@@ -2,13 +2,13 @@ const fs = require('fs');
 const https = require('https');
 
 const CLIENT_ID = 'e6gxp2t8xr';
-const CLIENT_SECRET = 'iNJgQTDNxwQ004Rpt3s2iHGM5UJT25lAXdxWaoz';
+const CLIENT_SECRET = 'INJgQTDNxwQ004Rpt3s2ihGM5UJt25lAXdxWaoz';
 
 const query = encodeURIComponent('학령인구 감소');
 
 function tryFetchNcp() {
   const options = {
-    hostname: 'naveropenapi.apigw.ntruss.com',
+    hostname: 'naverapihub.apigw.ntruss.com',
     path: `/search/v1/news?query=${query}&display=4`,
     headers: {
       'X-NCP-APIGW-API-KEY-ID': CLIENT_ID,
