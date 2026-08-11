@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>수업 설계안 만들기 (앱 F) — 설명서 · TEAM LEAP</title>
+<meta name="robots" content="noindex">
+<style>
+:root{--ink:#14202E;--gray:#5A6672;--line:#D8DEE6;--hair:#EDF1F5;--bg:#F7F9FB;
+  --surface:#fff;--blue:#1B4FA0;--tint:#EAF1FC;--radius:14px}
+@media (prefers-color-scheme:dark){:root{--ink:#E8EDF3;--gray:#A8B3BF;--line:#33404F;
+  --hair:#232E3B;--bg:#141B24;--surface:#1B242F;--blue:#7FB3F7;--tint:#1E2B3D}}
+:root[data-theme="dark"]{--ink:#E8EDF3;--gray:#A8B3BF;--line:#33404F;--hair:#232E3B;
+  --bg:#141B24;--surface:#1B242F;--blue:#7FB3F7;--tint:#1E2B3D}
+:root[data-theme="light"]{--ink:#14202E;--gray:#5A6672;--line:#D8DEE6;--hair:#EDF1F5;
+  --bg:#F7F9FB;--surface:#fff;--blue:#1B4FA0;--tint:#EAF1FC}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);line-height:1.8;
+  font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,
+    "Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+  font-size:16px;-webkit-text-size-adjust:100%}
+.top{background:var(--blue);color:#fff;padding:14px 0}
+:root[data-theme="dark"] .top,@media (prefers-color-scheme:dark){.top{background:#16233A}}
+.top .in{max-width:860px;margin:0 auto;padding:0 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.top .t{font-weight:800;letter-spacing:-.01em}
+.top .t span{font-weight:600;opacity:.85;font-size:.875rem;margin-left:8px}
+.top a{margin-left:auto;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.5);
+  border-radius:999px;padding:7px 15px;font-size:.8125rem;font-weight:700;min-height:38px;
+  display:inline-flex;align-items:center}
+.top a:hover{background:rgba(255,255,255,.18)}
+main{max-width:860px;margin:0 auto;padding:34px 22px 90px}
+h1{font-size:1.75rem;letter-spacing:-.02em;margin:0 0 8px}
+h2{font-size:1.3125rem;letter-spacing:-.015em;margin:44px 0 12px;padding-bottom:8px;
+  border-bottom:2px solid var(--hair)}
+h3{font-size:1.0625rem;margin:30px 0 8px}
+h4,h5,h6{font-size:.9375rem;margin:22px 0 6px;color:var(--gray)}
+p{margin:0 0 14px}
+a{color:var(--blue)}
+b{font-weight:700}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+ul,ol{margin:0 0 16px;padding-left:24px}
+li{margin:4px 0}
+blockquote{margin:18px 0;padding:14px 18px;background:var(--tint);border-radius:var(--radius);
+  border-left:4px solid var(--blue)}
+blockquote p:last-child{margin:0}
+code{background:var(--hair);border-radius:5px;padding:2px 6px;font-size:.875em;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 18px;overflow-x:auto;margin:0 0 18px}
+pre code{background:none;padding:0;font-size:.8125rem;line-height:1.7}
+.tw{overflow-x:auto;margin:0 0 20px}
+table{border-collapse:collapse;width:100%;font-size:.9375rem;min-width:420px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{background:var(--hair);font-weight:700;white-space:nowrap}
+del{color:var(--gray)}
+.foot{max-width:860px;margin:0 auto;padding:0 22px 60px;color:var(--gray);font-size:.8125rem;line-height:1.8}
+@media print{
+  .top a{display:none}
+  body{background:#fff;color:#000;font-size:10.5pt}
+  .top{background:none;color:#000;border-bottom:2px solid #000;padding:0 0 8px;margin-bottom:14px}
+  main{padding:0;max-width:none}
+  h2{break-after:avoid}
+  pre,table,blockquote{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <div class="t">수업 설계안 만들기 (앱 F)<span>설명서</span></div>
+  <a href="../index.html">처음으로</a>
+</div></header>
+<main>
+<h1 id="h0">수업 설계안 만들기 (앱 F)</h1>
+<blockquote><p><b>왼쪽에서 적으면 오른쪽에 나올 종이가 바로 보입니다.</b> 차시안(1·2차시)과 단원안을 <b>A4 가로·세로</b> 두 양식으로 냅니다. 서버 없는 단일 HTML. v0.5 · 점검 178개 통과</p></blockquote>
+<pre><code>f-lessonplan/
+├─ index.html            ← 두 번 누르면 열립니다
+├─ test.js               ← node test.js  (178개)
+├─ bake-standards.mjs    ← 성취기준·성취수준을 앱 안에 굽습니다
+├─ .build/               ← 조각과 조립 스크립트 (아래 「고칠 때」)
+└─ README.md             ← 이 문서</code></pre>
+<hr>
+<h2 id="h4">왜 이 앱인가</h2>
+<p>앱 D(복식학급)는 「두 학년이 한 교실에 있을 때」의 도구입니다. 그런데 소규모학교 교사가 실제로 가장 많이 쓰는 시간은 <b>그냥 한 차시를 짜는 일</b>이고, 작은 학교일수록 그 일을 <b>혼자</b> 합니다. 나눠 맡을 동학년이 없습니다. 학년마다 교사 한 명이 전 교과를 짜는 학교에서, 지도안은 늘 밀립니다.</p>
+<p>「인공지능 활용 선도교사」 연수의 <b>수업설계안 실습 앱</b>과 양식이 같지만, 그쪽은 실습용이고 이쪽은 <b>학교에 나가는 것</b>이라 지켜야 할 것이 다릅니다.</p>
+<hr>
+<h2 id="h8">v0.5 — 시간 띠, 이 앱의 얼굴 (2026. 8. 6.)</h2>
+<h3 id="h9">1. 시간 띠 ★</h3>
+<p>앱마다 <b>「그 앱이 무엇인지」를 한눈에 말하는 자리</b>가 하나씩 있습니다. 앱 A 는 주간 시간표, 앱 B 는 로고의 도약 궤적을 그대로 쓴 진행바, 앱 D 는 시간 배치표, 앱 G 는 히트맵.</p>
+<p><b>앱 F 에는 그것이 없었습니다.</b> 이 앱의 마크가 「한 장 안에 나뉜 도입·전개·정리, <b>막대 길이가 곧 시간</b>」인데, 정작 화면에는 숫자와 진행바 하나뿐이었습니다. <b>마크가 말하는 것을 화면이 말하지 않고 있었습니다.</b></p>
+<pre><code>┌──────┬───────────┬───────────────────────┬──────┐
+│관심갖기│  계획하기   │       탐색하기          │정리하기│
+│ 5분  │   10분     │        20분            │ 5분  │
+└──────┴───────────┴───────────────────────┴──────┘
+   전체     모둠            모둠·개별            전체</code></pre>
+<ul><li><b>칸의 폭이 곧 그 단계의 시간</b>입니다. 40분이 눈앞에 통째로 놓입니다.</li><li><b>색은 학습 형태</b>입니다 — 종이에 찍히는 색과 <b>같은 값</b>입니다. 화면에서 본 색을 종이에서 다시 만납니다.</li><li><b>남은 시간은 빗금</b>으로 남습니다. 아직 안 쓴 자리가 눈에 보입니다.</li><li><b>칸을 누르면 그 단계로 갑니다.</b></li><li>무슨 색이 무엇인지 아래에 <b>글자로도</b> 적습니다(원칙 4).</li></ul>
+<h3 id="h14">2. 걸음 표시</h3>
+<p>세 걸음이 각각 <b>얼마나 채워졌는지</b> 위에 늘 보입니다. 채운 걸음은 번호가 체크로 바뀝니다 — 「어디까지 했더라」를 사람이 기억하지 않아도 됩니다.</p>
+<pre><code>✓ 개요            ✓ 흐름              3 평가·유의사항
+  성취기준 1개       4단계 · 40/40분      평가요소를 적어 주세요</code></pre>
+<h3 id="h17">3. 종이 마무리 셋</h3>
+<div class="tw"><table><thead><tr><th>무엇</th><th>어떻게</th></tr></thead><tbody><tr><td><b>꼬리말</b></td><td>가운데 → <b>오른쪽</b>. 가운데에 두면 「본문의 일부」처럼 보입니다. 「학교 안에서 쓰는 자료입니다」는 뺐습니다</td></tr><tr><td><b>개요의 결이 달랐다</b></td><td>성취기준·도구·분석만 점을 찍고 주제·질문·의도는 맨 글자였습니다. <b>여섯 칸 모두</b> 점으로</td></tr><tr><td><b>도구·역할이 한 줄이었다</b></td><td>「도구 A · 역할 B」로 붙어 있어 어디까지가 도구인지 안 갈렸습니다. <b>줄을 나눴습니다</b></td></tr></tbody></table></div>
+<hr>
+<h2 id="h20">v0.4 — 현장에서 인쇄해 보고 짚어 준 것들 (2026. 8. 6.)</h2>
+<p>가로·세로로 실제로 뽑아 보고 나온 것들입니다.</p>
+<div class="tw"><table><thead><tr><th>무엇이 문제였나</th><th>어떻게 고쳤나</th></tr></thead><tbody><tr><td><b>설계 탭이 너무 길었다</b> — 여덟 마디를 한 화면에 넣어 평가까지 한참 굴려야 했음</td><td>걸음을 셋으로 — <b>① 개요 ② 흐름 ③ 평가·유의사항</b>. 오른쪽 종이는 <b>세 걸음에 모두</b> 붙어 있고, 걸음마다 「다음 →」 단추가 있습니다</td></tr><tr><td><b>글자가 잘렸다</b> — 가로판의 도구·역할 줄이 칸 안에서 끊김</td><td>흐름 칸을 <b>늘되 줄지 않게</b>(<code>flex:1 0 auto</code>). v0.3 은 줄어들 수 있게 두었고, <b>늘어나는 것과 잘리는 것은 한 몸</b>이었습니다</td></tr><tr><td><b>얼룩덜룩했다</b></td><td>회색이 세 가지(<code>#EDF1F6</code>·<code>#F5F7FA</code>·<code>#F7F9FC</code>)였습니다. <b>하나</b>로 줄이고 선도 한 굵기·한 색으로</td></tr><tr><td><b>소제목이 넓고 헐거웠다</b></td><td>색 점과 넓은 여백을 걷어내고 <b>밑줄 한 줄</b>로. 글자·줄 간격·표 안쪽을 함께 조여 같은 내용이 더 작은 자리에</td></tr><tr><td><b>표가 깨졌다</b> — 「초등학교 5학 / 년」</td><td>머리 표의 <b>칸 폭을 못박음</b>. <code>table-layout:fixed</code> 라 그냥 두면 열두 칸이 똑같이 나뉩니다</td></tr><tr><td><b>학습 형태가 안 갈렸다</b></td><td>전체·모둠·짝·개별에 <b>각각 다른 색</b>. 색만으로 말하지 않도록 <b>글자를 함께</b> 답니다(원칙 4)</td></tr><tr><td><b>평가가 심화부터였다</b></td><td><b>기초 → 기본 → 심화</b>로. 왼쪽에서 오른쪽으로 <b>올라가는</b> 순서라야 「이 아이를 어디까지 데려갈 것인가」로 읽힙니다. 종이와 입력 화면이 같은 순서입니다</td></tr><tr><td><b>활동이 서술문이었다</b></td><td>「~합니다」 → <b>「~하기」</b>. 예시안 19군데를 고치고, AI 프롬프트에도 못박았습니다 — <em>지도안은 읽는 글이 아니라 <b>보는 표</b>입니다</em></td></tr></tbody></table></div>
+<h3 id="h23">인쇄해 보고 또 나온 것 넷</h3>
+<p>화면에서는 멀쩡한데 <b>종이에서만 보이는</b> 자리들이었습니다.</p>
+<div class="tw"><table><thead><tr><th>무엇</th><th>왜 그랬나</th></tr></thead><tbody><tr><td><b>소제목이 커다란 흰 상자였다</b></td><td>종이의 소제목이 <code>h2.sec</code> 였는데, 입력 화면의 카드 규칙 <code>.sec{background·border·border-radius·padding:18px 20px·box-shadow}</code> 을 <b>그대로 뒤집어썼습니다.</b> <code>.page h2.sec</code> 가 더 구체적인데도 소용없었습니다 — <b>선언하지 않은 성질은 낮은 규칙이 이깁니다.</b> 이름을 <code>psec</code> 로 가르고, 그 안에서 배경·테두리·그림자를 <b>스스로 끄게</b> 못박았습니다</td></tr><tr><td><b>과정중심평가와 유의사항 사이의 네모</b></td><td>위와 같은 원인입니다. 두 소제목이 각각 흰 카드가 되어 그 사이에 상자 모서리와 그림자가 남았습니다</td></tr><tr><td><b>머리 표가 아래로 처져 보였다</b></td><td>이름표(8.6px)와 값(9px)의 크기가 다른데 둘 다 위로 붙여 두어 밑선이 어긋났습니다. 머리 표는 한 줄짜리라 <b>가운데</b>가 맞습니다. 개요 표는 값이 여러 줄이므로 이름표를 <b>위</b>에 둡니다</td></tr><tr><td><b>오른쪽 테두리가 잘렸다</b></td><td>인쇄에서 안쪽 여백을 0으로 두어 표의 오른쪽 선이 인쇄 경계에 딱 붙었습니다. <b>0.6mm</b> 만 남기니 선이 온전히 찍힙니다</td></tr></tbody></table></div>
+<h3 id="h26">PDF 파일 이름 ★</h3>
+<p>브라우저는 <b>문서 제목(<code>document.title</code>)</b> 을 파일 이름으로 씁니다. 그대로 두면 열 장을 뽑아도 열 장이 모두 「수업 설계안 만들기 — TEAM LEAP.pdf」였습니다.</p>
+<pre><code>차시안_사회_2. 우리 지역의 국가유산_2026-08-06.pdf
+차시안2_과학_3. 식물의 구조와 기능_2026-08-06.pdf
+단원안_국어_4. 주장과 근거를 판단해요_2026-08-06.pdf</code></pre>
+<p>인쇄하는 <b>동안만</b> 제목을 바꾸고 <code>afterprint</code> 로 되돌립니다 — 안 되돌리면 브라우저 탭 이름이 파일 이름인 채로 남습니다. 파일 이름에 못 쓰는 글자(<code>/ : * ? &quot; &lt; &gt; |</code> 등)는 걷어내고, 단원도 주제도 비어 있으면 「설계안」으로 둡니다.</p>
+<h3 id="h30">곁들여 — 일곱 앱의 머리를 하나로</h3>
+<p><b>처음으로 · AI 초안 · 밝게/어둡게</b> 순서로 맞췄습니다. 앱 F 의 AI 초안은 탭에서 머리 단추로 옮겼습니다 — AI 초안은 설계의 한 걸음이 아니라 <b>언제든 부르는 도우미</b>이기 때문입니다.</p>
+<p>그리고 <b>「화면 전환」을 걷어냈습니다.</b> 무엇이 바뀌는지 말해 주지 않는 말이었습니다. 이제 단추가 <b>지금 누르면 어떻게 되는지</b>를 스스로 말합니다 — 「어둡게 보기」를 누르면 어두워지고, 단추는 「밝게 보기」로 바뀝니다. 일곱 앱 · 카탈로그 · 활용 가이드 · 메인 페이지가 <b>모두 같은 말</b>을 씁니다.</p>
+<hr>
+<h2 id="h34">v0.3 — 다 적고 나서야 무엇이 나오는지 알던 것을 고쳤습니다</h2>
+<p>현장에서 온 것들을 반영했습니다. 하나씩 적어 둡니다.</p>
+<h3 id="h36">1. 왼쪽은 쓰는 곳, 오른쪽은 나올 종이 ★</h3>
+<p>v0.2 는 「종이로 내기」가 <b>따로 있는 탭</b>이었습니다. 그래서 한 쪽에 안 들어간다는 것을 다 적은 뒤에 알았고, 그때는 이미 <b>지울 것을 고르는 일</b>이 되어 있었습니다.</p>
+<p>이제 한 글자 적을 때마다 오른쪽 종이가 함께 바뀝니다. 위에는 늘 「<b>A4 가로 1쪽</b>」처럼 몇 쪽짜리인지 적혀 있고, 줄여서 맞췄으면 「글자 92%로 맞춤」이라고 밝힙니다.</p>
+<blockquote><p>글자를 칠 때 화면을 통째로 다시 그리면 <b>커서가 튑니다</b>(마스터 7장 함정 7번). 그래서 값이 바뀔 때는 <b>오른쪽 종이만</b> 갈아 끼웁니다.</p></blockquote>
+<h3 id="h40">2. 가로와 세로, 두 양식 ★</h3>
+<p>연수 제출 양식은 <b>A4 가로 한 쪽</b>이지만, 학교 결재는 <b>세로</b>로 도는 일이 많습니다. 같은 자료 하나에 두 양식을 입힙니다. 양식이 늘어도 만드는 쪽은 그대로입니다.</p>
+<div class="tw"><table><thead><tr><th></th><th>가로</th><th>세로</th></tr></thead><tbody><tr><td>흐름</td><td>단계 카드가 <b>옆으로</b> (연수 양식의 배치)</td><td>표가 <b>아래로</b> (표가 스스로 쪽을 넘김)</td></tr><tr><td>평가·유의사항</td><td>아래 두 칸에 나란히</td><td>차례로</td></tr><tr><td>쪽수</td><td><b>1쪽</b></td><td>차시안 1쪽 · 2차시·단원안 <b>2쪽까지</b></td></tr></tbody></table></div>
+<p><b>약속: 개요 · 수업 · 평가가 모두 그 안에 들어갑니다.</b> 넘치면 글자를 한 단계씩 줄여서라도 넣습니다. 어림하지 않고 <b>실제로 그려 놓고 높이를 잽니다</b> — 글자 수로 어림하면 표가 몇 줄로 접히는지를 알 수 없어 늘 틀립니다.</p>
+<h3 id="h44">3. AI 초안 — 프롬프트 생성기입니다 ★</h3>
+<p>API 키를 쓰지 않습니다. 학교에서 키 발급이 막히는 일이 잦고, 공용 컴퓨터에 키를 남기는 것도 께름칙합니다.</p>
+<pre><code>① 개요를 적는다            (교과·학년·성취기준만 있어도 됩니다)
+② 프롬프트를 복사한다       → 쓰던 챗봇에 붙여 넣기 (ChatGPT · Gemini · 클로드 …)
+③ 돌아온 JSON 을 붙여 넣는다
+④ 「무엇이 들어올지 보기」   → 확인하고 「이대로 받기」를 눌러야 들어갑니다</code></pre>
+<p><b>받아들이기 전에 반드시 거릅니다.</b></p>
+<div class="tw"><table><thead><tr><th>AI 가 이렇게 주면</th><th>이렇게 합니다</th></tr></thead><tbody><tr><td>시간 합이 200분</td><td>비율을 지켜 <b>40분에 맞춰 넣고</b>, 무엇을 고쳤는지 화면에 적습니다</td></tr><tr><td>없는 학습 형태(<code>텔레파시</code>)</td><td>「전체」로 되돌리고 그 사실을 적습니다</td></tr><tr><td>없는 탐구 유형</td><td>「구조화된 탐구」로 되돌립니다</td></tr><tr><td>흐름이 하나도 없음</td><td><b>받지 않습니다</b> — 종이의 가운데가 통째로 빕니다</td></tr><tr><td>앞뒤에 설명이 섞임</td><td><code>{ }</code> 부분만 찾아 읽습니다</td></tr></tbody></table></div>
+<p>프롬프트에 <b>「학생 이름을 쓰지 마세요」</b>를 못박아 두었습니다. 앱 밖으로 나가는 유일한 길목이기 때문입니다.</p>
+<p>사람이 못 만드는 상태를 AI 라고 만들 수 있으면, 「시간이 넘치는 수업안은 만들 수 없다」가 무너집니다.</p>
+<h3 id="h51">4. 차시안(1·2차시)과 단원안 ★</h3>
+<p>블록 수업이 흔해졌는데 v0.2 는 <b>한 차시 길이만</b> 알고 있었습니다.</p>
+<ul><li><b>차시안 1차시</b> — 초 40 · 중 45 · 고 50분</li><li><b>차시안 2차시(블록)</b> — 그 두 배</li><li><b>단원안</b> — 차시 묶음마다 <b>탐구 유형</b>(구조화된 → 안내된 → 개방형). 뒤로 갈수록 학생 주도성이 커지게 두는 것이 연수 예시안의 얼개입니다.</li></ul>
+<h3 id="h54">5. 과목·학년·성취기준을 토글로 ★</h3>
+<p>학교급 · 학년 · 학기 · 교과를 눌러서 고릅니다. <b>목록에 없으면 직접 적습니다</b> (중·고등학교 교과, 창의적 체험활동, 통합교과 등).</p>
+<h3 id="h56">6. 성취기준 611건을 앱 안에 담았습니다 ★</h3>
+<p><b>v0.2 의 「굽지 않는다」를 뒤집었습니다.</b> 그때 이유는 「수천 줄이고 개정 때마다 낡는다」였는데, 실제로 세어 보니 <b>초등 611건</b>이고 성취수준 A·B·C 까지 139K 입니다.</p>
+<p>그리고 굽지 않아 <b>잃고 있던 것</b>이 컸습니다. 붙여 넣게 하면 코드와 문장만 들어오고, <b>성취수준 A·B·C 는 어디에서도 오지 않습니다.</b> 그 셋이 그대로 기초·기본·심화 피드백이 되는데, <b>교사가 가장 오래 붙들고 있는 칸이 그것</b>입니다.</p>
+<pre><code>[4사06-01] 을 고른다
+   → 성취수준 C → 기초 피드백
+   → 성취수준 B → 기본 피드백      「피드백 채우기」 한 번
+   → 성취수준 A → 심화 피드백</code></pre>
+<p><b>이미 적은 줄은 덮지 않습니다.</b> 공들여 적은 것을 단추 하나로 날리면 다시는 그 단추를 안 누릅니다.</p>
+<blockquote><p>낡는 문제는 굽는 스크립트로 답합니다 — <code>node bake-standards.mjs</code>. 개정되면 원본을 바꿔 한 번 돌리면 됩니다. 앱 A·C·E 의 학교 좌표와 같은 방식입니다.</p></blockquote>
+<h3 id="h62">7. AI·디지털이 양식의 축입니다 ★</h3>
+<p>연수 양식(KERIS)의 네 블록을 그대로 따랐습니다.</p>
+<div class="tw"><table><thead><tr><th>블록</th><th>무엇</th></tr></thead><tbody><tr><td><b>개요</b></td><td>수업 주제 · <b>탐구 질문</b> · 수업 의도 / 성취기준 · <b>AI·디지털 도구</b> · 학생·과제 분석</td></tr><tr><td><b>교수·학습 설계</b></td><td>단계 · 시간 · 학습 형태 · 교사▪/학생- 활동 · <b>도구와 그 역할</b></td></tr><tr><td><b>과정 중심 평가</b></td><td>영역 · 평가요소 · <b>피드백 3수준</b> · 평가도구</td></tr><tr><td><b>유의사항</b></td><td>신뢰성 · 저작권 · 개인정보 · AI 결과의 비판적 수용 · 디지털 시민성</td></tr></tbody></table></div>
+<p><b>도구는 이름만 적지 않고 「무엇을 하는지」까지 적습니다.</b> 이름만 적힌 지도안은 다음 해에 못 씁니다.</p>
+<h3 id="h66">8. 예시안 셋 ★</h3>
+<p>채워진 것을 한 벌 열어 <b>내 수업으로 고쳐 쓰는</b> 것이 가장 빠릅니다.</p>
+<div class="tw"><table><thead><tr><th>예시안</th><th>무엇</th></tr></thead><tbody><tr><td>초등 사회 4학년</td><td>우리 지역의 역사 조사하기 · 1차시(40분) · A4 가로</td></tr><tr><td>초등 과학 5학년</td><td>잎이 하는 일 · <b>2차시 블록(80분)</b> · A4 세로</td></tr><tr><td>초등 국어 6학년</td><td>주장과 근거를 판단해요 · <b>단원안</b> 1~6차시 · A4 가로</td></tr></tbody></table></div>
+<p>여는 순간 <b>지금 것을 보관함에 자동으로 넣습니다</b> — 잃지 않습니다.</p>
+<h3 id="h70">9. 만들며 고친 것 셋</h3>
+<div class="tw"><table><thead><tr><th>무엇</th><th>왜 그랬나</th></tr></thead><tbody><tr><td><b>꼬리말이 평가표 글자 위에 겹쳤다</b></td><td><code>position:absolute</code> 로 띄웠기 때문입니다. 자리를 차지하는 요소로 두고 <code>margin-top:auto</code> 로 바닥에 붙였습니다 — <b>겹칠 수 없는 구조</b>가 되었습니다</td></tr><tr><td><b>짧은 설계안이 종이 위쪽에만 붙어 나왔다</b></td><td>인쇄에서 종이의 높이를 0으로 풀어 버려 흐름 칸이 늘어나지 않았습니다. <code>mm</code> 로 제 높이를 돌려주었습니다</td></tr><tr><td><b>백지가 한 장 더 나왔다</b></td><td>인쇄 높이를 <b>딱</b> 맞췄더니 반올림 1px 때문에 넘쳤습니다. 3mm 적게 잡습니다 — 제출물에 백지가 끼는 것이 가장 나쁩니다</td></tr></tbody></table></div>
+<hr>
+<h2 id="h73">그대로 둔 것 — 이 앱의 심장</h2>
+<h3 id="h74">시간이 넘치는 수업안을 <b>만들 수 없습니다</b> (마스터 원칙 8번)</h3>
+<blockquote><p>40분짜리 종이에 47분이 적히는 일 — 지도안이 현장에서 안 지켜지는 첫 번째 이유입니다.</p></blockquote>
+<p>경고로 잡지 않습니다. <b>구조로 막습니다.</b></p>
+<ul><li>남은 시간이 0이면 <b>「+ 단계」 단추가 잠깁니다.</b></li><li>시간 칸은 <code>max = 지금 값 + 남은 시간</code> 입니다. 넘겨 적으면 <b>값 자체가 되돌아갑니다.</b></li><li>남은 시간은 화면 위에 <b>붙어서 따라다닙니다.</b> 「저장할 때」 알면 늦습니다.</li><li>학교급이나 차시 수를 바꾸면 <b>비율을 지켜 그 자리에서 다시 나눕니다.</b> 나머지는 마지막 칸이 받습니다 — 반올림을 나눠 담으면 합이 1~2분씩 어긋납니다.</li></ul>
+<p><b>모자란 것은 막지 않습니다.</b> 일부러 여백을 두는 수업도 있습니다.</p>
+<h3 id="h79">학생 이름 칸이 없습니다 (원칙 3번)</h3>
+<p>평가에도 「누구를」이 아니라 <b>「무엇을 어떻게」</b>만 적습니다. 가장 확실한 증거는 저장 구조입니다 — <b>학생 하나하나를 담을 자리가 아예 없습니다.</b> 검사가 이걸 고정합니다(<code>[9]</code>). 그래서 개인정보 영향평가 없이 학교에 나갈 수 있습니다.</p>
+<h3 id="h81">보관함 — 파일 한 번 열었다고 쌓아 둔 것이 사라지지 않습니다</h3>
+<p>예시안을 열 때도, 보관함에서 열 때도, 파일을 불러올 때도 <b>먼저 지금 것을 보관함에 넣습니다.</b> 보관함은 보관함을 품지 않습니다 — 품으면 한 번 저장할 때마다 자료가 두 배로 불어납니다.</p>
+<hr>
+<h2 id="h84">고칠 때 — 조각으로 나뉘어 있습니다</h2>
+<p><code>index.html</code> 은 <b>조립 결과물</b>입니다. 손으로 고치지 말고 <code>.build/</code> 의 조각을 고친 뒤 조립하세요. 성취기준 139K 가 한가운데 박혀 있어 통째로 편집하기 어렵기 때문입니다.</p>
+<pre><code>./.build/assemble.sh     # 조각 → index.html → 성취기준 굽기
+node test.js             # 178개</code></pre>
+<div class="tw"><table><thead><tr><th>조각</th><th>무엇</th></tr></thead><tbody><tr><td><code>00-head.html</code> · <code>04-body.html</code></td><td>머리와 뼈대</td></tr><tr><td><code>01-kit.css</code> · <code>02-common.css</code></td><td>LEAP Kit 사본 (원본은 <code>apps/kit/</code>)</td></tr><tr><td><code>03-app.css</code></td><td>이 앱의 모양 — 두 칸 · A4 종이 · 인쇄</td></tr><tr><td><code>11-model.js</code></td><td>문서 모델 · 성취기준 · 시간</td></tr><tr><td><code>12-paper.js</code></td><td>종이 (가로·세로)</td></tr><tr><td><code>13-make.js</code> · <code>14-bind.js</code></td><td>왼쪽 입력 화면과 손잡이</td></tr><tr><td><code>15-ai.js</code></td><td>AI 초안</td></tr><tr><td><code>16-box.js</code></td><td>예시안 · 보관함 · 부팅</td></tr></tbody></table></div>
+<blockquote><p><b>파일이 476K 입니다.</b> 다른 앱보다 큰 것은 성취기준 611건 때문입니다. 다만 <b>내려받을 때는 gzip 87K</b> 로, 앱 C(86K)·앱 E(83K)와 같은 자리입니다. 오프라인 파일 하나로 들고 다닐 때만 476K 입니다.</p></blockquote>
+<hr>
+<h2 id="h90">뺀 것과 그 이유</h2>
+<div class="tw"><table><thead><tr><th>뺀 것</th><th>왜</th></tr></thead><tbody><tr><td>중·고등학교 성취기준 DB</td><td>초등만 611건입니다. 중·고는 <b>직접 적기</b>로 받습니다 — 이 앱을 쓸 학교가 대부분 초등입니다</td></tr><tr><td>DOCX·HWP 내보내기</td><td>HWP 는 독점 포맷입니다. <b>인쇄 → PDF</b> 가 가장 빠르고 어디서나 됩니다</td></tr><tr><td>에듀테크 자동 추천</td><td>학교마다 태블릿·인터넷 사정이 다릅니다. 자주 쓰는 12개를 칩으로 두고 <b>자유 입력</b>을 열어 두었습니다</td></tr><tr><td>부분 재생성 (이 단계만 다시)</td><td>지금은 프롬프트에 「추가 요청」을 적어 다시 받습니다</td></tr><tr><td>AI 응답 자동 반영</td><td><b>초안은 초안입니다.</b> 눌러서 받기 전에는 아무것도 바뀌지 않습니다</td></tr><tr><td>약안·세안 두 벌</td><td>v0.2 의 갈래였습니다. <b>가로·세로</b>가 현장에서 더 필요한 갈래라 그쪽으로 옮겼습니다</td></tr></tbody></table></div>
+<hr>
+<h2 id="h93">검사</h2>
+<pre><code>node test.js      # 178개</code></pre>
+<p>기능이 아니라 <b>약속한 규칙</b>을 봅니다.</p>
+<ul><li><code>[2]</code> <b>한 화면에 입력과 종이가 함께 있는가</b> — v0.3 에서 가장 크게 바꾼 것.</li><li><code>[3]</code> <b>시간</b> — 넘치는 상태를 <em>만들 수 있는가</em>를 봅니다. 「경고가 뜨는가」가 아닙니다.</li><li><code>[4]</code> <b>성취기준</b> — 611건이 다 있는지, A·B·C 가 피드백으로 들어가는지, <b>이미 적은 것을 덮지 않는지</b>.</li><li><code>[6]</code> <b>종이</b> — 가로·세로에 개요·수업·평가가 모두 들어가는지, 꼬리말이 겹치지 않는지, <b>백지가 안 나오는지</b>.</li><li><code>[7]</code> <b>예시안</b> — 평가가 비어 있지 않은지, <b>예시안끼리 내용이 섞이지 않았는지</b>(실제로 한 번 섞였습니다).</li><li><code>[8]</code> <b>AI 초안</b> — 200분짜리를 40분으로 맞추는지, 빈 초안을 거르는지, <b>보기만 해서는 안 바뀌는지</b>.</li><li><code>[9]</code> <b>학생 자리</b> — 저장 구조에 학생을 담을 칸이 없는지.</li></ul>
+<hr>
+<h2 id="h98">출처</h2>
+<ul><li>설계안 양식·예시안의 얼개: <b>KERIS 인공지능 활용 선도교사 연수 자료</b>를 바탕으로 재구성</li><li>성취기준·성취수준 611건: <b>2022 개정 교육과정에 따른 성취수준(1~2·3~4·5~6학년군), 한국교육과정평가원</b></li></ul>
+</main>
+<div class="foot">© 2026 TEAM LEAP · 경북교육 AI Lab · AI 활용 분과</div>
+</body>
+</html>

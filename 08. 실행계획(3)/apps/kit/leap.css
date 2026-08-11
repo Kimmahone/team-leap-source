@@ -1,0 +1,177 @@
+/* ==========================================================================
+   LEAP Kit — 공통 스타일 토큰
+   TEAM LEAP / 경북교육 AI Lab · AI 활용 분과
+   v0.1 · 2026.08.02
+
+   원칙
+   - 외부 폰트·CDN·아이콘 라이브러리를 쓰지 않는다 (보안성 검토 대비, 오프라인 동작)
+   - 모든 텍스트 색은 배경 대비 4.5:1 이상 (검증값은 주석에 표기)
+   - 라이트/다크 자동 대응
+   - 인쇄 스타일을 처음부터 포함
+   ========================================================================== */
+
+:root {
+  /* --- 브랜드 (라이트) ------------------------------------------------- */
+  --leap-ink:        #14202E;  /* 본문      · 15.61:1 */
+  --leap-blue:       #1B4FA0;  /* 주색      ·  7.45:1 */
+  --leap-amber:      #A8560A;  /* 강조 텍스트·  4.98:1 */
+  --leap-amber-mark: #CE6410;  /* 로고 착지점 (비텍스트, 3:1 기준) */
+  --leap-teal:       #0D6E5C;  /* 성공·실천 ·  5.85:1 */
+  --leap-gray:       #5A6672;  /* 보조 텍스트·  5.56:1 */
+
+  /* --- 표면 ------------------------------------------------------------ */
+  --leap-bg:      #F7F9FC;
+  --leap-surface: #FFFFFF;
+  --leap-border:  #D9E0EA;
+  --leap-hairline:#E8EDF3;
+
+  /* --- 상태 (배경에 흰 글자를 얹는 용도) ------------------------------- */
+  --leap-on-fill: #FFFFFF;
+
+  /* --- 타이포 ----------------------------------------------------------- */
+  --leap-font: system-ui, -apple-system, "Segoe UI", "Apple SD Gothic Neo",
+               "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --leap-mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas,
+               "D2Coding", monospace;
+
+  --leap-size-display: 2.0rem;   /* 앱 제목 */
+  --leap-size-title:   1.375rem; /* 섹션 제목 */
+  --leap-size-body:    1rem;
+  --leap-size-small:   0.8125rem;
+
+  /* --- 간격 (4의 배수) --------------------------------------------------- */
+  --leap-1: 4px;  --leap-2: 8px;  --leap-3: 12px; --leap-4: 16px;
+  --leap-5: 24px; --leap-6: 32px; --leap-7: 48px; --leap-8: 64px;
+
+  --leap-radius: 10px;
+  --leap-radius-sm: 6px;
+  --leap-shadow: 0 1px 2px rgba(20, 32, 46, .06), 0 4px 12px rgba(20, 32, 46, .07);
+}
+
+/* --- 다크 --------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --leap-ink:        #E8EDF3;  /* 15.44:1 */
+    --leap-blue:       #7FB3F7;  /*  8.39:1 */
+    --leap-amber:      #F2A65A;  /*  8.98:1 */
+    --leap-amber-mark: #F2A65A;
+    --leap-teal:       #4FD1B0;  /*  9.59:1 */
+    --leap-gray:       #97A3B0;  /*  7.08:1 */
+
+    --leap-bg:      #0E1621;
+    --leap-surface: #1A2735;
+    --leap-border:  #2C3B4C;
+    --leap-hairline:#22303F;
+
+    --leap-on-fill: #0E1621;
+    --leap-shadow: 0 1px 2px rgba(0,0,0,.4), 0 4px 14px rgba(0,0,0,.35);
+  }
+}
+
+/* 사용자가 앱 안에서 직접 전환하는 경우 (미디어쿼리보다 우선) */
+:root[data-theme="light"] {
+  --leap-ink: #14202E; --leap-blue: #1B4FA0; --leap-amber: #A8560A;
+  --leap-amber-mark: #CE6410; --leap-teal: #0D6E5C; --leap-gray: #5A6672;
+  --leap-bg: #F7F9FC; --leap-surface: #FFFFFF;
+  --leap-border: #D9E0EA; --leap-hairline: #E8EDF3; --leap-on-fill: #FFFFFF;
+}
+:root[data-theme="dark"] {
+  --leap-ink: #E8EDF3; --leap-blue: #7FB3F7; --leap-amber: #F2A65A;
+  --leap-amber-mark: #F2A65A; --leap-teal: #4FD1B0; --leap-gray: #97A3B0;
+  --leap-bg: #0E1621; --leap-surface: #1A2735;
+  --leap-border: #2C3B4C; --leap-hairline: #22303F; --leap-on-fill: #0E1621;
+}
+
+/* --- 기본 --------------------------------------------------------------- */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--leap-font);
+  font-size: var(--leap-size-body);
+  line-height: 1.65;
+  color: var(--leap-ink);
+  background: var(--leap-bg);
+  -webkit-text-size-adjust: 100%;
+}
+
+/* 키보드 포커스는 반드시 보인다 — 접근성 필수 항목 */
+:focus-visible {
+  outline: 3px solid var(--leap-blue);
+  outline-offset: 2px;
+  border-radius: var(--leap-radius-sm);
+}
+
+/* 스크린리더 전용 (색·아이콘만으로 정보를 전달하지 않기 위한 보조 라벨) */
+.leap-sr {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* --- 컴포넌트 ----------------------------------------------------------- */
+.leap-card {
+  background: var(--leap-surface);
+  border: 1px solid var(--leap-border);
+  border-radius: var(--leap-radius);
+  padding: var(--leap-5);
+  box-shadow: var(--leap-shadow);
+}
+
+.leap-btn {
+  font: inherit;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: var(--leap-radius-sm);
+  border: 1px solid var(--leap-blue);
+  background: var(--leap-blue);
+  color: var(--leap-on-fill);
+  cursor: pointer;
+  min-height: 44px;          /* 터치 목표 최소 크기 */
+}
+.leap-btn--quiet {
+  background: transparent;
+  color: var(--leap-blue);
+}
+.leap-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* 상태 배지 — 색 + 텍스트를 항상 함께 쓴다 (색상 단독 전달 금지) */
+.leap-badge {
+  display: inline-block;
+  font-size: var(--leap-size-small);
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+}
+.leap-badge--info    { color: var(--leap-blue); }
+.leap-badge--warn    { color: var(--leap-amber); }
+.leap-badge--ok      { color: var(--leap-teal); }
+
+/* --- 인쇄 --------------------------------------------------------------- */
+/* 학교 현장은 여전히 종이로 결재하고 게시한다. 인쇄를 나중에 붙이지 않는다. */
+@media print {
+  :root {
+    --leap-ink: #000; --leap-gray: #333;
+    --leap-bg: #fff; --leap-surface: #fff;
+    --leap-border: #999; --leap-shadow: none;
+  }
+  body { font-size: 11pt; }
+  .leap-card { box-shadow: none; break-inside: avoid; }
+  .leap-no-print { display: none !important; }
+  /* 알림 토스트는 화면 아래에 2.8초 떠 있다가 사라집니다. 그런데 인쇄를 누른
+     그 순간에도 떠 있으면 **종이 한가운데에 검은 말풍선으로 찍힙니다.**
+     인쇄 직전에 무언가를 눌렀으니 떠 있는 것이 오히려 보통입니다.
+     앱마다 자기 인쇄 규칙에 적어 두고 있었는데 앱 A·E 가 빠져 있었습니다 —
+     그래서 원본인 여기에 둡니다 (원칙 10번). */
+  .leap-toast { display: none !important; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 9pt; }
+}
+
+/* --- 모션 축소 요청 존중 -------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}

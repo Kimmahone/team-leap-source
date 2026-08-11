@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-labelledby="t">
+  <title id="t">TEAM LEAP 앱 아이콘</title>
+  <!-- 앱 아이콘 / 바로가기 / 카탈로그 타일용. -->
+  <rect width="96" height="96" rx="22" fill="#14202E"/>
+  <g transform="translate(48 48) scale(1.05) translate(-32 -33)">
+    <path d="M7 52 H25" stroke="#97A3B0" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+    <path d="M39 36 H57" stroke="#F2A65A" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+    <path d="M16 46 Q32 -10 48 30" stroke="#7FB3F7" stroke-width="7" stroke-linecap="round" fill="none"/>
+  </g>
+</svg>

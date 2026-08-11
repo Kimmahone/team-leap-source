@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-labelledby="t">
+  <title id="t">TEAM LEAP 심볼 (어두운 배경용)</title>
+  <!-- 어두운 배경 전용. 밝은 배경에 쓰면 대비가 무너집니다. -->
+  <path d="M7 52 H25" stroke="#97A3B0" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+  <path d="M39 36 H57" stroke="#F2A65A" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+  <path d="M16 46 Q32 -10 48 30" stroke="#7FB3F7" stroke-width="7" stroke-linecap="round" fill="none"/>
+</svg>

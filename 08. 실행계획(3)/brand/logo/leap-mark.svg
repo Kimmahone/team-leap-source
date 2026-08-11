@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-labelledby="t">
+  <title id="t">TEAM LEAP 심볼</title>
+  <!-- 낮은 지면 : 지금 서 있는 자리 -->
+  <path d="M7 52 H25" stroke="#5A6672" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+  <!-- 높은 지면 : 도달하는 곳 -->
+  <path d="M39 36 H57" stroke="#CE6410" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+  <!-- 도약 궤적 -->
+  <path d="M16 46 Q32 -10 48 30" stroke="#1B4FA0" stroke-width="7" stroke-linecap="round" fill="none"/>
+</svg>

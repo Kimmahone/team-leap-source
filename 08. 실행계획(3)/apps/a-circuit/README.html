@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>순회교사 통합 시간표 (앱 A) — 설명서 · TEAM LEAP</title>
+<meta name="robots" content="noindex">
+<style>
+:root{--ink:#14202E;--gray:#5A6672;--line:#D8DEE6;--hair:#EDF1F5;--bg:#F7F9FB;
+  --surface:#fff;--blue:#1B4FA0;--tint:#EAF1FC;--radius:14px}
+@media (prefers-color-scheme:dark){:root{--ink:#E8EDF3;--gray:#A8B3BF;--line:#33404F;
+  --hair:#232E3B;--bg:#141B24;--surface:#1B242F;--blue:#7FB3F7;--tint:#1E2B3D}}
+:root[data-theme="dark"]{--ink:#E8EDF3;--gray:#A8B3BF;--line:#33404F;--hair:#232E3B;
+  --bg:#141B24;--surface:#1B242F;--blue:#7FB3F7;--tint:#1E2B3D}
+:root[data-theme="light"]{--ink:#14202E;--gray:#5A6672;--line:#D8DEE6;--hair:#EDF1F5;
+  --bg:#F7F9FB;--surface:#fff;--blue:#1B4FA0;--tint:#EAF1FC}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);line-height:1.8;
+  font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,
+    "Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+  font-size:16px;-webkit-text-size-adjust:100%}
+.top{background:var(--blue);color:#fff;padding:14px 0}
+:root[data-theme="dark"] .top,@media (prefers-color-scheme:dark){.top{background:#16233A}}
+.top .in{max-width:860px;margin:0 auto;padding:0 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.top .t{font-weight:800;letter-spacing:-.01em}
+.top .t span{font-weight:600;opacity:.85;font-size:.875rem;margin-left:8px}
+.top a{margin-left:auto;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.5);
+  border-radius:999px;padding:7px 15px;font-size:.8125rem;font-weight:700;min-height:38px;
+  display:inline-flex;align-items:center}
+.top a:hover{background:rgba(255,255,255,.18)}
+main{max-width:860px;margin:0 auto;padding:34px 22px 90px}
+h1{font-size:1.75rem;letter-spacing:-.02em;margin:0 0 8px}
+h2{font-size:1.3125rem;letter-spacing:-.015em;margin:44px 0 12px;padding-bottom:8px;
+  border-bottom:2px solid var(--hair)}
+h3{font-size:1.0625rem;margin:30px 0 8px}
+h4,h5,h6{font-size:.9375rem;margin:22px 0 6px;color:var(--gray)}
+p{margin:0 0 14px}
+a{color:var(--blue)}
+b{font-weight:700}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+ul,ol{margin:0 0 16px;padding-left:24px}
+li{margin:4px 0}
+blockquote{margin:18px 0;padding:14px 18px;background:var(--tint);border-radius:var(--radius);
+  border-left:4px solid var(--blue)}
+blockquote p:last-child{margin:0}
+code{background:var(--hair);border-radius:5px;padding:2px 6px;font-size:.875em;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 18px;overflow-x:auto;margin:0 0 18px}
+pre code{background:none;padding:0;font-size:.8125rem;line-height:1.7}
+.tw{overflow-x:auto;margin:0 0 20px}
+table{border-collapse:collapse;width:100%;font-size:.9375rem;min-width:420px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{background:var(--hair);font-weight:700;white-space:nowrap}
+del{color:var(--gray)}
+.foot{max-width:860px;margin:0 auto;padding:0 22px 60px;color:var(--gray);font-size:.8125rem;line-height:1.8}
+@media print{
+  .top a{display:none}
+  body{background:#fff;color:#000;font-size:10.5pt}
+  .top{background:none;color:#000;border-bottom:2px solid #000;padding:0 0 8px;margin-bottom:14px}
+  main{padding:0;max-width:none}
+  h2{break-after:avoid}
+  pre,table,blockquote{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <div class="t">순회교사 통합 시간표 (앱 A) — v0.3<span>설명서</span></div>
+  <a href="../index.html">처음으로</a>
+</div></header>
+<main>
+<h1 id="h0">순회교사 통합 시간표 (앱 A) — v0.3</h1>
+<p>여러 학교를 도는 순회·겸임 교사가 <b>학교별 시간표를 한 장으로 보고</b>, 학교 사이 <b>이동 시간이 모자란 자리</b>를 미리 잡아내는 도구입니다.</p>
+<ul><li>실행: <code>index.html</code>을 브라우저로 열면 됩니다. 설치·로그인·인터넷 모두 필요 없습니다.</li><li>점검: <code>node test.js</code> — <b>146개</b></li></ul>
+<hr>
+<h2 id="h4">저작권</h2>
+<pre><code>© 2026 TEAM LEAP (경북교육 AI Lab · AI 활용 분과)</code></pre>
+<p>교육 목적에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다. 상업적 이용과 외부 배포는 제작자에게 문의해 주세요. 표기는 파일 머리 주석 · JS 상단 주석 · 화면 맨 아래 · 인쇄물 아래에 있습니다.</p>
+<hr>
+<h2 id="h8">왜 이 앱인가</h2>
+<pre><code>학령인구 감소 → 소규모학교 증가 → 순회·겸임 교사 증가</code></pre>
+<p>인과가 직선입니다. 학생이 줄어 한 학교에 한 과목 교사를 둘 수 없으면, 한 사람이 두세 학교를 돕니다. 영양·보건·사서·특수·전문상담 교사, 그리고 소규모 중학교의 교과 교사가 그렇습니다.</p>
+<p>계획서(<code>TEAM LEAP 앱 개발 실행계획(8~12월).md</code> 3장)가 이 앱을 두고 이렇게 적었습니다.</p>
+<blockquote><p><b>주제 정합성이 가장 높다.</b> &quot;학령인구 감소 대응&quot;이라는 연구소 주제에 설명이 필요 없는 유일한 앱이다. 가장 중요한 기능은 <b>이동 시간 충돌 경고</b>다. 다른 도구에 없고, 순회 교사가 실제로 겪는 사고를 막는다.</p></blockquote>
+<p>8월에는 만들지 못했습니다. <b>학교 좌표가 없었기 때문입니다.</b> 거리를 모르면 이동 시간을 말할 수 없고, 그러면 이 앱의 존재 이유가 사라집니다.</p>
+<p>앱 C(지역 탐방 디지털 스토리북)를 위해 <b>경상북도 학교 917곳의 위도·경도</b>를 공공데이터에서 받아 구웠습니다. 그 자료가 이 앱을 가능하게 했습니다.</p>
+<hr>
+<h2 id="h16">다른 시간표 앱과 갈리는 두 자리</h2>
+<h3 id="h17">1. 학교마다 종 치는 시각이 다릅니다</h3>
+<p>A중 3교시는 <b>10:40</b>에, B초 3교시는 <b>10:50</b>에 시작합니다.</p>
+<p>「3교시」라는 말로는 두 수업이 겹치는지, 사이에 몇 분이 있는지 <b>알 수 없습니다.</b> 그래서 이 앱은 모든 판단을 <b>분 단위 실제 시각</b>으로 합니다. 교시 번호는 사람이 부르는 이름일 뿐입니다.</p>
+<p>학교를 넣으면 학교급에 맞는 기본 시각표(초등 40분 · 중고 45분)가 들어갑니다. <b>그대로 쓰는 학교는 없습니다.</b> 고치라고 넣어 둔 출발점입니다.</p>
+<h3 id="h21">2. 학교 사이에는 이동 시간이 있습니다</h3>
+<p>쉬는 시간 10분에 28km 떨어진 학교로 갈 수는 없습니다. 다른 시간표 도구에는 이 개념이 아예 없습니다.</p>
+<hr>
+<h2 id="h24">지키는 규칙 — 경고가 아니라 구조로</h2>
+<blockquote><p><b>교사는 한 시점에 한 학교에만 있을 수 있다.</b></p></blockquote>
+<p>이것을 경고로 잡지 않습니다. <b>넣을 수 없게</b> 합니다.</p>
+<div class="tw"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>흔한 방식</td><td>아무 데나 넣게 하고 나중에 「겹칩니다」 경고를 띄운다</td></tr><tr><td>이 앱</td><td><b>이미 찬 시각의 교시는 눌리지 않는다.</b> 왜 못 누르는지도 칸에 적는다 (<code>길안초 겹침</code>)</td></tr></tbody></table></div>
+<p>두 학교에 동시에 있는 시간표를 만들 방법이 앱 안에 없습니다. 앱 B의 무기명, 앱 D의 복식 배치와 같은 방식입니다.</p>
+<h3 id="h29">반대로 「이동 시간 부족」은 경고로 남깁니다</h3>
+<p><b>판단이 필요하기 때문입니다.</b> 그 사이가 급식 시간일 수도 있고, 이미 학교와 조율해 둔 것일 수도 있습니다. 기계가 대신 결정할 일이 아닙니다.</p>
+<p>대신 <b>눈에 걸리게</b> 합니다. 시간표에서 빈 자리를 채워 칠하고, 아래에 글로 다시 적고, 「고치러 가기」로 그 수업까지 데려다줍니다.</p>
+<p>여유가 넉넉한 이동은 <b>얇게</b> 긋습니다. 세 시간 비는 자리를 「이동」이라고 크게 칠해 놓으면 정작 위험한 자리가 묻힙니다.</p>
+<hr>
+<h2 id="h34">이동 시간은 어림입니다. 숨기지 않습니다</h2>
+<pre><code>필요 시간 = 직선거리 × 1.35(도로 사정) ÷ 시속 50km × 60 + 10분(준비)
+          단, 아무리 가까워도 15분</code></pre>
+<p>준비 10분은 짐 챙기고 주차하고 교실 찾아가는 시간입니다. 바로 옆 학교라도 늘 듭니다.</p>
+<p>경북은 산이 많아 실제로는 더 걸리기도 하고, 고속도로가 있으면 덜 걸리기도 합니다. 그래서</p>
+<ul><li>화면에 <b>「어림값」</b>이라고 적습니다</li><li><b>교사가 고칠 수 있습니다.</b> 한 번 고치면 그 값을 씁니다</li><li>고친 값에는 <b>「직접 적음」</b> 표시가 붙습니다. 종이에도 그대로 나옵니다</li></ul>
+<p>실제로 다녀 본 사람이 제일 잘 압니다. 검사가 이것을 고정합니다 — <em>「직접 적은 값으로 넉넉해지면 경고가 사라진다」</em>.</p>
+<p>좌표를 모르는 학교는 <b>어림하지 않습니다.</b> 0분으로 두면 경고가 조용히 사라지기 때문입니다.</p>
+<hr>
+<h2 id="h42">화면</h2>
+<div class="tw"><table><thead><tr><th>탭</th><th>내용</th></tr></thead><tbody><tr><td><b>담당 학교</b></td><td>경북 917곳에서 찾아 넣기(초성 가능) · 짧은 이름 · 색 · <b>교시 시각</b></td></tr><tr><td><b>주간 시간표</b></td><td>월~금 한 장. 실제 시각으로 그린 블록 · 이동 표시 · 문제 목록 · 수업 넣기</td></tr><tr><td><b>이동 시간</b></td><td>학교 쌍마다 직선거리 · 어림값 · <b>직접 적기</b></td></tr><tr><td><b>일지</b></td><td>날짜·학교별 진도와 특이사항</td></tr></tbody></table></div>
+<p>인쇄는 화면 아래 「인쇄 · PDF」입니다. A4 한 장에 주간 시간표 + 색 범례 + 이동 시간표 + 살펴볼 자리가 들어갑니다. <b>수첩에 끼울 수 있습니다.</b></p>
+<hr>
+<h2 id="h46">색만으로 알아보게 하지 않습니다</h2>
+<p>학교마다 색이 붙지만, 시간표 블록에는 <b>짧은 이름이 늘 함께</b> 나옵니다 (<code>09:00 길안초</code>). 색각 이상이거나 흑백으로 인쇄하면 색만으로는 어느 학교인지 알 수 없기 때문입니다. 이동 경고도 색 + <code>!</code> + <code>10/35분</code> 세 가지로 말합니다.</p>
+<p>검사가 고정합니다 — <em>「블록마다 짧은 이름이 함께 붙는다」</em>.</p>
+<hr>
+<h2 id="h50">개인정보</h2>
+<p><b>학생 이름을 받는 칸이 없습니다.</b> 칸이 있으면 언젠가 적힙니다.</p>
+<ul><li>학급은 <code>3-1</code> 까지만 적습니다</li><li>교사 본인 이름도 받지 않습니다. 필요가 없습니다</li><li>일지 입력칸에 「학생 이름은 적지 마세요」를 붙여 두었습니다</li><li>학교 이름은 공개 정보입니다</li></ul>
+<p>적은 것은 모두 <b>이 브라우저 안에만</b> 있습니다. 서버로 보내지 않습니다.</p>
+<hr>
+<h2 id="h55">공공데이터</h2>
+<div class="tw"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>이름·학교급·주소</td><td>교육부 「학교기본정보」 (교육정보 개방 포털 <code>open.neis.go.kr</code>)</td></tr><tr><td>위도·경도</td><td>교육부 <b>학교알리미</b> (<code>schoolinfo.go.kr</code>) — <code>LTTUD</code> · <code>LGTUD</code></td></tr><tr><td>범위</td><td>경상북도 초 474 · 중 260 · 고 183 = <b>917교</b> (분교장 18곳 포함)</td></tr><tr><td>이용조건</td><td>공공누리 제1유형 (출처표시)</td></tr></tbody></table></div>
+<p><b>앱 파일 안에 구워 두었습니다.</b> 앱을 열 때 인터넷을 부르지 않습니다. 인증키도 들어 있지 않습니다. 검사가 이것을 고정합니다 — <em>「인증키가 들어 있지 않다」</em>.</p>
+<p>앱 C와 같은 자료입니다. 다시 받으려면 <code>open api/bake-coords.mjs</code>.</p>
+<hr>
+<h2 id="h60">가져온 파일에서도 규칙을 지킵니다</h2>
+<p>앱 안에서는 겹치는 수업을 만들 수 없지만, <b>파일로는 들어올 수 있습니다.</b> 남이 보낸 파일이거나 손으로 고친 파일일 수 있습니다.</p>
+<p>들어오는 자리에서 규칙에 맞게 고칩니다.</p>
+<div class="tw"><table><thead><tr><th>들어온 것</th><th>어떻게</th></tr></thead><tbody><tr><td>같은 시각에 두 수업</td><td>뒤엣것을 버립니다</td></tr><tr><td>없는 학교를 가리키는 수업</td><td>버립니다</td></tr><tr><td>없는 교시를 가리키는 수업</td><td>버립니다</td></tr></tbody></table></div>
+<p>몇 개를 뺐는지 화면에 알립니다. 조용히 두면 앱의 약속이 깨집니다.</p>
+<hr>
+<h2 id="h66">파일</h2>
+<pre><code>a-circuit/
+├─ index.html      ← 전부 여기에 (HTML + CSS + JS + 학교 917곳)
+├─ test.js         ← node test.js   146개
+└─ README.md</code></pre>
+<p><code>kit/leap.css</code> 와 <code>kit/leap.js</code> 가 원본이고, <code>index.html</code> 안의 것은 <b>사본</b>입니다. 원본을 고치면 앱 안의 블록도 함께 고쳐야 합니다.</p>
+<p><code>index.html</code> 맨 아래 <code>window.__LEAP_TEST__</code> 훅은 <b>점검용</b>입니다. <code>test.js</code> 가 미리 만들어 둘 때만 붙고, 브라우저에서는 아무 일도 하지 않습니다.</p>
+<hr>
+<h2 id="h71">계획서에서 뺀 것</h2>
+<div class="tw"><table><thead><tr><th>뺀 것</th><th>사유</th></tr></thead><tbody><tr><td>나이스 연동</td><td>서버·인증 필요. 단일 HTML 원칙과 충돌</td></tr><tr><td>실시간 동기화</td><td>서버 필요</td></tr><tr><td>학부모 공유</td><td>서버 + 개인정보</td></tr><tr><td>학사일정 겹침 표시</td><td>v0.2로 미룸. 학교별 학사일정을 받는 화면이 하나 더 필요합니다</td></tr></tbody></table></div>
+<hr>
+<h2 id="h74">v0.2 — 시간표를 「짜는 도구」로</h2>
+<p>v0.1은 <b>다 짜 놓은 것을 보여 주는</b> 화면이었습니다. 한 칸씩 눌러 넣어야 했고, 학교 사이가 얼마나 먼지는 숫자로만 있었고, 일지는 시간표와 따로 놀았습니다.</p>
+<h3 id="h76">1. 지도 — 학교 사이가 눈에 보입니다</h3>
+<p>경상북도 <b>시군 경계</b>를 그리고 그 위에 담당 학교를 실제 위경도로 찍습니다. 오가는 자리는 <b>양쪽 화살촉</b>으로 잇고, 거리 눈금(축척)을 답니다.</p>
+<ul><li>지도 API 를 부르지 않습니다. 이 앱은 인터넷 없이 돌아야 하고, 학교망에서 막히면 안 되며, <b>지도 API 는 행정 경계 다각형을 주지 않습니다</b> (<code>지도 경계 굽는 법.md</code>).</li><li><b>인쇄물에도 실립니다.</b> 이동 거리를 종이에서도 봐야 순회 계획이 섭니다.</li><li>학교가 몰려 있으면 기본 배율로는 이름표가 뭉갭니다. <b>확대·축소와 끌기</b>를 붙이고, 이름표는 서로 <b>겹치지 않게 자리를 피해</b> 놓습니다.</li></ul>
+<h3 id="h79">2. 빠른 채우기 — 한 칸씩 찍지 않아도 됩니다</h3>
+<div class="tw"><table><thead><tr><th>방법</th><th>쓰임</th></tr></thead><tbody><tr><td><b>교시 범위로 넣기</b></td><td>「월요일 1~4교시, 길안초」</td></tr><tr><td><b>요일 복사</b></td><td>월요일에 짠 것을 화요일로</td></tr><tr><td><b>월~금 밑칠하기</b></td><td>일단 다 넣어 두고 하나씩 빼며 고치기</td></tr><tr><td><b>이 학교 수업 모두 빼기</b></td><td>밑칠을 되돌리는 길. 이것이 없으면 아무도 밑칠하지 않습니다</td></tr></tbody></table></div>
+<p>넣을 수 없는 자리는 <b>이유를 돌려줍니다</b> — <code>dup</code>(이미 있음) · <code>busy</code>(다른 학교와 시각 겹침) · <code>no</code>(그 학교에 없는 교시). 교시 번호가 같아도 학교마다 시각이 다르므로, 「3교시」라는 말만으로는 겹침을 알 수 없습니다.</p>
+<h3 id="h82">3. 일지를 시간표와 이었습니다</h3>
+<p>v0.1의 일지는 <b>빈 칸</b>이었습니다. 처음부터 적게 하면 아무도 적지 않습니다.</p>
+<p>이제 날짜를 고르면 <b>그날 시간표에 있는 수업이 학급별로 차례대로 나옵니다.</b> 그리고 칸마다 <b>「지난번(날짜)」</b> 이 함께 뜹니다 — 같은 학교·같은 학급의 앞선 마지막 기록입니다.</p>
+<p>순회교사는 한 학급을 한 주 뒤에 다시 만납니다. <b>지난번에 어디까지 했는지가 전부입니다.</b></p>
+<h3 id="h86">4. 쪽창이 겹치지 않습니다</h3>
+<p>여러 개를 열어도 자리를 비껴 놓고, 제목을 잡아 <b>옮길 수 있습니다.</b> 겹쳐서 열리면 닫기만 반복하게 됩니다.</p>
+<h3 id="h88">5. 인쇄 미리보기 · 학교 색</h3>
+<p>눌러 봐야 아는 인쇄물은 종이를 버립니다. <b>미리보기</b>를 붙이고, 판면 규칙을 <code>@media print</code> 밖으로 꺼내 <b>미리보기와 인쇄가 같은 규칙</b>을 쓰게 했습니다. 학교마다 정한 색이 종이에도 살아 있습니다 (<code>print-color-adjust: exact</code>).</p>
+<h3 id="h90">6. 저장 공간은 평소에 조용합니다</h3>
+<p>4.2MB 중 3KB 를 쓰면서 눈금을 늘 보여 줄 이유가 없습니다. <b>70%를 넘을 때만</b> 한 줄이 나옵니다.</p>
+<h3 id="h92">7. 이 앱의 마크</h3>
+<p>두 학교와 그 사이를 잇는 <b>점선 길</b>입니다.</p>
+<hr>
+<h2 id="h95">v0.3 — 잃는 길을 막았습니다</h2>
+<p>v0.2 는 <b>짜는 도구</b>가 되었습니다. v0.3 은 <b>잘못 눌렀을 때 무슨 일이 벌어지는가</b>를 봤습니다.</p>
+<h3 id="h97">1. 되돌릴 수 없는 일을 「예 / 아니오」로 묻지 않습니다 ★ — 마스터 함정 37번</h3>
+<p>이 앱에서 지우는 것은 대개 <b>한 개가 아닙니다.</b> 학교 하나를 빼면 그 학교의 수업·일지·이동 시간이 함께 사라집니다. 그것을 「계속할까요?」 한 줄로 물었습니다.</p>
+<p><b>그렇게 물으면 잃는 쪽에 「예」를 눌러야 합니다.</b> 그리고 「계속할까요?」는 잘못 누르는 것을 못 막습니다 — 누르던 손이 그대로 「예」를 누릅니다.</p>
+<div class="tw"><table><thead><tr><th>어디</th><th>v0.2</th><th>v0.3</th></tr></thead><tbody><tr><td>파일에서 열기</td><td>「계속할까요?」</td><td>① <b>먼저 내보내고 열기</b> ② 그냥 열기. <b>지금 것이 비어 있으면 아예 안 물음</b></td></tr><tr><td>처음부터 다시</td><td>「계속할까요?」 <b>두 번</b></td><td>① <b>파일로 내보내고 처음부터</b> ② 그냥 처음부터</td></tr><tr><td>학교 빼기 · 교시 빼기 · 한 학교 수업 모두 빼기 · 일지 지우기</td><td>「계속할까요?」</td><td><b>묻지 않고 하되 「되돌리기」</b></td></tr></tbody></table></div>
+<p><b>두 번 묻는 것은 안전장치가 아닙니다.</b> 두 번 다 「예」를 누르게 될 뿐입니다. 앱 안에 <code>confirm</code> 이 하나도 남지 않았고, 검사가 그것을 고정합니다. 그만두는 길은 늘 있고, <b>Esc 와 바깥 누르기는 아무 일도 일으키지 않습니다.</b></p>
+<h3 id="h102">2. 되돌리기는 <b>통으로</b> 붙듭니다 — 마스터 함정 39번</h3>
+<p>무엇이 함께 지워졌는지 일일이 세어 되살리려 하면 언젠가 하나를 빠뜨립니다. 이 앱의 자료는 통째로도 몇 KB 라, <b>지우기 전 상태를 통으로 붙들어 둡니다.</b> 그러면 학교·수업·일지·이동 시간이 한꺼번에 제자리로 돌아옵니다.</p>
+<p><b>한 걸음만 기억합니다.</b> 다음 일을 하면 앞의 되돌리기는 사라집니다 — 그러지 않으면 며칠 전에 지운 것을 가리키는 단추가 화면에 계속 남습니다.</p>
+<h3 id="h105">3. 미리보기 종이가 인쇄 종이와 폭이 달랐습니다 — 마스터 함정 31번</h3>
+<p>미리보기는 글이 놓이는 폭이 <b>170mm</b> 였는데 인쇄는 <b>190mm</b> 였습니다. 20mm 차이로 주간 시간표가 미리보기에서만 좁아 보였습니다. <b>「실제로 나갈 모습입니다」라고 적어 놓고 다른 폭을 보여 준 것</b>입니다. 이제 <code>@page</code> 와 같은 값(210mm · 11/10mm)입니다.</p>
+<h3 id="h107">4. PDF 파일 이름 — 마스터 함정 27번</h3>
+<p>브라우저는 「PDF 로 저장」의 이름으로 <code>document.title</code> 을 씁니다. 주마다 뽑은 것이 전부 같은 이름이라 내려받기 폴더에서 어느 주 것인지 알 수 없었습니다. 이제 <code>주간시간표_길안초·신성초_2026-09-04</code> 꼴입니다.</p>
+<h3 id="h109">5. 걷어낸 것</h3>
+<p><code>LEAP Kit</code> 머리 주석이 <b>똑같이 두 번</b> 붙어 있었습니다. 그리고 머리 주석의 판 번호가 <b>v0.1 인 채로</b> 두 판을 지나왔습니다(화면 판권은 v0.2). 검사가 이제 둘을 견줍니다 — 마스터 함정 35번과 같은 자리입니다.</p>
+<hr>
+<h2 id="h112">다음</h2>
+<ol><li><b>제작자 본인 9월 실사용 4주</b> — 이 앱은 셋 중 유일하게 만든 사람이 곧 사용자입니다</li><li><b>종이로 뽑아 수첩에 끼워 보기</b> — A4 한 장에 다 들어가는지, 글자가 읽히는지</li><li><b>이동 시간 어림값을 실제와 견줘 보기</b> — 1.35배·시속 50km가 경북에 맞는지</li><li>실사용에서 나온 것 반영 → v0.2 (학사일정·특이일, 하루 보기)</li></ol>
+</main>
+<div class="foot">© 2026 TEAM LEAP · 경북교육 AI Lab · AI 활용 분과</div>
+</body>
+</html>

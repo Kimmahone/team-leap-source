@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>내려간 앱 — 교육과정 시수 짜기 · TEAM LEAP</title>
+<meta name="author" content="TEAM LEAP · 경북교육 AI Lab">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2314202E'/%3E%3Cg transform='translate(32 32) scale(0.92) translate(-32 -33)'%3E%3Cpath d='M7 52 H25' stroke='%2397A3B0' stroke-width='7.5' stroke-linecap='round' fill='none'/%3E%3Cpath d='M39 36 H57' stroke='%23F2A65A' stroke-width='7.5' stroke-linecap='round' fill='none'/%3E%3Cpath d='M16 46 Q32 -10 48 30' stroke='%237FB3F7' stroke-width='8' stroke-linecap='round' fill='none'/%3E%3C/g%3E%3C/svg%3E">
+<!--
+  교육과정 시수 짜기 — 2026. 8. 7. 에 내렸습니다.
+
+  왜 이 파일이 남아 있나
+    주소를 그냥 없애면 두 가지가 생깁니다.
+      ① 즐겨찾기로 오신 분이 404 를 만납니다. 무슨 일이 있었는지 알 길이 없습니다.
+      ② 무엇보다 — Cloudflare 의 가장자리 서버가 **지워진 쪽을 이레 동안 그대로**
+         내줍니다. 파일이 없으면 갈아 끼울 것도 없기 때문입니다.
+         내린 앱이 일주일 더 살아 있는 셈이라, 그 자리에 이 쪽을 세웁니다.
+
+  왜 바로 넘기지 않나
+    이 앱에 적어 두신 시수가 그 브라우저에 그대로 남아 있을 수 있습니다.
+    말없이 넘기면 그것을 꺼낼 길이 사라집니다. 먼저 알리고, 꺼내 가는 길을 둡니다.
+
+  © 2026 TEAM LEAP (경북교육 AI Lab · AI 활용 분과)
+-->
+<style>
+:root{
+  --ink:#14202E; --blue:#1B4FA0; --amber:#A8560A; --gray:#5A6672;
+  --bg:#F7F9FC; --surface:#FFFFFF; --border:#D9E0EA; --tint-blue:#EAF1FB; --tint-amber:#FCF0E3;
+  --font:system-ui,-apple-system,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{--ink:#E8EDF3;--blue:#7FB3F7;--amber:#F2A65A;--gray:#97A3B0;
+    --bg:#0E1621;--surface:#1A2735;--border:#2C3B4C;--tint-blue:#16304F;--tint-amber:#3A2A18}
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font);font-size:1rem;line-height:1.7;
+  color:var(--ink);background:var(--bg);-webkit-text-size-adjust:100%}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:8px}
+main{max-width:680px;margin:0 auto;padding:56px 20px 80px}
+.mark{display:block;margin:0 auto 26px;opacity:.85}
+h1{margin:0 0 6px;font-size:1.5rem;letter-spacing:-.022em;text-align:center}
+.sub{margin:0 0 32px;text-align:center;color:var(--gray);font-size:.9375rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:26px 28px;box-shadow:0 1px 2px rgba(20,32,46,.05),0 6px 18px rgba(20,32,46,.07)}
+.card + .card{margin-top:16px}
+.card h2{margin:0 0 10px;font-size:1.0625rem;letter-spacing:-.015em}
+.card p{margin:0 0 12px}
+.card p:last-child{margin-bottom:0}
+.why{background:var(--tint-blue);border:0}
+.keep{background:var(--tint-amber);border:0}
+.btns{display:flex;gap:11px;flex-wrap:wrap;margin-top:18px}
+.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
+  font-weight:700;padding:12px 22px;min-height:46px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--blue);background:var(--blue);color:#fff;font-size:1rem;font-family:inherit}
+.btn:hover{filter:brightness(1.09)}
+.btn--ghost{background:transparent;color:var(--gray);border-color:var(--border)}
+.btn--ghost:hover{background:var(--border);filter:none}
+.foot{margin-top:34px;text-align:center;font-size:.8125rem;color:var(--gray);line-height:1.8}
+.mk-low{stroke:var(--gray)} .mk-high{stroke:var(--amber)} .mk-arc{stroke:var(--blue)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+  <svg class="mark" viewBox="0 0 64 64" width="52" height="52" aria-hidden="true" fill="none" stroke-linecap="round">
+    <path class="mk-low"  d="M7 52 H25" stroke-width="6.5"/>
+    <path class="mk-high" d="M39 36 H57" stroke-width="6.5"/>
+    <path class="mk-arc"  d="M16 46 Q32 -10 48 30" stroke-width="7"/>
+  </svg>
+
+  <h1>「교육과정 시수 짜기」는 내렸습니다</h1>
+  <p class="sub">2026. 8. 7. · TEAM LEAP · 경북교육 AI Lab</p>
+
+  <div class="card why">
+    <h2>왜 내렸나</h2>
+    <p>이 앱이 하던 일은 <b>연구부장 선생님이 한 해에 한 번 하는 셈</b>이었습니다.
+       표 하나면 되는 일에 앱을 두는 것은 도움이 되지 않는다고 판단했습니다.</p>
+    <p><b>담임이 해마다 되풀이하는 일</b>이 아니면 앱으로 만들 값어치가 없다 —
+       그것이 이 앱을 하루 만에 내린 까닭입니다.</p>
+  </div>
+
+  <div class="card">
+    <h2>그 자리에 다른 앱이 섰습니다</h2>
+    <p><b>법정 의무교육 점검표</b> — 법으로 시수가 박힌 교육이 <b>연 127시간</b>인데
+       창의적 체험활동은 한 해 <b>102시간</b>뿐입니다. 어디에 얼마를 얹었는지,
+       무엇이 모자라는지를 앱이 셈합니다.</p>
+    <div class="btns">
+      <a class="btn" href="../i-required/index.html">법정 의무교육 점검표 열기</a>
+      <a class="btn btn--ghost" href="../index.html">앱 목록 보기</a>
+    </div>
+  </div>
+
+  <!-- 적어 두신 것을 꺼내 가는 길.
+       앱은 내렸어도 그 자료는 이 브라우저 안에 그대로 남아 있습니다.
+       말없이 넘겨 버리면 꺼낼 길이 사라집니다. -->
+  <div class="card keep" id="keep" hidden>
+    <h2>이 앱에 적어 두신 것이 남아 있습니다</h2>
+    <p>이 브라우저 안에 <b id="keep-n">시수 편성</b>이 그대로 있습니다.
+       앱은 내렸지만 <b>자료는 지우지 않았습니다.</b> 파일로 꺼내 두세요 —
+       엑셀·한글에 옮겨 적으시면 됩니다.</p>
+    <div class="btns">
+      <button class="btn" id="keep-get" type="button">파일로 내려받기</button>
+    </div>
+  </div>
+
+  <p class="foot">
+    © 2026 TEAM LEAP (경북교육 AI Lab · AI 활용 분과)<br>
+    이 쪽은 아무것도 밖으로 보내지 않습니다.
+  </p>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  /* 옛 앱의 저장 열쇠입니다. 이 열쇠는 이 앱만 쓰던 것이라
+     남아 있으면 그것은 이 앱에 적어 두신 것이 맞습니다. */
+  var KEY = 'leap-hours-v1';
+  var raw = null;
+  try { raw = localStorage.getItem(KEY); } catch (e) { raw = null; }
+  if (!raw) return;
+
+  var d = null;
+  try { d = JSON.parse(raw); } catch (e) { d = null; }
+  if (!d) return;
+
+  /* 빈 저장본이면 알리지 않습니다 — 없는 것을 있다고 말하지 않습니다. */
+  var school = (d.info && d.info.school) || '';
+  var year = (d.info && d.info.year) || '';
+  var any = !!(school || year);
+  try {
+    Object.keys(d.bands || {}).forEach(function (k) {
+      var b = d.bands[k] || {};
+      Object.keys(b.rows || {}).forEach(function (s) {
+        if ((b.rows[s][0] | 0) + (b.rows[s][1] | 0) > 0) any = true;
+      });
+      if (((b.cet || [])[0] | 0) + ((b.cet || [])[1] | 0) > 0) any = true;
+      if ((b.aut || []).length) any = true;
+    });
+  } catch (e) { }
+  if (!any) return;
+
+  var box = document.getElementById('keep');
+  var nm = document.getElementById('keep-n');
+  nm.textContent = (school ? '「' + school + '」의 ' : '') + (year ? year + ' ' : '') + '시수 편성';
+  box.hidden = false;
+
+  document.getElementById('keep-get').addEventListener('click', function () {
+    var name = '교육과정시수-' + (school || '학교').replace(/\s/g, '') + '.json';
+    var blob = new Blob([JSON.stringify(d, null, 2)], { type: 'application/json;charset=utf-8' });
+    var url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  });
+})();
+</script>
+</body>
+</html>

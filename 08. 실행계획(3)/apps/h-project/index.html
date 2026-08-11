@@ -1,0 +1,2575 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>프로젝트 학습 계획서 — TEAM LEAP</title>
+<meta name="description" content="여러 주에 걸친 프로젝트 학습의 운영 계획서와 결과 보고서를 한 벌로 만듭니다. 교과 시수 저울이 딸려 있습니다. TEAM LEAP.">
+<meta name="author" content="TEAM LEAP · 경북교육 AI Lab">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2314202E'/%3E%3Cg transform='translate(32 32) scale(0.92) translate(-32 -33)'%3E%3Cpath d='M7 52 H25' stroke='%2397A3B0' stroke-width='7.5' stroke-linecap='round' fill='none'/%3E%3Cpath d='M39 36 H57' stroke='%23F2A65A' stroke-width='7.5' stroke-linecap='round' fill='none'/%3E%3Cpath d='M16 46 Q32 -10 48 30' stroke='%237FB3F7' stroke-width='8' stroke-linecap='round' fill='none'/%3E%3C/g%3E%3C/svg%3E">
+<!--
+  프로젝트 학습 계획서 v0.1
+  © 2026 TEAM LEAP (경북교육 AI Lab · AI 활용 분과)
+  교육 목적에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다.
+
+  앱 F 는 «한 차시»를 짜고, 이 앱은 «여러 주에 걸친 프로젝트»를 짭니다.
+  그리고 끝난 뒤 같은 자료로 결과 보고서를 냅니다 — 옮겨 적지 않습니다.
+-->
+<style>
+/* ==========================================================================
+   LEAP Kit 토큰 (apps/kit/leap.css 사본 — 단일 HTML 유지를 위해 붙여 넣음)
+   ========================================================================== */
+:root{
+  --leap-ink:#14202E; --leap-blue:#1B4FA0; --leap-amber:#A8560A;
+  --leap-amber-mark:#CE6410; --leap-teal:#0D6E5C; --leap-gray:#5A6672;
+  --leap-bg:#F7F9FC; --leap-surface:#FFFFFF; --leap-border:#D9E0EA;
+  --leap-hairline:#E8EDF3; --leap-on-fill:#FFFFFF;
+  --leap-font:system-ui,-apple-system,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  --leap-1:4px; --leap-2:8px; --leap-3:12px; --leap-4:16px;
+  --leap-5:24px; --leap-6:32px; --leap-7:48px;
+  --leap-radius:14px; --leap-radius-sm:8px;
+  --leap-shadow:0 1px 2px rgba(20,32,46,.05),0 6px 18px rgba(20,32,46,.07);
+  --leap-shadow-lg:0 2px 4px rgba(20,32,46,.06),0 14px 38px rgba(20,32,46,.11);
+
+  /* 앱에서 더 쓰는 색 — 전부 배경용이며, 글자는 늘 --leap-ink 를 얹는다 */
+  --tint-blue:#EAF1FB; --tint-amber:#FCF0E3; --tint-teal:#E4F4F0;
+  --grad-head:linear-gradient(135deg,#14202E 0%,#1B4FA0 78%,#2C6FD1 100%);
+  --grad-bar:linear-gradient(90deg,#1B4FA0,#3C7FD8);
+  --grad-win:linear-gradient(90deg,#CE6410,#E8862B);
+  --solid-teal:#0D6E5C; --solid-amber:#A8560A; --solid-gray:#5A6672;
+  --solid-fg:#FFFFFF;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --leap-ink:#E8EDF3; --leap-blue:#7FB3F7; --leap-amber:#F2A65A;
+    --leap-amber-mark:#F2A65A; --leap-teal:#4FD1B0; --leap-gray:#97A3B0;
+    --leap-bg:#0E1621; --leap-surface:#1A2735; --leap-border:#2C3B4C;
+    --leap-hairline:#22303F; --leap-on-fill:#0E1621;
+    --leap-shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.34);
+    --leap-shadow-lg:0 2px 6px rgba(0,0,0,.45),0 16px 44px rgba(0,0,0,.45);
+    --tint-blue:#16304F; --tint-amber:#3A2A18; --tint-teal:#123830;
+    --grad-head:linear-gradient(135deg,#0A111C 0%,#16345F 78%,#1E4C8C 100%);
+    --grad-bar:linear-gradient(90deg,#3C7FD8,#7FB3F7);
+    --grad-win:linear-gradient(90deg,#C4691B,#F2A65A);
+    --solid-teal:#4FD1B0; --solid-amber:#F2A65A; --solid-gray:#97A3B0;
+    --solid-fg:#0E1621;
+  }
+}
+:root[data-theme="light"]{
+  --leap-ink:#14202E;--leap-blue:#1B4FA0;--leap-amber:#A8560A;--leap-amber-mark:#CE6410;
+  --leap-teal:#0D6E5C;--leap-gray:#5A6672;--leap-bg:#F7F9FC;--leap-surface:#FFFFFF;
+  --leap-border:#D9E0EA;--leap-hairline:#E8EDF3;--leap-on-fill:#FFFFFF;
+  --tint-blue:#EAF1FB;--tint-amber:#FCF0E3;--tint-teal:#E4F4F0;
+  --grad-head:linear-gradient(135deg,#14202E 0%,#1B4FA0 78%,#2C6FD1 100%);
+  --grad-bar:linear-gradient(90deg,#1B4FA0,#3C7FD8);
+  --grad-win:linear-gradient(90deg,#CE6410,#E8862B);
+  --solid-teal:#0D6E5C; --solid-amber:#A8560A; --solid-gray:#5A6672;
+  --solid-fg:#FFFFFF;
+}
+:root[data-theme="dark"]{
+  --leap-ink:#E8EDF3;--leap-blue:#7FB3F7;--leap-amber:#F2A65A;--leap-amber-mark:#F2A65A;
+  --leap-teal:#4FD1B0;--leap-gray:#97A3B0;--leap-bg:#0E1621;--leap-surface:#1A2735;
+  --leap-border:#2C3B4C;--leap-hairline:#22303F;--leap-on-fill:#0E1621;
+  --tint-blue:#16304F;--tint-amber:#3A2A18;--tint-teal:#123830;
+  --grad-head:linear-gradient(135deg,#0A111C 0%,#16345F 78%,#1E4C8C 100%);
+  --grad-bar:linear-gradient(90deg,#3C7FD8,#7FB3F7);
+  --grad-win:linear-gradient(90deg,#C4691B,#F2A65A);
+  --solid-teal:#4FD1B0; --solid-amber:#F2A65A; --solid-gray:#97A3B0;
+  --solid-fg:#0E1621;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--leap-font);font-size:1rem;line-height:1.65;
+  color:var(--leap-ink);background:var(--leap-bg);-webkit-text-size-adjust:100%}
+:focus-visible{outline:3px solid var(--leap-blue);outline-offset:3px;border-radius:var(--leap-radius-sm)}
+.leap-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}
+button,input,textarea,select{font:inherit;color:inherit}
+
+.leap-toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(14px);
+  background:var(--leap-ink);color:var(--leap-bg);padding:13px 26px;border-radius:999px;
+  font-size:.9375rem;font-weight:700;box-shadow:var(--leap-shadow-lg);
+  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:90;max-width:88vw;text-align:center}
+.leap-toast.is-on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ==========================================================================
+   머리말 — 브랜드 그라디언트 + 배경에 깔린 도약 궤적
+   ========================================================================== */
+header.top{background:var(--grad-head);color:#fff;position:relative;overflow:hidden}
+header.top .deco{position:absolute;right:-40px;top:-30px;width:280px;height:280px;
+  opacity:.13;pointer-events:none}
+.top-in{max-width:1180px;margin:0 auto;padding:22px 20px 24px;display:flex;
+  align-items:center;gap:14px;flex-wrap:wrap;position:relative}
+.brand{display:flex;align-items:center;gap:13px;min-width:0}
+.brand .badge{flex:none;width:48px;height:48px;border-radius:13px;
+  background:rgba(255,255,255,.13);display:grid;place-items:center;
+  border:1px solid rgba(255,255,255,.2)}
+.brand h1{margin:0;font-size:1.25rem;letter-spacing:-.02em;line-height:1.25}
+.brand .sub{font-size:.75rem;color:rgba(255,255,255,.72);letter-spacing:.03em;margin-top:1px}
+.top-actions{margin-left:auto;display:flex;gap:8px}
+.iconbtn{min-height:42px;padding:8px 15px;font-size:.8125rem;font-weight:700;
+  border:1px solid rgba(255,255,255,.28);border-radius:999px;
+  background:rgba(255,255,255,.1);color:#fff;cursor:pointer}
+.iconbtn:hover{background:rgba(255,255,255,.2)}
+
+/* 메인 페이지로 돌아가는 길.
+   링크지만 옆의 단추와 같은 모양이라야 눈이 한 줄로 읽습니다.
+   맨 앞에 두는 것은 일부러입니다 — 「나가는 문」은 늘 같은 자리에 있어야 합니다. */
+a.iconbtn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.iconbtn--home{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.44)}
+.iconbtn--home:hover{background:rgba(255,255,255,.32)}
+
+/* 탭 */
+nav.tabs{background:var(--leap-surface);border-bottom:1px solid var(--leap-border);
+  position:sticky;top:0;z-index:20;box-shadow:0 1px 0 var(--leap-border)}
+.tabs-in{max-width:880px;margin:0 auto;padding:9px 20px;display:flex;gap:6px;overflow-x:auto}
+[role="tab"]{background:none;border:0;padding:10px 18px;min-height:46px;border-radius:999px;
+  font-weight:700;font-size:.9375rem;color:var(--leap-gray);cursor:pointer;white-space:nowrap}
+[role="tab"]:hover{background:var(--leap-hairline)}
+[role="tab"][aria-selected="true"]{color:var(--leap-blue);background:var(--tint-blue)}
+
+/* 이 앱은 «적는 곳»과 «나오는 종이»를 나란히 둡니다. 880px 로는 둘 다 좁아
+   글자가 줄줄이 접힙니다. 다른 앱과 달리 넓게 잡는 것은 그 때문입니다. */
+main.wrap{max-width:1180px;margin:0 auto;padding:26px 20px 90px}
+
+/* ==========================================================================
+   카드
+   ========================================================================== */
+.card{background:var(--leap-surface);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:28px;box-shadow:var(--leap-shadow);margin-bottom:20px}
+.card > h2{margin:0 0 5px;font-size:1.4375rem;letter-spacing:-.022em}
+.card > h2 + .sub{margin:0 0 24px;color:var(--leap-gray);font-size:.9375rem}
+.muted{color:var(--leap-gray)}
+.small{font-size:.8125rem}
+.prompt{margin:0 0 6px;font-size:1.3125rem;font-weight:800;letter-spacing:-.022em}
+.prompt-sub{margin:0 0 22px;color:var(--leap-gray)}
+
+/* 버튼 */
+.btn{font-weight:700;padding:12px 22px;min-height:46px;border-radius:999px;
+  border:1px solid var(--leap-blue);background:var(--leap-blue);color:var(--leap-on-fill);
+  cursor:pointer;transition:transform .12s,box-shadow .12s,filter .12s}
+.btn:hover{filter:brightness(1.09);box-shadow:0 6px 18px rgba(27,79,160,.28);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn--quiet{background:transparent;color:var(--leap-blue)}
+.btn--quiet:hover{background:var(--tint-blue);box-shadow:none}
+.btn--ghost{background:transparent;color:var(--leap-gray);border-color:var(--leap-border)}
+.btn--ghost:hover{background:var(--leap-hairline);box-shadow:none;filter:none}
+.btn--danger{background:transparent;color:var(--leap-amber);border-color:var(--leap-amber)}
+.btn--danger:hover{background:var(--tint-amber);box-shadow:none;filter:none}
+.btn--amber{background:var(--solid-amber);border-color:var(--solid-amber);color:var(--solid-fg)}
+.btn:disabled{opacity:.4;cursor:not-allowed;filter:none;transform:none;box-shadow:none}
+.btn--big{font-size:1.0625rem;padding:16px 30px;min-height:58px}
+.btn--sm{font-size:.8125rem;padding:8px 16px;min-height:42px}
+.btn .ico{margin-right:8px;vertical-align:-3px}
+.actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:22px;align-items:center}
+
+/* ==========================================================================
+   단계 표시 — 로고의 도약 궤적을 그대로 진행바로 쓴다
+   ========================================================================== */
+.arcwrap{background:var(--tint-blue);border-radius:var(--leap-radius);
+  padding:14px 10px 6px;margin:0 0 24px}
+.arcwrap svg{display:block;width:100%;max-width:430px;height:auto;margin:0 auto}
+/* 색은 CSS 로 준다. SVG 표현 속성 안의 var() 는 브라우저에 따라 먹지 않는다. */
+.arc-low{stroke:var(--leap-gray);opacity:.55}
+.arc-high{stroke:var(--leap-amber-mark)}
+.arc-high.dim{opacity:.38}
+.arc-track{stroke:var(--leap-border)}
+.arc-fill{stroke:var(--leap-blue);transition:stroke-dasharray .6s cubic-bezier(.22,1,.36,1)}
+.ring{fill:none;stroke:var(--leap-blue);stroke-width:2.5;opacity:.32}
+.dot{stroke-width:3}
+.dot--todo{fill:var(--leap-surface);stroke:var(--leap-border)}
+.dot--done,.dot--now{fill:var(--leap-blue);stroke:var(--leap-blue)}
+.dot-n{font-family:var(--leap-font);font-size:14px;font-weight:800;fill:var(--leap-on-fill)}
+.dot-n--todo{fill:var(--leap-gray)}
+/* 심볼 */
+.mk-low{stroke:var(--leap-gray)}
+.mk-high{stroke:var(--leap-amber-mark)}
+.mk-arc{stroke:var(--leap-blue)}
+.arclabel{text-align:center;margin:2px 0 12px}
+.arclabel .now{font-size:1.0625rem;font-weight:800;color:var(--leap-blue);letter-spacing:-.01em}
+.arclabel .of{font-size:.75rem;color:var(--leap-gray);font-weight:700;letter-spacing:.06em;display:block}
+
+/* 무기명 안내 */
+.anon{border-radius:var(--leap-radius);padding:16px 18px;margin:0 0 22px;
+  background:var(--tint-teal);border:1px solid transparent}
+.anon .hd{display:flex;align-items:center;gap:9px;font-weight:800;color:var(--leap-teal)}
+.anon ul{margin:9px 0 0;padding-left:20px;font-size:.875rem;color:var(--leap-gray)}
+.anon li{margin:4px 0}
+.anon--blue{background:var(--tint-blue)}
+.anon--blue .hd{color:var(--leap-blue)}
+.anon--amber{background:var(--tint-amber)}
+.anon--amber .hd{color:var(--leap-amber)}
+.anon--amber p,.anon--blue p{margin:8px 0 0;font-size:1.0625rem;font-weight:600;color:var(--leap-ink)}
+
+/* 입력 */
+label.fld{display:block;font-weight:700;font-size:.875rem;margin:0 0 8px}
+textarea.kiosk{width:100%;min-height:140px;padding:17px;border-radius:var(--leap-radius);
+  border:2px solid var(--leap-border);background:var(--leap-bg);resize:vertical;line-height:1.6;
+  font-size:1.0625rem;transition:border-color .15s}
+textarea.kiosk:focus{border-color:var(--leap-blue);outline:none}
+input.txt{width:100%;padding:12px 15px;min-height:46px;border-radius:var(--leap-radius-sm);
+  border:2px solid var(--leap-border);background:var(--leap-bg);transition:border-color .15s}
+input.txt:focus{border-color:var(--leap-blue);outline:none}
+.row{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.row > *{flex:1 1 200px}
+.row .fixed{flex:0 0 auto}
+
+/* ==========================================================================
+   갈림길 〔v0.4〕 — 마스터 함정 37번
+   --------------------------------------------------------------------------
+   되돌릴 수 없는 일을 「예 / 아니오」로 물으면 **잃는 쪽에 「예」를 눌러야** 합니다.
+   길을 갈라 놓고 **잃지 않는 길을 맨 위에** 둡니다. 앱 D 와 같은 이름을 씁니다.
+   ========================================================================== */
+.picks2{display:grid;gap:9px}
+.pick2{text-align:left;border:2px solid var(--leap-border);background:var(--leap-surface);
+  border-radius:var(--leap-radius);padding:14px 16px;cursor:pointer;min-height:64px;width:100%}
+.pick2:hover{border-color:var(--leap-blue);background:var(--tint-blue)}
+.pick2 .n{display:block;font-weight:800;font-size:.9375rem}
+.pick2 .d{display:block;font-size:.8125rem;color:var(--leap-gray);margin-top:3px;line-height:1.6}
+.pick2--go{border-color:var(--leap-teal);background:var(--tint-teal)}
+.pick2--go:hover{border-color:var(--solid-teal)}
+.pick2--off{border-style:dashed}
+.pick2--off:hover{border-style:solid}
+
+/* 되돌리기 〔v0.4〕 — 마스터 함정 39번
+   「지울까요?」는 잘못 누르는 것을 못 막습니다. 누르던 손이 그대로 「예」를 누릅니다.
+   묻지 않고 지우되, **한 걸음은 되돌릴 수 있게** 합니다. */
+.undo{display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  background:var(--tint-amber);border:1px solid var(--leap-amber-mark);
+  border-radius:var(--leap-radius);padding:12px 16px;margin:0 0 16px}
+.undo p{margin:0;font-size:.875rem;font-weight:700}
+.undo .btn{margin-left:auto}
+
+/* ==========================================================================
+   앱 H 전용 — 걸음 · 교과 시수 저울 · 흐름표 · 곁에 붙는 종이
+   ========================================================================== */
+
+/* 적는 곳과 나오는 것을 나란히 둡니다.
+   걸음으로 나누되 **미리보기는 걸음마다 곁에** 둡니다 — 고치는 것과
+   나오는 것이 끊기면 나눈 보람이 없습니다 (마스터 함정 33번). */
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:1080px){.split{grid-template-columns:1fr}}
+.side{position:sticky;top:78px}
+@media (max-width:1080px){.side{position:static}}
+
+/* 걸음 */
+.steps{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.stepb{display:flex;align-items:center;gap:9px;text-align:left;cursor:pointer;
+  border:2px solid var(--leap-border);background:var(--leap-surface);
+  border-radius:999px;padding:8px 15px 8px 9px;min-height:46px}
+.stepb:hover{border-color:var(--leap-blue)}
+.stepb[aria-pressed="true"]{border-color:var(--leap-blue);background:var(--tint-blue)}
+.stepb .i{flex:none;width:26px;height:26px;border-radius:999px;display:grid;place-items:center;
+  background:var(--leap-hairline);color:var(--leap-gray);font-weight:800;font-size:.8125rem}
+.stepb[aria-pressed="true"] .i{background:var(--leap-blue);color:var(--leap-on-fill)}
+.stepb .n{font-weight:800;font-size:.875rem;white-space:nowrap}
+.stepb .ok{color:var(--solid-teal);font-weight:800;font-size:.8125rem}
+.stepfoot{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+@media print{.steps,.stepfoot,.side{display:none!important}}
+
+/* 지금 무엇을 짜고 있는지 + 새로 짜는 길 */
+.planbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 16px}
+.planbar .pb-t{min-width:0}
+.planbar .pb-t b{display:block;font-size:1rem;letter-spacing:-.01em}
+.planbar .pb-t span{display:block;font-size:.75rem;color:var(--leap-gray);margin-top:1px}
+.planbar .pb-r{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+@media print{.planbar{display:none!important}}
+
+/* 계획서 / 결과 보고서 — 같은 자료의 두 얼굴 */
+.kinds{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 20px}
+@media (max-width:520px){.kinds{grid-template-columns:1fr}}
+.kind{text-align:left;border:2px solid var(--leap-border);background:var(--leap-surface);
+  border-radius:var(--leap-radius);padding:14px 16px;cursor:pointer;min-height:74px}
+.kind:hover{border-color:var(--leap-blue)}
+.kind[aria-pressed="true"]{border-color:var(--leap-blue);background:var(--tint-blue)}
+.kind .n{display:block;font-weight:800;font-size:.9375rem}
+.kind .d{display:block;font-size:.75rem;color:var(--leap-gray);margin-top:3px;line-height:1.6}
+
+/* ==========================================================================
+   교과 시수 저울 — 이 앱의 「얼굴」
+   --------------------------------------------------------------------------
+   프로젝트 학습은 여러 교과에서 **시수를 빌려 옵니다.** 결재에서 실제로 걸리는
+   자리가 그것입니다 — 「사회 6 + 국어 4 + 미술 3 + 자율 5 = 18차시」가 맞는가.
+   합계만 보고 있으면 쪼갠 값이 틀린 것은 보이지 않습니다 (마스터 함정 12번).
+   그래서 **교과마다 막대**로 그리고, 흐름의 차시 합과 어긋나면 그 자리에서 말합니다.
+   ========================================================================== */
+.scale{background:var(--leap-bg);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:18px 20px;margin:0 0 20px}
+.scale .hd{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.scale .hd b{font-size:1.0625rem;letter-spacing:-.015em}
+.scale .tot{margin-left:auto;font-weight:800;font-variant-numeric:tabular-nums;
+  font-size:1.25rem;color:var(--leap-blue)}
+.scale .rows{display:grid;gap:7px}
+.srow{display:flex;align-items:center;gap:10px}
+.srow .nm{flex:0 0 76px;font-size:.8125rem;font-weight:800;text-align:right}
+.srow .br{flex:1;height:20px;border-radius:5px;background:var(--leap-hairline);overflow:hidden}
+.srow .br i{display:block;height:100%;border-radius:5px;background:var(--grad-bar);
+  transition:width .4s cubic-bezier(.22,1,.36,1)}
+.srow .hh{flex:0 0 54px;font-size:.8125rem;font-weight:800;font-variant-numeric:tabular-nums}
+/* 색만으로 알리지 않습니다 — 교과 이름과 숫자가 늘 함께 있습니다 (원칙 4) */
+.scale .warn{margin:14px 0 0;padding:11px 14px;border-radius:var(--leap-radius-sm);
+  background:var(--tint-amber);font-size:.875rem;font-weight:700;color:var(--leap-ink)}
+.scale .ok{margin:14px 0 0;font-size:.8125rem;color:var(--leap-gray)}
+.scale .empty{margin:0;font-size:.875rem;color:var(--leap-gray)}
+
+/* 흐름 — 소주제 카드 */
+.fl{border:1px solid var(--leap-border);border-radius:var(--leap-radius);
+  background:var(--leap-surface);padding:18px 20px;margin-bottom:13px;box-shadow:var(--leap-shadow)}
+.fl-h{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin-bottom:12px}
+.fl-n{flex:none;min-width:30px;height:30px;padding:0 9px;border-radius:999px;background:var(--leap-blue);
+  color:var(--leap-on-fill);font-weight:800;font-size:.8125rem;display:inline-flex;
+  align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+.fl-p{font-size:.75rem;font-weight:800;color:var(--leap-gray);letter-spacing:.02em}
+.fl-x{margin-left:auto}
+.fl-g{display:grid;gap:11px}
+.fl-g label{display:block;font-size:.75rem;font-weight:800;margin:0 0 5px}
+.fl-g textarea,.fl-g input{width:100%;padding:10px 12px;border-radius:var(--leap-radius-sm);
+  border:2px solid var(--leap-border);background:var(--leap-bg);font:inherit;font-size:.9375rem;
+  color:var(--leap-ink)}
+.fl-g textarea{min-height:70px;resize:vertical;line-height:1.6}
+.fl-g textarea:focus,.fl-g input:focus{border-color:var(--leap-blue);outline:none}
+.fl-two{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+@media (max-width:620px){.fl-two{grid-template-columns:1fr}}
+
+/* 연계 교과 — 자유 글자가 아니라 «고르고 세는» 칸입니다.
+   글로 적게 두면 합계를 낼 수 없고, 합계를 못 내면 저울이 서지 않습니다. */
+.links{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.link{display:inline-flex;align-items:center;gap:6px;border:2px solid var(--leap-border);
+  border-radius:999px;padding:4px 6px 4px 12px;background:var(--leap-bg);min-height:40px}
+.link b{font-size:.8125rem;font-weight:800}
+.link input{width:48px;padding:3px 6px;border:1px solid var(--leap-border);border-radius:6px;
+  background:var(--leap-surface);font:inherit;font-size:.8125rem;text-align:center;
+  font-variant-numeric:tabular-nums;color:var(--leap-ink)}
+.link .x{border:0;background:none;color:var(--leap-gray);cursor:pointer;
+  min-width:26px;min-height:26px;border-radius:6px;font-size:1rem;line-height:1}
+.link .x:hover{background:var(--leap-hairline);color:var(--leap-ink)}
+.link select{border:0;background:none;font-weight:800;font-size:.8125rem;color:var(--leap-ink)}
+
+/* 성취기준 */
+.stdbox{display:grid;gap:8px;margin-top:14px}
+.stdrow{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius-sm);padding:11px 13px;background:var(--leap-surface)}
+.stdrow .cd{flex:none;font-weight:800;font-size:.8125rem;color:var(--leap-blue);
+  font-variant-numeric:tabular-nums}
+.stdrow .tx{font-size:.875rem;line-height:1.65}
+.stdrow .x{margin-left:auto;flex:none}
+.stdfind{display:grid;gap:9px;max-height:340px;overflow:auto;margin-top:12px;
+  border:1px solid var(--leap-border);border-radius:var(--leap-radius);padding:12px}
+.stdpick{text-align:left;width:100%;border:1px solid var(--leap-border);background:var(--leap-surface);
+  border-radius:var(--leap-radius-sm);padding:10px 12px;cursor:pointer}
+.stdpick:hover{border-color:var(--leap-blue);background:var(--tint-blue)}
+.stdpick[aria-pressed="true"]{border-color:var(--leap-teal);background:var(--tint-teal)}
+.stdpick .cd{font-weight:800;font-size:.8125rem;color:var(--leap-blue)}
+.stdpick .tx{display:block;font-size:.875rem;line-height:1.6;margin-top:3px}
+.chips2{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.chip2{border:2px solid var(--leap-border);background:var(--leap-surface);border-radius:999px;
+  padding:7px 14px;min-height:40px;font-size:.8125rem;font-weight:700;cursor:pointer;
+  color:var(--leap-gray)}
+.chip2[aria-pressed="true"]{border-color:var(--leap-blue);background:var(--tint-blue);color:var(--leap-blue)}
+
+/* 표 형태로 적는 것 (평가·예산) */
+.grid{display:grid;gap:9px}
+.gr{display:grid;gap:9px;border:1px solid var(--leap-border);border-radius:var(--leap-radius);
+  padding:14px 16px;background:var(--leap-surface)}
+.gr .top{display:flex;gap:10px;align-items:center}
+.gr .top .t{font-weight:800;font-size:.875rem}
+.gr .top .x{margin-left:auto}
+.gr input,.gr textarea,.gr select{width:100%;padding:9px 11px;border-radius:var(--leap-radius-sm);
+  border:2px solid var(--leap-border);background:var(--leap-bg);font:inherit;font-size:.875rem;
+  color:var(--leap-ink)}
+.gr textarea{min-height:56px;resize:vertical;line-height:1.6}
+.gr input:focus,.gr textarea:focus,.gr select:focus{border-color:var(--leap-blue);outline:none}
+.gr label{display:block;font-size:.6875rem;font-weight:800;color:var(--leap-gray);margin:0 0 4px;
+  letter-spacing:.03em}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.g3{display:grid;grid-template-columns:1.2fr 1fr .8fr;gap:9px}
+@media (max-width:620px){.g2,.g3{grid-template-columns:1fr}}
+.sum{display:flex;align-items:baseline;gap:10px;margin-top:12px;padding:12px 15px;
+  background:var(--leap-bg);border:1px solid var(--leap-border);border-radius:var(--leap-radius)}
+.sum b{margin-left:auto;font-size:1.125rem;font-weight:800;font-variant-numeric:tabular-nums;
+  color:var(--leap-blue)}
+
+/* 사진 (결과 보고서) */
+.shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:11px}
+.shot{position:relative;border-radius:var(--leap-radius-sm);overflow:hidden;
+  border:1px solid var(--leap-border);background:var(--leap-hairline)}
+.shot img{display:block;width:100%;height:104px;object-fit:cover}
+.shot .x{position:absolute;top:5px;right:5px;min-width:30px;min-height:30px;border-radius:8px;
+  border:0;background:rgba(20,32,46,.72);color:#fff;cursor:pointer;font-size:1rem;line-height:1}
+.saved{display:flex;align-items:center;gap:10px;margin-top:9px;font-size:.75rem;color:var(--leap-gray)}
+.saved .pct{font-weight:800;color:var(--solid-teal);font-size:.875rem}
+
+/* 빈 화면 */
+.empty{text-align:center;padding:44px 22px}
+.empty p{margin:0;color:var(--leap-gray);font-size:1rem;line-height:1.75}
+.hintline{font-size:.8125rem;color:var(--leap-gray);line-height:1.7;margin:8px 0 0}
+
+/* 바닥 */
+footer.foot{margin-top:44px}
+.foot-card{background:var(--leap-surface);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:24px;box-shadow:var(--leap-shadow)}
+.foot-card h2{margin:0 0 5px;font-size:1.0625rem}
+.foot-actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:18px}
+.colophon{display:flex;gap:16px;align-items:flex-start;margin-top:30px;
+  padding-top:26px;border-top:1px solid var(--leap-border)}
+.colophon svg{flex:none;opacity:.8}
+.colophon .body{font-size:.8125rem;color:var(--leap-gray);line-height:1.75}
+.colophon .name{font-weight:800;color:var(--leap-ink);font-size:.9375rem;letter-spacing:-.01em}
+.colophon .name span{font-weight:600;color:var(--leap-gray);font-size:.8125rem;margin-left:7px}
+.colophon p{margin:5px 0 0}
+.colophon .cc{color:var(--leap-ink);font-weight:600}
+.mk-low{stroke:var(--leap-gray)}
+.mk-high{stroke:var(--leap-amber-mark)}
+.mk-arc{stroke:var(--leap-blue)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .btn:hover{transform:none}
+}
+
+/* ==========================================================================
+   인쇄 — 학교는 여전히 종이로 결재합니다
+   ========================================================================== */
+#print-area{display:none}
+@media print{
+  @page{size:A4 portrait;margin:14mm 12mm}
+  :root{--leap-ink:#000;--leap-gray:#333;--leap-bg:#fff;--leap-surface:#fff;
+    --leap-border:#999;--leap-hairline:#ccc;--leap-shadow:none}
+  header.top,nav.tabs,main,.leap-toast,.no-print,.pv-back{display:none!important}
+  #print-area{display:block!important}
+  body{font-size:10.5pt;background:#fff}
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+}
+
+/* ==========================================================================
+   인쇄 판면 — 미리보기와 실제 인쇄가 «같은 규칙»을 씁니다
+   #print-area 는 화면에서 display:none 이라 평소에는 아무 영향이 없습니다.
+   ========================================================================== */
+.pv-page{color:#000;background:#fff;font-size:10.5pt;line-height:1.55}
+.pv-page .P-t1{text-align:center;font-size:16pt;font-weight:800;margin:0 0 3mm;letter-spacing:-.02em}
+.pv-page .P-t2{text-align:center;font-size:13pt;font-weight:800;margin:0 0 5mm}
+.pv-page .P-who{text-align:right;font-size:10pt;font-weight:700;margin:0 0 6mm}
+.pv-page h2.P-h{font-size:12.5pt;margin:7mm 0 3mm;border-bottom:1.6pt solid #111;padding-bottom:1.4mm;
+  background:none;border-radius:0;padding-left:0;box-shadow:none}
+.pv-page h3.P-s{font-size:11pt;margin:5mm 0 2mm;background:none;box-shadow:none;padding:0}
+.pv-page table{width:100%;border-collapse:collapse;margin:0 0 4mm;table-layout:fixed}
+.pv-page th,.pv-page td{border:.3mm solid #777;padding:1.8mm 2mm;vertical-align:top;
+  font-size:9.5pt;line-height:1.5;word-break:break-word}
+.pv-page th{background:#EEF1F5;font-weight:800;text-align:center;vertical-align:middle}
+.pv-page td.c{text-align:center;vertical-align:middle}
+.pv-page td.r{text-align:right}
+.pv-page .pre{white-space:pre-wrap}
+/* 긴 표는 흐르게 두고 머리줄을 다시 그립니다 (마스터 함정 29번) */
+.pv-page thead{display:table-header-group}
+.pv-page .P-shots{display:grid;grid-template-columns:1fr 1fr;gap:3mm;margin:0 0 4mm}
+.pv-page .P-shots img{width:100%;height:52mm;object-fit:cover;border:.3mm solid #999}
+.pv-page .P-foot{margin-top:6mm;padding-top:2mm;border-top:.3mm solid #BBB;font-size:8pt;color:#555}
+.pv-page .P-note{font-size:9pt;color:#444;margin:0 0 3mm}
+
+
+/* 미리보기 창 */
+.pv-back{position:fixed;inset:0;z-index:130;background:rgba(20,32,46,.55);
+  display:flex;align-items:center;justify-content:center;padding:20px 14px}
+.pv-w{background:var(--leap-surface);border-radius:var(--leap-radius);
+  width:min(230mm,100%);max-height:calc(100vh - 40px);display:flex;flex-direction:column;
+  box-shadow:0 24px 70px rgba(0,0,0,.34);overflow:hidden}
+.pv-h{display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  padding:14px 18px;border-bottom:1px solid var(--leap-border)}
+.pv-h .pv-sub{display:block;font-size:.8125rem;color:var(--leap-gray);margin-top:2px}
+.pv-btns{margin-left:auto;display:flex;gap:8px;align-items:center}
+.pv-scroll{overflow:auto;background:var(--leap-hairline);padding:16px;flex:1}
+/* 미리보기 종이는 **인쇄될 종이와 폭이 같아야** 합니다 〔v0.4 · 마스터 함정 31번〕
+   v0.3 까지는 width:186mm 에 padding:12mm 라 글이 놓이는 폭이 162mm 였고,
+   실제 인쇄는 A4 210mm 에서 @page 여백 12mm 를 뺀 186mm 였습니다.
+   24mm 차이 때문에 실천 띠가 미리보기에서만 좁아 보였습니다.
+   「여기 보이는 것이 그대로 나옵니다」라고 적어 놓고 다른 폭을 보여 준 것입니다.
+   이제 @page 와 **같은 값**입니다 — 210mm 에 14mm 12mm. */
+.pv-scroll > .pv-page{width:210mm;max-width:100%;margin:0 auto;padding:14mm 12mm;
+  box-shadow:0 2px 14px rgba(0,0,0,.18);border-radius:2px}
+@media (max-width:560px){.pv-scroll{padding:8px}}
+
+/* ==========================================================================
+   AI 초안 도우미 (LEAP Kit 공통 조각)
+   원본은 `apps/kit/leap-ai.css` · 단일 HTML 을 지키려고 붙여 넣은 사본입니다.
+
+   왜 모달인가 — 이 도우미는 **곁다리**입니다. 앱은 이것 없이도 온전히 돌아야 하고,
+   화면 한 자리를 늘 차지하면 「AI 없으면 못 쓰는 앱」처럼 보입니다.
+   ========================================================================== */
+.aim{position:fixed;inset:0;z-index:120;background:rgba(20,32,46,.55);
+  display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow:auto}
+.aim[hidden]{display:none}
+.aim-w{background:var(--leap-surface);border-radius:var(--leap-radius);width:min(760px,100%);
+  box-shadow:0 24px 70px rgba(0,0,0,.34);display:flex;flex-direction:column;max-height:calc(100vh - 48px)}
+.aim-h{display:flex;align-items:center;gap:12px;padding:16px 20px;
+  border-bottom:1px solid var(--leap-border);position:sticky;top:0;background:var(--leap-surface);
+  border-radius:var(--leap-radius) var(--leap-radius) 0 0;z-index:1}
+.aim-h h2{margin:0;font-size:1.0625rem;letter-spacing:-.015em}
+.aim-x{margin-left:auto;min-width:40px;min-height:40px;border-radius:10px;border:1px solid var(--leap-border);
+  background:transparent;color:var(--leap-gray);font-size:1.25rem;line-height:1;cursor:pointer}
+.aim-x:hover{background:var(--leap-hairline);color:var(--leap-ink)}
+.aim-b{padding:20px 22px 24px;overflow:auto}
+.aim-note{border-radius:var(--leap-radius);padding:15px 17px;margin:0 0 18px;background:var(--tint-blue)}
+.aim-note .hd{font-weight:800;color:var(--leap-blue);margin-bottom:6px}
+.aim-note p{margin:0;font-size:.875rem;color:var(--leap-gray);line-height:1.75}
+.aim-note p b{color:var(--leap-ink)}
+.aim-warn{background:var(--tint-amber)}
+.aim-warn .hd{color:var(--leap-amber)}
+.aim-step{border:1px solid var(--leap-border);border-radius:var(--leap-radius);
+  padding:16px 18px;margin-bottom:14px}
+.aim-step h3{margin:0 0 4px;font-size:.9375rem;display:flex;align-items:center;gap:9px;letter-spacing:-.01em}
+.aim-step h3 i{flex:none;min-width:24px;height:24px;border-radius:999px;background:var(--leap-blue);
+  color:var(--leap-on-fill);font-style:normal;font-size:.75rem;font-weight:800;
+  display:inline-flex;align-items:center;justify-content:center}
+.aim-step > p{margin:0 0 13px;font-size:.8125rem;color:var(--leap-gray);line-height:1.7}
+.aim-step > p b{color:var(--leap-ink)}
+.aim-ta{width:100%;min-height:64px;padding:11px 13px;border-radius:var(--leap-radius-sm);
+  border:2px solid var(--leap-border);background:var(--leap-bg);font:inherit;font-size:.9375rem;
+  color:var(--leap-ink);resize:vertical}
+.aim-ta:focus{outline:none;border-color:var(--leap-blue)}
+.aim-pre{width:100%;min-height:200px;padding:13px 15px;border-radius:var(--leap-radius-sm);
+  border:2px solid var(--leap-border);background:var(--leap-bg);font-size:.78rem;line-height:1.62;
+  color:var(--leap-ink);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;resize:vertical;white-space:pre}
+.aim-act{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+@media (max-width:560px){.aim{padding:0}.aim-w{max-height:100vh;border-radius:0}}
+@media print{.aim{display:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <svg class="deco" viewBox="0 0 64 64" aria-hidden="true">
+    <path d="M7 52 H25" stroke="#fff" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+    <path d="M39 36 H57" stroke="#fff" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+    <path d="M16 46 Q32 -10 48 30" stroke="#fff" stroke-width="7" stroke-linecap="round" fill="none"/>
+  </svg>
+  <div class="top-in">
+    <div class="brand">
+      <!-- 앱 마크 — 이 앱은 «여러 교과에서 시수를 빌려 하나로 묶는 일».
+           밑에서 올라오는 선 셋이 위의 한 줄로 모입니다.
+           공통 표시는 머리 배경의 큰 곡선(.deco)이 맡습니다. -->
+      <span class="badge">
+        <svg viewBox="0 0 64 64" width="32" height="32" aria-hidden="true" fill="none"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 52 V38 Q12 30 22 30 H42 Q52 30 52 38 V52" stroke="#7FB3F7" stroke-width="4.5"/>
+          <path d="M32 30 V14" stroke="#F2A65A" stroke-width="5"/>
+          <path d="M14 14 H50" stroke="#F2A65A" stroke-width="5"/>
+          <path d="M12 52 H20" stroke="#97A3B0" stroke-width="4.5"/>
+          <path d="M28 52 H36" stroke="#97A3B0" stroke-width="4.5"/>
+          <path d="M44 52 H52" stroke="#97A3B0" stroke-width="4.5"/>
+        </svg>
+      </span>
+      <div>
+        <h1>프로젝트 학습 계획서</h1>
+        <div class="sub">TEAM LEAP · 경북교육 AI Lab</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <a class="iconbtn iconbtn--home" href="../../../index.html" title="TEAM LEAP 메인 페이지로 나갑니다. 이 앱에 적은 것은 그대로 남습니다." aria-label="TEAM LEAP 메인 페이지로 나가기">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
+             stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 10.6 12 4l8 6.6V20h-5v-5.6H9V20H4z"/>
+        </svg>
+        메인으로
+      </a>
+      <button class="iconbtn" id="btn-ai" type="button" title="쓰던 챗봇에 붙여 넣을 프롬프트를 만들어 줍니다">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9z"/>
+          <path d="M18 16.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>
+        </svg>
+        AI 초안
+      </button>
+      <button class="iconbtn" id="btn-theme" type="button">어둡게 보기</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="planbar no-print" id="planbar"></div>
+
+  <div class="split">
+    <div>
+      <div class="steps" id="steps" role="group" aria-label="걸음"></div>
+      <section id="panel" aria-live="polite"></section>
+    </div>
+    <div class="side">
+      <div class="card" style="padding:18px 20px">
+        <h2 style="font-size:1.0625rem;margin:0 0 4px">미리보기</h2>
+        <p class="sub" style="margin:0 0 14px;font-size:.8125rem">
+          여기 보이는 것이 <b>그대로 종이로 나갑니다.</b> A4 세로.
+        </p>
+        <div id="mini" class="pv-page"
+             style="border:1px solid var(--leap-border);border-radius:8px;padding:9mm 8mm;
+                    max-height:62vh;overflow:auto;font-size:8pt"></div>
+        <div class="actions" style="margin-top:14px">
+          <button class="btn" id="btn-print" type="button">인쇄 · PDF</button>
+          <button class="btn btn--ghost btn--sm" id="btn-docx" type="button"
+                  title="한글과 워드에서 열립니다">한글·워드로 내보내기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="foot no-print">
+    <div class="foot-card">
+      <h2>자료 관리</h2>
+      <p class="small muted" style="margin:0">
+        적은 것은 모두 <b>이 브라우저 안에만</b> 있습니다. 서버로 보내지 않습니다.
+        다른 컴퓨터로 옮기거나 백업하려면 <b>파일로 내보내기</b> 하세요.
+      </p>
+      <div class="foot-actions">
+        <button class="btn btn--ghost" id="btn-export" type="button">파일로 내보내기</button>
+        <button class="btn btn--ghost" id="btn-import" type="button">파일에서 열기</button>
+        <button class="btn btn--danger" id="btn-clear" type="button">처음부터 다시</button>
+      </div>
+
+      <div class="colophon">
+        <svg viewBox="0 0 64 64" width="40" height="40" aria-hidden="true" fill="none" stroke-linecap="round">
+          <path class="mk-low"  d="M7 52 H25" stroke-width="6.5"/>
+          <path class="mk-high" d="M39 36 H57" stroke-width="6.5"/>
+          <path class="mk-arc"  d="M16 46 Q32 -10 48 30" stroke-width="7"/>
+        </svg>
+        <div class="body">
+          <div class="name">프로젝트 학습 계획서 <span>v0.1</span></div>
+          <p>TEAM LEAP · 경북교육 AI Lab · AI 활용 분과</p>
+          <p class="cc">© 2026 TEAM LEAP. All rights reserved.</p>
+          <p>교육 목적에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다.
+             상업적 이용과 외부 배포는 제작자에게 문의해 주세요.</p>
+          <p>이 앱은 학생 개인정보를 수집하지 않으며, 어떤 자료도 외부로 전송하지 않습니다.</p>
+          <p>성취기준은 <b>2022 개정 교육과정에 따른 성취수준</b>(한국교육과정평가원)을 바탕으로 재구성했습니다.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<div id="print-area" class="pv-page"></div>
+
+
+<script>
+/* ==========================================================================
+   LEAP Kit (apps/kit/leap.js 사본 — 단일 HTML 유지를 위해 붙여 넣음)
+   ========================================================================== */
+(function(global){'use strict';
+var LEAP={};
+function clone(v){if(typeof structuredClone==='function')return structuredClone(v);return JSON.parse(JSON.stringify(v));}
+LEAP.clone=clone;
+LEAP.store=function(key,initial){
+  var cache=null;
+  function flush(){try{localStorage.setItem(key,JSON.stringify(cache));return true;}
+    catch(e){LEAP.announce('저장하지 못했습니다. 파일로 내보낸 뒤 정리해 주세요.');return false;}}
+  function read(){if(cache)return cache;
+    try{var raw=localStorage.getItem(key);cache=raw?JSON.parse(raw):clone(initial);}
+    catch(e){cache=clone(initial);}return cache;}
+  return{get:read,set:function(n){cache=n;return flush();},
+    update:function(fn){var d=read();fn(d);flush();return d;},
+    reset:function(){cache=clone(initial);flush();return cache;}};
+};
+LEAP.uid=function(){if(global.crypto&&crypto.randomUUID)return crypto.randomUUID().slice(0,8);
+  return Math.random().toString(36).slice(2,10);};
+function randInt(n){if(global.crypto&&crypto.getRandomValues){var b=new Uint32Array(1);crypto.getRandomValues(b);return b[0]%n;}
+  return Math.floor(Math.random()*n);}
+LEAP.shuffle=function(arr){var a=arr.slice(),i,j,t;
+  for(i=a.length-1;i>0;i--){j=randInt(i+1);t=a[i];a[i]=a[j];a[j]=t;}return a;};
+/* saveBlob 은 «이미 만들어 둔 덩어리»를, download 는 «자료를 JSON 으로» 내보냅니다.
+   이 앱은 DOCX 를 내보내므로 saveBlob 이 있어야 합니다 (마스터 함정 13번). */
+LEAP.saveBlob=function(filename,blob){
+  var url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);},1000);};
+LEAP.download=function(filename,obj){
+  LEAP.saveBlob(filename,new Blob([JSON.stringify(obj,null,2)],{type:'application/json;charset=utf-8'}));};
+LEAP.pickFile=function(onLoad,onError){
+  var input=document.createElement('input');input.type='file';input.accept='application/json,.json';
+  input.addEventListener('change',function(){var f=input.files&&input.files[0];if(!f)return;
+    var r=new FileReader();
+    r.onload=function(){try{onLoad(JSON.parse(r.result),f.name);}
+      catch(e){(onError||alert)('파일을 읽지 못했습니다. 이 앱에서 내보낸 파일이 맞는지 확인해 주세요.');}};
+    r.readAsText(f,'utf-8');});
+  input.click();};
+LEAP.announce=function(msg){
+  var el=document.getElementById('leap-live');
+  if(!el){el=document.createElement('div');el.id='leap-live';el.setAttribute('role','status');
+    el.setAttribute('aria-live','polite');el.className='leap-toast';document.body.appendChild(el);}
+  el.textContent=msg;el.classList.add('is-on');
+  clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('is-on');},2600);};
+LEAP.todayISO=function(){var d=new Date(),p=function(n){return String(n).padStart(2,'0');};
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());};
+LEAP.fmtDate=function(iso){if(!iso)return '';var p=iso.split('-');return p[0]+'. '+Number(p[1])+'. '+Number(p[2])+'.';};
+LEAP.toggleTheme=function(){var r=document.documentElement,cur=r.getAttribute('data-theme');
+  if(!cur)cur=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  var next=cur==='dark'?'light':'dark';r.setAttribute('data-theme',next);
+  try{localStorage.setItem('leap-theme',next);}catch(e){}return next;};
+LEAP.restoreTheme=function(){try{var t=localStorage.getItem('leap-theme');
+  if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}};
+LEAP.themeLabel=function(){var r=document.documentElement,cur=r.getAttribute('data-theme');
+  if(!cur)cur=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  return cur==='dark'?'밝게 보기':'어둡게 보기';};
+/* 「화면 전환」은 무엇이 바뀌는지 말해 주지 않습니다. 지금 누르면 어떻게 되는지를
+   단추 자체가 말하게 둡니다 — 「어둡게 보기」를 누르면 어두워집니다. */
+LEAP.initThemeBtn=function(btn){if(!btn)return;
+  function paint(){var t=LEAP.themeLabel();btn.textContent=t;
+    btn.setAttribute('title','화면을 '+t.replace(' 보기','')+' 바꿉니다');
+    btn.setAttribute('aria-label','화면을 '+t.replace(' 보기','')+' 바꿉니다');}
+  paint();btn.addEventListener('click',function(){LEAP.toggleTheme();paint();});};
+LEAP.initTabs=function(listEl,onChange){
+  var tabs=Array.prototype.slice.call(listEl.querySelectorAll('[role="tab"]'));
+  function select(tab){tabs.forEach(function(t){var on=t===tab;
+    t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1;
+    var p=document.getElementById(t.getAttribute('aria-controls'));if(p)p.hidden=!on;});
+    if(onChange)onChange(tab.getAttribute('aria-controls'));}
+  tabs.forEach(function(tab,i){
+    tab.addEventListener('click',function(){select(tab);});
+    tab.addEventListener('keydown',function(e){
+      var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(!d)return;e.preventDefault();
+      var n=tabs[(i+d+tabs.length)%tabs.length];n.focus();select(n);});});
+  select(tabs[0]);return{select:select,tabs:tabs};};
+LEAP.esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+  .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');};
+global.LEAP=LEAP;})(window);
+
+
+/* ==========================================================================
+   ZIP 만들기 (EPUB 용) — 외부 라이브러리 없이
+   압축하지 않고(STORE) 담는다. 사진은 이미 JPEG 로 압축되어 있고,
+   EPUB 규격상 mimetype 은 첫 항목이면서 무압축이어야 하므로 이 편이 안전하다.
+   ========================================================================== */
+var ZIP = (function () {
+  var TBL = (function () {
+    var t = new Uint32Array(256), c, n, k;
+    for (n = 0; n < 256; n++) {
+      c = n;
+      for (k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      t[n] = c >>> 0;
+    }
+    return t;
+  })();
+
+  function crc32(buf) {
+    var c = 0xFFFFFFFF;
+    for (var i = 0; i < buf.length; i++) c = TBL[(c ^ buf[i]) & 0xFF] ^ (c >>> 8);
+    return (c ^ 0xFFFFFFFF) >>> 0;
+  }
+
+  function bytes(str) { return new TextEncoder().encode(str); }
+
+  function make(files) {
+    var enc = new TextEncoder();
+    var parts = [], central = [], offset = 0;
+
+    files.forEach(function (f) {
+      var name = enc.encode(f.name);
+      var data = typeof f.data === 'string' ? enc.encode(f.data) : f.data;
+      var crc = crc32(data);
+
+      var lh = new DataView(new ArrayBuffer(30));
+      lh.setUint32(0, 0x04034b50, true);
+      lh.setUint16(4, 20, true);            // 필요한 버전
+      lh.setUint16(6, 0x0800, true);        // 파일명 UTF-8
+      lh.setUint16(8, 0, true);             // 압축 없음
+      lh.setUint16(10, 0, true); lh.setUint16(12, 0x2821, true); // 시각/날짜 (고정)
+      lh.setUint32(14, crc, true);
+      lh.setUint32(18, data.length, true);
+      lh.setUint32(22, data.length, true);
+      lh.setUint16(26, name.length, true);
+      lh.setUint16(28, 0, true);
+      parts.push(new Uint8Array(lh.buffer), name, data);
+
+      var ch = new DataView(new ArrayBuffer(46));
+      ch.setUint32(0, 0x02014b50, true);
+      ch.setUint16(4, 20, true); ch.setUint16(6, 20, true);
+      ch.setUint16(8, 0x0800, true); ch.setUint16(10, 0, true);
+      ch.setUint16(12, 0, true); ch.setUint16(14, 0x2821, true);
+      ch.setUint32(16, crc, true);
+      ch.setUint32(20, data.length, true);
+      ch.setUint32(24, data.length, true);
+      ch.setUint16(28, name.length, true);
+      ch.setUint32(42, offset, true);
+      central.push(new Uint8Array(ch.buffer), name);
+
+      offset += 30 + name.length + data.length;
+    });
+
+    var cSize = 0;
+    central.forEach(function (p) { cSize += p.length; });
+
+    var end = new DataView(new ArrayBuffer(22));
+    end.setUint32(0, 0x06054b50, true);
+    end.setUint16(8, files.length, true);
+    end.setUint16(10, files.length, true);
+    end.setUint32(12, cSize, true);
+    end.setUint32(16, offset, true);
+
+    return new Blob(parts.concat(central, [new Uint8Array(end.buffer)]),
+      { type: 'application/epub+zip' });
+  }
+
+  return { make: make, bytes: bytes };
+})();
+</script>
+
+<script>
+  /* ── 성취기준 ───────────────────────────────────────────────────────────
+   원본은 2022 개정 교육과정에 따른 성취수준(한국교육과정평가원)입니다.
+   앱 F 는 성취수준 A·B·C 까지 굽습니다(139K) — 거기서는 그 셋이 그대로
+   심화·기본·기초 피드백이 되기 때문입니다. 이 앱은 «코드와 문장»만 씁니다.
+   프로젝트 계획서의 평가 계획은 A·B·C 를 적는 자리가 아니고,
+   쓰지 않을 105K 를 들고 다닐 이유가 없습니다.
+   낡는 문제는 굽는 스크립트가 답합니다 — `f-lessonplan/bake-standards.mjs`
+   가 **두 앱을 한꺼번에** 고칩니다 (마스터 함정 13번).
+   ────────────────────────────────────────────────────────────────────── */
+  /* STD-DATA-BEGIN */
+  var STD_RAW = [["2국01-01","중요한 내용이나 일이 일어난 순서를 고려하며 듣고 말한다."],["2국01-02","바르고 고운 말로 서로의 감정을 나누며 듣고 말한다."],["2국01-03","상대의 말을 집중하여 듣고 말차례를 지키며 대화한다."],["2국01-04","자신의 경험이나 생각을 바른 자세로 발표한다."],["2국01-05","듣기와 말하기에 관심과 흥미를 가진다."],["2국02-01","글자, 단어, 문장, 짧은 글을 정확하게 소리 내어 읽는다."],["2국02-02","의미가 잘 드러나도록 문장과 짧은 글을 알맞게 띄어 읽는다."],["2국02-03","글을 읽고 중심 내용을 확인한다."],["2국02-04","인물의 마음이나 생각을 짐작하고 이를 자신과 비교하며 글을 읽는다."],["2국02-05","읽기에 흥미를 가지고 즐겨 읽는 태도를 지닌다."],["2국03-01","글자와 단어를 바르게 쓴다."],["2국03-02","쓰기에 흥미를 가지며 자신의 생각이나 느낌을 문장으로 표현한다."],["2국03-03","주변 소재에 대해 소개하는 글을 쓴다."],["2국03-04","겪은 일을 표현하는 글을 자유롭게 쓰고, 쓴 글을 함께 읽고 생각이나 느낌을 나눈다."],["2국04-01","한글 자모의 이름과 소릿값을 알고 정확하게 발음하고 쓴다."],["2국04-02","소리와 표기가 다를 수 있음을 알고 단어를 바르게 읽고 쓴다."],["2국04-03","문장과 문장 부호를 알맞게 쓰고 한글에 호기심을 가진다."],["2국05-01","말놀이, 낭송 등을 통해 말의 재미와 즐거움을 느낀다."],["2국05-02","작품을 듣거나 읽으면서 느끼거나 생각한 점을 말한다."],["2국05-03","작품 속 인물의 모습, 행동, 마음을 상상하여 시, 노래, 이야기, 그림 등으로 표현한다."],["2국05-04","시나 노래, 이야기에 흥미를 가진다."],["2국06-01","일상의 다양한 매체와 매체 자료에 흥미와 관심을 가진다."],["2국06-02","일상의 경험과 생각을 글과 그림으로 표현한다."],["2바01-01","학교 생활 습관과 학습 습관을 형성하여 안전하고 건강하게 생활한다."],["2바01-02","나를 이해하고 존중하며 생활한다."],["2바01-03","가족이나 주변 사람을 배려하며 관계를 맺는다."],["2바01-04","생태환경에서 더불어 살기 위해 노력한다."],["2바02-01","공동체에서 내가 할 수 있는 일을 찾아보고 실천한다."],["2바02-02","우리나라의 소중함을 알고 사랑하는 마음을 기른다."],["2바02-03","차이나 다양성을 서로 존중하면서 생활한다."],["2바02-04","새로운 활동에 호기심을 갖고 도전한다."],["2바03-01","하루의 가치를 느끼며 지금을 소중히 여긴다."],["2바03-02","계절의 변화에 대응하며 생활한다."],["2바03-03","여러 인물의 삶을 통해 공동체성을 기른다."],["2바03-04","공동체 속에서 지속가능성을 위한 삶의 방식을 찾아 실천한다."],["2바04-01","모두를 위한 생활환경을 만드는 데 참여한다."],["2바04-02","다양한 생각이나 의견에 대해 개방적인 태도를 형성한다."],["2바04-03","여럿이 하는 활동에 관심을 갖고 자발적으로 협력한다."],["2바04-04","지금까지의 생활 습관과 학습 습관을 되돌아본다."],["2수01-01","수의 필요성을 인식하면서 0과 100까지의 수 개념을 이해하고, 수를 세고 읽고 쓸 수 있다."],["2수01-02","일, 십, 백, 천의 자릿값과 위치적 기수법을 이해하고, 네 자리 이하의 수를 읽고 쓸 수 있다."],["2수01-03","네 자리 이하의 수의 범위에서 수의 계열을 이해하고, 수의 크기를 비교할 수 있다."],["2수01-04","하나의 수를 두 수로 분해하고 두 수를 하나의 수로 합성하는 활동을 통하여 수 감각을 기른다."],["2수01-05","덧셈과 뺄셈이 이루어지는 실생활 상황과 연결하여 덧셈과 뺄셈의 의미를 이해한다."],["2수01-06","두 자리 수의 범위에서 덧셈과 뺄셈3)의 계산 원리를 이해하고 그 계산을 할 수 있다."],["2수01-07","덧셈과 뺄셈의 관계를 이해한다."],["2수01-08","두 자리 수의 범위에서 세 수의 덧셈과 뺄셈을 할 수 있다."],["2수01-09","□가 사용된 덧셈식과 뺄셈식을 만들고, □의 값을 구할 수 있다."],["2수01-10","곱셈이 이루어지는 실생활 상황과 연결하여 곱셈의 의미를 이해한다."],["2수01-11","곱셈구구를 이해하고, 한 자리 수의 곱셈을 할 수 있다."],["2수02-01","물체, 무늬, 수 등의 배열에서 규칙을 찾아 여러 가지 방법으로 표현할 수 있다."],["2수02-02","자신이 정한 규칙에 따라 물체, 무늬, 수 등을 배열할 수 있다."],["2수03-01","교실 및 생활 주변에서 여러 가지 물건을 관찰하여 직육면체, 원기둥, 구의 모양을 찾고, 이를 이용하여 여러 가지 모양을 만들 수 있다."],["2수03-02","쌓기나무를 이용하여 여러 가지 입체도형의 모양을 만들고, 그 모양에 대해 위치나 방향을 이용하여 말할 수 있다."],["2수03-03","교실 및 생활 주변에서 여러 가지 물건을 관찰하여 삼각형, 사각형, 원의 모양을 찾고, 이를 이용하여 여러 가지 모양을 만들 수 있다."],["2수03-04","삼각형, 사각형, 원을 직관적으로 이해하고, 그 모양을 그릴 수 있다."],["2수03-05","삼각형, 사각형에서 각각의 공통점을 찾아 말할 수 있다."],["2수03-06","구체물의 길이, 들이, 무게, 넓이를 비교하여 각각 ‘길다, 짧다’, ‘많다, 적다’, ‘무겁다, 가볍다’, ‘넓다, 좁다’ 등을 구별하여 말할 수 있다."],["2수03-07","시계를 보고 시각을 ‘몇 시 몇 분’까지 읽을 수 있다."],["2수03-08","1시간과 1분의 관계를 이해하고, 시간을 ‘시간’, ‘분’으로 표현할 수 있다."],["2수03-09","실생활 문제 상황과 연결하여 1분, 1시간, 1일, 1주일, 1개월, 1년 사이의 관계를 이해한다."],["2수03-10","길이 단위 1cm와 1m를 알고, 이를 이용하여 주변 사물의 길이를 측정할 수 있다."],["2수03-11","1m와 1cm의 관계를 이해하고, 길이를 ‘몇 m 몇 cm’와 ‘몇 cm’로 표현할 수 있다."],["2수03-12","여러 가지 물건의 길이를 어림하고, 길이에 대한 양감을 기른다."],["2수03-13","실생활 문제 상황과 연결하여 길이의 덧셈과 뺄셈을 할 수 있다."],["2수04-01","여러 가지 사물을 정해진 기준 또는 자신이 정한 기준으로 분류하여 개수를 세어 보고, 기준에 따른 결과를 말할 수 있다."],["2수04-02","자료를 분류하여 표로 나타내고, 자료를 표로 나타내면 편리한 점을 말할 수 있다."],["2수04-03","자료를 분류하여 ○, ×, / 등을 이용한 그래프로 나타내고, 자료를 그래프로 나타내면 편리한 점을 말할 수 있다."],["2슬01-01","학교 안팎의 모습과 생활을 탐색하며 안전한 학교 생활을 한다."],["2슬01-02","나를 탐색하여 나에 대해 설명한다."],["2슬01-03","가족이나 주변 사람에게 관심을 갖고 함께 살아가는 모습을 탐구한다."],["2슬01-04","사람과 자연, 동식물이 어우러져 사는 생태를 탐구한다."],["2슬02-01","우리가 살고 있는 마을과 사람들이 생활하는 모습을 살펴본다."],["2슬02-02","우리나라의 모습이나 문화를 조사한다."],["2슬02-03","알고 싶은 나라를 탐구하며 다른 나라에 관심을 갖는다."],["2슬02-04","궁금한 세계를 다양한 매체로 탐색한다."],["2슬03-01","하루의 변화와 사람들이 하루를 살아가는 모습을 탐색한다."],["2슬03-02","계절과 생활의 관계를 탐구한다."],["2슬03-03","관심 있는 대상의 과거와 현재를 살펴보고 미래를 상상한다."],["2슬03-04","우리의 생활과 관련된 지속가능성의 다양한 사례를 찾고 탐색한다."],["2슬04-01","생활도구의 모양이나 기능을 탐색하고 바꾸어본다."],["2슬04-02","상상한 것을 다양한 매체와 재료로 구현한다."],["2슬04-03","경험한 것 중에서 관심 있는 주제를 정하고 조사한다."],["2슬04-04","배운 것과 배울 것을 연결하며 앞으로의 배움을 상상한다."],["2즐01-01","즐겁게 놀이하며, 건강하고 안전하게 생활한다."],["2즐01-02","놀이하며 내 몸의 움직임이나 감각을 느낀다."],["2즐01-03","가족이나 주변 사람과 소통하며 어울린다."],["2즐01-04","우리를 둘러싼 자연의 아름다움을 감상한다."],["2즐02-01","내가 참여할 수 있는 문화 예술을 향유한다."],["2즐02-02","우리나라의 문화 예술을 즐긴다."],["2즐02-03","다른 나라의 문화 예술을 체험한다."],["2즐02-04","다양한 세상을 상상하고 표현한다."],["2즐03-01","하루를 건강하고 활기차게 지낸다."],["2즐03-02","자연의 변화를 느끼며 놀이한다."],["2즐03-03","전통문화를 새롭게 표현한다."],["2즐03-04","안전과 안녕을 위한 아동의 권리가 있음을 알고 누린다."],["2즐04-01","주변의 물건을 활용하여 놀잇감을 만든다."],["2즐04-02","자유롭게 상상하며 놀이한다."],["2즐04-03","생각이나 느낌을 살려 전시나 공연 활동을 한다."],["2즐04-04","기억에 남는 경험을 떠올리며 의미를 부여한다."],["4과01-01","일상생활에서 힘과 관련된 현상에 흥미를 갖고, 물체를 밀거나 당길 때 나타나는 현상을 관찰할 수 있다."],["4과01-02","수평잡기 활동을 통해 물체의 무게를 비교할 수 있다."],["4과01-03","무게를 정확히 비교하기 위해서는 저울이 필요함을 알고, 저울을 사용해 무게를 비교할 수 있다."],["4과01-04","지레, 빗면과 같은 도구를 이용하면 물체를 들어 올릴 때 드는 힘의 크기가 달라짐을 알고, 도구가 일상생활에서 어떻게 쓰이는지 조사하여 공유할 수 있다."],["4과02-01","여러 가지 동물을 관찰하여 특징에 따라 동물을 분류할 수 있다."],["4과02-02","다양한 환경에 서식하는 동물을 조사하여 동물의 생김새와 생활 방식이 환경과 관련되어 있음을 설명할 수 있다."],["4과02-03","동물의 특징을 이용하여 일상생활에서 활용할 수 있는 생활용품을 설계하여 협력적으로 소통할 수 있다."],["4과03-01","여러 가지 식물을 관찰하여 특징에 따라 식물을 분류할 수 있다."],["4과03-02","다양한 환경에 서식하는 식물을 조사하여 식물의 생김새와 생활 방식이 환경과 관련되어 있음을 설명할 수 있다."],["4과03-03","식물의 특징을 이용하여 일상생활에서 활용할 수 있는 생활용품을 설계하여 협력적으로 소통할 수 있다."],["4과04-01","동물의 한살이를 직접 관찰하고, 관찰한 내용을 글과 그림으로 표현할 수 있다."],["4과04-02","식물이 자라는 데 필요한 조건을 찾는 실험을 설계하여 수행할 수 있다."],["4과04-03","생물의 한살이 과정을 조사하여 생물에 따라 한살이의 유형이 다양함을 소개하는 자료를 만들어 공유할 수 있다."],["4과05-01","물체를 이루는 여러 가지 물질의 성질을 비교하고, 물질의 종류에 따라 물체를 분류할 수 있다."],["4과05-02","물질의 세 가지 상태인 고체, 액체, 기체의 성질을 관찰하여 비교할 수 있다."],["4과05-03","다양한 물질의 성질을 이용하여 쓰임새 있는 물체를 설계할 수 있다."],["4과06-01","지구가 대기로 둘러싸여 있음을 알고, 지구 표면을 구성하는 육지와 바다의 특징을 비교할 수 있다."],["4과06-02","바닷물의 특징을 육지의 물과 비교하고, 바닷가에서 볼 수 있는 다양한 지형을 조사할 수 있다."],["4과06-03","밀물과 썰물의 차이를 알고, 갯벌의 가치와 보전의 필요성을 설득･홍보할 수 있다."],["4과07-01","여러 가지 물체를 이용하여 소리를 내보고, 소리가 나는 물체는 떨림이 있음을 설명할 수 있다."],["4과07-02","큰 소리와 작은 소리, 높은 소리와 낮은 소리를 구분하고, 세기와 높낮이가 다른 소리를 낼 수 있다."],["4과07-03","여러 가지 물질을 통하여 소리가 전달되는 것을 관찰하고, 소음을 줄이는 방법을 찾아 일상생활에서 실천할 수 있다."],["4과08-01","생활 속 감염병의 사례를 알고, 다양한 질병과 그 위험성에 대해 토의할 수 있다."],["4과08-02","감염병으로부터 안전한 사회에 관심을 가지고, 여러 감염 과정을 통해 생활 습관과 감염병 유행과의 연관성을 설명할 수 있다."],["4과08-03","건강한 생활을 위해 필요한 감염병 예방 수칙을 공유하고, 생활 속에서 실천할 수 있다."],["4과09-01","자석과 여러 가지 물체를 가까이했을 때 나타나는 현상을 관찰하고, 자석과 자석에 붙는 물체 사이에 작용하는 힘의 특징을 말할 수 있다."],["4과09-02","자석과 자석을 가까이했을 때 나타나는 현상을 관찰하여 그 특징을 자석의 극과 관련지어 설명할 수 있다."],["4과09-03","자석을 이용하여 일상생활을 편리하게 하는 장치를 설계할 수 있다."],["4과10-01","물이 세 가지 상태로 변할 수 있음을 알고, 우리 주변에서 예를 찾을 수 있다."],["4과10-02","물이 얼 때, 얼음이 녹을 때, 물이 증발할 때와 끓을 때, 수증기가 응결할 때의 변화를 관찰할 수 있다."],["4과10-03","물의 상태 변화를 이용하여 물을 얻을 수 있는 장치를 설계하고 만들 수 있다."],["4과11-01","흐르는 물의 작용과 강 주변 지형의 특징을 관련지을 수 있다."],["4과11-02","화산의 의미와 화산 활동으로 나오는 물질을 알고, 화산 활동을 모형으로 표현할 수 있다."],["4과11-03","화성암을 관찰하고 분류할 수 있다."],["4과11-04","화산 활동과 지진이 우리 생활에 미치는 영향을 조사하여, 대처 방법을 실천할 수 있다."],["4과12-01","균류･원생생물･세균을 관찰하여 특징과 사는 곳을 설명할 수 있다."],["4과12-02","균류･원생생물･세균이 우리 생활에 미치는 영향을 조사하여 발표할 수 있다."],["4과12-03","우리 생활에 생명과학이 이용되는 사례를 소개하는 자료를 만들어 공유할 수 있다."],["4과13-01","달의 모양과 표면, 달의 위상변화를 관찰하여 밤하늘 관찰에 흥미를 가질 수 있다."],["4과13-02","태양계 구성원을 알고, 태양과 행성을 조사할 수 있다."],["4과13-03","별의 정의를 알고, 북극성 주변의 별자리를 관찰할 수 있다."],["4과14-01","생태계의 구성 요소를 조사하여 생물 요소와 비생물 요소로 분류할 수 있다."],["4과14-02","생물 요소들의 먹고 먹히는 관계를 조사하여 먹이그물로 표현할 수 있다."],["4과14-03","인간 활동이 생태계에 미치는 영향을 조사하고, 생태계 보전을 위해 우리가 할 수 있는 일을 토의하여 실천할 수 있다."],["4과15-01","실험을 통해 기체가 무게가 있음을 설명할 수 있다."],["4과15-02","온도나 압력에 따라 기체의 부피가 달라지는 현상을 관찰하고, 우리 주변에서 예를 찾을 수 있다."],["4과15-03","일상생활에서 이용되는 기체의 종류와 성질을 조사하고, 여러 가지 기체에 대해 흥미를 느낄 수 있다."],["4과15-04","기체의 성질을 이용하여 작동시킬 수 있는 장치를 설계하고 만들 수 있다."],["4과16-01","기후변화 현상의 예를 알고, 기후변화가 인간의 활동과 관련되어 있음을 토의할 수 있다."],["4과16-02","기후변화의 심각성에 관심을 가지고, 기후변화가 우리 생활과 환경에 미치는 영향을 설명할 수 있다."],["4과16-03","기후변화 대응 방법을 조사하고, 생활 속에서 기후변화 대응 방법을 실천할 수 있다."],["4국01-01","중요한 내용과 주제를 파악하며 듣고 그 내용을 요약한다."],["4국01-02","원인과 결과의 관계를 고려하여 내용을 예측하며 듣고 말한다."],["4국01-03","상황에 적절한 준언어ㆍ비언어적 표현을 활용하여 듣고 말한다."],["4국01-04","상황과 상대의 입장을 이해하고 예의를 지키며 대화한다."],["4국01-05","목적과 주제에 알맞게 자료를 정리하여 자신감 있게 발표한다."],["4국01-06","주제에 적절한 의견과 이유를 제시하고 서로의 생각을 교환하며 토의한다."],["4국02-01","글의 의미를 파악하며 유창하게 글을 읽는다."],["4국02-02","문단과 글에서 중심 생각을 파악하고 내용을 간추린다."],["4국02-03","질문을 활용하여 글을 예측하며 읽고 자신의 읽기 과정을 점검한다."],["4국02-04","글에 나타난 사실과 의견을 구분하고 필자와 자신의 의견을 비교한다."],["4국02-05","글이나 자료의 출처가 믿을 만한지 판단한다."],["4국02-06","바람직한 읽기 습관을 형성하고 읽기에 대한 자신감을 기른다."],["4국03-01","중심 문장과 뒷받침 문장을 갖추어 문단을 쓰고, 문장과 문단을 중심으로 고쳐 쓴다."],["4국03-02","절차와 결과가 드러나게 정확한 표현으로 보고하는 글을 쓴다."],["4국03-03","대상에 대한 자신의 의견과 그렇게 생각한 이유가 드러나게 글을 쓴다."],["4국03-04","목적과 주제를 고려하여 독자에게 마음을 전하는 글을 쓴다."],["4국03-05","자신의 쓰기 과정을 점검하며 쓰기에 자신감을 갖는다."],["4국04-01","단어와 단어 간의 의미 관계를 파악한다."],["4국04-02","단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다."],["4국04-03","기본적인 문장의 짜임을 이해하고 적절하게 사용한다."],["4국04-04","글과 담화에 쓰인 높임 표현과 지시·접속 표현을 이해하고 상황에 맞게 표현한다."],["4국04-05","언어가 의사소통과 관계 형성의 수단임을 이해하고 국어를 소중히 여기는 태도를 지닌다."],["4국05-01","인물과 이야기의 흐름을 중심으로 작품을 감상한다."],["4국05-02","자신의 경험을 바탕으로 작품 속 세계와 현실 세계를 비교하여 작품을 감상한다."],["4국05-03","작품을 듣거나 읽고 마음에 드는 작품을 소개한다."],["4국05-04","감각적 표현에 유의하여 작품을 감상하고, 감각적 표현을 활용하여 자신의 생각이나 감정을 표현한다."],["4국05-05","재미나 감동을 느끼며 작품을 즐겨 감상하는 태도를 지닌다."],["4국06-01","인터넷에서 학습에 필요한 다양한 자료를 탐색하고 목적에 맞게 자료를 선택한다."],["4국06-02","매체를 활용하여 간단한 발표 자료를 만든다."],["4국06-03","매체 소통 윤리를 고려하여 매체 자료를 활용하고 공유한다."],["4도01-01","자신의 감정을 소중히 여기며 존중하는 태도를 바탕으로 내가 누구인가를 탐구한다."],["4도01-02","정직의 의미를 알고 모범적인 사례를 탐색하여 바르게 행동하려는 태도를 기른다."],["4도01-03","성실한 생활의 모범 사례를 탐색하고 시간 관리를 위한 생활을 계획하여 지속적인 자기 성장을 모색한다."],["4도01-04","다른 사람의 관점을 수용할 수 있는지를 도덕적으로 검토하고 도덕규범을 내면화하여 도덕적으로 행동할 수 있는 자세를 기른다."],["4도02-01","효, 우애의 의미와 필요성을 명료하게 이해하고 가족의 행복을 위해 할 수 있는 일을 탐색하여 실천 계획을 세운다."],["4도02-02","친구 사이의 배려에 대한 올바른 이해를 바탕으로 일상생활에서 배려에 기반한 도덕적 관계를 맺을 수 있는 방안을 탐색한다."],["4도02-03","공감의 태도가 필요한 이유를 이해하고 도덕적 상상력을 바탕으로 대상과 상황에 따라 감정을 나누는 방법을 탐구하여 실천한다."],["4도03-01","불공정의 사례를 탐구하고, 일상생활에서 공정의 가치를 추구하는 활동을 통해 실천 의지를 함양한다."],["4도03-02","디지털 사회에서 발생하는 다양한 문제를 살펴보고, 해결 방안을 탐구 하여 정보통신 윤리에 대한 민감성을 기른다."],["4도03-03","통일의 필요성을 이해하고, 통일 감수성을 길러 바람직한 통일의 방향을 모색한다."],["4도04-01","생명 경시 사례를 조사하고 문제 해결 방법을 탐구함으로써 생명의 소중함을 이해한다."],["4도04-02","인간과 자연이 함께 살아야 하는 이유를 이해하고 공생을 위한 구체적인 실천 계획을 세우며 생태 감수성을 기른다."],["4미01-01","자연물과 인공물을 탐색하는 데 다양한 감각을 활용할 수 있다."],["4미01-02","주변 대상을 체험하며 떠오른 느낌과 생각을 다양한 방법으로 나타낼 수 있다."],["4미01-03","미적 탐색에 호기심을 갖고 참여하며 자신의 감각으로 대상의 특징을 이해할 수 있다."],["4미01-04","생활 속에서 활용되는 미술에 관심을 가지고 미술의 특징과 역할을 발견할 수 있다."],["4미02-01","관찰과 상상으로 아이디어를 떠올려 표현 주제를 구체화할 수 있다."],["4미02-02","기본적인 표현 재료와 용구의 특성을 이해하고 사용 방법을 익힐 수 있다."],["4미02-03","조형 요소의 특징을 자유롭게 탐색하며 주제 표현에 알맞게 활용할 수 있다."],["4미02-04","표현 의도를 가지고 작품을 제작하며 자기 작품을 소중히 여길 수 있다."],["4미02-05","미술과 타 교과를 관련지어 주제를 표현하는 데 흥미를 가질 수 있다."],["4미03-01","미술 작품을 자세히 보고 작품과 미술가에 관해 질문할 수 있다."],["4미03-02","미술 작품의 특징과 작품에 관한 자신의 느낌과 생각을 설명할 수 있다."],["4미03-03","미술 문화에 관심을 가지고 전시 및 행사에 참여할 수 있다."],["4미03-04","작품 감상에 흥미를 가지고 참여하며 작품에 대한 자신의 감상 관점을 존중할 수 있다."],["4사01-01","주변 여러 장소에서의 경험과 느낌을 다양한 방식으로 표현하고, 장소감을 나누며 서로 존중하는 태도를 지닌다."],["4사01-02","주변의 여러 장소를 살펴보고, 우리가 사는 곳을 더 살기 좋은 곳으로 만드는 방안을 탐색한다."],["4사02-01","일상 속에서 시간의 흐름을 경험할 수 있는 사례를 살펴보고, 이를 바탕으로 역사의 시간 개념을 이해한다."],["4사02-02","오래된 물건이나 자료들을 주변에서 찾아보고, 이를 통해 과거의 모습을 살펴볼 수 있음을 이해한다."],["4사02-03","지역의 변화상을 보여주는 역사 자료를 분석하여 지역 사람들의 달라진 생활 모습을 파악한다."],["4사03-01","최근 사회 변화의 양상과 특징을 파악하고, 그로 인해 나타난 생활모습의 변화를 탐색한다."],["4사03-02","우리 사회에 다양한 문화가 확산되면서 나타나는 긍정적 효과와 문제를 분석하고, 나와 다른 사람이나 집단의 문화를 존중하는 태도를 기른다."],["4사04-01","옛날 풍습에 대해 알아보고, 오늘날과 비교하여 변화상을 파악한다."],["4사04-02","옛날부터 오늘날까지 교통의 변화에 따른 이동과 생활 모습의 변화를 이해한다."],["4사04-03","옛날부터 오늘날까지 통신수단의 변화에 따른 정보 교류와 의사소통 방식의 변화를 설명한다."],["4사05-01","우리 지역을 표현한 다양한 종류의 지도를 찾아보고, 지도의 요소를 이해한다."],["4사05-02","지도에서 우리 지역의 위치를 파악하고, 우리 지역의 지리 정보를 탐색한다."],["4사06-01","지역의 문화유산을 통해 문화유산의 의미와 유형을 알아보고, 문화유산의 가치를 탐색한다."],["4사06-02","지역의 박물관, 기념관, 유적지 등을 체험하고 지역의 역사를 이해한다."],["4사07-01","자원의 희소성으로 인해 경제활동에서 선택의 문제가 발생함을 이해하고, 경제활동에서 합리적 선택의 방법을 탐색한다."],["4사07-02","생산과 소비 활동을 파악하고, 인적ㆍ물적 교류의 사례를 통해 각 지역 및 사람들이 상호 의존 관계를 맺고 있음을 탐색한다."],["4사08-01","학교 자치 사례를 통하여 민주주의의 의미를 이해하고, 학교생활에서 민주주의를 실천하는 능력을 기른다."],["4사08-02","지역에서 이루어지는 민주주의 사례를 통해 주민 자치와 주민 참여의 중요성을 파악하고, 지역사회의 문제 해결에 참여하는 태도를 기른다."],["4사09-01","생활 주변에서 찾을 수 있는 여러 가지 문제를 파악하고, 그 문제를 합리적으로 해결하는 능력을 기른다."],["4사09-02","지역의 자연환경, 역사, 문화, 생산물 등을 알리려는 지역사회의 노력을 알고 관심을 갖는다."],["4사10-01","여러 지역의 자연환경과 인문환경의 특징을 살펴보고, 환경의 이용과 개발에 따른 변화를 탐구한다."],["4사10-02","사례에서 도시의 인구, 교통, 산업 등의 특징을 탐구하고, 도시에서의 삶의 모습을 이해한다."],["4수01-01","큰 수의 필요성을 인식하면서 10000 이상의 큰 수에 대한 자릿값과 위치적 기수법을 이해하고, 수를 읽고 쓸 수 있다."],["4수01-02","다섯 자리 이상의 수의 범위에서 수의 계열을 이해하고, 수의 크기를 비교하며 그 방법을 설명할 수 있다."],["4수01-03","세 자리 수의 덧셈과 뺄셈의 계산 원리를 이해하고 그 계산을 할 수 있다."],["4수01-04","곱하는 수가 한 자리 수 또는 두 자리 수인 곱셈의 계산 원리를 이해하고 그 계산을 할 수 있다."],["4수01-05","나눗셈이 이루어지는 실생활 상황과 연결하여 나눗셈의 의미를 알고, 곱셈과 나눗셈의 관계를 이해한다."],["4수01-06","나누는 수가 한 자리 수인 나눗셈의 계산 원리를 이해하고 그 계산을 할 수 있으며, 나눗셈에서 몫과 나머지의 의미를 안다."],["4수01-07","나누는 수가 두 자리 수인 나눗셈의 계산 원리를 이해하고 그 계산을 할 수 있다."],["4수01-08","자연수의 덧셈, 뺄셈, 곱셈, 나눗셈과 관련한 여러 가지 상황에서 어림셈을 할 수 있다."],["4수01-09","양의 등분할을 통하여 분수의 필요성을 인식하고, 분수를 이해하고 읽고 쓸 수 있다."],["4수01-10","단위분수, 진분수, 가분수, 대분수를 알고, 그 관계를 이해한다."],["4수01-11","분모가 같은 분수끼리, 단위분수끼리 크기를 비교하고 그 방법을 설명할 수 있다."],["4수01-12","분모가 10인 진분수와 연결하여 소수 한 자리 수를 이해하고 읽고 쓸 수 있다."],["4수01-13","자릿값의 원리를 바탕으로 소수 두 자리 수와 소수 세 자리 수를 이해하고 읽고 쓸 수 있다."],["4수01-14","소수의 크기를 비교하고 그 방법을 설명할 수 있다."],["4수01-15","분모가 같은 분수의 덧셈과 뺄셈의 계산 원리를 이해하고 그 계산을 할 수 있다."],["4수01-16","소수 두 자리 수의 범위에서 소수의 덧셈과 뺄셈의 계산 원리를 이해하고 그 계산을 할 수 있다."],["4수02-01","다양한 변화 규칙을 찾아 설명하고, 그 규칙을 수나 식으로 나타낼 수 있다."],["4수02-02","계산식의 배열에서 규칙을 찾고, 계산 결과를 추측할 수 있다."],["4수02-03","등호를 사용하여 크기가 같은 두 양의 관계를 식으로 나타낼 수 있다."],["4수03-01","직선, 선분, 반직선을 이해하고 구별할 수 있다."],["4수03-02","각과 직각을 이해하고, 직각과 비교하는 활동을 통하여 예각과 둔각을 구별할 수 있다."],["4수03-03","직선의 수직 관계와 평행 관계를 이해한다."],["4수03-04","구체물이나 평면도형의 밀기, 뒤집기, 돌리기 활동을 통하여 그 변화를 이해한다."],["4수03-05","평면에서 점의 이동에 대해 위치와 방향을 이용하여 설명할 수 있다."],["4수03-06","원의 중심, 반지름, 지름을 이해하고, 그 성질을 안다."],["4수03-07","컴퍼스를 이용하여 여러 가지 크기의 원을 그릴 수 있다."],["4수03-08","여러 가지 모양의 삼각형에 대한 분류 활동을 통하여 이등변삼각형, 정삼각형을 이해하고, 그 성질을 탐구하고 설명할 수 있다."],["4수03-09","여러 가지 모양의 삼각형에 대한 분류 활동을 통하여 직각삼각형, 예각삼각형, 둔각삼각형을 이해한다."],["4수03-10","여러 가지 모양의 사각형에 대한 분류 활동을 통하여 직사각형, 정사각형, 사다리꼴, 평행사변형, 마름모를 이해하고, 그 성질을 탐구하고 설명할 수 있다."],["4수03-11","다각형과 정다각형을 이해한다."],["4수03-12","주어진 도형을 이용하여 여러 가지 모양을 만들거나 채우고 설명할 수 있다."],["4수03-13","1분과 1초의 관계를 이해하고, 초 단위까지 시각을 읽을 수 있다."],["4수03-14","실생활 문제 상황과 연결하여 초 단위까지의 시간의 덧셈과 뺄셈을 할 수 있다."],["4수03-15","길이 단위 1mm와 1km를 알고, 이를 이용하여 길이를 측정하고 어림하며 수학의 유용성을 인식할 수 있다."],["4수03-16","1cm와 1mm, 1km와 1m의 관계를 이해하고, 길이를 ‘몇 cm 몇 mm’와 ‘몇 mm’, ‘몇 km 몇 m’와 ‘몇 m’로 다양하게 표현할 수 있다."],["4수03-17","들이 단위 1L와 1mL를 알고, 이를 이용하여 들이를 측정하고 어림하며 수학의 유용성을 인식할 수 있다."],["4수03-18","1L와 1mL의 관계를 이해하고, 들이를 ‘몇 L 몇 mL’와 ‘몇 mL’로 표현할 수 있다."],["4수03-19","실생활 문제 상황과 연결하여 들이의 덧셈과 뺄셈을 할 수 있다."],["4수03-20","실생활에서 무게를 나타낼 때 사용하는 단위 1g과 1kg을 알고, 이를 이용하여 무게를 측정하고 어림하며 수학의 유용성을 인식할 수 있다."],["4수03-21","1kg과 1g의 관계를 이해하고, 무게를 ‘몇 kg 몇 g’과 ‘몇 g’으로 표현할 수 있다."],["4수03-22","실생활에서 무게를 나타낼 때 사용하는 단위 1t을 알고, 1t과 1kg의 관계를 이해한다."],["4수03-23","실생활 문제 상황과 연결하여 무게의 덧셈과 뺄셈을 할 수 있다."],["4수03-24","각의 크기의 단위인 1도(°)를 알고, 각도기를 이용하여 각의 크기를 측정하고 어림할 수 있다."],["4수03-25","여러 가지 방법으로 삼각형과 사각형의 내각의 크기의 합을 추론하고, 자신의 추론 과정을 설명할 수 있다."],["4수04-01","자료를 수집하여 그림그래프나 막대그래프로 나타내고 해석할 수 있다."],["4수04-02","자료를 수집하여 꺾은선그래프로 나타내고 해석할 수 있다."],["4수04-03","탐구 문제를 해결하기 위해 자료를 수집, 정리하여 막대그래프나 꺾은선그래프로 나타내고 해석할 수 있다."],["4영01-01","알파벳과 쉽고 간단한 단어의 소리를 듣고 식별한다."],["4영01-02","알파벳 대소문자를 식별하여 읽는다."],["4영01-03","쉽고 간단한 단어, 어구, 문장을 듣고 강세, 리듬, 억양을 식별한다."],["4영01-04","소리와 철자의 관계를 이해하며 쉽고 간단한 단어, 어구, 문장을 소리 내어 읽는다."],["4영01-05","쉽고 간단한 단어, 어구, 문장의 의미를 이해한다."],["4영01-06","자기 주변 주제에 관한 담화의 주요 정보를 파악한다."],["4영01-07","적절한 전략을 활용하여 담화나 문장을 듣거나 읽는다."],["4영01-08","다양한 매체로 표현된 담화나 문장을 흥미를 가지고 듣거나 읽는다."],["4영01-09","시, 노래, 이야기를 공감하며 듣는다."],["4영01-10","자기 주변 주제나 문화에 관한 담화나 문장을 존중의 태도로 듣거나 읽는다."],["4영02-01","쉽고 간단한 단어, 어구, 문장을 강세, 리듬, 억양에 맞게 따라 말한다."],["4영02-02","알파벳 대소 문자를 구별하여 쓴다."],["4영02-03","소리와 철자의 관계를 바탕으로 쉽고 간단한 단어를 쓴다."],["4영02-04","실물, 그림, 동작 등을 보고 쉽고 간단한 문장으로 말하거나 단어나 어구를 쓴다."],["4영02-05","자신, 주변 사람이나 사물의 소개나 묘사를 쉽고 간단한 문장으로 말하거나 보고 쓴다."],["4영02-06","행동 지시를 쉽고 간단한 문장으로 말하거나 보고 쓴다."],["4영02-07","자신의 감정을 쉽고 간단한 문장으로 말하거나 보고 쓴다."],["4영02-08","자기 주변 주제에 관한 담화의 주요 정보를 묻거나 답한다."],["4영02-09","적절한 매체나 전략을 활용하여 창의적으로 의미를 표현한다."],["4영02-10","의사소통 활동에 흥미와 자신감을 가지고 대화 예절을 지키며 참여한다."],["4음01-01","바른 자세와 주법을 익혀 노래 부르거나 악기로 연주한다."],["4음01-02","기초적인 음악 요소를 살려 노래 부르거나 악기로 연주하고 느낌을 이야기한다."],["4음01-03","노래와 악기 연주에 어울리는 신체표현이나 놀이를 하며 음악을 즐긴다."],["4음01-04","생활 속에서 음악을 경험하며 연주에 관심을 가지고 참여한다."],["4음02-01","음악을 듣고 기초적인 음악 요소를 탐색하며 반응한다."],["4음02-02","다양한 음악을 듣고 음악적 특징을 발견한다."],["4음02-03","다양한 종류의 음악을 듣고 음악의 분위기를 묘사하거나 쓰임을 이야기한다."],["4음02-04","생활 속에서 음악을 들으며 느낌과 호기심을 갖고 즐긴다."],["4음02-05","우리 지역의 음악 문화유산을 찾아 듣고 국악을 즐기는 태도를 갖는다."],["4음03-01","느낌과 상상을 즉흥적으로 표현하며 음악에 대한 흥미를 갖는다."],["4음03-02","악곡의 일부를 바꾸어 표현하고 간단한 악보로 나타낸다."],["4음03-03","기초적인 음악 요소를 활용하여 소리나 음악으로 표현한다."],["4음03-04","생활 주변의 소리나 장면을 모방하며 음악의 새로움을 즐기는 태도를 갖는다."],["4체01-01","운동과 체력의 의미를 이해하고 관계를 파악한다."],["4체01-02","기본 체력 운동의 방법과 절차를 익히며 자신의 수준에 맞는 운동을 시도한다."],["4체01-03","운동과 건강의 의미를 이해하고 관계를 파악한다."],["4체01-04","건강을 위한 바른 생활 습관을 이해하고 생활 속에서 규칙적으로 실천한다."],["4체01-05","자신의 신체적 특징을 긍정적으로 인식하고 운동 계획을 세워 안전하게 활동한다."],["4체01-06","운동과 건강한 생활 습관 형성에 관심을 갖고 적극적으로 실천한다."],["4체02-01","스포츠의 의미와 유형을 파악한다."],["4체02-02","기본 움직임 기술의 의미와 종류를 이해하고 스포츠와의 관계를 파악한다."],["4체02-03","움직임 요소에 따른 기본 움직임 기술의 수행 방법을 파악하고 시도한다."],["4체02-04","기본 움직임 기술을 연결한 복합적인 움직임 기술을 파악하고 시도한다."],["4체02-05","기술형 스포츠에 적합한 기본 움직임 기술을 파악하고 시도한다."],["4체02-06","전략형 스포츠에 적합한 기본 움직임 기술을 파악하고 시도한다."],["4체02-07","생태형 스포츠에 적합한 기본 움직임 기술을 파악하고 시도한다."],["4체02-08","움직임 기술 수행에 자신감을 갖고 적극적으로 시도한다."],["4체02-09","게임 활동에 최선을 다하고 규칙을 지킨다."],["4체02-10","다양한 스포츠 환경에 개방적인 태도를 갖고 적극적이고 안전하게 스포츠 활동에 참여한다."],["4체03-01","표현 활동의 의미와 기본 움직임 기술과의 관계를 파악한다."],["4체03-02","움직임 요소에 따른 기본 움직임 기술의 표현 방법을 파악하고 시도한다."],["4체03-03","기본 움직임 기술을 활용하여 사물이나 자연을 모방하여 표현한다."],["4체03-04","기본 움직임 기술을 활용하여 느낌이나 생각을 표현한다."],["4체03-05","기본 움직임 기술을 리듬에 맞춰 표현한다."],["4체03-06","기본 움직임 기술을 도구를 활용하여 표현한다."],["4체03-07","움직임의 심미적 표현에 대한 호기심과 감수성을 나타낸다."],["6과01-01","지층의 특징을 알고, 지층의 형성 과정을 모형으로 표현할 수 있다."],["6과01-02","지층이 퇴적암으로 이루어짐을 알고, 퇴적암을 알갱이의 크기에 따라 분류할 수 있다."],["6과01-03","화석의 생성 과정을 모형으로 설명하고, 지구의 과거 생물과 환경을 추리하는 활동을 통해 화석의 가치를 인식할 수 있다."],["6과02-01","물체를 보기 위해서 빛이 있어야 함을 알고, 빛의 성질에 대해 흥미를 느낄 수 있다."],["6과02-02","빛이 나아가는 현상을 관찰하여 빛이 직진, 반사, 굴절하는 성질이 있음을 말할 수 있다."],["6과02-03","거울과 렌즈의 쓰임새를 조사하고 거울이나 렌즈를 이용한 장치를 창의적으로 만들 수 있다."],["6과03-01","용해 현상의 의미를 알고, 용질의 종류와 물의 온도에 따라 물에 녹는 용질의 양이 달라짐을 비교할 수 있다."],["6과03-02","용질이나 용매의 양에 따라 용액의 진하기가 달라짐을 관찰하고, 용액의 상대적인 진하기를 비교할 수 있다."],["6과03-03","일상생활에서 용액이 쓰이는 사례를 조사하여 용액의 필요성을 알리는 자료를 만들고 공유할 수 있다."],["6과04-01","뼈와 근육의 생김새를 관찰하고 모형을 만들어 몸이 움직이는 원리를 설명할 수 있다."],["6과04-02","소화, 순환, 호흡, 배설 기관의 구조와 기능을 알아보고, 우리 몸의 여러 기관이 서로 관련되어 있음을 설명할 수 있다."],["6과04-03","우리 몸의 여러 기관과 관련된 질병을 조사하고, 건강을 유지하기 위한 생활 방식을 실천할 수 있다."],["6과05-01","알갱이의 크기가 다른 고체 혼합물과 골고루 섞이지 않는 액체 혼합물을 분리할 수 있다."],["6과05-02","물에 용해되는 성질을 이용하여 고체 혼합물을 분리하고, 물을 증발시켜 물에 용해된 고체 물질을 분리할 수 있다."],["6과05-03","지속가능한 삶을 위한 과학기술 사례 중 혼합물의 분리를 이용한 장치를 조사하여 공유할 수 있다."],["6과06-01","기상 요소를 조사하고, 날씨가 우리 생활에 주는 영향을 인식할 수 있다."],["6과06-02","이슬, 안개, 구름을 관찰하고, 공통점과 차이점을 찾을 수 있다."],["6과06-03","고기압과 저기압의 분포에 따른 날씨의 특징을 기상 요소로 표현할 수 있다."],["6과07-01","물체의 따뜻하고 차가운 정도를 온도로 표현함을 알고, 온도계를 이용하여 온도를 측정할 수 있다."],["6과07-02","온도가 다른 두 물체가 접촉했을 때 두 물체의 온도 변화를 관찰하고 그 원인을 추리할 수 있다."],["6과07-03","주위에서 열의 이동으로 나타나는 현상을 관찰하여 열의 이동 방식이 다양함을 설명할 수 있다."],["6과07-04","일상생활에서 단열을 이용하는 사례를 조사하고, 온도를 오랫동안 일정하게 유지할 수 있는 장치를 창의적으로 만들 수 있다."],["6과08-01","우리가 생활에서 이용하는 다양한 자원을 조사하고, 자원의 유한함을 설명할 수 있다."],["6과08-02","재생에너지의 종류를 조사하고, 에너지를 지속가능하게 이용하는 방법에 관심을 갖는다."],["6과08-03","자원과 에너지의 효율적인 이용 방법에 대해 탐색하고, 생활 속에서 실천할 수 있는 다양한 사례를 공유할 수 있다."],["6과09-01","여러 가지 용액에 지시약을 넣었을 때의 변화를 관찰하여 용액을 산성 용액과 염기성 용액으로 분류할 수 있다."],["6과09-02","산성 용액과 염기성 용액의 성질을 관찰하고, 산성 용액과 염기성 용액을 섞을 때 용액의 성질 변화를 실험을 통해 추론할 수 있다."],["6과09-03","우리 주변에서 산성 용액과 염기성 용액을 이용하는 예를 찾아서 설명할 수 있다."],["6과09-04","산성화로 인한 환경의 피해 사례를 소개하는 자료를 만들고 공유할 수 있다."],["6과10-01","운동하는 물체는 시간에 따라 위치가 변화함을 알고 그 변화를 표현할 수 있다."],["6과10-02","물체의 이동 거리와 걸린 시간을 측정하여 속력을 구하고 빠르기를 비교할 수 있다."],["6과10-03","속력과 관련된 안전 수칙과 안전장치를 조사한 결과를 공유하고 일상생활에서 교통안전을 실천할 수 있다."],["6과11-01","생물을 이루고 있는 기본 단위인 세포를 현미경으로 관찰할 수 있다."],["6과11-02","식물의 각 기관의 구조를 관찰하고, 기능을 알아보는 실험을 수행하여 식물 각 기관의 구조와 기능을 설명할 수 있다."],["6과11-03","여러 가지 식물의 특징을 설명하는 자료를 만들어 공유할 수 있다."],["6과12-01","하루 동안 태양과 별을 관찰하여 위치 변화의 규칙성을 찾을 수 있다."],["6과12-02","지구의 자전을 알고, 낮과 밤이 생기는 이유를 설명할 수 있다."],["6과12-03","지구의 공전을 알고, 계절에 따라 달라지는 별자리를 관찰할 수 있다."],["6과13-01","태양 고도 측정기로 하루 동안 태양 고도, 그림자 길이, 기온을 측정하여 이들의 관계를 찾을 수 있다."],["6과13-02","계절에 따른 태양의 남중 고도와 낮의 길이 사이의 관계를 자료에 근거하여 추론할 수 있다."],["6과13-03","계절 변화의 원인을 지구의 자전축이 기울어진 채 공전하는 것으로 설명할 수 있다."],["6과14-01","물질의 성질이 달라지는 변화와 달라지지 않는 변화를 관찰하여 비교할 수 있다."],["6과14-02","물질이 연소할 때 나타나는 공통적인 현상을 관찰하고, 연소의 조건을 찾을 수 있다."],["6과14-03","연소 전과 후의 물질을 비교하여 연소 과정에서 물질의 성질이 달라짐을 설명할 수 있다."],["6과14-04","연소 과정에서 생성되는 물질로 인한 생태계의 피해 사례를 수집하고 분석하여 해결책을 제안하고 공유할 수 있다."],["6과15-01","전지와 전구, 전선을 연결하여 전구에 불을 켜보고, 불이 켜지는 전기 회로의 특징을 말할 수 있다."],["6과15-02","전지 한 개를 연결한 전기 회로와 전지 두 개를 직렬연결한 전기 회로의 특징을 비교할 수 있다."],["6과15-03","전자석을 만들어 전자석의 성질을 탐색하고 전자석이 사용되는 예를 조사할 수 있다."],["6과15-04","전기를 효율적이고 안전하게 사용하는 방법을 조사하여 실천 계획을 세우고 일상생활에서 실천할 수 있다."],["6과16-01","미래 사회에 일어날 수 있는 문제를 조사하고, 문제를 해결하는 데 과학이 기여할 수 있는 방법을 토의할 수 있다."],["6과16-02","다양한 진로가 과학과 관련됨을 알고, 자신의 진로를 과학과 관련지어 설명할 수 있다."],["6국01-01","대화에서 생략된 내용을 추론하며 듣는다."],["6국01-02","주장을 파악하고 이유나 근거가 타당한지 평가하며 듣는다."],["6국01-03","주제와 관련하여 궁금한 내용을 질문하며 적극적으로 듣고 말한다."],["6국01-04","면담의 절차를 이해하고 상대와 매체를 고려하여 면담한다."],["6국01-05","자료를 선별하여 핵심 정보를 중심으로 내용을 구성하고 매체를 활용하여 발표한다."],["6국01-06","토의에 협력적으로 참여하며 서로의 의견을 비교하고 조정한다."],["6국01-07","절차와 규칙을 지키고 타당한 이유와 근거를 제시하며 토론한다."],["6국02-01","글의 구조를 고려하며 주제나 주장을 파악하고 글 내용을 요약한다."],["6국02-02","글에서 생략된 내용이나 함축된 표현을 문맥을 고려하여 추론한다."],["6국02-03","글이나 자료를 읽고 내용의 타당성과 표현의 적절성을 평가한다."],["6국02-04","문제 상황과 관련된 다양한 관점의 글을 읽고 이를 문제 해결에 활용한다."],["6국02-05","긍정적인 읽기 동기를 형성하고 적극적으로 읽기에 참여하는 태도를 기른다."],["6국03-01","알맞은 내용을 선정하여 대상의 특성이 나타나게 설명하는 글을 쓴다."],["6국03-02","적절한 근거를 사용하고 인용의 출처를 밝히며 주장하는 글을 쓴다."],["6국03-03","체험한 일에 대한 감상을 나타내는 글을 쓴다."],["6국03-04","독자와 매체를 고려하여 내용을 생성하고 표현하며 글을 쓴다."],["6국03-05","쓰기 과정을 점검·조정하며 글을 쓰고, 글 전체를 대상으로 통일성 있게 고쳐 쓴다."],["6국03-06","쓰기에 적극적으로 참여하며 자신의 글을 독자와 공유하는 태도를 지닌다."],["6국04-01","음성 언어 및 문자 언어의 특성을 이해하고 다양한 매체 자료에서 표현 효과를 평가한다."],["6국04-02","표준어와 방언의 기능을 파악하고 언어 공동체와 국어생활과의 관계를 이해한다."],["6국04-03","고유어와 관용 표현의 쓰임과 가치를 이해하고 상황에 맞게 표현한다."],["6국04-04","문장 성분을 이해하고 호응 관계가 올바른 문장을 구성한다."],["6국04-05","글과 담화에 쓰인 시간 표현을 이해하고 상황에 맞게 표현한다."],["6국04-06","글과 담화에 쓰인 단어 및 문장, 띄어쓰기를 민감하게 살펴 바르게 고치는 태도를 지닌다."],["6국05-01","작가의 의도를 생각하며 작품을 읽는다."],["6국05-02","비유적 표현의 효과에 유의하여 작품을 감상한다."],["6국05-03","소설이나 극을 읽고 인물, 사건, 배경을 파악한다."],["6국05-04","인상적인 부분을 중심으로 작품에 대한 의견을 나눈다."],["6국05-05","자신의 경험을 시, 소설, 극, 수필 등 적절한 갈래로 표현한다."],["6국05-06","작품을 읽고 자신의 삶과 연관 지어 성찰하는 태도를 지닌다."],["6국06-01","정보 검색 도구를 활용하여 자신의 목적에 맞는 매체 자료를 찾는다."],["6국06-02","뉴스 및 각종 정보 매체 자료의 신뢰성을 평가한다."],["6국06-03","적합한 양식과 수용자의 반응을 고려하여 복합양식 매체 자료를 제작하고 공유한다."],["6국06-04","자신의 매체 이용 양상에 대해 성찰한다."],["6도01-01","자주적인 삶에 대한 이해를 바탕으로 자신의 생활계획을 세우고 실천하여 주체적인 삶의 태도를 기른다."],["6도01-02","생활 습관에 대한 성찰을 통해 자기 생활을 점검하고 올바른 계획을 세워 이를 실천한다."],["6도01-03","자기가 하고 싶은 일을 선택할 때 도덕적 고려의 필요성을 알고 자신의 특기와 적성을 탐색하여 진로계획을 수립한다."],["6도02-01","봉사의 의미와 중요성을 이해하고, 타인이 처한 상황과 환경에 대한 주의 깊은 관심을 바탕으로 봉사를 실천한다."],["6도02-02","편견이 발생하는 이유를 탐색하여 해결 방안을 살펴보고, 다양성 존중을 바탕으로 다른 사람과 올바른 관계를 맺기 위한 실천 방안을 탐구한다."],["6도02-03","인간과 인공지능 로봇 간의 다양한 관계를 파악하고 도덕에 기반을 둔 관계 형성의 필요성을 탐구한다."],["6도03-01","인권과 관련된 다양한 사례를 살펴보고 인권에 관한 감수성을 길러 이를 실천하려는 의지를 함양한다."],["6도03-02","정의에 관한 관심을 토대로 공동체 규칙의 중요성을 살펴보고 직접 공정한 규칙을 고안하며 기초적인 시민의식을 기른다."],["6도03-03","통일과정과 통일 이후 사회의 여러 가지 상황을 예상하고 바람직한 통일 과정과 통일국가의 사회상을 제시한다."],["6도03-04","다른 나라 사람들이 처한 여러 가지 상황을 종합적으로 이해하고 해결 방안을 탐구하며 인류애를 기른다."],["6도04-01","지구의 환경 위기 상황을 이해하고, 이를 극복하기 위한 다양한 방법을 찾아 자신의 일상에서 실천하고자 노력한다."],["6도04-02","지속가능한 삶의 의미를 탐구하고 미래 세대에 대한 책임을 강화하여 자연의 다양성을 존중하고 생산성을 유지할 수 있는 미래를 위한 실천 방안을 찾는다."],["6미01-01","다양한 감각과 매체를 활용하여 자신과 대상을 탐색할 수 있다."],["6미01-02","자신이나 주변 환경에서 찾은 감각적 특징, 느낌, 생각 등을 관련지어 나타낼 수 있다."],["6미01-03","주변 환경에 대한 민감한 태도로 대상과 상호 작용하며 새로운 의미를 발견할 수 있다."],["6미01-04","이미지가 나타내는 의미를 비판적으로 이해하고 느낌과 생각을 전달하는 데 활용할 수 있다."],["6미02-01","다양한 방법으로 아이디어를 연결하여 확장된 표현 주제로 발전시킬 수 있다."],["6미02-02","디지털 매체 등 다양한 표현 재료와 용구를 탐색하여 작품 제작에 활용할 수 있다."],["6미02-03","조형 요소의 어울림을 통해 조형 원리를 이해하고 주제 표현에 연결할 수 있다."],["6미02-04","주제 표현에 의지를 갖고 표현 과정을 돌아보며 작품을 발전시킬 수 있다."],["6미02-05","미술과 타 교과의 내용과 방법을 융합하는 활동을 자유롭게 시도할 수 있다."],["6미03-01","미술 작품을 작품이 만들어진 시대적, 지역적 배경 등과 연결하여 이해할 수 있다."],["6미03-02","미술 작품의 내용(소재, 주제 등)과 형식(재료와 용구, 표현 방법, 조형 요소와 원리 등)을 분석하여 작품의 특징을 설명할 수 있다."],["6미03-03","공동체의 미술 문화 활동에 관심을 가지고 참여하며 경험을 공유할 수 있다."],["6미03-04","다양한 방법을 활용하여 작품을 감상하며 작품에 관한 서로 다른 관점을 존중할 수 있다."],["6사01-01","우리나라 산지, 하천, 해안 지형의 위치를 확인하고 지형의 분포 특징을 탐구한다."],["6사01-02","독도의 지리적 특성과 독도에 대한 역사 기록을 바탕으로 영토로서 독도의 중요성을 이해한다."],["6사02-01","우리나라의 계절별 기후 특징을 자료에서 탐구하고, 기후변화로 인한 자연재해의 심각성을 이해한다."],["6사02-02","우리나라의 지역별 인구 분포의 특징을 알아보고, 이에 따른 문제점과 해결 방안을 탐색한다."],["6사03-01","일상 사례에서 법의 의미와 역할을 이해하고, 헌법에 규정된 인권이 일상생활에서 구현되는 사례를 조사하여 인권 친화적 태도를 기른다."],["6사03-02","일상생활에서 인권이 침해되는 사례를 찾아 그 해결 방안을 탐색하고, 인권을 보호하는 활동에 참여한다."],["6사04-01","선사 시대와 고조선의 유적과 유물을 활용하여 당시 사람들의 생활을 추론한다."],["6사04-02","역사 기록이나 유적과 유물에 나타난 고대 사람들의 생각과 생활을 추론한다."],["6사04-03","다양한 역사 자료를 활용하여 고려 시대 사회 모습과 사람들의 생활을 추론한다."],["6사05-01","조선 시대 사람들의 생각과 생활에 유교 문화가 미친 영향을 파악한다."],["6사05-02","조선 후기 사회ㆍ문화적 변화와 개항기 근대 문물 수용 과정에서 달라진 사람들의 생활을 이해한다."],["6사06-01","일제의 식민 통치와 이에 대한 저항이 사회와 생활에 미친 영향을 이해한다."],["6사06-02","8･15 광복과 6･25 전쟁이 사회와 생활에 미친 영향을 파악한다."],["6사07-01","분단으로 나타난 문제점과 분단과 관련된 장소를 평화의 장소로 만들려는 노력 등을 알아보고, 평화 통일을 위해 우리가 할 수 있는 일을 탐색한다."],["6사07-02","민주화와 산업화로 인해 달라진 생활 문화를 사례를 들어 이해한다."],["6사08-01","민주주의에서 선거의 의미와 역할을 파악하고, 시민의 주권 행사를 위해 선거에 참여하는 태도를 기른다."],["6사08-02","민주 국가에서 국회, 행정부, 법원이 하는 일에 대해 이해하고, 각 국가기관의 권력을 분립하는 이유를 탐색한다."],["6사08-03","민주주의에서 미디어의 의미와 역할을 이해하고, 여러 가지 미디어의 내용을 비판적으로 분석하여 올바르게 이용하는 태도를 기른다."],["6사09-01","세계를 표현하는 다양한 공간 자료의 특징을 이해하고, 지구본과 세계지도에서 위치를 표현하는 방법을 익힌다."],["6사09-02","세계 주요 대륙과 대양을 파악하고, 우리나라 및 세계 여러 국가의 위치와 영토의 특징을 이해한다."],["6사10-01","세계 여러 지역의 지형 경관을 살펴보고, 이를 통해 다양한 삶의 모습을 이해한다."],["6사10-02","세계의 다양한 기후를 알아보고 기후 환경과 인간생활 간의 관계를 탐구한다."],["6사11-01","시장경제에서 가계와 기업의 역할을 이해하고, 근로자의 권리와 기업의 자유 및 책임을 탐색한다."],["6사11-02","경제성장이 우리 생활에 미치는 영향을 파악하고, 빠른 경제성장으로 발생한 문제의 해결 방안을 탐색한다."],["6사11-03","사례를 통해 무역의 의미를 이해하고, 국가 간 무역이 발생하는 이유를 탐구한다."],["6사12-01","세계 인구 분포를 파악하고 여러 국가의 인구 특징을 탐구한다."],["6사12-02","지구촌을 위협하는 다양한 문제들을 파악하고, 지속가능한 미래를 위한 해결 방안을 탐색한다."],["6수01-01","덧셈, 뺄셈, 곱셈, 나눗셈의 혼합 계산에서 계산하는 순서를 알고, 혼합 계산을 할 수 있다."],["6수01-02","실생활과 연결하여 이상, 이하, 초과, 미만의 의미와 쓰임을 알고, 이를 활용하여 수의 범위를 나타낼 수 있다."],["6수01-03","어림값을 구하기 위한 방법으로 올림, 버림, 반올림의 의미와 필요성을 알고, 이를 실생활에 활용함으로써 수학의 유용성을 인식할 수 있다."],["6수01-04","약수, 공약수, 최대공약수를 이해하고 구할 수 있다."],["6수01-05","배수, 공배수, 최소공배수를 이해하고 구할 수 있다."],["6수01-06","크기가 같은 분수를 만드는 방법을 이해하고, 분수를 약분, 통분할 수 있다."],["6수01-07","분모가 다른 분수의 크기를 비교하고 그 방법을 설명할 수 있다."],["6수01-08","분모가 다른 분수의 덧셈과 뺄셈의 계산 원리를 탐구하고 그 계산을 할 수 있다."],["6수01-09","분수의 곱셈의 계산 원리를 탐구하고 그 계산을 할 수 있다."],["6수01-10","‘(자연수)÷(자연수)’에서 나눗셈의 몫을 분수로 나타낼 수 있다."],["6수01-11","분수의 나눗셈의 계산 원리를 탐구하고 그 계산을 할 수 있다."],["6수01-12","분수와 소수의 관계를 이해하고 크기를 비교하며 그 방법을 설명할 수 있다."],["6수01-13","소수의 곱셈의 계산 원리를 탐구하고 그 계산을 할 수 있다."],["6수01-14","‘(자연수)÷(자연수)’에서 나눗셈의 몫을 소수로 나타낼 수 있다."],["6수01-15","소수의 나눗셈의 계산 원리를 탐구하고 그 계산을 할 수 있다."],["6수02-01","한 양이 변할 때 다른 양이 그에 종속하여 변하는 대응 관계를 나타낸 표에서 규칙을 찾아 설명하고, □, △ 등을 사용하여 식으로 나타낼 수 있다."],["6수02-02","두 양의 크기를 비교하는 상황을 통해 비의 개념을 이해하고, 두 양의 관계를 비로 나타낼 수 있다."],["6수02-03","비율을 이해하고, 비율을 분수, 소수, 백분율로 나타낼 수 있다."],["6수02-04","비례식을 알고, 그 성질을 이해하며, 이를 활용하여 간단한 비례식을 풀 수 있다."],["6수02-05","비례배분을 알고, 주어진 양을 비례배분 할 수 있다."],["6수03-01","도형의 합동을 이해하고, 합동인 도형의 성질을 탐구하고 설명할 수 있다."],["6수03-02","실생활과 연결하여 선대칭도형과 점대칭도형을 이해하고 그릴 수 있다."],["6수03-03","직육면체와 정육면체를 이해하고, 구성 요소와 성질을 탐구하고 설명할 수 있다."],["6수03-04","직육면체와 정육면체의 겨냥도와 전개도를 그릴 수 있다."],["6수03-05","각기둥과 각뿔을 이해하고, 구성 요소와 성질을 탐구하고 설명할 수 있다."],["6수03-06","각기둥의 전개도를 그릴 수 있다."],["6수03-07","원기둥, 원뿔, 구를 이해하고, 구성 요소와 성질을 탐구하고 설명할 수 있다."],["6수03-08","원기둥의 전개도를 그릴 수 있다."],["6수03-09","쌓기나무로 만든 입체도형을 보고 사용된 쌓기나무의 개수를 구할 수 있다."],["6수03-10","쌓기나무로 만든 입체도형의 위, 앞, 옆에서 본 모양을 표현할 수 있고, 이러한 표현을 보고 입체도형의 모양을 추측할 수 있다."],["6수03-11","평면도형의 둘레를 이해하고, 기본적인 평면도형의 둘레를 구할 수 있다."],["6수03-12","넓이 단위 1cm², 1m², 1km²를 알며, 그 관계를 이해한다."],["6수03-13","직사각형과 정사각형의 넓이를 구하는 방법을 이해하고, 이를 구할 수 있다."],["6수03-14","평행사변형, 삼각형, 사다리꼴, 마름모의 넓이를 구하는 방법을 다양하게 추론하고, 이와 관련된 문제를 해결할 수 있다."],["6수03-15","여러 가지 원 모양 물체의 원주와 지름을 측정하는 활동을 통하여, 원주율이 일정한 값임을 알고 그 근삿값을 사용할 수 있다."],["6수03-16","원주와 원의 넓이를 구하는 방법을 이해하고, 이를 구할 수 있다."],["6수03-17","직육면체와 정육면체의 겉넓이를 구하는 방법을 이해하고, 이를 구할 수 있다."],["6수03-18","부피 단위 1cm³, 1m³를 알며, 그 관계를 이해한다."],["6수03-19","직육면체와 정육면체의 부피를 구하는 방법을 이해하고, 이를 구할 수 있다."],["6수04-01","평균의 의미를 알고, 자료를 수집하여 평균을 구하고 해석할 수 있다."],["6수04-02","자료를 수집하여 띠그래프나 원그래프로 나타내고 해석할 수 있다."],["6수04-03","탐구 문제를 설정하고, 그에 맞는 자료를 수집, 정리하여 적절한 그래프로 나타내고 해석할 수 있다."],["6수04-04","사건이 일어날 가능성을 말로 표현하고 비교할 수 있다."],["6수04-05","사건이 일어날 가능성을 수로 나타낼 수 있다."],["6수04-06","자료를 이용하여 가능성을 예상하고, 가능성에 근거하여 적절한 판단을 내릴 수 있다."],["6실01-01","아동기의 발달 특징을 이해하고 성장발달에 필요한 조건과 방법을 탐색한다."],["6실01-02","건강한 발달을 위한 자기 관리 방법을 탐색하고, 일상생활 속에서 올바른 생활습관과 태도를 갖도록 계획하여 실천한다."],["6실01-03","건강한 가정생활을 위해 가족원 모두에게 다양한 요구가 있음을 이해하여 서로에 대한 배려와 돌봄을 실천한다."],["6실01-04","균형 잡힌 식사의 중요성과 조건을 탐색하여 자신의 식습관을 검토해 보고 건강한 식습관 형성에 적용한다."],["6실01-05","옷의 기능을 이해하여 평소 자신의 옷차림을 살펴보고 건강하고 적절한 옷 입기를 실천한다."],["6실01-06","가정일을 수행하는 과정에서 일의 가치와 중요성을 이해하고, 가정생활을 유지하는 데 필요한 가정일의 종류를 탐색한다."],["6실01-07","직업의 필요성을 이해하고 적성, 흥미, 성격에 따라 진로 발달 계획을 세우고 주도적으로 탐색한다."],["6실02-01","시간이나 용돈과 같은 생활자원이 제한되어 있음을 이해하고, 생활자원의 사용가치를 높이는 방법을 탐색한다."],["6실02-02","생활자원 관리의 필요성을 인식하고, 합리적인 생활자원의 보관과 활용방법을 익힌다."],["6실02-03","생활자원의 올바른 사용이 가정과 환경에 도움이 됨을 이해하고 재활용, 재사용 등 환경을 고려한 관리 방법을 실천한다."],["6실02-04","식재료 생산과 선택의 중요성을 인식하고 여러 식재료의 고유하고 다양한 맛을 경험하여 자신의 식사에 적용한다."],["6실02-05","음식의 조리과정을 체험하여 자신의 간식이나 식사를 스스로 마련하는 식생활을 실천한다."],["6실02-06","우리나라 밥상차림을 이해하고, 함께 식사하는 즐거움을 경험하면서 이 과정에서 식사 예절을 실천한다."],["6실02-07","의생활 용품이 만들어지는 과정을 탐색하여 옷이나 생활용품이 어떻게 구성되는지를 설명한다."],["6실02-08","다양한 도구와 재료를 활용하여 간단한 생활용품을 만들어 보면서 직접 만들어 쓰는 즐거움과 창의적 태도를 가진다."],["6실02-09","간단한 옷의 수선 등 의생활과 관련된 문제를 스스로 해결하려는 태도를 가진다."],["6실02-10","자신의 생활공간을 쾌적하고 위생적으로 관리하는 것의 중요성을 알고, 정리정돈과 청소 및 쓰레기 처리의 방법을 익혀 실천한다."],["6실02-11","생태 지향적 삶을 위해 자신의 의식주 생활에서 할 수 있는 구체적인 행동을 계획하여 실천한다."],["6실03-01","발명의 의미를 이해하고, 일상생활을 바꾼 발명품을 탐색하여 발명과 기술에 대한 중요성과 가치를 인식한다."],["6실03-02","발명사고기법과 기술적 문제 해결 과정을 이해하고, 다양한 재료를 활용하여 생활 속 문제를 해결할 수 있는 창의적인 제품을 구상하고 만들어 봄으로써 실천적 태도를 갖는다."],["6실03-03","발명과 특허의 관계를 이해하고, 특허 침해 사례를 통하여 지식재산권의 중요성을 인식하여 올바른 방법으로 활용한다."],["6실03-04","수송의 의미와 수송 수단의 발달과정에 대한 이해를 바탕으로 생활 속 다양한 수송 수단을 탐색한다."],["6실03-05","수송 수단의 구성 요소를 이해하고, 친환경 에너지를 적용한 다양한 수송 수단의 시제품을 만들어 수송기술의 가치를 인식한다."],["6실04-01","친환경 건설 구조물을 이해하고, 생활 속 건설 구조물을 탐색하여 간단한 구조물을 체험하면서 건설기술에 대한 가치를 인식한다."],["6실04-02","생활 속 디지털 기술의 중요성을 이해하고, 디지털 기기와 디지털 콘텐츠 저작 도구를 사용하여 발표 자료를 만들어 보면서 디지털 기기의 활용 능력을 기른다."],["6실04-03","제작한 발표 자료를 사이버 공간에 공유하고, 건전한 정보기기의 활용을 실천한다."],["6실04-04","로봇의 개념과 구조를 이해하고, 생활 속 로봇 기능을 체험하여 로봇의 중요성을 인식한다."],["6실04-05","로봇의 종류와 활용 사례를 통해 작동 원리를 이해하고, 로봇에 대한 관심과 흥미를 가진다."],["6실04-06","로봇의 융합 기술을 이해하고, 간단한 로봇을 만들어 코딩과 프로그램을 적용하여 동작시키는 체험을 통해 융합 기술의 가치를 인식한다."],["6실04-07","생활 속 동식물 자원을 활용 목적에 따라 분류하고 이와 관련된 다양한 생명기술을 탐색한다."],["6실04-08","생활 속 동식물을 기르고 가꾸는 방법을 알고, 동식물을 기르고 가꾸는 체험을 통해 생태 존중감을 가진다."],["6실04-09","동식물 자원의 친환경 농업 사례를 통해 지속가능한 농업이 순환되고 있음을 인식하고 농업의 미래가치를 인식한다."],["6실04-10","생활 속에서 농업활동과 관련된 모습을 분석하고 이에 따른 농업활동을 체험하여 농업에 대한 관심을 두고 이를 생활 속에서 실천한다."],["6실04-11","농업과 농촌의 다원적인 역할과 가치를 이해하고 미래 농업과 관련된 다양한 직업 세계를 탐색한다."],["6실05-01","컴퓨터를 활용한 생활 속 문제해결 사례를 탐색하고 일상생활 속 문제를 해결하기 위한 알고리즘을 다양한 방법으로 표현한다."],["6실05-02","컴퓨터에게 명령하는 방법을 체험하고, 주어진 문제를 해결하는 프로그램을 작성한다."],["6실05-03","실생활의 문제를 해결하는 프로그램을 협력하여 작성하고, 산출물을 타인과 공유한다."],["6실05-04","디지털 데이터와 아날로그 데이터의 특징을 이해하고, 인공지능에 활용할 수 있는 데이터의 유형이나 형태를 탐색한다."],["6실05-05","인공지능이 만들어지는 과정을 체험하고, 인공지능이 사회에 미치는 영향을 탐색한다."],["6영01-01","간단한 단어, 어구, 문장을 듣고 강세, 리듬, 억양을 식별한다."],["6영01-02","간단한 단어, 어구, 문장을 강세, 리듬, 억양에 맞게 소리 내어 읽는다."],["6영01-03","간단한 단어, 어구, 문장의 의미를 이해한다."],["6영01-04","일상생활 주제에 관한 담화나 글의 세부 정보를 파악한다."],["6영01-05","일상생활 주제에 관한 담화나 글의 중심 내용을 파악한다."],["6영01-06","일상생활 주제에 관한 담화나 글에서 일이나 사건의 순서를 파악한다."],["6영01-07","적절한 전략을 활용하여 일상생활 주제에 관한 담화나 글을 듣거나 읽는다."],["6영01-08","다양한 매체로 표현된 담화나 글을 흥미와 자신감을 가지고 듣거나 읽는다."],["6영01-09","시, 노래, 이야기를 공감하며 듣거나 읽는다."],["6영01-10","일상생활 주제나 문화에 관한 담화나 글을 포용의 태도로 듣거나 읽는다."],["6영02-01","간단한 단어, 어구, 문장을 강세, 리듬, 억양에 맞게 말한다."],["6영02-02","실물, 그림, 동작 등을 보고 간단한 단어, 어구, 문장으로 말하거나 쓴다."],["6영02-03","알파벳 대소 문자와 문장 부호를 문장에서 바르게 사용한다."],["6영02-04","주변 사람이나 사물을 간단한 문장으로 소개하거나 묘사한다."],["6영02-05","주변 장소나 위치, 행동 순서나 방법을 간단한 문장으로 설명한다."],["6영02-06","자신의 감정이나 의견, 경험이나 계획을 간단한 문장으로 표현한다."],["6영02-07","일상생활 주제에 관한 담화나 글의 세부 정보를 간단한 문장으로 묻거나 답한다."],["6영02-08","예시문을 참고하여 목적에 맞는 간단한 글을 쓴다."],["6영02-09","적절한 매체와 전략을 활용하여 창의적으로 의미를 생성하고 표현한다."],["6영02-10","의사소통 활동에 흥미와 자신감을 가지고 참여하여 협력적으로 수행한다."],["6음01-01","바른 주법과 표현 기법을 익혀 노래나 악기로 느낌을 담아 연주한다."],["6음01-02","음악 요소를 살려 노래나 악기로 발표하고 과정을 돌아본다."],["6음01-03","소리의 어울림을 생각하며 다양한 방법으로 함께 표현한다."],["6음01-04","간단한 형태의 연주를 준비하여 생활 속 음악 활동에 참여한다."],["6음02-01","음악을 듣고 음악의 요소를 감지하며 구별한다."],["6음02-02","다양한 문화권의 음악을 듣고 음악적 특징과 음악의 간단한 구성을 인식한다."],["6음02-03","다양한 종류의 음악을 듣고 음악의 배경과 활용을 설명한다."],["6음02-04","생활 속에서 음악을 찾아 들으며 아름다움을 느끼고 공감한다."],["6음02-05","우리나라 음악 문화유산을 찾아 듣고 국악의 가치를 인식한다."],["6음03-01","느낌과 아이디어를 떠올려 여러 매체나 방법으로 자신감 있게 표현한다."],["6음03-02","기초적인 기보를 활용하여 간단한 조건에 따라 악곡의 일부를 바꾼다."],["6음03-03","음악의 요소를 활용하여 간단한 음악을 만든다."],["6음03-04","생활 주변 상황이나 이야기를 활용하여 음악을 만들며 열린 태도를 갖는다."],["6체01-01","건강 체력과 운동 체력의 의미와 요소를 파악하고 다양한 운동 방법을 탐색한다."],["6체01-02","건강 체력과 운동 체력을 측정하고 자신의 체력 수준에 맞는 운동을 시도한다."],["6체01-03","성장 발달의 의미와 특성을 이해하고 운동과의 관계를 파악한다."],["6체01-04","운동 및 생활 속 위험 상황, 성장 발달을 저해하는 생활 방식의 문제점을 파악하고 예방 및 대처 방법을 익혀 안전하게 활동한다."],["6체01-05","체력 운동을 끈기 있게 규칙적으로 수행한다."],["6체01-06","성장과 발달 과정에서 나타나는 신체적, 정서적, 사회적 특성과 차이를 공감하고 위험 상황에 침착하게 대처한다."],["6체02-01","기술형 스포츠의 의미와 유형을 파악한다."],["6체02-02","기술형 스포츠 유형별로 기본 움직임 기술을 응용한 기본 기능을 파악하고 수행한다."],["6체02-03","기술형 스포츠 유형별 활동 방법을 파악하고 기본 전략을 게임 활동에서 수행한다."],["6체02-04","전략형 스포츠의 의미와 유형을 파악한다."],["6체02-05","전략형 스포츠 유형별로 기본 움직임 기술을 응용한 기본 기능을 파악하고 수행한다."],["6체02-06","전략형 스포츠 유형별 활동 방법을 파악하고 기본 전략을 게임 활동에서 수행한다."],["6체02-07","생태형 스포츠의 의미와 유형을 파악한다."],["6체02-08","생태형 스포츠 유형별로 기본 움직임 기술을 응용한 기본 기능을 파악하고 수행한다."],["6체02-09","생태형 스포츠 유형별 활동 방법을 파악하고 기본 전략을 게임 활동에서 수행한다."],["6체02-10","스포츠 활동에 참여하며 목표를 달성하기 위한 의지를 실천하고 상대의 기술을 인정한다."],["6체02-11","스포츠 활동에 참여하며 팀원과 협력하고 구성원을 배려한다."],["6체02-12","스포츠 활동에 참여하며 환경을 아끼고 감사하는 태도를 실천한다."],["6체03-01","표현 활동의 의미와 유형을 파악한다."],["6체03-02","스포츠 표현에서 움직임 기술을 응용한 기본 동작을 파악하고 표현한다."],["6체03-03","스포츠 표현의 기본 동작을 다양하게 구성하여 발표하고 감상한다."],["6체03-04","전통 표현에서 움직임 기술을 응용한 기본 동작을 파악하고 표현한다."],["6체03-05","전통 표현의 기본 동작을 다양하게 구성하여 발표하고 감상한다."],["6체03-06","현대 표현에서 움직임 기술을 응용한 기본 동작을 파악하고 표현한다."],["6체03-07","현대 표현의 기본 동작을 다양하게 구성하여 발표하고 감상한다."],["6체03-08","다양한 표현 활동 유형을 수용하고, 움직임 표현의 아름다움을 추구한다."]];
+  /* STD-DATA-END */
+
+</script>
+
+<script>
+/* ==========================================================================
+   프로젝트 학습 계획서
+   © 2026 TEAM LEAP (경북교육 AI Lab · AI 활용 분과)
+   --------------------------------------------------------------------------
+   왜 이 앱인가
+     앱 F 는 **한 차시**를 짭니다. 이 앱은 **여러 주에 걸친 프로젝트**를 짜고,
+     끝난 뒤 같은 자료로 **결과 보고서**를 냅니다. 계획서와 보고서를 따로 쓰면
+     같은 표를 두 번 옮겨 적게 되고, 옮겨 적는 동안 숫자가 어긋납니다.
+
+   이 앱의 얼굴 — **교과 시수 저울**
+     프로젝트 학습은 여러 교과에서 시수를 빌려 옵니다. 결재에서 실제로 걸리는
+     자리가 그것입니다. 합계만 보고 있으면 쪼갠 값이 틀린 것은 보이지 않으므로
+     (마스터 함정 12번) 교과마다 막대로 그리고, 계획한 차시와 어긋나면 말합니다.
+
+   그래서 연계 교과를 **글로 적게 두지 않았습니다.** 「국어/2, 사회/1」처럼 글로
+   적으면 합계를 낼 수 없고, 합계를 못 내면 저울이 서지 않습니다.
+   고르고 세는 칸으로 두어 **합계를 낼 수 없는 상태 자체를 없앴습니다**(원칙 8번).
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  var esc = LEAP.esc;
+  var KEY = 'leap-project-v1';
+
+  var SUBJ_NAME = { 국: '국어', 수: '수학', 사: '사회', 과: '과학', 영: '영어', 도: '도덕',
+    체: '체육', 음: '음악', 미: '미술', 실: '실과',
+    바: '바른 생활', 슬: '슬기로운 생활', 즐: '즐거운 생활' };
+  /* 프로젝트는 교과에서만 시수를 빌려 오지 않습니다. 창의적 체험활동과
+     2022 개정의 학교자율시간이 오히려 큰 몫입니다. */
+  var SUBJECTS = ['국어', '수학', '사회', '과학', '영어', '도덕', '체육', '음악', '미술', '실과',
+    '바른 생활', '슬기로운 생활', '즐거운 생활', '창의적 체험활동', '학교자율시간'];
+  var BANDS = [{ k: '2', n: '1~2학년군' }, { k: '4', n: '3~4학년군' }, { k: '6', n: '5~6학년군' }];
+  var HOWS = ['관찰평가', '서술·논술', '포트폴리오', '실기평가', '동료평가', '자기평가', '구술·발표', '보고서'];
+
+  var STEPS = [
+    { n: '기본 정보', d: '무엇을, 누가, 언제' },
+    { n: '성취기준', d: '어느 교과의 무엇' },
+    { n: '개요', d: '왜 이 프로젝트인가' },
+    { n: '흐름', d: '소주제와 차시' },
+    { n: '평가 · 예산', d: '무엇을 어떻게 보나' },
+    { n: '운영 결과', d: '끝난 뒤 적습니다' }
+  ];
+
+  var DEFAULT = {
+    v: 1, kind: 'plan',
+    info: { year: '', school: '', title: '', grade: '', type: '학급 단위형',
+      from: '', to: '', hours: 0 },
+    stds: [], overview: '',
+    flow: [], evals: [], budget: [], results: [],
+    reflect: { tip: '', plus: '', interest: '', minus: '', voice: '' }
+  };
+
+  var db = LEAP.store(KEY, DEFAULT);
+
+  /* 옛 저장본에 없던 칸을 채웁니다 (마스터 함정 10번).
+     새 칸을 더할 때마다 여기에 한 줄씩 늘려야 합니다. */
+  function fill(d) {
+    if (!d || typeof d !== 'object') return LEAP.clone(DEFAULT);
+    d.v = 1;
+    if (d.kind !== 'report') d.kind = 'plan';
+    d.info = d.info || {};
+    ['year', 'school', 'title', 'grade', 'type', 'from', 'to'].forEach(function (k) {
+      if (typeof d.info[k] !== 'string') d.info[k] = '';
+    });
+    if (typeof d.info.hours !== 'number') d.info.hours = 0;
+    if (!d.info.type) d.info.type = '학급 단위형';
+    if (!Array.isArray(d.stds)) d.stds = [];
+    if (typeof d.overview !== 'string') d.overview = '';
+    if (!Array.isArray(d.flow)) d.flow = [];
+    d.flow.forEach(function (f) {
+      if (!f.id) f.id = LEAP.uid();
+      if (typeof f.sub !== 'string') f.sub = '';
+      if (typeof f.body !== 'string') f.body = '';
+      if (typeof f.out !== 'string') f.out = '';
+      if (!Array.isArray(f.links)) f.links = [];
+      f.links.forEach(function (l) { l.h = Math.max(0, +l.h || 0); });
+    });
+    if (!Array.isArray(d.evals)) d.evals = [];
+    if (!Array.isArray(d.budget)) d.budget = [];
+    if (!Array.isArray(d.results)) d.results = [];
+    d.results.forEach(function (r) {
+      if (!r.id) r.id = LEAP.uid();
+      if (!Array.isArray(r.photos)) r.photos = [];
+      if (typeof r.text !== 'string') r.text = '';
+    });
+    d.reflect = d.reflect || {};
+    ['tip', 'plus', 'interest', 'minus', 'voice'].forEach(function (k) {
+      if (typeof d.reflect[k] !== 'string') d.reflect[k] = '';
+    });
+    return d;
+  }
+  db.set(fill(db.get()));
+
+  /* ---------- 되돌리기 〔마스터 함정 39·44번〕 ----------
+     이 앱의 자료는 통째로도 작습니다(사진을 뺀 글은 몇 KB).
+     지우기 전 상태를 **통으로** 붙들어 두면 무엇이 함께 사라졌는지 세지 않아도
+     다 돌아옵니다. 한 걸음만 기억합니다. */
+  var undo = null, undoKeep = false;
+
+  function markUndo(label) {
+    undo = { snap: JSON.stringify(db.get()), label: label };
+    undoKeep = true;
+  }
+  function save(fn) {
+    if (undoKeep) undoKeep = false; else undo = null;
+    var before = JSON.stringify(db.get());
+    if (db.update(fn)) return true;
+    db.set(JSON.parse(before));
+    LEAP.announce('저장 공간이 가득 찼습니다. 사진을 줄이거나 파일로 내보내 주세요.');
+    return false;
+  }
+  function undoBar() {
+    if (!undo) return '';
+    return '<div class="undo"><p>' + esc(undo.label) + '</p>' +
+      '<button class="btn btn--quiet btn--sm" type="button" id="btn-undo">되돌리기</button></div>';
+  }
+
+  /* ---------- 성취기준 ---------- */
+
+  var STD = STD_RAW.map(function (r) {
+    var m = /^(\d{1,2})([가-힣]{1,3})/.exec(r[0]);
+    return { code: r[0], text: r[1], band: m ? m[1] : '', subj: m ? (SUBJ_NAME[m[2]] || m[2]) : '' };
+  });
+  var STD_BY = {};
+  STD.forEach(function (s) { STD_BY[s.code] = s; });
+
+  /* 초성으로도 찾습니다 — 「ㅁㅅ」로 미술을, 「ㅈㄷ」로 지도를 */
+  var CHO = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
+  function choOf(s) {
+    var out = '';
+    for (var i = 0; i < s.length; i++) {
+      var c = s.charCodeAt(i);
+      out += (c >= 0xAC00 && c <= 0xD7A3) ? CHO.charAt(Math.floor((c - 0xAC00) / 588)) : s.charAt(i);
+    }
+    return out;
+  }
+  function findStd(band, subj, q) {
+    q = (q || '').trim();
+    var qc = choOf(q);
+    return STD.filter(function (s) {
+      if (band && s.band !== band) return false;
+      if (subj && s.subj !== subj) return false;
+      if (!q) return true;
+      return s.code.indexOf(q) >= 0 || s.text.indexOf(q) >= 0 || choOf(s.text).indexOf(qc) >= 0;
+    });
+  }
+
+  /* ---------- 셈 ---------- */
+
+  function hoursOf(f) {
+    var n = 0;
+    (f.links || []).forEach(function (l) { n += (+l.h || 0); });
+    return n;
+  }
+  function flowHours(d) {
+    var n = 0;
+    (d.flow || []).forEach(function (f) { n += hoursOf(f); });
+    return n;
+  }
+  /* 차시 범위는 셈해서 붙입니다. 사람이 번호를 매기면 한 줄을 지웠을 때 어긋납니다. */
+  function ranges(d) {
+    var out = [], at = 1;
+    (d.flow || []).forEach(function (f) {
+      var h = hoursOf(f);
+      out.push(h <= 0 ? '—' : (h === 1 ? String(at) : at + '~' + (at + h - 1)));
+      at += h;
+    });
+    return out;
+  }
+  function bySubject(d) {
+    var map = {}, order = [];
+    (d.flow || []).forEach(function (f) {
+      (f.links || []).forEach(function (l) {
+        if (!l.s) return;
+        if (!(l.s in map)) { map[l.s] = 0; order.push(l.s); }
+        map[l.s] += (+l.h || 0);
+      });
+    });
+    return order.map(function (s) { return { s: s, h: map[s] }; })
+      .sort(function (a, b) { return b.h - a.h; });
+  }
+  function budgetTotal(d) {
+    var n = 0;
+    (d.budget || []).forEach(function (b) { n += (parseInt(String(b.cost || '').replace(/[^0-9]/g, ''), 10) || 0); });
+    return n;
+  }
+  function won(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+  function periodText(d) {
+    var i = d.info;
+    if (!i.from && !i.to) return '';
+    var s = (i.from ? LEAP.fmtDate(i.from) : '') + (i.from && i.to ? ' ~ ' : '') + (i.to ? LEAP.fmtDate(i.to) : '');
+    var h = flowHours(d);
+    return s + (h ? ' (' + h + '차시)' : '');
+  }
+  function subjectsText(d) {
+    var a = bySubject(d);
+    return a.length ? a.map(function (x) { return x.s; }).join(', ') : '';
+  }
+  function docName(d) {
+    return d.kind === 'report' ? '프로젝트 학습 운영 결과 보고서' : '프로젝트 학습 운영 계획';
+  }
+
+  /* 걸음마다 「채워졌는가」 — 표시일 뿐 막지 않습니다.
+     못 넘어가게 하면 순서대로 쓰지 않는 사람이 갇힙니다. */
+  function done(d, i) {
+    if (i === 0) return !!(d.info.title && d.info.grade);
+    if (i === 1) return d.stds.length > 0;
+    if (i === 2) return d.overview.trim().length > 0;
+    if (i === 3) return d.flow.length > 0 && flowHours(d) > 0;
+    if (i === 4) return d.evals.length > 0;
+    return d.results.length > 0 || !!d.reflect.tip;
+  }
+
+  /* ==========================================================================
+     화면
+     ========================================================================== */
+
+  var panel = document.getElementById('panel');
+  var stepsEl = document.getElementById('steps');
+  var barEl = document.getElementById('planbar');
+  var miniEl = document.getElementById('mini');
+  var step = 0;
+  var stdBand = '6', stdSubj = '', stdQ = '';
+
+  function renderAll() { renderBar(); renderSteps(); renderPanel(); renderMini(); }
+
+  function renderBar() {
+    var d = db.get();
+    barEl.innerHTML =
+      '<div class="pb-t"><b>' + (d.info.title ? esc(d.info.title) : '이름 없는 프로젝트') + '</b>' +
+      '<span>' + esc(docName(d)) +
+      (d.info.grade ? ' · ' + esc(d.info.grade) : '') +
+      (flowHours(d) ? ' · ' + flowHours(d) + '차시' : '') + '</span></div>' +
+      '<div class="pb-r"><button class="btn btn--ghost btn--sm" id="p-new" type="button">새로 짜기</button></div>';
+    var b = barEl.querySelector('#p-new');
+    if (b) b.addEventListener('click', askNew);
+  }
+
+  function renderSteps() {
+    var d = db.get();
+    var last = d.kind === 'report' ? STEPS.length : STEPS.length - 1;
+    var h = '';
+    for (var i = 0; i < last; i++) {
+      h += '<button class="stepb" type="button" data-step="' + i + '" ' +
+        'aria-pressed="' + (i === step ? 'true' : 'false') + '">' +
+        '<span class="i">' + (i + 1) + '</span><span class="n">' + esc(STEPS[i].n) + '</span>' +
+        (done(d, i) ? '<span class="ok" aria-label="채웠습니다">✓</span>' : '') +
+        '</button>';
+    }
+    stepsEl.innerHTML = h;
+    stepsEl.querySelectorAll('[data-step]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        step = +b.getAttribute('data-step');
+        renderSteps(); renderPanel();
+      });
+    });
+  }
+
+  function foot() {
+    var d = db.get();
+    var last = (d.kind === 'report' ? STEPS.length : STEPS.length - 1) - 1;
+    return '<div class="stepfoot no-print">' +
+      (step > 0 ? '<button class="btn btn--ghost" id="s-prev" type="button">← ' + esc(STEPS[step - 1].n) + '</button>' : '<span></span>') +
+      (step < last ? '<button class="btn" id="s-next" type="button">' + esc(STEPS[step + 1].n) + ' →</button>' : '<span></span>') +
+      '</div>';
+  }
+
+  function bindFoot() {
+    var p = panel.querySelector('#s-prev'), n = panel.querySelector('#s-next');
+    if (p) p.addEventListener('click', function () { step--; renderSteps(); renderPanel(); window.scrollTo(0, 0); });
+    if (n) n.addEventListener('click', function () { step++; renderSteps(); renderPanel(); window.scrollTo(0, 0); });
+  }
+
+  function renderPanel() {
+    var d = db.get();
+    var h = undoBar();
+    if (step === 0) h += viewInfo(d);
+    else if (step === 1) h += viewStd(d);
+    else if (step === 2) h += viewOverview(d);
+    else if (step === 3) h += viewFlow(d);
+    else if (step === 4) h += viewEval(d);
+    else h += viewResult(d);
+    h += foot();
+    panel.innerHTML = h;
+    if (step === 0) bindInfo();
+    else if (step === 1) bindStd();
+    else if (step === 2) bindOverview();
+    else if (step === 3) bindFlow();
+    else if (step === 4) bindEval();
+    else bindResult();
+    bindFoot();
+    var u = panel.querySelector('#btn-undo');
+    if (u) u.addEventListener('click', function () {
+      if (!undo) return;
+      db.set(JSON.parse(undo.snap));
+      undo = null; undoKeep = false;
+      renderAll();
+      LEAP.announce('되돌렸습니다.');
+    });
+  }
+
+  /* ---------- 걸음 1. 기본 정보 ---------- */
+
+  /* ---------- AI 초안 받기 ----------
+     머리의 「AI 초안」이 프롬프트를 만들어 주고, 챗봇이 돌려준 JSON 을 여기서 받습니다.
+     **바로 넣지 않습니다.** 무엇이 들어오는지 먼저 보여 주고 「이대로 받기」를 눌러야
+     들어갑니다. 들어온 뒤에도 한 걸음 되돌릴 수 있습니다.
+     앱이 밖으로 보내는 것은 없습니다 — 오가는 것은 사람이 복사해서 옮깁니다. */
+  var draftOpen = false, draft = null, draftErr = '';
+
+  /* 앞뒤에 설명이 섞여 있어도 읽습니다. 챗봇은 「여기 있습니다!」를 붙이기 마련입니다. */
+  function parseLoose(s) {
+    s = String(s || '').trim();
+    if (!s) return null;
+    s = s.replace(/^```[a-zA-Z]*\s*/, '').replace(/```\s*$/, '');
+    try { return JSON.parse(s); } catch (e) { /* 아래에서 다시 */ }
+    var i = s.indexOf('{'), j = s.lastIndexOf('}');
+    if (i >= 0 && j > i) { try { return JSON.parse(s.slice(i, j + 1)); } catch (e2) { } }
+    return null;
+  }
+
+  function readDraft(text) {
+    var o = parseLoose(text);
+    if (!o) { draft = null; draftErr = 'JSON 을 찾지 못했습니다. 챗봇이 준 답을 그대로 붙여 넣어 보세요.'; return; }
+    var f = Array.isArray(o.flow) ? o.flow : [];
+    var e = Array.isArray(o.evals) ? o.evals : [];
+    var b = Array.isArray(o.budget) ? o.budget : [];
+    if (!o.title && !o.overview && !f.length && !e.length) {
+      draft = null; draftErr = '읽기는 했는데 받을 것이 없습니다. title · overview · flow · evals 가운데 하나는 있어야 합니다.';
+      return;
+    }
+    draftErr = '';
+    draft = {
+      title: typeof o.title === 'string' ? o.title : '',
+      overview: typeof o.overview === 'string' ? o.overview : '',
+      flow: f.map(function (x) {
+        var links = (Array.isArray(x.links) ? x.links : [])
+          .map(function (l) {
+            var s = String(l && l.s || '');
+            return { s: SUBJECTS.indexOf(s) >= 0 ? s : '창의적 체험활동',
+              h: Math.max(0, Math.min(60, parseInt(l && l.h, 10) || 0)) };
+          })
+          .filter(function (l) { return l.h > 0; });
+        return { id: LEAP.uid(), sub: String(x.sub || ''), body: String(x.body || ''),
+          out: String(x.out || ''), links: links.length ? links : [{ s: '창의적 체험활동', h: 1 }] };
+      }),
+      evals: e.map(function (x) {
+        var how = String(x.how || '');
+        return { subj: String(x.subj || ''), code: String(x.code || ''),
+          what: String(x.what || ''), how: HOWS.indexOf(how) >= 0 ? how : '관찰평가' };
+      }),
+      budget: b.map(function (x) {
+        return { item: String(x.item || ''), basis: String(x.basis || ''),
+          cost: String(x.cost || ''), note: String(x.note || '') };
+      })
+    };
+  }
+
+  /* AI 가 고른 성취기준이 걸음 2 의 목록에 없으면 평가 줄이 빈 코드가 됩니다.
+     그 자리를 말해 줍니다 — 조용히 버리면 왜 비었는지 알 수 없습니다. */
+  function draftOutside(d) {
+    if (!draft) return [];
+    var out = [];
+    draft.evals.forEach(function (e) {
+      if (e.code && d.stds.indexOf(e.code) < 0 && out.indexOf(e.code) < 0) out.push(e.code);
+    });
+    return out;
+  }
+
+  function draftHTML(d) {
+    var h = '<div class="card"><h2 style="font-size:1.125rem">AI 초안 붙여넣기</h2>' +
+      '<p class="sub" style="font-size:.875rem">머리의 <b>「AI 초안」</b>이 만들어 준 프롬프트를 챗봇에 넣고, ' +
+      '돌아온 답을 여기 붙여 넣으세요. <b>이 앱은 아무것도 보내지 않습니다.</b></p>' +
+      '<textarea class="txt" id="ai-in" style="min-height:110px" placeholder=\'{"title":"…","flow":[…]}\'></textarea>' +
+      '<div class="actions"><button class="btn btn--ghost" id="ai-read" type="button">읽어 보기</button>' +
+      '<button class="btn btn--quiet btn--sm" id="ai-close" type="button">닫기</button></div>';
+    if (draftErr) h += '<p class="hintline" style="color:var(--leap-amber)"><b>읽지 못했습니다</b> — ' + esc(draftErr) + '</p>';
+    if (draft) {
+      var outside = draftOutside(d);
+      h += '<div class="scale" style="margin-top:16px"><div class="hd"><b>이런 것이 들어옵니다</b>' +
+        '<span class="small muted">아직 넣지 않았습니다</span></div>' +
+        '<p class="hintline" style="margin:0">' +
+        (draft.title ? '이름 「' + esc(draft.title) + '」 · ' : '') +
+        (draft.overview ? '개요 ' + draft.overview.length + '자 · ' : '') +
+        '소주제 ' + draft.flow.length + '개 · 평가 ' + draft.evals.length + '줄 · 예산 ' + draft.budget.length + '줄' +
+        '</p>' +
+        (outside.length
+          ? '<p class="warn" style="margin-top:12px">평가에 <b>고르지 않은 성취기준</b>이 있습니다 — ' +
+            outside.map(function (c) { return '[' + esc(c) + ']'; }).join(' ') +
+            '. 그대로 받으면 그 줄은 <b>성취기준이 빈 채</b>로 들어옵니다. ' +
+            '걸음 2 에서 먼저 골라 두면 이어집니다.</p>'
+          : '') +
+        '</div>' +
+        '<div class="actions"><button class="btn" id="ai-apply" type="button">이대로 받기</button>' +
+        '<span class="small muted">받은 뒤에도 한 걸음 되돌릴 수 있습니다</span></div>';
+    }
+    return h + '</div>';
+  }
+
+  function viewInfo(d) {
+    var i = d.info;
+    return (draftOpen ? draftHTML(d)
+      : '<div class="actions no-print" style="margin:0 0 16px">' +
+        '<button class="btn btn--ghost btn--sm" id="ai-open" type="button">AI 초안 붙여넣기</button>' +
+        '<span class="small muted">머리의 「AI 초안」으로 프롬프트를 먼저 받으세요</span></div>') +
+      '<div class="card"><h2>무엇을 만드시나요</h2>' +
+      '<p class="sub">같은 자료로 둘 다 만듭니다. <b>계획서를 쓰고 프로젝트가 끝나면 결과 보고서로 바꾸면</b> ' +
+      '적어 둔 것이 그대로 넘어갑니다. 옮겨 적지 않습니다.</p>' +
+      '<div class="kinds">' +
+      '<button class="kind" type="button" data-kind="plan" aria-pressed="' + (d.kind === 'plan' ? 'true' : 'false') + '">' +
+      '<span class="n">운영 계획서</span><span class="d">시작 전에 냅니다. 흐름 · 평가 · 예산까지.</span></button>' +
+      '<button class="kind" type="button" data-kind="report" aria-pressed="' + (d.kind === 'report' ? 'true' : 'false') + '">' +
+      '<span class="n">운영 결과 보고서</span><span class="d">끝난 뒤에 냅니다. 계획서에 <b>사진과 성찰</b>이 붙습니다.</span></button>' +
+      '</div>' +
+
+      '<h2 style="font-size:1.125rem">기본 정보</h2>' +
+      '<div class="row" style="margin-top:14px">' +
+      '<div><label class="fld" for="f-title">프로젝트 이름</label>' +
+      '<input class="txt" id="f-title" placeholder="예: 살아 있는 역사 박물관" value="' + esc(i.title) + '"></div>' +
+      '</div>' +
+      '<div class="row" style="margin-top:14px">' +
+      '<div><label class="fld" for="f-school">학교</label>' +
+      '<input class="txt" id="f-school" placeholder="예: 포항양덕초등학교" value="' + esc(i.school) + '"></div>' +
+      '<div class="fixed" style="flex:0 0 150px"><label class="fld" for="f-grade">학년</label>' +
+      '<input class="txt" id="f-grade" placeholder="예: 5학년" value="' + esc(i.grade) + '"></div>' +
+      '</div>' +
+      '<div class="row" style="margin-top:14px">' +
+      '<div><label class="fld" for="f-year">학년도 · 학기</label>' +
+      '<input class="txt" id="f-year" placeholder="예: 2026학년도 2학기" value="' + esc(i.year) + '"></div>' +
+      '<div><label class="fld" for="f-type">운영 형태</label>' +
+      '<input class="txt" id="f-type" placeholder="예: 학급 단위형" value="' + esc(i.type) + '"></div>' +
+      '</div>' +
+      '<div class="row" style="margin-top:14px">' +
+      '<div><label class="fld" for="f-from">시작</label>' +
+      '<input class="txt" id="f-from" type="date" value="' + esc(i.from) + '"></div>' +
+      '<div><label class="fld" for="f-to">끝</label>' +
+      '<input class="txt" id="f-to" type="date" value="' + esc(i.to) + '"></div>' +
+      '<div class="fixed" style="flex:0 0 160px"><label class="fld" for="f-hours">계획 차시 ' +
+      '<span class="hint">어림</span></label>' +
+      '<input class="txt" id="f-hours" type="number" min="0" max="200" inputmode="numeric" ' +
+      'value="' + (i.hours ? i.hours : '') + '"></div>' +
+      '</div>' +
+      '<p class="hintline">계획 차시는 <b>어림으로 먼저</b> 적어 두는 숫자입니다. ' +
+      '흐름을 짜면 교과마다 몇 차시가 나왔는지 저울이 셈해 주고, 이 숫자와 어긋나면 알려 줍니다.</p>' +
+      '<p class="hintline"><b>학생 이름은 어디에도 넣지 마세요.</b> 이 앱에는 학생 이름을 받는 칸이 없습니다.</p>' +
+      '</div>';
+  }
+
+  function bindInfo() {
+    var op = panel.querySelector('#ai-open');
+    if (op) op.addEventListener('click', function () { draftOpen = true; renderPanel(); });
+    var cl = panel.querySelector('#ai-close');
+    if (cl) cl.addEventListener('click', function () {
+      draftOpen = false; draft = null; draftErr = ''; renderPanel();
+    });
+    var rd = panel.querySelector('#ai-read');
+    if (rd) rd.addEventListener('click', function () {
+      var box = panel.querySelector('#ai-in');
+      var v = (box && box.value) || '';
+      if (!v.trim()) { LEAP.announce('붙여 넣은 것이 없습니다.'); if (box) box.focus(); return; }
+      readDraft(v);
+      renderPanel();
+      LEAP.announce(draft ? '읽었습니다. 무엇이 들어오는지 확인해 주세요.' : '읽지 못했습니다.');
+    });
+    var ap = panel.querySelector('#ai-apply');
+    if (ap) ap.addEventListener('click', function () {
+      if (!draft) return;
+      markUndo('AI 초안을 받았습니다.');
+      var dr = draft;
+      save(function (d) {
+        if (dr.title) d.info.title = dr.title;
+        if (dr.overview) d.overview = dr.overview;
+        if (dr.flow.length) d.flow = dr.flow;
+        if (dr.evals.length) {
+          // 고르지 않은 성취기준은 빈 채로 둡니다. 지어내서 채우지 않습니다.
+          d.evals = dr.evals.map(function (e) {
+            return { subj: e.subj, code: d.stds.indexOf(e.code) >= 0 ? e.code : '',
+              what: e.what, how: e.how };
+          });
+        }
+        if (dr.budget.length) d.budget = dr.budget;
+      });
+      draftOpen = false; draft = null; draftErr = '';
+      step = 3;
+      renderAll();
+      LEAP.announce('받았습니다. 흐름을 확인해 주세요. 되돌릴 수 있습니다.');
+    });
+
+    panel.querySelectorAll('[data-kind]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        save(function (d) { d.kind = b.getAttribute('data-kind'); });
+        renderAll();
+        LEAP.announce(docName(db.get()) + '로 바꿨습니다.');
+      });
+    });
+    var map = { 'f-title': 'title', 'f-school': 'school', 'f-grade': 'grade',
+      'f-year': 'year', 'f-type': 'type', 'f-from': 'from', 'f-to': 'to' };
+    Object.keys(map).forEach(function (id) {
+      var el = panel.querySelector('#' + id);
+      if (!el) return;
+      el.addEventListener('input', function () {
+        save(function (d) { d.info[map[id]] = el.value; });
+        renderBar(); renderMini();
+      });
+    });
+    var hh = panel.querySelector('#f-hours');
+    if (hh) hh.addEventListener('input', function () {
+      save(function (d) { d.info.hours = Math.max(0, Math.min(200, parseInt(hh.value, 10) || 0)); });
+      renderMini();
+    });
+  }
+
+  /* ---------- 걸음 2. 성취기준 ---------- */
+
+  function viewStd(d) {
+    var picked = d.stds.map(function (c) {
+      var s = STD_BY[c];
+      return '<div class="stdrow"><span class="cd">[' + esc(c) + ']</span>' +
+        '<span class="tx">' + esc(s ? s.text : '(앱에 없는 성취기준입니다)') + '</span>' +
+        '<button class="btn btn--ghost btn--sm x" type="button" data-std-x="' + esc(c) + '">빼기</button></div>';
+    }).join('');
+
+    var list = findStd(stdBand, stdSubj, stdQ);
+    var shown = list.slice(0, 60);
+    var subs = [''].concat(SUBJECTS.slice(0, 13));
+
+    return '<div class="card"><h2>성취기준</h2>' +
+      '<p class="sub">프로젝트가 어느 교과의 무엇을 다루는지 고릅니다. ' +
+      '<b>초등 611건이 앱 안에 있습니다.</b></p>' +
+      (picked ? '<div class="stdbox">' + picked + '</div>'
+              : '<p class="hintline">아직 고른 것이 없습니다.</p>') +
+
+      '<h3 style="font-size:1rem;margin:22px 0 0">찾기</h3>' +
+      '<div class="chips2">' + BANDS.map(function (b) {
+        return '<button class="chip2" type="button" data-band="' + b.k + '" ' +
+          'aria-pressed="' + (stdBand === b.k ? 'true' : 'false') + '">' + b.n + '</button>';
+      }).join('') + '</div>' +
+      '<div class="chips2">' + subs.map(function (s) {
+        return '<button class="chip2" type="button" data-subj="' + esc(s) + '" ' +
+          'aria-pressed="' + (stdSubj === s ? 'true' : 'false') + '">' + (s || '모두') + '</button>';
+      }).join('') + '</div>' +
+      '<input class="txt" id="std-q" placeholder="낱말이나 코드를 치세요 · 초성도 됩니다 — ㅇㄹㅈㅇ → 우리 지역" ' +
+      'value="' + esc(stdQ) + '" autocomplete="off">' +
+      '<div class="stdfind">' + (shown.length
+        ? shown.map(function (s) {
+            var on = d.stds.indexOf(s.code) >= 0;
+            return '<button class="stdpick" type="button" data-std="' + esc(s.code) + '" ' +
+              'aria-pressed="' + (on ? 'true' : 'false') + '">' +
+              '<span class="cd">[' + esc(s.code) + ']</span> <span class="cd" style="color:var(--leap-gray)">' +
+              esc(s.subj) + '</span>' +
+              '<span class="tx">' + esc(s.text) + '</span></button>';
+          }).join('')
+        : '<p class="hintline" style="margin:0">찾은 것이 없습니다.</p>') +
+      '</div>' +
+      (list.length > shown.length
+        ? '<p class="hintline">' + list.length + '건 가운데 60건만 보입니다. 낱말을 더 치면 좁혀집니다.</p>' : '') +
+      '</div>';
+  }
+
+  function bindStd() {
+    panel.querySelectorAll('[data-band]').forEach(function (b) {
+      b.addEventListener('click', function () { stdBand = b.getAttribute('data-band'); renderPanel(); });
+    });
+    panel.querySelectorAll('[data-subj]').forEach(function (b) {
+      b.addEventListener('click', function () { stdSubj = b.getAttribute('data-subj'); renderPanel(); });
+    });
+    var q = panel.querySelector('#std-q');
+    if (q) {
+      var t;
+      q.addEventListener('input', function () {
+        stdQ = q.value;
+        clearTimeout(t);
+        // 타이핑 중 전체 재렌더는 커서를 튀게 합니다 (마스터 함정 7번).
+        // 목록만 다시 그리고 입력칸은 그대로 둡니다.
+        t = setTimeout(function () {
+          var box = panel.querySelector('.stdfind');
+          if (!box) return;
+          var d = db.get();
+          var shown = findStd(stdBand, stdSubj, stdQ).slice(0, 60);
+          box.innerHTML = shown.length
+            ? shown.map(function (s) {
+                var on = d.stds.indexOf(s.code) >= 0;
+                return '<button class="stdpick" type="button" data-std="' + esc(s.code) + '" ' +
+                  'aria-pressed="' + (on ? 'true' : 'false') + '">' +
+                  '<span class="cd">[' + esc(s.code) + ']</span> <span class="cd" style="color:var(--leap-gray)">' +
+                  esc(s.subj) + '</span><span class="tx">' + esc(s.text) + '</span></button>';
+              }).join('')
+            : '<p class="hintline" style="margin:0">찾은 것이 없습니다.</p>';
+          bindPick();
+        }, 180);
+      });
+    }
+    bindPick();
+    panel.querySelectorAll('[data-std-x]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var c = b.getAttribute('data-std-x');
+        save(function (d) { d.stds = d.stds.filter(function (x) { return x !== c; }); });
+        renderPanel(); renderSteps(); renderMini();
+      });
+    });
+  }
+
+  function bindPick() {
+    panel.querySelectorAll('[data-std]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var c = b.getAttribute('data-std');
+        save(function (d) {
+          if (d.stds.indexOf(c) >= 0) d.stds = d.stds.filter(function (x) { return x !== c; });
+          else d.stds.push(c);
+        });
+        renderPanel(); renderSteps(); renderMini();
+      });
+    });
+  }
+
+  /* ---------- 걸음 3. 개요 ---------- */
+
+  function viewOverview(d) {
+    return '<div class="card"><h2>프로젝트 개요</h2>' +
+      '<p class="sub">왜 이 프로젝트를 하는지, 아이들이 무엇을 하게 되는지 200~400자로 적습니다.</p>' +
+      '<textarea class="txt" id="f-ov" style="min-height:220px" ' +
+      'placeholder="예: 5학년 2학기 사회에서 배우는 우리나라 역사를 깊이 탐구하고, 그 결과를 우리 반만의 박물관으로 …">' +
+      esc(d.overview) + '</textarea>' +
+      '<p class="hintline">글자 수 <b id="ov-n">' + d.overview.length + '</b>자</p>' +
+      '<p class="hintline">막히면 머리의 <b>「AI 초안」</b>을 눌러 보세요. ' +
+      '앱이 지금까지 적은 것으로 프롬프트를 만들어 줍니다 — <b>앱이 밖으로 보내는 것은 없습니다.</b></p>' +
+      '</div>';
+  }
+
+  function bindOverview() {
+    var ta = panel.querySelector('#f-ov');
+    if (!ta) return;
+    ta.addEventListener('input', function () {
+      save(function (d) { d.overview = ta.value; });
+      var n = panel.querySelector('#ov-n');
+      if (n) n.textContent = ta.value.length;
+      renderMini();
+    });
+  }
+
+  /* ---------- 걸음 4. 흐름 + 저울(얼굴) ---------- */
+
+  function scaleHTML(d) {
+    var rows = bySubject(d);
+    var tot = flowHours(d);
+    var plan = d.info.hours || 0;
+    var max = rows.length ? rows[0].h : 1;
+
+    var body = rows.length
+      ? '<div class="rows">' + rows.map(function (r) {
+          var pct = max ? Math.round(r.h / max * 100) : 0;
+          return '<div class="srow"><span class="nm">' + esc(r.s) + '</span>' +
+            '<span class="br"><i style="width:' + pct + '%"></i></span>' +
+            '<span class="hh">' + r.h + '차시</span></div>';
+        }).join('') + '</div>'
+      : '<p class="empty">소주제를 더하고 <b>연계 교과와 시수</b>를 적으면 여기에 저울이 섭니다.</p>';
+
+    var note;
+    if (!rows.length) note = '';
+    else if (!plan) note = '<p class="ok">계획 차시를 적어 두면 어긋날 때 알려 드립니다 (걸음 1).</p>';
+    else if (plan === tot) note = '<p class="ok">계획한 ' + plan + '차시와 <b>맞습니다.</b></p>';
+    else note = '<p class="warn">계획은 <b>' + plan + '차시</b>인데 흐름은 <b>' + tot + '차시</b>입니다 — ' +
+      (tot > plan ? (tot - plan) + '차시 많습니다.' : (plan - tot) + '차시 모자랍니다.') +
+      ' 어느 쪽이 맞는지 정해 주세요.</p>';
+
+    return '<div class="scale"><div class="hd"><b>교과 시수 저울</b>' +
+      '<span class="small muted">어느 교과에서 몇 차시를 빌려 왔는가</span>' +
+      '<span class="tot">' + tot + '차시</span></div>' +
+      body + note + '</div>';
+  }
+
+  function viewFlow(d) {
+    var rg = ranges(d);
+    var cards = d.flow.map(function (f, i) {
+      var h = hoursOf(f);
+      return '<div class="fl" data-f="' + f.id + '">' +
+        '<div class="fl-h"><span class="fl-n">' + (i + 1) + '</span>' +
+        '<span class="fl-p">' + rg[i] + '차시 · ' + h + '차시분</span>' +
+        '<span class="fl-x">' +
+        (i > 0 ? '<button class="btn btn--ghost btn--sm" type="button" data-up="' + f.id + '" aria-label="위로">↑</button> ' : '') +
+        '<button class="btn btn--ghost btn--sm" type="button" data-fx="' + f.id + '">빼기</button></span></div>' +
+        '<div class="fl-g">' +
+        '<div><label for="s-' + f.id + '">소주제</label>' +
+        '<input id="s-' + f.id + '" data-fs="' + f.id + '" placeholder="예: 우리가 정한 역사 질문" value="' + esc(f.sub) + '"></div>' +
+        '<div><label for="b-' + f.id + '">학습 내용</label>' +
+        '<textarea id="b-' + f.id + '" data-fb="' + f.id + '" placeholder="한 줄에 하나씩 적으세요">' + esc(f.body) + '</textarea></div>' +
+        '<div class="fl-two">' +
+        '<div><label>연계 교과 · 시수</label><div class="links">' +
+        f.links.map(function (l, j) {
+          return '<span class="link"><select data-ls="' + f.id + '" data-j="' + j + '" aria-label="교과">' +
+            SUBJECTS.map(function (s) {
+              return '<option' + (s === l.s ? ' selected' : '') + '>' + esc(s) + '</option>';
+            }).join('') + '</select>' +
+            '<input type="number" min="0" max="60" inputmode="numeric" data-lh="' + f.id + '" data-j="' + j + '" ' +
+            'value="' + (+l.h || 0) + '" aria-label="시수">' +
+            '<button class="x" type="button" data-lx="' + f.id + '" data-j="' + j + '" aria-label="이 교과 빼기">×</button></span>';
+        }).join('') +
+        '<button class="btn btn--ghost btn--sm" type="button" data-la="' + f.id + '">＋ 교과</button>' +
+        '</div></div>' +
+        '<div><label for="o-' + f.id + '">학습 결과물</label>' +
+        '<input id="o-' + f.id + '" data-fo="' + f.id + '" placeholder="예: 역사 신문" value="' + esc(f.out) + '"></div>' +
+        '</div></div></div>';
+    }).join('');
+
+    return '<div class="card"><h2>프로젝트의 흐름</h2>' +
+      '<p class="sub">소주제를 차례대로 놓습니다. <b>차시 번호는 앱이 셈해서 붙입니다</b> — ' +
+      '한 줄을 지우거나 옮겨도 어긋나지 않습니다.</p>' +
+      scaleHTML(d) +
+      (cards || '<div class="empty"><p>아직 소주제가 없습니다.<br>아래에서 첫 소주제를 더해 보세요.</p></div>') +
+      '<div class="actions"><button class="btn" id="f-add" type="button">＋ 소주제 더하기</button></div>' +
+      '</div>';
+  }
+
+  function bindFlow() {
+    var add = panel.querySelector('#f-add');
+    if (add) add.addEventListener('click', function () {
+      save(function (d) {
+        d.flow.push({ id: LEAP.uid(), sub: '', body: '', out: '', links: [{ s: '국어', h: 1 }] });
+      });
+      renderPanel(); renderSteps(); renderMini();
+    });
+
+    /* 글을 칠 때는 저울과 미리보기만 갱신합니다 — 전체를 다시 그리면 커서가 튑니다 */
+    function live(sel, key) {
+      panel.querySelectorAll('[' + sel + ']').forEach(function (el) {
+        el.addEventListener('input', function () {
+          var id = el.getAttribute(sel);
+          save(function (d) {
+            d.flow.forEach(function (f) { if (f.id === id) f[key] = el.value; });
+          });
+          renderMini();
+        });
+      });
+    }
+    live('data-fs', 'sub'); live('data-fb', 'body'); live('data-fo', 'out');
+
+    panel.querySelectorAll('[data-la]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var id = b.getAttribute('data-la');
+        save(function (d) {
+          d.flow.forEach(function (f) { if (f.id === id) f.links.push({ s: '국어', h: 1 }); });
+        });
+        renderPanel(); renderMini();
+      });
+    });
+    panel.querySelectorAll('[data-lx]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var id = b.getAttribute('data-lx'), j = +b.getAttribute('data-j');
+        save(function (d) {
+          d.flow.forEach(function (f) { if (f.id === id) f.links.splice(j, 1); });
+        });
+        renderPanel(); renderMini();
+      });
+    });
+    panel.querySelectorAll('[data-ls]').forEach(function (el) {
+      el.addEventListener('change', function () {
+        var id = el.getAttribute('data-ls'), j = +el.getAttribute('data-j');
+        save(function (d) {
+          d.flow.forEach(function (f) { if (f.id === id && f.links[j]) f.links[j].s = el.value; });
+        });
+        renderPanel(); renderMini();
+      });
+    });
+    panel.querySelectorAll('[data-lh]').forEach(function (el) {
+      el.addEventListener('input', function () {
+        var id = el.getAttribute('data-lh'), j = +el.getAttribute('data-j');
+        save(function (d) {
+          d.flow.forEach(function (f) {
+            if (f.id === id && f.links[j]) f.links[j].h = Math.max(0, Math.min(60, parseInt(el.value, 10) || 0));
+          });
+        });
+        // 저울과 차시 표시만 다시 그립니다
+        var sc = panel.querySelector('.scale');
+        if (sc) sc.outerHTML = scaleHTML(db.get());
+        var rg = ranges(db.get());
+        panel.querySelectorAll('.fl').forEach(function (c, i) {
+          var p = c.querySelector('.fl-p');
+          if (p) p.textContent = rg[i] + '차시 · ' + hoursOf(db.get().flow[i]) + '차시분';
+        });
+        renderMini(); renderSteps();
+      });
+    });
+    panel.querySelectorAll('[data-up]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var id = b.getAttribute('data-up');
+        save(function (d) {
+          var i = -1;
+          d.flow.forEach(function (f, k) { if (f.id === id) i = k; });
+          if (i > 0) { var t = d.flow[i - 1]; d.flow[i - 1] = d.flow[i]; d.flow[i] = t; }
+        });
+        renderPanel(); renderMini();
+      });
+    });
+    /* 묻지 않고 빼되 되돌릴 수 있게 (마스터 함정 39번) */
+    panel.querySelectorAll('[data-fx]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var id = b.getAttribute('data-fx');
+        var f = null;
+        db.get().flow.forEach(function (x) { if (x.id === id) f = x; });
+        markUndo('소주제 「' + (f && f.sub ? f.sub : '이름 없음') + '」을 뺐습니다.');
+        save(function (d) { d.flow = d.flow.filter(function (x) { return x.id !== id; }); });
+        renderPanel(); renderSteps(); renderMini();
+        LEAP.announce('뺐습니다. 되돌릴 수 있습니다.');
+      });
+    });
+  }
+
+  /* ---------- 걸음 5. 평가 · 예산 ---------- */
+
+  function viewEval(d) {
+    var codes = d.stds.slice();
+    var ev = d.evals.map(function (e, i) {
+      return '<div class="gr" data-e="' + i + '">' +
+        '<div class="top"><span class="t">평가 ' + (i + 1) + '</span>' +
+        '<span class="x"><button class="btn btn--ghost btn--sm" type="button" data-ex="' + i + '">빼기</button></span></div>' +
+        '<div class="g3">' +
+        '<div><label>교과</label><select data-ev="subj" data-i="' + i + '">' +
+        [''].concat(SUBJECTS).map(function (s) {
+          return '<option' + (s === e.subj ? ' selected' : '') + '>' + esc(s) + '</option>';
+        }).join('') + '</select></div>' +
+        '<div><label>성취기준</label><select data-ev="code" data-i="' + i + '">' +
+        [''].concat(codes).map(function (c) {
+          return '<option value="' + esc(c) + '"' + (c === e.code ? ' selected' : '') + '>' +
+            (c ? '[' + esc(c) + ']' : '(고르지 않음)') + '</option>';
+        }).join('') + '</select></div>' +
+        '<div><label>평가 방법</label><select data-ev="how" data-i="' + i + '">' +
+        HOWS.map(function (h) {
+          return '<option' + (h === e.how ? ' selected' : '') + '>' + esc(h) + '</option>';
+        }).join('') + '</select></div>' +
+        '</div>' +
+        '<div><label>평가 내용</label><textarea data-ev="what" data-i="' + i + '" ' +
+        'placeholder="무엇을 보고 무엇을 판단하나">' + esc(e.what) + '</textarea></div>' +
+        '</div>';
+    }).join('');
+
+    var bg = d.budget.map(function (b, i) {
+      return '<div class="gr" data-b="' + i + '">' +
+        '<div class="top"><span class="t">' + (i + 1) + '</span>' +
+        '<span class="x"><button class="btn btn--ghost btn--sm" type="button" data-bx="' + i + '">빼기</button></span></div>' +
+        '<div class="g3">' +
+        '<div><label>품목</label><input data-bd="item" data-i="' + i + '" value="' + esc(b.item) + '" placeholder="예: 색지·머메이드지"></div>' +
+        '<div><label>산출 근거</label><input data-bd="basis" data-i="' + i + '" value="' + esc(b.basis) + '" placeholder="예: 1,200원 × 24명"></div>' +
+        '<div><label>금액(원)</label><input data-bd="cost" data-i="' + i + '" inputmode="numeric" value="' + esc(b.cost) + '" placeholder="28800"></div>' +
+        '</div>' +
+        '<div><label>비고</label><input data-bd="note" data-i="' + i + '" value="' + esc(b.note) + '"></div>' +
+        '</div>';
+    }).join('');
+
+    return '<div class="card"><h2>평가 계획</h2>' +
+      '<p class="sub">걸음 2에서 고른 성취기준이 여기 목록에 나옵니다. ' +
+      '<b>고르지 않은 성취기준은 평가에 올릴 수 없습니다</b> — 그래야 둘이 어긋나지 않습니다.</p>' +
+      (d.stds.length ? '' : '<p class="hintline">먼저 <b>걸음 2</b>에서 성취기준을 골라 주세요.</p>') +
+      '<div class="grid">' + (ev || '<p class="hintline">아직 없습니다.</p>') + '</div>' +
+      '<div class="actions"><button class="btn" id="e-add" type="button">＋ 평가 더하기</button></div>' +
+      '</div>' +
+
+      '<div class="card"><h2>예산 사용 계획</h2>' +
+      '<p class="sub">쓸 것이 없으면 비워 두세요. 비어 있으면 종이에도 이 절이 나오지 않습니다.</p>' +
+      '<div class="grid">' + (bg || '<p class="hintline">아직 없습니다.</p>') + '</div>' +
+      '<div class="actions"><button class="btn" id="b-add" type="button">＋ 항목 더하기</button></div>' +
+      (d.budget.length ? '<div class="sum"><span>합계</span><b>' + won(budgetTotal(d)) + '원</b></div>' : '') +
+      '</div>';
+  }
+
+  function bindEval() {
+    var ea = panel.querySelector('#e-add');
+    if (ea) ea.addEventListener('click', function () {
+      save(function (d) {
+        d.evals.push({ subj: '', code: d.stds[0] || '', what: '', how: '관찰평가' });
+      });
+      renderPanel(); renderSteps(); renderMini();
+    });
+    var ba = panel.querySelector('#b-add');
+    if (ba) ba.addEventListener('click', function () {
+      save(function (d) { d.budget.push({ item: '', basis: '', cost: '', note: '' }); });
+      renderPanel(); renderMini();
+    });
+
+    panel.querySelectorAll('[data-ev]').forEach(function (el) {
+      var ev = function () {
+        var k = el.getAttribute('data-ev'), i = +el.getAttribute('data-i');
+        save(function (d) { if (d.evals[i]) d.evals[i][k] = el.value; });
+        renderMini();
+      };
+      el.addEventListener('input', ev);
+      el.addEventListener('change', ev);
+    });
+    panel.querySelectorAll('[data-bd]').forEach(function (el) {
+      el.addEventListener('input', function () {
+        var k = el.getAttribute('data-bd'), i = +el.getAttribute('data-i');
+        save(function (d) { if (d.budget[i]) d.budget[i][k] = el.value; });
+        var s = panel.querySelector('.sum b');
+        if (s) s.textContent = won(budgetTotal(db.get())) + '원';
+        renderMini();
+      });
+    });
+    panel.querySelectorAll('[data-ex]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var i = +b.getAttribute('data-ex');
+        markUndo('평가 한 줄을 뺐습니다.');
+        save(function (d) { d.evals.splice(i, 1); });
+        renderPanel(); renderSteps(); renderMini();
+      });
+    });
+    panel.querySelectorAll('[data-bx]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var i = +b.getAttribute('data-bx');
+        markUndo('예산 한 줄을 뺐습니다.');
+        save(function (d) { d.budget.splice(i, 1); });
+        renderPanel(); renderMini();
+      });
+    });
+  }
+
+  /* ---------- 걸음 6. 운영 결과 (결과 보고서일 때만) ---------- */
+
+  var MAX_EDGE = 1600, QUALITY = 0.82;
+
+  function viewResult(d) {
+    var byFlow = {};
+    d.results.forEach(function (r) { byFlow[r.fid] = r; });
+
+    var blocks = d.flow.length ? d.flow.map(function (f, i) {
+      var r = byFlow[f.id] || { fid: f.id, text: '', photos: [] };
+      return '<div class="gr">' +
+        '<div class="top"><span class="t">' + (i + 1) + '. ' + (f.sub ? esc(f.sub) : '이름 없는 소주제') + '</span></div>' +
+        '<div><label>무엇을 했고 무엇이 남았나</label>' +
+        '<textarea data-rt="' + f.id + '" placeholder="아이들이 한 일과 눈에 띈 것을 적으세요">' + esc(r.text) + '</textarea></div>' +
+        '<div><label>사진</label>' +
+        '<input type="file" accept="image/*" multiple data-rp="' + f.id + '" class="no-print">' +
+        (r.photos.length ? '<div class="shots">' + r.photos.map(function (p, j) {
+          return '<div class="shot"><img src="' + p.src + '" alt="' + esc((f.sub || '') + ' 활동 사진 ' + (j + 1)) + '">' +
+            '<button class="x" type="button" data-rx="' + f.id + '" data-j="' + j + '" aria-label="이 사진 빼기">×</button></div>';
+        }).join('') + '</div>' : '') +
+        '</div></div>';
+    }).join('') : '<p class="hintline">먼저 <b>걸음 4</b>에서 흐름을 짜 주세요. 소주제마다 결과를 적습니다.</p>';
+
+    var f = d.reflect;
+    return '<div class="card"><h2>운영 과정과 결과</h2>' +
+      '<p class="sub">소주제마다 무엇을 했는지 적고 사진을 넣습니다. ' +
+      '<b>사진은 넣는 그 자리에서 줄입니다</b> — 브라우저 저장 공간은 넉넉하지 않습니다.</p>' +
+      '<div class="grid">' + blocks + '</div></div>' +
+
+      '<div class="card"><h2>성찰과 아이들의 반응</h2>' +
+      '<p class="sub">다음에 이 프로젝트를 할 사람에게 남기는 글입니다. 여기가 보고서에서 가장 오래 읽히는 자리입니다.</p>' +
+      '<div class="grid"><div class="gr">' +
+      '<div><label>운영하며 느낀 것 · 다음에 할 사람에게 남기는 말</label>' +
+      '<textarea data-rf="tip" style="min-height:110px">' + esc(f.tip) + '</textarea></div>' +
+      '<div class="g2">' +
+      '<div><label>좋았던 것 (Plus)</label><textarea data-rf="plus">' + esc(f.plus) + '</textarea></div>' +
+      '<div><label>흥미로웠던 것 (Interesting)</label><textarea data-rf="interest">' + esc(f.interest) + '</textarea></div>' +
+      '</div>' +
+      '<div class="g2">' +
+      '<div><label>아쉬웠던 것 (Minus)</label><textarea data-rf="minus">' + esc(f.minus) + '</textarea></div>' +
+      '<div><label>아이들의 말</label><textarea data-rf="voice" ' +
+      'placeholder="아이가 한 말을 그대로 옮기되 이름은 적지 마세요">' + esc(f.voice) + '</textarea></div>' +
+      '</div></div></div>' +
+      '<p class="hintline"><b>학생 이름은 적지 마세요.</b> 이 종이는 학교 밖으로 나갑니다.</p>' +
+      '</div>';
+  }
+
+  function bindResult() {
+    panel.querySelectorAll('[data-rt]').forEach(function (el) {
+      el.addEventListener('input', function () {
+        var fid = el.getAttribute('data-rt');
+        save(function (d) { rowOf(d, fid).text = el.value; });
+        renderMini(); renderSteps();
+      });
+    });
+    panel.querySelectorAll('[data-rf]').forEach(function (el) {
+      el.addEventListener('input', function () {
+        var k = el.getAttribute('data-rf');
+        save(function (d) { d.reflect[k] = el.value; });
+        renderMini(); renderSteps();
+      });
+    });
+    panel.querySelectorAll('[data-rp]').forEach(function (el) {
+      el.addEventListener('change', function () {
+        var fid = el.getAttribute('data-rp');
+        var files = Array.prototype.slice.call(el.files || []);
+        if (!files.length) return;
+        var left = files.length;
+        files.forEach(function (file) {
+          shrinkFile(file, MAX_EDGE, QUALITY, function (p) {
+            if (p) save(function (d) { rowOf(d, fid).photos.push(p); });
+            if (--left === 0) { renderPanel(); renderMini(); LEAP.announce('사진을 넣었습니다.'); }
+          });
+        });
+      });
+    });
+    panel.querySelectorAll('[data-rx]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var fid = b.getAttribute('data-rx'), j = +b.getAttribute('data-j');
+        markUndo('사진 한 장을 뺐습니다.');
+        save(function (d) { rowOf(d, fid).photos.splice(j, 1); });
+        renderPanel(); renderMini();
+        LEAP.announce('뺐습니다. 되돌릴 수 있습니다.');
+      });
+    });
+  }
+
+  function rowOf(d, fid) {
+    var r = null;
+    d.results.forEach(function (x) { if (x.fid === fid) r = x; });
+    if (!r) { r = { id: LEAP.uid(), fid: fid, text: '', photos: [] }; d.results.push(r); }
+    return r;
+  }
+
+  /* 사진은 넣는 그 자리에서 줄입니다. 실패해도 cb 를 부릅니다(null 로) —
+     한 장이 깨졌다고 나머지가 멈추면 무엇이 안 됐는지도 모른 채 기다리게 됩니다. */
+  function shrinkFile(file, edge, q, cb) {
+    if (!/^image\//.test(file.type)) { LEAP.announce('사진 파일만 넣을 수 있습니다.'); cb(null); return; }
+    var url = URL.createObjectURL(file);
+    var img = new Image();
+    img.onload = function () {
+      var w = img.naturalWidth || img.width, h = img.naturalHeight || img.height;
+      var s = Math.min(1, edge / Math.max(w, h));
+      var cw = Math.max(1, Math.round(w * s)), ch = Math.max(1, Math.round(h * s));
+      var cv = document.createElement('canvas');
+      cv.width = cw; cv.height = ch;
+      cv.getContext('2d').drawImage(img, 0, 0, cw, ch);
+      var out = cv.toDataURL('image/jpeg', q);
+      URL.revokeObjectURL(url);
+      cb({ src: out, w: cw, h: ch });
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); LEAP.announce('사진을 읽지 못했습니다.'); cb(null); };
+    img.src = url;
+  }
+
+  /* ==========================================================================
+     종이 — 미리보기와 인쇄가 같은 HTML 을 씁니다. 서로 어긋날 수 없습니다.
+     ========================================================================== */
+
+  function paperHTML(d) {
+    var i = d.info, rg = ranges(d);
+    var isRep = d.kind === 'report';
+
+    var head =
+      '<p class="P-t1">' + esc(i.year || '') + (i.year ? ' ' : '') + '프로젝트 학습 및</p>' +
+      '<p class="P-t2">학생 생성 교육과정 ' + (isRep ? '운영 결과 보고서' : '운영 계획') + '</p>' +
+      '<p class="P-who">' + esc(i.school || '') + (i.school && i.grade ? ' ' : '') + esc(i.grade || '') + '</p>';
+
+    var stdText = d.stds.map(function (c) {
+      var s = STD_BY[c];
+      return '[' + c + '] ' + (s ? s.text : '');
+    }).join('\n');
+
+    var intro =
+      '<h2 class="P-h">Ⅰ. 프로젝트 소개</h2>' +
+      '<table><colgroup><col style="width:17%"><col style="width:41%"><col style="width:15%"><col style="width:27%"></colgroup><tbody>' +
+      '<tr><th>프로젝트명</th><td><b>' + esc(i.title) + '</b></td><th>학년</th><td class="c">' + esc(i.grade) + '</td></tr>' +
+      '<tr><th>운영 기간</th><td>' + esc(periodText(d)) + '</td><th>운영 형태</th><td class="c">' + esc(i.type) + '</td></tr>' +
+      '<tr><th>연계 교과</th><td colspan="3">' + esc(subjectsText(d) || '(아직 없습니다)') + '</td></tr>' +
+      '<tr><th>성취기준</th><td colspan="3" class="pre">' + esc(stdText || '(아직 고르지 않았습니다)') + '</td></tr>' +
+      '<tr><th>개요</th><td colspan="3" class="pre">' + esc(d.overview || '(아직 적지 않았습니다)') + '</td></tr>' +
+      '</tbody></table>';
+
+    var flow = '<h2 class="P-h">Ⅱ. 프로젝트 설계</h2>' +
+      '<h3 class="P-s">1. 프로젝트의 흐름</h3>' +
+      '<table><colgroup><col style="width:6%"><col style="width:10%"><col style="width:20%"><col style="width:34%">' +
+      '<col style="width:16%"><col style="width:14%"></colgroup>' +
+      '<thead><tr><th>순</th><th>차시</th><th>소주제</th><th>학습 내용</th><th>교과 / 시수</th><th>결과물</th></tr></thead><tbody>' +
+      (d.flow.length ? d.flow.map(function (f, k) {
+        return '<tr><td class="c">' + (k + 1) + '</td><td class="c">' + rg[k] + '</td>' +
+          '<td><b>' + esc(f.sub) + '</b></td><td class="pre">' + esc(f.body) + '</td>' +
+          '<td class="c">' + esc((f.links || []).filter(function (l) { return l.h > 0; })
+            .map(function (l) { return l.s + '/' + l.h; }).join(' · ')) + '</td>' +
+          '<td>' + esc(f.out) + '</td></tr>';
+      }).join('')
+        : '<tr><td class="c" colspan="6">(아직 소주제가 없습니다)</td></tr>') +
+      (d.flow.length ? '<tr><th colspan="4">계</th><th class="c">' + flowHours(d) + '차시</th><th></th></tr>' : '') +
+      '</tbody></table>';
+
+    var ev = '<h3 class="P-s">2. 평가 계획</h3>' +
+      '<table><colgroup><col style="width:14%"><col style="width:18%"><col style="width:52%"><col style="width:16%"></colgroup>' +
+      '<thead><tr><th>교과</th><th>성취기준</th><th>평가 내용</th><th>평가 방법</th></tr></thead><tbody>' +
+      (d.evals.length ? d.evals.map(function (e) {
+        return '<tr><td class="c">' + esc(e.subj) + '</td><td class="c">' + (e.code ? '[' + esc(e.code) + ']' : '') + '</td>' +
+          '<td class="pre">' + esc(e.what) + '</td><td class="c">' + esc(e.how) + '</td></tr>';
+      }).join('') : '<tr><td class="c" colspan="4">(아직 없습니다)</td></tr>') +
+      '</tbody></table>';
+
+    var bg = '';
+    if (d.budget.length) {
+      bg = '<h3 class="P-s">3. 예산 사용 계획</h3>' +
+        '<table><colgroup><col style="width:28%"><col style="width:32%"><col style="width:20%"><col style="width:20%"></colgroup>' +
+        '<thead><tr><th>품목</th><th>산출 근거</th><th>금액(원)</th><th>비고</th></tr></thead><tbody>' +
+        d.budget.map(function (b) {
+          var n = parseInt(String(b.cost || '').replace(/[^0-9]/g, ''), 10) || 0;
+          return '<tr><td>' + esc(b.item) + '</td><td>' + esc(b.basis) + '</td>' +
+            '<td class="r">' + won(n) + '</td><td>' + esc(b.note) + '</td></tr>';
+        }).join('') +
+        '<tr><th colspan="2">합계</th><th class="r">' + won(budgetTotal(d)) + '</th><th></th></tr>' +
+        '</tbody></table>';
+    }
+
+    var res = '';
+    if (isRep) {
+      var byFlow = {};
+      d.results.forEach(function (r) { byFlow[r.fid] = r; });
+      res = '<h2 class="P-h">Ⅲ. 운영 과정과 결과</h2>' +
+        (d.flow.length ? d.flow.map(function (f, k) {
+          var r = byFlow[f.id];
+          if (!r || (!r.text && !r.photos.length)) return '';
+          return '<h3 class="P-s">' + (k + 1) + '. ' + esc(f.sub) + '</h3>' +
+            (r.text ? '<p class="P-note pre">' + esc(r.text) + '</p>' : '') +
+            (r.photos.length ? '<div class="P-shots">' + r.photos.map(function (p) {
+              return '<img src="' + p.src + '" alt="' + esc(f.sub) + ' 활동 사진">';
+            }).join('') + '</div>' : '');
+        }).join('') : '<p class="P-note">(아직 없습니다)</p>') +
+
+        '<h2 class="P-h">Ⅳ. 성찰과 아이들의 반응</h2>' +
+        '<h3 class="P-s">1. 운영하며 느낀 것</h3>' +
+        '<p class="P-note pre">' + esc(d.reflect.tip || '(아직 적지 않았습니다)') + '</p>' +
+        '<h3 class="P-s">2. 아이들의 반응</h3>' +
+        '<table><colgroup><col style="width:20%"><col style="width:80%"></colgroup><tbody>' +
+        '<tr><th>좋았던 것</th><td class="pre">' + esc(d.reflect.plus) + '</td></tr>' +
+        '<tr><th>흥미로웠던 것</th><td class="pre">' + esc(d.reflect.interest) + '</td></tr>' +
+        '<tr><th>아쉬웠던 것</th><td class="pre">' + esc(d.reflect.minus) + '</td></tr>' +
+        '<tr><th>아이들의 말</th><td class="pre">' + esc(d.reflect.voice) + '</td></tr>' +
+        '</tbody></table>';
+    }
+
+    return head + intro + flow + ev + bg + res +
+      '<div class="P-foot">© 2026 TEAM LEAP · 경북교육 AI Lab · AI 활용 분과 — 프로젝트 학습 계획서</div>';
+  }
+
+  function renderMini() {
+    miniEl.innerHTML = paperHTML(db.get());
+  }
+
+  /* PDF 파일 이름 — 브라우저는 document.title 을 파일 이름으로 씁니다 (함정 27번) */
+  function fileBase(d) {
+    var i = d.info;
+    return ((d.kind === 'report' ? '프로젝트결과보고서_' : '프로젝트계획서_') +
+      (i.grade ? i.grade + '_' : '') + (i.title || '이름없음') + '_' + LEAP.todayISO())
+      .replace(/[\\/:*?"<>|]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  function withFileName(name, run) {
+    var was = document.title;
+    document.title = name;
+    var done2 = false;
+    function back() {
+      if (done2) return;
+      done2 = true;
+      document.title = was;
+      window.removeEventListener('afterprint', back);
+    }
+    window.addEventListener('afterprint', back);
+    setTimeout(back, 20000);
+    run();
+  }
+
+  function doPrint() {
+    var d = db.get();
+    var html = paperHTML(d);
+    document.getElementById('print-area').innerHTML = html;
+
+    var back = document.createElement('div');
+    back.className = 'pv-back';
+    back.innerHTML = '<div class="pv-w" role="dialog" aria-modal="true" aria-label="인쇄 미리보기">' +
+      '<div class="pv-h"><div><b>인쇄 미리보기</b>' +
+      '<span class="pv-sub">A4 세로 · ' + esc(docName(d)) + '</span></div>' +
+      '<div class="pv-btns"><button class="btn" id="pv-go" type="button">인쇄하기</button>' +
+      '<button class="btn btn--ghost btn--sm" id="pv-x" type="button">닫기</button></div>' +
+      '</div><div class="pv-scroll"><div class="pv-page">' + html + '</div></div></div>';
+    document.body.appendChild(back);
+    function close() {
+      if (back.parentNode) back.parentNode.removeChild(back);
+      document.removeEventListener('keydown', onKey);
+    }
+    function onKey(e) { if (e.key === 'Escape') close(); }
+    document.addEventListener('keydown', onKey);
+    back.addEventListener('click', function (e) { if (e.target === back) close(); });
+    back.querySelector('#pv-x').addEventListener('click', close);
+    back.querySelector('#pv-go').addEventListener('click', function () {
+      close();
+      withFileName(fileBase(d), function () { window.print(); });
+    });
+    back.querySelector('#pv-go').focus();
+  }
+
+  /* ==========================================================================
+     한글·워드로 내보내기 — 라이브러리 없이 DOCX 를 굽습니다
+     --------------------------------------------------------------------------
+     왜 DOCX 인가 — 한글(HWP)도 워드 문서를 엽니다. 반대로 HWPX 는 규격이 까다로워
+     겉모양만 맞춘 파일은 한글이 열지 못하거나 글이 날것으로 뜹니다.
+     **열리지 않는 파일을 주는 것이 안 주는 것보다 나쁩니다.**
+
+     ZIP 은 앱 C(스토리북)가 EPUB 을 굽는 데 쓰는 것과 같은 조각입니다.
+     압축하지 않고(STORE) 담습니다 — OOXML 은 그것을 허용합니다.
+
+     사진은 담지 않습니다. 넣으려면 그림 부품과 관계 파일이 더 필요하고,
+     여기서 실제 한글로 열어 확인할 수 없습니다. **사진은 인쇄·PDF 로 나갑니다.**
+     ========================================================================== */
+
+  function xe(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+  }
+  /* 줄바꿈은 <w:br/> 로 나눠야 합니다. 그냥 넣으면 한 줄로 붙습니다. */
+  function runs(text, bold, size) {
+    var rpr = '<w:rPr>' + (bold ? '<w:b/>' : '') +
+      '<w:rFonts w:ascii="맑은 고딕" w:eastAsia="맑은 고딕" w:hAnsi="맑은 고딕"/>' +
+      '<w:sz w:val="' + (size || 19) + '"/></w:rPr>';
+    return String(text == null ? '' : text).split('\n').map(function (line, i) {
+      return '<w:r>' + rpr + (i ? '<w:br/>' : '') +
+        '<w:t xml:space="preserve">' + xe(line) + '</w:t></w:r>';
+    }).join('');
+  }
+  function para(text, o) {
+    o = o || {};
+    var pr = '<w:pPr>' +
+      (o.align ? '<w:jc w:val="' + o.align + '"/>' : '') +
+      (o.space ? '<w:spacing w:before="' + o.space + '"/>' : '') +
+      (o.rule ? '<w:pBdr><w:bottom w:val="single" w:sz="12" w:space="2" w:color="222222"/></w:pBdr>' : '') +
+      '</w:pPr>';
+    return '<w:p>' + pr + runs(text, o.bold, o.size) + '</w:p>';
+  }
+  function cell(text, o) {
+    o = o || {};
+    return '<w:tc><w:tcPr><w:tcW w:w="' + (o.w || 0) + '" w:type="dxa"/>' +
+      (o.head ? '<w:shd w:val="clear" w:fill="EEF1F5"/>' : '') +
+      '<w:vAlign w:val="center"/></w:tcPr>' +
+      '<w:p><w:pPr>' + (o.align ? '<w:jc w:val="' + o.align + '"/>' : '') + '</w:pPr>' +
+      runs(text, o.head || o.bold, 18) + '</w:p></w:tc>';
+  }
+  function table(widths, rows) {
+    var b = ['top', 'left', 'bottom', 'right', 'insideH', 'insideV'].map(function (k) {
+      return '<w:' + k + ' w:val="single" w:sz="4" w:space="0" w:color="777777"/>';
+    }).join('');
+    return '<w:tbl><w:tblPr><w:tblW w:w="9070" w:type="dxa"/><w:tblBorders>' + b +
+      '</w:tblBorders><w:tblLayout w:type="fixed"/></w:tblPr>' +
+      '<w:tblGrid>' + widths.map(function (w) { return '<w:gridCol w:w="' + w + '"/>'; }).join('') + '</w:tblGrid>' +
+      rows.map(function (r) {
+        return '<w:tr>' + r.map(function (c, i) {
+          return cell(c.t, { w: widths[i], head: c.h, align: c.a });
+        }).join('') + '</w:tr>';
+      }).join('') + '</w:tbl>' + '<w:p/>';
+  }
+
+  /* 순수 함수입니다 — 파일 목록만 돌려줍니다. 굽는 일(ZIP·내려받기)은 밖에서 합니다.
+     검사가 XML 을 그대로 들여다볼 수 있게 하려는 것입니다. */
+  function docxFiles(d) {
+    var i = d.info, rg = ranges(d), isRep = d.kind === 'report';
+    var body = '';
+
+    body += para((i.year ? i.year + ' ' : '') + '프로젝트 학습 및', { align: 'center', bold: true, size: 32 });
+    body += para('학생 생성 교육과정 ' + (isRep ? '운영 결과 보고서' : '운영 계획'),
+      { align: 'center', bold: true, size: 26 });
+    body += para((i.school || '') + ' ' + (i.grade || ''), { align: 'right', bold: true, size: 20 });
+    body += '<w:p/>';
+
+    body += para('Ⅰ. 프로젝트 소개', { bold: true, size: 24, rule: true, space: 200 });
+    var stdText = d.stds.map(function (c) {
+      var s = STD_BY[c];
+      return '[' + c + '] ' + (s ? s.text : '');
+    }).join('\n');
+    body += table([1600, 3600, 1400, 2470], [
+      [{ t: '프로젝트명', h: 1 }, { t: i.title }, { t: '학년', h: 1 }, { t: i.grade, a: 'center' }],
+      [{ t: '운영 기간', h: 1 }, { t: periodText(d) }, { t: '운영 형태', h: 1 }, { t: i.type, a: 'center' }]
+    ]);
+    body += table([1600, 7470], [
+      [{ t: '연계 교과', h: 1 }, { t: subjectsText(d) }],
+      [{ t: '성취기준', h: 1 }, { t: stdText }],
+      [{ t: '개요', h: 1 }, { t: d.overview }]
+    ]);
+
+    body += para('Ⅱ. 프로젝트 설계', { bold: true, size: 24, rule: true, space: 200 });
+    body += para('1. 프로젝트의 흐름', { bold: true, size: 21, space: 120 });
+    var fRows = [[{ t: '순', h: 1 }, { t: '차시', h: 1 }, { t: '소주제', h: 1 },
+      { t: '학습 내용', h: 1 }, { t: '교과 / 시수', h: 1 }, { t: '결과물', h: 1 }]];
+    d.flow.forEach(function (f, k) {
+      fRows.push([
+        { t: String(k + 1), a: 'center' }, { t: rg[k], a: 'center' }, { t: f.sub },
+        { t: f.body },
+        { t: (f.links || []).filter(function (l) { return l.h > 0; })
+            .map(function (l) { return l.s + '/' + l.h; }).join(' · '), a: 'center' },
+        { t: f.out }
+      ]);
+    });
+    if (d.flow.length) {
+      fRows.push([{ t: '계', h: 1 }, { t: '', h: 1 }, { t: '', h: 1 }, { t: '', h: 1 },
+        { t: flowHours(d) + '차시', h: 1, a: 'center' }, { t: '', h: 1 }]);
+    }
+    body += table([560, 900, 1800, 3100, 1450, 1260], fRows);
+
+    body += para('2. 평가 계획', { bold: true, size: 21, space: 120 });
+    var eRows = [[{ t: '교과', h: 1 }, { t: '성취기준', h: 1 }, { t: '평가 내용', h: 1 }, { t: '평가 방법', h: 1 }]];
+    d.evals.forEach(function (e) {
+      eRows.push([{ t: e.subj, a: 'center' }, { t: e.code ? '[' + e.code + ']' : '', a: 'center' },
+        { t: e.what }, { t: e.how, a: 'center' }]);
+    });
+    body += table([1270, 1630, 4720, 1450], eRows);
+
+    if (d.budget.length) {
+      body += para('3. 예산 사용 계획', { bold: true, size: 21, space: 120 });
+      var bRows = [[{ t: '품목', h: 1 }, { t: '산출 근거', h: 1 }, { t: '금액(원)', h: 1 }, { t: '비고', h: 1 }]];
+      d.budget.forEach(function (b) {
+        var n = parseInt(String(b.cost || '').replace(/[^0-9]/g, ''), 10) || 0;
+        bRows.push([{ t: b.item }, { t: b.basis }, { t: won(n), a: 'right' }, { t: b.note }]);
+      });
+      bRows.push([{ t: '합계', h: 1 }, { t: '', h: 1 }, { t: won(budgetTotal(d)), h: 1, a: 'right' }, { t: '', h: 1 }]);
+      body += table([2540, 2900, 1810, 1820], bRows);
+    }
+
+    if (isRep) {
+      body += para('Ⅲ. 운영 과정과 결과', { bold: true, size: 24, rule: true, space: 200 });
+      var byFlow = {};
+      d.results.forEach(function (r) { byFlow[r.fid] = r; });
+      d.flow.forEach(function (f, k) {
+        var r = byFlow[f.id];
+        if (!r || (!r.text && !r.photos.length)) return;
+        body += para((k + 1) + '. ' + f.sub, { bold: true, size: 21, space: 120 });
+        if (r.text) body += para(r.text);
+        if (r.photos.length) body += para('(사진 ' + r.photos.length + '장은 인쇄·PDF 로 나옵니다)', { size: 16 });
+      });
+      body += para('Ⅳ. 성찰과 아이들의 반응', { bold: true, size: 24, rule: true, space: 200 });
+      body += para('1. 운영하며 느낀 것', { bold: true, size: 21, space: 120 });
+      body += para(d.reflect.tip);
+      body += para('2. 아이들의 반응', { bold: true, size: 21, space: 120 });
+      body += table([1810, 7260], [
+        [{ t: '좋았던 것', h: 1 }, { t: d.reflect.plus }],
+        [{ t: '흥미로웠던 것', h: 1 }, { t: d.reflect.interest }],
+        [{ t: '아쉬웠던 것', h: 1 }, { t: d.reflect.minus }],
+        [{ t: '아이들의 말', h: 1 }, { t: d.reflect.voice }]
+      ]);
+    }
+
+    body += para('© 2026 TEAM LEAP · 경북교육 AI Lab · AI 활용 분과', { size: 15, space: 300 });
+
+    var doc = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' +
+      '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">' +
+      '<w:body>' + body +
+      '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/>' +
+      '<w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="720" w:footer="720" w:gutter="0"/>' +
+      '</w:sectPr></w:body></w:document>';
+
+    var types = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' +
+      '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+      '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+      '<Default Extension="xml" ContentType="application/xml"/>' +
+      '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>' +
+      '</Types>';
+
+    var rels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' +
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+      '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>' +
+      '</Relationships>';
+
+    return [
+      { name: '[Content_Types].xml', data: types },
+      { name: '_rels/.rels', data: rels },
+      { name: 'word/document.xml', data: doc }
+    ];
+  }
+
+  function doDocx() {
+    var d = db.get();
+    var blob = ZIP.make(docxFiles(d));
+    LEAP.saveBlob(fileBase(d) + '.docx',
+      new Blob([blob], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }));
+    LEAP.announce('한글·워드 파일로 내보냈습니다.');
+  }
+
+  /* ==========================================================================
+     갈림길 — 되돌릴 수 없는 일을 「예 / 아니오」로 묻지 않습니다 (함정 37번)
+     ========================================================================== */
+
+  function askWay(opts) {
+    var back = document.createElement('div');
+    back.className = 'pv-back';
+    back.innerHTML = '<div class="pv-w" role="dialog" aria-modal="true" aria-label="' + esc(opts.title) + '">' +
+      '<div class="pv-h"><div><b>' + esc(opts.title) + '</b>' +
+      '<span class="pv-sub">' + opts.sub + '</span></div>' +
+      '<div class="pv-btns"><button class="btn btn--ghost btn--sm" id="way-x" type="button">그만두기</button></div>' +
+      '</div><div class="pv-scroll" style="background:var(--leap-surface);padding:20px">' +
+      '<div class="picks2">' + opts.ways.map(function (w, k) {
+        return '<button class="pick2' + (w.cls ? ' ' + w.cls : '') + '" type="button" data-i="' + k + '">' +
+          '<span class="n">' + esc(w.name) + '</span><span class="d">' + w.desc + '</span></button>';
+      }).join('') + '</div></div></div>';
+    document.body.appendChild(back);
+    function shut() {
+      if (back.parentNode) back.parentNode.removeChild(back);
+      document.removeEventListener('keydown', onKey);
+    }
+    function onKey(e) { if (e.key === 'Escape') shut(); }
+    document.addEventListener('keydown', onKey);
+    back.addEventListener('click', function (e) { if (e.target === back) shut(); });
+    back.querySelector('#way-x').addEventListener('click', shut);
+    back.querySelectorAll('[data-i]').forEach(function (b) {
+      b.addEventListener('click', function () { shut(); opts.ways[+b.getAttribute('data-i')].run(); });
+    });
+    var first = back.querySelector('[data-i]');
+    if (first) first.focus();
+  }
+
+  function has(d) {
+    return !!(d.info.title || d.stds.length || d.flow.length || d.evals.length ||
+      d.overview.trim() || d.budget.length || d.results.length);
+  }
+
+  function wipe() {
+    markUndo('처음부터 시작합니다.');
+    db.reset();
+    undoKeep = false;
+    step = 0;
+    renderAll();
+    LEAP.announce('새로 짤 수 있습니다. 되돌릴 수 있습니다.');
+  }
+
+  function askNew() {
+    var d = db.get();
+    if (!has(d)) { wipe(); return; }   // 잃을 것이 없으면 묻지 않습니다
+    askWay({
+      title: '새로 짤까요',
+      sub: '지금 것: ' + (d.info.title || '이름 없음') + ' · 소주제 ' + d.flow.length + '개 · ' + flowHours(d) + '차시',
+      ways: [
+        {
+          name: '파일로 내보내고 새로 짜기', cls: 'pick2--go',
+          desc: '지금 것을 파일로 받은 다음 비웁니다. 나중에 「파일에서 열기」로 그대로 되살릴 수 있습니다.',
+          run: function () { doExport(); wipe(); }
+        },
+        {
+          name: '그냥 새로 짜기', cls: 'pick2--off',
+          desc: '<b>지금 적은 것이 모두 사라집니다.</b> 한 걸음은 「되돌리기」로 돌아옵니다.',
+          run: wipe
+        }
+      ]
+    });
+  }
+
+  /* ---------- 내보내기 / 가져오기 ---------- */
+
+  function doExport() {
+    var d = db.get();
+    LEAP.download('프로젝트학습-' + (d.info.title || '이름없음').replace(/\s/g, '') +
+      '-' + LEAP.todayISO() + '.json', d);
+    LEAP.announce('파일로 내보냈습니다.');
+  }
+
+  document.getElementById('btn-export').addEventListener('click', doExport);
+  document.getElementById('btn-print').addEventListener('click', doPrint);
+  document.getElementById('btn-docx').addEventListener('click', doDocx);
+
+  document.getElementById('btn-import').addEventListener('click', function () {
+    LEAP.pickFile(function (incoming) {
+      if (!incoming || incoming.v !== 1 || !incoming.info) {
+        LEAP.announce('이 앱에서 내보낸 파일이 아닙니다.'); return;
+      }
+      var open = function () {
+        markUndo('가져온 것을 열었습니다.');
+        db.set(fill(incoming));
+        undoKeep = false;
+        step = 0;
+        renderAll();
+        LEAP.announce('열었습니다.');
+      };
+      if (!has(db.get())) { open(); return; }
+      askWay({
+        title: '가져온 것을 열까요',
+        sub: '「' + esc(incoming.info.title || '이름 없음') + '」 · 소주제 ' +
+          ((incoming.flow || []).length) + '개',
+        ways: [
+          {
+            name: '지금 것을 먼저 내보내고 열기', cls: 'pick2--go',
+            desc: '지금 적은 것을 파일로 받은 다음 가져온 것을 엽니다. <b>잃는 것이 없습니다.</b>',
+            run: function () { doExport(); open(); }
+          },
+          {
+            name: '그냥 열기', cls: 'pick2--off',
+            desc: '지금 적은 것이 <b>가려집니다.</b> 한 걸음은 「되돌리기」로 돌아옵니다.',
+            run: open
+          }
+        ]
+      });
+    });
+  });
+
+  document.getElementById('btn-clear').addEventListener('click', askNew);
+
+  LEAP.initThemeBtn(document.getElementById('btn-theme'));
+
+  /* 조각 사이의 창구는 «늘 있는 것»으로 냅니다 (마스터 함정 28번).
+     내주는 것은 셈한 결과뿐이고, 고치는 길은 열지 않습니다. */
+  window.LEAP_H = {
+    read: function () { return LEAP.clone(db.get()); },
+    hours: flowHours, bySubject: bySubject, ranges: ranges,
+    paperHTML: paperHTML, docxFiles: docxFiles, fileBase: fileBase,
+    stdCount: STD.length, findStd: findStd, docName: docName
+  };
+
+  LEAP.restoreTheme();
+  renderAll();
+})();
+</script>
+<div class="aim" id="leap-aim" hidden></div>
+
+<script>
+/* ==========================================================================
+   AI 초안 도우미 (LEAP Kit 공통 조각)
+   원본은 `apps/kit/leap-ai.js` · 단일 HTML 을 지키려고 붙여 넣은 사본입니다.
+
+   왜 API 키를 안 쓰는가
+     학교에서 키 발급이 막히는 일이 잦고, 공용 컴퓨터에 키를 남기는 것도 께름칙합니다.
+     무엇보다 **키를 넣는 순간 이 앱은 인터넷이 필요한 앱이 됩니다** (마스터 원칙 1번).
+
+   그래서 이렇게 합니다.
+     ① 앱이 지금 갖고 있는 것으로 **프롬프트를 만들어 준다**
+     ② 교사가 쓰던 챗봇 아무 데나 붙여 넣는다
+     ③ 돌아온 글은 **교사가 읽고 고쳐서 쓴다**
+
+   앱 D·F 는 여기서 한 걸음 더 갑니다 — 돌아온 JSON 을 받아 화면에 넣습니다.
+   나머지 앱은 **받지 않습니다.** 회의 진행이나 아이에 대한 글은 초안을 자동으로
+   집어넣을 성질의 것이 아니기 때문입니다.
+
+   개인정보
+     프롬프트에 무엇을 담을지는 **앱마다 다르게** 정합니다 (아래 build 함수).
+     학생의 이름이나 의견 원문처럼 밖으로 나가면 안 되는 것은 애초에 담지 않습니다.
+   ========================================================================== */
+(function (global) {
+  'use strict';
+  var CFG = null;
+  var ask = '';
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function box() { return document.getElementById('leap-aim'); }
+  function say(m) { if (global.LEAP && LEAP.announce) LEAP.announce(m); }
+
+  function open(cfg) {
+    CFG = cfg;
+    var b = box();
+    if (!b) return;
+    b.innerHTML =
+      '<div class="aim-w" role="dialog" aria-modal="true" aria-label="AI 초안 도우미">' +
+      '<div class="aim-h"><h2>AI 초안 도우미</h2>' +
+      '<button class="aim-x" id="aim-x" type="button" aria-label="닫기">×</button></div>' +
+      '<div class="aim-b" id="aim-b">' + body() + '</div></div>';
+    b.hidden = false;
+    bind();
+    var x = document.getElementById('aim-x');
+    if (x) x.focus();
+  }
+  function close() { var b = box(); if (b) { b.hidden = true; b.innerHTML = ''; } }
+
+  function body() {
+    var warn = CFG.warn ? CFG.warn() : '';
+    var h = '<div class="aim-note"><div class="hd">쓰던 챗봇 아무 데나 쓰시면 됩니다</div>' +
+      '<p>API 키가 필요 없습니다. 아래 프롬프트를 <b>복사하거나 파일로 받아</b> ' +
+      'ChatGPT·Gemini·클로드 등에 붙여 넣으세요. ' +
+      '<b>이 앱은 아무것도 보내지 않습니다</b> — 붙여 넣을 글자를 만들어 줄 뿐입니다.</p></div>';
+    if (warn) h += '<div class="aim-note aim-warn"><div class="hd">먼저 알려 드립니다</div><p>' + warn + '</p></div>';
+
+    h += '<div class="aim-step"><h3><i>1</i>추가로 부탁할 것이 있나요</h3>' +
+      '<p>없으면 비워 두세요. 앱에 적어 둔 것은 이미 프롬프트에 들어 있습니다.</p>' +
+      '<textarea class="aim-ta" id="aim-ask" placeholder="' + esc(CFG.hint || '') + '">' +
+      esc(ask) + '</textarea></div>';
+
+    h += '<div class="aim-step"><h3><i>2</i>이 프롬프트를 AI에게 주세요</h3>' +
+      '<p>' + (CFG.what || '') + '</p>' +
+      '<textarea class="aim-pre" id="aim-pre" readonly aria-label="AI에게 줄 프롬프트">' +
+      esc(text()) + '</textarea>' +
+      '<div class="aim-act">' +
+      '<button class="btn" id="aim-copy" type="button">프롬프트 복사</button>' +
+      '<button class="btn btn--ghost" id="aim-save" type="button">파일로 받기</button>' +
+      '</div></div>';
+
+    h += '<div class="aim-step"><h3><i>3</i>돌아온 글은 그대로 쓰지 마세요</h3>' +
+      '<p>' + (CFG.after ||
+        '이 앱은 AI 의 답을 <b>받아 저장하지 않습니다.</b> 초안은 초안입니다 — ' +
+        '읽고, 확인하고, 선생님의 말로 옮겨 적으세요.') + '</p></div>';
+    return h;
+  }
+
+  function text() {
+    try { return CFG.build(ask.trim()); }
+    catch (e) { return '(프롬프트를 만들지 못했습니다: ' + e.message + ')'; }
+  }
+
+  function bind() {
+    var b = document.getElementById('aim-b');
+    var q = function (s) { return b.querySelector(s); };
+    var t;
+    var x = document.getElementById('aim-x');
+    if (x) x.addEventListener('click', close);
+    box().addEventListener('click', function (e) { if (e.target === box()) close(); });
+    document.addEventListener('keydown', onEsc);
+
+    q('#aim-ask').addEventListener('input', function (e) {
+      ask = e.target.value;
+      clearTimeout(t);
+      t = setTimeout(function () { var p = q('#aim-pre'); if (p) p.value = text(); }, 250);
+    });
+    q('#aim-copy').addEventListener('click', function () {
+      copy(text(), function () { say('프롬프트를 복사했습니다. 쓰시는 챗봇에 붙여 넣으세요.'); });
+    });
+    q('#aim-save').addEventListener('click', function () {
+      var name = (CFG.file || 'AI-프롬프트') + '-' +
+        (global.LEAP && LEAP.todayISO ? LEAP.todayISO() : '') + '.txt';
+      var bl = new Blob([text()], { type: 'text/plain;charset=utf-8' });
+      var u = URL.createObjectURL(bl), a = document.createElement('a');
+      a.href = u; a.download = name; document.body.appendChild(a); a.click();
+      document.body.removeChild(a); setTimeout(function () { URL.revokeObjectURL(u); }, 1000);
+    });
+  }
+  function onEsc(e) {
+    if (e.key !== 'Escape') return;
+    var b = box();
+    if (b && !b.hidden) { close(); document.removeEventListener('keydown', onEsc); }
+  }
+
+  function copy(s, done) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(s).then(done, function () { fb(s, done); });
+    } else fb(s, done);
+  }
+  function fb(s, done) {
+    var ta = document.createElement('textarea');
+    ta.value = s; ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed'; ta.style.left = '-9999px';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); }
+    catch (e) { say('복사하지 못했습니다. 직접 선택해 복사해 주세요.'); }
+    document.body.removeChild(ta);
+  }
+
+  /* 저장소에서 앱 자료를 그대로 읽습니다. 앱 코드를 건드리지 않으려는 것입니다 —
+     이 조각이 깨져도 앱 본체는 그대로 돕니다. */
+  function load(key, fallback) {
+    try { var raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }
+    catch (e) { return fallback; }
+  }
+
+  /* 프롬프트 꼬리 — 어느 앱이든 같습니다 */
+  var TAIL = [
+    '',
+    '[반드시 지킬 것]',
+    '· 자료에 없는 것을 지어내지 마세요. 모르는 것은 「자료에 없습니다」라고 적으세요.',
+    '· 학생의 이름·가정환경·성격을 추측하지 마세요.',
+    '· 최종 판단은 교사가 합니다. 교사가 확인할 거리를 함께 적어 주세요.',
+    '· 한국어로, 바로 쓸 수 있는 문장으로 써 주세요.'
+  ].join('\n');
+
+  global.LEAPAI = { open: open, close: close, load: load, TAIL: TAIL, esc: esc };
+})(window);
+/* ── 앱 H 의 AI 초안 도우미 ──────────────────────────────────────────────
+   무엇의 초안을 받는가 — **프로젝트 한 벌**입니다. 개요·흐름·평가까지.
+
+   왜 API 키를 쓰지 않는가 — 학교에서 키 발급이 막히는 일이 잦고, 공용 컴퓨터에
+   키를 남기는 것도 께름칙합니다. 무엇보다 **키를 넣는 순간 이 앱은 인터넷이
+   필요한 앱이 됩니다**(마스터 원칙 1번). 그래서 프롬프트를 만들어 주고,
+   돌아온 JSON 을 **걸음 1 에서 붙여 넣게** 합니다. 앱은 아무것도 보내지 않습니다.
+
+   프롬프트에 무엇이 들어가나 — 학교·학년·주제·차시·고른 성취기준까지입니다.
+   **학생에 대한 것은 하나도 들어가지 않습니다.** 이 앱에는 애초에 학생을 적는
+   칸이 없고, 결과 보고서의 「아이들의 말」도 프롬프트에 넣지 않습니다.
+   ──────────────────────────────────────────────────────────────────────── */
+(function () {
+  'use strict';
+  var btn = document.getElementById('btn-ai');
+  if (!btn || !window.LEAPAI || !window.LEAP_H) return;
+
+  function build(ask) {
+    var d = LEAP_H.read(), i = d.info;
+    var t = ['당신은 대한민국 초등학교 교육과정 설계와 프로젝트 학습(학생 생성 교육과정) 전문가입니다.',
+      '아래 조건에 맞는 **프로젝트 학습 운영 계획 초안**을 만들어 주세요.', '',
+      '[조건]',
+      '- 학교: ' + (i.school || '(미기재)'),
+      '- 학년: ' + (i.grade || '(미기재)'),
+      '- 학년도·학기: ' + (i.year || '(미기재)'),
+      '- 프로젝트 이름: ' + (i.title || '(아직 정하지 않았습니다. 지어 주세요)'),
+      '- 계획한 차시: ' + (i.hours ? i.hours + '차시' : '(미기재)'),
+      '- 운영 형태: ' + (i.type || '학급 단위형')];
+
+    if (d.stds.length) {
+      t.push('');
+      t.push('[이미 고른 성취기준 — 이 안에서만 쓰세요]');
+      d.stds.forEach(function (c) {
+        var s = LEAP_H.findStd('', '', c)[0];
+        t.push('- [' + c + '] ' + (s ? s.text : ''));
+      });
+    } else {
+      t.push('');
+      t.push('[성취기준] 아직 고르지 않았습니다. 2022 개정 교육과정 성취기준 코드를 함께 제안해 주세요.');
+    }
+
+    t.push('');
+    t.push('[꼭 알아야 할 것 — 작은 학교의 조건]');
+    t.push('1. 전교생이 수십 명인 **소규모학교**입니다. 모둠이 두셋밖에 서지 않고, 학년을 섞어야 할 때도 있습니다.');
+    t.push('2. 예산과 인력이 넉넉하지 않습니다. **밖에서 사람을 부르는 활동은 피하고**, 교사 한 사람으로 되는 것으로 짜 주세요.');
+    t.push('3. 프로젝트는 여러 교과에서 **시수를 빌려** 옵니다. 소주제마다 어느 교과에서 몇 차시를 쓰는지 반드시 적어 주세요.');
+    t.push('   그 합이 위의 「계획한 차시」와 맞아야 합니다.');
+
+    t.push('');
+    t.push('[아래 JSON 만 출력하세요. 설명·인사말·마크다운 없이 JSON 하나만.]');
+    t.push('{');
+    t.push('  "title": "프로젝트 이름",');
+    t.push('  "overview": "왜 이 프로젝트를 하는지, 아이들이 무엇을 하게 되는지 200~400자",');
+    t.push('  "flow": [');
+    t.push('    { "sub": "소주제", "body": "학습 내용을 줄바꿈으로 나눠 3~5줄",');
+    t.push('      "links": [ { "s": "사회", "h": 2 }, { "s": "국어", "h": 1 } ],');
+    t.push('      "out": "학습 결과물" }');
+    t.push('  ],');
+    t.push('  "evals": [');
+    t.push('    { "subj": "사회", "code": "6사04-01", "what": "무엇을 보고 무엇을 판단하나", "how": "관찰평가" }');
+    t.push('  ],');
+    t.push('  "budget": [');
+    t.push('    { "item": "품목", "basis": "1,200원 × 24명", "cost": "28800", "note": "" }');
+    t.push('  ]');
+    t.push('}');
+    t.push('');
+    t.push('· "s"(교과)는 다음 가운데에서만 고르세요 — 국어·수학·사회·과학·영어·도덕·체육·음악·미술·실과·창의적 체험활동·학교자율시간');
+    t.push('· "how"(평가 방법)는 다음 가운데에서만 고르세요 — 관찰평가·서술·논술·포트폴리오·실기평가·동료평가·자기평가·구술·발표·보고서');
+    t.push('· "h"(시수)는 숫자입니다. 따옴표를 붙이지 마세요.');
+    if (ask) { t.push(''); t.push('[교사의 추가 요청]'); t.push(ask); }
+    t.push(LEAPAI.TAIL);
+    return t.join('\n');
+  }
+
+  btn.addEventListener('click', function () {
+    var d = LEAP_H.read();
+    LEAPAI.open({
+      build: build,
+      file: '프로젝트학습-초안',
+      what: '학교·학년·주제·차시와 <b>고른 성취기준</b>이 들어가 있습니다. 학생에 대한 것은 들어가지 않습니다.',
+      hint: '예: 마을과 이어지는 활동을 넣어 주세요. 예산은 10만 원 안쪽으로.',
+      after: '돌아온 JSON 을 <b>걸음 1 「기본 정보」 맨 위의 「AI 초안 붙여넣기」</b>에 넣으세요. ' +
+        '넣기 전에 무엇이 들어오는지 보여 드리고, <b>「이대로 받기」를 눌러야</b> 들어갑니다. ' +
+        '들어온 뒤에도 <b>한 걸음 되돌릴 수 있습니다.</b>',
+      warn: function () {
+        return d.stds.length
+          ? '고른 성취기준 <b>' + d.stds.length + '건</b>이 프롬프트에 들어갑니다. ' +
+            'AI 에게 <b>그 안에서만 쓰라고</b> 적어 두었습니다.'
+          : '성취기준을 아직 고르지 않았습니다. <b>걸음 2 에서 먼저 고르면</b> ' +
+            'AI 가 엉뚱한 성취기준을 지어내지 않습니다.';
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

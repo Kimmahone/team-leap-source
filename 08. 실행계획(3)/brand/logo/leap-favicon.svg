@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="32" height="32" role="img" aria-labelledby="t">
+  <title id="t">TEAM LEAP</title>
+  <!-- 브라우저 탭 아이콘. 어두운 배경을 깔아 밝은 탭·어두운 탭 양쪽에서 보이게 했습니다. -->
+  <rect width="64" height="64" rx="14" fill="#14202E"/>
+  <g transform="translate(32 32) scale(0.92) translate(-32 -33)">
+    <path d="M7 52 H25" stroke="#97A3B0" stroke-width="7.5" stroke-linecap="round" fill="none"/>
+    <path d="M39 36 H57" stroke="#F2A65A" stroke-width="7.5" stroke-linecap="round" fill="none"/>
+    <path d="M16 46 Q32 -10 48 30" stroke="#7FB3F7" stroke-width="8" stroke-linecap="round" fill="none"/>
+  </g>
+</svg>

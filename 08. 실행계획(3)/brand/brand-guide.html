@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TEAM LEAP 브랜드 가이드 v1.0</title>
+<style>
+:root{
+  --leap-ink:#14202E; --leap-blue:#1B4FA0; --leap-amber:#A8560A;
+  --leap-amber-mark:#CE6410; --leap-teal:#0D6E5C; --leap-gray:#5A6672;
+  --leap-bg:#F7F9FC; --leap-surface:#FFFFFF; --leap-border:#D9E0EA;
+  --leap-hairline:#E8EDF3; --leap-on-fill:#FFFFFF;
+  --leap-font:system-ui,-apple-system,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  --leap-mono:ui-monospace,SFMono-Regular,"SF Mono",Consolas,"D2Coding",monospace;
+  --leap-radius:10px; --leap-radius-sm:6px;
+  --leap-shadow:0 1px 2px rgba(20,32,46,.06),0 4px 12px rgba(20,32,46,.07);
+  /* 심볼 3색 */
+  --m-low:var(--leap-gray); --m-arc:var(--leap-blue); --m-high:var(--leap-amber-mark);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --leap-ink:#E8EDF3; --leap-blue:#7FB3F7; --leap-amber:#F2A65A;
+    --leap-amber-mark:#F2A65A; --leap-teal:#4FD1B0; --leap-gray:#97A3B0;
+    --leap-bg:#0E1621; --leap-surface:#1A2735; --leap-border:#2C3B4C;
+    --leap-hairline:#22303F; --leap-on-fill:#0E1621;
+    --leap-shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="light"]{
+  --leap-ink:#14202E;--leap-blue:#1B4FA0;--leap-amber:#A8560A;--leap-amber-mark:#CE6410;
+  --leap-teal:#0D6E5C;--leap-gray:#5A6672;--leap-bg:#F7F9FC;--leap-surface:#FFFFFF;
+  --leap-border:#D9E0EA;--leap-hairline:#E8EDF3;--leap-on-fill:#FFFFFF;
+}
+:root[data-theme="dark"]{
+  --leap-ink:#E8EDF3;--leap-blue:#7FB3F7;--leap-amber:#F2A65A;--leap-amber-mark:#F2A65A;
+  --leap-teal:#4FD1B0;--leap-gray:#97A3B0;--leap-bg:#0E1621;--leap-surface:#1A2735;
+  --leap-border:#2C3B4C;--leap-hairline:#22303F;--leap-on-fill:#0E1621;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--leap-font);line-height:1.7;color:var(--leap-ink);background:var(--leap-bg)}
+:focus-visible{outline:3px solid var(--leap-blue);outline-offset:2px;border-radius:4px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px 96px}
+.leap-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+header.top{border-bottom:1px solid var(--leap-border);margin-bottom:48px;background:var(--leap-surface)}
+.top-in{max-width:960px;margin:0 auto;padding:28px 20px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between}
+.top h1{margin:0;font-size:1.5rem;letter-spacing:-.01em}
+.top p{margin:4px 0 0;color:var(--leap-gray);font-size:.875rem}
+.themebtn{font:inherit;font-size:.8125rem;font-weight:600;padding:8px 14px;min-height:40px;
+  border:1px solid var(--leap-border);border-radius:var(--leap-radius-sm);
+  background:var(--leap-bg);color:var(--leap-ink);cursor:pointer}
+
+section{margin:0 0 64px}
+h2{font-size:1.25rem;letter-spacing:-.01em;margin:0 0 6px;padding-top:24px;border-top:2px solid var(--leap-ink)}
+h2 .num{color:var(--leap-blue);font-variant-numeric:tabular-nums;margin-right:10px}
+.lede{color:var(--leap-gray);margin:0 0 28px;font-size:.9375rem}
+h3{font-size:.9375rem;margin:32px 0 12px;color:var(--leap-gray);text-transform:uppercase;letter-spacing:.06em}
+
+.card{background:var(--leap-surface);border:1px solid var(--leap-border);border-radius:var(--leap-radius);padding:24px;box-shadow:var(--leap-shadow)}
+.grid{display:grid;gap:16px}
+@media(min-width:640px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}}
+
+.stage{background:var(--leap-surface);border:1px solid var(--leap-border);border-radius:var(--leap-radius);
+  padding:32px 24px;display:flex;align-items:center;justify-content:center;min-height:132px}
+.stage--dark{background:#0E1621;border-color:#2C3B4C}
+.cap{font-size:.8125rem;color:var(--leap-gray);margin:10px 2px 0}
+.cap code{font-family:var(--leap-mono);font-size:.9em;color:var(--leap-ink)}
+
+.lockup{display:flex;align-items:center;gap:18px}
+.wm1{font-size:1.75rem;letter-spacing:.045em;line-height:1.15}
+.wm1 .t{font-weight:500;color:var(--leap-gray)}
+.wm1 .l{font-weight:800;color:var(--leap-ink)}
+.wm2{font-size:.75rem;font-weight:500;color:var(--leap-gray)}
+.stage--dark .wm1 .l{color:#E8EDF3}
+.stage--dark .wm1 .t,.stage--dark .wm2{color:#97A3B0}
+
+.mk{display:block}
+.dark-mark{--m-low:#97A3B0;--m-arc:#7FB3F7;--m-high:#F2A65A}
+.mono-mark{--m-low:currentColor;--m-arc:currentColor;--m-high:currentColor}
+.mono-mark .low{opacity:.5}
+
+.clear{position:relative;display:inline-block;padding:22px;background:
+  repeating-linear-gradient(45deg,var(--leap-hairline) 0 6px,transparent 6px 12px);
+  border:1px dashed var(--leap-border);border-radius:6px}
+.clear>span{display:block;background:var(--leap-surface);padding:2px}
+
+.dont .stage{border-color:var(--leap-amber);position:relative}
+.mark-x{position:absolute;top:10px;right:10px;font-weight:800;color:var(--leap-amber);font-size:1.1rem}
+.sq{transform:scaleX(1.55)}
+.rot{transform:rotate(-16deg)}
+.badcolor{--m-arc:#8E44AD;--m-high:#27AE60;--m-low:#8E44AD}
+.lowcon{background:#8FA6C4}
+
+.swatch{border:1px solid var(--leap-border);border-radius:var(--leap-radius);overflow:hidden;background:var(--leap-surface)}
+.chip{height:78px}
+.swatch .meta{padding:12px 14px}
+.swatch b{display:block;font-size:.9375rem}
+.swatch code{display:block;font-family:var(--leap-mono);font-size:.8125rem;color:var(--leap-gray);margin-top:2px}
+.swatch .use{font-size:.8125rem;color:var(--leap-gray);margin-top:6px}
+
+table{width:100%;border-collapse:collapse;font-size:.875rem}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--leap-hairline);vertical-align:top}
+th{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--leap-gray);border-bottom:1px solid var(--leap-border);white-space:nowrap}
+td code{font-family:var(--leap-mono);font-size:.9em}
+.num-c{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pass{color:var(--leap-teal);font-weight:700}
+
+.type-demo>div{padding:10px 0;border-bottom:1px solid var(--leap-hairline)}
+.type-demo .lbl{font-size:.75rem;color:var(--leap-gray);font-family:var(--leap-mono)}
+
+.btn{font:inherit;font-weight:600;padding:10px 18px;min-height:44px;border-radius:var(--leap-radius-sm);
+  border:1px solid var(--leap-blue);background:var(--leap-blue);color:var(--leap-on-fill);cursor:pointer}
+.btn--quiet{background:transparent;color:var(--leap-blue)}
+.pill{display:inline-block;font-size:.8125rem;font-weight:700;padding:2px 10px;border-radius:999px;border:1px solid currentColor}
+.p-info{color:var(--leap-blue)}.p-warn{color:var(--leap-amber)}.p-ok{color:var(--leap-teal)}
+
+ul.tight{margin:0;padding-left:20px}
+ul.tight li{margin:6px 0}
+.note{border-left:3px solid var(--leap-amber);padding:2px 0 2px 16px;color:var(--leap-gray);font-size:.9375rem}
+.files{font-family:var(--leap-mono);font-size:.8125rem;line-height:1.9;white-space:pre;overflow-x:auto;
+  background:var(--leap-surface);border:1px solid var(--leap-border);border-radius:var(--leap-radius);padding:18px}
+.sizes{display:flex;align-items:flex-end;gap:28px;flex-wrap:wrap}
+.sizes figure{margin:0;text-align:center}
+.sizes figcaption{font-size:.75rem;color:var(--leap-gray);margin-top:8px}
+
+@media print{
+  :root{--leap-ink:#000;--leap-gray:#333;--leap-bg:#fff;--leap-surface:#fff;--leap-border:#999;--leap-shadow:none}
+  .themebtn{display:none}
+  section{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="mark" viewBox="0 0 64 64">
+    <path class="low" d="M7 52 H25" stroke="var(--m-low)" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+    <path d="M39 36 H57" stroke="var(--m-high)" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+    <path d="M16 46 Q32 -10 48 30" stroke="var(--m-arc)" stroke-width="7" stroke-linecap="round" fill="none"/>
+  </symbol>
+</svg>
+
+<header class="top">
+  <div class="top-in">
+    <div>
+      <h1>TEAM LEAP 브랜드 가이드</h1>
+      <p>v1.0 · 2026. 8. 2. · 경북교육 AI Lab · AI 활용 분과</p>
+    </div>
+    <button class="themebtn" id="tt" type="button">라이트 / 다크 전환</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section>
+  <h2><span class="num">01</span>로고</h2>
+  <p class="lede">기본은 가로 조합입니다. 자리가 정사각에 가까울 때만 세로 조합을 씁니다.</p>
+
+  <div class="grid g2">
+    <div>
+      <div class="stage">
+        <div class="lockup">
+          <svg class="mk" width="60" height="60" aria-hidden="true"><use href="#mark"/></svg>
+          <div>
+            <div class="wm1"><span class="t">TEAM</span> <span class="l">LEAP</span></div>
+            <div class="wm2">경북교육 AI Lab · AI 활용 분과</div>
+          </div>
+        </div>
+      </div>
+      <p class="cap">가로 조합 (기본) — <code>leap-logo-horizontal.svg</code></p>
+    </div>
+    <div>
+      <div class="stage stage--dark">
+        <div class="lockup">
+          <svg class="mk dark-mark" width="60" height="60" aria-hidden="true"><use href="#mark"/></svg>
+          <div>
+            <div class="wm1"><span class="t">TEAM</span> <span class="l">LEAP</span></div>
+            <div class="wm2">경북교육 AI Lab · AI 활용 분과</div>
+          </div>
+        </div>
+      </div>
+      <p class="cap">어두운 배경용 — <code>leap-logo-horizontal-dark.svg</code></p>
+    </div>
+  </div>
+
+  <div class="grid g3" style="margin-top:16px">
+    <div>
+      <div class="stage"><svg class="mk" width="76" height="76" aria-hidden="true"><use href="#mark"/></svg></div>
+      <p class="cap">심볼 단독 — <code>leap-mark.svg</code></p>
+    </div>
+    <div>
+      <div class="stage"><svg class="mk mono-mark" width="76" height="76" aria-hidden="true"><use href="#mark"/></svg></div>
+      <p class="cap">단색 (흑백 인쇄·각인) — <code>leap-mark-mono.svg</code></p>
+    </div>
+    <div>
+      <div class="stage" style="background:#14202E;border-color:#2C3B4C">
+        <svg class="mk dark-mark" width="76" height="76" aria-hidden="true"><use href="#mark"/></svg>
+      </div>
+      <p class="cap">앱 아이콘 — <code>leap-badge.svg</code></p>
+    </div>
+  </div>
+
+  <h3>심볼이 뜻하는 것</h3>
+  <div class="card">
+    <div style="display:flex;gap:28px;align-items:center;flex-wrap:wrap">
+      <svg class="mk" width="104" height="104" aria-hidden="true" style="flex:none"><use href="#mark"/></svg>
+      <ul class="tight" style="flex:1;min-width:280px">
+        <li><b>낮은 회색 지면</b> — 지금 서 있는 자리. 작아지는 학교.</li>
+        <li><b>사이의 빈 공간</b> — 학령인구 감소가 만든 간극.</li>
+        <li><b>호</b> — 도약. 간극 위를 건너간다.</li>
+        <li><b>높은 주황 지면</b> — 도달하는 곳. 출발보다 <b>높다.</b></li>
+      </ul>
+    </div>
+  </div>
+  <p class="note" style="margin-top:16px">감소를 그리지 않았습니다. 주제는 감소지만 브랜드는 <b>대응</b>입니다. 하강하는 그래프·우는 얼굴·빈 교실 같은 표현은 쓰지 않습니다.</p>
+</section>
+
+<section>
+  <h2><span class="num">02</span>여백과 최소 크기</h2>
+  <p class="lede">로고 주변에 심볼 높이의 <b>1/2</b>만큼을 비웁니다. 그 안에 다른 글자·선·이미지를 넣지 않습니다.</p>
+
+  <div class="grid g2">
+    <div>
+      <div class="stage">
+        <span class="clear"><span><svg class="mk" width="56" height="56" aria-hidden="true"><use href="#mark"/></svg></span></span>
+      </div>
+      <p class="cap">빗금 = 비워야 하는 영역</p>
+    </div>
+    <div>
+      <div class="stage">
+        <div class="sizes">
+          <figure><svg class="mk" width="64" height="64" aria-hidden="true"><use href="#mark"/></svg><figcaption>64px</figcaption></figure>
+          <figure><svg class="mk" width="32" height="32" aria-hidden="true"><use href="#mark"/></svg><figcaption>32px</figcaption></figure>
+          <figure><svg class="mk" width="20" height="20" aria-hidden="true"><use href="#mark"/></svg><figcaption>20px<br>최소</figcaption></figure>
+          <figure><svg class="mk" width="16" height="16" aria-hidden="true"><use href="#mark"/></svg><figcaption>16px<br>파비콘</figcaption></figure>
+        </div>
+      </div>
+      <p class="cap">심볼 최소 <b>20px</b>. 16px는 파비콘(<code>leap-favicon.svg</code>)에서만 씁니다. 가로 조합은 최소 폭 <b>140px</b>.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">03</span>이렇게 쓰지 않습니다</h2>
+  <p class="lede">여섯 가지만 지키면 됩니다.</p>
+  <div class="grid g3 dont">
+    <div>
+      <div class="stage"><span class="mark-x" aria-hidden="true">✕</span><svg class="mk sq" width="64" height="64" aria-hidden="true"><use href="#mark"/></svg></div>
+      <p class="cap">가로세로 비율 변형</p>
+    </div>
+    <div>
+      <div class="stage"><span class="mark-x" aria-hidden="true">✕</span><svg class="mk rot" width="64" height="64" aria-hidden="true"><use href="#mark"/></svg></div>
+      <p class="cap">회전·기울임</p>
+    </div>
+    <div>
+      <div class="stage"><span class="mark-x" aria-hidden="true">✕</span><svg class="mk badcolor" width="64" height="64" aria-hidden="true"><use href="#mark"/></svg></div>
+      <p class="cap">임의 색상 지정</p>
+    </div>
+    <div>
+      <div class="stage lowcon"><span class="mark-x" aria-hidden="true">✕</span><svg class="mk" width="64" height="64" aria-hidden="true"><use href="#mark"/></svg></div>
+      <p class="cap">대비가 낮은 배경 위</p>
+    </div>
+    <div>
+      <div class="stage"><span class="mark-x" aria-hidden="true">✕</span>
+        <svg class="mk" width="64" height="64" aria-hidden="true" style="filter:drop-shadow(3px 5px 3px rgba(0,0,0,.5))"><use href="#mark"/></svg>
+      </div>
+      <p class="cap">그림자·외곽선·그라디언트 추가</p>
+    </div>
+    <div>
+      <div class="stage"><span class="mark-x" aria-hidden="true">✕</span>
+        <div class="lockup" style="gap:2px">
+          <svg class="mk" width="46" height="46" aria-hidden="true"><use href="#mark"/></svg>
+          <div class="wm1" style="font-size:1.1rem"><span class="l">LEAP</span></div>
+        </div>
+      </div>
+      <p class="cap">여백 침범 · 조합 임의 재배치</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">04</span>색</h2>
+  <p class="lede">여섯 색뿐입니다. 후보 25개의 명도 대비를 전부 계산해서, 통과한 값만 넣었습니다.</p>
+
+  <div class="grid g3">
+    <div class="swatch"><div class="chip" style="background:#14202E"></div><div class="meta"><b>LEAP Ink</b><code>#14202E</code><div class="use">본문 텍스트, 앱 아이콘 배경</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#1B4FA0"></div><div class="meta"><b>LEAP Blue</b><code>#1B4FA0</code><div class="use">주색. 도약의 호, 기본 버튼, 링크</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#CE6410"></div><div class="meta"><b>LEAP Amber</b><code>#CE6410</code><div class="use">높은 지면, 강조. 텍스트는 <code>#A8560A</code></div></div></div>
+    <div class="swatch"><div class="chip" style="background:#0D6E5C"></div><div class="meta"><b>LEAP Teal</b><code>#0D6E5C</code><div class="use">완료·실천·성공 상태</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#5A6672"></div><div class="meta"><b>LEAP Gray</b><code>#5A6672</code><div class="use">보조 텍스트, 낮은 지면</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#F7F9FC;border-bottom:1px solid var(--leap-border)"></div><div class="meta"><b>LEAP Surface</b><code>#F7F9FC</code><div class="use">배경. 카드는 <code>#FFFFFF</code></div></div></div>
+  </div>
+
+  <h3>대비 검증</h3>
+  <div class="scroll">
+  <table>
+    <caption class="leap-sr">브랜드 색상의 명도 대비 검증 결과</caption>
+    <thead><tr><th>색</th><th>라이트</th><th class="num-c">대비</th><th>다크</th><th class="num-c">대비</th><th>판정</th></tr></thead>
+    <tbody>
+      <tr><td>본문</td><td><code>#14202E</code></td><td class="num-c">15.61</td><td><code>#E8EDF3</code></td><td class="num-c">15.44</td><td class="pass">통과</td></tr>
+      <tr><td>주색</td><td><code>#1B4FA0</code></td><td class="num-c">7.45</td><td><code>#7FB3F7</code></td><td class="num-c">8.39</td><td class="pass">통과</td></tr>
+      <tr><td>강조(텍스트)</td><td><code>#A8560A</code></td><td class="num-c">4.98</td><td><code>#F2A65A</code></td><td class="num-c">8.98</td><td class="pass">통과</td></tr>
+      <tr><td>성공</td><td><code>#0D6E5C</code></td><td class="num-c">5.85</td><td><code>#4FD1B0</code></td><td class="num-c">9.59</td><td class="pass">통과</td></tr>
+      <tr><td>보조</td><td><code>#5A6672</code></td><td class="num-c">5.56</td><td><code>#97A3B0</code></td><td class="num-c">7.08</td><td class="pass">통과</td></tr>
+      <tr><td>높은 지면(도형)</td><td><code>#CE6410</code></td><td class="num-c">3.65</td><td><code>#F2A65A</code></td><td class="num-c">8.98</td><td class="pass">통과</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="cap">텍스트 4.5:1, 도형 3:1 기준 (KWCAG 2.2 / WCAG AA). 라이트는 <code>#F7F9FC</code>, 다크는 <code>#0E1621</code> 배경 기준.</p>
+
+  <p class="note" style="margin-top:20px"><b>Amber는 값이 둘입니다.</b> 처음 잡았던 밝은 주황 <code>#E8862B</code>는 흰 배경 대비가 <b>2.67</b>이라 텍스트에 쓸 수 없습니다. 텍스트는 <code>#A8560A</code>, 도형은 <code>#CE6410</code>을 쓰세요.</p>
+
+  <p class="note" style="margin-top:16px"><b>색만으로 정보를 전달하지 않습니다.</b> 상태를 색으로 표시할 때는 반드시 글자를 함께 씁니다. 12월 웹앱스토어 등록 시 접근성 심사에서 가장 많이 걸리는 항목입니다.</p>
+  <div class="card" style="margin-top:12px">
+    <span class="pill p-info">진행 중</span>
+    <span class="pill p-warn">확인 필요</span>
+    <span class="pill p-ok">완료</span>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">05</span>글자</h2>
+  <p class="lede">웹폰트를 쓰지 않습니다. 외부 CDN 의존을 없애 보안성 검토를 통과하고, 인터넷 없이도 앱이 온전히 뜨게 하기 위해서입니다.</p>
+  <div class="card type-demo">
+    <div><div class="lbl">display · 2rem · 700</div><div style="font-size:2rem;font-weight:700;letter-spacing:-.02em">학급 자율 의사결정 보드</div></div>
+    <div><div class="lbl">title · 1.375rem · 700</div><div style="font-size:1.375rem;font-weight:700">이번 주 안건</div></div>
+    <div><div class="lbl">body · 1rem · 400 · line-height 1.65</div><div>소규모 학급은 인원이 적어 익명이 성립하지 않습니다. 그래서 무기명 도구가 오히려 더 필요합니다.</div></div>
+    <div style="border:0"><div class="lbl">small · 0.8125rem · 500</div><div style="font-size:.8125rem;color:var(--leap-gray)">제출 시각은 기록하지 않습니다</div></div>
+  </div>
+  <p class="cap" style="margin-top:10px">글꼴 스택 — <code>system-ui, -apple-system, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif</code></p>
+</section>
+
+<section>
+  <h2><span class="num">06</span>앱에 적용한 모습</h2>
+  <p class="lede">앱 3종이 모두 이 모양을 공유합니다. 각자 만들면 서로 다른 물건 10개가 됩니다.</p>
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:12px;padding-bottom:16px;margin-bottom:20px;border-bottom:1px solid var(--leap-hairline)">
+      <svg class="mk" width="34" height="34" aria-hidden="true"><use href="#mark"/></svg>
+      <b style="font-size:1.125rem">학급 자율 의사결정 보드</b>
+      <span class="pill p-ok" style="margin-left:auto">저장됨</span>
+    </div>
+    <p style="margin:0 0 20px">안건 3건이 대기 중입니다. 투표를 시작하면 순서가 자동으로 섞입니다.</p>
+    <button class="btn" type="button">투표 시작</button>
+    <button class="btn btn--quiet" type="button">파일로 내보내기</button>
+  </div>
+  <p class="cap">버튼 최소 높이 44px — 터치 목표 크기 기준. 포커스 표시 3px는 <code>leap.css</code>가 전역으로 처리합니다.</p>
+</section>
+
+<section>
+  <h2><span class="num">07</span>파일</h2>
+  <p class="lede">웹·앱에는 SVG를, 한글(HWP)·PPT·공문에는 PNG를 쓰세요. 한글은 SVG 삽입이 제대로 되지 않습니다.</p>
+  <div class="files">brand/
+├─ brand-guide.html            ← 이 문서
+├─ 브랜드 가이드.md               ← 값을 옮겨 적을 때 쓰는 규격서
+├─ logo/                       ← 웹·앱용 (SVG, 각 1KB 내외)
+│  ├─ leap-logo-horizontal.svg        기본 (밝은 배경)
+│  ├─ leap-logo-horizontal-dark.svg   기본 (어두운 배경)
+│  ├─ leap-logo-stacked.svg           세로 조합
+│  ├─ leap-logo-stacked-dark.svg      세로 조합 (어두운 배경)
+│  ├─ leap-wordmark.svg               워드마크 단독
+│  ├─ leap-mark.svg                   심볼 단독
+│  ├─ leap-mark-dark.svg              심볼 (어두운 배경)
+│  ├─ leap-mark-mono.svg              심볼 단색 (currentColor 상속)
+│  ├─ leap-badge.svg                  앱 아이콘 96px
+│  └─ leap-favicon.svg                파비콘 32px
+└─ logo-png/                   ← 한글·PPT·공문용 (PNG, 투명 배경, 20개)
+   ├─ leap-logo-horizontal-{600,1200,2400}w.png
+   ├─ leap-logo-stacked-{400,800,1600}w.png
+   ├─ leap-mark-{256,512,1024}.png
+   ├─ leap-badge-{256,512,1024}.png
+   └─ leap-favicon-{32,64,128,256}.png</div>
+
+  <h3>앱에 넣을 때</h3>
+  <div class="card">
+    <p style="margin:0 0 12px"><b>SVG 코드를 HTML에 직접 붙여 넣으세요.</b> 파일로 링크하면 앱이 단일 HTML로 성립하지 않습니다. 심볼은 이 세 줄이 전부입니다.</p>
+    <div class="files" style="border:0;padding:14px 0 0;background:none">&lt;path d="M7 52 H25"          stroke="#5A6672" stroke-width="6.5" stroke-linecap="round" fill="none"/&gt;
+&lt;path d="M39 36 H57"         stroke="#CE6410" stroke-width="6.5" stroke-linecap="round" fill="none"/&gt;
+&lt;path d="M16 46 Q32 -10 48 30" stroke="#1B4FA0" stroke-width="7" stroke-linecap="round" fill="none"/&gt;</div>
+  </div>
+</section>
+
+</div>
+
+<script>
+(function(){
+  var b=document.getElementById('tt'),r=document.documentElement;
+  b.addEventListener('click',function(){
+    var cur=r.getAttribute('data-theme');
+    if(!cur) cur=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+    r.setAttribute('data-theme', cur==='dark'?'light':'dark');
+  });
+})();
+</script>
+</body>
+</html>

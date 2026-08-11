@@ -1,0 +1,38 @@
+name: Update News Daily
+
+on:
+  schedule:
+    # 매일 아침 7시 (한국시간 기준. UTC로는 22시)
+    - cron: '0 22 * * *'
+  workflow_dispatch: # 수동으로 실행할 수 있는 버튼 활성화
+
+jobs:
+  update-news:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 깃허브 저장소에 쓰기 권한 부여
+      
+    steps:
+      - name: 저장소 가져오기
+        uses: actions/checkout@v4
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 뉴스 수집 스크립트 실행
+        run: node fetch-news.js
+
+      - name: 새로운 뉴스 확인 및 자동 푸시 (Commit & Push)
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add news-latest.json
+          # 변경사항이 있을 때만 커밋하고 푸시합니다.
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "🤖 주간 뉴스 클리핑 자동 업데이트"
+            git push
+          else
+            echo "새로운 뉴스가 없습니다. 업데이트를 건너뜁니다."
+          fi

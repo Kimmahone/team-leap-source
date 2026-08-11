@@ -1,0 +1,3025 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>법정 의무교육 점검표 — TEAM LEAP</title>
+<meta name="description" content="범교과 학습 주제와 학교안전교육 7대 영역의 법정 시수를 학년 단위로 짜고, 모자란 시수와 못 지킨 조건을 앱이 셈해 줍니다. 2026 경상북도 기준. TEAM LEAP.">
+<meta name="author" content="TEAM LEAP · 경북교육 AI Lab">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2314202E'/%3E%3Cg transform='translate(32 32) scale(0.92) translate(-32 -33)'%3E%3Cpath d='M7 52 H25' stroke='%2397A3B0' stroke-width='7.5' stroke-linecap='round' fill='none'/%3E%3Cpath d='M39 36 H57' stroke='%23F2A65A' stroke-width='7.5' stroke-linecap='round' fill='none'/%3E%3Cpath d='M16 46 Q32 -10 48 30' stroke='%237FB3F7' stroke-width='8' stroke-linecap='round' fill='none'/%3E%3C/g%3E%3C/svg%3E">
+<!--
+  법정 의무교육 점검표 v0.5
+
+  v0.5 — 표 셋을 한 화면에 이어 붙이니 스크롤이 너무 길었습니다. **걸음 탭**으로
+         나눴습니다 — ① 안전 7대 영역 ② 범교과 ③ 다음 학기 채우기.
+         한 번에 하나만 보이고, 「지금 어디쯤인지」는 탭이 늘 말해 줍니다.
+         「진도표 읽기」는 머리로 옮겼습니다 — 이 앱에서 가장 먼저 하실 일입니다.
+
+  v0.4 — **남은 것을 차시로 묶어 줍니다.** 1학기 진도표를 읽으면 앱은 주제마다
+         몇 번까지 갔는지 압니다. 그러니 2학기를 짤 때 «세어 가며» 넣지 않아도
+         됩니다 — 남은 시수를 차시로 묶고, 진도표에 그대로 붙여넣을
+         「[교통안전-7][재난안전-5]」 를 만들어 드립니다.
+         한 차시는 40분이고 10분 이상 다루면 이수로 보므로 **넷이 끝**입니다.
+
+  v0.3 — **진도표에서 읽어 옵니다.** 연간지도계획의 학습주제에 이미 붙어 있는
+         「[생활안전-19]」 같은 표시를 읽어 표를 채웁니다. 그리고 그 표시가
+         알려 준 것 — **한 차시가 여러 주제를 함께 이수한다** — 에 맞춰
+         창의적 체험활동을 «이수 시수»가 아니라 «실제 차시»로 셉니다.
+         v0.2 까지 이 앱은 그 자리에서 틀린 말을 하고 있었습니다.
+
+  v0.2 — 얹는 자리를 «창의적 체험활동 · 교과» 둘로 줄이고(학교 행사·훈련을 없앰),
+         학교안전교육 7대 영역을 범교과보다 «먼저» 두었습니다.
+         범교과 표의 첫 줄이 7대 영역 표의 합이라, 그것부터 채워야 합니다.
+  © 2026 TEAM LEAP (경북교육 AI Lab · AI 활용 분과)
+  교육 목적에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다.
+
+  법으로 시수가 박힌 교육이 연 127시간입니다. 3~4학년 한 해 수업이 986시간이니
+  여덟 시간에 한 시간꼴입니다. 그런데 창의적 체험활동은 한 해 102시간뿐입니다 —
+  **창체만으로는 절대 들어가지 않습니다.** 그 사실을 아무도 세어 보지 않습니다.
+
+  ★ 이 127 이라는 숫자를 앱 어디에도 적어 두지 않았습니다. 표에서 «셉니다».
+    처음 손으로 더할 때 환경교육 2시간을 빠뜨려 125 로 적었었고,
+    그것을 알아챈 것은 앱이 세어 본 값과 달랐기 때문입니다 (마스터 함정 34번 —
+    규칙을 표가 아니라 함수로).
+
+  기준: 「2026학년도 삶의 힘을 키우는 초등학교 교육과정 도움자료」(경상북도교육청연구원)
+        43~45쪽 범교과 학습 주제 운영 시수 및 근거 · 학교안전교육 7대 표준안
+-->
+<style>
+/* ==========================================================================
+   LEAP Kit 토큰 (apps/kit/leap.css 사본 — 단일 HTML 유지를 위해 붙여 넣음)
+   ========================================================================== */
+:root{
+  --leap-ink:#14202E; --leap-blue:#1B4FA0; --leap-amber:#A8560A;
+  --leap-amber-mark:#CE6410; --leap-teal:#0D6E5C; --leap-gray:#5A6672;
+  --leap-bg:#F7F9FC; --leap-surface:#FFFFFF; --leap-border:#D9E0EA;
+  --leap-hairline:#E8EDF3; --leap-on-fill:#FFFFFF;
+  --leap-font:system-ui,-apple-system,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  --leap-1:4px; --leap-2:8px; --leap-3:12px; --leap-4:16px;
+  --leap-5:24px; --leap-6:32px; --leap-7:48px;
+  --leap-radius:14px; --leap-radius-sm:8px;
+  --leap-shadow:0 1px 2px rgba(20,32,46,.05),0 6px 18px rgba(20,32,46,.07);
+  --leap-shadow-lg:0 2px 4px rgba(20,32,46,.06),0 14px 38px rgba(20,32,46,.11);
+
+  /* 앱에서 더 쓰는 색 — 전부 배경용이며, 글자는 늘 --leap-ink 를 얹는다 */
+  --tint-blue:#EAF1FB; --tint-amber:#FCF0E3; --tint-teal:#E4F4F0;
+  --grad-head:linear-gradient(135deg,#14202E 0%,#1B4FA0 78%,#2C6FD1 100%);
+  --grad-bar:linear-gradient(90deg,#1B4FA0,#3C7FD8);
+  --grad-win:linear-gradient(90deg,#CE6410,#E8862B);
+  --solid-teal:#0D6E5C; --solid-amber:#A8560A; --solid-gray:#5A6672;
+  --solid-fg:#FFFFFF;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --leap-ink:#E8EDF3; --leap-blue:#7FB3F7; --leap-amber:#F2A65A;
+    --leap-amber-mark:#F2A65A; --leap-teal:#4FD1B0; --leap-gray:#97A3B0;
+    --leap-bg:#0E1621; --leap-surface:#1A2735; --leap-border:#2C3B4C;
+    --leap-hairline:#22303F; --leap-on-fill:#0E1621;
+    --leap-shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.34);
+    --leap-shadow-lg:0 2px 6px rgba(0,0,0,.45),0 16px 44px rgba(0,0,0,.45);
+    --tint-blue:#16304F; --tint-amber:#3A2A18; --tint-teal:#123830;
+    --grad-head:linear-gradient(135deg,#0A111C 0%,#16345F 78%,#1E4C8C 100%);
+    --grad-bar:linear-gradient(90deg,#3C7FD8,#7FB3F7);
+    --grad-win:linear-gradient(90deg,#C4691B,#F2A65A);
+    --solid-teal:#4FD1B0; --solid-amber:#F2A65A; --solid-gray:#97A3B0;
+    --solid-fg:#0E1621;
+  }
+}
+:root[data-theme="light"]{
+  --leap-ink:#14202E;--leap-blue:#1B4FA0;--leap-amber:#A8560A;--leap-amber-mark:#CE6410;
+  --leap-teal:#0D6E5C;--leap-gray:#5A6672;--leap-bg:#F7F9FC;--leap-surface:#FFFFFF;
+  --leap-border:#D9E0EA;--leap-hairline:#E8EDF3;--leap-on-fill:#FFFFFF;
+  --tint-blue:#EAF1FB;--tint-amber:#FCF0E3;--tint-teal:#E4F4F0;
+  --grad-head:linear-gradient(135deg,#14202E 0%,#1B4FA0 78%,#2C6FD1 100%);
+  --grad-bar:linear-gradient(90deg,#1B4FA0,#3C7FD8);
+  --grad-win:linear-gradient(90deg,#CE6410,#E8862B);
+  --solid-teal:#0D6E5C; --solid-amber:#A8560A; --solid-gray:#5A6672;
+  --solid-fg:#FFFFFF;
+}
+:root[data-theme="dark"]{
+  --leap-ink:#E8EDF3;--leap-blue:#7FB3F7;--leap-amber:#F2A65A;--leap-amber-mark:#F2A65A;
+  --leap-teal:#4FD1B0;--leap-gray:#97A3B0;--leap-bg:#0E1621;--leap-surface:#1A2735;
+  --leap-border:#2C3B4C;--leap-hairline:#22303F;--leap-on-fill:#0E1621;
+  --tint-blue:#16304F;--tint-amber:#3A2A18;--tint-teal:#123830;
+  --grad-head:linear-gradient(135deg,#0A111C 0%,#16345F 78%,#1E4C8C 100%);
+  --grad-bar:linear-gradient(90deg,#3C7FD8,#7FB3F7);
+  --grad-win:linear-gradient(90deg,#C4691B,#F2A65A);
+  --solid-teal:#4FD1B0; --solid-amber:#F2A65A; --solid-gray:#97A3B0;
+  --solid-fg:#0E1621;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--leap-font);font-size:1rem;line-height:1.65;
+  color:var(--leap-ink);background:var(--leap-bg);-webkit-text-size-adjust:100%}
+:focus-visible{outline:3px solid var(--leap-blue);outline-offset:3px;border-radius:var(--leap-radius-sm)}
+.leap-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}
+button,input,textarea,select{font:inherit;color:inherit}
+
+.leap-toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(14px);
+  background:var(--leap-ink);color:var(--leap-bg);padding:13px 26px;border-radius:999px;
+  font-size:.9375rem;font-weight:700;box-shadow:var(--leap-shadow-lg);
+  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:90;max-width:88vw;text-align:center}
+.leap-toast.is-on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ==========================================================================
+   머리말 — 브랜드 그라디언트 + 배경에 깔린 도약 궤적
+   ========================================================================== */
+header.top{background:var(--grad-head);color:#fff;position:relative;overflow:hidden}
+header.top .deco{position:absolute;right:-40px;top:-30px;width:280px;height:280px;
+  opacity:.13;pointer-events:none}
+.top-in{max-width:1340px;margin:0 auto;padding:22px 20px 24px;display:flex;
+  align-items:center;gap:14px;flex-wrap:wrap;position:relative}
+.brand{display:flex;align-items:center;gap:13px;min-width:0}
+.brand .badge{flex:none;width:48px;height:48px;border-radius:13px;
+  background:rgba(255,255,255,.13);display:grid;place-items:center;
+  border:1px solid rgba(255,255,255,.2)}
+.brand h1{margin:0;font-size:1.25rem;letter-spacing:-.02em;line-height:1.25}
+.brand .sub{font-size:.75rem;color:rgba(255,255,255,.72);letter-spacing:.03em;margin-top:1px}
+.top-actions{margin-left:auto;display:flex;gap:8px}
+.iconbtn{min-height:42px;padding:8px 15px;font-size:.8125rem;font-weight:700;
+  border:1px solid rgba(255,255,255,.28);border-radius:999px;
+  background:rgba(255,255,255,.1);color:#fff;cursor:pointer}
+.iconbtn:hover{background:rgba(255,255,255,.2)}
+
+/* 메인 페이지로 돌아가는 길 — 「나가는 문」은 늘 같은 자리에 있어야 합니다. */
+a.iconbtn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.iconbtn--home{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.44)}
+/* 이 앱에서 가장 먼저 하실 일이라 머리에 둡니다 — 스무 줄을 손으로 넣지 않으셔도 됩니다 */
+.iconbtn--plan{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.44)}
+.iconbtn--plan:hover{background:rgba(255,255,255,.32)}
+.iconbtn--home:hover{background:rgba(255,255,255,.32)}
+
+/* 표가 여덟 칸이라 좁으면 오른쪽(계·어디에)이 잘립니다.
+   잘린 표는 «다 채웠는지»를 확인할 수 없어 이 앱의 존재 이유가 사라집니다. */
+main.wrap{max-width:1340px;margin:0 auto;padding:24px 20px 90px}
+
+/* ==========================================================================
+   카드
+   ========================================================================== */
+.card{background:var(--leap-surface);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:28px;box-shadow:var(--leap-shadow);margin-bottom:20px}
+.card > h2{margin:0 0 5px;font-size:1.4375rem;letter-spacing:-.022em}
+.card > h2 + .sub{margin:0 0 24px;color:var(--leap-gray);font-size:.9375rem}
+.muted{color:var(--leap-gray)}
+.small{font-size:.8125rem}
+
+/* 버튼 */
+.btn{font-weight:700;padding:12px 22px;min-height:46px;border-radius:999px;
+  border:1px solid var(--leap-blue);background:var(--leap-blue);color:var(--leap-on-fill);
+  cursor:pointer;transition:transform .12s,box-shadow .12s,filter .12s}
+.btn:hover{filter:brightness(1.09);box-shadow:0 6px 18px rgba(27,79,160,.28);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn--quiet{background:transparent;color:var(--leap-blue)}
+.btn--quiet:hover{background:var(--tint-blue);box-shadow:none}
+.btn--ghost{background:transparent;color:var(--leap-gray);border-color:var(--leap-border)}
+.btn--ghost:hover{background:var(--leap-hairline);box-shadow:none;filter:none}
+.btn--danger{background:transparent;color:var(--leap-amber);border-color:var(--leap-amber)}
+.btn--danger:hover{background:var(--tint-amber);box-shadow:none;filter:none}
+.btn:disabled{opacity:.4;cursor:not-allowed;filter:none;transform:none;box-shadow:none}
+.btn--sm{font-size:.8125rem;padding:8px 16px;min-height:42px}
+.actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:22px;align-items:center}
+
+/* 무기명 안내 상자 */
+.anon{border-radius:var(--leap-radius);padding:16px 18px;margin:0 0 22px;
+  background:var(--tint-teal);border:1px solid transparent}
+.anon .hd{display:flex;align-items:center;gap:9px;font-weight:800;color:var(--leap-teal)}
+.anon ul{margin:9px 0 0;padding-left:20px;font-size:.875rem;color:var(--leap-gray)}
+.anon li{margin:4px 0}
+.anon--blue{background:var(--tint-blue)}
+.anon--blue .hd{color:var(--leap-blue)}
+.anon--amber{background:var(--tint-amber)}
+.anon--amber .hd{color:var(--leap-amber)}
+
+/* 입력 */
+input.txt{width:100%;padding:12px 15px;min-height:46px;border-radius:var(--leap-radius-sm);
+  border:2px solid var(--leap-border);background:var(--leap-bg);transition:border-color .15s}
+input.txt:focus{border-color:var(--leap-blue);outline:none}
+
+/* ==========================================================================
+   갈림길 — 마스터 함정 37번
+   되돌릴 수 없는 일을 「예 / 아니오」로 물으면 **잃는 쪽에 「예」를 눌러야** 합니다.
+   길을 갈라 놓고 **잃지 않는 길을 맨 위에** 둡니다.
+   ========================================================================== */
+.picks2{display:grid;gap:9px}
+.pick2{text-align:left;border:2px solid var(--leap-border);background:var(--leap-surface);
+  border-radius:var(--leap-radius);padding:14px 16px;cursor:pointer;min-height:64px;width:100%}
+.pick2:hover{border-color:var(--leap-blue);background:var(--tint-blue)}
+.pick2 .n{display:block;font-weight:800;font-size:.9375rem}
+.pick2 .d{display:block;font-size:.8125rem;color:var(--leap-gray);margin-top:3px;line-height:1.6}
+.pick2--go{border-color:var(--leap-teal);background:var(--tint-teal)}
+.pick2--go:hover{border-color:var(--solid-teal)}
+.pick2--off{border-style:dashed}
+.pick2--off:hover{border-style:solid}
+
+/* 되돌리기 — 마스터 함정 39번
+   「지울까요?」는 잘못 누르는 것을 못 막습니다. 누르던 손이 그대로 「예」를 누릅니다.
+   묻지 않고 지우되, **한 걸음은 되돌릴 수 있게** 합니다. */
+.undo{display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  background:var(--tint-amber);border:1px solid var(--leap-amber-mark);
+  border-radius:var(--leap-radius);padding:12px 16px;margin:0 0 16px}
+.undo p{margin:0;font-size:.875rem;font-weight:700}
+.undo .btn{margin-left:auto}
+
+/* 지금 무엇을 짜고 있는지 */
+.planbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 16px}
+.planbar .pb-t{min-width:0}
+.planbar .pb-t b{display:block;font-size:1rem;letter-spacing:-.01em}
+.planbar .pb-t span{display:block;font-size:.75rem;color:var(--leap-gray);margin-top:1px}
+.planbar .pb-r{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+@media print{.planbar{display:none!important}}
+
+/* ==========================================================================
+   앱 I 전용 — 학년 고르기 · 그릇 · 두 표
+   ========================================================================== */
+.split{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:1180px){.split{grid-template-columns:1fr}}
+.side{position:sticky;top:20px}
+@media (max-width:1180px){.side{position:static}}
+
+/* 학년 — 여섯이 늘 함께 보입니다. 법정 시수는 학년마다 같지만
+   창의적 체험활동 시수와 독도교육 문구는 학년에 달려 있습니다. */
+.grades{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:0 0 18px}
+@media (max-width:700px){.grades{grid-template-columns:repeat(3,1fr)}}
+.gb{text-align:center;border:2px solid var(--leap-border);background:var(--leap-surface);
+  border-radius:var(--leap-radius);padding:11px 6px;cursor:pointer;min-height:56px;font-weight:800;
+  font-size:.9375rem}
+.gb:hover{border-color:var(--leap-blue)}
+.gb[aria-pressed="true"]{border-color:var(--leap-blue);background:var(--tint-blue);color:var(--leap-blue)}
+.gb span{display:block;font-size:.6875rem;font-weight:700;color:var(--leap-gray);margin-top:2px}
+
+/* 표 */
+.tb{width:100%;border-collapse:collapse;font-size:.875rem}
+.tb th,.tb td{border:1px solid var(--leap-border);padding:6px 8px;vertical-align:middle}
+.tb thead th{background:var(--leap-bg);font-size:.75rem;font-weight:800;text-align:center;
+  letter-spacing:-.01em;line-height:1.35}
+.tb td.nm{font-weight:700}
+.tb td.c{text-align:center;font-variant-numeric:tabular-nums}
+.tb td.base{text-align:center;color:var(--leap-gray);font-variant-numeric:tabular-nums}
+.tb tr.grp td{background:var(--leap-hairline);font-weight:800;font-size:.75rem;
+  letter-spacing:.04em;padding:5px 8px}
+.tb tr.sum td{background:var(--tint-blue);font-weight:800}
+.tb input[type="number"]{width:100%;min-width:46px;padding:6px 4px;border:2px solid var(--leap-border);
+  border-radius:6px;background:var(--leap-surface);font:inherit;font-size:.875rem;text-align:center;
+  font-variant-numeric:tabular-nums;color:var(--leap-ink)}
+.tb input[type="number"]:focus{border-color:var(--leap-blue);outline:none}
+/* 모자란 칸 — 색 + 테두리 + 「모자람 N」 글자 셋으로 말합니다 (원칙 4번) */
+.tb input.short{border-color:var(--leap-amber-mark);background:var(--tint-amber)}
+.tb select{width:100%;padding:6px 6px;border:2px solid var(--leap-border);border-radius:6px;
+  background:var(--leap-surface);font:inherit;font-size:.8125rem;color:var(--leap-ink)}
+.tb select:focus{border-color:var(--leap-blue);outline:none}
+.tb input.sj{width:100%;margin-top:4px;padding:5px 8px;border:2px solid var(--leap-border);
+  border-radius:6px;background:var(--leap-surface);font:inherit;font-size:.8125rem;color:var(--leap-ink)}
+.tb td.gap{text-align:center;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap;
+  font-size:.8125rem}
+.gap--ok{color:var(--leap-teal)}
+.gap--no{color:var(--leap-amber)}
+.gap--0{color:var(--leap-gray);font-weight:600}
+/* 의무 / 권장 — 색이 아니라 «글자»가 말합니다 */
+.tag{display:inline-block;font-size:.625rem;font-weight:800;padding:1px 7px;border-radius:999px;
+  vertical-align:1px;white-space:nowrap}
+.tag--duty{background:var(--tint-amber);color:var(--leap-amber)}
+.tag--rec{background:var(--leap-hairline);color:var(--leap-gray)}
+.tag--integ{background:var(--tint-teal);color:var(--leap-teal)}
+/* 밑줄 — 편성·운영 방법과 함께 지킬 조건 */
+.tb tr.nt td{border-top:0;background:var(--leap-bg);font-size:.75rem;color:var(--leap-gray);
+  line-height:1.7;padding:2px 10px 8px}
+.tb tr.nt b{color:var(--leap-ink)}
+.musts{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:5px}
+.mck{display:inline-flex;align-items:flex-start;gap:6px;font-size:.75rem;cursor:pointer;
+  color:var(--leap-ink);font-weight:600;line-height:1.55}
+.mck input{margin:2px 0 0;width:16px;height:16px;flex:none;accent-color:var(--leap-blue)}
+.mck.off{color:var(--leap-amber);font-weight:700}
+@media (max-width:820px){
+  .tb{font-size:.8125rem}
+  .tb th,.tb td{padding:5px 4px}
+}
+
+/* ==========================================================================
+   그릇 — 이 앱의 「얼굴」
+   --------------------------------------------------------------------------
+   법으로 시수가 박힌 교육이 **연 125시간**입니다. 그런데 창의적 체험활동은
+   한 해 102시간뿐입니다. 창체에 다 넣을 수 없다는 사실은 «세어 보기 전에는»
+   보이지 않습니다. 그래서 세 그릇에 얼마씩 담겼는지를 한 눈에 그립니다.
+   창체 그릇에는 **넘치는 자리를 표시하는 눈금**이 있습니다.
+   ========================================================================== */
+.bowl{background:var(--leap-bg);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:18px 20px;margin:0 0 20px}
+.bowl .hd{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:15px}
+.bowl .hd b{font-size:1.0625rem;letter-spacing:-.015em}
+.bowl .rows{display:grid;gap:9px}
+.bwr{display:flex;align-items:center;gap:10px}
+.bwr .nm{flex:0 0 118px;font-size:.8125rem;font-weight:800;text-align:right;white-space:nowrap}
+.bwr .tr{flex:1;position:relative;height:24px;border-radius:5px;background:var(--leap-hairline);
+  overflow:hidden}
+.bwr .tr .fl{position:absolute;left:0;top:0;bottom:0;background:var(--grad-bar);
+  transition:width .3s cubic-bezier(.22,1,.36,1)}
+.bwr .tr .fl.over{background:var(--grad-win)}
+/* 창의적 체험활동 시수가 여기까지라는 눈금 */
+.bwr .tr .cap{position:absolute;top:0;bottom:0;width:3px;background:var(--leap-amber-mark)}
+.bwr .tr .hatch{position:absolute;top:0;bottom:0;right:0;background:repeating-linear-gradient(
+  45deg,var(--leap-border),var(--leap-border) 3px,transparent 3px,transparent 6px)}
+.bwr .vv{flex:0 0 128px;font-size:.8125rem;font-weight:800;font-variant-numeric:tabular-nums;
+  white-space:nowrap}
+.bwr .vv em{font-style:normal;font-weight:600;color:var(--leap-gray)}
+.bowl .tot{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:15px;
+  padding-top:13px;border-top:1px solid var(--leap-border)}
+.bowl .tot .big{font-size:1.375rem;font-weight:800;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums}
+.bowl .warn{margin:14px 0 0;padding:11px 14px;border-radius:var(--leap-radius-sm);
+  background:var(--tint-amber);font-size:.875rem;line-height:1.75}
+.bowl .warn b{color:var(--leap-ink)}
+.bowl .ok{margin:14px 0 0;padding:11px 14px;border-radius:var(--leap-radius-sm);
+  background:var(--tint-teal);font-size:.875rem;font-weight:700}
+.bowl .note{margin:12px 0 0;font-size:.8125rem;color:var(--leap-gray);line-height:1.75}
+
+/* 창체 시수 고치기 */
+.capline{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:13px;
+  font-size:.8125rem;color:var(--leap-gray)}
+.capline input{width:88px;padding:7px 9px;border:2px solid var(--leap-border);border-radius:6px;
+  background:var(--leap-surface);font:inherit;font-size:.8125rem;text-align:center;
+  font-variant-numeric:tabular-nums;color:var(--leap-ink)}
+.capline input:focus{border-color:var(--leap-blue);outline:none}
+
+/* 보건교육 중점학년 */
+.hline{display:flex;align-items:flex-start;gap:9px;margin:0 0 18px;padding:13px 16px;
+  border-radius:var(--leap-radius);background:var(--tint-blue);font-size:.875rem;line-height:1.7}
+.hline input{margin:3px 0 0;width:18px;height:18px;flex:none;accent-color:var(--leap-blue)}
+.hline b{color:var(--leap-ink)}
+
+.hintline{font-size:.8125rem;color:var(--leap-gray);line-height:1.75;margin:10px 0 0}
+.empty{text-align:center;padding:38px 22px}
+.empty p{margin:0;color:var(--leap-gray);font-size:1rem;line-height:1.75}
+
+/* 바닥 */
+footer.foot{margin-top:44px}
+.foot-card{background:var(--leap-surface);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:24px;box-shadow:var(--leap-shadow)}
+.foot-card h2{margin:0 0 5px;font-size:1.0625rem}
+.foot-actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:18px}
+.colophon{display:flex;gap:16px;align-items:flex-start;margin-top:30px;
+  padding-top:26px;border-top:1px solid var(--leap-border)}
+.colophon svg{flex:none;opacity:.8}
+.colophon .body{font-size:.8125rem;color:var(--leap-gray);line-height:1.75}
+.colophon .name{font-weight:800;color:var(--leap-ink);font-size:.9375rem;letter-spacing:-.01em}
+.colophon .name span{font-weight:600;color:var(--leap-gray);font-size:.8125rem;margin-left:7px}
+.colophon p{margin:5px 0 0}
+.colophon .cc{color:var(--leap-ink);font-weight:600}
+.mk-low{stroke:var(--leap-gray)}
+.mk-high{stroke:var(--leap-amber-mark)}
+.mk-arc{stroke:var(--leap-blue)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .btn:hover{transform:none}
+}
+
+/* ==========================================================================
+   인쇄
+   ========================================================================== */
+#print-area{display:none}
+@media print{
+  @page{size:A4 portrait;margin:12mm}
+  :root{--leap-ink:#000;--leap-gray:#333;--leap-bg:#fff;--leap-surface:#fff;
+    --leap-border:#999;--leap-hairline:#ccc;--leap-shadow:none}
+  header.top,nav.tabs,main,.leap-toast,.no-print,.pv-back{display:none!important}
+  #print-area{display:block!important}
+  body{font-size:9pt;background:#fff}
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+}
+
+/* 인쇄 판면 — 미리보기와 인쇄가 «같은 규칙»을 씁니다 */
+.pv-page{color:#000;background:#fff;font-size:9pt;line-height:1.45}
+.pv-page .P-t1{text-align:center;font-size:15pt;font-weight:800;margin:0 0 2mm;letter-spacing:-.02em}
+.pv-page .P-who{text-align:right;font-size:9pt;font-weight:700;margin:0 0 4mm}
+.pv-page h2.P-h{font-size:11pt;margin:5mm 0 2mm;border-bottom:1.4pt solid #111;padding-bottom:1.2mm;
+  background:none;border-radius:0;padding-left:0;box-shadow:none}
+.pv-page table{width:100%;border-collapse:collapse;margin:0 0 3mm;table-layout:fixed}
+.pv-page th,.pv-page td{border:.3mm solid #777;padding:1.1mm 1.4mm;font-size:7.5pt;line-height:1.4;
+  text-align:center;vertical-align:middle;word-break:break-word}
+.pv-page th{background:#EEF1F5;font-weight:800}
+.pv-page td.l{text-align:left;font-weight:700}
+.pv-page td.law{text-align:left;font-weight:400;font-size:6.5pt;line-height:1.4;color:#333}
+.pv-page tr.s td{background:#F5F7FA;font-weight:800}
+.pv-page tr.t td{background:#E8EEF6;font-weight:800}
+/* 여러 장으로 넘어가도 머리줄이 다시 그려집니다 (마스터 함정 29번) */
+.pv-page thead{display:table-header-group}
+.pv-page tr{break-inside:avoid}
+.pv-page .P-note{font-size:7.5pt;color:#444;margin:0 0 3mm;line-height:1.65}
+.pv-page .P-foot{margin-top:4mm;padding-top:1.5mm;border-top:.3mm solid #BBB;font-size:7pt;color:#555}
+
+
+/* ==========================================================================
+   진도표에서 읽어 오기 〔v0.3〕
+   ========================================================================== */
+.planbtn{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 18px;
+  padding:16px 20px;border-radius:var(--leap-radius);background:var(--tint-teal)}
+.planbtn .t{min-width:0;flex:1 1 320px}
+.planbtn .t b{display:block;font-size:1rem;letter-spacing:-.01em}
+.planbtn .t span{display:block;font-size:.8125rem;color:var(--leap-gray);margin-top:2px;line-height:1.65}
+.planbtn .btn{flex:none}
+.planbtn.done{background:var(--tint-blue)}
+@media print{.planbtn{display:none!important}}
+
+.imp{padding:20px 22px 24px}
+.imp h3{margin:0 0 5px;font-size:.9375rem;display:flex;align-items:center;gap:9px;letter-spacing:-.01em}
+.imp h3 i{flex:none;min-width:24px;height:24px;border-radius:999px;background:var(--leap-blue);
+  color:var(--leap-on-fill);font-style:normal;font-size:.75rem;font-weight:800;
+  display:inline-flex;align-items:center;justify-content:center}
+.imp .step{border:1px solid var(--leap-border);border-radius:var(--leap-radius);
+  padding:16px 18px;margin-bottom:14px}
+.imp .step > p{margin:0 0 12px;font-size:.8125rem;color:var(--leap-gray);line-height:1.7}
+.imp .step > p b{color:var(--leap-ink)}
+.imp textarea{width:100%;min-height:150px;padding:12px 14px;border-radius:var(--leap-radius-sm);
+  border:2px solid var(--leap-border);background:var(--leap-bg);font:inherit;font-size:.875rem;
+  color:var(--leap-ink);resize:vertical;line-height:1.6}
+.imp textarea:focus{outline:none;border-color:var(--leap-blue)}
+.imp .big{font-size:1.25rem;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.imp .lead{margin:0 0 12px;font-size:.9375rem;line-height:1.75}
+.imp .lead b{font-weight:800}
+.rtb{width:100%;border-collapse:collapse;font-size:.8125rem;margin:10px 0 0}
+.rtb th,.rtb td{border-bottom:1px solid var(--leap-hairline);padding:5px 7px;text-align:left;
+  vertical-align:middle}
+.rtb th{font-size:.6875rem;font-weight:800;color:var(--leap-gray);letter-spacing:.03em;
+  border-bottom:1px solid var(--leap-border)}
+.rtb td.c{text-align:center;font-variant-numeric:tabular-nums;font-weight:800;white-space:nowrap}
+.rtb td.w{color:var(--leap-gray);font-size:.75rem;white-space:nowrap}
+.rtb select{width:100%;padding:5px 7px;border:2px solid var(--leap-border);border-radius:6px;
+  background:var(--leap-surface);font:inherit;font-size:.75rem;color:var(--leap-ink)}
+.imp .warn{margin:12px 0 0;padding:11px 14px;border-radius:var(--leap-radius-sm);
+  background:var(--tint-amber);font-size:.8125rem;line-height:1.75}
+.imp .ok{margin:12px 0 0;padding:11px 14px;border-radius:var(--leap-radius-sm);
+  background:var(--tint-teal);font-size:.8125rem;font-weight:700}
+.imp .picks{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.imp .pb{border:2px solid var(--leap-border);background:var(--leap-surface);border-radius:999px;
+  padding:9px 20px;min-height:44px;font-weight:800;font-size:.875rem;cursor:pointer;color:var(--leap-ink)}
+.imp .pb[aria-pressed="true"]{border-color:var(--leap-blue);background:var(--tint-blue);color:var(--leap-blue)}
+.imp .scroll{max-height:38vh;overflow:auto}
+
+
+/* 걸음 탭 〔v0.5〕 — 세 표를 한 화면에 이어 붙이면 스크롤이 너무 깁니다.
+   한 번에 한 가지만 보이게 하고, «지금 어디쯤인지»는 탭이 늘 말해 줍니다. */
+.tabs2{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
+.tabs2 button{flex:1 1 200px;text-align:left;border:2px solid var(--leap-border);
+  background:var(--leap-surface);border-radius:var(--leap-radius);padding:12px 16px;
+  cursor:pointer;min-height:64px;color:var(--leap-ink)}
+.tabs2 button:hover{border-color:var(--leap-blue)}
+.tabs2 button[aria-selected="true"]{border-color:var(--leap-blue);background:var(--tint-blue)}
+.tabs2 .n{display:block;font-weight:800;font-size:.9375rem;letter-spacing:-.01em}
+.tabs2 .d{display:block;font-size:.75rem;color:var(--leap-gray);margin-top:3px;
+  font-variant-numeric:tabular-nums}
+.tabs2 button[aria-selected="true"] .n{color:var(--leap-blue)}
+@media print{.tabs2{display:none!important}}
+.invite{text-align:center;padding:36px 22px}
+.invite p{margin:0 0 18px;color:var(--leap-gray);font-size:1rem;line-height:1.8}
+.invite p b{color:var(--leap-ink)}
+
+/* 남은 것을 차시로 묶어 주기 〔v0.4〕 */
+.nx .lead{margin:0 0 4px;font-size:1.0625rem;line-height:1.7}
+.nx .big{font-size:1.5rem;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;
+  color:var(--leap-blue)}
+.nx .caps{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:16px 0 0}
+.nx .cb{border:2px solid var(--leap-border);background:var(--leap-surface);border-radius:999px;
+  padding:9px 18px;min-height:44px;font-weight:800;font-size:.875rem;cursor:pointer;color:var(--leap-ink)}
+.nx .cb[aria-pressed="true"]{border-color:var(--leap-blue);background:var(--tint-blue);color:var(--leap-blue)}
+.mk{display:grid;gap:7px;margin:14px 0 0}
+.mk .row{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius-sm);background:var(--leap-bg);flex-wrap:wrap}
+.mk .no{flex:none;width:26px;height:26px;border-radius:999px;background:var(--leap-blue);
+  color:var(--leap-on-fill);font-size:.75rem;font-weight:800;display:grid;place-items:center}
+.mk .tg{flex:1 1 320px;min-width:0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:.8125rem;line-height:1.55;word-break:break-all;color:var(--leap-ink)}
+.mk .wh{flex:none;font-size:.75rem;color:var(--leap-gray);white-space:nowrap}
+.mk .cp{flex:none;min-height:38px;padding:6px 14px;font-size:.75rem;font-weight:700;border-radius:999px;
+  border:1px solid var(--leap-border);background:transparent;color:var(--leap-blue);cursor:pointer}
+.mk .cp:hover{background:var(--tint-blue)}
+.nx .note{margin:14px 0 0;font-size:.8125rem;color:var(--leap-gray);line-height:1.75}
+.nx .warn{margin:14px 0 0;padding:11px 14px;border-radius:var(--leap-radius-sm);
+  background:var(--tint-amber);font-size:.8125rem;line-height:1.75}
+.nx .ok{margin:0;padding:13px 16px;border-radius:var(--leap-radius-sm);background:var(--tint-teal);
+  font-size:.9375rem;font-weight:700}
+.nx select{width:100%;padding:6px 8px;border:2px solid var(--leap-border);border-radius:6px;
+  background:var(--leap-surface);font:inherit;font-size:.75rem;color:var(--leap-ink)}
+
+/* 미리보기 창 */
+.pv-back{position:fixed;inset:0;z-index:130;background:rgba(20,32,46,.55);
+  display:flex;align-items:center;justify-content:center;padding:20px 14px}
+.pv-w{background:var(--leap-surface);border-radius:var(--leap-radius);
+  width:min(230mm,100%);max-height:calc(100vh - 40px);display:flex;flex-direction:column;
+  box-shadow:0 24px 70px rgba(0,0,0,.34);overflow:hidden}
+.pv-h{display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  padding:14px 18px;border-bottom:1px solid var(--leap-border)}
+.pv-h .pv-sub{display:block;font-size:.8125rem;color:var(--leap-gray);margin-top:2px}
+.pv-btns{margin-left:auto;display:flex;gap:8px;align-items:center}
+.pv-scroll{overflow:auto;background:var(--leap-hairline);padding:16px;flex:1}
+/* 미리보기 종이는 **인쇄될 종이와 폭이 같아야** 합니다 (마스터 함정 31번) —
+   @page 가 A4 210mm 에 여백 12mm 이므로 여기도 210mm 에 12mm 입니다. */
+.pv-scroll > .pv-page{width:210mm;max-width:100%;margin:0 auto;padding:14mm 12mm;
+  box-shadow:0 2px 14px rgba(0,0,0,.18);border-radius:2px}
+@media (max-width:560px){.pv-scroll{padding:8px}}
+
+/* ==========================================================================
+   AI 초안 도우미 (LEAP Kit 공통 조각)
+   원본은 `apps/kit/leap-ai.css` · 단일 HTML 을 지키려고 붙여 넣은 사본입니다.
+   ========================================================================== */
+.aim{position:fixed;inset:0;z-index:120;background:rgba(20,32,46,.55);
+  display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow:auto}
+.aim[hidden]{display:none}
+.aim-w{background:var(--leap-surface);border-radius:var(--leap-radius);width:min(760px,100%);
+  box-shadow:0 24px 70px rgba(0,0,0,.34);display:flex;flex-direction:column;max-height:calc(100vh - 48px)}
+.aim-h{display:flex;align-items:center;gap:12px;padding:16px 20px;
+  border-bottom:1px solid var(--leap-border);position:sticky;top:0;background:var(--leap-surface);
+  border-radius:var(--leap-radius) var(--leap-radius) 0 0;z-index:1}
+.aim-h h2{margin:0;font-size:1.0625rem;letter-spacing:-.015em}
+.aim-x{margin-left:auto;min-width:40px;min-height:40px;border-radius:10px;border:1px solid var(--leap-border);
+  background:transparent;color:var(--leap-gray);font-size:1.25rem;line-height:1;cursor:pointer}
+.aim-x:hover{background:var(--leap-hairline);color:var(--leap-ink)}
+.aim-b{padding:20px 22px 24px;overflow:auto}
+.aim-note{border-radius:var(--leap-radius);padding:15px 17px;margin:0 0 18px;background:var(--tint-blue)}
+.aim-note .hd{font-weight:800;color:var(--leap-blue);margin-bottom:6px}
+.aim-note p{margin:0;font-size:.875rem;color:var(--leap-gray);line-height:1.75}
+.aim-note p b{color:var(--leap-ink)}
+.aim-warn{background:var(--tint-amber)}
+.aim-warn .hd{color:var(--leap-amber)}
+.aim-step{border:1px solid var(--leap-border);border-radius:var(--leap-radius);
+  padding:16px 18px;margin-bottom:14px}
+.aim-step h3{margin:0 0 4px;font-size:.9375rem;display:flex;align-items:center;gap:9px;letter-spacing:-.01em}
+.aim-step h3 i{flex:none;min-width:24px;height:24px;border-radius:999px;background:var(--leap-blue);
+  color:var(--leap-on-fill);font-style:normal;font-size:.75rem;font-weight:800;
+  display:inline-flex;align-items:center;justify-content:center}
+.aim-step > p{margin:0 0 13px;font-size:.8125rem;color:var(--leap-gray);line-height:1.7}
+.aim-step > p b{color:var(--leap-ink)}
+.aim-ta{width:100%;min-height:64px;padding:11px 13px;border-radius:var(--leap-radius-sm);
+  border:2px solid var(--leap-border);background:var(--leap-bg);font:inherit;font-size:.9375rem;
+  color:var(--leap-ink);resize:vertical}
+.aim-ta:focus{outline:none;border-color:var(--leap-blue)}
+.aim-pre{width:100%;min-height:200px;padding:13px 15px;border-radius:var(--leap-radius-sm);
+  border:2px solid var(--leap-border);background:var(--leap-bg);font-size:.78rem;line-height:1.62;
+  color:var(--leap-ink);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;resize:vertical;white-space:pre}
+.aim-act{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+@media (max-width:560px){.aim{padding:0}.aim-w{max-height:100vh;border-radius:0}}
+@media print{.aim{display:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <svg class="deco" viewBox="0 0 64 64" aria-hidden="true">
+    <path d="M7 52 H25" stroke="#fff" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+    <path d="M39 36 H57" stroke="#fff" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+    <path d="M16 46 Q32 -10 48 30" stroke="#fff" stroke-width="7" stroke-linecap="round" fill="none"/>
+  </svg>
+  <div class="top-in">
+    <div class="brand">
+      <!-- 앱 마크 — 이 앱은 «점검표». 목록 세 줄에 확인 표시가 얹힙니다.
+           공통 표시는 머리 배경의 큰 곡선(.deco)이 맡습니다. -->
+      <span class="badge">
+        <svg viewBox="0 0 64 64" width="32" height="32" aria-hidden="true" fill="none"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 12 H50 V54 H14 Z" stroke="#97A3B0" stroke-width="4"/>
+          <path d="M25 12 V7 H39 V12" stroke="#97A3B0" stroke-width="4"/>
+          <path d="M22 26 l4 4 7-9" stroke="#7FB3F7" stroke-width="4"/>
+          <path d="M22 40 l4 4 7-9" stroke="#F2A65A" stroke-width="4"/>
+          <path d="M38 28 H44" stroke="#7FB3F7" stroke-width="3.5"/>
+          <path d="M38 42 H44" stroke="#F2A65A" stroke-width="3.5"/>
+        </svg>
+      </span>
+      <div>
+        <h1>법정 의무교육 점검표</h1>
+        <div class="sub">TEAM LEAP · 경북교육 AI Lab</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <a class="iconbtn iconbtn--home" href="../../../index.html" title="TEAM LEAP 메인 페이지로 나갑니다. 이 앱에 적은 것은 그대로 남습니다." aria-label="TEAM LEAP 메인 페이지로 나가기">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
+             stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 10.6 12 4l8 6.6V20h-5v-5.6H9V20H4z"/>
+        </svg>
+        메인으로
+      </a>
+      <button class="iconbtn iconbtn--plan" id="btn-plan" type="button" title="연간지도계획을 붙여 넣으면 표가 저절로 채워집니다">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 16h4"/>
+        </svg>
+        진도표 읽기
+      </button>
+      <button class="iconbtn" id="btn-ai" type="button" title="쓰던 챗봇에 붙여 넣을 프롬프트를 만들어 줍니다">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9z"/>
+          <path d="M18 16.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>
+        </svg>
+        AI 초안
+      </button>
+      <button class="iconbtn" id="btn-theme" type="button">어둡게 보기</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="planbar no-print" id="planbar"></div>
+  <div class="grades no-print" id="grades" role="group" aria-label="학년"></div>
+
+  <div class="split">
+    <div>
+      <section id="panel" aria-live="polite"></section>
+    </div>
+    <div class="side">
+      <div class="card" style="padding:18px 20px">
+        <h2 style="font-size:1.0625rem;margin:0 0 4px">미리보기</h2>
+        <p class="sub" style="margin:0 0 14px;font-size:.8125rem">
+          여기 보이는 것이 <b>그대로 종이로 나갑니다.</b> A4 세로.
+        </p>
+        <div id="mini" class="pv-page"
+             style="border:1px solid var(--leap-border);border-radius:8px;padding:7mm 6mm;
+                    max-height:60vh;overflow:auto;font-size:6.5pt"></div>
+        <div class="actions" style="margin-top:14px">
+          <button class="btn" id="btn-print" type="button">인쇄 · PDF</button>
+          <button class="btn btn--ghost btn--sm" id="btn-csv" type="button"
+                  title="엑셀·구글 시트에서 열립니다">표로 내보내기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="foot no-print">
+    <div class="foot-card">
+      <h2>자료 관리</h2>
+      <p class="small muted" style="margin:0">
+        적은 것은 모두 <b>이 브라우저 안에만</b> 있습니다. 서버로 보내지 않습니다.
+        다른 컴퓨터로 옮기거나 백업하려면 <b>파일로 내보내기</b> 하세요.
+      </p>
+      <div class="foot-actions">
+        <button class="btn btn--ghost" id="btn-export" type="button">파일로 내보내기</button>
+        <button class="btn btn--ghost" id="btn-import" type="button">파일에서 열기</button>
+        <button class="btn btn--danger" id="btn-clear" type="button">처음부터 다시</button>
+      </div>
+
+      <div class="colophon">
+        <svg viewBox="0 0 64 64" width="40" height="40" aria-hidden="true" fill="none" stroke-linecap="round">
+          <path class="mk-low"  d="M7 52 H25" stroke-width="6.5"/>
+          <path class="mk-high" d="M39 36 H57" stroke-width="6.5"/>
+          <path class="mk-arc"  d="M16 46 Q32 -10 48 30" stroke-width="7"/>
+        </svg>
+        <div class="body">
+          <div class="name">법정 의무교육 점검표 <span>v0.5</span></div>
+          <p>TEAM LEAP · 경북교육 AI Lab · AI 활용 분과</p>
+          <p class="cc">© 2026 TEAM LEAP. All rights reserved.</p>
+          <p>교육 목적에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다.
+             상업적 이용과 외부 배포는 제작자에게 문의해 주세요.</p>
+          <p>이 앱은 학생 개인정보를 수집하지 않으며, 어떤 자료도 외부로 전송하지 않습니다.</p>
+          <p>시수와 근거 법령은 <b>「2026학년도 삶의 힘을 키우는 초등학교 교육과정 도움자료」</b>
+             (경상북도교육청연구원) 43~45쪽을 옮긴 것입니다.
+             법령은 <b>바뀝니다.</b> 계획을 결재에 올리기 전에 그해 지침으로 한 번 확인해 주세요.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<div id="print-area" class="pv-page"></div>
+
+
+<script>
+/* ==========================================================================
+   LEAP Kit (apps/kit/leap.js 사본 — 단일 HTML 유지를 위해 붙여 넣음)
+   ========================================================================== */
+(function(global){'use strict';
+var LEAP={};
+function clone(v){if(typeof structuredClone==='function')return structuredClone(v);return JSON.parse(JSON.stringify(v));}
+LEAP.clone=clone;
+LEAP.store=function(key,initial){
+  var cache=null;
+  function flush(){try{localStorage.setItem(key,JSON.stringify(cache));return true;}
+    catch(e){LEAP.announce('저장하지 못했습니다. 파일로 내보낸 뒤 정리해 주세요.');return false;}}
+  function read(){if(cache)return cache;
+    try{var raw=localStorage.getItem(key);cache=raw?JSON.parse(raw):clone(initial);}
+    catch(e){cache=clone(initial);}return cache;}
+  return{get:read,set:function(n){cache=n;return flush();},
+    update:function(fn){var d=read();fn(d);flush();return d;},
+    reset:function(){cache=clone(initial);flush();return cache;}};
+};
+LEAP.uid=function(){if(global.crypto&&crypto.randomUUID)return crypto.randomUUID().slice(0,8);
+  return Math.random().toString(36).slice(2,10);};
+function randInt(n){if(global.crypto&&crypto.getRandomValues){var b=new Uint32Array(1);crypto.getRandomValues(b);return b[0]%n;}
+  return Math.floor(Math.random()*n);}
+LEAP.shuffle=function(arr){var a=arr.slice(),i,j,t;
+  for(i=a.length-1;i>0;i--){j=randInt(i+1);t=a[i];a[i]=a[j];a[j]=t;}return a;};
+/* saveBlob 은 «이미 만들어 둔 덩어리»를, download 는 «자료를 JSON 으로» 내보냅니다.
+   CSV 를 내보내는 앱은 saveBlob 을 씁니다. 둘로 나눠 두지 않으면
+   사본마다 같은 여섯 줄이 다시 적히고, 그러다 한 곳이 빠집니다 (마스터 함정 13번). */
+LEAP.saveBlob=function(filename,blob){
+  var url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);},1000);};
+LEAP.download=function(filename,obj){
+  LEAP.saveBlob(filename,new Blob([JSON.stringify(obj,null,2)],{type:'application/json;charset=utf-8'}));};
+LEAP.pickFile=function(onLoad,onError){
+  var input=document.createElement('input');input.type='file';input.accept='application/json,.json';
+  input.addEventListener('change',function(){var f=input.files&&input.files[0];if(!f)return;
+    var r=new FileReader();
+    r.onload=function(){try{onLoad(JSON.parse(r.result),f.name);}
+      catch(e){(onError||alert)('파일을 읽지 못했습니다. 이 앱에서 내보낸 파일이 맞는지 확인해 주세요.');}};
+    r.readAsText(f,'utf-8');});
+  input.click();};
+LEAP.announce=function(msg){
+  var el=document.getElementById('leap-live');
+  if(!el){el=document.createElement('div');el.id='leap-live';el.setAttribute('role','status');
+    el.setAttribute('aria-live','polite');el.className='leap-toast';document.body.appendChild(el);}
+  el.textContent=msg;el.classList.add('is-on');
+  clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('is-on');},2600);};
+LEAP.todayISO=function(){var d=new Date(),p=function(n){return String(n).padStart(2,'0');};
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());};
+LEAP.fmtDate=function(iso){if(!iso)return '';var p=iso.split('-');return p[0]+'. '+Number(p[1])+'. '+Number(p[2])+'.';};
+LEAP.toggleTheme=function(){var r=document.documentElement,cur=r.getAttribute('data-theme');
+  if(!cur)cur=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  var next=cur==='dark'?'light':'dark';r.setAttribute('data-theme',next);
+  try{localStorage.setItem('leap-theme',next);}catch(e){}return next;};
+LEAP.restoreTheme=function(){try{var t=localStorage.getItem('leap-theme');
+  if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}};
+LEAP.themeLabel=function(){var r=document.documentElement,cur=r.getAttribute('data-theme');
+  if(!cur)cur=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  return cur==='dark'?'밝게 보기':'어둡게 보기';};
+/* 「화면 전환」은 무엇이 바뀌는지 말해 주지 않습니다. 지금 누르면 어떻게 되는지를
+   단추 자체가 말하게 둡니다 — 「어둡게 보기」를 누르면 어두워집니다. */
+LEAP.initThemeBtn=function(btn){if(!btn)return;
+  function paint(){var t=LEAP.themeLabel();btn.textContent=t;
+    btn.setAttribute('title','화면을 '+t.replace(' 보기','')+' 바꿉니다');
+    btn.setAttribute('aria-label','화면을 '+t.replace(' 보기','')+' 바꿉니다');}
+  paint();btn.addEventListener('click',function(){LEAP.toggleTheme();paint();});};
+LEAP.esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+  .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');};
+global.LEAP=LEAP;})(window);
+</script>
+
+<script>
+/* ==========================================================================
+   법정 의무교육 점검표
+   © 2026 TEAM LEAP (경북교육 AI Lab · AI 활용 분과)
+   --------------------------------------------------------------------------
+   왜 이 앱인가
+     법으로 시수가 박힌 교육이 **연 127시간**입니다. 3~4학년 한 해 수업이
+     986시간이니 **여덟 시간에 한 시간꼴**입니다. 그런데 창의적 체험활동은
+     한 해 **102시간**뿐입니다 — 창체만으로는 절대 들어가지 않습니다.
+     그 사실은 «세어 보기 전에는» 보이지 않습니다.
+
+     ★ 127 을 상수로 적어 두지 않았습니다. `dutyTotal()` 이 표에서 셉니다.
+       손으로 더하면 한 줄을 빠뜨립니다 — 실제로 처음에 환경교육 2시간을
+       빠뜨려 125 로 적었었습니다 (마스터 함정 34번).
+
+   이 앱의 얼굴 — **그릇**
+     창의적 체험활동 · 교과 통합 · 학교 행사, 세 그릇에 얼마씩 담겼는지를
+     한 눈에 그립니다. 창체 그릇에는 **넘치는 자리를 알리는 눈금**이 있습니다.
+
+   구조로 막는 것 (원칙 8번 — 잘못된 상태는 표현 불가능하게)
+     · 법정 시수는 **입력이 아니라 상수**입니다. 손으로 고칠 칸이 없습니다
+     · 계·모자란 시수·그릇은 **결과**입니다
+     · **학기를 나눠** 받습니다 — 「학기당 N회 이상」을 셀 수 없기 때문입니다
+     · 시수를 적었는데 **어디에 얹을지 안 정한 것**을 따로 셉니다.
+       그것은 채운 것이 아닙니다
+     · 시수만 맞으면 되는 것이 아닙니다 — **함께 지킬 조건**(사이버폭력 3차시,
+       딥페이크 1차시, 소방 연 2회, 재난 훈련 2종류…)을 따로 셉니다
+
+   기준
+     「2026학년도 삶의 힘을 키우는 초등학교 교육과정 도움자료」
+     (경상북도교육청연구원) 43~44쪽 범교과 학습 주제 운영 시수 및 근거
+     45쪽 학교안전교육 7대 표준안
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  var esc = LEAP.esc;
+  var KEY = 'leap-required-v1';
+
+  /* ── 학교안전교육 7대 표준안 (도움자료 45쪽) ────────────────────────────
+     per — 「학기당 N회 이상」. 시수와 **다른 종류의 조건**입니다.
+     시수를 다 채우고도 한 번에 몰아 하면 이 조건이 깨집니다. */
+  var AREAS = [
+    { id: 'a-life',  n: '생활 안전', h: 12, per: 2,
+      d: '교실·가정·공공시설 안전 / 학용품·놀이용품 / 실험·실습 / 놀이·야외활동 / 유괴·미아 예방' },
+    { id: 'a-road',  n: '교통 안전', h: 11, per: 3,
+      d: '안전한 통학로 / 자전거·대중교통 이용법 / 교통 표지판과 도로교통 법규' },
+    { id: 'a-viol',  n: '폭력예방 및 신변보호', h: 8, per: 2,
+      d: '학교폭력 예방·대처 / 성폭력 예방 / 내 몸의 소중함 / 아동학대 / 가정폭력 / 자살예방·생명존중' },
+    { id: 'a-drug',  n: '약물 및 사이버 중독 예방', h: 10, per: 2,
+      d: '약물 5시간(오남용·중독성 물질) + 사이버 5시간(사이버 통제력·사용습관)' },
+    { id: 'a-dis',   n: '재난 안전', h: 6, per: 2,
+      d: '화재 원인·대피·신고 / 화상 대처 / 자연 재난 / 폭발·붕괴·테러 / 재난 유형별 대비 훈련' },
+    { id: 'a-job',   n: '직업 안전', h: 2, per: 1,
+      d: '일터의 산업재해 알기 / 일터 안전시설 현장 체험' },
+    { id: 'a-aid',   n: '응급처치', h: 2, per: 1,
+      d: '응급처치의 상황·의미·신고 / 심폐소생술과 자동제세동기 / 상처별 응급처치' }
+  ];
+
+  /* ── 범교과 학습 주제 (도움자료 43~44쪽) ────────────────────────────────
+     h     — 법으로 박힌 시수. 0 이면 「교과 통합 운영」이라 숫자가 없는 것입니다
+     duty  — 1 의무 · 0 권장
+     law   — 관련 근거. **원문 그대로** 옮겼습니다. 기억으로 적으면 조문이 틀립니다
+     how   — 편성·운영 방법
+     must  — 시수와 **별개로** 지켜야 하는 조건. 시수만 맞으면 되는 것이 아닙니다
+     ────────────────────────────────────────────────────────────────────── */
+  var TOPICS = [
+    { id: 'safe', g: '안전·건강', n: '학교안전교육 7대 영역', h: 51, duty: 1, areas: AREAS,
+      law: ['「학교안전사고 예방 및 보상에 관한 법률」 제8조 / 동법 시행규칙 제2조 / 「학교안전교육 실시 기준 등에 관한 고시」',
+        '「화재의 예방 및 안전관리에 관한 법률」 제37조 · 「공공기관의 소방안전관리에 관한 규정」 제14조',
+        '「아동복지법」 제31조 / 동법 시행령 제28조',
+        '「자전거 이용 활성화에 관한 법률」 제21조'],
+      how: '교과·창의적 체험활동 시간을 활용합니다. 자전거·전동킥보드 등 <b>개인형 이동장치 교육을 포함</b>합니다. 51시간 안에 <b>아동복지법 시행령 안전교육 44시간이 들어 있습니다.</b>',
+      must: [{ id: 'm-drill', t: '재난 대비 훈련을 <b>2종류 이상</b> 했습니다',
+        d: '재난 안전 교육은 훈련을 포함하되 유형을 달리하여 매학년도 2종류 이상' }] },
+
+    { id: 'fire', g: '안전·건강', n: '소방 안전교육', h: 2, duty: 1,
+      law: ['「초·중등학교 교육과정 총론」 Ⅲ. 학교급별 교육과정 편성·운영의 기준'],
+      how: '안전교육에 통합하거나 교과와 연계합니다. <b>소방훈련은 별도</b>입니다.',
+      must: [{ id: 'm-fire2', t: '소방 안전교육을 <b>연 2회</b> 했습니다',
+        d: '51시간 안전교육 안에 연 2회 소방 안전교육을 포함' }] },
+
+    { id: 'gender', g: '안전·건강', n: '양성평등교육', h: 15, duty: 1,
+      law: ['「교육기본법」 제17조의2', '「양성평등기본법」 제30조·제36조',
+        '「성폭력방지 및 피해자보호 등에 관한 법률」 제5조 / 동법 시행령 제2조',
+        '「성매매방지 및 피해자보호 등에 관한 법률」 제5조 / 동법 시행령 제2조',
+        '「가정폭력방지 및 피해자보호 등에 관한 법률」 제4조의3 / 동법 시행령 제1조의2',
+        '「학교보건법」 제9조',
+        '2026학년도 경상북도교육청 학생 성교육 운영 계획'],
+      how: '안전·보건·인성·민주시민 교육과 통합하거나 교과·창의적 체험활동과 연계합니다.',
+      must: [
+        { id: 'm-sv3', t: '성폭력·가정폭력·성매매 예방교육을 <b>3차시 이상</b> 넣었습니다' },
+        { id: 'm-deep', t: '디지털 성폭력(딥페이크·AI 등) 예방교육을 <b>1차시 별도</b>로 넣었습니다' }] },
+
+    { id: 'health', g: '안전·건강', n: '보건교육', h: 17, duty: 1, pick: 1,
+      law: ['「학교보건법」 제9조·제9조의2', '2026학년도 경상북도교육청 보건교육 운영 계획'],
+      how: '<b>한 개 학년 이상</b>에 최소 17차시 이상 편성합니다 — 모든 학년이 아닙니다.' },
+
+    { id: 'food', g: '안전·건강', n: '영양·식생활 교육', h: 2, duty: 1,
+      law: ['「학교급식법」 제13조', '「식생활교육지원법」 제26조',
+        '「어린이 식생활안전관리 특별법」 제13조',
+        '제2차 학생건강증진 기본계획(2024~2028)',
+        '2026학년도 경상북도교육청 학교급식 기본방향'],
+      how: '안전·건강 교육과 통합하거나 교과·창의적 체험활동과 연계합니다.' },
+
+    { id: 'life', g: '안전·건강', n: '생명존중 및 자살예방교육 (사회정서교육)', h: 6, duty: 1,
+      law: ['「자살예방 및 생명존중문화 조성을 위한 법률」 제17조 / 동법 시행령 제10조의2',
+        '학생 맞춤형 마음건강 통합지원방안(2024. 8. 9.)',
+        '2026학년도 경상북도교육청 학생 마음건강 위기지원 프로젝트 HOPE 계획',
+        '2026학년도 경북형 사회정서교육 운영 계획'],
+      how: '안전교육·인성교육 등과 통합하거나 교과·창의적 체험활동과 연계합니다.' },
+
+    { id: 'bully', g: '안전·건강', n: '학교폭력 예방교육', h: 12, duty: 1,
+      law: ['「학교폭력예방법」 제15조 및 동법 시행령 제17조',
+        '교육부 연도별 「학교폭력 예방 및 대책 시행계획」',
+        '2026학년도 경상북도교육청 학교폭력 예방 및 대책 운영 계획',
+        '2026학년도 경상북도교육청 학교폭력 예방교육(어울림프로그램) 운영 계획'],
+      how: '<b>학급당</b> 12차시 이상입니다 — 학교 단위가 아니라 <b>우리 반</b>입니다. 어울림(사이버어울림) 프로그램 등을 활용합니다.',
+      must: [{ id: 'm-cyber3', t: '사이버폭력 예방을 <b>3차시 이상</b> 넣었습니다' }] },
+
+    { id: 'char', g: '인성', n: '인성교육', h: 0, duty: 1, integ: 1,
+      law: ['「인성교육진흥법」 제6조·제10조 / 동법 시행령 제11조',
+        '교육부 연도별 「인성교육 시행계획」',
+        '2026학년도 경상북도교육청 인성교육 시행 계획'],
+      how: '도덕·실과 등 관련 교과를 통해 세부 주제를 통합 운영하기를 권장합니다.' },
+
+    { id: 'teach', g: '인성', n: '교육활동 침해행위 예방교육', h: 1, duty: 1,
+      law: ['「교원의 지위 향상 및 교육활동 보호를 위한 특별법」 제24조 / 동법 시행령 제21조'],
+      how: '인성교육·민주시민교육·안전교육 등과 통합하거나 교과·창의적 체험활동과 연계합니다.' },
+
+    { id: 'digit', g: '인성', n: '디지털 역량교육', h: 10, duty: 1,
+      law: ['「디지털 기반의 원격교육 활성화 기본법」 제10조',
+        '2026학년도 경상북도교육청 디지털 역량 교육 추진 계획'],
+      how: '디지털 안전과 윤리 · 디지털 시민성 · 디지털 리터러시. 교과·창의적 체험활동·학교자율시간과 체계적으로 연계합니다.' },
+
+    { id: 'career', g: '진로', n: '진로교육', h: 0, duty: 1, integ: 1,
+      law: ['「진로교육법」 제12조 / 동법 시행령 제5조·제6조',
+        '2026학년도 경상북도교육청 진로교육 운영 계획'],
+      how: '교과·창의적 체험활동(진로활동)·학교자율시간과 체계적으로 연계합니다.' },
+
+    { id: 'civic', g: '민주시민', n: '민주시민교육', h: 0, duty: 0, integ: 1,
+      law: ['「교육기본법」 제2조', '2022 개정 「초·중등학교 교육과정 총론」',
+        '「공직선거법」 제15조·제16조 · 「정당법」 제22조 · 「선거관리위원회법」 제14조①·제15조의2①',
+        '2026학년도 경상북도교육청 학교민주시민 운영 계획'],
+      how: '통합교과(바·슬·즐)·국어·사회·도덕 등 관련 교과를 통해 통합 운영합니다.' },
+
+    { id: 'disab', g: '인권', n: '장애인식 개선교육', h: 2, duty: 1,
+      law: ['「장애인복지법」 제25조 / 동법 시행령 제16조',
+        '교육부 연도별 「특수교육 운영계획」',
+        '2026학년도 경상북도교육청 특수교육 운영 계획'],
+      how: '교과·창의적 체험활동·학교자율시간과 체계적으로 연계하여 실시합니다.' },
+
+    { id: 'human', g: '인권', n: '인권교육', h: 0, duty: 0, integ: 1,
+      law: ['「교육기본법」 제12조', '「초·중등교육법」 제18조의4', '「국가인권위원회법」 제26조'],
+      how: '교과·창의적 체험활동·학교자율시간과 체계적으로 연계하여 실시합니다.' },
+
+    { id: 'multi', g: '다문화', n: '다문화 이해 교육', h: 2, duty: 1,
+      law: ['「다문화가족지원법」 제5조', '2022 개정 「초·중등학교 교육과정 총론」',
+        '2026학년도 경상북도교육청 다문화교육 기본 계획'],
+      how: '교과교육과 연계하고 <b>세계인의 날(5월 20일)</b>과 연계합니다.' },
+
+    { id: 'uni', g: '통일', n: '통일교육', h: 5, duty: 1,
+      law: ['「통일교육 지원법」 제4조 및 제8조 / 동법 시행령 제6조의2',
+        '통일부 연도별 「학교 통일교육 지원 사업 추진계획」',
+        '2026학년도 경상북도교육청 통일·나라사랑교육 운영 계획'],
+      how: '<b>통일교육주간(5월 4주)</b>과 연계합니다. 도덕·사회 등 관련 교과 및 창의적 체험활동과 통합 운영합니다.' },
+
+    { id: 'dokdo', g: '독도', n: '독도교육', h: 10, duty: 0, byGrade: 1,
+      law: ['「독도의 지속가능한 이용에 관한 법률」 제5조',
+        '교육부 연도별 「독도교육 활성화 계획」',
+        '2026학년도 경상북도교육청 독도교육 기본 계획'],
+      how: '교과·창의적 체험활동 등과 통합하고 <b>독도교육주간</b>과 연계합니다.' },
+
+    { id: 'econ', g: '경제·금융', n: '경제·금융교육', h: 0, duty: 0, integ: 1,
+      law: ['「경제교육지원법」 제4조·제5조 / 동법 시행령 제3조',
+        '2026학년도 경상북도교육청 미래를 준비하는 슬기로운 경제교육 운영 계획'],
+      how: '사회·실과 등 관련 교과 및 창의적 체험활동과 연계·통합 운영합니다.' },
+
+    { id: 'env', g: '환경·지속가능발전', n: '환경·지속가능발전 교육', h: 2, duty: 1,
+      law: ['「교육기본법」 제22조의2',
+        '「기후위기 대응을 위한 탄소중립·녹색성장 기본법」 제4조·제67조',
+        '「환경교육의 활성화 및 지원에 관한 법률」 제4조·제10조의2',
+        '「지속가능발전 기본법」 제4조·제28조',
+        '2026학년도 경상북도교육청 생태전환교육 기본 계획'],
+      how: '과학·사회 등 관련 교과 및 창의적 체험활동·학교자율시간과 연계 운영합니다.' },
+
+    { id: 'hist', g: '역사', n: '역사교육 (독립운동사)', h: 3, duty: 0,
+      law: ['경상북도교육청 독립운동사 교육 활성화 조례 제6조'],
+      how: '교과·창의적 체험활동·학교자율시간 등 학교급별 교육과정과 연계하여 운영합니다.' }
+  ];
+
+  /* 창의적 체험활동 연간 시수 — 학년군 시수의 절반입니다.
+     (1~2학년 238 · 3~4학년 204 · 5~6학년 204 — 모두 2년치) */
+  var CET_YEAR = { '1학년': 119, '2학년': 119, '3학년': 102, '4학년': 102, '5학년': 102, '6학년': 102 };
+  var GRADES = ['1학년', '2학년', '3학년', '4학년', '5학년', '6학년'];
+
+/* 얹을 수 있는 자리는 **둘뿐**입니다. 도움자료의 「편성·운영 방법」이 스무 주제
+   모두 「교과 및 창의적 체험활동과 연계」로 끝나기 때문입니다 — 소방훈련·재난훈련도
+   결국 창의적 체험활동 시간에 합니다. 셋째 그릇(학교 행사)을 두면 «교육과정 밖에
+   둔 시간»이 생기고, 그것은 시수로 셀 수 있는 것이 아닙니다. */
+  var WHERE = { cet: '창의적 체험활동', subj: '교과' };
+
+  /* 값을 적는 자리를 한 줄로 폅니다 — 안전은 7영역이 각각 받고,
+     나머지 주제는 저마다 하나씩 받습니다. 안전 주제 자체는 «합»이라 받지 않습니다. */
+  var UNITS = [];
+  TOPICS.forEach(function (t) {
+    if (t.areas) {
+      t.areas.forEach(function (a) {
+        UNITS.push({ id: a.id, n: a.n, h: a.h, per: a.per, d: a.d, duty: 1, area: 1, top: t });
+      });
+    } else {
+      UNITS.push({ id: t.id, n: t.n, h: t.h, duty: t.duty, integ: t.integ, top: t });
+    }
+  });
+  var UBY = {};
+  UNITS.forEach(function (u) { UBY[u.id] = u; });
+
+  /* 함께 지킬 조건을 한 줄로 폅니다 */
+  var MUSTS = [];
+  TOPICS.forEach(function (t) {
+    (t.must || []).forEach(function (m) { MUSTS.push({ id: m.id, t: m.t, d: m.d, top: t }); });
+  });
+
+  /* ── 안전 영역의 20% 자율 조정 (도움자료 45쪽 유의 사항) ─────────────────
+     「총 이수 시간의 범위 내에서 안전 영역별 이수 시간을 자율적으로 조정·운영
+       (20% 범위 내, 소수점은 올림 처리)할 수 있다」
+     ★ 이 규칙은 **두 겹**입니다 — 영역별로는 줄일 수 있지만 **총 51시간은
+       지켜야** 합니다. 한쪽만 보면 규칙을 반만 지킵니다. */
+  function adjLo(h) { return Math.ceil(h * 0.8); }
+  function adjHi(h) { return Math.ceil(h * 1.2); }
+  var SAFE_TOTAL = AREAS.reduce(function (n, a) { return n + a.h; }, 0);   // 51
+
+  function emptyUnits() {
+    var o = {};
+    UNITS.forEach(function (u) {
+      o[u.id] = { h: [0, 0], n: [0, 0], where: '', subj: '' };
+    });
+    return o;
+  }
+  function emptyMusts() {
+    var o = {};
+    MUSTS.forEach(function (m) { o[m.id] = false; });
+    return o;
+  }
+
+  var DEFAULT = {
+    v: 1,
+    info: { year: '', school: '', grade: '', klass: '' },
+    cetCap: 0,          /* 0 이면 학년의 기본값을 씁니다 */
+    healthGrade: true,  /* 보건교육 17시간은 「한 개 학년 이상」입니다 */
+    units: emptyUnits(),
+    musts: emptyMusts(),
+    plan: null          /* 진도표에서 읽어 온 기록 〔v0.3〕 — 아래 참조 */
+  };
+  var db = LEAP.store(KEY, DEFAULT);
+
+  /* 옛 저장본에 없던 칸을 채웁니다 (마스터 함정 10번) */
+  function fill(d) {
+    if (!d || typeof d !== 'object') return LEAP.clone(DEFAULT);
+    d.v = 1;
+    d.info = d.info || {};
+    ['year', 'school', 'grade', 'klass'].forEach(function (k) {
+      if (typeof d.info[k] !== 'string') d.info[k] = '';
+    });
+    if (GRADES.indexOf(d.info.grade) < 0) d.info.grade = '';
+    d.cetCap = num(d.cetCap);
+    d.healthGrade = d.healthGrade !== false;
+    var u = d.units && typeof d.units === 'object' ? d.units : {};
+    d.units = {};
+    UNITS.forEach(function (x) {
+      var v = u[x.id] || {};
+      d.units[x.id] = {
+        h: [num(v.h && v.h[0]), num(v.h && v.h[1])],
+        n: [num(v.n && v.n[0]), num(v.n && v.n[1])],
+        /* 모르는 자리는 비웁니다. v0.1 에 잠깐 있던 「학교 행사·훈련」도 여기서
+           걷힙니다 — 지우지 않고 「아직 안 정함」으로 두어 다시 고르게 합니다.
+           조용히 다른 그릇에 옮겨 담으면 «정한 적 없는 것»이 정해진 것이 됩니다. */
+        where: WHERE[v.where] ? v.where : '',
+        subj: String(v.subj || '').slice(0, 40)
+      };
+    });
+    var m = d.musts && typeof d.musts === 'object' ? d.musts : {};
+    d.musts = {};
+    MUSTS.forEach(function (x) { d.musts[x.id] = m[x.id] === true; });
+    /* 진도표에서 읽어 온 기록. 없으면 없는 것이고, 앱은 그대로 돕니다. */
+    var pl = d.plan;
+    d.plan = (pl && typeof pl === 'object' && pl.lessons)
+      ? { term: num(pl.term), lessons: num(pl.lessons), tags: num(pl.tags),
+          at: String(pl.at || ''), flaws: Array.isArray(pl.flaws) ? pl.flaws.slice(0, 40) : [],
+          byWhere: { cet: num(pl.byWhere && pl.byWhere.cet), subj: num(pl.byWhere && pl.byWhere.subj),
+            none: num(pl.byWhere && pl.byWhere.none) },
+          names: (pl.names && typeof pl.names === 'object') ? pl.names : {},
+          rawList: (pl.rawList && typeof pl.rawList === 'object') ? pl.rawList : {},
+          rawMax: (pl.rawMax && typeof pl.rawMax === 'object') ? pl.rawMax : {},
+          pairs: (pl.pairs && typeof pl.pairs === 'object') ? pl.pairs : {},
+          pick: (pl.pick && typeof pl.pick === 'object') ? pl.pick : {} }
+      : null;
+    return d;
+  }
+  function num(v) { var n = parseInt(v, 10); return (isFinite(n) && n > 0) ? Math.min(999, n) : 0; }
+  db.set(fill(db.get()));
+
+  /* ---------- 되돌리기 (마스터 함정 39·44번) ---------- */
+  var undo = null, undoKeep = false;
+  function markUndo(label) { undo = { snap: JSON.stringify(db.get()), label: label }; undoKeep = true; }
+  function save(fn) {
+    if (undoKeep) undoKeep = false; else undo = null;
+    db.update(fn);
+  }
+  function undoBar() {
+    if (!undo) return '';
+    return '<div class="undo"><p>' + esc(undo.label) + '</p>' +
+      '<button class="btn btn--quiet btn--sm" type="button" id="btn-undo">되돌리기</button></div>';
+  }
+
+  /* ==========================================================================
+     셈 — 계·모자란 시수·그릇은 **결과**입니다
+     ========================================================================== */
+
+  function row(id) { return db.get().units[id]; }
+  function uSum(id) { var r = row(id); return r.h[0] + r.h[1]; }
+  function safeSum() { return AREAS.reduce(function (n, a) { return n + uSum(a.id); }, 0); }
+
+  /* 이 학년이 져야 하는 법정 시수.
+     보건교육 17시간은 「한 개 학년 이상」이라 **우리 학년의 몫이 아닐 수 있습니다.** */
+  function needOf(u) {
+    if (u.id === 'health' && !db.get().healthGrade) return 0;
+    return u.h;
+  }
+  function dutyTotal() {
+    return UNITS.reduce(function (n, u) { return n + (u.duty ? needOf(u) : 0); }, 0);
+  }
+  /* 보건교육 17차시를 우리 학년이 지든 지지 않든, 두 값 모두 표에서 셉니다.
+     127 이나 110 을 손으로 적어 두면 표가 바뀌었을 때 조용히 낡습니다. */
+  var DUTY_FULL = UNITS.reduce(function (n, u) { return n + (u.duty ? u.h : 0); }, 0);
+  var DUTY_NOHEALTH = DUTY_FULL - UBY.health.h;
+  function recTotal() {
+    return UNITS.reduce(function (n, u) { return n + (u.duty ? 0 : u.h); }, 0);
+  }
+
+  /* 창의적 체험활동 연간 시수 — 학교가 증감했으면 고칠 수 있습니다 */
+  function cetCap() {
+    var d = db.get();
+    if (d.cetCap) return d.cetCap;
+    return CET_YEAR[d.info.grade] || 0;
+  }
+
+  /* ── 그릇 — 어디에 얹었는가 ─────────────────────────────────────────────
+     「아직 안 정함」을 따로 셉니다. 시수를 적어 놓고 자리를 안 정한 것은
+     채운 것이 아니기 때문입니다. */
+  function bowls() {
+    var o = { cet: 0, subj: 0, none: 0 };
+    UNITS.forEach(function (u) {
+      var v = uSum(u.id);
+      if (!v) return;
+      o[row(u.id).where || 'none'] += v;
+    });
+    return o;
+  }
+  function placedTotal() {
+    var b = bowls();
+    return b.cet + b.subj + b.none;
+  }
+  /* 얼굴에는 «의무에 얹은 것만» 견줍니다. 권장까지 더한 값을 의무 시수와
+     나란히 두면 다 못 채웠는데도 넘친 것처럼 읽힙니다. */
+  function dutyPlaced() {
+    return UNITS.reduce(function (n, u) { return n + (u.duty ? uSum(u.id) : 0); }, 0);
+  }
+  function recPlaced() {
+    return UNITS.reduce(function (n, u) { return n + (u.duty ? 0 : uSum(u.id)); }, 0);
+  }
+
+  /* ★ 창의적 체험활동에서 «실제로 쓴 시간» 은 이수 시수가 아니라 **차시 수** 입니다.
+     한 차시가 여러 주제를 겸하기 때문입니다. 진도표를 읽어 왔으면 그 값을 쓰고,
+     손으로 적었으면 알 길이 없으므로 이수 시수를 씁니다 — 그때는 그렇다고 말합니다. */
+  function cetUsed() {
+    var d = db.get();
+    if (d.plan && d.plan.byWhere && d.plan.lessons) return d.plan.byWhere.cet;
+    return bowls().cet;
+  }
+
+  function touched() {
+    return UNITS.some(function (u) { return uSum(u.id) > 0; }) ||
+      MUSTS.some(function (m) { return db.get().musts[m.id]; });
+  }
+
+  /* ── 지키지 못한 것을 «목록으로» 돌려줍니다 ────────────────────────────
+     「맞다/틀리다」만 돌려주면 무엇이 왜 걸렸는지 말해 줄 수 없습니다.
+     ★ 시수가 다 차도 끝이 아닙니다 — 자리(where)·횟수(per)·조건(must)이
+       따로 있습니다. 합계만 맞으면 틀린 것이 안 보입니다 (마스터 함정 12번). */
+  function problems() {
+    var out = [];
+    if (!touched()) return out;
+    var d = db.get();
+
+    UNITS.forEach(function (u) {
+      var need = needOf(u), have = uSum(u.id);
+      if (u.duty && need && have < need) {
+        out.push({ t: 'short', id: u.id, n: u.n, need: need, have: have });
+      }
+      if (!u.duty && u.h && have > 0 && have < u.h) {
+        out.push({ t: 'rec', id: u.id, n: u.n, need: u.h, have: have });
+      }
+      if (have > 0 && !row(u.id).where) {
+        out.push({ t: 'nowhere', id: u.id, n: u.n, have: have });
+      }
+      /* 안전 영역의 20% 조정 — 총 51시간을 지키는 한에서만 */
+      if (u.area && have > 0) {
+        var lo = adjLo(u.h), hi = adjHi(u.h);
+        if (have < lo || have > hi) {
+          out.push({ t: 'adj', id: u.id, n: u.n, have: have, lo: lo, hi: hi, base: u.h });
+        }
+      }
+      /* 학기당 N회 이상 — 시수를 다 채우고도 몰아 하면 깨집니다 */
+      if (u.per && have > 0) {
+        [0, 1].forEach(function (i) {
+          var c = row(u.id).n[i];
+          if (c < u.per) {
+            out.push({ t: 'per', id: u.id, n: u.n, term: i + 1, need: u.per, have: c });
+          }
+        });
+      }
+    });
+
+    var s = safeSum();
+    if (s > 0 && s < SAFE_TOTAL) {
+      out.push({ t: 'safe51', have: s, need: SAFE_TOTAL });
+    }
+
+    var cap = cetCap(), b = bowls();
+    var used = cetUsed();
+    if (cap && used > cap) {
+      out.push({ t: 'cetover', have: used, cap: cap, hours: b.cet, lessons: used !== b.cet });
+    }
+
+    MUSTS.forEach(function (m) {
+      if (!d.musts[m.id]) out.push({ t: 'must', id: m.id, n: m.t, top: m.top.n });
+    });
+
+    return out;
+  }
+
+  /* 「알림」과 「지키지 못한 것」을 나눕니다.
+     rec(권장 미달)·nowhere 는 법을 어긴 것이 아닙니다 — 다만 계획이 덜 된 것입니다. */
+  function hard() {
+    return problems().filter(function (p) { return p.t !== 'rec'; });
+  }
+
+  /* ==========================================================================
+     진도표에서 읽어 오기  〔v0.3〕
+     --------------------------------------------------------------------------
+     ★ 이 앱이 물어보려던 것을 학교는 **이미 적어 두었습니다.**
+       「교육과정 연간지도계획」의 학습주제 칸에 표시가 붙어 있습니다 —
+
+         [폭력예방 및 신변보호-2][학교폭력 예방교육…-2][사회정서-2]
+         스스로 감정을 조절하고, 다른 사람을 배려하며 대화하기
+
+       그러니 앱이 다시 묻는 것은 **같은 일을 두 번 시키는 것**입니다. 읽어 옵니다.
+
+     ★★ 그리고 이 표시가 앱이 몰랐던 것을 알려 줍니다 —
+        **한 차시가 여러 주제를 함께 이수합니다.** 위 차시 하나가 세 주제를 겸합니다.
+        실제 진도표에서 태그가 붙은 차시 120개가 이수 시수 195시간을 냅니다
+        (한 차시 평균 1.6 주제). **이것이 연 127시간이 986시간 안에 들어가는 방법**이고,
+        v0.2 까지 이 앱은 그것을 모른 채 「창체에 안 들어간다」고 말하고 있었습니다.
+
+     왜 붙여넣기인가
+       PDF 를 앱이 직접 읽으려면 바깥 라이브러리가 필요하고, 그러면 이 앱은
+       **인터넷이 필요한 앱**이 됩니다 (마스터 원칙 1번).
+       표시는 **글자 안에** 있으므로 표 모양이 깨져도 읽힙니다 —
+       한글·PDF·NEIS 어디서 복사해 붙여 넣어도 같습니다.
+     ========================================================================== */
+
+  /* 이름이 문서마다 다릅니다. 가운뎃점만 해도 `·` `・` `･` 셋을 봤고,
+     같은 학교 문서 안에서 「약물 및 사이버 중독 예방」과 「…중독예방」을
+     함께 쓰고 있었습니다. 그래서 **느슨하게** 맞춥니다. */
+  function norm(x) {
+    return String(x == null ? '' : x)
+      .replace(/\([^)]*\)/g, '')              /* 괄호 안은 갈래 이름입니다 — (감정조절)·(공감) */
+      .replace(/[\s·・･ㆍ‧∙⋅.,_]/g, '')
+      .replace(/교육$/, '')                    /* 「~교육」은 붙기도 안 붙기도 합니다 */
+      .toLowerCase();
+  }
+  /* 정규화로도 안 맞는 자리. 실제 진도표에서 나온 이름을 그대로 적어 둡니다 —
+     짐작으로 넓히지 않습니다. 모르는 것은 모른다고 하고 사람에게 묻습니다. */
+  var ALIAS = {
+    '건강한식생활및영양': 'food',
+    '식생활영양': 'food',
+    '사회정서': 'life',
+    '자살예방': 'life',
+    '생명존중': 'life',
+    '성폭력예방': 'gender',
+    '성희롱예방': 'gender',
+    '양성평등': 'gender',
+    '학교폭력': 'bully',
+    '학교폭력예방': 'bully',
+    '어울림': 'bully',
+    '어울림프로그램': 'bully',
+    '사이버폭력': 'bully',
+    '사이버폭력예방': 'bully',
+    '도박예방': 'drug',
+    '마약예방': 'drug',
+    '약물남용': 'drug',
+    '감염병예방': 'health',
+    '독도': 'dokdo',
+    '통일': 'uni',
+    '다문화': 'multi',
+    '환경': 'env'
+  };
+  var NORM_UNIT = {};
+  UNITS.forEach(function (u) { NORM_UNIT[norm(u.n)] = u.id; });
+
+  function matchUnit(raw) {
+    var k = norm(raw);
+    if (!k) return '';
+    if (NORM_UNIT[k]) return NORM_UNIT[k];
+    if (ALIAS[k]) return ALIAS[k];
+    /* 앞부분이 같으면 같은 주제로 봅니다 —
+       「학교폭력 예방교육 어울림 프로그램(감정조절)」은 「학교폭력 예방교육」입니다.
+       네 글자 밑으로는 보지 않습니다. 짧은 말은 엉뚱한 데 붙습니다. */
+    var hit = '';
+    Object.keys(NORM_UNIT).forEach(function (n) {
+      if (n.length >= 4 && k.indexOf(n) === 0) { if (!hit || n.length > norm(UBY[hit].n).length) hit = NORM_UNIT[n]; }
+    });
+    return hit;
+  }
+
+  /* 창의적 체험활동의 세 영역은 「교과」가 아닙니다 */
+  function whereOfSubject(sj) {
+    if (!sj) return '';
+    return /자율|자치|동아리|진로활동/.test(sj) ? 'cet' : 'subj';
+  }
+
+  /* 진도표 글자 → 읽은 것. **고치지 않고 읽기만 합니다.** */
+  function readPlan(text) {
+    var t = String(text == null ? '' : text).replace(/\r/g, '');
+
+    /* 괄호 안이 줄바꿈으로 갈립니다 — PDF·한글에서 복사하면 늘 그렇습니다.
+       「[학교폭력 예방교육 어울림 프\n로그램(감정조절)-2]」 를 먼저 잇습니다. */
+    t = t.replace(/\[[^\]]*\]/g, function (x) { return x.replace(/\s*\n\s*/g, ''); });
+    t = t.replace(/【[^】]*】/g, function (x) { return x.replace(/\s*\n\s*/g, ''); });
+    t = t.replace(/\([^\)]*\)/g, function (x) { return x.replace(/\s*\n\s*/g, ''); });
+    t = t.replace(/<[^>]*>/g, function (x) { return x.replace(/\s*\n\s*/g, ''); });
+
+    var heads = [], hre = /([가-힣][가-힣·・･ㆍ]*)\s*교육과정\s*연간\s*지도\s*계획/g, hm;
+    while ((hm = hre.exec(t))) heads.push({ at: hm.index, subj: hm[1] });
+    function subjAt(pos) {
+      var s2 = '';
+      for (var i = 0; i < heads.length; i++) { if (heads[i].at < pos) s2 = heads[i].subj; else break; }
+      return s2;
+    }
+
+    var term = 0;
+    var tm = /20\d\d\s*학년도\s*([12])\s*학기/.exec(t);
+    if (tm) term = +tm[1];
+
+    /* 한 차시에 붙은 표시를 한 덩어리로 봅니다.
+       ★ 대괄호 및 기타 괄호 «사이»에도 줄바꿈이 낍니다. */
+    var lessons = 0, hits = [];
+    var gre = /(?:(?:\[[^\[\]]+?-\d+\]|【[^【】]+?-\d+】|\([^()]+?-\d+\)|<[^<>]+?-\d+>)\s*)+/g, gm;
+    while ((gm = gre.exec(t))) {
+      lessons++;
+      var sj = subjAt(gm.index), w = whereOfSubject(sj);
+      (gm[0].match(/(?:\[[^\[\]]+?-\d+\]|【[^【】]+?-\d+】|\([^()]+?-\d+\)|<[^<>]+?-\d+>)/g) || []).forEach(function (x) {
+        var p = /^[\(\[\【\<](.+)-(\d+)[\)\}\]】\>]$/.exec(x);
+        if (p) hits.push({ raw: p[1].trim(), n: +p[2], subj: sj, where: w, lesson: lessons });
+      });
+    }
+
+
+
+    /* 맞은 것끼리 «합칩니다». 이름이 둘로 갈려 있으면 여기서 하나가 됩니다 —
+       그러면 번호도 성해집니다. 실제 문서가 그랬습니다. */
+    var byUnit = {}, unknown = {}, order = [];
+    hits.forEach(function (h) {
+      var id = matchUnit(h.raw);
+      if (!id) {
+        if (!unknown[h.raw]) unknown[h.raw] = { raw: h.raw, count: 0, ns: [], bySubj: {}, lessons: {} };
+        var q = unknown[h.raw];
+        q.count++; q.ns.push(h.n); q.bySubj[h.subj || '(모름)'] = (q.bySubj[h.subj || '(모름)'] || 0) + 1;
+        q.lessons[h.lesson] = 1;
+        return;
+      }
+      if (!byUnit[id]) { byUnit[id] = { id: id, count: 0, ns: [], names: {}, bySubj: {}, where: {}, lessons: {} }; order.push(id); }
+      var o = byUnit[id];
+      o.count++; o.ns.push(h.n); o.names[h.raw] = (o.names[h.raw] || 0) + 1;
+      o.bySubj[h.subj || '(모름)'] = (o.bySubj[h.subj || '(모름)'] || 0) + 1;
+      if (h.where) o.where[h.where] = (o.where[h.where] || 0) + 1;
+      o.lessons[h.lesson] = 1;
+    });
+
+    /* 번호가 성한가 — 1 부터 빠짐없이 이어지는가.
+       사람이 손으로 붙이는 번호라 빠지고 겹칩니다. 아무도 세어 보지 않습니다.
+
+       ★ 번호는 «이름마다» 매겨집니다. 그래서 이름을 합쳐 놓고 세면 안 됩니다 —
+         「어울림(감정조절)」·「어울림(공감)」·「어울림(사이버 의사소통)」이
+         저마다 1·2 로 시작하는데, 합쳐 세면 «겹쳤다»는 거짓 경고가 납니다.
+         이름이 갈린 주제는 **갈렸다는 것만** 알리고 번호는 셈하지 않습니다. */
+    function tally(ns) {
+      var mx = 0, seen = {}, dup = [], miss = [];
+      ns.forEach(function (n) { if (n > mx) mx = n; if (seen[n]) { if (dup.indexOf(n) < 0) dup.push(n); } seen[n] = 1; });
+      for (var i = 1; i <= mx; i++) if (!seen[i]) miss.push(i);
+      return { max: mx, miss: miss, dup: dup.sort(function (a, b) { return a - b; }) };
+    }
+
+    var topics = order.map(function (id) {
+      var o = byUnit[id];
+      var names = Object.keys(o.names);
+      /* 이름이 하나일 때만 번호를 셉니다 (위 까닭) */
+      var t2 = names.length === 1 ? tally(o.ns) : { max: Math.max.apply(null, o.ns), miss: [], dup: [] };
+      /* 자리가 갈리면 «많은 쪽»으로 둡니다. 같으면 창의적 체험활동 —
+         범교과의 기본 자리이고, 표에는 한 자리만 적을 수 있기 때문입니다.
+         갈린 것 자체는 미리보기가 그대로 말해 줍니다. */
+      var wc = o.where.cet || 0, ws = o.where.subj || 0;
+      var w = (wc || ws) ? (ws > wc ? 'subj' : 'cet') : '';
+      var sjs = Object.keys(o.bySubj).filter(function (x) { return x !== '(모름)' && whereOfSubject(x) === 'subj'; })
+        .sort(function (a, b) { return o.bySubj[b] - o.bySubj[a]; });
+      return {
+        id: id, n: UBY[id].n, count: o.count, lessons: Object.keys(o.lessons).length,
+        names: names, bySubj: o.bySubj, where: w, subjText: sjs.join('·'),
+        cetLessons: wc, subjLessons: ws, split: !!(wc && ws),
+        max: t2.max, miss: t2.miss, dup: t2.dup
+      };
+    });
+
+    /* 1학기에 **어떤 이름으로 적었고 몇 번까지 갔는지**. 2학기를 이어 붙일 때 씁니다 —
+       앱의 이름(「생활 안전」)으로 내보내면 진도표에 두 이름이 섞입니다.
+       바로 그 문제를 앱이 만들어서는 안 됩니다. */
+    var rawMax = {}, rawList = {};
+    hits.forEach(function (h) {
+      if (!rawMax[h.raw] || h.n > rawMax[h.raw]) rawMax[h.raw] = h.n;
+    });
+    order.forEach(function (id) {
+      rawList[id] = Object.keys(byUnit[id].names)
+        .sort(function (a, b) { return byUnit[id].names[b] - byUnit[id].names[a]; });
+    });
+
+    /* **함께 묶은 짝** — 「보건교육+양성평등교육」을 열세 번 묶으셨다면
+       2학기도 그렇게 묶어 드리는 것이 맞습니다. 앱이 어울림을 짐작하는 것보다
+       **선생님이 1학기에 하신 대로** 하는 것이 낫습니다. */
+    var byLesson = {};
+    hits.forEach(function (h) {
+      var id = matchUnit(h.raw); if (!id) return;
+      (byLesson[h.lesson] = byLesson[h.lesson] || {})[id] = 1;
+    });
+    var pairs = {};
+    Object.keys(byLesson).forEach(function (L) {
+      var ids = Object.keys(byLesson[L]).sort();
+      for (var a = 0; a < ids.length; a++) for (var b = a + 1; b < ids.length; b++) {
+        var k = ids[a] + '|' + ids[b];
+        pairs[k] = (pairs[k] || 0) + 1;
+      }
+    });
+
+    var unk = Object.keys(unknown).map(function (k) {
+      var q = unknown[k], t2 = tally(q.ns);
+      return { raw: q.raw, count: q.count, lessons: Object.keys(q.lessons).length, bySubj: q.bySubj, max: t2.max };
+    }).sort(function (a, b) { return b.count - a.count; });
+
+    /* 자리마다 «실제 차시» 를 셉니다 — 이수 시수가 아니라 진짜 쓴 시간입니다 */
+    var byWhere = { cet: {}, subj: {}, '': {} };
+    hits.forEach(function (h) { byWhere[h.where || ''][h.lesson] = 1; });
+
+    return {
+      term: term, lessons: lessons, tags: hits.length,
+      topics: topics, unknown: unk,
+      byWhere: { cet: Object.keys(byWhere.cet).length, subj: Object.keys(byWhere.subj).length,
+        none: Object.keys(byWhere['']).length },
+      rawMax: rawMax, rawList: rawList, pairs: pairs,
+      heads: heads.map(function (h) { return h.subj; })
+    };
+  }
+
+
+  /* 읽은 것을 표로 옮깁니다.
+     term 은 1 또는 2. picks 는 «모르는 이름»에 사람이 골라 준 주제입니다.
+
+     ★ 덮어씁니다 — 그 학기 칸만. 그리고 **되돌릴 수 있게** 합니다.
+       「덮어쓸까요?」라고 묻지 않는 것은, 무엇이 들어갈지 이미
+       미리보기에서 다 보여 주었기 때문입니다 (마스터 함정 39번). */
+  function applyPlan(res, term, picks) {
+    var i = (term === 2) ? 1 : 0;
+    picks = picks || {};
+
+    /* 사람이 골라 준 것을 읽은 것에 얹습니다 — 읽기와 고르기를 섞지 않습니다 */
+    var extra = {};
+    (res.unknown || []).forEach(function (u) {
+      var id = picks[u.raw];
+      if (!id || !UBY[id]) return;
+      if (!extra[id]) extra[id] = { count: 0, bySubj: {}, lessons: 0 };
+      extra[id].count += u.count;
+      extra[id].lessons += u.lessons;
+      Object.keys(u.bySubj).forEach(function (k) { extra[id].bySubj[k] = (extra[id].bySubj[k] || 0) + u.bySubj[k]; });
+    });
+
+    var flaws = [];
+    res.topics.forEach(function (t) {
+      if (t.names.length > 1) flaws.push({ t: 'name', n: t.n, names: t.names.slice(0, 4) });
+      if (t.miss.length) flaws.push({ t: 'miss', n: t.n, ns: t.miss.slice(0, 8), max: t.max });
+      if (t.dup.length) flaws.push({ t: 'dup', n: t.n, ns: t.dup.slice(0, 8) });
+    });
+
+    markUndo('진도표에서 읽어 왔습니다 — ' + term + '학기.');
+    save(function (d) {
+      res.topics.forEach(function (t) {
+        var add = extra[t.id];
+        var cnt = t.count + (add ? add.count : 0);
+        var u = d.units[t.id];
+        u.h[i] = Math.min(999, cnt);
+        /* 표시가 붙은 차시 하나를 「한 회」로 봅니다.
+           한 회가 두 차시일 수도 있으니 **적게** 잡는 쪽입니다 — 넘겨 짚지 않습니다. */
+        u.n[i] = Math.min(99, t.lessons + (add ? add.lessons : 0));
+        if (t.where) u.where = t.where;
+        if (t.where === 'subj' && t.subjText) u.subj = t.subjText.slice(0, 40);
+      });
+      Object.keys(extra).forEach(function (id) {
+        if (res.topics.some(function (t) { return t.id === id; })) return;
+        var u = d.units[id], a = extra[id];
+        u.h[i] = Math.min(999, a.count);
+        u.n[i] = Math.min(99, a.lessons);
+        var sjs = Object.keys(a.bySubj).filter(function (x) { return x !== '(모름)' && whereOfSubject(x) === 'subj'; });
+        u.where = sjs.length ? 'subj' : 'cet';
+        if (u.where === 'subj') u.subj = sjs.join('·').slice(0, 40);
+      });
+      var names = {};
+      Object.keys(res.rawList || {}).forEach(function (id) { names[id] = res.rawList[id][0]; });
+      d.plan = {
+        term: term, lessons: res.lessons, tags: res.tags,
+        at: LEAP.todayISO(), flaws: flaws, byWhere: res.byWhere,
+        names: names, rawList: res.rawList || {}, rawMax: res.rawMax || {}, pairs: res.pairs || {},
+        pick: {}
+      };
+    });
+  }
+
+
+
+  /* ==========================================================================
+     남은 것을 차시로 묶어 주기  〔v0.4〕
+     --------------------------------------------------------------------------
+     1학기 진도표를 읽고 나면 앱은 «2학기에 무엇이 몇 시간 남았는지»를 압니다.
+     그런데 선생님이 실제로 하시는 일은 그 다음입니다 —
+     **2학기 진도표를 만들면서 차시마다 표시를 손으로 붙이는 일.**
+     그러려면 주제마다 «몇 번까지 갔는지»를 세어 가며 넣어야 합니다.
+
+     ★ 앱은 그 번호를 이미 알고 있습니다. 그러니 **세지 않게** 해 드리면 됩니다.
+       남은 것을 차시로 묶고, **진도표에 그대로 붙여넣을 글자**를 만들어 드립니다.
+
+         [교통 안전-7][재난 안전-5][소방 안전교육-2]
+
+     한 차시에 몇 개까지 넣나
+       한 차시는 40분이고, **10분 이상 다루면 이수로 봅니다.** 그래서 이론상 넷까지고,
+       넷을 넣으면 각 10분입니다. 셋까지를 권합니다.
+       다섯째는 **넣을 수 없습니다** — 40분에 다섯이면 8분입니다 (원칙 8번).
+
+     어떻게 묶나
+       앱이 어울림을 짐작하지 않습니다. **1학기에 선생님이 묶으신 대로** 묶습니다.
+       실제 진도표에서 「보건교육+양성평등교육」이 열세 번, 「사회정서+폭력예방」이
+       열한 번 함께 묶여 있었습니다. 그 버릇을 그대로 따릅니다.
+
+     이름은 문서에서 쓰시던 그대로
+       앱의 이름(「생활 안전」)으로 내보내면 진도표에 두 이름이 섞입니다 —
+       **띄어쓰기 하나로 번호가 갈리는 그 문제**를 앱이 만드는 셈입니다.
+     ========================================================================== */
+  var LESSON_MAX = 4;   /* 40분 ÷ 10분 */
+  var LESSON_FIT = 3;   /* 권하는 수 */
+
+  function planOf() { return db.get().plan; }
+  function tagName(id) {
+    var pl = planOf();
+    return (pl && pl.names && pl.names[id]) || (UBY[id] ? UBY[id].n : '');
+  }
+  function nextNo(id) {
+    var pl = planOf();
+    if (!pl) return 1;
+    var nm = tagName(id);
+    return ((pl.rawMax && pl.rawMax[nm]) || 0) + 1;
+  }
+  function rawsOf(id) {
+    var pl = planOf();
+    return (pl && pl.rawList && pl.rawList[id]) || [];
+  }
+  /* ★ 한 주제를 여러 갈래 이름으로 적으신 경우 — 「어울림(감정조절)·(공감)·(사이버
+     의사소통)」처럼 — 한 갈래에 몰아넣으면 안 됩니다. 갈래마다 번호가 따로 가고,
+     1학기에도 갈래마다 나눠 적으셨기 때문입니다. **골고루 돌아가며** 이어 붙이되,
+     한 갈래로만 하시겠다면 고르실 수 있게 합니다. */
+  function tagFor(id, k) {
+    var pl = planOf() || {};
+    var pick = (pl.pick && pl.pick[id]) || '';
+    var raws = rawsOf(id);
+    if (pick || raws.length < 2) {
+      var nm = pick || tagName(id);
+      return { name: nm, n: ((pl.rawMax && pl.rawMax[nm]) || 0) + 1 + k };
+    }
+    var r = raws[k % raws.length];
+    return { name: r, n: ((pl.rawMax && pl.rawMax[r]) || 0) + 1 + Math.floor(k / raws.length) };
+  }
+
+  /* 2학기에 더 넣어야 할 것.
+     안전 영역은 «영역별» 기준을 지켜야 하므로 총합이 넘어도 모자란 영역이 남습니다. */
+  function remain() {
+    var out = [];
+    UNITS.forEach(function (u) {
+      var need = needOf(u);
+      if (!need) return;                       /* 교과 통합 · 우리 학년 몫 아님 */
+      var have = uSum(u.id), left = need - have;
+      out.push({ id: u.id, n: u.n, tag: tagName(u.id), need: need, have: have,
+        left: left > 0 ? left : 0, duty: !!u.duty, next: nextNo(u.id),
+        raws: (planOf() && planOf().rawList && planOf().rawList[u.id]) || [] });
+    });
+    return out;
+  }
+  function leftTotal() {
+    return remain().reduce(function (n, r) { return n + r.left; }, 0);
+  }
+
+  function affinity(id, taken) {
+    var pl = planOf(), pr = (pl && pl.pairs) || {}, n = 0;
+    taken.forEach(function (t) {
+      var k = (id < t.id ? id + '|' + t.id : t.id + '|' + id);
+      n += (pr[k] || 0) * 10;                                   /* 1학기에 함께 묶은 만큼 */
+      if (UBY[id].top.g === UBY[t.id].top.g) n += 2;            /* 같은 묶음이면 조금 더 */
+      if (UBY[id].area && UBY[t.id].area) n += 1;               /* 둘 다 안전 영역이면 조금 더 */
+    });
+    return n;
+  }
+
+  /* 남은 것을 차시로 묶습니다. 같은 주제를 한 차시에 두 번 넣지 않습니다. */
+  function makeLessons(cap) {
+    cap = Math.max(1, Math.min(LESSON_MAX, cap || LESSON_FIT));
+    var pool = remain().filter(function (r) { return r.left > 0; })
+      .map(function (r) { return { id: r.id, left: r.left, k: 0 }; });
+    var out = [], guard = 0;
+    while (pool.some(function (p) { return p.left > 0; }) && guard++ < 500) {
+      pool.sort(function (a, b) { return b.left - a.left || (a.id < b.id ? -1 : 1); });
+      var take = [pool.filter(function (p) { return p.left > 0; })[0]];
+      while (take.length < cap) {
+        var cand = pool.filter(function (p) { return p.left > 0 && take.indexOf(p) < 0; });
+        if (!cand.length) break;
+        cand.sort(function (a, b) {
+          var d = affinity(b.id, take) - affinity(a.id, take);
+          return d || (b.left - a.left) || (a.id < b.id ? -1 : 1);
+        });
+        take.push(cand[0]);
+      }
+      out.push(take.map(function (p) {
+        p.left--;
+        var t = tagFor(p.id, p.k++);
+        return { id: p.id, name: t.name, n: t.n };
+      }));
+    }
+    return out;
+  }
+
+  /* 진도표에 그대로 붙여넣을 글자 */
+  function lessonTag(one) {
+    return one.map(function (x) { return '[' + x.name + '-' + x.n + ']'; }).join('');
+  }
+  /* 1학기에 그 주제들을 주로 어디에 두셨는지 */
+  function lessonWhere(one) {
+    var c = {};
+    one.forEach(function (x) { var w = row(x.id).where; if (w) c[w] = (c[w] || 0) + 1; });
+    var k = Object.keys(c).sort(function (a, b) { return c[b] - c[a]; })[0];
+    return k ? WHERE[k] : '';
+  }
+
+  /* ==========================================================================
+     진도표 읽어 오기 창 〔v0.3〕
+     --------------------------------------------------------------------------
+     붙여 넣으면 **그 자리에서** 무엇을 읽었는지 보여 줍니다 (마스터 함정 33번).
+     받기 전에 다 보이므로 「덮어쓸까요?」라고 묻지 않습니다 — 대신 되돌립니다.
+     ========================================================================== */
+  function unitOptions(sel) {
+    var h = '<option value="">세지 않음</option>';
+    TOPICS.forEach(function (t) {
+      if (t.areas) {
+        h += '<optgroup label="' + esc(t.n) + '">';
+        t.areas.forEach(function (a) {
+          h += '<option value="' + a.id + '"' + (sel === a.id ? ' selected' : '') + '>' + esc(a.n) + '</option>';
+        });
+        h += '</optgroup>';
+      } else {
+        h += '<option value="' + t.id + '"' + (sel === t.id ? ' selected' : '') + '>' + esc(t.n) + '</option>';
+      }
+    });
+    return h;
+  }
+
+  function readBody(res, term, picks) {
+    if (!res || !res.tags) {
+      return '<p class="lead muted" style="margin:0">아직 아무것도 읽지 못했습니다. ' +
+        '위에 진도표를 붙여 넣으면 여기에 읽은 것이 나타납니다.<br>' +
+        '<span class="small">「<b>[생활안전-19]</b>몸과 마음이 건강한 방학 식생활 계획 세우기」 같은 ' +
+        '<b>대괄호 표시</b>를 찾습니다. 표시가 없는 진도표라면 읽을 것이 없습니다.</span></p>';
+    }
+    var per = (res.tags / res.lessons).toFixed(2);
+    var h = '<p class="lead">' +
+      '<span class="big">' + res.lessons + '차시</span> 에 표시가 붙어 있고, ' +
+      '<span class="big">' + res.tags + '시간</span> 을 이수합니다.<br>' +
+      '<b>한 차시가 평균 ' + per + '개 주제를 함께 이수합니다.</b> ' +
+      '그래서 ' + res.tags + '시간이 ' + res.lessons + '차시 안에 들어갑니다.' +
+      (res.term ? ' &nbsp;·&nbsp; 문서에 <b>' + res.term + '학기</b>라고 적혀 있습니다.' : '') +
+      '</p>';
+
+    h += '<div class="scroll"><table class="rtb"><thead><tr>' +
+      '<th style="width:44%">알아본 주제</th><th style="width:14%">시수</th>' +
+      '<th style="width:14%">차시</th><th style="width:28%">어디에</th></tr></thead><tbody>';
+    res.topics.forEach(function (t) {
+      var w = t.where === 'subj' ? ('교과' + (t.subjText ? '(' + esc(t.subjText) + ')' : ''))
+        : t.where === 'cet' ? '창의적 체험활동' : '—';
+      if (t.split) w += ' <span class="small">· 창체 ' + t.cetLessons + '/교과 ' + t.subjLessons + '</span>';
+      h += '<tr><td>' + esc(t.n) + '</td><td class="c">' + t.count + '</td>' +
+        '<td class="c">' + t.lessons + '</td><td class="w">' + w + '</td></tr>';
+    });
+    h += '</tbody></table></div>';
+
+    if (res.unknown.length) {
+      h += '<div class="warn"><b>모르는 이름이 ' + res.unknown.length + '가지 있습니다.</b> ' +
+        '어느 주제인지 골라 주세요 — <b>짐작해서 넣지 않습니다.</b> ' +
+        '고르지 않으면 세지 않습니다.</div>' +
+        '<table class="rtb"><thead><tr><th style="width:38%">문서에 적힌 이름</th>' +
+        '<th style="width:12%">시수</th><th style="width:50%">어느 주제입니까</th></tr></thead><tbody>';
+      res.unknown.forEach(function (u) {
+        h += '<tr><td>' + esc(u.raw) + '</td><td class="c">' + u.count + '</td>' +
+          '<td><select data-unk="' + esc(u.raw) + '">' + unitOptions(picks[u.raw] || '') + '</select></td></tr>';
+      });
+      h += '</tbody></table>';
+    }
+
+    var flaw = [];
+    res.topics.forEach(function (t) {
+      if (t.names.length > 1) {
+        flaw.push('<b>' + esc(t.n) + '</b> 을 문서에서 <b>' + t.names.length + '가지 이름</b>으로 적었습니다 — ' +
+          t.names.map(function (x) { return '「' + esc(x) + '」'; }).join(' · ') + '. ' +
+          '합쳐서 ' + t.count + '시간으로 셌습니다.');
+      }
+      if (t.miss.length) {
+        flaw.push('<b>' + esc(t.n) + '</b> 의 번호 ' + t.miss.join('·') + '번이 <b>없습니다</b> (' + t.max + '번까지 있는데).');
+      }
+      if (t.dup.length) {
+        flaw.push('<b>' + esc(t.n) + '</b> 의 번호 ' + t.dup.join('·') + '번이 <b>겹칩니다</b>.');
+      }
+    });
+    if (flaw.length) {
+      h += '<div class="warn"><b>진도표에서 눈에 걸린 것</b><br>· ' + flaw.join('<br>· ') + '</div>';
+    } else {
+      h += '<div class="ok">번호가 모두 성하고, 주제마다 이름이 하나씩입니다.</div>';
+    }
+    return h;
+  }
+
+  function openPlan() {
+    var res = null, picks = {}, term = 0, txt = '';
+    var back = document.createElement('div');
+    back.className = 'pv-back';
+    back.innerHTML = '<div class="pv-w" role="dialog" aria-modal="true" aria-label="진도표에서 읽어 오기">' +
+      '<div class="pv-h"><div><b>진도표에서 읽어 오기</b>' +
+      '<span class="pv-sub">이 앱이 물어보려던 것을 학교는 이미 적어 두었습니다</span></div>' +
+      '<div class="pv-btns"><button class="btn btn--ghost btn--sm" id="pl-x" type="button">그만두기</button></div>' +
+      '</div><div class="pv-scroll" style="background:var(--leap-surface);padding:0"><div class="imp">' +
+
+      '<div class="step"><h3><i>1</i>진도표를 통째로 붙여 넣으세요</h3>' +
+      '<p>「<b>○○ 교육과정 연간지도계획</b>」을 한글·PDF·NEIS 어디서 복사해도 됩니다. ' +
+      '<b>표 모양이 깨져도 괜찮습니다</b> — 학습주제에 붙은 <b>[주제-번호]</b> 표시만 읽습니다. ' +
+      '교과별로 나눠 넣지 않아도 됩니다. <b>전부 한꺼번에</b> 넣으면 어느 교과에 얹었는지까지 읽습니다.</p>' +
+      '<textarea id="pl-t" placeholder="여기에 붙여 넣으세요 (Ctrl+A · Ctrl+C · Ctrl+V)" aria-label="진도표 붙여넣기"></textarea>' +
+      '</div>' +
+
+      '<div class="step"><h3><i>2</i>읽은 것</h3><div id="pl-r"></div></div>' +
+
+      '<div class="step" id="pl-term-step" hidden><h3><i>3</i>어느 학기입니까</h3>' +
+      '<p>고른 학기 칸에 <b>덮어씁니다.</b> 다른 학기와 손으로 적은 것은 그대로 둡니다. ' +
+      '잘못 받았으면 <b>「되돌리기」</b>로 한 걸음 돌아옵니다.</p>' +
+      '<div class="picks">' +
+      '<button class="pb" type="button" data-term="1">1학기</button>' +
+      '<button class="pb" type="button" data-term="2">2학기</button></div>' +
+      '<div class="actions"><button class="btn" id="pl-go" type="button" disabled>이대로 받기</button>' +
+      '<span class="small muted" id="pl-hint"></span></div></div>' +
+
+      '</div></div></div>';
+    document.body.appendChild(back);
+
+    function shut() {
+      if (back.parentNode) back.parentNode.removeChild(back);
+      document.removeEventListener('keydown', onKey);
+    }
+    function onKey(e) { if (e.key === 'Escape') shut(); }
+    document.addEventListener('keydown', onKey);
+    back.addEventListener('click', function (e) { if (e.target === back) shut(); });
+    back.querySelector('#pl-x').addEventListener('click', shut);
+
+    var ta = back.querySelector('#pl-t');
+    var box = back.querySelector('#pl-r');
+    var step3 = back.querySelector('#pl-term-step');
+    var go = back.querySelector('#pl-go');
+    var hint = back.querySelector('#pl-hint');
+
+    function paintTerm() {
+      back.querySelectorAll('[data-term]').forEach(function (b) {
+        b.setAttribute('aria-pressed', (+b.getAttribute('data-term') === term) ? 'true' : 'false');
+      });
+      go.disabled = !(res && res.tags && term);
+      hint.innerHTML = !res || !res.tags ? ''
+        : !term ? '학기를 골라 주세요.'
+          : '<b>' + term + '학기</b> 칸에 ' + res.topics.length + '개 주제를 적습니다.';
+    }
+    function paint() {
+      box.innerHTML = readBody(res, term, picks);
+      step3.hidden = !(res && res.tags);
+      box.querySelectorAll('[data-unk]').forEach(function (sel) {
+        sel.addEventListener('change', function () {
+          picks[sel.getAttribute('data-unk')] = sel.value;
+        });
+      });
+      paintTerm();
+    }
+    var tmr;
+    ta.addEventListener('input', function () {
+      clearTimeout(tmr);
+      tmr = setTimeout(function () {
+        txt = ta.value;
+        res = txt.trim() ? readPlan(txt) : null;
+        if (res && res.term && !term) term = res.term;   /* 문서가 말해 주면 그대로 */
+        picks = {};
+        paint();
+      }, 260);
+    });
+    back.querySelectorAll('[data-term]').forEach(function (b) {
+      b.addEventListener('click', function () { term = +b.getAttribute('data-term'); paintTerm(); });
+    });
+    go.addEventListener('click', function () {
+      if (!res || !res.tags || !term) return;
+      applyPlan(res, term, picks);
+      shut();
+      curTab = 'next';        /* 받고 나면 다음에 하실 일이 거기 있습니다 */
+      renderAll();
+      LEAP.announce('진도표에서 ' + res.topics.length + '개 주제를 읽어 왔습니다. 되돌릴 수 있습니다.');
+    });
+
+    paint();
+    ta.focus();
+  }
+
+  /* ==========================================================================
+     화면
+     ========================================================================== */
+
+  var panel = document.getElementById('panel');
+  var gradesEl = document.getElementById('grades');
+  var barEl = document.getElementById('planbar');
+  var miniEl = document.getElementById('mini');
+
+  function renderAll() { renderBar(); renderGrades(); renderPanel(); renderMini(); }
+
+  function renderBar() {
+    var d = db.get();
+    barEl.innerHTML =
+      '<div class="pb-t"><b>' + (d.info.school ? esc(d.info.school) : '학교 이름을 적어 주세요') + '</b>' +
+      '<span>' + (d.info.year ? esc(d.info.year) + ' · ' : '') +
+      (d.info.grade ? esc(d.info.grade) + ' · ' : '') + '범교과 학습 주제 운영 계획</span></div>' +
+      '<div class="pb-r">' +
+      '<input class="txt" id="f-school" placeholder="학교 이름" style="max-width:180px" value="' + esc(d.info.school) + '">' +
+      '<input class="txt" id="f-year" placeholder="예: 2026학년도" style="max-width:145px" value="' + esc(d.info.year) + '">' +
+      '<input class="txt" id="f-klass" placeholder="학급 (선택)" style="max-width:125px" value="' + esc(d.info.klass) + '">' +
+      '</div>';
+    [['f-school', 'school'], ['f-year', 'year'], ['f-klass', 'klass']].forEach(function (p) {
+      var el = barEl.querySelector('#' + p[0]);
+      if (!el) return;
+      el.addEventListener('input', function () {
+        save(function (d2) { d2.info[p[1]] = el.value.slice(0, 40); });
+        var t = barEl.querySelector('.pb-t b');
+        if (t) t.textContent = db.get().info.school || '학교 이름을 적어 주세요';
+        renderMini();
+      });
+    });
+  }
+
+  function renderGrades() {
+    var g = db.get().info.grade;
+    gradesEl.innerHTML = GRADES.map(function (x) {
+      return '<button class="gb" type="button" data-g="' + x + '" ' +
+        'aria-pressed="' + (g === x ? 'true' : 'false') + '">' + x +
+        '<span>창체 ' + CET_YEAR[x] + '시간</span></button>';
+    }).join('');
+    gradesEl.querySelectorAll('[data-g]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        var v = el.getAttribute('data-g');
+        save(function (d) { d.info.grade = (d.info.grade === v) ? '' : v; });
+        renderAll();
+      });
+    });
+  }
+
+  function gapCell(have, need, duty) {
+    if (!need) return '<td class="gap gap--0">—</td>';
+    if (!have) return '<td class="gap gap--0">—</td>';
+    var g = need - have;
+    if (g <= 0) return '<td class="gap gap--ok">채움</td>';
+    return '<td class="gap ' + (duty ? 'gap--no' : 'gap--0') + '">모자람 ' + g + '</td>';
+  }
+
+  function whereCell(u) {
+    var r = row(u.id);
+    var h = '<select data-w="' + u.id + '" aria-label="' + esc(u.n) + ' 어디에 얹는가">' +
+      '<option value="">아직 안 정함</option>' +
+      Object.keys(WHERE).map(function (k) {
+        return '<option value="' + k + '"' + (r.where === k ? ' selected' : '') + '>' + WHERE[k] + '</option>';
+      }).join('') + '</select>';
+    if (r.where === 'subj') {
+      h += '<input class="sj" data-sj="' + u.id + '" placeholder="어느 교과 (예: 도덕, 체육)" ' +
+        'value="' + esc(r.subj) + '" aria-label="' + esc(u.n) + ' 교과 이름">';
+    }
+    return '<td>' + h + '</td>';
+  }
+
+  /* 칸을 칠하는 기준이 «주제»와 «안전 영역»에서 다릅니다.
+     안전 영역은 20% 안에서 줄여도 되므로 기준보다 적다고 칠하면 거짓말이 됩니다 —
+     조정 범위를 벗어났을 때만 칠하고, 총 51시간은 계 줄에서 잡습니다. */
+  function hourCells(u) {
+    var r = row(u.id), need = needOf(u), have = r.h[0] + r.h[1];
+    var lack = u.area
+      ? (have > 0 && (have < adjLo(u.h) || have > adjHi(u.h)))
+      : (u.duty && need && have < need);
+    var cls = lack ? ' class="short"' : '';
+    return [0, 1].map(function (i) {
+      return '<td class="c"><input type="number" inputmode="numeric" min="0" max="999" ' +
+        'data-h="' + u.id + '" data-i="' + i + '" value="' + (r.h[i] || '') + '" ' +
+        'aria-label="' + esc(u.n) + ' ' + (i + 1) + '학기 시수"' + cls + '></td>';
+    }).join('');
+  }
+
+  function noteRow(t, cols) {
+    var laws = t.law || [];
+    var h = '<tr class="nt"><td colspan="' + cols + '">' + (t.how || '');
+    if (laws.length) {
+      h += '<br><span style="opacity:.85">근거 — ' + esc(laws[0]) +
+        (laws.length > 1 ? ' 외 ' + (laws.length - 1) + '건' : '') + '</span>';
+    }
+    if (t.must && t.must.length) {
+      h += '<div class="musts">' + t.must.map(function (m) {
+        var on = db.get().musts[m.id];
+        return '<label class="mck' + (on ? '' : ' off') + '">' +
+          '<input type="checkbox" data-m="' + m.id + '"' + (on ? ' checked' : '') + '>' +
+          '<span>' + m.t + (m.d ? ' <span style="color:var(--leap-gray);font-weight:600">— ' + esc(m.d) + '</span>' : '') + '</span></label>';
+      }).join('') + '</div>';
+    }
+    return h + '</td></tr>';
+  }
+
+  /* 걸음 셋 — 한 번에 하나만 보입니다 */
+  var curTab = 'safe';
+
+  function tabsHTML() {
+    var pl = planOf(), left = pl ? leftTotal() : 0;
+    var s2 = safeSum(), bad = hard().length;
+    var tabs = [
+      { k: 'safe',  n: '① 학교안전교육 7대 영역',
+        d: (s2 ? s2 : '—') + ' / ' + SAFE_TOTAL + '시간 · 법정 의무의 가장 큰 덩어리' },
+      { k: 'cross', n: '② 범교과 학습 주제',
+        d: dutyPlaced() + ' / ' + dutyTotal() + '시간 · 스무 주제' +
+           (bad ? ' · 살펴볼 곳 ' + bad : '') },
+      { k: 'next',  n: '③ 다음 학기 채우기',
+        d: pl ? (left ? left + '시간 남음 · ' + Math.ceil(left / mkCap) + '차시' : '더 넣을 것 없음')
+              : '진도표를 읽어 오면 여기에' }
+    ];
+    return '<div class="tabs2 no-print" role="tablist">' + tabs.map(function (t) {
+      return '<button type="button" role="tab" data-tab="' + t.k + '" ' +
+        'aria-selected="' + (curTab === t.k ? 'true' : 'false') + '">' +
+        '<span class="n">' + t.n + '</span><span class="d">' + t.d + '</span></button>';
+    }).join('') + '</div>';
+  }
+
+  function healthHTML() {
+    var d = db.get();
+    /* ── 보건교육 「한 개 학년 이상」 ──────────────────────────────────── */
+    return '<label class="hline no-print">' +
+      '<input type="checkbox" id="f-health"' + (d.healthGrade ? ' checked' : '') + '>' +
+      '<span><b>우리 학년이 보건교육 17차시를 편성하는 학년입니다.</b><br>' +
+      '보건교육은 「<b>한 개 학년 이상</b> 최소 17차시 이상」입니다 — 모든 학년이 아닙니다. ' +
+      '우리 학년이 아니라면 이 표시를 끄세요 — <b>우리 학년이 져야 할 법정 시수가 ' +
+      DUTY_FULL + '시간에서 ' + DUTY_NOHEALTH + '시간으로 바뀝니다.</b></span></label>';
+
+  }
+
+  function safeHTML() {
+    var h = '';
+    /* ── 표 1 : 학교안전교육 7대 표준안 ───────────────────────────────── */
+    h += '<div class="card"><h2>학교안전교육 7대 영역</h2>' +
+      '<p class="sub">법정 의무 ' + DUTY_FULL + '시간 가운데 <b>' + SAFE_TOTAL + '시간</b>이 여기 있습니다. ' +
+      '가장 큰 덩어리라 <b>여기부터 채웁니다</b> — <b>② 범교과</b> 표의 첫 줄이 이 표의 합입니다.<br>' +
+      '영역별 시수는 <b>학년별로 실시해야 하는 시간</b>입니다. ' +
+      '총 이수 시간 안에서 영역별로 <b>20%까지 조정</b>할 수 있습니다(소수점 올림) — ' +
+      '다만 <b>총 ' + SAFE_TOTAL + '시간은 지켜야</b> 합니다.</p>' +
+      '<div style="overflow-x:auto"><table class="tb">' +
+      '<thead><tr><th style="width:24%">영역</th><th style="width:7%">기준</th>' +
+      '<th style="width:11%">조정 범위</th><th style="width:8%">1학기</th><th style="width:8%">2학기</th>' +
+      '<th style="width:7%">계</th><th style="width:14%">학기당 횟수<br><span style="font-weight:600">1학기 · 2학기</span></th>' +
+      '<th style="width:21%">어디에 얹는가</th></tr></thead><tbody>';
+
+    AREAS.forEach(function (a) {
+      var u = UBY[a.id], r = row(a.id), have = uSum(a.id);
+      var lo = adjLo(a.h), hi = adjHi(a.h);
+      var bad = have > 0 && (have < lo || have > hi);
+      h += '<tr><td class="nm">' + esc(a.n) + '</td>' +
+        '<td class="base">' + a.h + '</td>' +
+        '<td class="base">' + lo + '~' + hi + '</td>' +
+        hourCells(u) +
+        '<td class="c"><b' + (bad ? ' style="color:var(--leap-amber)"' : '') + '>' + (have || '—') + '</b></td>' +
+        '<td class="c">' +
+        [0, 1].map(function (i) {
+          var short = have > 0 && r.n[i] < a.per;
+          return '<input type="number" inputmode="numeric" min="0" max="99" style="width:44px;display:inline-block" ' +
+            'data-n="' + a.id + '" data-i="' + i + '" value="' + (r.n[i] || '') + '" ' +
+            'aria-label="' + esc(a.n) + ' ' + (i + 1) + '학기 횟수"' + (short ? ' class="short"' : '') + '>';
+        }).join(' ') +
+        '<div class="small muted" style="margin-top:2px">' + a.per + '회 이상</div></td>' +
+        whereCell(u) + '</tr>';
+      h += '<tr class="nt"><td colspan="8">' + esc(a.d) + '</td></tr>';
+    });
+
+    var s2 = safeSum();
+    h += '<tr class="sum"><td class="nm">계</td><td class="base">' + SAFE_TOTAL + '</td><td class="base">—</td>' +
+      '<td class="c">' + (termSafe(0) || '—') + '</td><td class="c">' + (termSafe(1) || '—') + '</td>' +
+      '<td class="c"><b>' + (s2 || '—') + '</b></td>' +
+      '<td class="base">—</td><td class="base">—</td></tr>';
+    h += '</tbody></table></div>';
+    h += '<p class="hintline">51시간 안에 <b>「아동복지법」 시행령의 안전교육 44시간이 들어 있습니다.</b> ' +
+      '따로 51시간과 44시간을 채우는 것이 아닙니다.</p>';
+    h += '</div>';
+
+    return h;
+  }
+
+  function crossHTML() {
+    var d = db.get(), h = healthHTML();
+    /* ── 표 2 : 범교과 학습 주제 ──────────────────────────────────────── */
+    h += '<div class="card"><h2>범교과 학습 주제</h2>' +
+      '<p class="sub">법정 시수는 <b>고칠 수 있는 칸이 아닙니다.</b> ' +
+      '학기를 나눠 적는 것은 「학기당 몇 회 이상」을 셀 수 있어야 하기 때문입니다.</p>' +
+      '<div style="overflow-x:auto"><table class="tb">' +
+      '<thead><tr><th style="width:27%">범교과 학습 주제</th><th style="width:8%">법정</th>' +
+      '<th style="width:7%">구분</th><th style="width:9%">1학기</th><th style="width:9%">2학기</th>' +
+      '<th style="width:8%">계</th><th style="width:10%">남은 것</th><th style="width:22%">어디에 얹는가</th></tr></thead><tbody>';
+
+    var lastG = '';
+    TOPICS.forEach(function (t) {
+      if (t.g !== lastG) {
+        h += '<tr class="grp"><td colspan="8">' + esc(t.g) + '</td></tr>';
+        lastG = t.g;
+      }
+      if (t.areas) {
+        /* 안전은 «합»이라 받지 않습니다 — 아래 7영역 표가 채웁니다 */
+        var s = safeSum();
+        h += '<tr class="sum"><td class="nm">' + esc(t.n) +
+          ' <span class="tag tag--duty">의무</span></td>' +
+          '<td class="base">' + t.h + '</td><td class="base">7영역</td>' +
+          '<td class="c">' + (termSafe(0) || '—') + '</td>' +
+          '<td class="c">' + (termSafe(1) || '—') + '</td>' +
+          '<td class="c"><b>' + (s || '—') + '</b></td>' +
+          gapCell(s, t.h, 1) +
+          '<td class="small muted"><b>① 7대 영역</b>에서 채운 값입니다</td></tr>';
+        h += noteRow(t, 8);
+        return;
+      }
+      var u = UBY[t.id], need = needOf(u), have = uSum(t.id);
+      var tag = t.integ ? '<span class="tag tag--integ">교과 통합</span>'
+        : t.duty ? '<span class="tag tag--duty">의무</span>'
+          : '<span class="tag tag--rec">권장</span>';
+      var base = t.integ ? '통합' : (need ? need : (t.h || '—'));
+      var nm = esc(t.n);
+      if (t.byGrade) {
+        var g = d.info.grade;
+        nm += ' <span class="small muted">' +
+          (!g ? '1~3학년 10차시 권장 · 4~6학년 10차시 이상'
+            : (GRADES.indexOf(g) < 3 ? '1~3학년 · 10차시 권장' : '4~6학년 · 10차시 이상')) + '</span>';
+      }
+      if (t.id === 'health' && !d.healthGrade) {
+        nm += ' <span class="small muted">우리 학년 몫이 아님</span>';
+      }
+      h += '<tr><td class="nm">' + nm + ' ' + tag + '</td>' +
+        '<td class="base">' + base + '</td>' +
+        '<td class="base">' + (t.duty ? '의무' : '권장') + '</td>' +
+        hourCells(u) +
+        '<td class="c"><b>' + (have || '—') + '</b></td>' +
+        gapCell(have, t.integ ? 0 : need, t.duty) +
+        whereCell(u) + '</tr>';
+      h += noteRow(t, 8);
+    });
+
+    h += '</tbody></table></div>';
+    h += '<p class="hintline">「교과 통합」은 <b>자료에 시수가 없는 주제</b>입니다 — ' +
+      '숫자 대신 <b>어느 교과에 통합했는지</b>를 적으면 계획서에 그대로 실립니다.</p>';
+    h += '</div>';
+
+    return h;
+  }
+
+  function renderPanel() {
+    var h = undoBar() + bowlHTML() + tabsHTML();
+    if (curTab === 'safe') h += safeHTML();
+    else if (curTab === 'cross') h += crossHTML();
+    else h += nextHTML();
+    panel.innerHTML = h;
+    bind();
+  }
+
+  function termSafe(i) {
+    return AREAS.reduce(function (n, a) { return n + row(a.id).h[i]; }, 0);
+  }
+
+  /* ── 화면 : 남은 것을 차시로 묶어 주기 ────────────────────────────────── */
+  var mkCap = LESSON_FIT;
+
+  function nextHTML() {
+    var pl = planOf();
+    if (!pl) {
+      return '<div class="card"><div class="invite">' +
+        '<p><b>진도표를 읽어 오면 여기에서 남은 것을 차시로 묶어 드립니다.</b><br>' +
+        '한 학기치를 읽고 나면 앱이 <b>어느 주제가 몇 번까지 갔는지</b> 알게 되어, ' +
+        '다음 학기를 짜실 때 <b>세어 가며 넣지 않으셔도</b> 됩니다.</p>' +
+        '<button class="btn btn--big" id="btn-plan2" type="button">진도표에서 읽어 오기</button>' +
+        '</div></div>';
+    }
+    var other = (pl.term === 1 ? 2 : 1);
+    var rows = remain(), left = leftTotal();
+
+    var h = '<div class="card nx no-print"><h2>' + other + '학기에 더 넣을 것</h2>' +
+      '<p class="sub">' + pl.term + '학기 진도표를 읽었으니 <b>어느 주제가 몇 번까지 갔는지 앱이 압니다.</b> ' +
+      '세어 가며 넣지 않으셔도 됩니다 — <b>진도표에 그대로 붙여넣을 글자</b>를 만들어 드립니다.</p>';
+
+    if (!left) {
+      return h + '<p class="ok">더 넣을 것이 없습니다 — 의무 시수가 모두 찼습니다.</p></div>';
+    }
+
+    var fit = Math.ceil(left / mkCap);
+    h += '<p class="lead"><span class="big">' + left + '시간</span> 이 남았습니다. ' +
+      '한 차시에 ' + mkCap + '개씩 담으면 <span class="big">' + fit + '차시</span> 입니다.</p>';
+
+    h += '<div style="overflow-x:auto"><table class="tb" style="margin-top:14px">' +
+      '<thead><tr><th style="width:30%">주제</th><th style="width:9%">연간</th>' +
+      '<th style="width:10%">' + pl.term + '학기</th><th style="width:11%">남음</th>' +
+      '<th style="width:40%">' + other + '학기에 이어 붙일 이름과 번호</th></tr></thead><tbody>';
+    rows.forEach(function (r) {
+      var raws = r.raws, nm;
+      /* 고르는 칸은 «남은 것이 있을 때만» 냅니다 — 다 찬 줄에 두면 할 일처럼 보입니다 */
+      if (r.left && raws.length > 1) {
+        /* 한 주제를 여러 갈래로 적으신 경우 — 한 갈래에 몰아넣지 않습니다 */
+        nm = '<select data-pick="' + r.id + '" aria-label="' + esc(r.n) + ' 이어 붙일 이름">' +
+          '<option value="">' + raws.length + '갈래에 골고루</option>' +
+          raws.map(function (x) {
+            return '<option value="' + esc(x) + '"' +
+              (((pl.pick || {})[r.id] === x) ? ' selected' : '') + '>「' + esc(x) + '」만</option>';
+          }).join('') + '</select>';
+      } else {
+        nm = r.left ? '<span class="small">「' + esc(r.tag) + '」 <b>' + r.next + '번</b>부터</span>'
+          : '<span class="small muted">—</span>';
+      }
+      h += '<tr' + (r.left ? '' : ' style="opacity:.5"') + '><td class="nm">' + esc(r.n) +
+        (r.duty ? '' : ' <span class="tag tag--rec">권장</span>') + '</td>' +
+        '<td class="base">' + r.need + '</td><td class="c">' + r.have + '</td>' +
+        '<td class="gap ' + (r.left ? 'gap--no">' + r.left + '시간' : 'gap--ok">채움') + '</td>' +
+        '<td>' + nm + '</td></tr>';
+    });
+    h += '</tbody></table></div>';
+
+    h += '<div class="caps"><span class="small muted" style="margin-right:4px">한 차시에</span>' +
+      [2, 3, 4].map(function (c) {
+        return '<button class="cb" type="button" data-cap="' + c + '" ' +
+          'aria-pressed="' + (mkCap === c ? 'true' : 'false') + '">' + c + '개씩</button>';
+      }).join('') +
+      '<button class="btn btn--ghost btn--sm" id="mk-copy" type="button" style="margin-left:auto">전부 복사</button>' +
+      '</div>';
+
+    var L = makeLessons(mkCap);
+    h += '<div class="mk">' + L.map(function (one, i) {
+      var w = lessonWhere(one);
+      return '<div class="row"><span class="no">' + (i + 1) + '</span>' +
+        '<span class="tg">' + esc(lessonTag(one)) + '</span>' +
+        (w ? '<span class="wh">' + esc(w) + '</span>' : '') +
+        '<button class="cp" type="button" data-cp="' + i + '">복사</button></div>';
+    }).join('') + '</div>';
+
+    h += '<p class="note">차시마다 <b>[주제-번호]</b> 를 복사해 진도표의 <b>학습주제 맨 앞</b>에 붙이세요. ' +
+      '이름은 <b>' + pl.term + '학기에 쓰시던 그대로</b>입니다 — 앱의 이름으로 바꾸면 진도표에 두 이름이 섞이고, ' +
+      '그러면 번호가 갈립니다.</p>';
+
+    /* 한 차시는 40분이고 10분 이상 다루면 이수로 봅니다 — 그래서 넷이 끝입니다 */
+    h += '<div class="warn"><b>한 차시는 40분입니다.</b> ' +
+      '한 주제를 <b>10분 이상</b> 다루면 이수로 보므로 <b>넷이 끝</b>이고, 넷을 넣으면 각 10분입니다. ' +
+      '<b>셋까지를 권합니다.</b> 다섯째는 이 앱에서 <b>넣을 수 없습니다</b> — 40분에 다섯이면 8분입니다.</div>';
+
+    var pr = pl.pairs || {};
+    var keys = Object.keys(pr);
+    if (keys.length) {
+      var top = keys.sort(function (a, b) { return pr[b] - pr[a]; })[0];
+      var ab = top.split('|');
+      if (UBY[ab[0]] && UBY[ab[1]]) {
+        h += '<p class="note"><b>' + pl.term + '학기에 묶으신 대로 묶었습니다.</b> ' +
+          '「' + esc(UBY[ab[0]].n) + '」과 「' + esc(UBY[ab[1]].n) + '」을 ' + pr[top] + '번 함께 두셨더군요 — ' +
+          '앱이 어울림을 짐작하는 것보다 그 버릇을 따르는 편이 낫습니다.</p>';
+      }
+    }
+    return h + '</div>';
+  }
+
+  function bindNext() {
+    panel.querySelectorAll('[data-cap]').forEach(function (b) {
+      b.addEventListener('click', function () { mkCap = +b.getAttribute('data-cap'); renderPanel(); });
+    });
+    panel.querySelectorAll('[data-pick]').forEach(function (sel) {
+      sel.addEventListener('change', function () {
+        var id = sel.getAttribute('data-pick');
+        save(function (d) { d.plan.pick = d.plan.pick || {}; d.plan.pick[id] = sel.value; });
+        renderPanel();
+      });
+    });
+    function copy(s2) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(s2).then(
+          function () { LEAP.announce('복사했습니다. 진도표에 붙여 넣으세요.'); },
+          function () { LEAP.announce('복사하지 못했습니다. 직접 선택해 복사해 주세요.'); });
+      } else LEAP.announce('복사하지 못했습니다. 직접 선택해 복사해 주세요.');
+    }
+    var L = makeLessons(mkCap);
+    panel.querySelectorAll('[data-cp]').forEach(function (b) {
+      b.addEventListener('click', function () { copy(lessonTag(L[+b.getAttribute('data-cp')])); });
+    });
+    var all = panel.querySelector('#mk-copy');
+    if (all) all.addEventListener('click', function () {
+      copy(L.map(function (one, i) { return (i + 1) + '\t' + lessonTag(one); }).join('\n'));
+    });
+  }
+
+  /* ── 얼굴 : 그릇 ──────────────────────────────────────────────────── */
+  function bowlHTML() {
+    var d = db.get();
+    var need = dutyTotal(), rec = recTotal();
+    var b = bowls(), cap = cetCap();
+
+    if (!touched()) {
+      return '<div class="bowl"><div class="hd"><b>연 ' + need + '시간을 어디에 얹는가</b>' +
+        '<span class="small muted">법으로 시수가 박힌 교육의 합</span></div>' +
+        '<p class="note" style="margin:0">아래 표에 시수를 적으면 여기에 그릇이 찹니다. ' +
+        '<b>의무 ' + need + '시간</b>' + (rec ? ' · 권장 ' + rec + '시간' : '') +
+        (cap ? ' · 창의적 체험활동은 한 해 <b>' + cap + '시간</b>' : '') + '입니다.' +
+        (cap && need > cap ? ' <b>창체만으로는 들어가지 않습니다.</b>' : '') + '</p>' +
+        capLine() + '</div>';
+    }
+
+    /* 눈금이 막대 끝에 딱 붙으면 «있으나 마나»입니다. 창체 시수 너머로 조금
+       여유를 두어, 「여기까지가 창체」라는 줄과 그 바깥의 빗금이 늘 보이게 합니다. */
+    var scale = Math.max(cap, b.cet, b.subj, b.none, 1);
+    if (cap) scale = Math.max(scale, cap * 1.14);
+    function bar(name, v, isCet) {
+      var w = Math.min(100, 100 * v / scale);
+      var over = isCet && cap && v > cap;
+      var inner = '';
+      if (isCet && cap) {
+        var cp = Math.min(100, 100 * cap / scale);
+        inner += '<span class="hatch" style="left:' + cp.toFixed(1) + '%"></span>';
+      }
+      inner += '<span class="fl' + (over ? ' over' : '') + '" style="width:' + w.toFixed(1) + '%"></span>';
+      if (isCet && cap) {
+        inner += '<span class="cap" style="left:calc(' + Math.min(100, 100 * cap / scale).toFixed(1) + '% - 1px)"></span>';
+      }
+      var tail = '';
+      if (isCet && cap) tail = ' <em>/ ' + cap + '시간</em>';
+      return '<div class="bwr"><span class="nm">' + name + '</span>' +
+        '<span class="tr">' + inner + '</span>' +
+        '<span class="vv">' + v + '시간' + tail + '</span></div>';
+    }
+
+    var body = '<div class="rows">' +
+      bar('창의적 체험활동', b.cet, 1) +
+      bar('교과 통합', b.subj, 0) +
+      (b.none ? bar('아직 안 정함', b.none, 0) : '') +
+      '</div>';
+
+    var ps = problems();
+    var hd = hard();
+    var note;
+    if (!hd.length) {
+      note = '<p class="ok">다 채웠습니다 — 의무 ' + need + '시간이 모두 자리를 잡았고, ' +
+        '학기당 횟수와 함께 지킬 조건도 표시했습니다.</p>';
+    } else {
+      var by = {};
+      hd.forEach(function (p) { by[p.t] = (by[p.t] || 0) + 1; });
+      var lines = [];
+      if (by.short) lines.push('<b>시수가 모자란 주제 ' + by.short + '개</b>');
+      if (by.safe51) lines.push('<b>안전교육 총 ' + SAFE_TOTAL + '시간 미달</b>');
+      if (by.adj) lines.push('안전 영역 조정 범위를 벗어난 곳 ' + by.adj + '곳');
+      if (by.per) lines.push('<b>학기당 횟수가 모자란 곳 ' + by.per + '곳</b>');
+      if (by.nowhere) lines.push('어디에 얹을지 안 정한 주제 ' + by.nowhere + '개');
+      if (by.must) lines.push('<b>함께 지킬 조건 ' + by.must + '개 미확인</b>');
+      if (by.cetover) lines.push('<b>창의적 체험활동에 다 들어가지 않습니다</b>');
+      note = '<div class="warn">' + lines.join(' · ') + '</div>';
+    }
+
+    /* ★ 이 한 줄이 이 앱의 이유입니다.
+       v0.2 까지는 «이수 시수»를 창체 시수와 견주었는데, 그것은 틀린 셈이었습니다 —
+       한 차시가 여러 주제를 겸하면 이수 시수는 실제로 쓴 시간보다 큽니다. */
+    var head = '', pl = d.plan;
+    var used = cetUsed();
+    if (cap && used) {
+      var pc = Math.round(100 * used / cap);
+      head = '<p class="note" style="margin-top:13px"><b>창의적 체험활동 ' + cap + '시간 가운데 ' +
+        used + (pl ? '차시가' : '시간이') + ' 법정 의무교육입니다 — ' + pc + '%.</b> ' +
+        (pc >= 100
+          ? '창체에는 <b>더 들어갈 자리가 없습니다.</b> 교과 통합으로 옮겨야 합니다.'
+          : '남은 자리는 ' + (cap - used) + '시간입니다 — 자치활동·동아리·진로활동이 여기에 들어갑니다.') +
+        (pl && b.cet !== used
+          ? '<br><b>이수 시수로는 ' + b.cet + '시간</b>이지만 <b>실제로 쓴 것은 ' + used + '차시</b>입니다 — ' +
+            '한 차시가 여러 주제를 함께 이수하기 때문입니다.'
+          : (!pl ? '<br><span class="small">한 차시가 여러 주제를 겸하면 <b>실제 차시는 이보다 적습니다.</b> ' +
+              '「진도표에서 읽어 오기」로 넣으면 실제 차시로 셉니다.</span>' : '')) +
+        '</p>';
+    }
+    if (pl) {
+      head += '<p class="note"><b>진도표에서 읽어 왔습니다</b> (' + esc(pl.at) + ' · ' + pl.term + '학기) — ' +
+        '표시가 붙은 차시 <b>' + pl.lessons + '개</b>로 이수 시수 <b>' + pl.tags + '시간</b>, ' +
+        '한 차시가 평균 <b>' + (pl.tags / pl.lessons).toFixed(2) + '개</b> 주제를 겸합니다.';
+      /* 한 학기만 읽어 왔으면 모자란 것이 «당연»합니다. 그 말을 안 하면
+         한 학기치를 넣고 스무 곳이 모자라다는 말을 듣게 됩니다. */
+      var other = pl.term === 1 ? 1 : 0;
+      var otherEmpty = UNITS.every(function (u) { return row(u.id).h[other] === 0; });
+      if (otherEmpty) {
+        head += '<br><b>' + (pl.term === 1 ? 2 : 1) + '학기가 아직 비어 있습니다.</b> ' +
+          '아래에서 모자라다고 하는 것은 대부분 그 때문입니다 — ' +
+          '' + (pl.term === 1 ? 2 : 1) + '학기 진도표도 읽어 오세요.';
+      }
+      head += '</p>';
+    }
+
+    var recLine = '';
+    var recs = ps.filter(function (p) { return p.t === 'rec'; });
+    if (recs.length) {
+      recLine = '<p class="note">권장 시수에 못 미치는 것 — ' + recs.map(function (p) {
+        return esc(p.n) + ' ' + p.have + '/' + p.need;
+      }).join(' · ') + '. <b>권장은 어긴 것이 아닙니다.</b></p>';
+    }
+
+    return '<div class="bowl"><div class="hd"><b>연 ' + need + '시간을 어디에 얹었는가</b>' +
+      '<span class="small muted">막대 위 세로줄이 창의적 체험활동의 끝입니다</span></div>' +
+      body +
+      '<div class="tot"><span class="big">' + dutyPlaced() + ' / ' + need + '시간</span>' +
+      '<span class="small muted">의무에 얹은 것 / 의무 시수' +
+      (rec ? ' &nbsp;·&nbsp; 권장은 따로 ' + recPlaced() + ' / ' + rec + '시간' : '') +
+      '</span></div>' +
+      note + head + recLine + capLine() + '</div>';
+  }
+
+  function capLine() {
+    var d = db.get(), base = CET_YEAR[d.info.grade] || 0;
+    if (!d.info.grade) {
+      return '<p class="capline no-print">학년을 고르면 <b>창의적 체험활동 시수</b>가 함께 셈됩니다.</p>';
+    }
+    return '<div class="capline no-print"><span>' + esc(d.info.grade) +
+      ' 창의적 체험활동 연간 시수</span>' +
+      '<input type="number" inputmode="numeric" min="0" max="400" id="f-cap" ' +
+      'value="' + (d.cetCap || base) + '" aria-label="창의적 체험활동 연간 시수">' +
+      '<span>시간 &nbsp;· 기본값 ' + base + '시간(학년군 시수의 절반). ' +
+      '학교가 증감했으면 고쳐 주세요.</span></div>';
+  }
+
+  function bind() {
+    var u = panel.querySelector('#btn-undo');
+    if (u) u.addEventListener('click', function () {
+      if (!undo) return;
+      db.set(JSON.parse(undo.snap));
+      undo = null; undoKeep = false;
+      renderAll();
+      LEAP.announce('되돌렸습니다.');
+    });
+
+    /* 숫자를 칠 때 전체를 다시 그리면 커서가 튑니다 (마스터 함정 7번).
+       그릇과 계만 갈아 끼우고, 표는 다음 렌더에서 맞춥니다. */
+    function live() {
+      var bw = panel.querySelector('.bowl');
+      if (bw) bw.outerHTML = bowlHTML();
+      bindCap();
+      renderMini();
+      refreshSums();
+    }
+
+    panel.querySelectorAll('[data-h]').forEach(function (el) {
+      el.addEventListener('input', function () {
+        var id = el.getAttribute('data-h'), i = +el.getAttribute('data-i');
+        save(function (d) { d.units[id].h[i] = num(el.value); });
+        live();
+      });
+    });
+    panel.querySelectorAll('[data-n]').forEach(function (el) {
+      el.addEventListener('input', function () {
+        var id = el.getAttribute('data-n'), i = +el.getAttribute('data-i');
+        save(function (d) { d.units[id].n[i] = num(el.value); });
+        live();
+      });
+    });
+    panel.querySelectorAll('[data-w]').forEach(function (el) {
+      el.addEventListener('change', function () {
+        var id = el.getAttribute('data-w');
+        save(function (d) { d.units[id].where = el.value; });
+        renderPanel(); renderMini();
+      });
+    });
+    panel.querySelectorAll('[data-sj]').forEach(function (el) {
+      el.addEventListener('input', function () {
+        var id = el.getAttribute('data-sj');
+        save(function (d) { d.units[id].subj = el.value.slice(0, 40); });
+        renderMini();
+      });
+    });
+    panel.querySelectorAll('[data-m]').forEach(function (el) {
+      el.addEventListener('change', function () {
+        var id = el.getAttribute('data-m');
+        save(function (d) { d.musts[id] = !!el.checked; });
+        renderPanel(); renderMini();
+      });
+    });
+    var pb2 = panel.querySelector('#btn-plan2');
+    if (pb2) pb2.addEventListener('click', openPlan);
+    panel.querySelectorAll('[data-tab]').forEach(function (b) {
+      b.addEventListener('click', function () { curTab = b.getAttribute('data-tab'); renderPanel(); });
+    });
+    bindNext();
+    var hg = panel.querySelector('#f-health');
+    if (hg) hg.addEventListener('change', function () {
+      save(function (d) { d.healthGrade = !!hg.checked; });
+      renderPanel(); renderMini();
+    });
+    bindCap();
+  }
+
+  function bindCap() {
+    var c = panel.querySelector('#f-cap');
+    if (!c) return;
+    c.addEventListener('input', function () {
+      save(function (d) { d.cetCap = num(c.value); });
+      var bw = panel.querySelector('.bowl');
+      if (bw) bw.outerHTML = bowlHTML();
+      bindCap();
+      renderMini();
+    });
+  }
+
+  /* 계 칸만 갈아 끼웁니다 */
+  function refreshSums() {
+    panel.querySelectorAll('.tb tbody tr').forEach(function (tr) {
+      var inp = tr.querySelector('[data-h]');
+      if (!inp) return;
+      var id = inp.getAttribute('data-h'), u = UBY[id];
+      if (!u) return;
+      var have = uSum(id), tds = tr.querySelectorAll('td');
+      /* 두 표 모두 여섯째 칸이 「계」입니다 —
+         표 A: 주제·법정·구분·1학기·2학기·계 / 표 B: 영역·기준·조정범위·1학기·2학기·계 */
+      if (tds[5]) tds[5].innerHTML = '<b>' + (have || '—') + '</b>';
+      if (!u.area && tds[6]) tds[6].outerHTML = gapCell(have, u.integ ? 0 : needOf(u), u.duty);
+    });
+  }
+
+  /* ==========================================================================
+     종이 — 미리보기와 인쇄가 같은 HTML 을 씁니다
+     ========================================================================== */
+
+  function whereText(id) {
+    var r = row(id);
+    if (!r.where) return '';
+    if (r.where === 'subj') return '교과' + (r.subj ? '(' + r.subj + ')' : '');
+    return WHERE[r.where];
+  }
+
+  function paperHTML() {
+    var d = db.get();
+    var who = [d.info.school, d.info.grade, d.info.klass].filter(Boolean).join(' · ');
+    var h = '<p class="P-t1">' + esc(d.info.year || '') + (d.info.year ? ' ' : '') +
+      '범교과 학습 주제 운영 계획</p>' +
+      '<p class="P-who">' + esc(who) + '</p>';
+
+    h += '<h2 class="P-h">1. 범교과 학습 주제별 운영 시수</h2>' +
+      '<table><colgroup><col style="width:20%"><col style="width:7%"><col style="width:7%">' +
+      '<col style="width:7%"><col style="width:7%"><col style="width:15%"><col style="width:37%"></colgroup>' +
+      '<thead><tr><th>범교과 학습 주제</th><th>법정<br>시수</th><th>1학기</th><th>2학기</th><th>계</th>' +
+      '<th>편성</th><th>관련 근거 및 유의 사항</th></tr></thead><tbody>';
+
+    TOPICS.forEach(function (t) {
+      var laws = (t.law || []).join(' · ');
+      if (t.areas) {
+        var s = safeSum();
+        h += '<tr class="s"><td class="l">' + esc(t.n) + '</td><td>' + t.h + '</td>' +
+          '<td>' + (termSafe(0) || '') + '</td><td>' + (termSafe(1) || '') + '</td>' +
+          '<td>' + (s || '') + '</td><td>아래 2 참조</td>' +
+          '<td class="law">' + esc(laws) + '</td></tr>';
+        return;
+      }
+      var u = UBY[t.id], r = row(t.id), have = uSum(t.id), need = needOf(u);
+      var base = t.integ ? '교과 통합' : (t.duty ? need : t.h + ' 권장');
+      if (t.id === 'health' && !d.healthGrade) base = '해당 없음';
+      h += '<tr><td class="l">' + esc(t.n) + '</td><td>' + base + '</td>' +
+        '<td>' + (r.h[0] || '') + '</td><td>' + (r.h[1] || '') + '</td>' +
+        '<td>' + (have || '') + '</td><td>' + esc(whereText(t.id)) + '</td>' +
+        '<td class="law">' + esc(laws) + '</td></tr>';
+    });
+
+    var got = placedTotal(), need2 = dutyTotal();
+    h += '<tr class="t"><td class="l">계</td><td>' + need2 + '</td>' +
+      '<td>' + (termAll(0) || '') + '</td><td>' + (termAll(1) || '') + '</td>' +
+      '<td>' + (got || '') + '</td>' +
+      '<td colspan="2">의무 ' + need2 + '시간 · 권장 ' + recTotal() + '시간</td></tr>' +
+      '</tbody></table>';
+
+    /* ── 안전 7대 영역 ── */
+    h += '<h2 class="P-h">2. 학교안전교육 7대 영역</h2>' +
+      '<table><colgroup><col style="width:24%"><col style="width:8%"><col style="width:10%">' +
+      '<col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:12%">' +
+      '<col style="width:22%"></colgroup>' +
+      '<thead><tr><th>영역</th><th>기준</th><th>조정 범위</th><th>1학기</th><th>2학기</th><th>계</th>' +
+      '<th>학기당 횟수</th><th>편성</th></tr></thead><tbody>';
+    AREAS.forEach(function (a) {
+      var r = row(a.id), have = uSum(a.id);
+      h += '<tr><td class="l">' + esc(a.n) + '</td><td>' + a.h + '</td>' +
+        '<td>' + adjLo(a.h) + '~' + adjHi(a.h) + '</td>' +
+        '<td>' + (r.h[0] || '') + '</td><td>' + (r.h[1] || '') + '</td>' +
+        '<td>' + (have || '') + '</td>' +
+        '<td>' + (r.n[0] || 0) + ' · ' + (r.n[1] || 0) + ' (' + a.per + '회 이상)</td>' +
+        '<td>' + esc(whereText(a.id)) + '</td></tr>';
+    });
+    h += '<tr class="t"><td class="l">계</td><td>' + SAFE_TOTAL + '</td><td>—</td>' +
+      '<td>' + (termSafe(0) || '') + '</td><td>' + (termSafe(1) || '') + '</td>' +
+      '<td>' + (safeSum() || '') + '</td><td colspan="2">—</td></tr></tbody></table>';
+
+    /* ── 함께 지킬 조건 ── */
+    h += '<h2 class="P-h">3. 함께 지킬 조건</h2><table>' +
+      '<colgroup><col style="width:10%"><col style="width:24%"><col style="width:66%"></colgroup>' +
+      '<thead><tr><th>확인</th><th>주제</th><th>조건</th></tr></thead><tbody>';
+    MUSTS.forEach(function (m) {
+      var on = d.musts[m.id];
+      h += '<tr><td>' + (on ? '✔' : '□') + '</td><td class="l">' + esc(m.top.n) + '</td>' +
+        '<td class="law">' + esc(String(m.t).replace(/<[^>]+>/g, '')) +
+        (m.d ? ' — ' + esc(m.d) : '') + '</td></tr>';
+    });
+    h += '</tbody></table>';
+
+    /* ── 살펴볼 곳 : 화면에서만 알리면 종이를 들고 간 사람은 모릅니다 ── */
+    var hd = hard();
+    if (hd.length) {
+      h += '<p class="P-note"><b>살펴볼 곳</b><br>' + hd.map(function (p) {
+        if (p.t === 'short') return '· ' + esc(p.n) + ' — ' + p.have + '/' + p.need + '시간, ' + (p.need - p.have) + '시간 모자람';
+        if (p.t === 'safe51') return '· 학교안전교육 총 ' + p.have + '시간 — 기준 ' + p.need + '시간보다 ' + (p.need - p.have) + '시간 모자람';
+        if (p.t === 'adj') return '· ' + esc(p.n) + ' ' + p.have + '시간 — 영역별 조정 범위 ' + p.lo + '~' + p.hi + '을 벗어남';
+        if (p.t === 'per') return '· ' + esc(p.n) + ' ' + p.term + '학기 ' + p.have + '회 — 학기당 ' + p.need + '회 이상';
+        if (p.t === 'nowhere') return '· ' + esc(p.n) + ' ' + p.have + '시간 — 어디에 얹을지 정하지 않음';
+        if (p.t === 'must') return '· ' + esc(p.top) + ' — ' + esc(String(p.n).replace(/<[^>]+>/g, '')) + ' (미확인)';
+        if (p.t === 'cetover') return '· 창의적 체험활동에 얹은 것이 ' + p.have + (p.lessons ? '차시' : '시간') + ' — 연간 ' + p.cap + '시간을 ' + (p.have - p.cap) + '시간 넘음';
+        return '';
+      }).join('<br>') + '</p>';
+    }
+
+    if (!touched()) {
+      h += '<p class="P-note">아직 적은 것이 없습니다. 왼쪽 표에 시수를 적으면 여기에 나타납니다.</p>';
+    }
+
+    /* 진도표에서 읽어 왔으면 그렇다고 종이가 적습니다 —
+       「이수 시수 195시간」만 적힌 종이를 보면 스무 시간이 남는 줄 압니다. */
+    if (d.plan) {
+      h += '<p class="P-note"><b>이 계획은 ' + esc(d.plan.at) + ' 에 ' + d.plan.term +
+        '학기 연간지도계획에서 읽어 온 것입니다.</b> 표시가 붙은 차시 ' + d.plan.lessons +
+        '개로 이수 시수 ' + d.plan.tags + '시간을 이수합니다 — ' +
+        '한 차시가 평균 ' + (d.plan.tags / d.plan.lessons).toFixed(2) + '개 주제를 함께 이수하기 때문입니다. ' +
+        '창의적 체험활동에서 쓴 차시는 ' + d.plan.byWhere.cet + '개, 교과에서 쓴 차시는 ' +
+        d.plan.byWhere.subj + '개입니다.';
+      var fl = (d.plan.flaws || []).map(function (f) {
+        if (f.t === 'name') return '「' + esc(f.n) + '」을 ' + f.names.length + '가지 이름으로 적음';
+        if (f.t === 'miss') return '「' + esc(f.n) + '」 번호 ' + f.ns.join('·') + '번 없음';
+        if (f.t === 'dup') return '「' + esc(f.n) + '」 번호 ' + f.ns.join('·') + '번 겹침';
+        return '';
+      }).filter(Boolean);
+      if (fl.length) h += '<br><b>진도표에서 눈에 걸린 것</b> — ' + fl.join(' · ');
+      h += '</p>';
+    }
+
+    h += '<p class="P-note">· 영역별 안전교육 시수는 <b>학년별로 실시해야 하는 시간</b>이며, ' +
+      '총 이수 시간의 범위 안에서 영역별로 20% 범위에서 자율 조정할 수 있습니다(소수점 올림).<br>' +
+      '· 51시간에는 「아동복지법」 시행령의 안전교육 44시간이 포함됩니다.<br>' +
+      '· 보건교육 17차시는 <b>한 개 학년 이상</b>에 편성합니다.<br>' +
+      '· 학교폭력 예방교육은 <b>학급당</b> 12차시 이상(사이버폭력 예방 3차시 이상 포함)입니다.</p>' +
+      '<div class="P-foot">기준: 2026학년도 삶의 힘을 키우는 초등학교 교육과정 도움자료(경상북도교육청연구원) 43~45쪽 ' +
+      '&nbsp;|&nbsp; 법령은 바뀝니다. 결재 전에 그해 지침으로 확인해 주세요. ' +
+      '&nbsp;|&nbsp; © 2026 TEAM LEAP · 경북교육 AI Lab</div>';
+    return h;
+  }
+
+  function termAll(i) {
+    return UNITS.reduce(function (n, u) { return n + row(u.id).h[i]; }, 0);
+  }
+
+  function renderMini() { miniEl.innerHTML = paperHTML(); }
+
+  /* PDF 파일 이름 (마스터 함정 27번) */
+  function fileBase() {
+    var d = db.get();
+    return ('범교과학습주제운영계획_' + (d.info.school ? d.info.school + '_' : '') +
+      (d.info.grade ? d.info.grade + '_' : '') + (d.info.year || LEAP.todayISO()))
+      .replace(/[\\/:*?"<>|]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  function withFileName(name, run) {
+    var was = document.title;
+    document.title = name;
+    var done = false;
+    function back() {
+      if (done) return;
+      done = true;
+      document.title = was;
+      window.removeEventListener('afterprint', back);
+    }
+    window.addEventListener('afterprint', back);
+    setTimeout(back, 20000);
+    run();
+  }
+
+  function doPrint() {
+    var html = paperHTML();
+    document.getElementById('print-area').innerHTML = html;
+    var back = document.createElement('div');
+    back.className = 'pv-back';
+    back.innerHTML = '<div class="pv-w" role="dialog" aria-modal="true" aria-label="인쇄 미리보기">' +
+      '<div class="pv-h"><div><b>인쇄 미리보기</b>' +
+      '<span class="pv-sub">A4 세로 · 범교과 학습 주제 운영 계획</span></div>' +
+      '<div class="pv-btns"><button class="btn" id="pv-go" type="button">인쇄하기</button>' +
+      '<button class="btn btn--ghost btn--sm" id="pv-x" type="button">닫기</button></div>' +
+      '</div><div class="pv-scroll"><div class="pv-page">' + html + '</div></div></div>';
+    document.body.appendChild(back);
+    function close() {
+      if (back.parentNode) back.parentNode.removeChild(back);
+      document.removeEventListener('keydown', onKey);
+    }
+    function onKey(e) { if (e.key === 'Escape') close(); }
+    document.addEventListener('keydown', onKey);
+    back.addEventListener('click', function (e) { if (e.target === back) close(); });
+    back.querySelector('#pv-x').addEventListener('click', close);
+    back.querySelector('#pv-go').addEventListener('click', function () {
+      close();
+      withFileName(fileBase(), function () { window.print(); });
+    });
+    back.querySelector('#pv-go').focus();
+  }
+
+  /* ── 표로 내보내기 ────────────────────────────────────────────────────
+     학교는 계획을 엑셀·구글 시트에 붙여 다시 만집니다.
+     맨 앞에 BOM 을 붙이는 것은 엑셀이 UTF-8 을 알아보게 하려는 것입니다 —
+     없으면 한글이 깨집니다. */
+  function csvText() {
+    var lines = [];
+    lines.push(['구분', '범교과 학습 주제', '법정 시수', '의무여부',
+      '1학기', '2학기', '계', '학기당 횟수 기준', '1학기 횟수', '2학기 횟수',
+      '편성', '관련 근거'].join(','));
+    TOPICS.forEach(function (t) {
+      if (t.areas) {
+        lines.push([q(t.g), q(t.n), t.h, '의무',
+          termSafe(0), termSafe(1), safeSum(), '', '', '', q('7영역 합'), q((t.law || []).join(' / '))].join(','));
+        t.areas.forEach(function (a) {
+          var r = row(a.id);
+          lines.push([q('학교안전교육'), q(a.n), a.h, '의무',
+            r.h[0], r.h[1], uSum(a.id), a.per, r.n[0], r.n[1],
+            q(whereText(a.id)), ''].join(','));
+        });
+        return;
+      }
+      var r = row(t.id);
+      lines.push([q(t.g), q(t.n), t.integ ? q('교과 통합') : t.h, t.duty ? '의무' : '권장',
+        r.h[0], r.h[1], uSum(t.id), '', '', '',
+        q(whereText(t.id)), q((t.law || []).join(' / '))].join(','));
+    });
+    var d = db.get();
+    lines.push(['', q('의무 시수 합'), dutyTotal(), '',
+      termAll(0), termAll(1), placedTotal(), '', '', '', '', ''].join(','));
+    MUSTS.forEach(function (m) {
+      lines.push([q('함께 지킬 조건'), q(m.top.n), '', d.musts[m.id] ? '확인' : '미확인',
+        '', '', '', '', '', '', '', q(String(m.t).replace(/<[^>]+>/g, ''))].join(','));
+    });
+    return lines.join('\r\n');
+  }
+  function q(s) { return '"' + String(s).replace(/"/g, '""') + '"'; }
+
+  function doCsv() {
+    if (!touched()) { LEAP.announce('아직 적은 것이 없습니다.'); return; }
+    LEAP.saveBlob(fileBase() + '.csv',
+      new Blob(['﻿' + csvText()], { type: 'text/csv;charset=utf-8' }));
+    LEAP.announce('표로 내보냈습니다. 엑셀·구글 시트에서 열립니다.');
+  }
+
+  /* ==========================================================================
+     갈림길 — 되돌릴 수 없는 일을 「예 / 아니오」로 묻지 않습니다 (함정 37번)
+     ========================================================================== */
+  function askWay(opts) {
+    var back = document.createElement('div');
+    back.className = 'pv-back';
+    back.innerHTML = '<div class="pv-w" role="dialog" aria-modal="true" aria-label="' + esc(opts.title) + '">' +
+      '<div class="pv-h"><div><b>' + esc(opts.title) + '</b>' +
+      '<span class="pv-sub">' + opts.sub + '</span></div>' +
+      '<div class="pv-btns"><button class="btn btn--ghost btn--sm" id="way-x" type="button">그만두기</button></div>' +
+      '</div><div class="pv-scroll" style="background:var(--leap-surface);padding:20px">' +
+      '<div class="picks2">' + opts.ways.map(function (w, k) {
+        return '<button class="pick2' + (w.cls ? ' ' + w.cls : '') + '" type="button" data-i="' + k + '">' +
+          '<span class="n">' + esc(w.name) + '</span><span class="d">' + w.desc + '</span></button>';
+      }).join('') + '</div></div></div>';
+    document.body.appendChild(back);
+    function shut() {
+      if (back.parentNode) back.parentNode.removeChild(back);
+      document.removeEventListener('keydown', onKey);
+    }
+    function onKey(e) { if (e.key === 'Escape') shut(); }
+    document.addEventListener('keydown', onKey);
+    back.addEventListener('click', function (e) { if (e.target === back) shut(); });
+    back.querySelector('#way-x').addEventListener('click', shut);
+    back.querySelectorAll('[data-i]').forEach(function (b) {
+      b.addEventListener('click', function () { shut(); opts.ways[+b.getAttribute('data-i')].run(); });
+    });
+    var first = back.querySelector('[data-i]');
+    if (first) first.focus();
+  }
+
+  function hasAny() {
+    var d = db.get();
+    return !!(d.info.school || d.info.year || d.info.grade || d.info.klass) || touched();
+  }
+  function wipe() {
+    markUndo('처음부터 시작합니다.');
+    db.reset();
+    undoKeep = false;
+    renderAll();
+    LEAP.announce('처음부터 시작합니다. 되돌릴 수 있습니다.');
+  }
+
+  function doExport() {
+    LEAP.download('법정의무교육-' + (db.get().info.school || '학교').replace(/\s/g, '') +
+      '-' + LEAP.todayISO() + '.json', db.get());
+    LEAP.announce('파일로 내보냈습니다.');
+  }
+
+  document.getElementById('btn-plan').addEventListener('click', openPlan);
+  document.getElementById('btn-export').addEventListener('click', doExport);
+  document.getElementById('btn-print').addEventListener('click', doPrint);
+  document.getElementById('btn-csv').addEventListener('click', doCsv);
+
+  document.getElementById('btn-import').addEventListener('click', function () {
+    LEAP.pickFile(function (incoming) {
+      if (!incoming || incoming.v !== 1 || !incoming.units) {
+        LEAP.announce('이 앱에서 내보낸 파일이 아닙니다.'); return;
+      }
+      var open = function () {
+        markUndo('가져온 것을 열었습니다.');
+        db.set(fill(incoming));
+        undoKeep = false;
+        renderAll();
+        LEAP.announce('열었습니다.');
+      };
+      if (!hasAny()) { open(); return; }
+      askWay({
+        title: '가져온 것을 열까요',
+        sub: '「' + esc((incoming.info && incoming.info.school) || '이름 없음') + '」',
+        ways: [
+          { name: '지금 것을 먼저 내보내고 열기', cls: 'pick2--go',
+            desc: '지금 적은 것을 파일로 받은 다음 가져온 것을 엽니다. <b>잃는 것이 없습니다.</b>',
+            run: function () { doExport(); open(); } },
+          { name: '그냥 열기', cls: 'pick2--off',
+            desc: '지금 적은 것이 <b>가려집니다.</b> 한 걸음은 「되돌리기」로 돌아옵니다.',
+            run: open }
+        ]
+      });
+    });
+  });
+
+  document.getElementById('btn-clear').addEventListener('click', function () {
+    if (!hasAny()) { wipe(); return; }   // 잃을 것이 없으면 묻지 않습니다
+    askWay({
+      title: '처음부터 다시 할까요',
+      sub: '적은 주제 ' + UNITS.filter(function (u) { return uSum(u.id) > 0; }).length + '개',
+      ways: [
+        { name: '파일로 내보내고 처음부터', cls: 'pick2--go',
+          desc: '지금 것을 파일로 받은 다음 비웁니다. 나중에 「파일에서 열기」로 되살릴 수 있습니다.',
+          run: function () { doExport(); wipe(); } },
+        { name: '그냥 처음부터', cls: 'pick2--off',
+          desc: '<b>적은 것이 모두 사라집니다.</b> 한 걸음은 「되돌리기」로 돌아옵니다.',
+          run: wipe }
+      ]
+    });
+  });
+
+  LEAP.initThemeBtn(document.getElementById('btn-theme'));
+
+  /* 조각 사이의 창구는 «늘 있는 것»으로 냅니다 (마스터 함정 28번).
+     내주는 것은 셈한 결과뿐이고, 고치는 길은 열지 않습니다. */
+  window.LEAP_I = {
+    read: function () { return LEAP.clone(db.get()); },
+    TOPICS: TOPICS, AREAS: AREAS, UNITS: UNITS, MUSTS: MUSTS,
+    SAFE_TOTAL: SAFE_TOTAL, CET_YEAR: CET_YEAR, GRADES: GRADES, WHERE: WHERE,
+    adjLo: adjLo, adjHi: adjHi,
+    uSum: uSum, safeSum: safeSum, needOf: needOf,
+    dutyTotal: dutyTotal, recTotal: recTotal, cetCap: cetCap,
+    DUTY_FULL: DUTY_FULL, DUTY_NOHEALTH: DUTY_NOHEALTH,
+    bowls: bowls, placedTotal: placedTotal, dutyPlaced: dutyPlaced, recPlaced: recPlaced,
+    cetUsed: cetUsed,
+    touched: touched,
+    problems: problems, hard: hard,
+    readPlan: readPlan, matchUnit: matchUnit, norm: norm, applyPlan: applyPlan,
+    remain: remain, leftTotal: leftTotal, makeLessons: makeLessons, rawsOf: rawsOf, tagFor: tagFor,
+    /* 검사와 다른 조각이 걸음을 옮겨 볼 수 있게 냅니다 — 화면 상태도 «늘 있는 창구»로 */
+    setTab: function (k) { if (['safe','cross','next'].indexOf(k) < 0) return curTab; curTab = k; renderPanel(); return curTab; },
+    getTab: function () { return curTab; },
+    lessonTag: lessonTag, tagName: tagName, nextNo: nextNo, lessonWhere: lessonWhere,
+    LESSON_MAX: LESSON_MAX, LESSON_FIT: LESSON_FIT,
+    paperHTML: paperHTML, csvText: csvText, fileBase: fileBase
+  };
+
+  LEAP.restoreTheme();
+  renderAll();
+})();
+</script>
+<div class="aim" id="leap-aim" hidden></div>
+
+<script>
+/* ==========================================================================
+   AI 초안 도우미 (LEAP Kit 공통 조각)
+   원본은 `apps/kit/leap-ai.js` · 단일 HTML 을 지키려고 붙여 넣은 사본입니다.
+
+   왜 API 키를 안 쓰는가
+     학교에서 키 발급이 막히는 일이 잦고, 공용 컴퓨터에 키를 남기는 것도 께름칙합니다.
+     무엇보다 **키를 넣는 순간 이 앱은 인터넷이 필요한 앱이 됩니다** (마스터 원칙 1번).
+
+   그래서 이렇게 합니다.
+     ① 앱이 지금 갖고 있는 것으로 **프롬프트를 만들어 준다**
+     ② 교사가 쓰던 챗봇 아무 데나 붙여 넣는다
+     ③ 돌아온 글은 **교사가 읽고 고쳐서 쓴다**
+   ========================================================================== */
+(function (global) {
+  'use strict';
+  var CFG = null;
+  var ask = '';
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function box() { return document.getElementById('leap-aim'); }
+  function say(m) { if (global.LEAP && LEAP.announce) LEAP.announce(m); }
+
+  function open(cfg) {
+    CFG = cfg;
+    var b = box();
+    if (!b) return;
+    b.innerHTML =
+      '<div class="aim-w" role="dialog" aria-modal="true" aria-label="AI 초안 도우미">' +
+      '<div class="aim-h"><h2>AI 초안 도우미</h2>' +
+      '<button class="aim-x" id="aim-x" type="button" aria-label="닫기">×</button></div>' +
+      '<div class="aim-b" id="aim-b">' + body() + '</div></div>';
+    b.hidden = false;
+    bind();
+    var x = document.getElementById('aim-x');
+    if (x) x.focus();
+  }
+  function close() { var b = box(); if (b) { b.hidden = true; b.innerHTML = ''; } }
+
+  function body() {
+    var warn = CFG.warn ? CFG.warn() : '';
+    var h = '<div class="aim-note"><div class="hd">쓰던 챗봇 아무 데나 쓰시면 됩니다</div>' +
+      '<p>API 키가 필요 없습니다. 아래 프롬프트를 <b>복사하거나 파일로 받아</b> ' +
+      'ChatGPT·Gemini·클로드 등에 붙여 넣으세요. ' +
+      '<b>이 앱은 아무것도 보내지 않습니다</b> — 붙여 넣을 글자를 만들어 줄 뿐입니다.</p></div>';
+    if (warn) h += '<div class="aim-note aim-warn"><div class="hd">먼저 알려 드립니다</div><p>' + warn + '</p></div>';
+
+    h += '<div class="aim-step"><h3><i>1</i>추가로 부탁할 것이 있나요</h3>' +
+      '<p>없으면 비워 두세요. 앱에 적어 둔 것은 이미 프롬프트에 들어 있습니다.</p>' +
+      '<textarea class="aim-ta" id="aim-ask" placeholder="' + esc(CFG.hint || '') + '">' +
+      esc(ask) + '</textarea></div>';
+
+    h += '<div class="aim-step"><h3><i>2</i>이 프롬프트를 AI에게 주세요</h3>' +
+      '<p>' + (CFG.what || '') + '</p>' +
+      '<textarea class="aim-pre" id="aim-pre" readonly aria-label="AI에게 줄 프롬프트">' +
+      esc(text()) + '</textarea>' +
+      '<div class="aim-act">' +
+      '<button class="btn" id="aim-copy" type="button">프롬프트 복사</button>' +
+      '<button class="btn btn--ghost" id="aim-save" type="button">파일로 받기</button>' +
+      '</div></div>';
+
+    h += '<div class="aim-step"><h3><i>3</i>돌아온 글은 그대로 쓰지 마세요</h3>' +
+      '<p>' + (CFG.after ||
+        '이 앱은 AI 의 답을 <b>받아 저장하지 않습니다.</b> 초안은 초안입니다 — ' +
+        '읽고, 확인하고, 선생님의 말로 옮겨 적으세요.') + '</p></div>';
+    return h;
+  }
+
+  function text() {
+    try { return CFG.build(ask.trim()); }
+    catch (e) { return '(프롬프트를 만들지 못했습니다: ' + e.message + ')'; }
+  }
+
+  function bind() {
+    var b = document.getElementById('aim-b');
+    var q = function (s) { return b.querySelector(s); };
+    var t;
+    var x = document.getElementById('aim-x');
+    if (x) x.addEventListener('click', close);
+    box().addEventListener('click', function (e) { if (e.target === box()) close(); });
+    document.addEventListener('keydown', onEsc);
+
+    q('#aim-ask').addEventListener('input', function (e) {
+      ask = e.target.value;
+      clearTimeout(t);
+      t = setTimeout(function () { var p = q('#aim-pre'); if (p) p.value = text(); }, 250);
+    });
+    q('#aim-copy').addEventListener('click', function () {
+      copy(text(), function () { say('프롬프트를 복사했습니다. 쓰시는 챗봇에 붙여 넣으세요.'); });
+    });
+    q('#aim-save').addEventListener('click', function () {
+      var name = (CFG.file || 'AI-프롬프트') + '-' +
+        (global.LEAP && LEAP.todayISO ? LEAP.todayISO() : '') + '.txt';
+      var bl = new Blob([text()], { type: 'text/plain;charset=utf-8' });
+      var u = URL.createObjectURL(bl), a = document.createElement('a');
+      a.href = u; a.download = name; document.body.appendChild(a); a.click();
+      document.body.removeChild(a); setTimeout(function () { URL.revokeObjectURL(u); }, 1000);
+    });
+  }
+  function onEsc(e) {
+    if (e.key !== 'Escape') return;
+    var b = box();
+    if (b && !b.hidden) { close(); document.removeEventListener('keydown', onEsc); }
+  }
+
+  function copy(s, done) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(s).then(done, function () { fb(s, done); });
+    } else fb(s, done);
+  }
+  function fb(s, done) {
+    var ta = document.createElement('textarea');
+    ta.value = s; ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed'; ta.style.left = '-9999px';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); }
+    catch (e) { say('복사하지 못했습니다. 직접 선택해 복사해 주세요.'); }
+    document.body.removeChild(ta);
+  }
+
+  /* 저장소에서 앱 자료를 그대로 읽습니다. 앱 코드를 건드리지 않으려는 것입니다 —
+     이 조각이 깨져도 앱 본체는 그대로 돕니다. */
+  function load(key, fallback) {
+    try { var raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }
+    catch (e) { return fallback; }
+  }
+
+  /* 프롬프트 꼬리 — 어느 앱이든 같습니다 */
+  var TAIL = [
+    '',
+    '[반드시 지킬 것]',
+    '· 자료에 없는 것을 지어내지 마세요. 모르는 것은 「자료에 없습니다」라고 적으세요.',
+    '· 학생의 이름·가정환경·성격을 추측하지 마세요.',
+    '· 최종 판단은 교사가 합니다. 교사가 확인할 거리를 함께 적어 주세요.',
+    '· 한국어로, 바로 쓸 수 있는 문장으로 써 주세요.'
+  ].join('\n');
+
+  global.LEAPAI = { open: open, close: close, load: load, TAIL: TAIL, esc: esc };
+})(window);
+/* ── 앱 I 의 AI 초안 도우미 ──────────────────────────────────────────────
+   무엇의 초안을 받는가 — **주제별 활동 내용**입니다.
+
+   시수는 AI 에게 맡기지 않습니다. 시수는 법으로 정해진 것이고 앱이 이미
+   들고 있습니다. **AI 가 지어낼 자리가 아닙니다.** 지어내면 그것은
+   법정 시수를 지어낸 것이 되고, 그대로 결재에 올라갑니다.
+
+   AI 가 도울 수 있는 것은 「이 시수로 무엇을 할 것인가」를 계획서의 말로
+   옮기는 일입니다. 범교과 계획서의 「운영 내용」 칸이 늘 비어 있고,
+   그것을 스무 줄 채우는 데 시간이 걸립니다.
+
+   프롬프트에 무엇이 들어가나 — **학년과 주제별 시수**뿐입니다.
+   학생에 대한 것은 이 앱에 아예 없습니다.
+   ──────────────────────────────────────────────────────────────────────── */
+(function () {
+  'use strict';
+  var btn = document.getElementById('btn-ai');
+  if (!btn || !window.LEAPAI || !window.LEAP_I) return;
+
+  function build(ask) {
+    var I = LEAP_I, d = I.read();
+    var t = ['당신은 대한민국 초등학교의 범교과 학습 주제 운영을 돕는 전문가입니다.',
+      '아래 시수 계획에 대해 **범교과 학습 주제 운영 계획서에 실을 「주제별 운영 내용」** 을 써 주세요.', '',
+      '[학교]',
+      '- 학교: ' + (d.info.school || '(미기재)'),
+      '- 학년도: ' + (d.info.year || '(미기재)'),
+      '- 학년: ' + (d.info.grade || '(미기재)') + (d.info.klass ? ' ' + d.info.klass : ''),
+      '- 창의적 체험활동 연간 시수: ' + (I.cetCap() || '(미기재)') + '시간'];
+
+    var any = false;
+    t.push('');
+    t.push('[주제별 시수와 편성 자리]');
+    I.TOPICS.forEach(function (top) {
+      if (top.areas) {
+        var s = I.safeSum();
+        if (!s) return;
+        any = true;
+        t.push('- ' + top.n + ': ' + s + '시간 (기준 ' + top.h + ')');
+        top.areas.forEach(function (a) {
+          var v = I.uSum(a.id);
+          if (!v) return;
+          var w = d.units[a.id].where;
+          t.push('  · ' + a.n + ': ' + v + '시간 (기준 ' + a.h + ')' +
+            (w ? ' — ' + (w === 'subj' ? '교과' + (d.units[a.id].subj ? '(' + d.units[a.id].subj + ')' : '') : I.WHERE[w]) : ''));
+        });
+        return;
+      }
+      var v = I.uSum(top.id);
+      if (!v) return;
+      any = true;
+      var w = d.units[top.id].where;
+      t.push('- ' + top.n + ': ' + v + '시간' +
+        (top.h ? ' (기준 ' + top.h + (top.duty ? ', 의무' : ', 권장') + ')' : ' (교과 통합 운영)') +
+        (w ? ' — ' + (w === 'subj' ? '교과' + (d.units[top.id].subj ? '(' + d.units[top.id].subj + ')' : '') : I.WHERE[w]) : ''));
+    });
+
+    if (!any) {
+      t.push('(아직 시수를 적지 않았습니다)');
+      t.push('');
+      t.push('[아직 시수를 적지 않았습니다]');
+      t.push('먼저 연 ' + I.dutyTotal() + '시간의 법정 의무교육을 어떻게 나눠 넣으면 좋을지,');
+      t.push('**묻는 말 다섯 개**를 만들어 주세요.');
+    }
+
+    t.push('');
+    t.push('[꼭 알아야 할 것]');
+    t.push('1. 이 시수는 **법령과 교육청 계획으로 정해진 것**입니다. 숫자를 바꾸거나 새로 만들지 마세요.');
+    t.push('2. 초등학생 대상입니다. 학년에 맞는 활동이어야 합니다.');
+    t.push('3. **창의적 체험활동만으로는 다 들어가지 않습니다.** 교과 수업 안에서 자연스럽게');
+    t.push('   다룰 수 있는 것은 어느 교과 어느 단원에 얹으면 좋을지 함께 적어 주세요.');
+    t.push('4. 이 학교는 **경상북도의 소규모학교일 수 있습니다.** 학급 수가 적고 복식학급일 수도 있습니다.');
+    t.push('   밖에서 사람을 부르거나 큰 예산이 드는 활동은 피해 주세요.');
+    t.push('');
+    t.push('[이렇게 써 주세요]');
+    t.push('· **주제마다** 운영 내용을 3~4줄. 위에 적힌 시수를 그대로 인용하세요.');
+    t.push('· 1학기·2학기에 **언제 하면 좋을지** 시기를 함께 적어 주세요.');
+    t.push('· 교과에 얹는 것은 **어느 교과**인지 적어 주세요.');
+    t.push('· 계획서에 그대로 붙일 수 있는 **공문 말투**로.');
+    t.push('· **시수를 지어내지 마세요.** 위에 적힌 숫자만 쓰세요.');
+    if (ask) { t.push(''); t.push('[교사의 추가 요청]'); t.push(ask); }
+    t.push(LEAPAI.TAIL);
+    return t.join('\n');
+  }
+
+  btn.addEventListener('click', function () {
+    var I = LEAP_I;
+    var bad = I.hard().length;
+    LEAPAI.open({
+      build: build,
+      file: '범교과-운영내용',
+      what: '학년과 <b>주제별 시수</b>가 들어가 있습니다. 학생에 대한 것은 이 앱에 아예 없습니다.',
+      hint: '예: 6학급 소규모학교입니다. 마을 자원을 쓰고 싶습니다.',
+      after: '돌아온 글은 <b>범교과 학습 주제 운영 계획서의 「운영 내용」 자리</b>에 붙이는 초안입니다. ' +
+        '이 앱은 AI 의 답을 <b>받아 저장하지 않습니다</b> — 법정 시수는 법으로 정해진 것이지 ' +
+        'AI 가 지어낼 자리가 아니기 때문입니다. 읽고, 확인하고, 선생님의 말로 옮겨 적으세요.',
+      warn: function () {
+        return bad
+          ? '<b>아직 살펴볼 곳이 ' + bad + '군데 있습니다.</b> ' +
+            '그대로 두고 운영 내용을 받으면 <b>모자란 시수에 대한 그럴듯한 계획</b>이 돌아옵니다. ' +
+            '시수를 먼저 채워 주세요.'
+          : '시수는 프롬프트에 <b>숫자 그대로</b> 들어갑니다. ' +
+            'AI 에게 <b>시수를 지어내지 말라고</b> 적어 두었습니다.';
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

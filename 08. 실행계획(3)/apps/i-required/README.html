@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>법정 의무교육 점검표 (앱 I) — 설명서 · TEAM LEAP</title>
+<meta name="robots" content="noindex">
+<style>
+:root{--ink:#14202E;--gray:#5A6672;--line:#D8DEE6;--hair:#EDF1F5;--bg:#F7F9FB;
+  --surface:#fff;--blue:#1B4FA0;--tint:#EAF1FC;--radius:14px}
+@media (prefers-color-scheme:dark){:root{--ink:#E8EDF3;--gray:#A8B3BF;--line:#33404F;
+  --hair:#232E3B;--bg:#141B24;--surface:#1B242F;--blue:#7FB3F7;--tint:#1E2B3D}}
+:root[data-theme="dark"]{--ink:#E8EDF3;--gray:#A8B3BF;--line:#33404F;--hair:#232E3B;
+  --bg:#141B24;--surface:#1B242F;--blue:#7FB3F7;--tint:#1E2B3D}
+:root[data-theme="light"]{--ink:#14202E;--gray:#5A6672;--line:#D8DEE6;--hair:#EDF1F5;
+  --bg:#F7F9FB;--surface:#fff;--blue:#1B4FA0;--tint:#EAF1FC}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);line-height:1.8;
+  font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,
+    "Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+  font-size:16px;-webkit-text-size-adjust:100%}
+.top{background:var(--blue);color:#fff;padding:14px 0}
+:root[data-theme="dark"] .top,@media (prefers-color-scheme:dark){.top{background:#16233A}}
+.top .in{max-width:860px;margin:0 auto;padding:0 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.top .t{font-weight:800;letter-spacing:-.01em}
+.top .t span{font-weight:600;opacity:.85;font-size:.875rem;margin-left:8px}
+.top a{margin-left:auto;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.5);
+  border-radius:999px;padding:7px 15px;font-size:.8125rem;font-weight:700;min-height:38px;
+  display:inline-flex;align-items:center}
+.top a:hover{background:rgba(255,255,255,.18)}
+main{max-width:860px;margin:0 auto;padding:34px 22px 90px}
+h1{font-size:1.75rem;letter-spacing:-.02em;margin:0 0 8px}
+h2{font-size:1.3125rem;letter-spacing:-.015em;margin:44px 0 12px;padding-bottom:8px;
+  border-bottom:2px solid var(--hair)}
+h3{font-size:1.0625rem;margin:30px 0 8px}
+h4,h5,h6{font-size:.9375rem;margin:22px 0 6px;color:var(--gray)}
+p{margin:0 0 14px}
+a{color:var(--blue)}
+b{font-weight:700}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+ul,ol{margin:0 0 16px;padding-left:24px}
+li{margin:4px 0}
+blockquote{margin:18px 0;padding:14px 18px;background:var(--tint);border-radius:var(--radius);
+  border-left:4px solid var(--blue)}
+blockquote p:last-child{margin:0}
+code{background:var(--hair);border-radius:5px;padding:2px 6px;font-size:.875em;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 18px;overflow-x:auto;margin:0 0 18px}
+pre code{background:none;padding:0;font-size:.8125rem;line-height:1.7}
+.tw{overflow-x:auto;margin:0 0 20px}
+table{border-collapse:collapse;width:100%;font-size:.9375rem;min-width:420px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{background:var(--hair);font-weight:700;white-space:nowrap}
+del{color:var(--gray)}
+.foot{max-width:860px;margin:0 auto;padding:0 22px 60px;color:var(--gray);font-size:.8125rem;line-height:1.8}
+@media print{
+  .top a{display:none}
+  body{background:#fff;color:#000;font-size:10.5pt}
+  .top{background:none;color:#000;border-bottom:2px solid #000;padding:0 0 8px;margin-bottom:14px}
+  main{padding:0;max-width:none}
+  h2{break-after:avoid}
+  pre,table,blockquote{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <div class="t">법정 의무교육 점검표 (앱 I) — v0.5<span>설명서</span></div>
+  <a href="../index.html">처음으로</a>
+</div></header>
+<main>
+<h1 id="h0">법정 의무교육 점검표 (앱 I) — v0.5</h1>
+<p><b>범교과 학습 주제</b>와 <b>학교안전교육 7대 영역</b>의 법정 시수를 <b>학년 단위</b>로 짜고, 모자란 시수·못 지킨 횟수·확인 안 한 조건을 앱이 셈합니다.</p>
+<ul><li>실행: <code>index.html</code>을 브라우저로 열면 됩니다. 설치·로그인·인터넷 모두 필요 없습니다.</li><li>걸음: 머리의 <b>「진도표 읽기」</b> → <b>① 안전 7대 영역</b> → <b>② 범교과 학습 주제</b> → <b>③ 다음 학기 채우기</b> (표 셋을 한 화면에 이어 붙이면 스크롤이 너무 깁니다. <b>한 번에 하나만</b> 보입니다 〔v0.5〕)</li><li>점검: <code>node test.js</code> — <b>281개</b></li></ul>
+<hr>
+<h2 id="h4">저작권</h2>
+<pre><code>© 2026 TEAM LEAP (경북교육 AI Lab · AI 활용 분과)</code></pre>
+<p>교육 목적에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다. 상업적 이용과 외부 배포는 제작자에게 문의해 주세요. 표기는 <b>파일 머리 주석 · 앱 화면 맨 아래 · 인쇄물 아래</b> 세 곳에 있습니다.</p>
+<hr>
+<h2 id="h8">왜 이 앱인가</h2>
+<p><b>법으로 시수가 박힌 교육이 연 127시간입니다.</b></p>
+<p>3~4학년 한 해 수업이 986시간이니 <b>여덟 시간에 한 시간꼴</b>입니다. 그런데 창의적 체험활동은 한 해 <b>102시간</b>뿐입니다.</p>
+<blockquote><p><b>창의적 체험활동만으로는 절대 들어가지 않습니다.</b></p></blockquote>
+<p>이 사실은 <b>세어 보기 전에는 보이지 않습니다.</b> 담임은 3월에 범교과 계획을 내고, 연중 운영하고, 학년말에 실적을 보고합니다. 그 사이에 「51시간을 어디에 넣었더라」가 사라집니다. 그리고 시수를 다 채우고도 <b>학기당 횟수</b>나 <b>함께 지킬 조건</b>에서 걸립니다.</p>
+<hr>
+<h2 id="h14">★★ 진짜 일은 그 다음입니다 — <b>2학기를 짜는 일</b> 〔v0.4〕</h2>
+<p>1학기를 읽어 표를 채우는 것은 절반입니다. 선생님이 실제로 하시는 일은 <b>2학기 진도표를 만들면서 차시마다 표시를 손으로 붙이는 일</b>이고, 그러려면 주제마다 <b>몇 번까지 갔는지 세어 가며</b> 넣어야 합니다.</p>
+<p><b>앱은 그 번호를 이미 알고 있습니다.</b> 그러니 세지 않게 해 드리면 됩니다.</p>
+<pre><code>2학기에 더 넣을 것
+
+19시간 이 남았습니다. 한 차시에 3개씩 담으면 7차시 입니다.
+
+  주제                  연간   1학기   남음    2학기에 이어 붙일 이름과 번호
+  교통 안전              11     6     5시간   「교통안전」 7번부터
+  재난 안전               6     4     2시간   「재난안전」 5번부터
+  학교폭력 예방교육        12     6     6시간   [3갈래에 골고루 ▾]
+  통일교육                5     3     2시간   「통일교육」 4번부터
+  …
+
+  ① [학교폭력 예방교육 어울림 프로그램(감정조절)-3][교통안전-7][재난안전-5]   창의적 체험활동  ⧉복사
+  ② [학교폭력예방교육 어울림 프로그램(사이버 의사소통)-3][교통안전-8][재난안전-6]        ⧉복사
+  ③ [학교폭력 예방교육 어울림 프로그램(공감)-3][교통안전-9][직업안전-2]              ⧉복사
+  …</code></pre>
+<p><b>복사해서 2학기 진도표의 학습주제 맨 앞에 붙이면 끝입니다.</b></p>
+<h3 id="h19">한 차시에 몇 개까지</h3>
+<p>한 차시는 <b>40분</b>이고, 한 주제를 <b>10분 이상</b> 다루면 이수로 봅니다. 그래서 <b>넷이 끝</b>이고, 넷을 넣으면 각 10분입니다. <b>셋까지를 권합니다.</b></p>
+<blockquote><p><b>다섯째는 이 앱에서 넣을 수 없습니다</b> — 40분에 다섯이면 8분입니다 (원칙 8번).</p></blockquote>
+<h3 id="h22">어떻게 묶나 — 앱이 짐작하지 않습니다</h3>
+<p><b>1학기에 선생님이 묶으신 대로</b> 묶습니다. 실제 진도표에서 「보건교육+양성평등교육」이 <b>열세 번</b>, 「사회정서+폭력예방 및 신변보호」가 <b>열한 번</b> 함께 묶여 있었습니다. 그 버릇을 그대로 따릅니다.</p>
+<h3 id="h24">이름은 문서에서 쓰시던 그대로</h3>
+<p>앱의 이름(「교통 안전」)으로 내보내면 진도표에 <b>두 이름이 섞이고</b>, 그러면 번호가 갈립니다 — <b>바로 그 문제를 앱이 만드는 셈</b>입니다. 그래서 1학기에 쓰신 이름(「교통안전」)으로 냅니다.</p>
+<p>그리고 한 주제를 <b>여러 갈래</b>로 적으신 경우(「어울림(감정조절)·(공감)·(사이버 의사소통)」), 갈래마다 번호가 따로 가므로 <b>한 갈래에 몰아넣지 않고 골고루</b> 이어 붙입니다. 한 갈래로만 하시겠다면 고르실 수 있습니다.</p>
+<hr>
+<h2 id="h28">★ 손으로 넣지 마세요 — 학교가 이미 적어 두었습니다 〔v0.3〕</h2>
+<p>「○○ 교육과정 연간지도계획」의 학습주제 칸에는 이미 표시가 붙어 있습니다.</p>
+<pre><code>화  1. 대화를 나누어요
+    [폭력예방 및 신변보호-2][학교폭력 예방교육 어울림 프로그램(감정조절)-2][사회정서-2]
+    스스로 감정을 조절하고, 다른 사람을 배려하며 대화하기</code></pre>
+<p>그러니 앱이 다시 묻는 것은 <b>같은 일을 두 번 시키는 것</b>입니다. <b>붙여 넣으면 읽습니다.</b></p>
+<ul><li>한글·PDF·NEIS 어디서 복사해도 됩니다. <b>표 모양이 깨져도 괜찮습니다</b> — 대괄호 표시는 글자 안에 있으니까요</li><li><b>교과별로 나눠 넣지 않아도 됩니다.</b> 전부 한꺼번에 넣으면 「○○ 교육과정 연간지도계획」 머리글을 따라가며 <b>어느 교과에 얹었는지까지</b> 읽습니다</li><li><b>학기도 문서에서 읽습니다</b> (「2026학년도 1학기」)</li></ul>
+<p><b>왜 PDF 를 직접 안 읽나</b> — PDF 파서는 바깥 라이브러리가 필요하고, 넣는 순간 이 앱은 <b>인터넷이 필요한 앱</b>이 됩니다(원칙 1번). 표시는 글자 안에 있으므로 붙여넣기로 충분합니다.</p>
+<h3 id="h34">이름이 달라도 알아봅니다</h3>
+<p>같은 학교 문서 안에서도 이름이 갈립니다. 실제로 겪은 것들 —</p>
+<div class="tw"><table><thead><tr><th>문서에 적힌 것</th><th>앱의 주제</th></tr></thead><tbody><tr><td><code>생활안전</code></td><td>생활 안전 (띄어쓰기)</td></tr><tr><td><code>약물 및 사이버 중독예방</code> / <code>약물 및 사이버 중독 예방</code></td><td>같은 주제인데 <b>한 문서 안에서 둘</b></td></tr><tr><td><code>환경･지속가능발전교육</code></td><td>가운뎃점이 <code>･</code> (도움자료는 <code>·</code>)</td></tr><tr><td><code>학교폭력 예방교육 어울림 프로그램(감정조절)</code></td><td>괄호는 갈래 이름 → 학교폭력 예방교육</td></tr><tr><td><code>사회정서</code></td><td>별명 → 생명존중 및 자살예방교육</td></tr><tr><td><code>건강한 식생활 및 영양교육</code></td><td>별명 → 영양·식생활 교육</td></tr></tbody></table></div>
+<p><b>모르는 이름은 짐작해서 넣지 않습니다.</b> 실제 문서에 「생성교육과정」이 15시간 있었는데, 앱이 모르는 이름입니다. <b>목록으로 보여 주고 사람이 고릅니다.</b> 고르지 않으면 세지 않습니다.</p>
+<h3 id="h38">번호가 성한지 셉니다</h3>
+<p><code>[생활안전-19]</code> 의 19는 열아홉 번째라는 뜻입니다. 사람이 손으로 붙이므로 빠지고 겹칩니다. <b>아무도 세어 보지 않습니다.</b></p>
+<p>실제 문서에서 이렇게 나왔습니다 — 「약물 및 사이버 중독 예방」이 1·2·5~13, 「약물 및 사이버 중독예방」이 3·4. <b>띄어쓰기 하나 때문에 한 주제가 둘로 갈려</b> 번호가 각각 비어 있었습니다. 합치면 1~13이 성합니다. 앱이 합쳐 세고, <b>갈렸다는 사실을 알립니다.</b></p>
+<blockquote><p>번호는 <b>이름마다</b> 매겨집니다. 그래서 이름이 갈린 주제는 <b>갈렸다는 것만</b> 알리고 번호는 셈하지 않습니다 — 「어울림(감정조절)」·「어울림(공감)」이 저마다 1·2로 시작하는데 합쳐 세면 「겹쳤다」는 <b>거짓 경고</b>가 납니다.</p></blockquote>
+<hr>
+<h2 id="h43">★★ 그 표시가 앱에게 알려 준 것 — v0.2 는 틀렸습니다</h2>
+<pre><code>[폭력예방 및 신변보호-2][학교폭력 예방교육…-2][사회정서-2]  ← 한 차시가 세 주제</code></pre>
+<p><b>한 차시가 여러 주제를 함께 이수합니다.</b> 실제 5학년 진도표(1학기)에서 <b>표시가 붙은 차시 120개가 이수 시수 195시간</b>을 냅니다 — 한 차시가 평균 <b>1.63개</b> 주제를 겸합니다.</p>
+<p><b>이것이 연 127시간이 986시간 안에 들어가는 방법</b>이고, v0.2 까지 이 앱은 그것을 모른 채 「창체에 안 들어간다」고 말하고 있었습니다.</p>
+<p>그래서 v0.3 은 <b>창의적 체험활동을 「이수 시수」가 아니라 「실제 차시」로</b> 셉니다.</p>
+<pre><code>이수 시수로는 61시간이지만 실제로 쓴 것은 42차시입니다
+— 한 차시가 여러 주제를 함께 이수하기 때문입니다.</code></pre>
+<p>진도표를 안 읽었으면 차시를 알 길이 없으므로 <b>모른다고 말합니다</b> — 「한 차시가 여러 주제를 겸하면 실제 차시는 이보다 적습니다.」</p>
+<hr>
+<h2 id="h51">이 앱의 얼굴 — <b>그릇</b></h2>
+<pre><code>연 127시간을 어디에 얹었는가                    4학년
+
+창의적 체험활동  █████████████████▌░│▨▨  91시간 / 102시간
+교과 통합        █████████▏░░░░░░░░░░░░  49시간
+────────────────────────────────────────────────
+127 / 127시간   의무에 얹은 것 / 의무 시수 · 권장은 따로 13 / 13시간
+
+창의적 체험활동 102시간 가운데 91시간이 법정 의무교육입니다 — 89%.
+남은 자리는 11시간입니다 — 자치활동·동아리·진로활동이 여기에 들어갑니다.</code></pre>
+<p><b>얹을 수 있는 자리는 둘뿐입니다</b> — 창의적 체험활동과 교과. 도움자료의 「편성·운영 방법」이 스무 주제 모두 <b>「교과 및 창의적 체험활동과 연계」</b>로 끝나기 때문입니다. 소방훈련도 재난훈련도 결국 창체 시간에 합니다. 셋째 그릇을 두면 <b>교육과정 밖에 둔 시간</b>이 생기고, 그것은 시수로 셀 수 있는 것이 아닙니다. 〔v0.2 에서 「학교 행사·훈련」을 없앴습니다〕</p>
+<p>창체 막대에는 <b>연간 시수가 어디서 끝나는지 세로줄</b>이 그어져 있습니다. 넘으면 막대가 색을 바꾸고, <b>몇 시간 넘는지 셈해서 말합니다.</b></p>
+<hr>
+<h2 id="h56">구조로 막는 것 (원칙 8번 — 잘못된 상태는 표현 불가능하게)</h2>
+<div class="tw"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td><b>법정 시수</b></td><td><b>입력이 아니라 상수</b>입니다. 손으로 고칠 칸이 없습니다</td></tr><tr><td><b>계·모자란 시수·그릇</b></td><td><b>결과</b>입니다</td></tr><tr><td><b>학기를 나눠</b></td><td>「학기당 몇 회 이상」을 셀 수 있어야 하기 때문입니다</td></tr><tr><td><b>어디에 얹을지 안 정한 것</b></td><td>「아직 안 정함」 그릇에 따로 담깁니다 — <b>채운 것이 아닙니다</b></td></tr><tr><td><b>채우는 순서</b></td><td><b>학교안전교육 7대 영역이 먼저</b> 옵니다. 범교과 표의 첫 줄이 그 표의 <b>합</b>이라, 뒤에 두면 채울 수 없는 칸을 먼저 보게 됩니다 〔v0.2〕</td></tr><tr><td><b>함께 지킬 조건</b></td><td>시수와 <b>다른 종류의 확인</b>입니다. 시수를 다 채워도 따로 셉니다</td></tr><tr><td><b>살펴볼 곳</b></td><td>화면에만 알리지 않고 <b>종이에도 적습니다</b></td></tr></tbody></table></div>
+<hr>
+<h2 id="h59">★ 세 가지를, 아무도 세지 않기 때문에 앱이 셉니다</h2>
+<h3 id="h60">① 127시간 — 손으로 더하면 한 줄을 빠뜨립니다</h3>
+<p>이 앱을 만들면서 <b>실제로 빠뜨렸습니다.</b> 처음 손으로 더할 때 <b>환경교육 2시간</b>을 빼먹고 125로 적었고, 앱이 표에서 센 값이 127이라 알아챘습니다.</p>
+<p>그래서 <b>127을 상수로 적어 두지 않았습니다.</b> <code>dutyTotal()</code>이 표에서 셉니다 (마스터 함정 34번 — <em>규칙을 표가 아니라 함수로</em>). 검사는 도움자료의 열세 개 숫자를 <b>따로 늘어놓고 더해</b> 앱의 값과 견줍니다 — 검사가 앱의 셈을 베껴 적으면 둘 다 틀려도 통과하기 때문입니다(함정 35번).</p>
+<h3 id="h63">② 보건교육 17차시는 「<b>한 개 학년 이상</b>」입니다</h3>
+<p>모든 학년이 아닙니다. 우리 학년이 그 학년이 아니라면 <b>우리 학년 몫은 127이 아니라 110시간</b>입니다. 화면에 <b>끄고 켤 수 있는 표시</b>로 두었고, 끄면 종이에 「해당 없음」이 찍힙니다. 이걸 모르고 17시간을 억지로 끼워 넣는 학년이 매년 나옵니다.</p>
+<h3 id="h65">③ 안전 영역 20% 조정은 <b>두 겹</b>입니다</h3>
+<blockquote><p>「총 이수 시간의 범위 내에서 안전 영역별 이수 시간을 자율적으로 조정·운영  (20% 범위 내, <b>소수점은 올림</b> 처리)할 수 있다」 — 도움자료 45쪽</p></blockquote>
+<p><b>영역별로는 줄일 수 있지만 총 51시간은 지켜야 합니다.</b> 한쪽만 보면 규칙을 반만 지킵니다. 그리고 <b>올림</b>입니다 — 12 × 0.8 = 9.6 은 <b>10</b>이지 9가 아닙니다.</p>
+<div class="tw"><table><thead><tr><th>기준</th><th>조정 범위</th><th></th><th>기준</th><th>조정 범위</th></tr></thead><tbody><tr><td>12</td><td>10~15</td><td></td><td>6</td><td>5~8</td></tr><tr><td>11</td><td>9~14</td><td></td><td>2</td><td>2~3</td></tr><tr><td>10</td><td>8~12</td><td></td><td>8</td><td>7~10</td></tr></tbody></table></div>
+<hr>
+<h2 id="h70">기준 자료</h2>
+<blockquote><p><b>「2026학년도 삶의 힘을 키우는 초등학교 교육과정 도움자료」</b> (경상북도교육청연구원) <b>43~44쪽</b> 범교과 학습 주제 운영 시수 및 근거 · <b>45쪽</b> 학교안전교육 7대 표준안</p></blockquote>
+<h3 id="h72">범교과 학습 주제 — 경북은 <b>11개 주제 · 세부 20개</b></h3>
+<div class="tw"><table><thead><tr><th>주제</th><th>시수</th><th></th><th>주제</th><th>시수</th></tr></thead><tbody><tr><td>학교안전교육 7대 영역</td><td><b>51</b> 의무</td><td></td><td>디지털 역량교육</td><td><b>10</b> 의무</td></tr><tr><td>소방 안전교육</td><td>2 의무</td><td></td><td>진로교육</td><td>교과 통합 의무</td></tr><tr><td>양성평등교육</td><td>15 의무</td><td></td><td>민주시민교육</td><td>교과 통합 권장</td></tr><tr><td>보건교육</td><td>17 의무</td><td></td><td>장애인식 개선교육</td><td>2 의무</td></tr><tr><td>영양·식생활 교육</td><td>2 의무</td><td></td><td>인권교육</td><td>교과 통합 권장</td></tr><tr><td>생명존중·자살예방</td><td>6 의무</td><td></td><td>다문화 이해 교육</td><td>2 의무</td></tr><tr><td>학교폭력 예방교육</td><td><b>12</b> 의무</td><td></td><td>통일교육</td><td>5 의무</td></tr><tr><td>인성교육</td><td>교과 통합 의무</td><td></td><td>독도교육</td><td>10 권장</td></tr><tr><td>교육활동 침해 예방</td><td>1 의무</td><td></td><td>경제·금융교육</td><td>교과 통합 권장</td></tr><tr><td></td><td></td><td></td><td>환경·지속가능발전</td><td>2 의무</td></tr><tr><td></td><td></td><td></td><td>역사교육(독립운동사)</td><td><b>3</b> 권장</td></tr></tbody></table></div>
+<p><b>의무 127시간 · 권장 13시간.</b></p>
+<h3 id="h75">학교안전교육 7대 영역 — 합 51시간</h3>
+<div class="tw"><table><thead><tr><th>영역</th><th>시수</th><th>횟수</th></tr></thead><tbody><tr><td>생활 안전</td><td>12</td><td>학기당 2회 이상</td></tr><tr><td>교통 안전</td><td>11</td><td>학기당 <b>3회 이상</b></td></tr><tr><td>폭력예방 및 신변보호</td><td>8</td><td>학기당 2회 이상</td></tr><tr><td>약물 및 사이버 중독 예방</td><td>10 (약물 5 + 사이버 5)</td><td>학기당 2회 이상</td></tr><tr><td>재난 안전</td><td>6</td><td>학기당 2회 이상</td></tr><tr><td>직업 안전</td><td>2</td><td>학기당 1회 이상</td></tr><tr><td>응급처치</td><td>2</td><td>학기당 1회 이상</td></tr></tbody></table></div>
+<p>51시간에 <b>「아동복지법」 시행령의 안전교육 44시간이 포함</b>됩니다 — 따로 채우는 것이 아닙니다.</p>
+<h3 id="h78">근거 법령은 <b>원문 그대로</b> 옮겼습니다</h3>
+<p>기억으로 적으면 조문이 틀립니다. 실제로 <b>통일교육을 제11조, 교원지위법을 제16조의3</b>으로 적을 뻔했는데, 원문은 <b>「통일교육 지원법」 제4조 및 제8조</b>와 <b>「교원의 지위 향상 및 교육활동 보호를 위한 특별법」 제24조</b>입니다. 검사가 열여덟 개 조문을 원문과 한 글자씩 견줍니다.</p>
+<hr>
+<h2 id="h81">함께 지킬 조건 — 시수만 맞으면 되는 것이 아닙니다</h2>
+<div class="tw"><table><thead><tr><th>주제</th><th>조건</th></tr></thead><tbody><tr><td>학교안전교육</td><td>재난 대비 훈련을 <b>2종류 이상</b> (유형을 달리하여 매학년도)</td></tr><tr><td>소방 안전교육</td><td><b>연 2회</b></td></tr><tr><td>양성평등교육</td><td>성폭력·가정폭력·성매매 예방 <b>3차시 이상</b></td></tr><tr><td>양성평등교육</td><td>디지털 성폭력(딥페이크·AI) <b>1차시 별도</b></td></tr><tr><td>학교폭력 예방교육</td><td>사이버폭력 예방 <b>3차시 이상</b></td></tr></tbody></table></div>
+<p>그리고 <b>학교폭력 예방교육은 「학급당」 12차시 이상</b>입니다 — 학교 단위가 아니라 <b>우리 반</b>입니다.</p>
+<hr>
+<h2 id="h85">종이와 표</h2>
+<ul><li><b>A4 세로.</b> 표 세 장 — ① 범교과 주제별 운영 시수(근거 포함) ② 안전 7대 영역 ③ 함께 지킬 조건</li><li><b>근거 법령이 종이에 다 실립니다</b> — 계획서에는 근거를 적어야 하기 때문입니다</li><li><b>살펴볼 곳이 종이에도 적힙니다</b></li><li>PDF 파일 이름 — <code>범교과학습주제운영계획_포항양덕초등학교_4학년_2026학년도</code> (함정 27번)</li><li><b>표로 내보내기(CSV)</b> — BOM 을 붙입니다. 없으면 엑셀에서 한글이 깨집니다</li></ul>
+<hr>
+<h2 id="h88">AI 초안 — 시수는 AI 에게 맡기지 않습니다</h2>
+<p><b>시수는 법으로 정해진 것</b>이고 앱이 이미 들고 있습니다. AI 가 지어내면 그것은 <b>법정 시수를 지어낸 것</b>이 되고, 그대로 결재에 올라갑니다.</p>
+<p>AI 가 돕는 것은 <b>「이 시수로 무엇을 할 것인가」</b>를 계획서의 말로 옮기는 일입니다. 범교과 계획서의 「운영 내용」 칸이 늘 비어 있고, 그것을 스무 줄 채우는 데 시간이 걸립니다.</p>
+<ul><li>프롬프트에는 <b>학년과 주제별 시수</b>만 들어갑니다. 이 앱에는 학생이 아예 나오지 않습니다</li><li><b>창체만으로는 다 들어가지 않는다</b>는 것을 프롬프트에도 적어 두었습니다 — 그래야 「어느 교과에 얹으면 좋은지」가 돌아옵니다</li><li><b>살펴볼 곳이 있으면 먼저 알립니다</b> — 그대로 두면 <em>모자란 시수에 대한 그럴듯한 계획</em>이 돌아옵니다</li><li>이 앱은 AI 의 답을 <b>받아 저장하지 않습니다</b></li></ul>
+<hr>
+<h2 id="h93">아직 하지 않은 것</h2>
+<div class="tw"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td><b>중학교</b></td><td>지금은 <b>초등만</b>입니다. 중학교 자료가 따로 필요합니다</td></tr><tr><td><b>경북 밖</b></td><td>범교과 시수는 <b>시도마다 다릅니다.</b> 경기도는 36항목이고 학교폭력 11·디지털 5 권장·환경 4 권장이며 독립운동사가 없습니다</td></tr><tr><td><b>연중 이수 기록</b></td><td>지금은 <b>계획</b>입니다. 「3월 4일 생활안전 2시간 했음」을 쌓아 실적 보고로 잇는 것은 다음입니다</td></tr><tr><td><b>학교 서식</b></td><td>학교가 실제로 내는 범교과 계획 서식을 받으면 종이를 그 모양으로 맞출 수 있습니다</td></tr><tr><td><b>창체 시수 받아 오기</b></td><td>지금은 학년군 시수의 절반을 기본값으로 쓰고 손으로 고칩니다. 학교 편성표를 파일로 읽어 눈금을 자동으로 맞출 수 있습니다</td></tr></tbody></table></div>
+<hr>
+<h2 id="h96">파일</h2>
+<pre><code>i-required/
+├─ index.html   ← 전부 여기에 (HTML + CSS + JS + 범교과 시수·근거·안전 7대 영역)
+├─ test.js      ← node test.js   281개
+└─ README.md</code></pre>
+<p><code>kit/leap.css</code> 와 <code>kit/leap.js</code> 가 원본이고, <code>index.html</code> 안의 것은 <b>사본</b>입니다. 갈림길·되돌리기는 앱 A·B·D·H 에서 온 것과 같은 모양입니다.</p>
+<p><code>window.LEAP_I</code> 는 셈한 결과를 내주는 창구입니다 — <b>늘 있는 것</b>이고, 고치는 길은 열지 않습니다 (마스터 함정 28번).</p>
+<blockquote><p><b>법령은 바뀝니다.</b> 계획을 결재에 올리기 전에 그해 지침으로 한 번 확인해 주세요. 앱은 화면과 종이 양쪽에 그렇게 적어 둡니다.</p></blockquote>
+<hr>
+<h2 id="h102">다음</h2>
+<ol><li><b>3월에 실제로 한 해 범교과 계획을 짜 보기</b> — 이 앱이 쓰이는 때가 그때입니다</li><li>종이로 뽑아 <b>학년 교육과정 문서에 그대로 붙여 보기</b></li><li>연중 이수 기록 → 학년말 실적 보고로 잇기</li><li>학교 편성표에서 창의적 체험활동 시수를 읽어 눈금 자동으로 맞추기</li></ol>
+</main>
+<div class="foot">© 2026 TEAM LEAP · 경북교육 AI Lab · AI 활용 분과</div>
+</body>
+</html>

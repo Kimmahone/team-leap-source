@@ -1,0 +1,47 @@
+{
+  "_meta": {
+    "title": "경상북도 시군 마스터",
+    "version": "0.1",
+    "created": "2026-08-01",
+    "sido_code": "47",
+    "sido_name": "경상북도",
+    "count": 22,
+    "notes": [
+      "군위군은 2023. 7. 1. 대구광역시로 편입되어 제외했습니다. 「데이터 플랫폼 구성안」 3쪽 시군 필터 목록과 동일한 22개입니다.",
+      "code는 행정표준코드(법정동코드 앞 5자리) 기준입니다. 반드시 code.go.kr 원문으로 대조하세요.",
+      "population_decline(인구감소지역)은 행정안전부 고시 기준 잠정 입력이며 verified=false 입니다. D7 확보 후 확정하세요.",
+      "education_innovation(교육혁신선도지역)은 정의 확인 전이라 전부 null 입니다. 기획예산관 확인 필요(D8).",
+      "grid_row/grid_col은 프로토타입의 시군 모식도(schematic map) 배치용 좌표이며 실제 지리 좌표가 아닙니다. 실제 지도 연동 시 lat/lon으로 대체합니다.",
+      "lat/lon은 D3(전국초중등학교위치표준데이터)에서 시군별 학교 좌표의 중심점으로 산출해 채우세요."
+    ],
+    "verified": {
+      "code": false,
+      "population_decline": false,
+      "education_innovation": false
+    }
+  },
+  "sigungu": [
+    { "code": "47110", "name": "포항시", "short": "포항", "type": "시", "population_decline": false, "education_innovation": null, "grid_row": 4, "grid_col": 5, "lat": null, "lon": null },
+    { "code": "47130", "name": "경주시", "short": "경주", "type": "시", "population_decline": false, "education_innovation": null, "grid_row": 5, "grid_col": 5, "lat": null, "lon": null },
+    { "code": "47150", "name": "김천시", "short": "김천", "type": "시", "population_decline": false, "education_innovation": null, "grid_row": 4, "grid_col": 1, "lat": null, "lon": null },
+    { "code": "47170", "name": "안동시", "short": "안동", "type": "시", "population_decline": true,  "education_innovation": null, "grid_row": 2, "grid_col": 3, "lat": null, "lon": null },
+    { "code": "47190", "name": "구미시", "short": "구미", "type": "시", "population_decline": false, "education_innovation": null, "grid_row": 4, "grid_col": 2, "lat": null, "lon": null },
+    { "code": "47210", "name": "영주시", "short": "영주", "type": "시", "population_decline": true,  "education_innovation": null, "grid_row": 1, "grid_col": 2, "lat": null, "lon": null },
+    { "code": "47230", "name": "영천시", "short": "영천", "type": "시", "population_decline": true,  "education_innovation": null, "grid_row": 4, "grid_col": 4, "lat": null, "lon": null },
+    { "code": "47250", "name": "상주시", "short": "상주", "type": "시", "population_decline": true,  "education_innovation": null, "grid_row": 3, "grid_col": 1, "lat": null, "lon": null },
+    { "code": "47280", "name": "문경시", "short": "문경", "type": "시", "population_decline": true,  "education_innovation": null, "grid_row": 2, "grid_col": 1, "lat": null, "lon": null },
+    { "code": "47290", "name": "경산시", "short": "경산", "type": "시", "population_decline": false, "education_innovation": null, "grid_row": 5, "grid_col": 3, "lat": null, "lon": null },
+    { "code": "47730", "name": "의성군", "short": "의성", "type": "군", "population_decline": true,  "education_innovation": null, "grid_row": 3, "grid_col": 2, "lat": null, "lon": null },
+    { "code": "47750", "name": "청송군", "short": "청송", "type": "군", "population_decline": true,  "education_innovation": null, "grid_row": 3, "grid_col": 4, "lat": null, "lon": null },
+    { "code": "47760", "name": "영양군", "short": "영양", "type": "군", "population_decline": true,  "education_innovation": null, "grid_row": 2, "grid_col": 4, "lat": null, "lon": null },
+    { "code": "47770", "name": "영덕군", "short": "영덕", "type": "군", "population_decline": true,  "education_innovation": null, "grid_row": 3, "grid_col": 5, "lat": null, "lon": null },
+    { "code": "47820", "name": "청도군", "short": "청도", "type": "군", "population_decline": true,  "education_innovation": null, "grid_row": 5, "grid_col": 4, "lat": null, "lon": null },
+    { "code": "47830", "name": "고령군", "short": "고령", "type": "군", "population_decline": true,  "education_innovation": null, "grid_row": 5, "grid_col": 2, "lat": null, "lon": null },
+    { "code": "47840", "name": "성주군", "short": "성주", "type": "군", "population_decline": true,  "education_innovation": null, "grid_row": 5, "grid_col": 1, "lat": null, "lon": null },
+    { "code": "47850", "name": "칠곡군", "short": "칠곡", "type": "군", "population_decline": false, "education_innovation": null, "grid_row": 4, "grid_col": 3, "lat": null, "lon": null },
+    { "code": "47900", "name": "예천군", "short": "예천", "type": "군", "population_decline": true,  "education_innovation": null, "grid_row": 2, "grid_col": 2, "lat": null, "lon": null },
+    { "code": "47920", "name": "봉화군", "short": "봉화", "type": "군", "population_decline": true,  "education_innovation": null, "grid_row": 1, "grid_col": 3, "lat": null, "lon": null },
+    { "code": "47930", "name": "울진군", "short": "울진", "type": "군", "population_decline": true,  "education_innovation": null, "grid_row": 1, "grid_col": 5, "lat": null, "lon": null },
+    { "code": "47940", "name": "울릉군", "short": "울릉", "type": "군", "population_decline": true,  "education_innovation": null, "grid_row": 1, "grid_col": 7, "lat": null, "lon": null }
+  ]
+}

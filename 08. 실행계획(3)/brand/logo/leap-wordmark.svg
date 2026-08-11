@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 44" width="220" height="44" role="img" aria-labelledby="t">
+  <title id="t">TEAM LEAP</title>
+  <!-- 워드마크 단독. 심볼이 이미 근처에 있어 반복이 어색할 때만 씁니다.
+       (예: 심볼이 들어간 앱 아이콘 옆의 제목 줄) -->
+  <text x="0" y="28"
+        font-family="system-ui, -apple-system, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif"
+        font-size="27" letter-spacing="1.2">
+    <tspan fill="#5A6672" font-weight="500">TEAM </tspan><tspan fill="#14202E" font-weight="800">LEAP</tspan>
+  </text>
+  <text x="1" y="42"
+        font-family="system-ui, -apple-system, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif"
+        font-size="10.5" font-weight="500" letter-spacing="0.2" fill="#5A6672">경북교육 AI Lab · AI 활용 분과</text>
+</svg>

@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+<html lang="ko">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<style type="text/css">
+		table thead tr th{background-color: #3DB7CC}
+	</style>
+</head>
+<script>
+</script>
+<body >
+<div>
+	<div>
+		<h3>시도시군구코드.xls</h3>
+	</div>
+	<table cellpadding="0" cellspacing="0" class="vertical" summary="시도시군구"  border="1px">
+		<thead>
+			<tr>
+				<th>시도명</th>
+				<th>시도코드</th>
+				<th>시군구명</th>
+				<th>시군구코드</th>
+			</tr>
+		</thead>
+		<tbody>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>중구</td>
+						<td>11140</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>관악구</td>
+						<td>11620</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>동대문구</td>
+						<td>11230</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>중랑구</td>
+						<td>11260</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>은평구</td>
+						<td>11380</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>금천구</td>
+						<td>11545</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>동작구</td>
+						<td>11590</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>강남구</td>
+						<td>11680</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>종로구</td>
+						<td>11110</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>용산구</td>
+						<td>11170</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>광진구</td>
+						<td>11215</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>양천구</td>
+						<td>11470</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>서대문구</td>
+						<td>11410</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>마포구</td>
+						<td>11440</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>성동구</td>
+						<td>11200</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>강북구</td>
+						<td>11305</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>서초구</td>
+						<td>11650</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>송파구</td>
+						<td>11710</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>강동구</td>
+						<td>11740</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>성북구</td>
+						<td>11290</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>도봉구</td>
+						<td>11320</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>노원구</td>
+						<td>11350</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>강서구</td>
+						<td>11500</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>구로구</td>
+						<td>11530</td>
+				</tr>
+			
+				<tr>
+						<td>서울특별시</td>
+						<td>11</td>
+						<td>영등포구</td>
+						<td>11560</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>신안군</td>
+						<td>12870</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>목포시</td>
+						<td>12110</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>화순군</td>
+						<td>12760</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>동구</td>
+						<td>12210</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>서구</td>
+						<td>12240</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>남구</td>
+						<td>12270</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>북구</td>
+						<td>12300</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>광산구</td>
+						<td>12330</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>담양군</td>
+						<td>12710</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>곡성군</td>
+						<td>12720</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>구례군</td>
+						<td>12730</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>고흥군</td>
+						<td>12740</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>보성군</td>
+						<td>12750</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>장흥군</td>
+						<td>12770</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>강진군</td>
+						<td>12780</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>해남군</td>
+						<td>12790</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>영암군</td>
+						<td>12800</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>무안군</td>
+						<td>12810</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>함평군</td>
+						<td>12820</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>영광군</td>
+						<td>12830</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>장성군</td>
+						<td>12840</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>완도군</td>
+						<td>12850</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>진도군</td>
+						<td>12860</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>광양시</td>
+						<td>12190</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>나주시</td>
+						<td>12170</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>순천시</td>
+						<td>12150</td>
+				</tr>
+			
+				<tr>
+						<td>전남광주통합특별시</td>
+						<td>12</td>
+						<td>여수시</td>
+						<td>12130</td>
+				</tr>
+			
+				<tr>
+						<td>부산광역시</td>
+						<td>26</td>
+						<td>기장군</td>
+						<td>26710</td>
+				</tr>
+			
+				<tr>
+						<td>부산광역시</td>
+						<td>26</td>
+						<td>동구</td>
+						<td>26170</td>
+				</tr>
+			
+				<tr>
+						<td>부산광역시</td>
+						<td>26</td>
+						<td>금정구</td>
+						<td>26410</td>
+				</tr>
+			
+				<tr>
+						<td>부산광역시</td>
+						<td>26</td>
+						<td>사상구</td>
+						<td>26530</td>
+				</tr>
+			
+				<tr>
+						<td>부산광역시</td>
+						<td>26</td>
+						<td>사하구</td>
+						<td>26380</td>
+				</tr>
+			
+				<tr>
+						<td>부산광역시</td>
+						<td>26</td>
+						<td>강서구</td>
+						<td>26440</td>
+				</tr>
+			
+				<tr>
+						<td>부산광역시</td>
+						<td>26</td>
+						<td>동래구</td>
+						<td>26260</td>
+				</tr>
+			
+				<tr>
+						<td>부산광역시</td>
+						<td>26</td>
+						<td>남구</td>
+						<td>26290</td>
+				</tr>
+			
+				<tr>
+						<td>부산광역시</td>
+						<td>26</td>
+						<td>영도구</td>
+						<td>26200</td>
+				</tr>
+			
+				<tr>
+						<td>부산광역시</td>
+						<td>26</td>
+						<td>연제구</td>
+						<td>26470</td>
+				</tr>
+			
+				<tr>
+						<td>부산광역시</td>
+						<td>26</td>
+						<td>부산진구</td>
+						<td>26230</td>
+				</tr>
+			
+				<tr>
+						<td>부산광역시</td>
+						<td>26</td>
+						<td>북구</td>
+						<td>26320</td>
+				</tr>
+			
+				<tr>
+						<td>부산광역시</td>
+						<td>26</td>
+						<td>서구</td>
+						<td>26140</td>
+				</tr>
+			
+				<tr>
+						<td>부산광역시</td>
+						<td>26</td>
+						<td>해운대구</td>
+						<td>26350</td>
+				</tr>
+			
+				<tr>
+						<td>부산광역시</td>
+						<td>26</td>
+						<td>수영구</td>
+						<td>26500</td>
+				</tr>
+			
+				<tr>
+						<td>부산광역시</td>
+						<td>26</td>
+						<td>중구</td>
+						<td>26110</td>
+				</tr>
+			
+				<tr>
+						<td>대구광역시</td>
+						<td>27</td>
+						<td>수성구</td>
+						<td>27260</td>
+				</tr>
+			
+				<tr>
+						<td>대구광역시</td>
+						<td>27</td>
+						<td>군위군</td>
+						<td>27720</td>
+				</tr>
+			
+				<tr>
+						<td>대구광역시</td>
+						<td>27</td>
+						<td>남구</td>
+						<td>27200</td>
+				</tr>
+			
+				<tr>
+						<td>대구광역시</td>
+						<td>27</td>
+						<td>달서구</td>
+						<td>27290</td>
+				</tr>
+			
+				<tr>
+						<td>대구광역시</td>
+						<td>27</td>
+						<td>서구</td>
+						<td>27170</td>
+				</tr>
+			
+				<tr>
+						<td>대구광역시</td>
+						<td>27</td>
+						<td>달성군</td>
+						<td>27710</td>
+				</tr>
+			
+				<tr>
+						<td>대구광역시</td>
+						<td>27</td>
+						<td>동구</td>
+						<td>27140</td>
+				</tr>
+			
+				<tr>
+						<td>대구광역시</td>
+						<td>27</td>
+						<td>북구</td>
+						<td>27230</td>
+				</tr>
+			
+				<tr>
+						<td>대구광역시</td>
+						<td>27</td>
+						<td>중구</td>
+						<td>27110</td>
+				</tr>
+			
+				<tr>
+						<td>인천광역시</td>
+						<td>28</td>
+						<td>검단구</td>
+						<td>28290</td>
+				</tr>
+			
+				<tr>
+						<td>인천광역시</td>
+						<td>28</td>
+						<td>서해구</td>
+						<td>28275</td>
+				</tr>
+			
+				<tr>
+						<td>인천광역시</td>
+						<td>28</td>
+						<td>영종구</td>
+						<td>28155</td>
+				</tr>
+			
+				<tr>
+						<td>인천광역시</td>
+						<td>28</td>
+						<td>제물포구</td>
+						<td>28125</td>
+				</tr>
+			
+				<tr>
+						<td>인천광역시</td>
+						<td>28</td>
+						<td>옹진군</td>
+						<td>28720</td>
+				</tr>
+			
+				<tr>
+						<td>인천광역시</td>
+						<td>28</td>
+						<td>강화군</td>
+						<td>28710</td>
+				</tr>
+			
+				<tr>
+						<td>인천광역시</td>
+						<td>28</td>
+						<td>계양구</td>
+						<td>28245</td>
+				</tr>
+			
+				<tr>
+						<td>인천광역시</td>
+						<td>28</td>
+						<td>부평구</td>
+						<td>28237</td>
+				</tr>
+			
+				<tr>
+						<td>인천광역시</td>
+						<td>28</td>
+						<td>남동구</td>
+						<td>28200</td>
+				</tr>
+			
+				<tr>
+						<td>인천광역시</td>
+						<td>28</td>
+						<td>연수구</td>
+						<td>28185</td>
+				</tr>
+			
+				<tr>
+						<td>인천광역시</td>
+						<td>28</td>
+						<td>미추홀구</td>
+						<td>28177</td>
+				</tr>
+			
+				<tr>
+						<td>대전광역시</td>
+						<td>30</td>
+						<td>동구</td>
+						<td>30110</td>
+				</tr>
+			
+				<tr>
+						<td>대전광역시</td>
+						<td>30</td>
+						<td>서구</td>
+						<td>30170</td>
+				</tr>
+			
+				<tr>
+						<td>대전광역시</td>
+						<td>30</td>
+						<td>대덕구</td>
+						<td>30230</td>
+				</tr>
+			
+				<tr>
+						<td>대전광역시</td>
+						<td>30</td>
+						<td>유성구</td>
+						<td>30200</td>
+				</tr>
+			
+				<tr>
+						<td>대전광역시</td>
+						<td>30</td>
+						<td>중구</td>
+						<td>30140</td>
+				</tr>
+			
+				<tr>
+						<td>울산광역시</td>
+						<td>31</td>
+						<td>남구</td>
+						<td>31140</td>
+				</tr>
+			
+				<tr>
+						<td>울산광역시</td>
+						<td>31</td>
+						<td>북구</td>
+						<td>31200</td>
+				</tr>
+			
+				<tr>
+						<td>울산광역시</td>
+						<td>31</td>
+						<td>울주군</td>
+						<td>31710</td>
+				</tr>
+			
+				<tr>
+						<td>울산광역시</td>
+						<td>31</td>
+						<td>동구</td>
+						<td>31170</td>
+				</tr>
+			
+				<tr>
+						<td>울산광역시</td>
+						<td>31</td>
+						<td>중구</td>
+						<td>31110</td>
+				</tr>
+			
+				<tr>
+						<td>세종특별자치시</td>
+						<td>36</td>
+						<td>세종특별자치시</td>
+						<td>36110</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>고양시 일산서구</td>
+						<td>41287</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>연천군</td>
+						<td>41800</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>양주시</td>
+						<td>41630</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>안산시 단원구</td>
+						<td>41273</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>광명시</td>
+						<td>41210</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>수원시 영통구</td>
+						<td>41117</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>안성시</td>
+						<td>41550</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>가평군</td>
+						<td>41820</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>여주시</td>
+						<td>41670</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>포천시</td>
+						<td>41650</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>광주시</td>
+						<td>41610</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>김포시</td>
+						<td>41570</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>파주시</td>
+						<td>41480</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>용인시 기흥구</td>
+						<td>41463</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>의왕시</td>
+						<td>41430</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>동두천시</td>
+						<td>41250</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>양평군</td>
+						<td>41830</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>안양시</td>
+						<td>41170</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>성남시 수정구</td>
+						<td>41131</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>하남시</td>
+						<td>41450</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>수원시 권선구</td>
+						<td>41113</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>과천시</td>
+						<td>41290</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>군포시</td>
+						<td>41410</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>용인시 수지구</td>
+						<td>41465</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>이천시</td>
+						<td>41500</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>안양시 만안구</td>
+						<td>41171</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>고양시 일산동구</td>
+						<td>41285</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>화성시 만세구</td>
+						<td>41591</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>화성시 효행구</td>
+						<td>41593</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>화성시 병점구</td>
+						<td>41595</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>화성시 동탄구</td>
+						<td>41597</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>구리시</td>
+						<td>41310</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>성남시 중원구</td>
+						<td>41133</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>수원시 장안구</td>
+						<td>41111</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>의정부시</td>
+						<td>41150</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>남양주시</td>
+						<td>41360</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>오산시</td>
+						<td>41370</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>시흥시</td>
+						<td>41390</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>용인시 처인구</td>
+						<td>41461</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>부천시 원미구</td>
+						<td>41192</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>부천시 소사구</td>
+						<td>41194</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>부천시 오정구</td>
+						<td>41196</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>수원시</td>
+						<td>41110</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>수원시 팔달구</td>
+						<td>41115</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>성남시</td>
+						<td>41130</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>성남시 분당구</td>
+						<td>41135</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>안양시 동안구</td>
+						<td>41173</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>평택시</td>
+						<td>41220</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>안산시 상록구</td>
+						<td>41271</td>
+				</tr>
+			
+				<tr>
+						<td>경기도</td>
+						<td>41</td>
+						<td>고양시 덕양구</td>
+						<td>41281</td>
+				</tr>
+			
+				<tr>
+						<td>충청북도</td>
+						<td>43</td>
+						<td>청주시 흥덕구</td>
+						<td>43113</td>
+				</tr>
+			
+				<tr>
+						<td>충청북도</td>
+						<td>43</td>
+						<td>청주시 상당구</td>
+						<td>43111</td>
+				</tr>
+			
+				<tr>
+						<td>충청북도</td>
+						<td>43</td>
+						<td>단양군</td>
+						<td>43800</td>
+				</tr>
+			
+				<tr>
+						<td>충청북도</td>
+						<td>43</td>
+						<td>음성군</td>
+						<td>43770</td>
+				</tr>
+			
+				<tr>
+						<td>충청북도</td>
+						<td>43</td>
+						<td>보은군</td>
+						<td>43720</td>
+				</tr>
+			
+				<tr>
+						<td>충청북도</td>
+						<td>43</td>
+						<td>영동군</td>
+						<td>43740</td>
+				</tr>
+			
+				<tr>
+						<td>충청북도</td>
+						<td>43</td>
+						<td>증평군</td>
+						<td>43745</td>
+				</tr>
+			
+				<tr>
+						<td>충청북도</td>
+						<td>43</td>
+						<td>괴산군</td>
+						<td>43760</td>
+				</tr>
+			
+				<tr>
+						<td>충청북도</td>
+						<td>43</td>
+						<td>옥천군</td>
+						<td>43730</td>
+				</tr>
+			
+				<tr>
+						<td>충청북도</td>
+						<td>43</td>
+						<td>청주시 서원구</td>
+						<td>43112</td>
+				</tr>
+			
+				<tr>
+						<td>충청북도</td>
+						<td>43</td>
+						<td>제천시</td>
+						<td>43150</td>
+				</tr>
+			
+				<tr>
+						<td>충청북도</td>
+						<td>43</td>
+						<td>청주시 청원구</td>
+						<td>43114</td>
+				</tr>
+			
+				<tr>
+						<td>충청북도</td>
+						<td>43</td>
+						<td>진천군</td>
+						<td>43750</td>
+				</tr>
+			
+				<tr>
+						<td>충청북도</td>
+						<td>43</td>
+						<td>충주시</td>
+						<td>43130</td>
+				</tr>
+			
+				<tr>
+						<td>충청남도</td>
+						<td>44</td>
+						<td>서천군</td>
+						<td>44770</td>
+				</tr>
+			
+				<tr>
+						<td>충청남도</td>
+						<td>44</td>
+						<td>천안시 동남구</td>
+						<td>44131</td>
+				</tr>
+			
+				<tr>
+						<td>충청남도</td>
+						<td>44</td>
+						<td>논산시</td>
+						<td>44230</td>
+				</tr>
+			
+				<tr>
+						<td>충청남도</td>
+						<td>44</td>
+						<td>보령시</td>
+						<td>44180</td>
+				</tr>
+			
+				<tr>
+						<td>충청남도</td>
+						<td>44</td>
+						<td>아산시</td>
+						<td>44200</td>
+				</tr>
+			
+				<tr>
+						<td>충청남도</td>
+						<td>44</td>
+						<td>홍성군</td>
+						<td>44800</td>
+				</tr>
+			
+				<tr>
+						<td>충청남도</td>
+						<td>44</td>
+						<td>당진시</td>
+						<td>44270</td>
+				</tr>
+			
+				<tr>
+						<td>충청남도</td>
+						<td>44</td>
+						<td>태안군</td>
+						<td>44825</td>
+				</tr>
+			
+				<tr>
+						<td>충청남도</td>
+						<td>44</td>
+						<td>예산군</td>
+						<td>44810</td>
+				</tr>
+			
+				<tr>
+						<td>충청남도</td>
+						<td>44</td>
+						<td>청양군</td>
+						<td>44790</td>
+				</tr>
+			
+				<tr>
+						<td>충청남도</td>
+						<td>44</td>
+						<td>금산군</td>
+						<td>44710</td>
+				</tr>
+			
+				<tr>
+						<td>충청남도</td>
+						<td>44</td>
+						<td>계룡시</td>
+						<td>44250</td>
+				</tr>
+			
+				<tr>
+						<td>충청남도</td>
+						<td>44</td>
+						<td>서산시</td>
+						<td>44210</td>
+				</tr>
+			
+				<tr>
+						<td>충청남도</td>
+						<td>44</td>
+						<td>공주시</td>
+						<td>44150</td>
+				</tr>
+			
+				<tr>
+						<td>충청남도</td>
+						<td>44</td>
+						<td>천안시 서북구</td>
+						<td>44133</td>
+				</tr>
+			
+				<tr>
+						<td>충청남도</td>
+						<td>44</td>
+						<td>부여군</td>
+						<td>44760</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>포항시 남구</td>
+						<td>47111</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>영주시</td>
+						<td>47210</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>경산시</td>
+						<td>47290</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>청도군</td>
+						<td>47820</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>포항시 북구</td>
+						<td>47113</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>의성군</td>
+						<td>47730</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>문경시</td>
+						<td>47280</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>안동시</td>
+						<td>47170</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>구미시</td>
+						<td>47190</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>경주시</td>
+						<td>47130</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>영덕군</td>
+						<td>47770</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>영양군</td>
+						<td>47760</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>울릉군</td>
+						<td>47940</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>청송군</td>
+						<td>47750</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>김천시</td>
+						<td>47150</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>영천시</td>
+						<td>47230</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>상주시</td>
+						<td>47250</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>포항시</td>
+						<td>47110</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>울진군</td>
+						<td>47930</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>예천군</td>
+						<td>47900</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>성주군</td>
+						<td>47840</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>봉화군</td>
+						<td>47920</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>칠곡군</td>
+						<td>47850</td>
+				</tr>
+			
+				<tr>
+						<td>경상북도</td>
+						<td>47</td>
+						<td>고령군</td>
+						<td>47830</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>사천시</td>
+						<td>48240</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>창원시</td>
+						<td>48120</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>진주시</td>
+						<td>48170</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>남해군</td>
+						<td>48840</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>창원시 마산합포구</td>
+						<td>48125</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>창원시 진해구</td>
+						<td>48129</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>합천군</td>
+						<td>48890</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>함양군</td>
+						<td>48870</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>하동군</td>
+						<td>48850</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>창녕군</td>
+						<td>48740</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>함안군</td>
+						<td>48730</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>양산시</td>
+						<td>48330</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>거제시</td>
+						<td>48310</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>김해시</td>
+						<td>48250</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>통영시</td>
+						<td>48220</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>고성군</td>
+						<td>48820</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>창원시 성산구</td>
+						<td>48123</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>거창군</td>
+						<td>48880</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>밀양시</td>
+						<td>48270</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>창원시 의창구</td>
+						<td>48121</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>산청군</td>
+						<td>48860</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>의령군</td>
+						<td>48720</td>
+				</tr>
+			
+				<tr>
+						<td>경상남도</td>
+						<td>48</td>
+						<td>창원시 마산회원구</td>
+						<td>48127</td>
+				</tr>
+			
+				<tr>
+						<td>제주특별자치도</td>
+						<td>50</td>
+						<td>제주시</td>
+						<td>50110</td>
+				</tr>
+			
+				<tr>
+						<td>제주특별자치도</td>
+						<td>50</td>
+						<td>서귀포시</td>
+						<td>50130</td>
+				</tr>
+			
+				<tr>
+						<td>강원특별자치도</td>
+						<td>51</td>
+						<td>태백시</td>
+						<td>51190</td>
+				</tr>
+			
+				<tr>
+						<td>강원특별자치도</td>
+						<td>51</td>
+						<td>영월군</td>
+						<td>51750</td>
+				</tr>
+			
+				<tr>
+						<td>강원특별자치도</td>
+						<td>51</td>
+						<td>춘천시</td>
+						<td>51110</td>
+				</tr>
+			
+				<tr>
+						<td>강원특별자치도</td>
+						<td>51</td>
+						<td>인제군</td>
+						<td>51810</td>
+				</tr>
+			
+				<tr>
+						<td>강원특별자치도</td>
+						<td>51</td>
+						<td>정선군</td>
+						<td>51770</td>
+				</tr>
+			
+				<tr>
+						<td>강원특별자치도</td>
+						<td>51</td>
+						<td>강릉시</td>
+						<td>51150</td>
+				</tr>
+			
+				<tr>
+						<td>강원특별자치도</td>
+						<td>51</td>
+						<td>속초시</td>
+						<td>51210</td>
+				</tr>
+			
+				<tr>
+						<td>강원특별자치도</td>
+						<td>51</td>
+						<td>화천군</td>
+						<td>51790</td>
+				</tr>
+			
+				<tr>
+						<td>강원특별자치도</td>
+						<td>51</td>
+						<td>원주시</td>
+						<td>51130</td>
+				</tr>
+			
+				<tr>
+						<td>강원특별자치도</td>
+						<td>51</td>
+						<td>동해시</td>
+						<td>51170</td>
+				</tr>
+			
+				<tr>
+						<td>강원특별자치도</td>
+						<td>51</td>
+						<td>양양군</td>
+						<td>51830</td>
+				</tr>
+			
+				<tr>
+						<td>강원특별자치도</td>
+						<td>51</td>
+						<td>고성군</td>
+						<td>51820</td>
+				</tr>
+			
+				<tr>
+						<td>강원특별자치도</td>
+						<td>51</td>
+						<td>양구군</td>
+						<td>51800</td>
+				</tr>
+			
+				<tr>
+						<td>강원특별자치도</td>
+						<td>51</td>
+						<td>철원군</td>
+						<td>51780</td>
+				</tr>
+			
+				<tr>
+						<td>강원특별자치도</td>
+						<td>51</td>
+						<td>평창군</td>
+						<td>51760</td>
+				</tr>
+			
+				<tr>
+						<td>강원특별자치도</td>
+						<td>51</td>
+						<td>홍천군</td>
+						<td>51720</td>
+				</tr>
+			
+				<tr>
+						<td>강원특별자치도</td>
+						<td>51</td>
+						<td>삼척시</td>
+						<td>51230</td>
+				</tr>
+			
+				<tr>
+						<td>강원특별자치도</td>
+						<td>51</td>
+						<td>횡성군</td>
+						<td>51730</td>
+				</tr>
+			
+				<tr>
+						<td>전북특별자치도</td>
+						<td>52</td>
+						<td>익산시</td>
+						<td>52140</td>
+				</tr>
+			
+				<tr>
+						<td>전북특별자치도</td>
+						<td>52</td>
+						<td>진안군</td>
+						<td>52720</td>
+				</tr>
+			
+				<tr>
+						<td>전북특별자치도</td>
+						<td>52</td>
+						<td>남원시</td>
+						<td>52190</td>
+				</tr>
+			
+				<tr>
+						<td>전북특별자치도</td>
+						<td>52</td>
+						<td>고창군</td>
+						<td>52790</td>
+				</tr>
+			
+				<tr>
+						<td>전북특별자치도</td>
+						<td>52</td>
+						<td>정읍시</td>
+						<td>52180</td>
+				</tr>
+			
+				<tr>
+						<td>전북특별자치도</td>
+						<td>52</td>
+						<td>임실군</td>
+						<td>52750</td>
+				</tr>
+			
+				<tr>
+						<td>전북특별자치도</td>
+						<td>52</td>
+						<td>전주시 완산구</td>
+						<td>52111</td>
+				</tr>
+			
+				<tr>
+						<td>전북특별자치도</td>
+						<td>52</td>
+						<td>전주시 덕진구</td>
+						<td>52113</td>
+				</tr>
+			
+				<tr>
+						<td>전북특별자치도</td>
+						<td>52</td>
+						<td>부안군</td>
+						<td>52800</td>
+				</tr>
+			
+				<tr>
+						<td>전북특별자치도</td>
+						<td>52</td>
+						<td>순창군</td>
+						<td>52770</td>
+				</tr>
+			
+				<tr>
+						<td>전북특별자치도</td>
+						<td>52</td>
+						<td>무주군</td>
+						<td>52730</td>
+				</tr>
+			
+				<tr>
+						<td>전북특별자치도</td>
+						<td>52</td>
+						<td>완주군</td>
+						<td>52710</td>
+				</tr>
+			
+				<tr>
+						<td>전북특별자치도</td>
+						<td>52</td>
+						<td>김제시</td>
+						<td>52210</td>
+				</tr>
+			
+				<tr>
+						<td>전북특별자치도</td>
+						<td>52</td>
+						<td>군산시</td>
+						<td>52130</td>
+				</tr>
+			
+				<tr>
+						<td>전북특별자치도</td>
+						<td>52</td>
+						<td>장수군</td>
+						<td>52740</td>
+				</tr>
+			
+		</tbody>
+	</table>
+</div>
+</body>
+</html>
+<!-- /컨텐츠 -->

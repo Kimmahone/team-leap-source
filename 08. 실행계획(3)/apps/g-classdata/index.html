@@ -1,0 +1,3290 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>우리 반 데이터 보기 — TEAM LEAP</title>
+<meta name="description" content="성취·참여·정서·관찰 자료를 회차별로 쌓고, 변화를 그림으로 봅니다. 엑셀 템플릿을 받아 채워 올리면 바로 대시보드가 나옵니다. TEAM LEAP.">
+<meta name="author" content="TEAM LEAP · 경북교육 AI Lab">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%2314202E%27/%3E%3Cg transform=%27translate(32 32) scale(0.92) translate(-32 -33)%27%3E%3Cpath d=%27M7 52 H25%27 stroke=%27%2397A3B0%27 stroke-width=%277.5%27 stroke-linecap=%27round%27 fill=%27none%27/%3E%3Cpath d=%27M39 36 H57%27 stroke=%27%23F2A65A%27 stroke-width=%277.5%27 stroke-linecap=%27round%27 fill=%27none%27/%3E%3Cpath d=%27M16 46 Q32 -10 48 30%27 stroke=%27%237FB3F7%27 stroke-width=%278%27 stroke-linecap=%27round%27 fill=%27none%27/%3E%3C/g%3E%3C/svg%3E">
+<!--
+  우리 반 데이터 보기 (앱 G) v0.4
+  © 2026 TEAM LEAP (경북교육 AI Lab · AI 활용 분과)
+  교육 목적에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다.
+-->
+<style>
+/* ==========================================================================
+   LEAP Kit 토큰 (apps/kit/leap.css 사본 — 단일 HTML 유지를 위해 붙여 넣음)
+   ========================================================================== */
+:root{
+  --leap-ink:#14202E; --leap-blue:#1B4FA0; --leap-amber:#A8560A;
+  --leap-amber-mark:#CE6410; --leap-teal:#0D6E5C; --leap-gray:#5A6672;
+  --leap-bg:#F7F9FC; --leap-surface:#FFFFFF; --leap-border:#D9E0EA;
+  --leap-hairline:#E8EDF3; --leap-on-fill:#FFFFFF;
+  --leap-font:system-ui,-apple-system,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  --leap-radius:14px; --leap-radius-sm:8px;
+  --leap-shadow:0 1px 2px rgba(20,32,46,.05),0 6px 18px rgba(20,32,46,.07);
+  --leap-shadow-lg:0 2px 4px rgba(20,32,46,.06),0 14px 38px rgba(20,32,46,.11);
+  --tint-blue:#EAF1FB; --tint-amber:#FCF0E3; --tint-teal:#E4F4F0;
+  --grad-head:linear-gradient(135deg,#14202E 0%,#1B4FA0 78%,#2C6FD1 100%);
+  --grad-bar:linear-gradient(90deg,#1B4FA0,#3C7FD8);
+  --solid-teal:#0D6E5C; --solid-amber:#A8560A; --solid-gray:#5A6672; --solid-fg:#FFFFFF;
+  /* 간격 — v0.2 에서 이름만 쓰이고 값이 없던 자리입니다 */
+  --leap-3:12px; --leap-4:16px; --leap-5:20px; --leap-6:26px;
+  /* 히트맵 다섯 단계. 색과 글자 대비를 짝지어 못박아 둡니다(원칙 4·6) */
+  --h0:#EAF1FB; --h0f:#14202E; --h1:#CFE0F7; --h1f:#14202E; --h2:#A9C8F0; --h2f:#14202E;
+  --h3:#5E93DC; --h3f:#FFFFFF; --h4:#24559F; --h4f:#FFFFFF;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --leap-ink:#E8EDF3; --leap-blue:#7FB3F7; --leap-amber:#F2A65A;
+    --leap-amber-mark:#F2A65A; --leap-teal:#4FD1B0; --leap-gray:#97A3B0;
+    --leap-bg:#0E1621; --leap-surface:#1A2735; --leap-border:#2C3B4C;
+    --leap-hairline:#22303F; --leap-on-fill:#0E1621;
+    --leap-shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.34);
+    --leap-shadow-lg:0 2px 6px rgba(0,0,0,.45),0 16px 44px rgba(0,0,0,.45);
+    --tint-blue:#16304F; --tint-amber:#3A2A18; --tint-teal:#123830;
+    --grad-head:linear-gradient(135deg,#0A111C 0%,#16345F 78%,#1E4C8C 100%);
+    --grad-bar:linear-gradient(90deg,#3C7FD8,#7FB3F7);
+    --solid-teal:#4FD1B0; --solid-amber:#F2A65A; --solid-gray:#97A3B0; --solid-fg:#0E1621;
+    --h0:#1C3151; --h0f:#E8EDF3; --h1:#254468; --h1f:#E8EDF3; --h2:#2F5A8B; --h2f:#FFFFFF;
+    --h3:#4079C0; --h3f:#FFFFFF; --h4:#6BA3E8; --h4f:#0E1621;
+  }
+}
+:root[data-theme="light"]{
+  --leap-ink:#14202E;--leap-blue:#1B4FA0;--leap-amber:#A8560A;--leap-amber-mark:#CE6410;
+  --leap-teal:#0D6E5C;--leap-gray:#5A6672;--leap-bg:#F7F9FC;--leap-surface:#FFFFFF;
+  --leap-border:#D9E0EA;--leap-hairline:#E8EDF3;--leap-on-fill:#FFFFFF;
+  --tint-blue:#EAF1FB;--tint-amber:#FCF0E3;--tint-teal:#E4F4F0;
+  --grad-head:linear-gradient(135deg,#14202E 0%,#1B4FA0 78%,#2C6FD1 100%);
+  --grad-bar:linear-gradient(90deg,#1B4FA0,#3C7FD8);
+  --solid-teal:#0D6E5C;--solid-amber:#A8560A;--solid-gray:#5A6672;--solid-fg:#FFFFFF;
+  --h0:#EAF1FB;--h0f:#14202E;--h1:#CFE0F7;--h1f:#14202E;--h2:#A9C8F0;--h2f:#14202E;
+  --h3:#5E93DC;--h3f:#FFFFFF;--h4:#24559F;--h4f:#FFFFFF;
+}
+:root[data-theme="dark"]{
+  --leap-ink:#E8EDF3;--leap-blue:#7FB3F7;--leap-amber:#F2A65A;--leap-amber-mark:#F2A65A;
+  --leap-teal:#4FD1B0;--leap-gray:#97A3B0;--leap-bg:#0E1621;--leap-surface:#1A2735;
+  --leap-border:#2C3B4C;--leap-hairline:#22303F;--leap-on-fill:#0E1621;
+  --tint-blue:#16304F;--tint-amber:#3A2A18;--tint-teal:#123830;
+  --grad-head:linear-gradient(135deg,#0A111C 0%,#16345F 78%,#1E4C8C 100%);
+  --grad-bar:linear-gradient(90deg,#3C7FD8,#7FB3F7);
+  --solid-teal:#4FD1B0;--solid-amber:#F2A65A;--solid-gray:#97A3B0;--solid-fg:#0E1621;
+  --h0:#1C3151;--h0f:#E8EDF3;--h1:#254468;--h1f:#E8EDF3;--h2:#2F5A8B;--h2f:#FFFFFF;
+  --h3:#4079C0;--h3f:#FFFFFF;--h4:#6BA3E8;--h4f:#0E1621;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--leap-font);font-size:1rem;line-height:1.65;
+  color:var(--leap-ink);background:var(--leap-bg);-webkit-text-size-adjust:100%}
+:focus-visible{outline:3px solid var(--leap-blue);outline-offset:3px;border-radius:var(--leap-radius-sm)}
+.leap-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}
+button,input,textarea,select{font:inherit;color:inherit}
+
+.leap-toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(14px);
+  background:var(--leap-ink);color:var(--leap-bg);padding:13px 26px;border-radius:999px;
+  font-size:.9375rem;font-weight:700;box-shadow:var(--leap-shadow-lg);
+  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:200;max-width:88vw;text-align:center}
+.leap-toast.is-on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+header.top{background:var(--grad-head);color:#fff;position:relative;overflow:hidden}
+header.top .deco{position:absolute;right:-40px;top:-30px;width:280px;height:280px;opacity:.13;pointer-events:none}
+.top-in{max-width:1360px;margin:0 auto;padding:22px 20px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:relative}
+.brand{display:flex;align-items:center;gap:13px;min-width:0}
+.brand .badge{flex:none;width:48px;height:48px;border-radius:13px;background:rgba(255,255,255,.13);
+  display:grid;place-items:center;border:1px solid rgba(255,255,255,.2)}
+.brand h1{margin:0;font-size:1.25rem;letter-spacing:-.02em;line-height:1.25}
+.brand .sub{font-size:.75rem;color:rgba(255,255,255,.72);letter-spacing:.03em;margin-top:1px}
+.top-actions{margin-left:auto;display:flex;gap:8px}
+.iconbtn{min-height:42px;padding:8px 15px;font-size:.8125rem;font-weight:700;
+  border:1px solid rgba(255,255,255,.28);border-radius:999px;background:rgba(255,255,255,.1);color:#fff;cursor:pointer}
+.iconbtn:hover{background:rgba(255,255,255,.2)}
+a.iconbtn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.iconbtn--home{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.44)}
+.iconbtn--home:hover{background:rgba(255,255,255,.32)}
+
+nav.tabs{background:var(--leap-surface);border-bottom:1px solid var(--leap-border);position:sticky;top:0;z-index:20}
+.tabs-in{max-width:1360px;margin:0 auto;padding:9px 20px;display:flex;gap:6px;overflow-x:auto}
+[role="tab"]{background:none;border:0;padding:10px 18px;min-height:46px;border-radius:999px;
+  font-weight:700;font-size:.9375rem;color:var(--leap-gray);cursor:pointer;white-space:nowrap}
+[role="tab"]:hover{background:var(--leap-hairline)}
+[role="tab"][aria-selected="true"]{color:var(--leap-blue);background:var(--tint-blue)}
+
+main.wrap{max-width:1360px;margin:0 auto;padding:26px 20px 90px}
+
+/* 「자리」 하나 — v0.2 에서 이 이름이 HTML 곳곳에 쓰였는데 CSS 에 정의가 없었습니다.
+   그래서 「우리 반」과 「읽기」 화면의 칸이 전부 맨 글자로 흘렀습니다. */
+.sheet{background:var(--leap-surface);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:22px 24px;box-shadow:var(--leap-shadow);
+  margin-bottom:var(--leap-5)}
+.sheet > h2{margin:0 0 5px;font-size:1.125rem;letter-spacing:-.022em;display:flex;
+  align-items:center;gap:10px;flex-wrap:wrap}
+.sheet > h2 + p{margin:0 0 var(--leap-4)}
+.sheet > h3{margin:var(--leap-5) 0 9px;font-size:.9375rem;letter-spacing:-.015em}
+
+.step{flex:none;min-width:24px;height:24px;padding:0 7px;border-radius:999px;
+  background:var(--tint-blue);color:var(--leap-blue);
+  font-size:.75rem;font-weight:800;display:grid;place-items:center;font-variant-numeric:tabular-nums}
+
+/* ==========================================================================
+   모달 — 이름이 CSS 와 어긋나 v0.2 에서 통째로 깨져 있던 자리
+   ========================================================================== */
+.modal{position:fixed;inset:0;z-index:120;display:flex;align-items:flex-start;justify-content:center;
+  padding:38px 18px}
+.modal[hidden]{display:none}
+.modal-back{position:absolute;inset:0;background:rgba(10,17,28,.55);backdrop-filter:blur(2px)}
+.modal-box{position:relative;background:var(--leap-surface);border-radius:18px;width:100%;max-width:720px;
+  max-height:calc(100vh - 76px);display:flex;flex-direction:column;box-shadow:var(--leap-shadow-lg);
+  border:1px solid var(--leap-border);animation:pop .16s ease-out}
+.modal-box--wide{max-width:960px}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.modal-box{animation:none}}
+.modal-h{display:flex;align-items:center;gap:12px;padding:20px 22px 14px;border-bottom:1px solid var(--leap-hairline);flex:none}
+.modal-h h2{margin:0;font-size:1.125rem;letter-spacing:-.02em}
+.modal-x{margin-left:auto;flex:none;width:38px;height:38px;border-radius:50%;border:0;cursor:pointer;
+  background:var(--leap-hairline);color:var(--leap-gray);font-size:1rem;font-weight:700}
+.modal-x:hover{background:var(--leap-border);color:var(--leap-ink)}
+.modal-b{padding:20px 22px 24px;overflow:auto;-webkit-overflow-scrolling:touch;min-height:0}
+
+.stepbox{border:1px solid var(--leap-border);border-radius:var(--leap-radius);padding:16px 18px;margin-bottom:14px}
+.stepbox > h3{margin:0 0 4px;font-size:.9375rem;display:flex;align-items:center;gap:9px;letter-spacing:-.01em}
+.stepbox > h3 + p{margin:0 0 14px;font-size:.8125rem;color:var(--leap-gray)}
+.promptbox{width:100%;min-height:190px;padding:13px 15px;border-radius:var(--leap-radius-sm);
+  border:2px solid var(--leap-border);background:var(--leap-bg);font-size:.78rem;line-height:1.6;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;resize:vertical;white-space:pre}
+
+.muted{color:var(--leap-gray)}
+.small{font-size:.8125rem}
+.btn{font-weight:700;padding:12px 22px;min-height:46px;border-radius:999px;
+  border:1px solid var(--leap-blue);background:var(--leap-blue);color:var(--leap-on-fill);
+  cursor:pointer;transition:transform .12s,box-shadow .12s,filter .12s}
+.btn:hover{filter:brightness(1.09);box-shadow:0 6px 18px rgba(27,79,160,.28);transform:translateY(-1px)}
+.btn--quiet{background:transparent;color:var(--leap-blue)}
+.btn--quiet:hover{background:var(--tint-blue);box-shadow:none}
+.btn--ghost{background:transparent;color:var(--leap-gray);border-color:var(--leap-border)}
+.btn--ghost:hover{background:var(--leap-hairline);box-shadow:none;filter:none}
+.btn--danger{background:transparent;color:var(--leap-amber);border-color:var(--leap-amber)}
+.btn--danger:hover{background:var(--tint-amber);box-shadow:none;filter:none}
+.btn:disabled{opacity:.4;cursor:not-allowed;filter:none;transform:none;box-shadow:none}
+.btn--sm{padding:8px 15px;min-height:40px;font-size:.8125rem}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:var(--leap-5);align-items:center}
+
+label.fld{display:block;font-weight:700;font-size:.875rem;margin:0 0 8px}
+label.fld .hint{font-weight:500;color:var(--leap-gray);font-size:.8125rem;margin-left:7px}
+input.txt,select.txt{width:100%;padding:11px 14px;min-height:46px;border-radius:var(--leap-radius-sm);
+  border:2px solid var(--leap-border);background:var(--leap-bg);transition:border-color .15s}
+input.txt:focus,select.txt:focus,textarea.txt:focus{border-color:var(--leap-blue);outline:none}
+textarea.txt{width:100%;min-height:76px;padding:12px 14px;border-radius:var(--leap-radius-sm);
+  border:2px solid var(--leap-border);background:var(--leap-bg);resize:vertical;line-height:1.6}
+.field{margin-bottom:var(--leap-4)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:var(--leap-4)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--leap-4)}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--leap-4)}
+@media (max-width:860px){.grid3,.grid4{grid-template-columns:1fr 1fr}}
+@media (max-width:620px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+
+.issue{display:flex;gap:11px;align-items:flex-start;border-radius:var(--leap-radius);
+  padding:13px 16px;margin-bottom:10px;font-size:.9375rem}
+.issue.warn{background:var(--tint-amber)}
+.issue.ok{background:var(--tint-teal)}
+.issue b{font-weight:800}
+.issue.warn b{color:var(--leap-amber)}
+.issue.ok b{color:var(--leap-teal)}
+.issue p{margin:3px 0 0;font-size:.8125rem;color:var(--leap-gray)}
+
+.empty{text-align:center;padding:44px 24px;color:var(--leap-gray);line-height:1.75}
+.note{border-radius:var(--leap-radius);padding:15px 17px;margin:0 0 var(--leap-5);background:var(--tint-blue)}
+.note .hd{display:flex;align-items:center;gap:9px;font-weight:800;color:var(--leap-blue)}
+.note p{margin:7px 0 0;font-size:.875rem;color:var(--leap-gray)}
+.note ol,.note ul{margin:8px 0 0;padding-left:20px;font-size:.875rem;color:var(--leap-gray);line-height:1.8}
+.note li b{color:var(--leap-ink)}
+
+footer.foot{margin-top:40px}
+.foot-card{background:var(--leap-surface);border:1px solid var(--leap-border);border-radius:var(--leap-radius);
+  padding:24px;box-shadow:var(--leap-shadow)}
+.foot-card h2{margin:0 0 5px;font-size:1.0625rem}
+.foot-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.colophon{display:flex;gap:16px;align-items:flex-start;margin-top:28px;padding-top:24px;border-top:1px solid var(--leap-border)}
+.colophon svg{flex:none;opacity:.8}
+.colophon .mk-low{stroke:var(--leap-gray)}
+.colophon .mk-high{stroke:var(--leap-amber-mark)}
+.colophon .mk-arc{stroke:var(--leap-blue);fill:none}
+.colophon .body{font-size:.8125rem;color:var(--leap-gray);line-height:1.75}
+.colophon .name{font-weight:800;color:var(--leap-ink);font-size:.9375rem}
+.colophon .name span{font-weight:600;color:var(--leap-gray);font-size:.8125rem;margin-left:7px}
+.colophon p{margin:5px 0 0}
+.colophon .cc{color:var(--leap-ink);font-weight:600}
+
+.tgl{display:flex;flex-wrap:wrap;gap:6px}
+.tgl button{padding:9px 15px;min-height:44px;border-radius:999px;border:2px solid var(--leap-border);
+  background:var(--leap-surface);color:var(--leap-ink);font-weight:700;font-size:.875rem;
+  cursor:pointer;transition:border-color .12s,background .12s;text-align:left}
+.tgl button:hover:not(:disabled){border-color:var(--leap-blue)}
+
+/* ==========================================================================
+   우리 반 데이터 보기 — 이 앱만의 것
+   ========================================================================== */
+.fillbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  background:var(--leap-surface);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:13px 18px;margin-bottom:var(--leap-5);
+  box-shadow:var(--leap-shadow)}
+.fillbar .n{font-size:1.375rem;font-weight:800;letter-spacing:-.03em;
+  font-variant-numeric:tabular-nums;color:var(--leap-blue);line-height:1.1}
+.fillbar .k{font-size:.8125rem;color:var(--leap-gray);line-height:1.5}
+.fillbar .k b{color:var(--leap-ink)}
+.fillbar .bar{flex:1 1 140px;min-width:110px;height:8px;border-radius:99px;
+  background:var(--leap-hairline);overflow:hidden}
+.fillbar .bar i{display:block;height:100%;border-radius:99px;background:var(--grad-bar)}
+
+.cat{display:inline-flex;align-items:center;gap:5px;font-size:.6875rem;font-weight:800;
+  padding:3px 9px;border-radius:999px;white-space:nowrap}
+.cat.ach{background:var(--tint-blue);color:var(--leap-blue)}
+.cat.eng{background:var(--tint-teal);color:var(--leap-teal)}
+.cat.emo{background:var(--tint-amber);color:var(--leap-amber)}
+.cat.obs{background:var(--leap-hairline);color:var(--leap-gray)}
+
+/* 항목 한 줄 — 이제 「고치기」가 있습니다 */
+.item{display:flex;gap:11px;align-items:center;border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius-sm);padding:11px 13px;margin-bottom:9px;
+  background:var(--leap-bg);flex-wrap:wrap}
+.item .nm{flex:1 1 200px;min-width:150px;font-weight:700;font-size:.9375rem;line-height:1.4}
+.item .nm i{display:block;font-style:normal;font-weight:600;font-size:.75rem;color:var(--leap-gray);margin-top:2px}
+.item .meta{font-size:.75rem;color:var(--leap-gray);font-variant-numeric:tabular-nums}
+.item .sp{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.item.no-date{border-left:4px solid var(--leap-amber)}
+
+/* 입력 표 */
+.gridwrap{overflow:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);background:var(--leap-surface);max-height:70vh}
+table.grid{border-collapse:separate;border-spacing:0;font-size:.8125rem;min-width:100%}
+table.grid th,table.grid td{border-right:1px solid var(--leap-hairline);
+  border-bottom:1px solid var(--leap-hairline);padding:0;text-align:center}
+table.grid thead th{position:sticky;top:0;z-index:3;background:var(--leap-hairline);
+  padding:7px 10px;font-weight:800;font-size:.75rem;line-height:1.35;
+  border-bottom:1px solid var(--leap-border);min-width:86px;max-width:150px}
+table.grid thead th .dt{display:block;font-weight:600;color:var(--leap-gray);font-size:.6875rem}
+table.grid tbody th{position:sticky;left:0;z-index:2;background:var(--leap-hairline);
+  padding:6px 10px;font-weight:800;font-size:.75rem;white-space:nowrap;
+  border-right:1px solid var(--leap-border);text-align:right}
+table.grid thead th.cnr{left:0;z-index:4}
+table.grid td input{width:100%;min-width:80px;min-height:38px;border:0;background:transparent;
+  text-align:center;font:inherit;color:var(--leap-ink);padding:6px 8px}
+/* 번호 칸의 너비를 못박아 둡니다. 이름 칸이 그 옆에 딱 붙어 얼어야 하는데,
+   너비가 글자 수에 따라 흔들리면 가로로 굴릴 때 두 칸이 어긋나 겹칩니다. */
+table.grid thead th.cnr,table.grid tbody th{width:46px;min-width:46px;max-width:46px}
+table.grid td.nmcell{position:sticky;left:46px;z-index:2;background:var(--leap-surface);
+  border-right:1px solid var(--leap-border)}
+table.grid td.nmcell input{text-align:left;min-width:96px;font-weight:600}
+table.grid thead th.nmh{left:46px;z-index:4;min-width:110px}
+table.grid td input:focus{outline:2px solid var(--leap-blue);outline-offset:-2px;background:var(--tint-blue)}
+table.grid td.filled{background:color-mix(in srgb,var(--leap-blue) 6%,transparent)}
+table.grid td.bad{background:var(--tint-amber);position:relative}
+table.grid td.bad input{box-shadow:inset 0 0 0 2px var(--leap-amber);border-radius:6px}
+table.grid td.bad::after{content:'!';position:absolute;right:3px;top:1px;z-index:1;
+  font-size:.625rem;font-weight:800;color:var(--leap-amber);pointer-events:none}
+
+.badbar{margin:12px 0 0;padding:13px 16px;border-radius:var(--leap-radius);background:var(--tint-amber)}
+.badbar .hd{font-weight:800;color:var(--leap-amber);font-size:.9375rem}
+.badbar p{margin:6px 0 8px;font-size:.8125rem;color:var(--leap-gray);line-height:1.75}
+.badbar ul{margin:0;padding-left:19px;font-size:.8125rem;color:var(--leap-gray);line-height:1.85}
+.badbar li b{color:var(--leap-ink)}
+
+/* ==========================================================================
+   대시보드 배치 — 히트맵은 넓고, 나머지는 나란히
+   v0.2 는 넷을 같은 격자에 넣어 히트맵만 세로로 길어졌습니다.
+   ========================================================================== */
+.dashgrid{display:grid;gap:var(--leap-4);grid-template-columns:repeat(auto-fit,minmax(330px,1fr));
+  margin-bottom:var(--leap-4)}
+.card{background:var(--leap-surface);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:16px 18px;box-shadow:var(--leap-shadow);min-width:0}
+.card--wide{margin-bottom:var(--leap-4)}
+.card > h3{margin:0 0 3px;font-size:.9375rem;letter-spacing:-.015em;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card > .why{margin:0 0 12px;font-size:.75rem;color:var(--leap-gray);line-height:1.6}
+.card .none{margin:0;font-size:.8125rem;color:var(--leap-gray);line-height:1.7;
+  background:var(--leap-bg);border-radius:var(--leap-radius-sm);padding:14px 16px}
+.card .none b{color:var(--leap-ink)}
+
+/* 히트맵 — 표입니다. 그림(SVG)이면 학생이 늘수록 세로로 늘어져
+   화면에서도 종이에서도 무너집니다. 표는 스스로 쪽을 넘깁니다. */
+.heatwrap{overflow:auto;-webkit-overflow-scrolling:touch;max-height:540px;
+  border:1px solid var(--leap-border);border-radius:var(--leap-radius-sm)}
+table.heat{border-collapse:separate;border-spacing:0;font-size:.75rem;width:100%}
+table.heat th,table.heat td{padding:5px 8px;text-align:center;white-space:nowrap;
+  border-bottom:1px solid var(--leap-hairline);border-right:1px solid var(--leap-hairline)}
+table.heat thead th{position:sticky;top:0;z-index:3;background:var(--leap-hairline);
+  font-size:.6875rem;font-weight:800;line-height:1.3;padding:6px 8px;min-width:64px}
+table.heat thead th .dt{display:block;font-weight:600;color:var(--leap-gray);font-size:.625rem}
+table.heat tbody th{position:sticky;left:0;z-index:2;background:var(--leap-surface);
+  text-align:left;font-weight:700;font-size:.75rem;border-right:1px solid var(--leap-border)}
+table.heat tbody th b{font-variant-numeric:tabular-nums;color:var(--leap-gray);margin-right:5px;font-weight:800}
+table.heat td{font-weight:700;font-variant-numeric:tabular-nums}
+table.heat td.s0{background:var(--h0);color:var(--h0f)}
+table.heat td.s1{background:var(--h1);color:var(--h1f)}
+table.heat td.s2{background:var(--h2);color:var(--h2f)}
+table.heat td.s3{background:var(--h3);color:var(--h3f)}
+table.heat td.s4{background:var(--h4);color:var(--h4f)}
+/* 안 넣은 칸 — 0 이 아니라 「안 봄」. 빗금과 함께 글자로도 적습니다 */
+table.heat td.na{color:var(--leap-gray);
+  background:repeating-linear-gradient(45deg,transparent,transparent 4px,var(--leap-hairline) 4px,var(--leap-hairline) 5px)}
+table.heat td.bad{background:var(--tint-amber);color:var(--leap-amber)}
+
+.scale{display:flex;align-items:center;gap:3px;flex-wrap:wrap;margin-top:10px;font-size:.75rem;color:var(--leap-gray)}
+.scale i{display:block;width:26px;height:13px;border-radius:2px;border:1px solid var(--leap-border)}
+.scale .lb{margin:0 8px 0 3px}
+
+.chart{width:100%;height:auto;display:block;overflow:visible}
+.chart .ax{stroke:var(--leap-border);stroke-width:1}
+.chart .gl{stroke:var(--leap-hairline);stroke-width:1}
+.chart text{font-size:10px;fill:var(--leap-gray)}
+.chart text.v{fill:var(--leap-ink);font-weight:700}
+.chart .ln{fill:none;stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round}
+.chart .pt{stroke:var(--leap-surface);stroke-width:1.4}
+.chart .bar{rx:2}
+
+/* 선 구분 — 색만으로 나누지 않습니다. 점선 모양이 함께 다릅니다 (원칙 4) */
+.lg{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;font-size:.75rem;color:var(--leap-gray)}
+.lg span{display:inline-flex;align-items:center;gap:6px;font-weight:700}
+.lg svg{flex:none}
+.chart .lgmk{stroke:none}
+
+/* 엑셀 미리보기 — **파일에 실제로 칠해지는 색과 같은 값**입니다.
+   여기서 본 것을 엑셀에서 그대로 만나야 안내가 됩니다.
+   다크 모드에서도 색을 그대로 둡니다. 이것은 장식이 아니라 파일의 사본입니다. */
+.xl-key{display:flex;flex-wrap:wrap;gap:8px 14px;margin:0 0 10px;font-size:.75rem;font-weight:700;color:var(--leap-gray)}
+.xl-key span{display:inline-flex;align-items:center;gap:5px}
+.xl-key i{width:15px;height:15px;border-radius:3px;border:1px solid #C4CDD8;flex:none}
+.k-cell,.xl-key i.k-cell{background:#FFF6D8}
+.k-head,.xl-key i.k-head{background:#E1ECFB}
+.k-who,.xl-key i.k-who{background:#E1F2EC}
+.k-label,.xl-key i.k-label{background:#E7EBF0}
+table.grid.xlprev td{padding:5px 9px;text-align:center;color:#14202E;border-color:#C4CDD8}
+table.grid.xlprev td:first-child{text-align:left}
+table.grid.xlprev td.k-label,table.grid.xlprev td.k-head{font-weight:700}
+table.grid.xlprev td.k-guide{background:#FFF6D8;color:#A8560A;font-weight:700}
+
+/* 자(척도)가 섞였을 때 · 축이 한 줄로 섰을 때 — 왜 그런지 여기서 말합니다 */
+.scalenote{margin:10px 0 0;padding:10px 13px;border-radius:var(--leap-radius);
+  background:var(--tint-amber);border-left:4px solid var(--leap-amber-mark);
+  font-size:.8125rem;line-height:1.55}
+.scalenote .muted{color:var(--leap-gray)}
+
+/* 산점도의 두 축 고르기 */
+.pickrow{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 10px}
+.pk{display:flex;flex-direction:column;gap:3px;flex:1 1 130px;min-width:130px}
+.pk>span{font-size:.6875rem;font-weight:700;color:var(--leap-gray)}
+.pk select{min-height:38px;font-size:.8125rem;padding:6px 8px}
+
+/* 역량 막대 */
+.compbar{display:grid;grid-template-columns:auto 1fr auto;gap:7px 10px;align-items:center;font-size:.8125rem}
+.compbar .lb{font-weight:700;white-space:nowrap}
+.compbar .lb i{display:block;font-style:normal;font-weight:600;font-size:.6875rem;color:var(--leap-gray)}
+.compbar .tr{height:12px;border-radius:99px;background:var(--leap-hairline);overflow:hidden;min-width:60px}
+.compbar .tr i{display:block;height:100%;border-radius:99px;background:var(--grad-bar)}
+.compbar .vl{font-weight:800;font-variant-numeric:tabular-nums;color:var(--leap-blue);white-space:nowrap}
+
+/* 눈에 띄는 학생 */
+.spot{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.spot span{display:inline-flex;align-items:center;gap:6px;font-size:.8125rem;font-weight:700;
+  border:1px solid var(--leap-border);border-radius:999px;padding:6px 13px;background:var(--leap-bg)}
+.spot span b{color:var(--leap-blue)}
+
+/* 관찰 메모 — v0.2 는 넣어 두고 어디에도 보여 주지 않았습니다 */
+.memos{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.memo{border:1px solid var(--leap-border);border-left:4px solid var(--leap-gray);
+  border-radius:var(--leap-radius-sm);padding:10px 13px;background:var(--leap-bg);font-size:.8125rem;line-height:1.65}
+.memo .who{font-weight:800;font-size:.8125rem;margin-bottom:3px}
+.memo .src{font-size:.6875rem;color:var(--leap-gray);margin-top:4px}
+
+/* 종이 */
+.paper{background:#fff;color:#111;border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius-sm);padding:22px 24px;font-size:.8125rem;line-height:1.6}
+.paper .ttl{font-size:1.125rem;font-weight:800;margin:0 0 4px;color:#111}
+.paper h2{font-size:.9375rem;margin:16px 0 7px;color:#111;border-bottom:2px solid #333;padding-bottom:4px}
+.paper table{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:.75rem}
+.paper th,.paper td{border:1px solid #999;padding:4px 6px;text-align:left;vertical-align:top}
+.paper th{background:#F0F0F0;font-weight:700;white-space:nowrap}
+.paper .meta{color:#555;font-size:.75rem;margin-bottom:12px}
+.paper .warn{margin:2mm 0 3mm;padding:2mm 3mm;border:1pt solid #C97A16;border-radius:2mm;
+  font-size:9pt;color:#8A5310;background:#FCF0E3}
+.paper .sig{margin-top:16px;font-size:.6875rem;color:#666;border-top:1px solid #CCC;padding-top:8px}
+/* 종이의 히트맵 — 칸을 잘게, 글자를 작게. 색은 인쇄해도 남습니다 */
+.paper table.ph{table-layout:fixed}
+.paper table.ph td,.paper table.ph th{text-align:center;padding:2px 3px;font-size:.6875rem}
+.paper .pnote{font-size:.6875rem;color:#555;margin:0 0 8px}
+.pvwrap{overflow:auto;-webkit-overflow-scrolling:touch;background:var(--leap-hairline);
+  border:1px solid var(--leap-border);border-radius:var(--leap-radius);padding:16px}
+
+/* ==========================================================================
+   인쇄 — v0.2 는 히트맵 그림 하나 때문에 종이가 통째로 무너졌습니다
+   ========================================================================== */
+#print-area{display:none}
+@media print{
+  @page{size:A4 portrait;margin:13mm}
+  html,body{background:#fff!important;color:#000}
+  header.top,nav.tabs,main,.leap-toast,.modal,.no-print{display:none!important}
+  #print-area{display:block!important}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .paper{border:0;border-radius:0;padding:0;font-size:9.5pt;background:#fff;color:#000;line-height:1.45}
+  .paper table{break-inside:auto}
+  .paper tr{break-inside:avoid}
+  .paper thead{display:table-header-group}
+  .paper h2{break-after:avoid;font-size:11pt}
+  .paper th{background:#F0F0F0!important}
+  .paper svg{max-width:100%;height:auto;break-inside:avoid}
+  .paper .pchart{max-width:150mm}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <svg class="deco" viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="#fff" stroke-linecap="round">
+    <rect x="9"  y="9"  width="19" height="19" rx="3" fill="#fff" stroke="none" opacity=".95"/>
+    <rect x="36" y="9"  width="19" height="19" rx="3" fill="#fff" stroke="none" opacity=".55"/>
+    <rect x="9"  y="36" width="19" height="19" rx="3" fill="#fff" stroke="none" opacity=".75"/>
+    <rect x="36" y="36" width="19" height="19" rx="3" stroke-width="3"/>
+    <path d="M39 52 L52 39" stroke-width="3"/>
+  </svg>
+  <div class="top-in">
+    <div class="brand">
+      <span class="badge">
+        <!-- 이 앱의 마크 — 한 칸이 비어 있는 격자.
+             칸마다 진하기가 다른 것이 히트맵이고, 비스듬한 빗금 한 칸이 「안 봄」입니다.
+             빈칸을 0으로 세지 않는 것이 이 앱의 심장이라 마크도 그 자리를 비워 두었습니다. -->
+        <svg viewBox="0 0 64 64" width="32" height="32" aria-hidden="true" fill="none" stroke-linecap="round">
+          <rect x="9"  y="9"  width="19" height="19" rx="3" fill="#7FB3F7"/>
+          <rect x="36" y="9"  width="19" height="19" rx="3" fill="#7FB3F7" opacity=".45"/>
+          <rect x="9"  y="36" width="19" height="19" rx="3" fill="#F2A65A"/>
+          <rect x="36" y="36" width="19" height="19" rx="3" stroke="#97A3B0" stroke-width="3"/>
+          <path d="M39 52 L52 39" stroke="#97A3B0" stroke-width="3"/>
+        </svg>
+      </span>
+      <div>
+        <h1>우리 반 데이터 보기</h1>
+        <div class="sub">TEAM LEAP · 경북교육 AI Lab</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <a class="iconbtn iconbtn--home" href="../../../index.html" title="TEAM LEAP 메인 페이지로 나갑니다. 이 앱에 적은 것은 그대로 남습니다." aria-label="TEAM LEAP 메인 페이지로 나가기">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
+             stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 10.6 12 4l8 6.6V20h-5v-5.6H9V20H4z"/>
+        </svg>
+        메인으로
+      </a>
+      <button class="iconbtn" id="btn-ai" type="button" title="쓰던 챗봇에 붙여 넣을 프롬프트를 만들어 줍니다">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9z"/>
+          <path d="M18 16.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>
+        </svg>
+        AI 초안
+      </button>
+      <button class="iconbtn" id="btn-theme" type="button">어둡게 보기</button>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="화면">
+  <div class="tabs-in" role="tablist" id="tablist">
+    <button role="tab" id="tab-set" aria-controls="panel-set" aria-selected="true">우리 반</button>
+    <button role="tab" id="tab-file" aria-controls="panel-file" aria-selected="false" tabindex="-1">템플릿·불러오기</button>
+    <button role="tab" id="tab-in" aria-controls="panel-in" aria-selected="false" tabindex="-1">입력</button>
+    <button role="tab" id="tab-dash" aria-controls="panel-dash" aria-selected="false" tabindex="-1">대시보드</button>
+    <button role="tab" id="tab-read" aria-controls="panel-read" aria-selected="false" tabindex="-1">읽기</button>
+  </div>
+</nav>
+
+<main class="wrap">
+  <section id="panel-set" role="tabpanel" aria-labelledby="tab-set"></section>
+  <section id="panel-file" role="tabpanel" aria-labelledby="tab-file" hidden></section>
+  <section id="panel-in" role="tabpanel" aria-labelledby="tab-in" hidden></section>
+  <section id="panel-dash" role="tabpanel" aria-labelledby="tab-dash" hidden></section>
+  <section id="panel-read" role="tabpanel" aria-labelledby="tab-read" hidden></section>
+
+  <footer class="foot no-print">
+    <div class="foot-card">
+      <h2>자료 관리</h2>
+      <p class="small muted" style="margin:0">
+        모든 자료는 <b>이 기기 안에만</b> 저장됩니다. 서버로 보내지 않습니다.
+        「AI 초안 도우미」도 마찬가지입니다 — 붙여 넣을 <b>숫자 요약</b>을 만들어 줄 뿐,
+        이 앱이 어디로도 보내지 않습니다.
+      </p>
+      <div class="foot-actions">
+        <button class="btn btn--ghost" id="btn-export" type="button">파일로 내보내기</button>
+        <button class="btn btn--ghost" id="btn-import" type="button">파일에서 가져오기</button>
+        <button class="btn btn--danger" id="btn-clear" type="button">전체 지우기</button>
+      </div>
+
+      <div class="colophon">
+        <svg viewBox="0 0 64 64" width="40" height="40" aria-hidden="true" fill="none" stroke-linecap="round">
+          <path class="mk-low"  d="M7 52 H25" stroke-width="6.5"/>
+          <path class="mk-high" d="M39 36 H57" stroke-width="6.5"/>
+          <path class="mk-arc"  d="M16 46 Q32 -10 48 30" stroke-width="7"/>
+        </svg>
+        <div class="body">
+          <div class="name">우리 반 데이터 보기 <span>v0.4</span></div>
+          <p>TEAM LEAP · 경북교육 AI Lab · AI 활용 분과</p>
+          <p class="cc">© 2026 TEAM LEAP. All rights reserved.</p>
+          <p>교육 목적에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다.
+             상업적 이용과 외부 배포는 제작자에게 문의해 주세요.</p>
+          <p>이 앱은 어떤 자료도 외부로 전송하지 않습니다.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<div class="modal" id="modal" hidden></div>
+<div id="print-area"></div>
+
+<script>
+(function(global){'use strict';
+var LEAP={};
+function clone(v){if(typeof structuredClone==='function')return structuredClone(v);return JSON.parse(JSON.stringify(v));}
+LEAP.clone=clone;
+LEAP.store=function(key,initial){
+  var cache=null;
+  function flush(){try{localStorage.setItem(key,JSON.stringify(cache));return true;}
+    catch(e){LEAP.announce('저장하지 못했습니다. 파일로 내보낸 뒤 정리해 주세요.');return false;}}
+  function read(){if(cache)return cache;
+    try{var raw=localStorage.getItem(key);cache=raw?JSON.parse(raw):clone(initial);}
+    catch(e){cache=clone(initial);}return cache;}
+  return{get:read,set:function(n){cache=n;return flush();},
+    update:function(fn){var d=read();fn(d);flush();return d;},
+    reset:function(){cache=clone(initial);flush();return cache;}};
+};
+LEAP.uid=function(){if(global.crypto&&crypto.randomUUID)return crypto.randomUUID().slice(0,8);
+  return Math.random().toString(36).slice(2,10);};
+LEAP.download=function(filename,obj){
+  var blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json;charset=utf-8'});
+  LEAP.saveBlob(filename,blob);};
+LEAP.saveBlob=function(filename,blob){
+  var url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);},1000);};
+LEAP.pickFile=function(onLoad,onError){
+  var input=document.createElement('input');input.type='file';input.accept='application/json,.json';
+  input.addEventListener('change',function(){var f=input.files&&input.files[0];if(!f)return;
+    var r=new FileReader();
+    r.onload=function(){try{onLoad(JSON.parse(r.result),f.name);}
+      catch(e){(onError||alert)('파일을 읽지 못했습니다. 이 앱에서 내보낸 파일이 맞는지 확인해 주세요.');}};
+    r.readAsText(f,'utf-8');});
+  input.click();};
+LEAP.announce=function(msg){
+  var el=document.getElementById('leap-live');
+  if(!el){el=document.createElement('div');el.id='leap-live';el.setAttribute('role','status');
+    el.setAttribute('aria-live','polite');el.className='leap-toast';document.body.appendChild(el);}
+  el.textContent=msg;el.classList.add('is-on');
+  clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('is-on');},2600);};
+LEAP.todayISO=function(){var d=new Date(),p=function(n){return String(n).padStart(2,'0');};
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());};
+LEAP.fmtDate=function(iso){if(!iso)return '';var p=String(iso).split('-');
+  if(p.length<3)return String(iso);return p[0]+'. '+Number(p[1])+'. '+Number(p[2])+'.';};
+LEAP.toggleTheme=function(){var r=document.documentElement,cur=r.getAttribute('data-theme');
+  if(!cur)cur=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  var next=cur==='dark'?'light':'dark';r.setAttribute('data-theme',next);
+  try{localStorage.setItem('leap-theme',next);}catch(e){}return next;};
+LEAP.restoreTheme=function(){try{var t=localStorage.getItem('leap-theme');
+  if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}};
+LEAP.themeLabel=function(){var r=document.documentElement,cur=r.getAttribute('data-theme');
+  if(!cur)cur=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  return cur==='dark'?'밝게 보기':'어둡게 보기';};
+/* 「화면 전환」은 무엇이 바뀌는지 말해 주지 않습니다. 지금 누르면 어떻게 되는지를
+   단추 자체가 말하게 둡니다 — 「어둡게 보기」를 누르면 어두워집니다. */
+LEAP.initThemeBtn=function(btn){if(!btn)return;
+  function paint(){var t=LEAP.themeLabel();btn.textContent=t;
+    btn.setAttribute('title','화면을 '+t.replace(' 보기','')+' 바꿉니다');
+    btn.setAttribute('aria-label','화면을 '+t.replace(' 보기','')+' 바꿉니다');}
+  paint();btn.addEventListener('click',function(){LEAP.toggleTheme();paint();});};
+LEAP.initTabs=function(listEl,onChange){
+  var tabs=Array.prototype.slice.call(listEl.querySelectorAll('[role="tab"]'));
+  function select(tab){tabs.forEach(function(t){var on=t===tab;
+    t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1;
+    var p=document.getElementById(t.getAttribute('aria-controls'));if(p)p.hidden=!on;});
+    if(onChange)onChange(tab.getAttribute('aria-controls'));}
+  tabs.forEach(function(tab,i){
+    tab.addEventListener('click',function(){select(tab);});
+    tab.addEventListener('keydown',function(e){
+      var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(!d)return;e.preventDefault();
+      var n=tabs[(i+d+tabs.length)%tabs.length];n.focus();select(n);});});
+  select(tabs[0]);return{select:select,tabs:tabs};};
+LEAP.esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+  .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');};
+global.LEAP=LEAP;})(window);
+/* ==========================================================================
+   우리 반 데이터 보기 (앱 G) v0.4
+   © 2026 TEAM LEAP (경북교육 AI Lab · AI 활용 분과)
+   --------------------------------------------------------------------------
+   v0.3 에서 바뀐 것 — 「한 장」에서 「학기」로
+
+   1. **회차가 생겼습니다.** 항목마다 실시일·과목·범위가 붙습니다.
+      교실에서 필요한 것은 한 시점의 사진이 아니라 **변화**입니다.
+      3월 진단평가와 6월 단원평가가 같은 축 위에 놓여야 그게 보입니다.
+
+   2. **항목을 고칠 수 있습니다.** v0.2 는 더하고 지울 수만 있었습니다.
+      이름을 잘못 적으면 값을 다시 넣는 수밖에 없었습니다.
+
+   3. **엑셀 템플릿을 받아 채워 올립니다.** 스물넷 × 열 칸을 앱에서
+      하나씩 두드리게 만드는 것은 도구가 아닙니다.
+
+   4. **이름을 씁니다.** 교실에서 「16번」은 상담 자리에서 다시 이름으로
+      옮겨 적어야 하는 번거로움이었습니다. 다만 **AI 프롬프트에는
+      번호와 숫자 요약만 나갑니다** — 이름도 관찰 메모도 나가지 않습니다.
+
+   5. **정서는 한국형 사회정서역량 6가지**를 축으로 삼습니다.
+      (교육부·한국교육환경보호원, 한국형 사회정서교육 프로그램 2024)
+
+   그대로 둔 것 — 이 앱의 심장
+   · **빈칸은 0이 아닙니다.** 안 본 것과 0점은 다릅니다.
+   · **덜 채워도 그립니다.** 못 그릴 때는 무엇을 더 넣으면 되는지 적습니다.
+   · **색만으로 말하지 않습니다.** 색 옆에 늘 숫자와 글자가 있습니다.
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  var KEY = 'leap-classdata-v1';
+  var esc = LEAP.esc;
+
+  /* 네 범주 */
+  var CATS = [
+    { k: 'ach', n: '성취', c: 'ach', d: '단원평가 · 수행평가 · 진단평가' },
+    { k: 'eng', n: '참여', c: 'eng', d: '발표 · 과제 제출 · 수업 참여' },
+    { k: 'emo', n: '정서', c: 'emo', d: '사회정서역량 · 자기보고' },
+    { k: 'obs', n: '관찰', c: 'obs', d: '교사가 눈으로 본 것 (글)' }
+  ];
+  function catOf(k) { for (var i = 0; i < CATS.length; i++) if (CATS[i].k === k) return CATS[i]; return CATS[3]; }
+  function catByName(n) {
+    n = String(n || '').replace(/\s/g, '');
+    for (var i = 0; i < CATS.length; i++) if (CATS[i].n === n) return CATS[i].k;
+    return '';
+  }
+
+  /* --------------------------------------------------------------------------
+     한국형 사회정서역량 — 4영역 6핵심역량
+     출처: 교육부·한국교육환경보호원(2024), 「한국형 사회정서교육 프로그램」 <표1>
+
+     v0.2 의 정서 항목은 「자신감·수업이 즐겁다·친구 관계」 셋뿐이었습니다.
+     그 셋이 무엇을 재는 것인지 아무 데도 적혀 있지 않았고, 학교에서 쓰는
+     말과도 이어지지 않았습니다. 이제 항목마다 **어느 역량인지**가 붙습니다.
+     -------------------------------------------------------------------------- */
+  var COMPS = [
+    { k: 'c1', area: '자기',   n: '자기인식',
+      d: '생각·감정·행동의 인식, 강점과 약점 인식, 자기효능감' },
+    { k: 'c2', area: '자기',   n: '자기조절',
+      d: '마음챙김, 부정적 감정 대처, 스트레스 조절, 목표 추진' },
+    { k: 'c3', area: '관계',   n: '관계인식',
+      d: '타인의 생각·감정 존중, 공감하기, 다양성 수용' },
+    { k: 'c4', area: '관계',   n: '관계관리',
+      d: '자기주장과 의사소통, 대인관계 기술, 갈등해결' },
+    { k: 'c5', area: '공동체', n: '공동체 가치',
+      d: '소속감, 책임감, 협력, 규칙 준수, 공동체 문제 해결' },
+    { k: 'c6', area: '마음건강', n: '마음건강',
+      d: '정신건강 이해와 관리, 낙인 감소, 도움 요청하기' }
+  ];
+  function compOf(k) { for (var i = 0; i < COMPS.length; i++) if (COMPS[i].k === k) return COMPS[i]; return null; }
+  function compByName(n) {
+    n = String(n || '').replace(/\s/g, '');
+    if (!n) return '';
+    for (var i = 0; i < COMPS.length; i++) {
+      var c = COMPS[i];
+      if (c.n === n || c.k === n || (c.n + '역량') === n) return c.k;
+    }
+    if (/자기관리|자기조절/.test(n)) return 'c2';
+    if (/정신건강|마음건강/.test(n)) return 'c6';
+    if (/공동체/.test(n)) return 'c5';
+    return '';
+  }
+
+  /* --------------------------------------------------------------------------
+     항목 템플릿
+
+     〔v0.4〕 정서 항목의 이름을 **역량 이름 그대로** 바꿨습니다.
+
+     v0.3 은 「나는 내가 좋아하는 것과 잘하는 것을 분명하게 알고 있다」처럼
+     설문 문장을 그대로 항목 이름으로 썼습니다. 출처가 분명한 것은 좋았지만,
+     현장에서 이 앱에 적는 것은 **설문지 원본이 아닙니다.**
+     교사는 관찰 · 감정 진단 · 일기 · 상담에서 본 것을 이미 한 번 정리한 뒤
+     그 결과를 적습니다. 그러니까 여기에 들어오는 것은 **1차 정제된 값**입니다.
+
+     그런데 열 이름이 설문 문장이면, 정리해서 가져온 값을 **다시 그 문장에
+     맞춰 쪼개야** 합니다. 정제한 것을 또 정제하게 만든 셈입니다.
+     이제 열 이름은 「자기인식」 「자기조절」… 여섯 마디입니다.
+     엑셀 머리줄도 짧아지고, 그림의 이름표도 읽힙니다.
+
+     설문지를 그대로 돌리고 싶은 분을 위해 **7문항은 그대로 남겨 두었습니다**
+     (아래 SURVEY). 기본이 아니라 고르는 것으로 자리를 옮겼을 뿐입니다.
+     -------------------------------------------------------------------------- */
+  var TPL = [
+    { n: '진단평가', cat: 'ach', type: 'num', max: 100, subject: '', scope: '학년 초 진단' },
+    { n: '단원평가', cat: 'ach', type: 'num', max: 100, subject: '', scope: '단원' },
+    { n: '형성평가', cat: 'ach', type: 'num', max: 10, subject: '', scope: '차시' },
+    { n: '수행평가', cat: 'ach', type: 'level', subject: '', scope: '성취기준' },
+    { n: '수업 참여도', cat: 'eng', type: 'num', max: 5, scope: '한 주' },
+    { n: '과제 제출', cat: 'eng', type: 'yn', scope: '한 주' },
+    { n: '발표 횟수', cat: 'eng', type: 'num', max: 10, scope: '한 주' },
+    /* 7~12 — 정서 여섯. 이름이 곧 역량입니다 */
+    { n: '자기인식', cat: 'emo', type: 'num', max: 5, comp: 'c1', hint: '제 감정과 강점을 아는가' },
+    { n: '자기조절', cat: 'emo', type: 'num', max: 5, comp: 'c2', hint: '화·불안을 다스리고 끝까지 하는가' },
+    { n: '관계인식', cat: 'emo', type: 'num', max: 5, comp: 'c3', hint: '남의 기분을 알아차리는가' },
+    { n: '관계관리', cat: 'emo', type: 'num', max: 5, comp: 'c4', hint: '대화로 다툼을 푸는가' },
+    { n: '공동체 가치', cat: 'emo', type: 'num', max: 5, comp: 'c5', hint: '약속을 지키고 함께 하는가' },
+    { n: '마음건강', cat: 'emo', type: 'num', max: 5, comp: 'c6', hint: '힘들 때 도움을 청할 줄 아는가' },
+    { n: '교사 관찰 메모', cat: 'obs', type: 'text' }
+  ];
+  /* 「사회정서역량 6가지」를 한 번에 — 같은 날짜로 묶어 넣습니다 */
+  var SEL_SET = [7, 8, 9, 10, 11, 12];
+
+  /* 설문지를 그대로 돌릴 때만 쓰는 일곱 줄.
+     한국교육과정평가원 「3~6학년 사회정서역량 진단도구」 문항 그대로입니다
+     (교육부·한국교육환경보호원 2024 지도서 6차시 학습활동지2).
+     기본 자리에서 뺐을 뿐 지우지 않았습니다 — 쓰는 학교가 있습니다. */
+  var SURVEY = [
+    { n: '나는 내가 좋아하는 것과 잘하는 것을 분명하게 알고 있다', cat: 'emo', type: 'num', max: 5, comp: 'c1' },
+    { n: '나는 분노를 조절하는 방법을 잘 알고 있다', cat: 'emo', type: 'num', max: 5, comp: 'c2' },
+    { n: '나는 힘이 들더라도 해야 할 일은 포기하지 않는다', cat: 'emo', type: 'num', max: 5, comp: 'c2' },
+    { n: '나는 다른 사람의 기분을 잘 알아차리는 편이다', cat: 'emo', type: 'num', max: 5, comp: 'c3' },
+    { n: '나는 친구와 의견이 다를 때 대화를 통해 문제를 해결한다', cat: 'emo', type: 'num', max: 5, comp: 'c4' },
+    { n: '나는 다른 사람들에게 도움이 되는 행동을 한다', cat: 'emo', type: 'num', max: 5, comp: 'c5' },
+    { n: '나는 마음이 힘이 들 때 누구에게 도움을 요청해야 할지를 잘 알고 있다', cat: 'emo', type: 'num', max: 5, comp: 'c6' }
+  ];
+  var LEVELS = ['상', '중', '하'];
+
+  /* pick — 「성취 × 정서」 그림에서 선생님이 고른 두 축. 비어 있으면 앱이 고릅니다. */
+  var INIT = { v: 4, className: '', size: 20, names: {}, items: [], cells: {}, pick: {} };
+  var db = LEAP.store(KEY, INIT);
+
+  /* 예전 판(v1·v2)에 없던 칸은 여기서 채웁니다. 열리지 않는 것이 가장 나쁩니다. */
+  function D() {
+    var d = db.get();
+    if (!d.items) d.items = [];
+    if (!d.cells) d.cells = {};
+    if (!d.names || typeof d.names !== 'object') d.names = {};
+    if (!d.pick || typeof d.pick !== 'object') d.pick = {};
+    d.size = Math.max(1, Math.min(60, Math.round(+d.size || 20)));
+    d.items.forEach(function (it) {
+      if (!it.id) it.id = LEAP.uid();
+      if (!it.type) it.type = 'num';
+      if (it.type === 'num' && !it.max) it.max = 100;
+      if (it.subject == null) it.subject = '';
+      if (it.scope == null) it.scope = '';
+      if (it.date == null) it.date = '';
+      if (it.comp == null) it.comp = '';
+      if (!d.cells[it.id]) d.cells[it.id] = {};
+    });
+    return d;
+  }
+  function save(fn) { db.update(fn); }
+
+  function nameOf(d, no) {
+    var v = d.names && d.names[no];
+    return v == null ? '' : String(v);
+  }
+  /* 종이·그림에 적히는 이름표. 이름이 없으면 번호만 나갑니다. */
+  function label(d, no) {
+    var nm = nameOf(d, no).trim();
+    return nm ? (no + '. ' + nm) : (no + '번');
+  }
+
+  /* ---------- 값 다루기 ----------
+     **빈칸은 0이 아닙니다.** 여기 한 곳에서만 판단합니다. */
+  function raw(d, itemId, no) {
+    var m = d.cells[itemId];
+    if (!m) return '';
+    var v = m[no];
+    return v == null ? '' : String(v);
+  }
+  function num(it, v) {                 /* 그림에 쓸 0~1 값. 없으면 null */
+    v = String(v == null ? '' : v).trim();
+    if (!v) return null;
+    if (it.type === 'num') {
+      /* parseFloat 는 앞쪽만 읽고 나머지를 버립니다. 그래서 v0.1 에서는
+         **「9O」(숫자 9 + 알파벳 O, 90 의 흔한 오타)가 9 로 들어갔습니다.**
+         빠지는 것도 아니고 **틀린 값이 그림에 그려졌습니다.**
+         그래서 칸 전체가 수인지 먼저 봅니다. 「90점」·「90%」는 받습니다. */
+      var m = /^([0-9]+(?:\.[0-9]+)?)\s*(?:점|%)?$/.exec(v);
+      if (!m) return null;
+      var n = parseFloat(m[1]);
+      if (!isFinite(n)) return null;
+      return Math.max(0, Math.min(1, n / (it.max || 100)));
+    }
+    if (it.type === 'level') {
+      var i = LEVELS.indexOf(v);
+      return i < 0 ? null : (LEVELS.length - 1 - i) / (LEVELS.length - 1);
+    }
+    if (it.type === 'yn') {
+      if (/^(o|O|ㅇ|예|했|1|y|Y|참|✓|√)/.test(v)) return 1;
+      if (/^(x|X|ㅌ|아니|안|0|n|N|거짓)/.test(v)) return 0;
+      return null;                      /* 「보류」 같은 글은 읽을 수 없는 값입니다 */
+    }
+    return null;                        /* 글은 셈하지 않습니다 */
+  }
+  function filledCount(d, it) {
+    var c = 0;
+    for (var no = 1; no <= d.size; no++) if (raw(d, it.id, no) !== '') c++;
+    return c;
+  }
+  /* 항목 하나의 반 평균(0~1)과 넣은 사람 수. **값이 있는 사람만** 셉니다. */
+  function stat(d, it) {
+    var vals = [];
+    for (var no = 1; no <= d.size; no++) {
+      var v = num(it, raw(d, it.id, no));
+      if (v != null) vals.push(v);
+    }
+    if (!vals.length) return { n: 0, avg: null, min: null, max: null, mid: null };
+    var s = vals.reduce(function (a, b) { return a + b; }, 0);
+    var so = vals.slice().sort(function (a, b) { return a - b; });
+    return { n: vals.length, avg: s / vals.length, min: so[0], max: so[so.length - 1],
+      mid: so[Math.floor(so.length / 2)] };
+  }
+  function pct(v) { return v == null ? '—' : Math.round(v * 100) + '%'; }
+
+  /* 읽을 수 없는 값 — 채운 것으로 세는데 그림에는 안 들어가는 칸 */
+  function badCells(d) {
+    d = d || D();
+    var out = [];
+    d.items.forEach(function (it) {
+      if (it.type === 'text') return;
+      for (var no = 1; no <= d.size; no++) {
+        var v = raw(d, it.id, no);
+        if (v !== '' && num(it, v) === null) out.push({ it: it, no: no, v: v });
+      }
+    });
+    return out;
+  }
+  function isBad(d, it, no) {
+    if (!it || it.type === 'text') return false;
+    var v = raw(d, it.id, no);
+    return v !== '' && num(it, v) === null;
+  }
+  function wantOf(it) {
+    if (it.type === 'num') return '0~' + (it.max || 100) + ' 사이의 숫자';
+    if (it.type === 'level') return LEVELS.join(' · ') + ' 가운데 하나';
+    if (it.type === 'yn') return 'O · X (또는 예/아니오)';
+    return '';
+  }
+  function typeName(it) {
+    return it.type === 'num' ? ((it.max || 100) + '점 만점')
+      : it.type === 'level' ? '상·중·하'
+      : it.type === 'yn' ? 'O·X' : '글';
+  }
+  /* --------------------------------------------------------------------------
+     척도 — 「재는 자」입니다 〔v0.4〕
+
+     v0.3 은 모든 값을 만점으로 나눠 0~1 로 만든 뒤, **같은 범주면 한 선 위에**
+     올렸습니다. 그래서 단원평가(100점 만점)와 수행평가(상·중·하)가 「성취」
+     한 줄로 섞였습니다.
+
+     이것이 왜 틀렸나 — 반 전체가 「상」이면 그 항목의 평균은 **100%** 입니다.
+     100점 만점에서 100점을 다 받은 것과 **같은 자리에 찍힙니다.** 실제로
+     31% → 100% 라는 「+69%p 상승」이 그려졌는데, 오른 것은 아이가 아니라
+     자가 바뀐 것뿐이었습니다. 있지도 않은 성장을 종이에 적을 뻔했습니다.
+
+     그래서 v0.4 는 **자가 다르면 선을 따로 긋습니다.** 0~1 로 고르게
+     만들었다는 것은 그림을 그릴 수 있다는 뜻이지, 서로 더해도 된다는 뜻이
+     아닙니다. 상·중·하는 「상 100 · 중 50 · 하 0」 자리에 놓았을 뿐이고,
+     그 사실을 화면에 적습니다.
+     -------------------------------------------------------------------------- */
+  function scaleKey(it) {
+    return it.type === 'num' ? ('num' + (it.max || 100)) : it.type;
+  }
+  /* 한 범주 안에 자가 몇 가지나 쓰였는가 — 섞이지 않았음을 말해 주려고 셉니다 */
+  function scalesIn(items) {
+    var seen = {}, out = [];
+    items.forEach(function (it) {
+      var k = scaleKey(it);
+      if (!seen[k]) { seen[k] = 1; out.push({ k: k, n: typeName(it) }); }
+    });
+    return out;
+  }
+  function fillRate(d) {
+    d = d || D();
+    var cells = d.items.length * d.size;
+    if (!cells) return 0;
+    var f = 0;
+    d.items.forEach(function (it) { f += filledCount(d, it); });
+    return Math.round(f / cells * 100);
+  }
+  function numericItems(d) {
+    return d.items.filter(function (it) { return it.type !== 'text'; });
+  }
+  function textItems(d) {
+    return d.items.filter(function (it) { return it.type === 'text'; });
+  }
+  /* 항목의 곁말 — 「수학 · 3단원 · 2026. 4. 10.」 */
+  function sideOf(it) {
+    var p = [];
+    if (it.subject) p.push(it.subject);
+    if (it.scope) p.push(it.scope);
+    if (it.comp && compOf(it.comp)) p.push(compOf(it.comp).n);
+    if (it.date) p.push(LEAP.fmtDate(it.date));
+    return p.join(' · ');
+  }
+  /* 회차 축 — 날짜순. 날짜가 없으면 넣은 순서를 뒤에 붙입니다.
+     **날짜가 없는 항목은 추이에 들어가지 않습니다.** 언제인지 모르는 점을
+     선으로 이으면 없는 변화가 생깁니다. */
+  function byDate(items) {
+    return items.slice().sort(function (a, b) {
+      if (a.date && b.date) return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+      if (a.date) return -1;
+      if (b.date) return 1;
+      return 0;
+    });
+  }
+  function datedItems(d, cat) {
+    return byDate(numericItems(d).filter(function (it) {
+      return it.date && filledCount(d, it) > 0 && (!cat || it.cat === cat);
+    }));
+  }
+
+  /* --------------------------------------------------------------------------
+     「성취 × 정서」의 두 축 고르기 〔v0.4〕
+
+     v0.3 은 **가장 나중 항목**을 말없이 골랐습니다. 그런데 마지막 성취 항목이
+     수행평가(상·중·하)이고 반 전체가 「상」이면, 가로값이 스물넷 모두 1 이 되어
+     **점이 오른쪽 끝에 한 줄로 겹쳐 섰습니다.** 그림은 그려졌는데 아무것도
+     보이지 않았고, 왜 그런지도 적혀 있지 않았습니다.
+
+     이제 —
+       · 선생님이 고른 것이 있으면 그것 (골라 둔 것은 기기에 남습니다)
+       · 없으면 **값이 가장 여러 갈래로 흩어진 항목**을 고릅니다
+       · 그래도 한 줄로 서면 「흩어지지 않는다」고 그림 아래에 적습니다
+     -------------------------------------------------------------------------- */
+  function axisCands(d, cat) {
+    return byDate(numericItems(d).filter(function (it) {
+      return it.cat === cat && filledCount(d, it) > 0;
+    }));
+  }
+  function spread(d, it) {              /* 서로 다른 값이 몇 갈래인가 */
+    var seen = {}, n = 0;
+    for (var no = 1; no <= d.size; no++) {
+      var v = num(it, raw(d, it.id, no));
+      if (v == null) continue;
+      var k = v.toFixed(4);
+      if (!seen[k]) { seen[k] = 1; n++; }
+    }
+    return n;
+  }
+  function axisOf(d, cat) {
+    var cs = axisCands(d, cat), i;
+    if (!cs.length) return null;
+    var want = (d.pick && d.pick[cat]) || '';
+    for (i = 0; i < cs.length; i++) if (cs[i].id === want) return cs[i];
+    var best = cs[0], bs = -1;
+    cs.forEach(function (it, ix) {
+      /* 흩어짐이 먼저, 그다음 넣은 사람 수, 마지막이 나중 회차 */
+      var sc = spread(d, it) * 10000 + stat(d, it).n * 100 + ix;
+      if (sc > bs) { bs = sc; best = it; }
+    });
+    return best;
+  }
+  /* ==========================================================================
+     엑셀·구글시트 템플릿
+
+     왜 만드나 — 스물넷 × 열 칸을 앱에서 하나씩 두드리게 만드는 것은 도구가 아닙니다.
+     교사는 이미 엑셀을 씁니다. **받아서, 채워서, 올리면 그림이 나와야** 합니다.
+
+     어떻게 — 라이브러리를 쓸 수 없습니다(원칙 1: 외부 CDN 0).
+     그래서 xlsx 를 직접 씁니다. xlsx 는 그냥 **압축하지 않은 zip 도 받아 줍니다.**
+     읽을 때만 브라우저의 DecompressionStream 으로 풀면 됩니다.
+
+     시트 넉 장 —
+       ① 안내      무엇을 어떻게 적는지 (사람이 읽는 곳)
+       ② 입력      실제로 채우는 표 (앱이 읽는 곳)
+       ③ 보기      같은 모양에 예시가 채워진 것
+       ④ 코드표    범주·종류·역량에 쓸 수 있는 말
+     ========================================================================== */
+
+  /* ---------- zip (압축 없이 담기) ---------- */
+  var CRC_T = (function () {
+    var t = new Int32Array(256), c, n, k;
+    for (n = 0; n < 256; n++) {
+      c = n;
+      for (k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      t[n] = c;
+    }
+    return t;
+  })();
+  function crc32(buf) {
+    var c = -1;
+    for (var i = 0; i < buf.length; i++) c = CRC_T[(c ^ buf[i]) & 0xFF] ^ (c >>> 8);
+    return (c ^ -1) >>> 0;
+  }
+  function utf8(s) { return new TextEncoder().encode(s); }
+  function zipStore(files) {
+    var parts = [], central = [], off = 0;
+    function u16(n) { return [n & 255, (n >> 8) & 255]; }
+    function u32(n) { return [n & 255, (n >> 8) & 255, (n >> 16) & 255, (n >>> 24) & 255]; }
+    files.forEach(function (f) {
+      var nm = utf8(f.name), data = utf8(f.data), crc = crc32(data);
+      /* 0x0800 — 이름이 UTF-8 임을 알립니다. 한글 시트 이름이 깨지지 않게. */
+      var lh = [].concat(u32(0x04034b50), u16(20), u16(0x0800), u16(0), u16(0), u16(0),
+        u32(crc), u32(data.length), u32(data.length), u16(nm.length), u16(0));
+      parts.push(new Uint8Array(lh), nm, data);
+      central.push({ nm: nm, crc: crc, len: data.length, off: off });
+      off += lh.length + nm.length + data.length;
+    });
+    var cstart = off, cbytes = [];
+    central.forEach(function (c) {
+      var ch = [].concat(u32(0x02014b50), u16(20), u16(20), u16(0x0800), u16(0), u16(0), u16(0),
+        u32(c.crc), u32(c.len), u32(c.len), u16(c.nm.length), u16(0), u16(0), u16(0), u16(0),
+        u32(0), u32(c.off));
+      cbytes.push(new Uint8Array(ch), c.nm);
+      off += ch.length + c.nm.length;
+    });
+    var eocd = new Uint8Array([].concat(u32(0x06054b50), u16(0), u16(0),
+      u16(files.length), u16(files.length), u32(off - cstart), u32(cstart), u16(0)));
+    var all = parts.concat(cbytes, [eocd]), total = 0, i;
+    for (i = 0; i < all.length; i++) total += all[i].length;
+    var out = new Uint8Array(total), p = 0;
+    for (i = 0; i < all.length; i++) { out.set(all[i], p); p += all[i].length; }
+    return new Blob([out], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  }
+
+  /* ---------- xlsx 쓰기 ---------- */
+  function xesc(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
+  }
+  function colName(i) {                 /* 0→A, 25→Z, 26→AA */
+    var s = '';
+    i = i + 1;
+    while (i > 0) { var m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); }
+    return s;
+  }
+  /* --------------------------------------------------------------------------
+     칸 색 〔v0.4〕 — **적을 곳과 두어야 할 곳을 눈으로 가릅니다**
+
+     v0.3 은 서식을 한 줄도 넣지 않았습니다. 「서식을 얹으면 구글시트에서
+     깨진다」는 것이 이유였는데, 실제로 깨지는 것은 **조건부 서식·수식·표
+     스타일**이고, **채우기 색·굵게·테두리·틀 고정은 구글시트가 그대로**
+     받습니다. 그래서 그 넷만 씁니다.
+
+     받은 사람이 파일을 열었을 때 가장 먼저 하는 질문은 「어디에 적나」입니다.
+     흰 표 하나를 주고 안내 시트를 읽으라고 하는 것은 답이 아닙니다.
+
+       회색  이름표 — 앱이 이 말을 보고 줄을 찾습니다. 고치지 마세요
+       파랑  항목을 정하는 곳 — 이름·범주·종류·실시일을 여기에
+       초록  번호와 이름
+       노랑  **값을 적는 곳**
+
+     스타일 번호가 곧 셀의 s= 값입니다. 순서를 바꾸면 색이 어긋납니다.
+     -------------------------------------------------------------------------- */
+  var ST = { none: 0, label: 1, head: 2, cell: 3, who: 4, title: 5, guide: 6 };
+  function stylesXML() {
+    var NS = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main';
+    function fill(rgb) {
+      return '<fill><patternFill patternType="solid"><fgColor rgb="' + rgb +
+        '"/><bgColor indexed="64"/></patternFill></fill>';
+    }
+    var bd = '<border><left style="thin"><color rgb="FFC4CDD8"/></left>' +
+      '<right style="thin"><color rgb="FFC4CDD8"/></right>' +
+      '<top style="thin"><color rgb="FFC4CDD8"/></top>' +
+      '<bottom style="thin"><color rgb="FFC4CDD8"/></bottom><diagonal/></border>';
+    /* xf: numFmtId fontId fillId borderId — 순서가 ST 와 맞아야 합니다 */
+    var xfs = [
+      '<xf xfId="0" numFmtId="0" fontId="0" fillId="0" borderId="0"/>',                                   /* 0 없음 */
+      '<xf xfId="0" numFmtId="0" fontId="1" fillId="2" borderId="1" applyFill="1" applyFont="1" applyBorder="1"/>',   /* 1 이름표 */
+      '<xf xfId="0" numFmtId="0" fontId="1" fillId="3" borderId="1" applyFill="1" applyFont="1" applyBorder="1"/>',   /* 2 항목 정하는 곳 */
+      /* 서식은 「일반」으로 둡니다. 텍스트 서식(numFmtId 49)을 걸면 선생님이
+         88 을 적었을 때 엑셀이 「숫자가 텍스트로 저장됨」 초록 삼각형을 답니다.
+         고쳐야 할 것이 없는데 고치라고 하는 표시입니다. */
+      '<xf xfId="0" numFmtId="0" fontId="0" fillId="4" borderId="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center"/></xf>', /* 3 값 적는 곳 */
+      '<xf xfId="0" numFmtId="0" fontId="0" fillId="5" borderId="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center"/></xf>', /* 4 번호·이름 */
+      '<xf xfId="0" numFmtId="0" fontId="1" fillId="0" borderId="0" applyFont="1"/>',                     /* 5 제목 */
+      '<xf xfId="0" numFmtId="0" fontId="2" fillId="4" borderId="1" applyFill="1" applyFont="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center"/></xf>' /* 6 안내 */
+    ];
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<styleSheet xmlns="' + NS + '">' +
+      '<fonts count="3">' +
+      '<font><sz val="11"/><color theme="1"/><name val="맑은 고딕"/></font>' +
+      '<font><b/><sz val="11"/><color rgb="FF14202E"/><name val="맑은 고딕"/></font>' +
+      '<font><b/><sz val="10"/><color rgb="FFA8560A"/><name val="맑은 고딕"/></font>' +
+      '</fonts>' +
+      '<fills count="6"><fill><patternFill patternType="none"/></fill>' +
+      '<fill><patternFill patternType="gray125"/></fill>' +
+      fill('FFE7EBF0') + fill('FFE1ECFB') + fill('FFFFF6D8') + fill('FFE1F2EC') +
+      '</fills>' +
+      '<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>' + bd + '</borders>' +
+      '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
+      '<cellXfs count="' + xfs.length + '">' + xfs.join('') + '</cellXfs>' +
+      '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>' +
+      '</styleSheet>';
+  }
+
+  /* 값은 전부 inlineStr 로 넣습니다. sharedStrings 를 안 만들어도 되고,
+     「01」 같은 번호가 숫자로 바뀌어 앞의 0 이 날아가는 일도 없습니다.
+     opt: {styles: 2차원 스타일표, freeze: {x, y}} */
+  function sheetXML(rows, opt) {
+    opt = opt || {};
+    var sg = opt.styles || [];
+    var x = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">';
+    /* 순서가 정해져 있습니다 — sheetViews 가 cols 보다 먼저여야 엑셀이 엽니다 */
+    if (opt.freeze) {
+      x += '<sheetViews><sheetView workbookViewId="0"><pane xSplit="' + opt.freeze.x +
+        '" ySplit="' + opt.freeze.y + '" topLeftCell="' + colName(opt.freeze.x) + (opt.freeze.y + 1) +
+        '" activePane="bottomRight" state="frozen"/></sheetView></sheetViews>';
+    }
+    x += '<cols><col min="1" max="1" width="16" customWidth="1"/>' +
+      '<col min="2" max="2" width="7" customWidth="1"/>' +
+      '<col min="3" max="3" width="12" customWidth="1"/>' +
+      '<col min="4" max="60" width="15" customWidth="1"/></cols><sheetData>';
+    rows.forEach(function (row, ri) {
+      var srow = sg[ri] || [];
+      var wide = Math.max(row.length, srow.length);
+      x += '<row r="' + (ri + 1) + '">';
+      for (var ci = 0; ci < wide; ci++) {
+        var v = row[ci], st = srow[ci] || 0;
+        v = (v == null) ? '' : String(v);
+        /* **빈칸도 색이 있으면 내보냅니다.** 「여기에 적으세요」는 비어 있을 때
+           가장 필요한 말인데, 셀이 없으면 색도 없습니다. */
+        if (v === '' && !st) continue;
+        x += '<c r="' + colName(ci) + (ri + 1) + '"' + (st ? ' s="' + st + '"' : '') +
+          (v === '' ? '/>'
+            : ' t="inlineStr"><is><t xml:space="preserve">' + xesc(v) + '</t></is></c>');
+      }
+      x += '</row>';
+    });
+    return x + '</sheetData></worksheet>';
+  }
+  function buildXlsx(sheets) {         /* sheets: [{name, rows, styles, freeze}] */
+    var files = [], sid = sheets.length + 1;   /* styles.xml 의 rId */
+    files.push({ name: '[Content_Types].xml',
+      data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+        '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+        '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+        '<Default Extension="xml" ContentType="application/xml"/>' +
+        '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>' +
+        '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' +
+        sheets.map(function (s, i) {
+          return '<Override PartName="/xl/worksheets/sheet' + (i + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>';
+        }).join('') + '</Types>' });
+    files.push({ name: '_rels/.rels',
+      data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+        '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>' +
+        '</Relationships>' });
+    files.push({ name: 'xl/workbook.xml',
+      data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+        '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" ' +
+        'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>' +
+        sheets.map(function (s, i) {
+          return '<sheet name="' + xesc(s.name) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>';
+        }).join('') + '</sheets></workbook>' });
+    files.push({ name: 'xl/_rels/workbook.xml.rels',
+      data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+        sheets.map(function (s, i) {
+          return '<Relationship Id="rId' + (i + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (i + 1) + '.xml"/>';
+        }).join('') +
+        '<Relationship Id="rId' + sid + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>' +
+        '</Relationships>' });
+    files.push({ name: 'xl/styles.xml', data: stylesXML() });
+    sheets.forEach(function (s, i) {
+      files.push({ name: 'xl/worksheets/sheet' + (i + 1) + '.xml',
+        data: sheetXML(s.rows, { styles: s.styles, freeze: s.freeze }) });
+    });
+    return zipStore(files);
+  }
+
+  /* ---------- xlsx 읽기 ---------- */
+  function inflateRaw(bytes) {
+    if (typeof DecompressionStream === 'undefined') {
+      return Promise.reject(new Error('nodecomp'));
+    }
+    var ds = new DecompressionStream('deflate-raw');
+    return new Response(new Blob([bytes]).stream().pipeThrough(ds)).arrayBuffer()
+      .then(function (b) { return new Uint8Array(b); });
+  }
+  function unzip(buf) {                 /* → Promise<{name:text}> */
+    var v = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    /* 끝쪽에서 EOCD(0x06054b50)를 거꾸로 찾습니다 */
+    var eo = -1, i;
+    for (i = buf.length - 22; i >= 0 && i > buf.length - 66000; i--) {
+      if (v.getUint32(i, true) === 0x06054b50) { eo = i; break; }
+    }
+    if (eo < 0) return Promise.reject(new Error('notzip'));
+    var count = v.getUint16(eo + 10, true), cd = v.getUint32(eo + 16, true);
+    var jobs = [], p = cd, dec = new TextDecoder('utf-8');
+    for (i = 0; i < count; i++) {
+      if (v.getUint32(p, true) !== 0x02014b50) break;
+      var method = v.getUint16(p + 10, true);
+      var csize = v.getUint32(p + 20, true);
+      var nlen = v.getUint16(p + 28, true), elen = v.getUint16(p + 30, true),
+          clen = v.getUint16(p + 32, true), lho = v.getUint32(p + 42, true);
+      var name = dec.decode(buf.subarray(p + 46, p + 46 + nlen));
+      /* 지역 헤더의 이름·부가 길이는 중앙 목록과 다를 수 있어 다시 읽습니다 */
+      var lnl = v.getUint16(lho + 26, true), lel = v.getUint16(lho + 28, true);
+      var start = lho + 30 + lnl + lel;
+      var data = buf.subarray(start, start + csize);
+      jobs.push((function (nm, dt, mt) {
+        return (mt === 0 ? Promise.resolve(dt) : inflateRaw(dt))
+          .then(function (out) { return { name: nm, text: dec.decode(out) }; });
+      })(name, data, method));
+      p += 46 + nlen + elen + clen;
+    }
+    return Promise.all(jobs).then(function (list) {
+      var o = {};
+      list.forEach(function (f) { o[f.name] = f.text; });
+      return o;
+    });
+  }
+  function unesc(s) {
+    return String(s).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
+      .replace(/&apos;/g, "'").replace(/&#(\d+);/g, function (m, n) { return String.fromCharCode(+n); })
+      .replace(/&amp;/g, '&');
+  }
+  function tagTexts(xml) {              /* <t>..</t> 를 모아 잇습니다 */
+    var out = '', re = /<t[^>]*>([\s\S]*?)<\/t>/g, m;
+    while ((m = re.exec(xml))) out += unesc(m[1]);
+    return out;
+  }
+  function parseSheet(xml, shared) {
+    var rows = [], rre = /<row[^>]*r="(\d+)"[^>]*>([\s\S]*?)<\/row>/g, rm;
+    while ((rm = rre.exec(xml))) {
+      var ri = +rm[1] - 1, cells = [], cre = /<c\b([^>]*)\/>|<c\b([^>]*)>([\s\S]*?)<\/c>/g, cm;
+      while ((cm = cre.exec(rm[2]))) {
+        var attr = cm[1] || cm[2] || '', inner = cm[3] || '';
+        var rr = /r="([A-Z]+)\d+"/.exec(attr);
+        var ci = 0;
+        if (rr) { var L = rr[1]; for (var k = 0; k < L.length; k++) ci = ci * 26 + (L.charCodeAt(k) - 64); ci -= 1; }
+        var t = (/t="([^"]+)"/.exec(attr) || [])[1] || 'n', val = '';
+        if (t === 's') {
+          var iv = /<v>([\s\S]*?)<\/v>/.exec(inner);
+          val = iv ? (shared[+iv[1]] || '') : '';
+        } else if (t === 'inlineStr') {
+          val = tagTexts(inner);
+        } else if (t === 'str') {
+          var sv = /<v>([\s\S]*?)<\/v>/.exec(inner);
+          val = sv ? unesc(sv[1]) : '';
+        } else {
+          var nv = /<v>([\s\S]*?)<\/v>/.exec(inner);
+          val = nv ? unesc(nv[1]) : '';
+        }
+        cells[ci] = val;
+      }
+      for (var z = 0; z < cells.length; z++) if (cells[z] == null) cells[z] = '';
+      rows[ri] = cells;
+    }
+    for (var y = 0; y < rows.length; y++) if (!rows[y]) rows[y] = [];
+    return rows;
+  }
+  /* 여러 시트 가운데 **앱이 읽을 시트**를 고릅니다.
+     이름이 「입력」이면 그것, 아니면 A1 이 「항목」인 첫 시트. */
+  function readWorkbook(buf) {
+    return unzip(buf).then(function (f) {
+      var shared = [];
+      if (f['xl/sharedStrings.xml']) {
+        var re = /<si>([\s\S]*?)<\/si>/g, m;
+        while ((m = re.exec(f['xl/sharedStrings.xml']))) shared.push(tagTexts(m[1]));
+      }
+      var wb = f['xl/workbook.xml'] || '', rels = f['xl/_rels/workbook.xml.rels'] || '';
+      var relMap = {}, rm, rre = /<Relationship[^>]*Id="([^"]+)"[^>]*Target="([^"]+)"/g;
+      while ((rm = rre.exec(rels))) relMap[rm[1]] = rm[2].replace(/^\/?xl\//, '').replace(/^\//, '');
+      var sheets = [], sre = /<sheet[^>]*name="([^"]*)"[^>]*r:id="([^"]+)"[^>]*\/>/g, sm;
+      while ((sm = sre.exec(wb))) {
+        var tgt = relMap[sm[2]] || '';
+        var xml = f['xl/' + tgt] || f[tgt] || '';
+        if (xml) sheets.push({ name: unesc(sm[1]), rows: parseSheet(xml, shared) });
+      }
+      if (!sheets.length) {
+        Object.keys(f).forEach(function (k) {
+          if (/^xl\/worksheets\/sheet\d+\.xml$/.test(k)) sheets.push({ name: k, rows: parseSheet(f[k], shared) });
+        });
+      }
+      var pick = null;
+      sheets.forEach(function (s) {
+        if (!pick && /입력/.test(s.name)) pick = s;
+      });
+      /* 이름으로 못 고르면 A열에 「항목」이 있는 시트를 찾습니다.
+         첫 줄만 보면 안 됩니다 — 위에 색 안내가 두 줄 붙어 있습니다. */
+      if (!pick) sheets.forEach(function (s) {
+        if (pick) return;
+        for (var i = 0; i < Math.min(s.rows.length, 30); i++) {
+          if (String((s.rows[i] || [])[0] || '').replace(/\s/g, '') === '항목') { pick = s; return; }
+        }
+      });
+      if (!pick) pick = sheets[0];
+      if (!pick) throw new Error('nosheet');
+      return pick.rows;
+    });
+  }
+
+  /* ---------- CSV ---------- */
+  function csvOut(rows) {
+    return rows.map(function (r) {
+      return r.map(function (c) {
+        c = String(c == null ? '' : c);
+        return /[",\n\r]/.test(c) ? '"' + c.replace(/"/g, '""') + '"' : c;
+      }).join(',');
+    }).join('\r\n');
+  }
+  function csvIn(text) {
+    text = String(text || '').replace(/^﻿/, '');
+    var sep = (text.split('\n')[0] || '').indexOf('\t') >= 0 ? '\t' : ',';
+    var rows = [], row = [], cur = '', q = false, i;
+    for (i = 0; i < text.length; i++) {
+      var ch = text[i];
+      if (q) {
+        if (ch === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else q = false; }
+        else cur += ch;
+      } else if (ch === '"') q = true;
+      else if (ch === sep) { row.push(cur); cur = ''; }
+      else if (ch === '\n') { row.push(cur); rows.push(row); row = []; cur = ''; }
+      else if (ch === '\r') { /* 넘어감 */ }
+      else cur += ch;
+    }
+    row.push(cur); rows.push(row);
+    return rows;
+  }
+  /* ==========================================================================
+     템플릿의 모양 — 한 장으로 스스로를 설명합니다
+
+       A열              B열   C열   D열부터
+       ──────────────────────────────────────────
+       항목             번호  이름  3월 진단평가   1단원 단원평가  ...
+       범주                         성취           성취
+       종류                         100점 만점     100점 만점
+       실시일                       2026-03-05     2026-04-12
+       과목                         수학           수학
+       단원·범위                    학년 초 진단   3단원 분수
+       사회정서역량
+       ── 여기부터 학생 ──  번호  이름  ↓ 값을 적으세요
+                        1     김민준  88            92
+
+     A열의 말이 「이름표」입니다. 줄이 위아래로 밀려도, 사이에 빈 줄이 들어가도
+     앱은 이름표를 보고 찾습니다. 학생 줄은 **B열이 번호인 줄**입니다.
+     그래서 설명을 더 적어 넣어도 깨지지 않습니다.
+     ========================================================================== */
+  var LB = { item: '항목', cat: '범주', type: '종류', date: '실시일',
+    subject: '과목', scope: '단원·범위', comp: '사회정서역량' };
+  var MARK = '── 여기부터 학생 ──';
+  var COL0 = 3;                         /* D열 = 첫 항목 */
+
+  function normKey(s) { return String(s == null ? '' : s).replace(/[\s·\-–—()]/g, ''); }
+
+  function typeToken(it) {
+    if (it.type === 'num') return (it.max || 100) + '점 만점';
+    if (it.type === 'level') return '상·중·하';
+    if (it.type === 'yn') return 'O·X';
+    return '글';
+  }
+  function parseType(s) {
+    var t = String(s || '').replace(/\s/g, '');
+    if (!t) return { type: 'num', max: 100 };
+    if (/글|메모|서술|텍스트/.test(t)) return { type: 'text' };
+    if (/상.?중.?하|삼단계/.test(t)) return { type: 'level' };
+    if (/^O.?X$|했다|예.?아니|여부|OX/i.test(t)) return { type: 'yn' };
+    var m = /(\d+)\s*점/.exec(t) || /^(\d+)$/.exec(t);
+    if (m) return { type: 'num', max: Math.max(1, Math.min(1000, +m[1])) };
+    return { type: 'num', max: 100 };
+  }
+  /* 엑셀이 날짜 칸을 일련번호로 돌려주는 경우가 있어 되돌립니다.
+     그대로 두면 「45658」이 실시일로 들어가 회차 순서가 뒤집힙니다. */
+  function parseDate(s) {
+    s = String(s == null ? '' : s).trim();
+    if (!s) return '';
+    var m = /^(\d{4})[.\-\/년\s]+(\d{1,2})[.\-\/월\s]+(\d{1,2})/.exec(s);
+    if (m) return m[1] + '-' + String(m[2]).padStart(2, '0') + '-' + String(m[3]).padStart(2, '0');
+    if (/^\d{8}$/.test(s)) return s.slice(0, 4) + '-' + s.slice(4, 6) + '-' + s.slice(6, 8);
+    if (/^\d{1,5}(\.\d+)?$/.test(s)) {
+      var n = Math.floor(+s);
+      if (n > 20000 && n < 80000) {      /* 1900 체계의 엑셀 일련번호 */
+        var dt = new Date(Date.UTC(1899, 11, 30) + n * 86400000);
+        return dt.toISOString().slice(0, 10);
+      }
+      return '';
+    }
+    return '';
+  }
+
+  /* ---------- 템플릿 만들기 ---------- */
+  function sheetRows(d, withSample) {
+    var items = d.items.length ? d.items : starterItems();
+    var head = [LB.item, '번호', '이름'], cat = [LB.cat, '', ''], typ = [LB.type, '', ''],
+        dat = [LB.date, '', ''], sub = [LB.subject, '', ''], sco = [LB.scope, '', ''],
+        cmp = [LB.comp, '', ''];
+    items.forEach(function (it) {
+      head.push(it.n);
+      cat.push(catOf(it.cat).n);
+      typ.push(typeToken(it));
+      dat.push(it.date || '');
+      sub.push(it.subject || '');
+      sco.push(it.scope || '');
+      cmp.push(it.comp && compOf(it.comp) ? compOf(it.comp).n : '');
+    });
+    var rows = [head, cat, typ, dat, sub, sco, cmp];
+    var mark = [MARK, '번호', '이름'];
+    items.forEach(function () { mark.push('↓ 값을 적으세요'); });
+    rows.push(mark);
+    var sample = [['88', '4', '5'], ['92', '5', '4'], ['', '3', '5'], ['75', '4', '3'], ['100', '5', '5']];
+    for (var no = 1; no <= d.size; no++) {
+      var r = ['', String(no), nameOf(d, no)];
+      items.forEach(function (it, ci) {
+        if (!withSample) { r.push(raw(d, it.id, no)); return; }
+        if (it.type === 'text') { r.push(no === 1 ? '발표를 시작할 때 목소리가 커졌다' : ''); return; }
+        if (it.type === 'level') { r.push(['상', '중', '하'][no % 3]); return; }
+        if (it.type === 'yn') { r.push(no % 4 === 0 ? 'X' : 'O'); return; }
+        var s = sample[(no - 1) % 5][Math.min(2, ci % 3)];
+        r.push(it.max === 5 ? String(Math.min(5, Math.max(1, (no + ci) % 5 + 1))) : s);
+      });
+      rows.push(r);
+    }
+    if (withSample) {
+      for (var i = 8; i < rows.length; i++) rows[i][2] = SAMPLE_NAMES[(i - 8) % SAMPLE_NAMES.length];
+    }
+    return rows;
+  }
+  /* --------------------------------------------------------------------------
+     「③ 보기」 시트의 이름 〔v0.4 에서 바꿨습니다〕
+
+     v0.3 은 흔한 성+이름을 썼습니다. 그런데 흔하다는 것은 **실제로 그 이름의
+     아이가 교실에 있을 확률이 높다**는 뜻입니다. 받은 선생님이 자기 반
+     아이 이름을 예시에서 보게 되면, 이 파일이 어디서 왔는지 의심하게 됩니다.
+
+     그래서 성을 떼고 **순우리말 이름**만 씁니다. 한눈에 예시인 것이 보이고,
+     이름 칸이 어떻게 쓰이는지는 그대로 보여 줍니다. 시트에도 그렇게 적습니다.
+     -------------------------------------------------------------------------- */
+  var SAMPLE_NAMES = ['가온', '나래', '다솜', '라온', '미르', '바다'];
+
+  function starterItems() {
+    return [0, 1, 3, 4, 5].map(function (i) {
+      return { n: TPL[i].n, cat: TPL[i].cat, type: TPL[i].type, max: TPL[i].max || 100,
+        subject: TPL[i].subject || '', scope: TPL[i].scope || '', date: '', comp: TPL[i].comp || '' };
+    }).concat(SEL_SET.map(function (i) {
+      return { n: TPL[i].n, cat: 'emo', type: 'num', max: 5, subject: '', scope: '',
+        date: '', comp: TPL[i].comp };
+    })).concat([{ n: '교사 관찰 메모', cat: 'obs', type: 'text', max: 100, subject: '', scope: '', date: '', comp: '' }]);
+  }
+
+  /* --------------------------------------------------------------------------
+     색으로 나눈 곳 — 엑셀에만 붙습니다 (CSV 는 색이 없으니 그대로 둡니다)
+     -------------------------------------------------------------------------- */
+  var LEGEND = '색이 뜻하는 것';
+  function legendRows(rows) {
+    return [[LEGEND, '', '', '노란 칸에 값을 적으세요',
+      '파란 칸은 항목을 정하는 곳', '회색 칸은 앱이 읽는 이름표 — 고치지 마세요'], []].concat(rows);
+  }
+  function markRow(rows) {
+    for (var i = 0; i < rows.length; i++) {
+      if (String((rows[i] || [])[0] || '').indexOf('여기부터 학생') >= 0) return i;
+    }
+    return -1;
+  }
+  /* 줄의 생김새를 보고 색을 정합니다. 줄 번호를 세지 않으므로,
+     위에 안내를 몇 줄 끼워 넣어도 색이 어긋나지 않습니다. */
+  function styleGrid(rows) {
+    var head = -1, mark = markRow(rows), i, j;
+    for (i = 0; i < rows.length; i++) {
+      if (normKey((rows[i] || [])[0]) === normKey(LB.item)) { head = i; break; }
+    }
+    return rows.map(function (row, ri) {
+      row = row || [];
+      if (String(row[0] || '') === LEGEND) return [ST.title, 0, 0, ST.cell, ST.head, ST.label];
+      var wide = Math.max(row.length, 4), line = [];
+      var inHead = head >= 0 && ri >= head && mark >= 0 && ri <= mark;
+      var isStudent = mark >= 0 && ri > mark &&
+        /^\d+$/.test(String(row[1] == null ? '' : row[1]).trim());
+      for (j = 0; j < wide; j++) {
+        if (inHead) {
+          /* 「── 여기부터 학생 ──」 줄의 D열부터는 「↓ 값을 적으세요」 안내입니다 */
+          line.push(j < 3 ? ST.label : (ri === mark ? ST.guide : ST.head));
+        } else if (isStudent) {
+          line.push(j === 0 ? ST.label : j < 3 ? ST.who : ST.cell);
+        } else {
+          line.push(j === 0 && String(row[0] || '') ? ST.title : ST.none);
+        }
+      }
+      return line;
+    });
+  }
+
+  function guideRows() {
+    return [
+      ['우리 반 데이터 보기 — 입력 템플릿 사용법'],
+      ['TEAM LEAP · 경북교육 AI Lab'],
+      [''],
+      ['■ 세 걸음'],
+      ['1', '「입력」 시트를 채웁니다. 이 파일을 구글 시트로 열어 함께 채워도 됩니다.'],
+      ['2', '엑셀은 그대로 저장(.xlsx), 구글 시트는 [파일 > 다운로드 > Microsoft Excel(.xlsx)] 또는 CSV.'],
+      ['3', '앱의 「템플릿·불러오기」 화면에 그 파일을 올립니다. 바로 대시보드가 나옵니다.'],
+      [''],
+      ['■ 칸 색이 곧 안내입니다 ★'],
+      ['노랑', '★ 여기에만 값을 적으세요. 학생 × 항목이 만나는 칸입니다.'],
+      ['파랑', '항목을 정하는 곳. 항목 이름·범주·종류·실시일·과목·범위·역량.'],
+      ['초록', '번호와 이름.'],
+      ['회색', '앱이 읽는 이름표입니다. 고치지 마세요. 이 말이 바뀌면 앱이 줄을 못 찾습니다.'],
+      [''],
+      ['■ 「입력」 시트의 생김새'],
+      ['', 'A열의 말이 이름표입니다. 앱은 이 말을 보고 줄을 찾습니다. A열은 지우지 마세요.'],
+      ['', 'D열부터가 항목입니다. 오른쪽으로 얼마든지 늘릴 수 있습니다(최대 40개).'],
+      ['', '학생 줄은 B열에 번호가 있는 줄입니다. 사이에 설명을 끼워 넣어도 됩니다.'],
+      ['', '번호·이름과 머리줄은 틀 고정해 두었습니다. 아래로 내려가도 어느 열인지 보입니다.'],
+      [''],
+      ['항목', '무엇을 재는지. 나중에 그림의 이름표가 됩니다. 예: 1단원 단원평가'],
+      ['범주', '성취 / 참여 / 정서 / 관찰 넷 중 하나. 「코드표」 시트를 보세요.'],
+      ['종류', '100점 만점 · 10점 만점 · 5점 만점 · 상·중·하 · O·X · 글'],
+      ['실시일', '언제 했는지. 2026-04-12 처럼. ★ 이것이 있어야 「회차 추이」가 그려집니다.'],
+      ['과목', '성취·참여 항목에. 예: 수학'],
+      ['단원·범위', '예: 3단원 분수의 덧셈 / 학년 초 진단 / 4월 넷째 주'],
+      ['사회정서역량', '정서 항목에. 자기인식·자기조절·관계인식·관계관리·공동체 가치·마음건강'],
+      [''],
+      ['■ 정서는 무엇을 적나 ★'],
+      ['', '설문지를 여기에 옮겨 적는 것이 아닙니다.'],
+      ['', '관찰·감정 진단·일기·상담에서 본 것을 선생님이 한 번 정리한 뒤, 그 결과를 5단계로 적습니다.'],
+      ['', '그래서 항목 이름이 역량 이름 여섯입니다 — 자기인식·자기조절·관계인식·관계관리·공동체 가치·마음건강.'],
+      ['', '설문지를 그대로 돌리셨다면 문항을 그대로 항목 이름으로 써도 됩니다. 역량만 적어 주세요.'],
+      [''],
+      ['■ 재는 자가 다르면 섞이지 않습니다 ★'],
+      ['', '100점 만점과 상·중·하는 다른 자입니다.'],
+      ['', '반 전체가 「상」이면 그 항목의 평균은 100%가 됩니다. 100점을 다 받은 것과 같은 자리입니다.'],
+      ['', '앱은 자가 다르면 「회차 추이」에서 선을 따로 긋습니다. 섞어서 평균 내지 않습니다.'],
+      ['', '변화를 보시려면 같은 항목을 같은 자로 두 번 이상 재세요. 예: 단원평가 100점 만점 × 3회.'],
+      [''],
+      ['■ 값을 적는 법'],
+      ['숫자', '0 이상 만점 이하. 「88」 「88.5」 「88점」 「88%」 모두 됩니다.'],
+      ['', '「9O」(영문 O) 같은 오타는 앱이 잡아서 알려 줍니다. 조용히 9점으로 세지 않습니다.'],
+      ['상·중·하', '상 / 중 / 하 셋 중 하나.'],
+      ['O·X', 'O 또는 X. 예/아니오, 1/0 도 됩니다.'],
+      ['글', '문장을 그대로. 관찰 메모는 대시보드와 종이에 모입니다.'],
+      [''],
+      ['■ 빈칸은 0이 아닙니다 ★'],
+      ['', '결석했거나 아직 안 본 칸은 그냥 비워 두세요. 0을 적지 마세요.'],
+      ['', '빈칸은 평균에서 빠지고, 히트맵에는 빗금으로 남습니다.'],
+      ['', '0을 적으면 그 아이가 0점을 받은 것이 되어 반 평균이 무너집니다.'],
+      [''],
+      ['■ 같은 것을 여러 번 재려면 (이 앱의 핵심)'],
+      ['', '열을 하나 더 만들고, 항목 이름과 실시일만 바꾸세요.'],
+      ['', '예: D열 「단원평가」 2026-03-14 / E열 「단원평가」 2026-05-09 / F열 「단원평가」 2026-07-04'],
+      ['', '같은 범주에 실시일이 있는 항목이 둘 이상이면 「회차 추이」에 꺾은선이 생깁니다.'],
+      ['', '정서도 같습니다. 3월과 7월에 같은 7문항을 물으면 한 학기의 변화가 보입니다.'],
+      [''],
+      ['■ 이름'],
+      ['', '「보기」 시트의 가온·나래·다솜… 은 예시입니다. 실제 학생 이름이 아닙니다. 지우고 쓰세요.'],
+      ['', 'C열에 이름을 적으면 화면과 종이에 이름이 함께 나옵니다.'],
+      ['', '비워 두면 번호만 씁니다. 「AI 초안 도우미」에는 이름도 관찰 메모도 나가지 않습니다.'],
+      [''],
+      ['■ 올릴 때'],
+      ['', '올리면 지금 앱에 든 자료를 이 파일로 바꿉니다. 먼저 「파일로 내보내기」를 해 두세요.'],
+      ['', 'xlsx 가 안 열리면 CSV 로 저장해서 올려도 똑같이 됩니다.']
+    ];
+  }
+  function codeRows() {
+    var r = [['이 시트는 참고용입니다. 「입력」 시트에 그대로 적을 수 있는 말입니다.'], [''],
+      ['범주', '뜻', '어떤 그림에 쓰이나']];
+    CATS.forEach(function (c) {
+      r.push([c.n, c.d, c.k === 'obs' ? '관찰 메모 모음 (셈하지 않음)'
+        : c.k === 'ach' ? '히트맵 · 분포 · 추이 · 성취×정서(가로)'
+        : c.k === 'emo' ? '히트맵 · 분포 · 추이 · 성취×정서(세로) · 역량 프로필'
+        : '히트맵 · 분포 · 추이']);
+    });
+    r.push([''], ['종류 (재는 자)', '적는 값', '같은 선에 이어지는가']);
+    [['100점 만점', '0~100 사이의 숫자', '100점 만점끼리만'],
+      ['10점 만점', '0~10 사이의 숫자', '10점 만점끼리만'],
+      ['5점 만점', '1~5 (5단계)', '5점 만점끼리만'],
+      ['상·중·하', '상 / 중 / 하', '상·중·하끼리만'],
+      ['O·X', 'O / X', 'O·X끼리만'],
+      ['글', '문장', '셈하지 않음']].forEach(function (x) { r.push([x[0], x[1], x[2]]); });
+    r.push(['', '★ 재는 자가 다르면 앱이 선을 따로 긋습니다. 상·중·하의 「상」은 100점 만점의 100점과 다릅니다.', '']);
+    r.push([''], ['사회정서역량', '영역', '무엇을 보는가 (교육부 2024)']);
+    COMPS.forEach(function (c) { r.push([c.n, c.area, c.d]); });
+    r.push(['', '★ 정서는 관찰·감정 진단·일기에서 한 번 정리한 값을 5단계로 적는 자리입니다.', '']);
+    r.push([''], ['출처', '교육부·한국교육환경보호원(2024), 한국형 사회정서교육 프로그램', ''],
+      ['', '설문 7문항: 한국교육과정평가원 3~6학년 사회정서역량 진단도구', '']);
+    return r;
+  }
+
+  function templateBlob(d) {
+    var g = guideRows();
+    var inRows = legendRows(sheetRows(d, false));
+    var exRows = legendRows(sheetRows(
+      { size: 6, items: d.items.length ? d.items : starterItems(), names: {}, cells: {} }, true));
+    var c = codeRows();
+    return buildXlsx([
+      { name: '① 안내', rows: g, styles: styleGrid(g) },
+      /* 틀 고정 — 학생이 스물넷이면 아래로 내려갈수록 어느 열인지 잊습니다.
+         번호·이름(C열까지)과 머리줄(학생 시작 줄까지)을 붙들어 둡니다. */
+      { name: '② 입력', rows: inRows, styles: styleGrid(inRows),
+        freeze: { x: 3, y: markRow(inRows) + 1 } },
+      { name: '③ 보기', rows: exRows, styles: styleGrid(exRows) },
+      { name: '④ 코드표', rows: c, styles: styleGrid(c) }
+    ]);
+  }
+  function templateCsv(d) {
+    return '﻿' + csvOut(sheetRows(d, false));
+  }
+
+  /* ---------- 올린 표 읽기 ----------
+     돌려주는 것: {ok, items, cells, names, size, note[]} */
+  function readRows(rows) {
+    var lab = {}, i, j;
+    for (i = 0; i < Math.min(rows.length, 30); i++) {
+      var a = normKey((rows[i] || [])[0]);
+      if (!a) continue;
+      if (a === normKey(LB.item) && !lab.item) lab.item = rows[i];
+      else if (a === normKey(LB.cat) && !lab.cat) lab.cat = rows[i];
+      else if (a === normKey(LB.type) && !lab.type) lab.type = rows[i];
+      else if (a === normKey(LB.date) && !lab.date) lab.date = rows[i];
+      else if (a === normKey(LB.subject) && !lab.subject) lab.subject = rows[i];
+      else if (a === normKey(LB.scope) && !lab.scope) lab.scope = rows[i];
+      else if (a === normKey(LB.comp) && !lab.comp) lab.comp = rows[i];
+    }
+    var note = [];
+    if (!lab.item) {
+      return { ok: false, why: 'A열에서 「항목」이라 적힌 줄을 찾지 못했습니다. ' +
+        '이 앱에서 받은 템플릿의 「② 입력」 시트인지 확인해 주세요.' };
+    }
+    /* 항목 열 모으기 */
+    var items = [], cols = [];
+    for (j = COL0; j < lab.item.length && items.length < 40; j++) {
+      var nm = String(lab.item[j] == null ? '' : lab.item[j]).trim();
+      if (!nm) continue;
+      var t = parseType(lab.type ? lab.type[j] : '');
+      var cat = catByName(lab.cat ? lab.cat[j] : '');
+      if (!cat) cat = (t.type === 'text') ? 'obs' : 'ach';
+      if (t.type === 'text' && cat !== 'obs') cat = 'obs';
+      items.push({ id: LEAP.uid(), n: nm.slice(0, 80), cat: cat, type: t.type,
+        max: t.max || 100,
+        date: parseDate(lab.date ? lab.date[j] : ''),
+        subject: String((lab.subject ? lab.subject[j] : '') || '').trim().slice(0, 30),
+        scope: String((lab.scope ? lab.scope[j] : '') || '').trim().slice(0, 40),
+        comp: cat === 'emo' ? compByName(lab.comp ? lab.comp[j] : '') : '' });
+      cols.push(j);
+    }
+    if (!items.length) return { ok: false, why: '「항목」 줄의 D열부터가 모두 비어 있습니다. 항목 이름을 적어 주세요.' };
+
+    /* 학생 줄 — B열이 1 이상의 정수인 줄 */
+    var names = {}, cells = {}, maxNo = 0, filled = 0, dup = 0, seen = {};
+    items.forEach(function (it) { cells[it.id] = {}; });
+    for (i = 0; i < rows.length; i++) {
+      var row = rows[i] || [];
+      if (normKey(row[0]) === normKey(LB.item)) continue;
+      var bs = String(row[1] == null ? '' : row[1]).trim();
+      if (!/^\d+$/.test(bs)) continue;
+      var no = parseInt(bs, 10);
+      if (no < 1 || no > 60) continue;
+      if (seen[no]) { dup++; continue; }
+      seen[no] = 1;
+      if (no > maxNo) maxNo = no;
+      var nm2 = String(row[2] == null ? '' : row[2]).trim();
+      if (nm2) names[no] = nm2.slice(0, 20);
+      items.forEach(function (it, k) {
+        var v = row[cols[k]];
+        v = String(v == null ? '' : v).trim();
+        if (v === '') return;
+        cells[it.id][no] = v.slice(0, 400);
+        filled++;
+      });
+    }
+    if (!maxNo) return { ok: false, why: 'B열에 번호가 적힌 학생 줄을 찾지 못했습니다. ' +
+      'B열에 1, 2, 3… 을 적어 주세요.' };
+    if (dup) note.push('번호가 겹친 줄 ' + dup + '개는 건너뛰었습니다. 먼저 나온 줄을 씁니다.');
+    var nodate = items.filter(function (it) { return it.type !== 'text' && !it.date; }).length;
+    if (nodate) note.push('실시일이 없는 항목이 ' + nodate + '개 있습니다. ' +
+      '그 항목은 「회차 추이」에 들어가지 않습니다 — 언제인지 모르는 점은 선으로 잇지 않습니다.');
+    /* 자가 섞였는지는 그림을 보기 전에 알려 줍니다 — 뒤늦게 알면 이미 읽은 뒤입니다 */
+    ['ach', 'eng', 'emo'].forEach(function (k) {
+      var sc = scalesIn(items.filter(function (it) { return it.cat === k && it.type !== 'text'; }));
+      if (sc.length < 2) return;
+      note.push(catOf(k).n + ' 항목에 재는 자가 ' + sc.length + '가지입니다 — ' +
+        sc.map(function (x) { return x.n; }).join(' · ') +
+        '. 「회차 추이」에서 선을 따로 긋습니다. 섞어서 평균 내지 않습니다.');
+    });
+    return { ok: true, items: items, cells: cells, names: names,
+      size: Math.max(1, Math.min(60, maxNo)), filled: filled, note: note };
+  }
+  /* ==========================================================================
+     화면
+     ========================================================================== */
+  var P = {};
+  function el(id) { return document.getElementById(id); }
+  function on(n, e, f) { if (n) n.addEventListener(e, f); }
+  function each(l, f) { Array.prototype.forEach.call(l || [], f); }
+  function fld(label, inner) {
+    var id = (inner.match(/id="([^"]+)"/) || [])[1] || '';
+    return '<div class="field"><label class="fld"' + (id ? ' for="' + id + '"' : '') + '>' +
+      label + '</label>' + inner + '</div>';
+  }
+  function render() {
+    P.set = el('panel-set'); P.file = el('panel-file'); P.in = el('panel-in');
+    P.dash = el('panel-dash'); P.read = el('panel-read');
+    renderSet(); renderFile(); renderIn(); renderDash(); renderRead();
+  }
+  /* 표를 통째로 다시 그리면 적고 있던 칸에서 초점이 튕깁니다.
+     그래서 값이 바뀔 때는 「채운 정도」와 다른 화면만 갈아 끼웁니다. */
+  function softAll() {
+    if (P.dash) renderDash();
+    var v = P.read && P.read.querySelector('#paper-view');
+    if (v) v.innerHTML = paperHTML();
+    var f = P.in && P.in.querySelector('#fillzone');
+    if (f) f.innerHTML = fillHTML(D());
+  }
+
+  function fillHTML(d) {
+    var r = fillRate(d), bad = badCells(d);
+    var h = '<div class="fillbar"><div><div class="n">' + r + '%</div>' +
+      '<div class="k">채웠습니다 · 항목 <b>' + d.items.length + '</b>개 × <b>' + d.size + '</b>명</div></div>' +
+      '<div class="bar"><i style="width:' + r + '%"></i></div>' +
+      '<div class="k">' + (r === 0 ? '아직 그릴 것이 없습니다'
+        : r < 100 ? '<b>덜 채워도 그립니다.</b> 「대시보드」를 보세요' : '다 채웠습니다') + '</div></div>';
+    if (bad.length) {
+      h += '<div class="badbar"><div class="hd">읽을 수 없는 값이 ' + bad.length + '칸 있습니다</div>' +
+        '<p>이 칸은 <b>채운 것으로 세지만 그림에는 들어가지 않습니다.</b> 아래 표에서 주황 테두리를 찾아 고쳐 주세요. ' +
+        '빈칸으로 두어도 됩니다 — <b>빈칸은 0이 아니라 「안 봄」</b>이라 셈에서 빠집니다.</p>' +
+        '<ul>' + bad.slice(0, 8).map(function (b) {
+          return '<li><b>' + esc(label(d, b.no)) + ' · ' + esc(b.it.n) + '</b> — 「' + esc(b.v) + '」 · ' +
+            wantOf(b.it) + '</li>';
+        }).join('') +
+        (bad.length > 8 ? '<li>… 그리고 ' + (bad.length - 8) + '칸</li>' : '') +
+        '</ul></div>';
+    }
+    return h;
+  }
+
+  /* ===== 1. 우리 반 ===== */
+  function renderSet() {
+    var d = D();
+    var h = '<div class="sheet"><h2>우리 반</h2><div class="grid2">' +
+      fld('학급 <span class="hint">종이에 적힐 이름입니다</span>',
+        '<input class="txt" id="s-name" value="' + esc(d.className) + '" maxlength="30" placeholder="예: 5학년 3반">') +
+      fld('학생 수 <span class="hint">1~60</span>',
+        '<input class="txt" id="s-size" type="number" min="1" max="60" value="' + d.size + '">') +
+      '</div>' +
+      '<p class="small muted" style="margin:0">이름은 「입력」 화면이나 엑셀 템플릿의 <b>C열</b>에서 적습니다. ' +
+      '비워 두면 번호만 씁니다.</p></div>';
+
+    h += '<div class="sheet"><h2>무엇을 볼까요</h2>' +
+      '<p class="small muted">항목 하나가 <b>한 회차</b>입니다. 같은 평가를 다시 보면 ' +
+      '<b>항목을 하나 더 만들고 실시일만 바꾸세요</b> — 그래야 변화가 그려집니다. ' +
+      '다 넣지 않아도 됩니다.</p>';
+
+    if (!d.items.length) {
+      h += '<p class="empty">아직 항목이 없습니다.<br>아래 템플릿에서 고르거나, ' +
+        '「템플릿·불러오기」에서 엑셀 양식을 받아 채워 올리세요.</p>';
+    } else {
+      h += d.items.map(function (it, i) {
+        var c = catOf(it.cat), f = filledCount(d, it), side = sideOf(it);
+        var noDate = it.type !== 'text' && !it.date;
+        return '<div class="item' + (noDate ? ' no-date' : '') + '"><span class="cat ' + c.c + '">' + c.n + '</span>' +
+          '<span class="nm">' + esc(it.n) +
+          '<i>' + (side ? esc(side) : '<b style="color:var(--leap-amber)">실시일 없음</b> — 회차 추이에 들어가지 않습니다') + '</i></span>' +
+          '<span class="meta">' + typeName(it) + ' · ' + f + '/' + d.size + '명</span>' +
+          '<span class="sp">' +
+          (i > 0 ? '<button class="btn btn--ghost btn--sm" data-up="' + i + '" type="button" aria-label="' + esc(it.n) + ' 위로 옮기기">↑</button>' : '') +
+          '<button class="btn btn--quiet btn--sm" data-edit="' + i + '" type="button">고치기</button>' +
+          '<button class="btn btn--ghost btn--sm" data-del="' + i + '" type="button">지우기</button>' +
+          '</span></div>';
+      }).join('');
+    }
+
+    h += '<h3>템플릿에서 더하기</h3>' +
+      '<p class="small muted" style="margin:0 0 10px">더한 뒤 「고치기」에서 <b>실시일·과목·단원</b>을 적어 주세요. ' +
+      '같은 것을 여러 번 보시려면 <b>재는 자(종류)를 똑같이</b> 두세요 — ' +
+      '100점 만점과 상·중·하는 한 선으로 이어지지 않습니다.</p>' +
+      '<div class="tgl">' + TPL.map(function (t, i) {
+        var nm = t.n.length > 22 ? t.n.slice(0, 21) + '…' : t.n;
+        return '<button type="button" data-tpl="' + i + '" title="' + esc(t.n + (t.hint ? ' — ' + t.hint : '')) + '">' +
+          '<span class="cat ' + catOf(t.cat).c + '">' + catOf(t.cat).n + '</span> ' + esc(nm) + '</button>';
+      }).join('') + '</div>' +
+      /* 정서를 어떻게 적는 것인지 — 여기서 한 번 말해 둡니다.
+         이 앱에 들어오는 정서 값은 설문지 원본이 아니라 이미 한 번 정리된 것입니다. */
+      '<div class="note" style="margin:14px 0 0"><div class="hd">정서는 이렇게 적습니다</div>' +
+      '<p>정서 자료는 <b>관찰 · 감정 진단 · 일기 · 상담</b>에서 나옵니다. ' +
+      '여기에 적는 것은 그것을 선생님이 <b>이미 한 번 정리한 값</b>입니다. ' +
+      '그래서 항목 이름을 설문 문장이 아니라 <b>역량 이름 여섯</b>으로 두었습니다 — ' +
+      '자기인식 · 자기조절 · 관계인식 · 관계관리 · 공동체 가치 · 마음건강. ' +
+      '각 5단계(1~5)로 적으시면 됩니다.</p></div>' +
+      '<div class="actions" style="margin-top:12px">' +
+      '<button class="btn btn--quiet btn--sm" id="btn-selset" type="button">사회정서역량 6가지 한 번에 더하기</button>' +
+      '<button class="btn btn--ghost btn--sm" id="btn-survey" type="button">설문 7문항 그대로 쓰기</button>' +
+      '</div>' +
+      '<p class="small muted" style="margin:8px 0 0">설문지를 실제로 돌리셨다면 오른쪽을 누르세요. ' +
+      '한국교육과정평가원 「3~6학년 사회정서역량 진단도구」 문항 그대로 들어갑니다.</p>';
+
+    h += '<h3>직접 만들기</h3><div class="grid3">' +
+      fld('이름', '<input class="txt" id="n-name" maxlength="80" placeholder="예: 2단원 단원평가">') +
+      fld('범주', '<select class="txt" id="n-cat">' + CATS.map(function (c) {
+        return '<option value="' + c.k + '">' + c.n + ' — ' + c.d + '</option>';
+      }).join('') + '</select>') +
+      fld('종류', '<select class="txt" id="n-type">' +
+        '<option value="num">점수 (숫자)</option>' +
+        '<option value="level">상 · 중 · 하</option>' +
+        '<option value="yn">O · X</option>' +
+        '<option value="text">글 (관찰 메모)</option></select>') +
+      '</div><div class="grid4">' +
+      fld('만점 <span class="hint">점수일 때</span>',
+        '<input class="txt" id="n-max" type="number" min="1" max="1000" value="100">') +
+      fld('실시일 <span class="hint">★ 추이의 축</span>',
+        '<input class="txt" id="n-date" type="date" value="' + LEAP.todayISO() + '">') +
+      fld('과목', '<input class="txt" id="n-sub" maxlength="30" placeholder="예: 수학">') +
+      fld('단원·범위', '<input class="txt" id="n-scope" maxlength="40" placeholder="예: 3단원 분수의 덧셈">') +
+      '</div>' +
+      '<div class="actions" style="margin-top:0"><button class="btn" id="btn-add" type="button">항목 더하기</button></div>' +
+      '</div>';
+
+    P.set.innerHTML = h;
+    bindSet();
+  }
+
+  function addItem(d, t, date) {
+    d.items.push({ id: LEAP.uid(), n: t.n, cat: t.cat, type: t.type || 'num',
+      max: t.max || 100, date: date || '', subject: t.subject || '',
+      scope: t.scope || '', comp: t.comp || '' });
+  }
+
+  function bindSet() {
+    var q = function (s) { return P.set.querySelector(s); };
+    on(q('#s-name'), 'input', function (e) { save(function (d) { d.className = e.target.value; }); softAll(); });
+    on(q('#s-size'), 'change', function () {
+      save(function (d) { d.size = Math.max(1, Math.min(60, Math.round(+q('#s-size').value || 20))); });
+      render();
+    });
+    each(P.set.querySelectorAll('[data-tpl]'), function (b) {
+      on(b, 'click', function () {
+        var t = TPL[+b.getAttribute('data-tpl')];
+        save(function (d) { addItem(d, t, t.type === 'text' ? '' : LEAP.todayISO()); });
+        render(); LEAP.announce('「' + t.n.slice(0, 16) + '」을 더했습니다. 실시일을 확인해 주세요.');
+      });
+    });
+    on(q('#btn-selset'), 'click', function () {
+      var today = LEAP.todayISO();
+      save(function (d) { SEL_SET.forEach(function (i) { addItem(d, TPL[i], today); }); });
+      render(); LEAP.announce('사회정서역량 6가지를 ' + LEAP.fmtDate(today) + ' 회차로 더했습니다.');
+    });
+    on(q('#btn-survey'), 'click', function () {
+      var today = LEAP.todayISO();
+      save(function (d) { SURVEY.forEach(function (t) { addItem(d, t, today); }); });
+      render(); LEAP.announce('진단 설문 7문항을 ' + LEAP.fmtDate(today) + ' 회차로 더했습니다.');
+    });
+    on(q('#btn-add'), 'click', function () {
+      var n = q('#n-name').value.trim();
+      if (!n) { LEAP.announce('항목 이름을 적어 주세요.'); return; }
+      var type = q('#n-type').value;
+      save(function (d) {
+        addItem(d, { n: n, cat: q('#n-cat').value, type: type,
+          max: Math.max(1, Math.round(+q('#n-max').value || 100)),
+          subject: q('#n-sub').value.trim(), scope: q('#n-scope').value.trim() },
+          type === 'text' ? '' : q('#n-date').value);
+      });
+      render(); LEAP.announce('항목을 더했습니다.');
+    });
+    each(P.set.querySelectorAll('[data-del]'), function (b) {
+      on(b, 'click', function () {
+        var i = +b.getAttribute('data-del'), d = D(), it = d.items[i];
+        var f = it ? filledCount(d, it) : 0;
+        if (!confirm('「' + (it ? it.n : '') + '」을 지웁니다.\n' +
+          (f ? '넣어 둔 값 ' + f + '칸이 함께 사라집니다.\n' : '') + '되돌릴 수 없습니다. 계속할까요?')) return;
+        save(function (dd) { var x = dd.items.splice(i, 1)[0]; if (x) delete dd.cells[x.id]; });
+        render();
+      });
+    });
+    each(P.set.querySelectorAll('[data-up]'), function (b) {
+      on(b, 'click', function () {
+        var i = +b.getAttribute('data-up');
+        save(function (d) { var t = d.items[i - 1]; d.items[i - 1] = d.items[i]; d.items[i] = t; });
+        render();
+      });
+    });
+    each(P.set.querySelectorAll('[data-edit]'), function (b) {
+      on(b, 'click', function () { openEdit(+b.getAttribute('data-edit')); });
+    });
+  }
+
+  /* --------------------------------------------------------------------------
+     항목 고치기 — v0.2 에 아예 없던 자리
+
+     이름을 잘못 적으면 지우고 다시 만드는 수밖에 없었고, 그러면 **넣어 둔 값이
+     함께 사라졌습니다.** 스물넷 칸을 다시 두드리게 만드는 벌이었습니다.
+     여기서는 id 를 그대로 두므로 값이 그대로 남습니다.
+     -------------------------------------------------------------------------- */
+  function openEdit(idx) {
+    var d = D(), it = d.items[idx];
+    if (!it) return;
+    var h = '<div class="grid2">' +
+      fld('항목 이름', '<input class="txt" id="e-name" maxlength="80" value="' + esc(it.n) + '">') +
+      fld('범주', '<select class="txt" id="e-cat">' + CATS.map(function (c) {
+        return '<option value="' + c.k + '"' + (c.k === it.cat ? ' selected' : '') + '>' + c.n + ' — ' + c.d + '</option>';
+      }).join('') + '</select>') + '</div>' +
+      '<div class="grid3">' +
+      fld('종류 <span class="hint">바꾸면 값을 다시 읽습니다</span>', '<select class="txt" id="e-type">' +
+        [['num', '점수 (숫자)'], ['level', '상 · 중 · 하'], ['yn', 'O · X'], ['text', '글 (관찰 메모)']]
+          .map(function (t) { return '<option value="' + t[0] + '"' + (t[0] === it.type ? ' selected' : '') + '>' + t[1] + '</option>'; }).join('') +
+        '</select>') +
+      fld('만점', '<input class="txt" id="e-max" type="number" min="1" max="1000" value="' + (it.max || 100) + '">') +
+      fld('실시일 <span class="hint">★ 회차의 축</span>',
+        '<input class="txt" id="e-date" type="date" value="' + esc(it.date || '') + '">') +
+      '</div><div class="grid3">' +
+      fld('과목', '<input class="txt" id="e-sub" maxlength="30" value="' + esc(it.subject) + '" placeholder="예: 수학">') +
+      fld('단원·범위', '<input class="txt" id="e-scope" maxlength="40" value="' + esc(it.scope) + '" placeholder="예: 3단원 분수의 덧셈">') +
+      fld('사회정서역량 <span class="hint">정서일 때</span>', '<select class="txt" id="e-comp">' +
+        '<option value="">(고르지 않음)</option>' + COMPS.map(function (c) {
+          return '<option value="' + c.k + '"' + (c.k === it.comp ? ' selected' : '') + '>' +
+            c.area + ' · ' + c.n + '</option>';
+        }).join('') + '</select>') +
+      '</div>' +
+      '<p class="small muted" style="margin:0 0 6px">넣어 둔 값 <b>' + filledCount(d, it) +
+      '칸</b>은 그대로 남습니다. 종류를 바꾸면 값을 새 종류로 다시 읽으므로, ' +
+      '읽을 수 없게 되는 칸이 생길 수 있습니다 — 「입력」 화면에서 알려 줍니다.</p>' +
+      '<div class="actions"><button class="btn" id="e-ok" type="button">고친 대로 저장</button>' +
+      '<button class="btn btn--ghost" id="e-cancel" type="button">그만두기</button></div>';
+    openModal('항목 고치기', h);
+    var box = el('modal-body'), q = function (s) { return box.querySelector(s); };
+    on(q('#e-cancel'), 'click', closeModal);
+    on(q('#e-ok'), 'click', function () {
+      var nm = q('#e-name').value.trim();
+      if (!nm) { LEAP.announce('항목 이름은 비울 수 없습니다.'); return; }
+      var ty = q('#e-type').value, ct = q('#e-cat').value;
+      save(function (dd) {
+        var x = dd.items[idx];
+        if (!x) return;
+        x.n = nm; x.cat = ct; x.type = ty;
+        x.max = Math.max(1, Math.min(1000, Math.round(+q('#e-max').value || 100)));
+        x.date = ty === 'text' ? '' : q('#e-date').value;
+        x.subject = q('#e-sub').value.trim();
+        x.scope = q('#e-scope').value.trim();
+        x.comp = ct === 'emo' ? q('#e-comp').value : '';
+      });
+      closeModal(); render(); LEAP.announce('항목을 고쳤습니다.');
+    });
+  }
+  /* ===== 2. 템플릿·불러오기 ===== */
+  function renderFile() {
+    var d = D();
+    var h = '<div class="note"><div class="hd">받아서 → 채워서 → 올리면 끝</div>' +
+      '<p>앱에서 한 칸씩 두드리지 마세요. <b>엑셀·구글 시트에서 채워 올리면 바로 대시보드가 나옵니다.</b> ' +
+      '받은 파일에는 <b>지금 정한 항목</b>이 이미 열로 들어가 있고, ' +
+      '「① 안내」 시트에 무엇을 어떻게 적는지 적혀 있습니다.</p></div>';
+
+    h += '<div class="sheet"><h2><span class="step">1</span>템플릿 받기</h2>' +
+      '<p class="small muted">' +
+      (d.items.length
+        ? '지금 정한 <b>항목 ' + d.items.length + '개 × 학생 ' + d.size + '명</b>으로 만듭니다. 넣어 둔 값도 함께 들어갑니다.'
+        : '아직 항목이 없어 <b>추천 항목 12개</b>(성취 3 · 참여 2 · 사회정서역량 6 · 관찰 메모 1)가 들어간 시작 양식을 만듭니다.') +
+      '<br><b>적을 곳은 노란 칸입니다.</b> 파랑은 항목을 정하는 곳, 초록은 번호·이름, ' +
+      '회색은 앱이 읽는 이름표라 고치면 안 됩니다. 번호·이름과 머리줄은 틀 고정해 두었습니다.' +
+      '</p>' +
+      '<div class="actions" style="margin-top:0">' +
+      '<button class="btn" id="t-xlsx" type="button">엑셀 템플릿 (.xlsx) 받기</button>' +
+      '<button class="btn btn--ghost" id="t-csv" type="button">CSV 템플릿 받기</button>' +
+      '</div>' +
+      '<h3>파일 안에 시트 넉 장</h3>' +
+      '<div class="grid4">' +
+      minicard('① 안내', '무엇을 어디에 적는지. 빈칸을 0으로 적지 말라는 것까지.') +
+      minicard('② 입력', '실제로 채우는 표. <b>앱이 읽는 곳은 여기</b>입니다.') +
+      minicard('③ 보기', '같은 모양에 예시가 채워진 것. 헷갈리면 여기를 보세요.') +
+      minicard('④ 코드표', '범주·종류·사회정서역량에 쓸 수 있는 말.') +
+      '</div>' +
+      '<h3>「② 입력」 시트는 이렇게 생겼습니다</h3>' +
+      /* 화면의 색과 파일의 색을 **같게** 둡니다. 여기서 본 것을 엑셀에서 그대로 만납니다. */
+      '<div class="xl-key">' +
+      '<span><i class="k-cell"></i>값을 적는 곳</span>' +
+      '<span><i class="k-head"></i>항목을 정하는 곳</span>' +
+      '<span><i class="k-who"></i>번호·이름</span>' +
+      '<span><i class="k-label"></i>이름표 — 고치지 마세요</span>' +
+      '</div>' +
+      '<div class="pvwrap" style="padding:0"><table class="grid xlprev"><tbody>' +
+      [['항목', '번호', '이름', '1단원 단원평가', '자기인식'],
+       ['범주', '', '', '성취', '정서'],
+       ['종류', '', '', '100점 만점', '5점 만점'],
+       ['실시일', '', '', '2026-04-12', '2026-03-06'],
+       ['과목', '', '', '수학', ''],
+       ['단원·범위', '', '', '3단원 분수의 덧셈', ''],
+       ['사회정서역량', '', '', '', '자기인식'],
+       ['── 여기부터 학생 ──', '번호', '이름', '↓ 값을 적으세요', '↓ 값을 적으세요'],
+       ['', '1', '가온', '88', '4'],
+       ['', '2', '나래', '', '5']].map(function (r, ri) {
+        return '<tr>' + r.map(function (c, ci) {
+          var k = ri <= 7
+            ? (ci < 3 ? 'k-label' : ri === 7 ? 'k-guide' : 'k-head')
+            : (ci === 0 ? 'k-label' : ci < 3 ? 'k-who' : 'k-cell');
+          return '<td class="' + k + '">' + esc(c) + '</td>';
+        }).join('') + '</tr>';
+      }).join('') + '</tbody></table></div>' +
+      '<p class="small muted" style="margin:10px 0 0">' +
+      '<b>A열의 말이 이름표입니다.</b> 앱은 이 말을 보고 줄을 찾으므로, 사이에 설명을 끼워 넣어도 됩니다. ' +
+      'D열부터가 항목이고, 오른쪽으로 얼마든지 늘릴 수 있습니다. ' +
+      '학생 줄은 <b>B열에 번호가 있는 줄</b>입니다. ' +
+      '<b>2번 학생의 빈 칸처럼 비워 두는 것이 맞습니다</b> — 결석한 칸에 0을 적으면 반 평균이 무너집니다. ' +
+      '「③ 보기」 시트의 <b>가온·나래·다솜</b>은 예시 이름이지 실제 학생이 아닙니다.</p>' +
+      '</div>';
+
+    h += '<div class="sheet"><h2><span class="step">2</span>채운 파일 올리기</h2>' +
+      '<p class="small muted">.xlsx · .csv · 구글 시트에서 받은 파일 모두 됩니다. ' +
+      '올리면 <b>항목·이름·값이 파일의 것으로 바뀝니다.</b></p>' +
+      '<div class="actions" style="margin-top:0">' +
+      '<button class="btn" id="t-up" type="button">파일 골라 올리기</button>' +
+      '<span class="small muted">먼저 아래 「파일로 내보내기」로 지금 자료를 챙겨 두세요.</span>' +
+      '</div>' +
+      '<div id="t-result"></div></div>';
+
+    h += '<div class="sheet"><h2>구글 시트로 하려면</h2><ol class="note" style="background:transparent;padding:0;margin:0">' +
+      '<li>위에서 받은 <b>.xlsx</b> 파일을 구글 드라이브에 올리고 구글 시트로 엽니다.</li>' +
+      '<li>「② 입력」 시트를 채웁니다. 동학년 선생님과 함께 채워도 됩니다.</li>' +
+      '<li>[파일 → 다운로드 → <b>Microsoft Excel(.xlsx)</b>] 또는 [쉼표로 구분된 값(.csv)]으로 받습니다.</li>' +
+      '<li>그 파일을 위 2번에 올립니다.</li></ol></div>';
+
+    P.file.innerHTML = h;
+    bindFile();
+  }
+  function minicard(t, s) {
+    return '<div class="card" style="box-shadow:none"><h3>' + t + '</h3>' +
+      '<p class="why" style="margin:0">' + s + '</p></div>';
+  }
+
+  function bindFile() {
+    var q = function (s) { return P.file.querySelector(s); };
+    on(q('#t-xlsx'), 'click', function () {
+      var d = D();
+      try {
+        LEAP.saveBlob('우리반데이터_템플릿_' + (d.className || '학급').replace(/\s/g, '') + '_' +
+          LEAP.todayISO() + '.xlsx', templateBlob(d));
+        LEAP.announce('엑셀 템플릿을 받았습니다. 「② 입력」 시트를 채워 주세요.');
+      } catch (e) {
+        LEAP.announce('엑셀 템플릿을 만들지 못했습니다. CSV 템플릿을 써 주세요.');
+      }
+    });
+    on(q('#t-csv'), 'click', function () {
+      var d = D();
+      LEAP.saveBlob('우리반데이터_템플릿_' + LEAP.todayISO() + '.csv',
+        new Blob([templateCsv(d)], { type: 'text/csv;charset=utf-8' }));
+      LEAP.announce('CSV 템플릿을 받았습니다.');
+    });
+    on(q('#t-up'), 'click', pickSheet);
+  }
+
+  function resultBox(html) {
+    var box = P.file && P.file.querySelector('#t-result');
+    if (box) box.innerHTML = html;
+  }
+  function pickSheet() {
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.xlsx,.csv,.tsv,.txt,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv';
+    input.addEventListener('change', function () {
+      var f = input.files && input.files[0];
+      if (!f) return;
+      resultBox('<div class="issue ok"><span aria-hidden="true">…</span><span><b>읽는 중입니다</b></span></div>');
+      var isX = /\.xlsx$/i.test(f.name) || /spreadsheetml/.test(f.type || '');
+      var rd = new FileReader();
+      rd.onerror = function () { failBox('파일을 읽지 못했습니다.'); };
+      rd.onload = function () {
+        var p;
+        if (isX) {
+          p = readWorkbook(new Uint8Array(rd.result));
+        } else {
+          p = Promise.resolve(csvIn(new TextDecoder('utf-8').decode(new Uint8Array(rd.result))));
+        }
+        p.then(function (rows) { applySheet(rows, f.name); })
+          .catch(function (e) {
+            if (e && e.message === 'nodecomp') {
+              failBox('이 브라우저는 xlsx 를 풀지 못합니다. 엑셀·구글 시트에서 <b>CSV 로 저장</b>해 올려 주세요. ' +
+                '(크롬·엣지·사파리 최신판이면 xlsx 도 됩니다)');
+            } else {
+              failBox('엑셀 파일을 읽지 못했습니다. 이 앱에서 받은 템플릿이 맞는지 확인하시고, ' +
+                '안 되면 <b>CSV 로 저장</b>해 올려 주세요.');
+            }
+          });
+      };
+      if (isX) rd.readAsArrayBuffer(f); else rd.readAsArrayBuffer(f);
+    });
+    input.click();
+  }
+  function failBox(msg) {
+    resultBox('<div class="issue warn"><span aria-hidden="true">!</span><span>' +
+      '<b>올리지 못했습니다</b><p>' + msg + '</p></span></div>');
+  }
+  function applySheet(rows, fname) {
+    var res = readRows(rows);
+    if (!res.ok) { failBox(esc(res.why)); return; }
+    var d = D(), had = 0;
+    d.items.forEach(function (it) { had += filledCount(d, it); });
+    if (had && !confirm('올린 파일로 바꿉니다.\n\n' +
+      '지금: ' + (d.className || '학급') + ' · 항목 ' + d.items.length + '개 · 채운 칸 ' + had + '개\n' +
+      '올릴 것: 항목 ' + res.items.length + '개 · 학생 ' + res.size + '명 · 채운 칸 ' + res.filled + '개\n\n' +
+      '지금 자료는 되돌릴 수 없습니다. 먼저 「파일로 내보내기」를 해 두셨나요?\n\n계속할까요?')) {
+      resultBox('<div class="issue warn"><span aria-hidden="true">!</span><span><b>그만두었습니다</b>' +
+        '<p>지금 자료를 그대로 두었습니다.</p></span></div>');
+      return;
+    }
+    save(function (dd) {
+      dd.items = res.items; dd.cells = res.cells; dd.names = res.names; dd.size = res.size;
+    });
+    render();
+    var d2 = D(), bad = badCells(d2).length;
+    var h = '<div class="issue ok"><span aria-hidden="true">✓</span><span>' +
+      '<b>' + esc(fname) + ' 을(를) 읽었습니다</b>' +
+      '<p>항목 <b>' + res.items.length + '개</b> · 학생 <b>' + res.size + '명</b> · 채운 칸 <b>' +
+      res.filled + '개</b> · 채운 정도 <b>' + fillRate(d2) + '%</b><br>' +
+      '위의 <b>「대시보드」</b> 화면으로 가면 바로 그림이 나옵니다.</p></span></div>';
+    if (bad) h += '<div class="issue warn"><span aria-hidden="true">!</span><span>' +
+      '<b>읽을 수 없는 값이 ' + bad + '칸 있습니다</b>' +
+      '<p>채운 것으로 세지만 그림에는 들어가지 않습니다. 「입력」 화면에서 주황 테두리를 찾아 고쳐 주세요.</p></span></div>';
+    res.note.forEach(function (n) {
+      h += '<div class="issue warn"><span aria-hidden="true">!</span><span><b>' + esc(n) + '</b></span></div>';
+    });
+    resultBox(h);
+    LEAP.announce('올렸습니다. 대시보드에 바로 나옵니다.');
+  }
+
+  /* ===== 3. 입력 ===== */
+  function renderIn() {
+    var d = D();
+    if (!d.items.length) {
+      P.in.innerHTML = '<p class="empty">아직 볼 것이 정해지지 않았습니다.<br>' +
+        '「우리 반」 화면에서 항목을 먼저 고르거나, 「템플릿·불러오기」에서 엑셀 양식을 받으세요.</p>';
+      return;
+    }
+    var h = '<div id="fillzone">' + fillHTML(d) + '</div>';
+    h += '<div class="note"><div class="hd">한 열씩 붙여 넣기</div>' +
+      '<p>엑셀·구글시트에서 <b>값 부분만 복사</b>해 아래에 붙여 넣으면 됩니다. ' +
+      '<b>첫 줄이 1번</b>, 그다음 줄이 2번… 순서입니다. 가로로 여러 항목이면 탭으로 나뉜 채 그대로 붙여 넣으세요. ' +
+      '표 전체를 통째로 옮기려면 <b>「템플릿·불러오기」</b>가 더 낫습니다.</p>' +
+      '<div class="grid2" style="margin-top:12px">' +
+      fld('어느 항목부터 채울까요', '<select class="txt" id="p-item">' + d.items.map(function (it, i) {
+        return '<option value="' + i + '">' + esc(it.n.slice(0, 40)) + '</option>';
+      }).join('') + '</select>') +
+      fld('붙여넣기', '<textarea class="txt" id="p-box" style="min-height:80px" ' +
+        'placeholder="88&#9;4&#10;92&#9;5&#10;75&#9;3"></textarea>') +
+      '</div>' +
+      '<div class="actions" style="margin-top:0">' +
+      '<button class="btn" id="p-go" type="button">붙여 넣은 대로 채우기</button>' +
+      '<button class="btn btn--ghost" id="p-clear" type="button">값 전부 비우기</button>' +
+      '</div></div>';
+
+    h += '<div class="gridwrap"><table class="grid"><thead><tr>' +
+      '<th scope="col" class="cnr">번호</th><th scope="col" class="nmh">이름</th>' +
+      d.items.map(function (it) {
+        return '<th scope="col"><span class="cat ' + catOf(it.cat).c + '">' + catOf(it.cat).n + '</span><br>' +
+          esc(it.n.length > 18 ? it.n.slice(0, 17) + '…' : it.n) +
+          '<span class="dt">' + (it.date ? LEAP.fmtDate(it.date) : '실시일 없음') +
+          ' · ' + typeName(it) + '</span></th>';
+      }).join('') + '</tr></thead><tbody>';
+    for (var no = 1; no <= d.size; no++) {
+      h += '<tr><th scope="row">' + no + '</th>' +
+        '<td class="nmcell"><input data-nm="' + no + '" value="' + esc(nameOf(d, no)) + '" ' +
+        'maxlength="20" aria-label="' + no + '번 이름"></td>' +
+        d.items.map(function (it) {
+          var v = raw(d, it.id, no), bad = isBad(d, it, no);
+          return '<td' + (bad ? ' class="bad"' : v !== '' ? ' class="filled"' : '') + '>' +
+            '<input data-c="' + it.id + ':' + no + '" value="' + esc(v) + '" ' +
+            'aria-label="' + no + '번 ' + esc(it.n) +
+            (bad ? ' — 읽을 수 없는 값입니다. ' + wantOf(it) + '을(를) 적어 주세요' : '') + '" ' +
+            (it.type === 'num' ? 'inputmode="decimal"' : '') +
+            (it.type === 'level' ? ' list="lv"' : '') + '></td>';
+        }).join('') + '</tr>';
+    }
+    h += '</tbody></table></div>' +
+      '<datalist id="lv"><option>상</option><option>중</option><option>하</option></datalist>' +
+      '<p class="small muted" style="margin-top:12px"><b>빈칸은 0이 아닙니다.</b> ' +
+      '안 본 것과 0점은 다릅니다. 빈칸은 평균에서 빠지고, 히트맵에서는 빗금으로 남습니다.<br>' +
+      '<b>↑ ↓ 와 Enter</b> 로 세로로 옮겨 다닐 수 있습니다 — 이 표는 세로로 채우기 때문입니다.</p>';
+
+    P.in.innerHTML = h;
+    bindIn();
+  }
+
+  function moveCell(inp, dr, dc) {
+    var d = D();
+    var p = inp.getAttribute('data-c'), i = p.lastIndexOf(':');
+    var id = p.slice(0, i), no = +p.slice(i + 1);
+    var ci = -1;
+    d.items.forEach(function (it, k) { if (it.id === id) ci = k; });
+    if (ci < 0) return;
+    var nno = no + dr, nci = ci + dc;
+    if (nno < 1 || nno > d.size) return;
+    if (nci < 0 || nci >= d.items.length) return;
+    var next = P.in.querySelector('[data-c="' + d.items[nci].id + ':' + nno + '"]');
+    if (next && next.focus) { next.focus(); if (next.select) next.select(); }
+  }
+
+  function bindIn() {
+    var q = function (s) { return P.in.querySelector(s); };
+    each(P.in.querySelectorAll('[data-nm]'), function (inp) {
+      var no = +inp.getAttribute('data-nm');
+      on(inp, 'change', function () {
+        save(function (d) {
+          var v = inp.value.trim();
+          if (v === '') delete d.names[no]; else d.names[no] = v;
+        });
+        softAll();
+      });
+    });
+    each(P.in.querySelectorAll('[data-c]'), function (inp) {
+      var p = inp.getAttribute('data-c'), i = p.lastIndexOf(':');
+      var id = p.slice(0, i), no = +p.slice(i + 1);
+      function store() {
+        save(function (d) {
+          if (!d.cells[id]) d.cells[id] = {};
+          var v = inp.value.trim();
+          if (v === '') delete d.cells[id][no]; else d.cells[id][no] = v;
+        });
+        var d2 = D(), it2 = null;
+        d2.items.forEach(function (x) { if (x.id === id) it2 = x; });
+        inp.parentNode.className = isBad(d2, it2, no) ? 'bad' : (inp.value.trim() ? 'filled' : '');
+        softAll();
+      }
+      on(inp, 'change', store);
+      on(inp, 'keydown', function (e) {
+        var k = e.key;
+        if (k === 'ArrowDown' || k === 'Enter') { e.preventDefault(); store(); moveCell(inp, 1, 0); }
+        else if (k === 'ArrowUp') { e.preventDefault(); store(); moveCell(inp, -1, 0); }
+      });
+    });
+    on(q('#p-go'), 'click', function () {
+      var start = +q('#p-item').value || 0;
+      var n = paste(q('#p-box').value, start);
+      q('#p-box').value = '';
+      render();
+      LEAP.announce(n ? n + '칸을 채웠습니다.' : '읽을 값이 없었습니다.');
+    });
+    on(q('#p-clear'), 'click', function () {
+      if (!confirm('넣은 값을 전부 비웁니다. 항목과 이름은 남습니다. 되돌릴 수 없습니다.')) return;
+      save(function (d) { d.cells = {}; d.items.forEach(function (it) { d.cells[it.id] = {}; }); });
+      render(); LEAP.announce('값을 전부 비웠습니다.');
+    });
+  }
+
+  /* 탭·쉼표로 나뉜 글을 번호 순서대로 채웁니다.
+     **가운데 빈 줄은 버리지 않습니다** — 결석해서 한 줄이 빈 표를 붙여 넣었을 때
+     빈 줄을 지우면 그 아래 번호가 통째로 한 칸씩 밀립니다. */
+  function paste(text, startIdx) {
+    var rows = String(text || '').replace(/\r/g, '').split('\n')
+      .map(function (r) { return r.split(/\t|,/); });
+    while (rows.length && rows[rows.length - 1].join('').trim() === '') rows.pop();
+    if (!rows.length) return 0;
+    var first = rows[0].join(' ');
+    if (!/[0-9]|상|중|하|[oOㅇ]/.test(first)) rows.shift();   /* 머리글로 보고 버립니다 */
+    var n = 0;
+    save(function (dd) {
+      rows.forEach(function (cols, ri) {
+        var no = ri + 1;
+        if (no > dd.size) return;
+        cols.forEach(function (val, ci) {
+          var it = dd.items[startIdx + ci];
+          if (!it) return;
+          val = String(val).trim();
+          if (!dd.cells[it.id]) dd.cells[it.id] = {};
+          if (val === '') return;
+          dd.cells[it.id][no] = val;
+          n++;
+        });
+      });
+    });
+    return n;
+  }
+  /* ==========================================================================
+     4. 대시보드
+
+     배치 — v0.2 는 넷을 같은 격자에 넣었습니다. 히트맵만 학생 수만큼 세로로
+     늘어나 옆 칸이 텅 비었습니다. 이제 **히트맵은 제 폭을 쓰고 스스로 굴러가며**,
+     나머지는 나란히 놓입니다.
+     ========================================================================== */
+  function renderDash() {
+    var d = D();
+    var h = '<div id="fillzone">' + fillHTML(d) + '</div>';
+
+    if (!d.items.length) {
+      P.dash.innerHTML = h + '<p class="empty">「우리 반」에서 볼 항목을 먼저 고르거나, ' +
+        '「템플릿·불러오기」에서 채운 파일을 올리세요.</p>';
+      return;
+    }
+
+    h += '<div class="card card--wide"><h3>한눈에 보기 (히트맵)</h3>' +
+      '<p class="why">가로가 회차, 세로가 학생입니다. 진할수록 높습니다. ' +
+      '<b>빗금 칸은 안 넣은 것</b>입니다 — 0점이 아니라 「안 봤음」입니다. ' +
+      '색 옆에 값이 그대로 적혀 있습니다. ' +
+      '진하기는 <b>그 항목의 만점 대비</b>입니다 — 머리줄의 <b>자</b>가 다르면 ' +
+      '진하기끼리 견주지 마세요.</p>' + heatmap(d) + '</div>';
+
+    h += '<div class="dashgrid">' +
+      card('회차 추이 <span class="cat ach">변화</span>',
+        '<b>같은 범주에서 같은 자로 잰 항목이 둘 이상</b>이면 그려집니다. 이 앱을 쓰는 가장 큰 까닭입니다. ' +
+        '<b>100점 만점과 상·중·하는 한 선으로 잇지 않습니다.</b>',
+        trendChart(d)) +
+      card('성취 × 정서',
+        '두 범주가 <b>모두</b> 있으면 그려집니다. 성취표만으로는 안 보이는 것이 여기서 보입니다. ' +
+        '<b>어느 항목을 두 축에 놓을지 고를 수 있습니다.</b>',
+        scatterChart(d)) +
+      card('항목별 분포',
+        '한 항목만 있어도 그려집니다. 반이 어디에 몰려 있는지 봅니다.',
+        distChart(d)) +
+      '</div>';
+
+    h += '<div class="dashgrid">' +
+      card('사회정서역량 프로필',
+        '정서 항목에 <b>역량</b>을 붙이면 그려집니다. 한국형 사회정서교육의 6가지 핵심역량입니다.',
+        compChart(d)) +
+      card('눈에 띄는 학생',
+        '기계가 고른 것입니다. <b>판단은 선생님이 합니다.</b> 자료가 적을수록 덜 미덥습니다.',
+        spotHTML(d)) +
+      '</div>';
+
+    h += '<div class="card card--wide"><h3>관찰 메모</h3>' +
+      '<p class="why">글 항목은 셈하지 않습니다. 대신 <b>여기와 종이에 그대로 모입니다</b> — ' +
+      '숫자가 설명하지 못하는 자리를 채우는 것이 관찰이기 때문입니다.</p>' + memoHTML(d) + '</div>';
+
+    P.dash.innerHTML = h;
+    bindDash();
+  }
+
+  /* 산점도의 두 축 고르기 — 고른 것은 이 기기에 남습니다 */
+  function bindDash() {
+    if (!P.dash) return;
+    [['#sc-x', 'ach'], ['#sc-y', 'emo']].forEach(function (pair) {
+      var sel = P.dash.querySelector(pair[0]);
+      if (!sel) return;
+      on(sel, 'change', function () {
+        var v = sel.value;
+        save(function (d) { if (!d.pick) d.pick = {}; d.pick[pair[1]] = v; });
+        renderDash();
+        LEAP.announce('성취 × 정서의 축을 바꿨습니다.');
+      });
+    });
+  }
+
+  function card(title, why, body) {
+    return '<div class="card"><h3>' + title + '</h3><p class="why">' + why + '</p>' + body + '</div>';
+  }
+  function need(msg) { return '<p class="none">' + msg + '</p>'; }
+  function bucket(v) { return Math.max(0, Math.min(4, Math.floor(v * 5))); }
+
+  /* --------------------------------------------------------------------------
+     히트맵 — 표로 그립니다
+
+     v0.2 는 SVG 였습니다. 학생이 스물넷이면 세로가 가로의 세 배가 되고,
+     그 그림을 A4 폭에 맞추면 **한 장을 통째로 넘겨 종이가 무너졌습니다.**
+     표는 스스로 쪽을 넘기고, 화면에서는 머리줄을 붙인 채 굴러갑니다.
+     -------------------------------------------------------------------------- */
+  function heatmap(d) {
+    var items = byDate(numericItems(d));
+    if (!items.length) return need('<b>점수·단계 항목이 하나도 없습니다.</b> ' +
+      '「우리 반」에서 하나 더해 보세요. 글(메모) 항목은 히트맵에 나오지 않습니다.');
+    var any = items.some(function (it) { return filledCount(d, it) > 0; });
+    if (!any) return need('아직 <b>넣은 값이 없습니다.</b> 「입력」에서 한 칸만 채워도 여기에 나타납니다.');
+
+    /* 머리줄에 **자**를 함께 적습니다. 「상」과 「88」이 같은 진하기로 칠해져 있으면,
+       적어도 서로 다른 자로 잰 것이라는 사실은 보여야 합니다. */
+    var head = '<tr><th scope="col">학생</th>' + items.map(function (it) {
+      return '<th scope="col">' + esc(it.n.length > 12 ? it.n.slice(0, 11) + '…' : it.n) +
+        '<span class="dt">' + esc(typeName(it)) + '</span>' +
+        '<span class="dt">' + (it.date ? LEAP.fmtDate(it.date).replace(/^\d{4}\. /, '') : '날짜 없음') + '</span></th>';
+    }).join('') + '</tr>';
+
+    var body = '';
+    for (var no = 1; no <= d.size; no++) {
+      var nm = nameOf(d, no).trim();
+      body += '<tr><th scope="row"><b>' + no + '</b>' + esc(nm) + '</th>' +
+        items.map(function (it) {
+          var rv = raw(d, it.id, no), v = num(it, rv);
+          if (rv !== '' && v == null) return '<td class="bad" title="읽을 수 없는 값">' + esc(rv.slice(0, 6)) + ' !</td>';
+          if (v == null) return '<td class="na" aria-label="안 넣음">·</td>';
+          return '<td class="s' + bucket(v) + '">' + esc(String(rv).slice(0, 6)) + '</td>';
+        }).join('') + '</tr>';
+    }
+    return '<div class="heatwrap"><table class="heat"><caption class="leap-sr">' +
+      '학생 ' + d.size + '명 × 항목 ' + items.length + '개 히트맵. ' +
+      '값이 없는 칸은 「안 넣음」입니다. 같은 내용이 「입력」 표에 있습니다.</caption>' +
+      '<thead>' + head + '</thead><tbody>' + body + '</tbody></table></div>' +
+      '<div class="scale"><span class="lb">낮음</span>' +
+      [0, 1, 2, 3, 4].map(function (i) { return '<i style="background:var(--h' + i + ')"></i>'; }).join('') +
+      '<span class="lb">높음</span>' +
+      '<i style="background:repeating-linear-gradient(45deg,transparent,transparent 4px,var(--leap-hairline) 4px,var(--leap-hairline) 5px)"></i>' +
+      '<span class="lb">안 넣음</span>' +
+      '<i style="background:var(--tint-amber)"></i><span class="lb">읽을 수 없음</span></div>';
+  }
+
+  /* --------------------------------------------------------------------------
+     회차 추이 — 이 앱의 새 심장
+
+     v0.2 는 「같은 범주의 항목 순서」를 회차로 삼았습니다. 그래서 3월 평가를
+     나중에 더하면 그것이 마지막 점이 되어 **없는 하락이 그려졌습니다.**
+     이제 가로축은 **실시일**입니다. 날짜가 없는 항목은 아예 들어가지 않습니다.
+     -------------------------------------------------------------------------- */
+  var SERIES = [
+    { k: 'ach', color: 'var(--leap-blue)' },
+    { k: 'emo', color: 'var(--leap-amber-mark)' },
+    { k: 'eng', color: 'var(--solid-teal)' }
+  ];
+  /* 같은 범주 안에서 자가 여럿이면 모양과 점선으로도 갈라 보입니다 (원칙 4) */
+  var MARKS = [
+    { dash: '', mark: 'circle' },
+    { dash: '6 4', mark: 'square' },
+    { dash: '2 3', mark: 'diamond' },
+    { dash: '1 3', mark: 'triangle' }
+  ];
+
+  /* --------------------------------------------------------------------------
+     한 회차 = 하루 〔v0.4〕
+
+     같은 날 한 항목이 여럿일 수 있습니다. 사회정서역량 여섯을 3월 6일 하루에
+     다 물으면 항목은 여섯이지만 **회차는 하나**입니다.
+
+     v0.3 은 그 여섯을 여섯 회차로 세었습니다. 그래서 가로축의 같은 자리에
+     점 여섯이 겹쳐 서고, 그 사이를 선으로 이어 「−5%p 내렸습니다」 같은
+     말을 만들어 냈습니다. **하루 안에서 내려간 것은 없습니다.**
+     같은 날짜의 항목은 하나로 모으고, **날짜가 둘 이상**이라야 선이 됩니다.
+     -------------------------------------------------------------------------- */
+  function dateStat(d, items) {
+    var sum = 0, cnt = 0, who = {};
+    items.forEach(function (it) {
+      for (var no = 1; no <= d.size; no++) {
+        var v = num(it, raw(d, it.id, no));
+        if (v == null) continue;
+        sum += v; cnt++; who[no] = 1;
+      }
+    });
+    return { avg: cnt ? sum / cnt : null, n: Object.keys(who).length, cells: cnt };
+  }
+  /* 한 학생의 그날 값 — 같은 날 항목이 여럿이면 그 사람 몫만 평균 냅니다 */
+  function studentAt(d, items, no) {
+    var s = 0, c = 0;
+    items.forEach(function (it) {
+      var v = num(it, raw(d, it.id, no));
+      if (v != null) { s += v; c++; }
+    });
+    return c ? s / c : null;
+  }
+
+  /* 계열 = 범주 × 척도. **자가 다르면 같은 선에 잇지 않습니다.**
+     돌려주는 것: {lines: [...], mixed: [{n, scales}], dropped: [{n, scale, item}]}
+     각 line 의 pts 는 **날짜별로 모은 회차**입니다. */
+  function trendLines(d) {
+    var lines = [], mixed = [], dropped = [];
+    SERIES.forEach(function (s) {
+      var byScale = {}, order = [];
+      datedItems(d, s.k).forEach(function (it) {
+        var k = scaleKey(it);
+        if (!byScale[k]) { byScale[k] = []; order.push(k); }
+        byScale[k].push(it);
+      });
+      if (order.length > 1) {
+        mixed.push({ n: catOf(s.k).n,
+          scales: order.map(function (k) { return typeName(byScale[k][0]); }) });
+      }
+      order.forEach(function (k, i) {
+        var its = byScale[k], byDay = {}, days = [];
+        its.forEach(function (it) {
+          if (!byDay[it.date]) { byDay[it.date] = []; days.push(it.date); }
+          byDay[it.date].push(it);
+        });
+        days.sort();
+        if (days.length < 2) {
+          dropped.push({ n: catOf(s.k).n, scale: typeName(its[0]),
+            item: its.length > 1 ? (its[0].n + ' 외 ' + (its.length - 1) + '개') : its[0].n,
+            date: days[0] || '' });
+          return;
+        }
+        lines.push({ cat: s.k, c: catOf(s.k), color: s.color,
+          mk: MARKS[Math.min(i, MARKS.length - 1)],
+          scale: typeName(its[0]), its: its,
+          pts: days.map(function (dt) { return { date: dt, items: byDay[dt] }; }) });
+      });
+    });
+    return { lines: lines, mixed: mixed, dropped: dropped };
+  }
+  function markSVG(mk, x, y, color, cls) {
+    var c = ' class="' + (cls || 'pt') + '" fill="' + color + '"';
+    if (mk.mark === 'square') return '<rect' + c + ' x="' + (x - 4).toFixed(1) + '" y="' + (y - 4).toFixed(1) + '" width="8" height="8"/>';
+    if (mk.mark === 'diamond') return '<path' + c + ' d="M' + x.toFixed(1) + ' ' + (y - 5).toFixed(1) + 'l5 5l-5 5l-5 -5z"/>';
+    if (mk.mark === 'triangle') return '<path' + c + ' d="M' + x.toFixed(1) + ' ' + (y - 5).toFixed(1) + 'l5 9l-10 0z"/>';
+    return '<circle' + c + ' cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="4.4"/>';
+  }
+
+  function trendChart(d) {
+    var grp = trendLines(d), lines = grp.lines;
+    if (!lines.length) {
+      var undated = numericItems(d).filter(function (it) { return !it.date && filledCount(d, it) > 0; }).length;
+      return need('<b>같은 범주에서 같은 자로 잰 항목이 둘 이상</b>이어야 추이가 나옵니다.<br>' +
+        (undated ? '지금 <b>실시일이 없는 항목이 ' + undated + '개</b> 있습니다. ' +
+          '「우리 반」에서 <b>고치기</b>를 눌러 실시일을 적어 주세요. — '
+          : '') +
+        (grp.dropped.length ? '지금은 <b>' + esc(grp.dropped.map(function (x) {
+          return x.n + '(' + x.scale + ')';
+        }).join(' · ')) + '</b> 이 각각 한 회차뿐입니다. — ' : '') +
+        '예를 들어 <b>100점 만점 단원평가</b>를 <b>3월 14일</b>과 <b>5월 9일</b> 두 번 넣으면 꺾은선이 생깁니다. ' +
+        '<b>언제인지 모르는 점은 선으로 잇지 않고, 다른 자로 잰 값은 한 선으로 잇지 않습니다.</b>');
+    }
+    /* 가로축은 모든 계열의 날짜를 모아 이른 순으로 늘어놓습니다 */
+    var dates = {};
+    lines.forEach(function (L) { L.pts.forEach(function (p) { dates[p.date] = 1; }); });
+    var ax = Object.keys(dates).sort();
+    var W = 340, H = 190, padL = 30, padR = 14, padT = 14, padB = 34;
+    var stepX = ax.length > 1 ? (W - padL - padR) / (ax.length - 1) : 0;
+    var X = function (dt) { return padL + ax.indexOf(dt) * stepX + (ax.length > 1 ? 0 : (W - padL - padR) / 2); };
+    var Y = function (v) { return padT + (1 - v) * (H - padT - padB); };
+
+    var read = [];
+    var s = '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="';
+    var body = '';
+    [0, .5, 1].forEach(function (t) {
+      body += '<line class="gl" x1="' + padL + '" y1="' + Y(t) + '" x2="' + (W - padR) + '" y2="' + Y(t) + '"/>' +
+        '<text x="' + (padL - 5) + '" y="' + (Y(t) + 3) + '" text-anchor="end">' + (t * 100) + '</text>';
+    });
+    lines.forEach(function (L) {
+      var pts = L.pts.map(function (p) {
+        var st = dateStat(d, p.items);
+        return { x: X(p.date), y: st.avg, n: st.n, date: p.date, items: p.items };
+      }).filter(function (p) { return p.y != null; });
+      if (!pts.length) return;
+      var dpath = pts.map(function (p, i) {
+        return (i ? 'L' : 'M') + p.x.toFixed(1) + ' ' + Y(p.y).toFixed(1);
+      }).join('');
+      body += '<path class="ln" d="' + dpath + '" stroke="' + L.color + '"' +
+        (L.mk.dash ? ' stroke-dasharray="' + L.mk.dash + '"' : '') + '/>';
+      pts.forEach(function (p) {
+        var x = p.x, y = Y(p.y);
+        body += markSVG(L.mk, x, y, L.color);
+        body += '<text class="v" x="' + x.toFixed(1) + '" y="' + (y - 9).toFixed(1) + '" text-anchor="middle">' +
+          Math.round(p.y * 100) + '</text>';
+      });
+      var first = pts[0], last = pts[pts.length - 1];
+      var diff = Math.round((last.y - first.y) * 100);
+      read.push(L.c.n + ' ' + L.scale + ' ' + pts.map(function (p) {
+        return LEAP.fmtDate(p.date) + ' ' + Math.round(p.y * 100) + '%';
+      }).join(', ') + ' (' + (diff > 0 ? '+' : '') + diff + '%p)');
+      L.diff = diff; L.drawn = pts;
+    });
+    ax.forEach(function (dt) {
+      var p = dt.split('-');
+      body += '<text x="' + X(dt).toFixed(1) + '" y="' + (H - 16) + '" text-anchor="middle">' +
+        Number(p[1]) + '/' + Number(p[2]) + '</text>';
+    });
+    body += '<line class="ax" x1="' + padL + '" y1="' + Y(0) + '" x2="' + (W - padR) + '" y2="' + Y(0) + '"/>';
+    s += esc('반 평균 추이. ' + read.join(' / ')) + '">' + body + '</svg>';
+
+    /* 선을 색으로만 나누지 않습니다 — 모양과 글자가 함께 다릅니다 (원칙 4).
+       이름표에 **자**를 함께 적습니다. 「성취」가 아니라 「성취 · 100점 만점」입니다. */
+    s += '<div class="lg">' + lines.map(function (L) {
+      var mk = markSVG(L.mk, 11, 6, L.color, 'lgmk');
+      return '<span><svg width="22" height="12" aria-hidden="true">' +
+        '<line x1="0" y1="6" x2="22" y2="6" stroke="' + L.color + '" stroke-width="2.4"' +
+        (L.mk.dash ? ' stroke-dasharray="' + L.mk.dash + '"' : '') + '/>' + mk + '</svg>' +
+        esc(L.c.n) + ' · ' + esc(L.scale) + '</span>';
+    }).join('') + '</div>';
+
+    s += '<p class="small muted" style="margin:8px 0 0">가로는 <b>실시일</b>, ' +
+      '세로는 <b>만점 대비 %</b>입니다. 값이 있는 사람만 평균에 넣었습니다.';
+    lines.forEach(function (L) {
+      if (L.diff == null || !L.drawn || L.drawn.length < 2) return;
+      var a = L.drawn[0], b = L.drawn[L.drawn.length - 1];
+      s += '<br><b>' + esc(L.c.n) + ' · ' + esc(L.scale) + '</b> ' +
+        LEAP.fmtDate(a.date) + '(' + a.n + '명) → ' +
+        LEAP.fmtDate(b.date) + '(' + b.n + '명) · ' +
+        '<b>' + (L.diff > 0 ? '+' : '') + L.diff + '%p</b> ' +
+        (L.diff > 0 ? '올랐습니다' : L.diff < 0 ? '내렸습니다' : '그대로입니다') +
+        (L.its.length > L.drawn.length
+          ? ' <span class="muted">(같은 날 항목 ' + L.its.length + '개를 회차 ' +
+            L.drawn.length + '개로 모았습니다)</span>' : '');
+    });
+    s += '<br><span class="muted">회차마다 넣은 사람이 다르면 평균도 함께 움직입니다. ' +
+      '변화를 읽기 전에 몇 명이 넣었는지 먼저 보세요.</span></p>';
+
+    /* 자가 섞였을 때 — 왜 선이 따로인지 여기서 말합니다 */
+    if (grp.mixed.length) {
+      s += '<p class="scalenote"><b>다른 자로 잰 값은 한 선으로 잇지 않았습니다.</b><br>' +
+        grp.mixed.map(function (m) {
+          return esc(m.n) + '에 자가 ' + m.scales.length + '가지입니다 — <b>' +
+            esc(m.scales.join(' · ')) + '</b>';
+        }).join('<br>') +
+        '<br><span class="muted">단원평가(100점 만점)와 수행평가(상·중·하)는 재는 자가 다릅니다. ' +
+        '<b>상·중·하는 상 100 · 중 50 · 하 0 자리에 놓았을 뿐</b>이고, ' +
+        '100점 만점의 100점과 같은 뜻이 아닙니다. 섞어서 평균 내면 없는 상승이 생깁니다.</span></p>';
+    }
+    if (grp.dropped.length) {
+      s += '<p class="small muted" style="margin:6px 0 0"><b>실시일이 하루뿐이라 선이 되지 못한 것</b>: ' +
+        esc(grp.dropped.map(function (x) {
+          return x.item + '(' + x.scale + (x.date ? ' · ' + LEAP.fmtDate(x.date) : '') + ')';
+        }).join(' · ')) +
+        ' — 같은 자로 <b>다른 날에</b> 한 번 더 재면 여기에 선이 생깁니다. ' +
+        '같은 날 항목이 여럿인 것은 회차가 여럿인 것이 아닙니다.</p>';
+    }
+    return s;
+  }
+
+  function distChart(d) {
+    var items = numericItems(d).filter(function (it) { return filledCount(d, it) > 0; });
+    if (!items.length) return need('아직 <b>넣은 값이 없습니다.</b> 한 항목의 한 칸만 채워도 그려집니다.');
+    var it = byDate(items)[items.length - 1] || items[0];
+    var bins = [0, 0, 0, 0, 0], labels = ['0–20', '20–40', '40–60', '60–80', '80–100'];
+    var n = 0;
+    for (var no = 1; no <= d.size; no++) {
+      var v = num(it, raw(d, it.id, no));
+      if (v == null) continue;
+      bins[bucket(v)]++; n++;
+    }
+    var W = 320, H = 165, pad = 26, bw = (W - pad * 2) / 5;
+    var max = Math.max.apply(null, bins) || 1;
+    var s = '<p class="small" style="margin:0 0 6px"><b>' + esc(it.n.slice(0, 30)) + '</b><br>' +
+      '<span class="muted">' + (sideOf(it) ? esc(sideOf(it)) + ' · ' : '') + n + '명 넣음</span></p>';
+    s += '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' +
+      esc(it.n) + ' 분포. ' + labels.map(function (l, i) { return l + '% ' + bins[i] + '명'; }).join(', ') + '">';
+    bins.forEach(function (b, i) {
+      var bh = (H - pad - 30) * (b / max), x = pad + i * bw, y = H - 30 - bh;
+      s += '<rect class="bar" x="' + (x + 4) + '" y="' + y + '" width="' + (bw - 8) + '" height="' + bh +
+        '" fill="var(--h' + i + ')" stroke="var(--leap-border)" stroke-width=".5"/>';
+      if (b) s += '<text class="v" x="' + (x + bw / 2) + '" y="' + (y - 4) + '" text-anchor="middle">' + b + '</text>';
+      s += '<text x="' + (x + bw / 2) + '" y="' + (H - 15) + '" text-anchor="middle">' + labels[i] + '</text>';
+    });
+    s += '<text x="' + (W / 2) + '" y="' + (H - 3) + '" text-anchor="middle">만점 대비 %</text>';
+    s += '<line class="ax" x1="' + pad + '" y1="' + (H - 30) + '" x2="' + (W - pad) + '" y2="' + (H - 30) + '"/></svg>';
+    return s;
+  }
+
+  /* --------------------------------------------------------------------------
+     성취 × 정서 〔v0.4 에서 다시 지었습니다〕
+
+     v0.3 에서 깨져 있던 것 넷 —
+       1. 축을 말없이 「가장 나중 항목」으로 골랐습니다. 그것이 상·중·하이고
+          반 전체가 「상」이면 **스물넷이 오른쪽 끝 한 점에 겹쳤습니다.**
+       2. 겹친 점을 그대로 겹쳐 그렸습니다. 이름표가 서로 위에 얹혀
+          **아무것도 읽히지 않았습니다.**
+       3. 오른쪽 끝 점의 이름표가 그림 밖으로 나갔습니다.
+       4. 세로축에 이름이 없었습니다. 무엇 대 무엇인지 그림만 봐서는 몰랐습니다.
+
+     고친 방법 — 축을 **고를 수 있게** 하고, 겹친 점은 **하나로 묶어 인원을
+     적고**, 이름표는 오른쪽 끝에서 왼쪽으로 넘기고, 두 축에 모두 이름과
+     **자**를 적습니다. 흔들어 흩뜨리지(jitter) 않은 것은 일부러입니다 —
+     없는 자리를 만들어 내는 것이기 때문입니다.
+     -------------------------------------------------------------------------- */
+  function scatterPicker(d, cat, id, sel) {
+    var cs = axisCands(d, cat);
+    if (cs.length < 2) return '';
+    return '<label class="pk"><span>' + (cat === 'ach' ? '가로(성취)' : '세로(정서)') + '</span>' +
+      '<select class="txt" id="' + id + '">' + cs.map(function (it) {
+        return '<option value="' + esc(it.id) + '"' + (sel && it.id === sel.id ? ' selected' : '') + '>' +
+          esc(it.n.length > 18 ? it.n.slice(0, 17) + '…' : it.n) + ' (' + esc(typeName(it)) + ')' +
+          (it.date ? ' · ' + LEAP.fmtDate(it.date) : '') + '</option>';
+      }).join('') + '</select></label>';
+  }
+  function scatterChart(d) {
+    var ax = axisOf(d, 'ach'), ay = axisOf(d, 'emo');
+    if (!ax || !ay) {
+      return need('<b>성취</b>와 <b>정서</b> 항목이 하나씩 있어야 그려집니다. ' +
+        (ax ? '정서 항목이 없습니다.' : ay ? '성취 항목이 없습니다.' : '둘 다 없습니다.') +
+        ' — 성취표만으로는 「점수는 높은데 힘들어하는 아이」가 보이지 않습니다.');
+    }
+    var pts = [];
+    for (var no = 1; no <= d.size; no++) {
+      var x = num(ax, raw(d, ax.id, no)), y = num(ay, raw(d, ay.id, no));
+      if (x == null || y == null) continue;
+      pts.push({ no: no, nm: nameOf(d, no), x: x, y: y });
+    }
+    var picker = '<div class="pickrow">' + scatterPicker(d, 'ach', 'sc-x', ax) +
+      scatterPicker(d, 'emo', 'sc-y', ay) + '</div>';
+    if (!pts.length) return picker + need('<b>둘 다 넣은 학생이 아직 없습니다.</b> 한 명만 두 칸을 채워도 점이 하나 찍힙니다.');
+
+    /* 같은 자리에 선 사람들을 묶습니다. 흔들어 흩뜨리면 없는 자리가 생깁니다. */
+    var groups = {}, order = [];
+    pts.forEach(function (p) {
+      var k = Math.round(p.x * 200) + '|' + Math.round(p.y * 200);
+      if (!groups[k]) { groups[k] = { x: p.x, y: p.y, mem: [] }; order.push(k); }
+      groups[k].mem.push(p);
+    });
+    var cl = order.map(function (k) { return groups[k]; });
+    var stacked = cl.filter(function (g) { return g.mem.length > 1; })
+      .reduce(function (a, g) { return a + g.mem.length; }, 0);
+
+    var W = 340, H = 250, padL = 40, padR = 26, padT = 16, padB = 40;
+    var X = function (v) { return padL + v * (W - padL - padR); };
+    var Y = function (v) { return H - padB - v * (H - padB - padT); };
+    var s = picker;
+    s += '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="가로 ' +
+      esc(ax.n) + '(' + esc(typeName(ax)) + '), 세로 ' + esc(ay.n) + '(' + esc(typeName(ay)) + ') 산점도. ' +
+      pts.length + '명. ' +
+      cl.map(function (g) {
+        return g.mem.map(function (p) { return label(d, p.no); }).join('·') +
+          ' 가로 ' + Math.round(g.x * 100) + ', 세로 ' + Math.round(g.y * 100);
+      }).join(', ') + '">';
+    s += '<line class="gl" x1="' + X(.5) + '" y1="' + Y(1) + '" x2="' + X(.5) + '" y2="' + Y(0) + '"/>' +
+      '<line class="gl" x1="' + X(0) + '" y1="' + Y(.5) + '" x2="' + X(1) + '" y2="' + Y(.5) + '"/>';
+    s += '<line class="ax" x1="' + X(0) + '" y1="' + Y(0) + '" x2="' + X(1) + '" y2="' + Y(0) + '"/>' +
+      '<line class="ax" x1="' + X(0) + '" y1="' + Y(0) + '" x2="' + X(0) + '" y2="' + Y(1) + '"/>';
+    /* 눈금 — 0 / 50 / 100 을 양 축에 글자로 (색·자리만으로 말하지 않습니다) */
+    [0, .5, 1].forEach(function (t) {
+      s += '<text x="' + (padL - 5) + '" y="' + (Y(t) + 3) + '" text-anchor="end">' + (t * 100) + '</text>' +
+        '<text x="' + X(t) + '" y="' + (H - padB + 13) + '" text-anchor="middle">' + (t * 100) + '</text>';
+    });
+    /* 이름표를 몇 개나 달 것인가 — v0.3 은 **전부** 달았습니다. 스물넷이면
+       글자가 서로 위에 얹혀 「(●2번3번(●」처럼 되고, 하나도 읽히지 않았습니다.
+       읽을 수 없는 이름표는 없는 것보다 나쁩니다. 정보를 가리기까지 합니다.
+       그래서 붐비면 **짚어야 할 것에만** 답니다 — 주황 네모(성취↑ 정서↓)와
+       겹쳐 묶인 자리. 나머지 번호는 그림 아래 글로 냅니다. */
+    var crowded = cl.length > 9;
+    var flagged = [];
+    cl.forEach(function (g) {
+      /* 성취는 높은데 정서가 낮은 자리 — 오른쪽 아래. 색만으로 말하지 않으려고
+         모양을 네모로 바꾸고 이름표를 붙입니다. */
+      var flag = g.x >= .5 && g.y < .5;
+      var cx = X(g.x), cy = Y(g.y), n = g.mem.length;
+      var r = n > 1 ? Math.min(11, 5.5 + Math.sqrt(n) * 1.6) : 5;
+      if (flag) g.mem.forEach(function (p) { flagged.push(p); });
+      s += flag
+        ? '<rect class="pt" x="' + (cx - r).toFixed(1) + '" y="' + (cy - r).toFixed(1) +
+          '" width="' + (r * 2).toFixed(1) + '" height="' + (r * 2).toFixed(1) + '" fill="var(--leap-amber-mark)"/>'
+        : '<circle class="pt" cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) +
+          '" r="' + r.toFixed(1) + '" fill="var(--leap-blue)" opacity=".85"/>';
+      if (crowded && !flag && n === 1) return;
+      var tag = n > 1 ? (n + '명')
+        : (g.mem[0].nm ? g.mem[0].nm.slice(0, 3) : String(g.mem[0].no) + '번');
+      /* 오른쪽 끝에서는 이름표를 왼쪽으로 넘깁니다. v0.3 은 그림 밖으로 나갔습니다. */
+      var right = cx > W - padR - 46;
+      s += '<text class="' + (n > 1 || flag ? 'v' : '') + '" x="' + (right ? (cx - r - 4) : (cx + r + 4)).toFixed(1) +
+        '" y="' + (cy + 3.5).toFixed(1) + '" text-anchor="' + (right ? 'end' : 'start') + '">' +
+        esc(tag) + '</text>';
+    });
+    /* 두 축에 모두 이름을 답니다 — v0.3 은 세로축에 아무 말이 없었습니다 */
+    s += '<text x="' + X(.5) + '" y="' + (H - 4) + '" text-anchor="middle">' +
+      esc(ax.n.slice(0, 16)) + ' (' + esc(typeName(ax)) + ') →</text>';
+    s += '<text transform="rotate(-90 11 ' + ((H - padB + padT) / 2) + ')" x="11" y="' +
+      ((H - padB + padT) / 2) + '" text-anchor="middle">' + esc(ay.n.slice(0, 14)) + ' ↑</text>';
+    s += '<text x="' + (W - padR) + '" y="' + (Y(0) - 6) + '" text-anchor="end" opacity=".75">성취↑ 정서↓</text>';
+    s += '</svg>';
+
+    s += '<p class="small muted" style="margin:6px 0 0">세로 <b>' + esc(ay.n.slice(0, 26)) +
+      '</b> (' + esc(typeName(ay)) + ') · 가로 <b>' + esc(ax.n.slice(0, 26)) +
+      '</b> (' + esc(typeName(ax)) + ') · ' + pts.length + '명<br>' +
+      '<b>오른쪽 아래(주황 네모)</b>가 성취는 높은데 정서가 낮은 자리입니다.' +
+      (flagged.length
+        ? ' 지금 <b>' + flagged.length + '명</b> — ' +
+          esc(flagged.map(function (p) { return label(d, p.no); }).join(' · '))
+        : ' 지금은 아무도 없습니다.') +
+      (stacked ? '<br>같은 자리에 겹친 ' + stacked + '명은 <b>하나로 묶고 인원을 적었습니다.</b> ' +
+        '없는 자리를 만들지 않으려고 흔들어 흩뜨리지 않았습니다.' : '') +
+      (crowded ? '<br>점이 많아 <b>주황 네모와 겹친 자리에만</b> 이름표를 달았습니다 — ' +
+        '스물넷의 이름표를 다 달면 글자가 서로 위에 얹혀 하나도 읽히지 않습니다.' : '') +
+      '</p>';
+
+    /* 한 줄로 서 버렸을 때 — 왜 그런지, 무엇을 하면 되는지 */
+    var sx = spread(d, ax), sy = spread(d, ay), warn = [];
+    if (sx < 2) warn.push('<b>가로(' + esc(ax.n.slice(0, 20)) + ')</b>의 값이 모두 같아 좌우로 흩어지지 않습니다');
+    if (sy < 2) warn.push('<b>세로(' + esc(ay.n.slice(0, 20)) + ')</b>의 값이 모두 같아 위아래로 흩어지지 않습니다');
+    if (warn.length) {
+      s += '<p class="scalenote">' + warn.join('<br>') + '.<br>' +
+        '<span class="muted">' + (axisCands(d, 'ach').length > 1 || axisCands(d, 'emo').length > 1
+          ? '위에서 <b>다른 항목</b>을 골라 보세요. '
+          : '') +
+        '상·중·하처럼 갈래가 셋뿐인 항목은 점이 몇 줄로만 섭니다. ' +
+        '흩어짐을 보려면 <b>100점 만점 같은 촘촘한 자</b>가 가로에 있어야 합니다.</span></p>';
+    }
+    return s;
+  }
+
+  /* 사회정서역량 프로필 — 레이더가 아니라 막대입니다.
+     축이 셋 미만이면 삼각형이 되고, 축 순서를 바꾸면 넓이가 달라져 없는 뜻이 생깁니다. */
+  function compChart(d) {
+    var by = {};
+    numericItems(d).forEach(function (it) {
+      if (it.cat !== 'emo' || !it.comp) return;
+      var st = stat(d, it);
+      if (!st.n) return;
+      if (!by[it.comp]) by[it.comp] = { s: 0, w: 0, items: 0 };
+      by[it.comp].s += st.avg * st.n;
+      by[it.comp].w += st.n;
+      by[it.comp].items++;
+    });
+    var ks = Object.keys(by);
+    if (!ks.length) {
+      var emo = numericItems(d).filter(function (it) { return it.cat === 'emo'; }).length;
+      return need(emo
+        ? '정서 항목은 있는데 <b>어느 역량인지</b>가 붙어 있지 않습니다. ' +
+          '「우리 반」에서 <b>고치기</b>를 눌러 역량을 골라 주세요.'
+        : '<b>정서 항목이 없습니다.</b> 「우리 반」의 <b>사회정서역량 7문항 한 번에 더하기</b>를 ' +
+          '누르면 한국형 사회정서역량 6가지가 한 번에 들어갑니다.');
+    }
+    var rows = COMPS.filter(function (c) { return by[c.k]; }).map(function (c) {
+      var b = by[c.k], v = b.s / b.w;
+      return { c: c, v: v, n: b.w, items: b.items };
+    });
+    var lo = rows.slice().sort(function (a, b) { return a.v - b.v; })[0];
+    return '<div class="compbar" role="img" aria-label="사회정서역량별 반 평균. ' +
+      esc(rows.map(function (r) { return r.c.n + ' ' + pct(r.v); }).join(', ')) + '">' +
+      rows.map(function (r) {
+        return '<span class="lb">' + esc(r.c.n) + '<i>' + esc(r.c.area) + ' · ' + r.items + '문항</i></span>' +
+          '<span class="tr"><i style="width:' + Math.round(r.v * 100) + '%"></i></span>' +
+          '<span class="vl">' + pct(r.v) + '</span>';
+      }).join('') + '</div>' +
+      '<p class="small muted" style="margin:10px 0 0">' + rows.length + '개 역량 · 값이 있는 사람만 셈했습니다.' +
+      (rows.length > 1 ? '<br>가장 낮은 쪽은 <b>' + esc(lo.c.n) + '</b>(' + pct(lo.v) + ')입니다. ' +
+        '한 학기에 <b>한 역량</b>만 골라 다뤄도 충분합니다.' : '') +
+      '<br><span class="muted">출처: 교육부·한국교육환경보호원(2024) 한국형 사회정서교육 프로그램</span></p>';
+  }
+
+  /* 눈에 띄는 학생 */
+  function spots(d) {
+    d = d || D();
+    var out = [];
+    var items = numericItems(d).filter(function (it) { return filledCount(d, it) > 0; });
+    items.forEach(function (it) {
+      var vals = [];
+      for (var no = 1; no <= d.size; no++) {
+        var v = num(it, raw(d, it.id, no));
+        if (v != null) vals.push({ no: no, v: v });
+      }
+      if (vals.length < 3) return;
+      var avg = vals.reduce(function (a, x) { return a + x.v; }, 0) / vals.length;
+      vals.sort(function (a, b) { return a.v - b.v; });
+      if (vals[0].v < avg - 0.2) out.push({ no: vals[0].no, why: it.n.slice(0, 20) + ' 낮음' });
+    });
+    /* 회차 사이에 많이 떨어진 학생 — v0.3 에서 새로 봅니다.
+       한 시점의 낮은 점수보다, 어제와 오늘이 다른 것이 먼저 눈에 띄어야 합니다. */
+    /* 같은 범주라도 **자가 같은 것끼리만** 견줍니다. 100점 만점 88점과
+       상·중·하의 「중」을 빼면 나오는 숫자는 아무 뜻이 없습니다. */
+    trendLines(d).lines.forEach(function (L) {
+      var a = L.pts[0].items, b = L.pts[L.pts.length - 1].items;
+      for (var no = 1; no <= d.size; no++) {
+        var v1 = studentAt(d, a, no), v2 = studentAt(d, b, no);
+        if (v1 == null || v2 == null) continue;
+        if (v2 - v1 <= -0.2) out.push({ no: no, why: L.c.n + ' ' + Math.round((v2 - v1) * 100) + '%p 내림' });
+      }
+    });
+    /* 대시보드의 산점도와 **같은 두 축**을 씁니다. 그림과 목록이 다른 것을
+       가리키면 어느 쪽을 믿어야 할지 알 수 없습니다. */
+    var ach = axisOf(d, 'ach'), emo = axisOf(d, 'emo');
+    if (ach && emo) {
+      for (var no2 = 1; no2 <= d.size; no2++) {
+        var a2 = num(ach, raw(d, ach.id, no2)), e2 = num(emo, raw(d, emo.id, no2));
+        if (a2 != null && e2 != null && a2 >= .5 && e2 < .5) out.push({ no: no2, why: '성취↑ 정서↓' });
+      }
+    }
+    var byNo = {};
+    out.forEach(function (o) { (byNo[o.no] = byNo[o.no] || []).push(o.why); });
+    return Object.keys(byNo).map(function (no) { return { no: +no, why: byNo[no] }; })
+      .sort(function (a, b) { return b.why.length - a.why.length || a.no - b.no; }).slice(0, 8);
+  }
+  function spotHTML(d) {
+    var s = spots(d);
+    if (!s.length) return '<p class="none">아직 짚을 만한 것이 없습니다. ' +
+      '한 항목에 <b>세 명 이상</b> 넣으면 평균에서 많이 떨어진 학생을 찾아 줍니다. ' +
+      '회차가 둘 이상이면 <b>많이 내려간 학생</b>도 함께 찾습니다.</p>';
+    return '<div class="spot">' + s.map(function (x) {
+      return '<span><b>' + esc(label(d, x.no)) + '</b> ' + esc(x.why.join(' · ')) + '</span>';
+    }).join('') + '</div>' +
+      '<p class="small muted" style="margin:10px 0 0">' +
+      '기계가 고른 것입니다. <b>판단은 선생님이 합니다.</b></p>';
+  }
+
+  /* 관찰 메모 — v0.2 는 넣어 두고 어디에도 보여 주지 않았습니다 */
+  function memos(d) {
+    var out = [];
+    textItems(d).forEach(function (it) {
+      for (var no = 1; no <= d.size; no++) {
+        var v = raw(d, it.id, no).trim();
+        if (v) out.push({ no: no, it: it, v: v });
+      }
+    });
+    return out.sort(function (a, b) { return a.no - b.no; });
+  }
+  function memoHTML(d) {
+    if (!textItems(d).length) {
+      return need('<b>글(메모) 항목이 없습니다.</b> 「우리 반」에서 「교사 관찰 메모」를 더하면 ' +
+        '여기에 학생별로 모입니다. 종이에도 함께 나갑니다.');
+    }
+    var m = memos(d);
+    if (!m.length) return need('메모 항목은 있는데 <b>아직 적은 것이 없습니다.</b> ' +
+      '「입력」 표의 메모 칸에 한 줄만 적어도 여기에 모입니다.');
+    return '<div class="memos">' + m.map(function (x) {
+      return '<div class="memo"><div class="who">' + esc(label(d, x.no)) + '</div>' +
+        esc(x.v) +
+        '<div class="src">' + esc(x.it.n) + (x.it.date ? ' · ' + LEAP.fmtDate(x.it.date) : '') + '</div></div>';
+    }).join('') + '</div>' +
+      '<p class="small muted" style="margin:10px 0 0">' + m.length + '개 · ' +
+      '<b>이 글은 AI 프롬프트에 들어가지 않습니다.</b></p>';
+  }
+  /* ==========================================================================
+     5. 읽기 · 종이
+
+     v0.2 의 종이는 히트맵 SVG 하나 때문에 무너졌습니다. 학생이 스물넷이면
+     그 그림의 세로가 가로의 세 배가 되고, A4 폭에 맞추는 순간 한 장을
+     통째로 넘겨 뒤의 내용이 밀렸습니다. 이제 표로 냅니다.
+     ========================================================================== */
+  function renderRead() {
+    var h = '<div class="sheet"><h2>종이로 내기</h2>' +
+      '<p class="small muted">학년 협의회나 상담 준비에 그대로 씁니다. ' +
+      'A4 세로 한두 장으로 나옵니다.</p>' +
+      '<div class="actions" style="margin-top:0">' +
+      '<button class="btn" id="btn-print" type="button">인쇄 · PDF로 저장</button>' +
+      '<button class="btn btn--ghost" id="btn-ai" type="button">AI 초안 도우미</button>' +
+      '</div></div>' +
+      '<div class="sheet"><h2>미리보기</h2>' +
+      '<div class="pvwrap"><div id="paper-view">' + paperHTML() + '</div></div></div>';
+    P.read.innerHTML = h;
+    on(P.read.querySelector('#btn-print'), 'click', function () {
+      el('print-area').innerHTML = paperHTML();
+      window.print();
+    });
+    on(P.read.querySelector('#btn-ai'), 'click', openAI);
+  }
+
+  /* 종이의 히트맵 — 이름은 짧게, 칸은 잘게. 표라서 스스로 쪽을 넘깁니다. */
+  function paperHeat(d) {
+    var items = byDate(numericItems(d)).filter(function (it) { return filledCount(d, it) > 0; });
+    if (!items.length) return '';
+    var h = '<table class="ph"><thead><tr><th style="width:20%">학생</th>' +
+      items.map(function (it) {
+        return '<th>' + esc(it.n.length > 8 ? it.n.slice(0, 7) + '…' : it.n) +
+          (it.date ? '<br>' + it.date.slice(5).replace('-', '/') : '') + '</th>';
+      }).join('') + '</tr></thead><tbody>';
+    for (var no = 1; no <= d.size; no++) {
+      var nm = nameOf(d, no).trim();
+      h += '<tr><th style="text-align:left">' + no + (nm ? '. ' + esc(nm) : '') + '</th>' +
+        items.map(function (it) {
+          var rv = raw(d, it.id, no), v = num(it, rv);
+          if (v == null) return '<td style="background:#F4F4F4;color:#999">' + (rv ? '!' : '·') + '</td>';
+          var bg = ['#EDF3FC', '#D3E2F7', '#AECAF0', '#7EA9E2', '#4B7BC4'][bucket(v)];
+          var fg = bucket(v) >= 3 ? '#FFF' : '#111';
+          return '<td style="background:' + bg + ';color:' + fg + '">' + esc(String(rv).slice(0, 5)) + '</td>';
+        }).join('') + '</tr>';
+    }
+    /* 눈금 설명은 **그 칸이 실제로 있을 때만** 답니다.
+       늘 잔소리하면 아무도 읽지 않습니다. */
+    return h + '</tbody></table>' +
+      '<p class="pnote">진할수록 높습니다. <b>·</b> 는 안 넣은 칸입니다 — 0점이 아니라 「안 봄」이라 평균에서 빠집니다.' +
+      (badCells(d).length ? ' <b>!</b> 는 읽을 수 없는 값입니다.' : '') + '</p>';
+  }
+
+  function paperHTML() {
+    var d = D();
+    var h = '<div class="paper"><div class="ttl">' + esc(d.className || '우리 반') + ' 데이터 한 장</div>' +
+      '<p class="meta">학생 ' + d.size + '명 · 항목 ' + d.items.length + '개 · 채움 ' + fillRate(d) + '% · ' +
+      LEAP.fmtDate(LEAP.todayISO()) + ' 뽑음</p>';
+    var badN = badCells(d).length;
+    if (badN) h += '<p class="warn">읽을 수 없는 값이 ' + badN + '칸 있어 그림에서 빠졌습니다. ' +
+      '「입력」 화면에서 주황 테두리를 찾아 고쳐 주세요.</p>';
+    if (!d.items.length) return h + '<p>아직 볼 것이 정해지지 않았습니다.</p></div>';
+
+    h += '<h2>회차 목록</h2><table><thead><tr><th>범주</th><th>항목</th><th>실시일</th>' +
+      '<th>과목·범위</th><th>종류</th><th>넣음</th><th>반 평균</th></tr></thead><tbody>';
+    byDate(d.items).forEach(function (it) {
+      var st = stat(d, it);
+      h += '<tr><td>' + catOf(it.cat).n + '</td><td>' + esc(it.n) + '</td>' +
+        '<td>' + (it.date ? esc(it.date) : '—') + '</td>' +
+        '<td>' + esc([it.subject, it.scope, it.comp && compOf(it.comp) ? compOf(it.comp).n : ''].filter(Boolean).join(' · ') || '—') + '</td>' +
+        '<td>' + typeName(it) + '</td>' +
+        '<td>' + (it.type === 'text' ? filledCount(d, it) : st.n) + '/' + d.size + '</td>' +
+        '<td>' + (it.type === 'text' ? '—' : pct(st.avg)) + '</td></tr>';
+    });
+    h += '</tbody></table><p class="pnote">반 평균은 <b>값이 있는 학생만</b> 셈했습니다. ' +
+      '빈칸은 0이 아니라 「안 봄」이라 평균에서 빠집니다.</p>';
+
+    /* 회차 추이 — 종이에서 가장 쓸모 있는 한 칸입니다 */
+    var grp = trendLines(d), lines = grp.lines;
+    if (lines.length) {
+      h += '<h2>회차 추이 (반 평균)</h2><table><thead><tr><th>범주 · 자</th><th>항목</th>' +
+        '<th>실시일</th><th>넣음</th><th>반 평균</th><th>앞 회차 대비</th></tr></thead><tbody>';
+      lines.forEach(function (L) {
+        var prev = null;
+        L.pts.forEach(function (p, i) {
+          var st = dateStat(d, p.items);
+          var diff = (prev != null && st.avg != null) ? Math.round((st.avg - prev) * 100) : null;
+          h += '<tr>' + (i === 0 ? '<td rowspan="' + L.pts.length + '">' + L.c.n +
+              '<br><span style="color:#777;font-size:.9em">' + L.scale + '</span></td>' : '') +
+            '<td>' + esc(p.items.map(function (it) { return it.n; }).join(' · ')) + '</td>' +
+            '<td>' + esc(p.date) + '</td>' +
+            '<td>' + st.n + '명</td><td>' + pct(st.avg) + '</td>' +
+            '<td>' + (diff == null ? '—' : (diff > 0 ? '+' : '') + diff + '%p') + '</td></tr>';
+          if (st.avg != null) prev = st.avg;
+        });
+      });
+      h += '</tbody></table><p class="pnote"><b>재는 자가 다르면 줄을 따로 두었습니다.</b> ' +
+        '단원평가(100점 만점)와 수행평가(상·중·하)는 섞어서 평균 내지 않습니다 — ' +
+        '상·중·하는 상 100 · 중 50 · 하 0 자리에 놓았을 뿐이라, 섞으면 없는 상승이 생깁니다. ' +
+        '<b>같은 날 항목이 여럿이면 한 회차로 모았습니다</b> — 하루 안에서는 오르내림이 없습니다.' +
+        (grp.mixed.length ? ' 지금 ' + esc(grp.mixed.map(function (m) {
+          return m.n + '(' + m.scales.join(' · ') + ')';
+        }).join(', ')) + ' 가 그렇습니다.' : '') + '</p>';
+    }
+
+    h += '<h2>한눈에 보기</h2>' + (paperHeat(d) || '<p>아직 넣은 값이 없습니다.</p>');
+
+    /* 사회정서역량 */
+    var cmp = compRows(d);
+    if (cmp.length) {
+      h += '<h2>사회정서역량</h2><table><thead><tr><th>영역</th><th>핵심역량</th>' +
+        '<th>문항</th><th>넣음</th><th>반 평균</th></tr></thead><tbody>' +
+        cmp.map(function (r) {
+          return '<tr><td>' + r.c.area + '</td><td>' + r.c.n + '</td><td>' + r.items + '</td>' +
+            '<td>' + r.n + '</td><td>' + pct(r.v) + '</td></tr>';
+        }).join('') + '</tbody></table>' +
+        '<p class="pnote">교육부·한국교육환경보호원(2024) 「한국형 사회정서교육 프로그램」의 6가지 핵심역량.</p>';
+    }
+
+    var sp = spots(d);
+    h += '<h2>눈에 띄는 학생</h2>';
+    if (!sp.length) h += '<p>아직 짚을 만한 것이 없습니다.</p>';
+    else h += '<table><tbody>' + sp.map(function (x) {
+      return '<tr><th style="width:26%">' + esc(label(d, x.no)) + '</th><td>' + esc(x.why.join(' · ')) + '</td></tr>';
+    }).join('') + '</tbody></table>' +
+      '<p><b>기계가 고른 것입니다. 판단은 선생님이 합니다.</b></p>';
+
+    var m = memos(d);
+    if (m.length) {
+      h += '<h2>관찰 메모</h2><table><tbody>' + m.map(function (x) {
+        return '<tr><th style="width:26%">' + esc(label(d, x.no)) + '</th><td>' + esc(x.v) +
+          '<br><span style="color:#777;font-size:.9em">' + esc(x.it.n) +
+          (x.it.date ? ' · ' + esc(x.it.date) : '') + '</span></td></tr>';
+      }).join('') + '</tbody></table>';
+    }
+
+    h += '<p class="sig">TEAM LEAP · 경북교육 AI Lab — 우리 반 데이터 보기 v0.4<br>' +
+      '이 문서는 학급 안에서 쓰는 자료입니다. 밖으로 낼 때는 학교의 절차를 따라 주세요.</p>';
+    return h + '</div>';
+  }
+
+  function compRows(d) {
+    var by = {};
+    numericItems(d).forEach(function (it) {
+      if (it.cat !== 'emo' || !it.comp) return;
+      var st = stat(d, it);
+      if (!st.n) return;
+      if (!by[it.comp]) by[it.comp] = { s: 0, w: 0, items: 0 };
+      by[it.comp].s += st.avg * st.n; by[it.comp].w += st.n; by[it.comp].items++;
+    });
+    return COMPS.filter(function (c) { return by[c.k]; }).map(function (c) {
+      return { c: c, v: by[c.k].s / by[c.k].w, n: by[c.k].w, items: by[c.k].items };
+    });
+  }
+
+  /* ==========================================================================
+     AI 초안 도우미
+
+     **숫자 요약만** 프롬프트에 담습니다. 칸 하나하나를 통째로 넘기지 않습니다.
+     v0.3 에서 이름을 쓰게 되었지만 **프롬프트에는 번호만 나갑니다** —
+     관찰 메모도 나가지 않습니다. 반 전체의 원자료를 남의 서버에 붙여 넣게
+     만드는 도구가 되면 안 됩니다.
+     ========================================================================== */
+  var aiAsk = '';
+
+  function summary() {
+    var d = D();
+    var t = ['[우리 반]',
+      '- 학급: ' + (d.className || '(미기재)'),
+      '- 학생 수: ' + d.size + '명',
+      '- 채운 정도: ' + fillRate(d) + '%',
+      '- 이 요약에는 학생 이름과 관찰 메모가 들어 있지 않습니다. 번호만 씁니다.', ''];
+    t.push('[회차별 요약 — 값이 있는 사람만 셈했습니다]');
+    byDate(numericItems(d)).forEach(function (it) {
+      var st = stat(d, it);
+      var head = '- [' + catOf(it.cat).n + '] ' + it.n +
+        (it.date ? ' (' + it.date + ')' : ' (실시일 없음)') +
+        (it.subject || it.scope ? ' · ' + [it.subject, it.scope].filter(Boolean).join(' ') : '');
+      if (!st.n) { t.push(head + ': 아직 넣은 값 없음'); return; }
+      t.push(head + ': ' + st.n + '명 · 평균 ' + pct(st.avg) + ' · 가운데값 ' + pct(st.mid) +
+        ' · 가장 낮음 ' + pct(st.min) + ' · 가장 높음 ' + pct(st.max));
+    });
+    var moved = [];
+    SERIES.forEach(function (s) {
+      var its = datedItems(d, s.k);
+      if (its.length < 2) return;
+      var a = stat(d, its[0]), b = stat(d, its[its.length - 1]);
+      if (a.avg == null || b.avg == null) return;
+      moved.push('- ' + catOf(s.k).n + ': ' + its[0].date + ' ' + pct(a.avg) + '(' + a.n + '명)' +
+        ' → ' + its[its.length - 1].date + ' ' + pct(b.avg) + '(' + b.n + '명)' +
+        ' · ' + (b.avg - a.avg >= 0 ? '+' : '') + Math.round((b.avg - a.avg) * 100) + '%p');
+    });
+    if (moved.length) {
+      t.push('');
+      t.push('[회차 사이의 변화 — 반 평균]');
+      moved.forEach(function (m) { t.push(m); });
+    }
+    var cr = compRows(d);
+    if (cr.length) {
+      t.push('');
+      t.push('[사회정서역량 — 한국형 6역량, 반 평균]');
+      cr.forEach(function (r) { t.push('- ' + r.c.area + ' · ' + r.c.n + ': ' + pct(r.v) + ' (' + r.items + '문항 · ' + r.n + '명)'); });
+    }
+    var sp = spots(d);
+    if (sp.length) {
+      t.push('');
+      t.push('[눈에 띄는 번호 — 앱이 고른 것]');
+      sp.forEach(function (x) { t.push('- ' + x.no + '번: ' + x.why.join(' · ')); });
+    }
+    return t.join('\n');
+  }
+
+  function promptText() {
+    var t = ['당신은 대한민국 초등·중등 교사를 돕는 교육 데이터 해석 전문가입니다.',
+      '아래는 한 학급의 학습데이터 **요약**입니다. 개별 학생의 이름은 없고 번호뿐입니다.',
+      '이 자료를 읽고 **교사가 다음 수업에서 바꿀 것**을 제안하세요.', '',
+      summary(), '',
+      '[반드시 지킬 것]',
+      '1. 자료에 없는 것을 지어내지 마세요. 특히 **채운 정도가 낮으면 그 사실을 먼저 말하고**,',
+      '   지금 자료로 말할 수 있는 것과 없는 것을 갈라 주세요.',
+      '2. 번호는 **이 학급 안에서만 뜻이 있는 표시**입니다. 성격·가정환경 같은 것을 추측하지 마세요.',
+      '3. 「이 아이는 ~한 학생이다」라고 단정하지 말고, 「이 자료에서는 ~로 보인다」로 쓰세요.',
+      '4. 최종 판단은 교사가 합니다. 교사가 확인할 거리를 함께 제안하세요.',
+      '5. 제안은 **다음 한 차시에서 실제로 할 수 있는 크기**로 적으세요.',
+      '6. 회차 사이의 변화를 말할 때는 **넣은 사람 수가 회차마다 다를 수 있음**을 함께 짚어 주세요.',
+      '   사람이 바뀌어 생긴 평균의 움직임을 학생의 변화로 읽으면 안 됩니다.'];
+    if (aiAsk.trim()) { t.push(''); t.push('[교사의 추가 요청]'); t.push(aiAsk.trim()); }
+    t.push('');
+    t.push('[이렇게 답해 주세요]');
+    t.push('1) 이 자료로 말할 수 있는 것 / 없는 것');
+    t.push('2) 학급 전체에 대해 보이는 것 (2~3가지)');
+    t.push('3) 회차 사이에 달라진 것과, 그것을 어떻게 읽어야 하는지');
+    t.push('4) 먼저 살펴볼 번호 1~3명과 그 이유, 그리고 교사가 확인할 거리');
+    t.push('5) 다음 한 차시에서 바꿀 것 한 가지');
+    t.push('');
+    t.push('한국어로 씁니다. 표가 아니라 읽기 쉬운 문장으로 써 주세요.');
+    return t.join('\n');
+  }
+
+  function openAI() {
+    var d = D();
+    var h = '<div class="note" style="margin-bottom:16px"><div class="hd">숫자 요약만 나갑니다</div>' +
+      '<p>API 키가 필요 없습니다. 아래 프롬프트를 복사해 쓰던 챗봇에 붙여 넣으세요. ' +
+      '<b>칸 하나하나를 통째로 넘기지 않습니다</b> — 사람 수·평균·가운데값 같은 <b>요약</b>과, ' +
+      '앱이 고른 <b>번호</b>만 들어갑니다. <b>학생 이름과 관찰 메모는 들어가지 않습니다.</b></p></div>';
+
+    if (fillRate(d) < 20) {
+      h += '<div class="issue warn"><span aria-hidden="true">!</span><span>' +
+        '<b>아직 ' + fillRate(d) + '%만 채웠습니다</b>' +
+        '<p>이대로도 프롬프트는 만들어집니다. 다만 <b>적은 자료로 나온 말은 덜 미덥습니다.</b> ' +
+        '프롬프트 안에 그 사실을 먼저 말하라고 적어 두었습니다.</p></span></div>';
+    }
+
+    h += '<div class="stepbox"><h3><span class="step">1</span>추가로 부탁할 것이 있나요</h3>' +
+      '<p>없으면 비워 두세요.</p>' +
+      '<textarea class="txt" id="ai-ask" placeholder="예: 다음 주 학부모 상담에서 쓸 말을 준비하고 싶습니다.">' +
+      esc(aiAsk) + '</textarea></div>';
+
+    h += '<div class="stepbox"><h3><span class="step">2</span>이 프롬프트를 AI에게 주세요</h3>' +
+      '<p>학급 요약 · 회차 사이의 변화 · 사회정서역량 · 「눈에 띄는 번호」가 이미 들어가 있습니다.</p>' +
+      '<textarea class="promptbox" id="ai-prompt" readonly aria-label="AI에게 줄 프롬프트">' +
+      esc(promptText()) + '</textarea>' +
+      '<div class="actions">' +
+      '<button class="btn" id="ai-copy" type="button">프롬프트 복사</button>' +
+      '<button class="btn btn--ghost" id="ai-savep" type="button">프롬프트 파일로 받기</button>' +
+      '</div></div>';
+
+    h += '<div class="stepbox"><h3><span class="step">3</span>돌아온 답은 그대로 쓰지 마세요</h3>' +
+      '<p>이 앱은 AI 의 답을 <b>받아 저장하지 않습니다.</b> 다른 앱과 다른 점입니다 — ' +
+      '수업 설계안은 초안을 받아 고치면 되지만, <b>아이에 대한 해석은 교사의 것이어야</b> 하기 때문입니다. ' +
+      '읽고, 확인하고, 선생님의 말로 옮겨 적으세요.</p></div>';
+
+    openModal('AI 초안 도우미', h, true);
+    var box = el('modal-body');
+    if (!box) return;
+    var q = function (s) { return box.querySelector(s); }, t;
+    on(q('#ai-ask'), 'input', function (e) {
+      aiAsk = e.target.value;
+      clearTimeout(t);
+      t = setTimeout(function () { var p = q('#ai-prompt'); if (p) p.value = promptText(); }, 250);
+    });
+    on(q('#ai-copy'), 'click', function () {
+      copyText(promptText(), function () {
+        LEAP.announce('프롬프트를 복사했습니다. 쓰시는 챗봇에 붙여 넣으세요.');
+      });
+    });
+    on(q('#ai-savep'), 'click', function () {
+      downloadText('우리반데이터-프롬프트-' + LEAP.todayISO() + '.txt', promptText());
+    });
+  }
+
+  /* ---------- 모달 ----------
+     v0.2 는 여기서 .modal-w 라는 이름을 썼는데 CSS 에는 .modal-box 만 있었습니다.
+     그래서 창이 **아무 모양도 없이 화면 위로 쏟아졌습니다.** */
+  var lastFocus = null;
+  function openModal(title, body, wide) {
+    var back = el('modal');
+    lastFocus = document.activeElement;
+    back.innerHTML = '<div class="modal-back" id="modal-back"></div>' +
+      '<div class="modal-box' + (wide ? ' modal-box--wide' : '') + '" role="dialog" aria-modal="true" ' +
+      'aria-label="' + esc(title) + '"><div class="modal-h"><h2>' + esc(title) + '</h2>' +
+      '<button class="modal-x" id="modal-close" type="button" aria-label="닫기">✕</button></div>' +
+      '<div class="modal-b" id="modal-body">' + body + '</div></div>';
+    back.hidden = false;
+    on(el('modal-close'), 'click', closeModal);
+    on(el('modal-back'), 'click', closeModal);
+    document.addEventListener('keydown', escClose);
+    var f = back.querySelector('input,textarea,select,button');
+    if (f && f.focus) f.focus();
+  }
+  function escClose(e) { if (e.key === 'Escape') closeModal(); }
+  function closeModal() {
+    var m = el('modal');
+    m.hidden = true; m.innerHTML = '';
+    document.removeEventListener('keydown', escClose);
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  function downloadText(name, text) {
+    LEAP.saveBlob(name, new Blob([text], { type: 'text/plain;charset=utf-8' }));
+  }
+  function copyText(text, done) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text, done); });
+    } else fallbackCopy(text, done);
+  }
+  function fallbackCopy(text, done) {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed'; ta.style.left = '-9999px';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); }
+    catch (e) { LEAP.announce('복사하지 못했습니다. 직접 선택해 복사해 주세요.'); }
+    document.body.removeChild(ta);
+  }
+
+  /* ---------- 자료 관리 ---------- */
+  function bindFoot() {
+    on(el('btn-export'), 'click', function () {
+      var d = D();
+      LEAP.download('우리반데이터-' + (d.className || '학급').replace(/\s/g, '') + '-' + LEAP.todayISO() + '.json', d);
+      LEAP.announce('파일로 내보냈습니다.');
+    });
+    on(el('btn-import'), 'click', function () {
+      LEAP.pickFile(function (obj) {
+        if (!obj || !obj.items) { alert('이 앱에서 내보낸 파일이 아닙니다.'); return; }
+        var d = D(), had = 0;
+        d.items.forEach(function (it) { had += filledCount(d, it); });
+        if (had && !confirm('지금 들어 있는 자료를 불러온 것으로 바꿉니다.\n\n' +
+            '지금: ' + (d.className || '학급') + ' · 항목 ' + d.items.length + '개 · 채운 칸 ' + had + '개\n' +
+            '이 자료는 되돌릴 수 없습니다. 먼저 「파일로 내보내기」를 해 두셨나요?\n\n계속할까요?')) {
+          LEAP.announce('불러오기를 그만두었습니다.');
+          return;
+        }
+        db.set(obj); render(); LEAP.announce('불러왔습니다.');
+      });
+    });
+    on(el('btn-clear'), 'click', function () {
+      if (!confirm('이 기기에 저장된 우리 반 자료를 모두 지웁니다. 되돌릴 수 없습니다.')) return;
+      db.reset(); render(); LEAP.announce('전부 지웠습니다.');
+    });
+  }
+
+  LEAP.restoreTheme();
+  LEAP.initThemeBtn(el('btn-theme'));
+  /* 머리의 「AI 초안」 — 여덟 앱이 같은 자리에 둡니다(처음으로 · AI 초안 · 밝게/어둡게) */
+  on(el('btn-ai'), 'click', openAI);
+  LEAP.initTabs(el('tablist'));
+  render();
+  bindFoot();
+
+  /* 검사용 문 */
+  window.__G = {
+    D: D, save: save, render: render, num: num, raw: raw, paste: paste, stat: stat,
+    fillRate: fillRate, filledCount: filledCount, spots: spots, label: label, nameOf: nameOf,
+    heatmap: heatmap, distChart: distChart, trendChart: trendChart, scatterChart: scatterChart,
+    compChart: compChart, memoHTML: memoHTML, memos: memos, compRows: compRows,
+    paperHTML: paperHTML, paperHeat: paperHeat, promptText: promptText, summary: summary,
+    CATS: CATS, TPL: TPL, LEVELS: LEVELS, COMPS: COMPS, SEL_SET: SEL_SET, SURVEY: SURVEY,
+    badCells: badCells, isBad: isBad, wantOf: wantOf, fillHTML: fillHTML, typeName: typeName,
+    sheetRows: sheetRows, readRows: readRows, guideRows: guideRows, codeRows: codeRows,
+    csvOut: csvOut, csvIn: csvIn, parseType: parseType, parseDate: parseDate,
+    templateBlob: templateBlob, templateCsv: templateCsv, buildXlsx: buildXlsx,
+    readWorkbook: readWorkbook, unzip: unzip, zipStore: zipStore,
+    colName: colName, sheetXML: sheetXML, crc32: crc32, byDate: byDate, datedItems: datedItems,
+    catByName: catByName, compByName: compByName, starterItems: starterItems, sideOf: sideOf,
+    /* v0.4 — 자(척도)와 두 축 */
+    scaleKey: scaleKey, scalesIn: scalesIn, trendLines: trendLines,
+    axisOf: axisOf, axisCands: axisCands, spread: spread,
+    legendRows: legendRows, styleGrid: styleGrid, markRow: markRow, stylesXML: stylesXML,
+    ST: ST, SAMPLE_NAMES: SAMPLE_NAMES
+  };
+})();
+</script>
+</body>
+</html>

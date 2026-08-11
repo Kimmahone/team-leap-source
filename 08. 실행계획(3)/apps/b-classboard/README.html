@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>학급 회의 (앱 B) — 설명서 · TEAM LEAP</title>
+<meta name="robots" content="noindex">
+<style>
+:root{--ink:#14202E;--gray:#5A6672;--line:#D8DEE6;--hair:#EDF1F5;--bg:#F7F9FB;
+  --surface:#fff;--blue:#1B4FA0;--tint:#EAF1FC;--radius:14px}
+@media (prefers-color-scheme:dark){:root{--ink:#E8EDF3;--gray:#A8B3BF;--line:#33404F;
+  --hair:#232E3B;--bg:#141B24;--surface:#1B242F;--blue:#7FB3F7;--tint:#1E2B3D}}
+:root[data-theme="dark"]{--ink:#E8EDF3;--gray:#A8B3BF;--line:#33404F;--hair:#232E3B;
+  --bg:#141B24;--surface:#1B242F;--blue:#7FB3F7;--tint:#1E2B3D}
+:root[data-theme="light"]{--ink:#14202E;--gray:#5A6672;--line:#D8DEE6;--hair:#EDF1F5;
+  --bg:#F7F9FB;--surface:#fff;--blue:#1B4FA0;--tint:#EAF1FC}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);line-height:1.8;
+  font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,
+    "Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+  font-size:16px;-webkit-text-size-adjust:100%}
+.top{background:var(--blue);color:#fff;padding:14px 0}
+:root[data-theme="dark"] .top,@media (prefers-color-scheme:dark){.top{background:#16233A}}
+.top .in{max-width:860px;margin:0 auto;padding:0 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.top .t{font-weight:800;letter-spacing:-.01em}
+.top .t span{font-weight:600;opacity:.85;font-size:.875rem;margin-left:8px}
+.top a{margin-left:auto;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.5);
+  border-radius:999px;padding:7px 15px;font-size:.8125rem;font-weight:700;min-height:38px;
+  display:inline-flex;align-items:center}
+.top a:hover{background:rgba(255,255,255,.18)}
+main{max-width:860px;margin:0 auto;padding:34px 22px 90px}
+h1{font-size:1.75rem;letter-spacing:-.02em;margin:0 0 8px}
+h2{font-size:1.3125rem;letter-spacing:-.015em;margin:44px 0 12px;padding-bottom:8px;
+  border-bottom:2px solid var(--hair)}
+h3{font-size:1.0625rem;margin:30px 0 8px}
+h4,h5,h6{font-size:.9375rem;margin:22px 0 6px;color:var(--gray)}
+p{margin:0 0 14px}
+a{color:var(--blue)}
+b{font-weight:700}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+ul,ol{margin:0 0 16px;padding-left:24px}
+li{margin:4px 0}
+blockquote{margin:18px 0;padding:14px 18px;background:var(--tint);border-radius:var(--radius);
+  border-left:4px solid var(--blue)}
+blockquote p:last-child{margin:0}
+code{background:var(--hair);border-radius:5px;padding:2px 6px;font-size:.875em;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 18px;overflow-x:auto;margin:0 0 18px}
+pre code{background:none;padding:0;font-size:.8125rem;line-height:1.7}
+.tw{overflow-x:auto;margin:0 0 20px}
+table{border-collapse:collapse;width:100%;font-size:.9375rem;min-width:420px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{background:var(--hair);font-weight:700;white-space:nowrap}
+del{color:var(--gray)}
+.foot{max-width:860px;margin:0 auto;padding:0 22px 60px;color:var(--gray);font-size:.8125rem;line-height:1.8}
+@media print{
+  .top a{display:none}
+  body{background:#fff;color:#000;font-size:10.5pt}
+  .top{background:none;color:#000;border-bottom:2px solid #000;padding:0 0 8px;margin-bottom:14px}
+  main{padding:0;max-width:none}
+  h2{break-after:avoid}
+  pre,table,blockquote{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <div class="t">학급 회의 (앱 B) — v0.4<span>설명서</span></div>
+  <a href="../index.html">처음으로</a>
+</div></header>
+<main>
+<h1 id="h0">학급 회의 (앱 B) — v0.4</h1>
+<ul><li>실행: <code>index.html</code>을 브라우저로 열면 됩니다. 설치·로그인·인터넷 모두 필요 없습니다.</li><li>근거: 08 「TEAM LEAP 앱 개발 실행계획」 5장 / 07 기획서 ④+⑦ 통합</li><li>점검: <code>node test.js</code> — 105개 통과</li></ul>
+<hr>
+<h2 id="h3">저작권</h2>
+<pre><code>© 2026 TEAM LEAP (경북교육 AI Lab · AI 활용 분과)</code></pre>
+<ul><li><b>교육 목적</b>에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다.</li><li>상업적 이용과 외부 배포는 제작자에게 문의해 주세요.</li><li>고쳐서 배포할 때는 출처(TEAM LEAP)를 남겨 주세요.</li></ul>
+<p>표기 위치는 세 곳입니다. 하나라도 지우지 마세요.</p>
+<div class="tw"><table><thead><tr><th>위치</th><th>내용</th></tr></thead><tbody><tr><td><code>index.html</code> 머리 주석</td><td>파일을 열어 보는 사람이 먼저 보는 곳</td></tr><tr><td>앱 화면 맨 아래</td><td>사용자에게 보이는 표기</td></tr><tr><td>인쇄되는 회의록 하단</td><td>종이로 나갔을 때의 표기</td></tr></tbody></table></div>
+<blockquote><p><b>12월 공식 배포 전에 라이선스 유형을 확정해야 합니다.</b> 교육청 누리집이나 웹앱스토어에 올릴 경우 공공누리(KOGL) 유형 지정이 필요할 수 있습니다. 위 문구는 그때까지의 잠정 표기입니다. 확정 주체는 기획예산관·거버넌스 분과입니다.</p></blockquote>
+<hr>
+<h2 id="h10">왜 이 앱인가</h2>
+<p><b>소규모 학급은 인원이 적어 익명이 성립하지 않습니다.</b> 6명 학급에서 손을 들면 누가 무슨 의견인지 다 보입니다. 그래서 무기명 도구가 대규모 학급보다 오히려 절실합니다.</p>
+<p>이 논리가 앱과 &quot;학령인구 감소 대응&quot;을 잇습니다. 학령인구가 줄어 학급이 작아질수록 이 도구가 더 필요해집니다.</p>
+<hr>
+<h2 id="h14">무기명을 지키는 다섯 가지 (설계에 박아 넣은 것)</h2>
+<p>기능이 아니라 <b>구조</b>입니다. 끄거나 우회할 수 없습니다.</p>
+<div class="tw"><table><thead><tr><th>#</th><th>장치</th><th>없으면 생기는 일</th></tr></thead><tbody><tr><td>1</td><td>이름을 받는 칸이 아예 없다</td><td>—</td></tr><tr><td>2</td><td>제출 시각을 저장하지 않는다</td><td>시각 순서로 누가 냈는지 역추적된다</td></tr><tr><td>3</td><td>모으는 동안 <b>개수만</b> 보인다</td><td>방금 낸 사람의 글이 화면에 뜨면 익명이 아니다</td></tr><tr><td>4</td><td>공개하는 순간 <b>순서를 섞는다</b></td><td>제출 순서가 곧 단서다</td></tr><tr><td>5</td><td>투표 중에는 <b>집계를 감춘다</b></td><td>먼저 고른 사람을 따라가게 된다</td></tr></tbody></table></div>
+<p>4번은 <code>Fisher-Yates</code>로 섞고, 가능하면 <code>crypto.getRandomValues</code>를 씁니다.</p>
+<hr>
+<h2 id="h19">진행 방식</h2>
+<p>교실 기기 한 대를 돌려가며 씁니다. 다섯 단계입니다.</p>
+<pre><code>1. 안건 모으기   무기명 제출 → 개수만 표시
+        ↓ [모으기 마치고 공개]  ← 여기서 순서를 섞는다
+2. 안건 고르기   한 사람씩 택1 → 집계 감춤
+        ↓ [투표 마치고 결과 보기]
+   결과 공개 → 다룰 안건 선택 (동점이면 함께 정함)
+        ↓
+3. 해결책 모으기  같은 방식
+4. 해결책 고르기  같은 방식
+5. 결정          결정문 작성 → 학급 약속으로 등록</code></pre>
+<p>각 단계마다 제출·투표 뒤 입력창이 즉시 비워지고 &quot;다음 사람에게 넘겨 주세요&quot;가 뜹니다.</p>
+<h3 id="h23">기기를 여러 대 쓸 때</h3>
+<p>각자 기기에서 같은 회의를 열고, 끝나면 <b>파일로 내보내기</b> → 한 기기에서 <b>가져오기 → 합치기</b>를 고르면 안건과 투표가 더해집니다. 회의 id가 같을 때만 합쳐집니다.</p>
+<hr>
+<h2 id="h26">실시간은 어디까지 되는가 〔v0.4〕</h2>
+<p><b>다른 기기와는 실시간이 되지 않습니다.</b> 브라우저는 같은 랜 안의 다른 기기를 스스로 찾지 못합니다. WebRTC 로 기기끼리 직접 잇더라도 <b>상대를 찾아 주는 일(시그널링)은 서버가 합니다.</b> 서버를 두지 않는 것이 이 앱들의 약속입니다(마스터 원칙 1·2번). 그러니 태블릿 여섯 대에 같은 주소를 띄워 놓고 서로 보이기를 기대하면 안 됩니다.</p>
+<p><b>되는 것은 같은 브라우저의 다른 창입니다.</b> 그리고 그 자리는 실제로 있습니다 — 교사는 노트북에서 회의를 돌리고, 빔프로젝터에는 <b>모아 보기 창</b>을 띄웁니다.</p>
+<div class="tw"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>어디서 여나</td><td>모으는 화면·투표 화면의 <b>「모아 보기 창 열기」</b></td></tr><tr><td>무엇이 뜨나</td><td>회의 이름 · 지금 단계 · <b>모인 개수</b>(인원을 적었으면 「4 / 6」)</td></tr><tr><td>무엇이 안 뜨나</td><td><b>낸 내용, 어느 것이 몇 표인지.</b> 이 화면에 내용이 뜨면 무기명이 그 자리에서 무너집니다</td></tr><tr><td>어떻게 이어지나</td><td><code>BroadcastChannel</code> · <code>storage</code> 이벤트 · <b>2초마다 스스로 확인</b>(셋 다 두는 것은 <code>file://</code> 로 열면 앞의 둘이 막히는 브라우저가 있기 때문입니다)</td></tr><tr><td>쓰기는 하나</td><td><b>읽기만 합니다.</b> 빔프로젝터에 띄워 둔 창이 회의 자료를 건드릴 길이 없어야 합니다</td></tr></tbody></table></div>
+<p>같은 파일을 <code>#board</code> 로 열면 켜집니다. <b>파일이 하나여야 한다는 약속을 지키면서 창을 둘로 쓰는 방법</b>입니다.</p>
+<p>검사가 이것을 고정합니다 — <em>「모아 보기 창에 안건 내용이 나가지 않는다」</em>, <em>「투표 중 집계가 나가지 않는다」</em>.</p>
+<hr>
+<h2 id="h33">화면</h2>
+<div class="tw"><table><thead><tr><th>탭</th><th>내용</th></tr></thead><tbody><tr><td><b>회의</b></td><td>위 5단계 진행</td></tr><tr><td><b>학급 약속</b></td><td>결정한 것을 매일 신호등(잘 지켰어요 / 조금 아쉬워요 / 못 지켰어요)으로 확인. 최근 14일 막대와 실천율</td></tr><tr><td><b>기록</b></td><td>지난 회의록 열람, <b>인쇄</b>, 삭제</td></tr></tbody></table></div>
+<p>약속 실천은 <b>학급 전체 단위</b>로 기록합니다. 학생 개인별로 기록하지 않습니다.</p>
+<hr>
+<h2 id="h37">개인정보</h2>
+<ul><li>학생 이름을 입력하는 칸이 <b>없습니다</b>. 만들지 마세요.</li><li>모든 자료는 <code>localStorage</code>, 즉 <b>이 기기 안에만</b> 있습니다. 서버로 보내지 않습니다.</li><li>학급 표시명(예: <code>3학년 1반</code>)만 회의록에 들어갑니다.</li><li>기기를 바꾸거나 백업하려면 파일로 내보내야 합니다. 자동 동기화는 없습니다.</li></ul>
+<hr>
+<h2 id="h40">화면 (v0.2)</h2>
+<p>브랜드 자산을 장식이 아니라 <b>기능</b>으로 씁니다.</p>
+<ul><li><b>단계 표시 = 로고의 도약 궤적.</b> 낮은 회색 지면에서 출발해 5개 점을 지나 높은 주황 지면(결정)에 닿습니다. 진행할수록 궤적이 파랑으로 채워집니다.</li><li>머리말은 브랜드 그라디언트(Ink → Blue), 배경에 심볼이 옅게 깔립니다</li><li>모인 개수를 <b>칩</b>으로 시각화합니다. 내용은 절대 넣지 않습니다 — 개수만 보여주는 원칙 그대로입니다</li><li>최다 득표에 <code>가장 많은 표</code> 배지와 주황 막대</li><li>약속 카드는 오늘 신호등 색으로 왼쪽 띠가 바뀝니다</li></ul>
+<h3 id="h43">색을 쓸 때 주의한 것</h3>
+<p><code>화려하게</code>와 <code>접근성</code>이 부딪히는 지점이 있었습니다. 다듬는 중에 <b>네 곳이 대비 기준 미달</b>로 걸렸습니다.</p>
+<div class="tw"><table><thead><tr><th>문제</th><th>값</th><th>고침</th></tr></thead><tbody><tr><td>주황 배지·버튼 <code>#CE6410</code> + 흰 글자</td><td>3.85</td><td><code>#A8560A</code> + 흰 글자 → 5.25</td></tr><tr><td>다크모드 신호등 <code>#4FD1B0</code> + 흰 글자</td><td>1.90</td><td>먹 글자 <code>#0E1621</code> → 9.59</td></tr><tr><td>다크모드 단계 숫자 (밝은 파랑 위 흰 글자)</td><td>1.90</td><td><code>--leap-on-fill</code> → 8.39</td></tr><tr><td>다크모드 선택지 번호</td><td>1.90</td><td><code>--leap-on-fill</code> → 8.39</td></tr></tbody></table></div>
+<p><b>밝은 색은 배경으로만 쓰고, 그 위의 글자는 테마마다 뒤집어야 합니다.</b> 이를 위해 <code>--solid-teal / --solid-amber / --solid-gray</code>와 짝이 되는 <code>--solid-fg</code>를 두었습니다. 라이트에서는 흰 글자, 다크에서는 먹 글자가 됩니다.</p>
+<hr>
+<h2 id="h48">접근성</h2>
+<p>12월 웹앱스토어 등록 조건에 맞춰 처음부터 넣었습니다.</p>
+<ul><li>색만으로 정보를 전달하지 않음 — 신호등은 <b>색 + 글자</b> 병기</li><li>전체 키보드 조작 가능. 탭은 좌우 화살표로 이동</li><li>포커스 표시 3px, 버튼 최소 높이 46px</li><li>제출·투표 결과를 <code>role=&quot;status&quot;</code>로 읽어 줌</li><li>단계 궤적 그림은 <code>role=&quot;presentation&quot;</code>, 대신 숨은 목록으로 단계·진행 상태를 읽어 줌</li><li>의미 있는 마크업 (<code>nav</code>, <code>main</code>, <code>role=&quot;tablist&quot;</code>, <code>dl</code>, <code>aria-pressed</code>, <code>aria-current</code>)</li><li>라이트/다크 모두 대비 4.5:1 이상 (위 표 참조)</li><li><code>prefers-reduced-motion</code> 존중 — 켜면 이동·확대 효과가 멈춤</li></ul>
+<p>※ 자동 검사 도구(K-WAH 등) 정식 진단은 11월 과제입니다.</p>
+<hr>
+<h2 id="h53">만들면서 정한 것</h2>
+<p><b>1. 감정 체크인을 뺐습니다.</b> 기획서 ④에 있었지만 학생 개인의 심리 상태 기록입니다. 개인정보 영향평가 없이 교사 동아리 산출물로 배포할 수 없습니다.</p>
+<p><b>2. ④와 ⑦을 하나로 합쳤습니다.</b> 기획서 ④(공동체 소통·학급 회의)와 ⑦(학급 자율 의사결정 캘린더)은 안건함·투표·약속 체크가 70% 겹칩니다. 따로 만들 이유가 없습니다.</p>
+<p><b>3. 중복 투표를 막지 않았습니다.</b> 계정이 없으므로 기술적으로 막을 방법이 없습니다. 교사가 지켜보는 앞에서 기기를 돌리는 방식이라 실제로는 문제가 되지 않습니다. 계정을 넣는 순간 무기명이 깨집니다.</p>
+<hr>
+<h2 id="h58">파일</h2>
+<pre><code>b-classboard/
+├─ index.html   ← 전부 여기에 (HTML + CSS + JS)
+├─ test.js      ← node test.js
+└─ README.md</code></pre>
+<p><code>kit/leap.css</code>와 <code>kit/leap.js</code>가 원본이고, <code>index.html</code> 안의 것은 <b>사본</b>입니다. 단일 HTML로 전달하기 위해서입니다. 원본을 고치면 앱 안의 블록도 함께 고쳐야 합니다.</p>
+<hr>
+<h2 id="h62">v0.3 — 실천 기록이 오늘에만 찍히던 것</h2>
+<h3 id="h63">1. 지난 날을 채울 수 있습니다 ★</h3>
+<p>v0.2의 실천 기록은 <b>오늘 날짜에만</b> 쓸 수 있었습니다.</p>
+<pre><code>if (r.log[today] === v) delete r.log[today]; else r.log[today] = v;</code></pre>
+<p>그래서 금요일에 한 주를 몰아 정리할 수 없었고, <b>하루 빠뜨리면 그 칸은 영영 비었습니다.</b> 학급 약속은 매일 보는 것인데, 띠가 구멍투성이가 되면 아무도 보지 않습니다.</p>
+<p>이제 <b>14일 띠의 칸을 직접 누릅니다.</b> 누를 때마다 <code>기록 없음 → 잘 지켰어요 → 조금 아쉬워요 → 못 지켰어요</code> 로 돌고, 한 바퀴 돌면 지워집니다 (잘못 찍은 것을 되돌릴 수 있어야 합니다). 칸마다 날짜가 적혀 있고 키보드로도 됩니다.</p>
+<h3 id="h68">2. 색만으로 알리지 않습니다 — 원칙 4</h3>
+<p>띠가 <code>aria-hidden=&quot;true&quot;</code> 에 배경색뿐이었습니다. 더 나쁜 것은 이 앱의 인쇄가 <b>일부러 흑백</b>이라, 종이에서는 세 값이 <b>전부 같은 회색</b>으로 나왔다는 점입니다.</p>
+<p><b>● ◐ ○ 기호를 함께</b> 넣었습니다. 색이 없어도, 흑백으로 뽑아도 구분됩니다.</p>
+<h3 id="h71">3. 교실에 붙일 한 장</h3>
+<p>회의록만 인쇄되고, 정작 <b>매일 보는 학급 약속은 붙일 수가 없었습니다.</b> 약속 목록 + 14일 실천 표 + <b>기호 설명</b>이 A4 한 장으로 나갑니다.</p>
+<p>종이 아래에 「학급 전체를 기록한 것입니다. <b>학생 개인의 기록이 아닙니다</b>」를 적었습니다. 교실 벽에 붙는 종이이기 때문입니다.</p>
+<h3 id="h74">4. 인쇄 미리보기</h3>
+<p><code>printMinutes()</code> 가 바로 <code>window.print()</code> 로 갔습니다. 판면 규칙을 <code>@media print</code> 밖으로 꺼내 <b>미리보기와 인쇄가 같은 HTML·같은 규칙</b>을 쓰게 했습니다.</p>
+<h3 id="h76">5. 이 앱의 마크</h3>
+<p><b>이름 없이 넣는 상자</b> — 쪽지가 상자로 들어가는 모양입니다. 이 앱의 존재 이유가 무기명입니다.</p>
+<blockquote><p><b>손대지 않은 것</b> — 익명 보장은 이미 구조로 되어 있었습니다. 단계가 넘어갈 때 <code>LEAP.shuffle()</code> 로 순서를 섞고, 제출 시각을 기록하지 않습니다. 소규모 학급에서 제출 순서만으로 누가 썼는지 추정되는 것을 막는 장치입니다.</p></blockquote>
+<hr>
+<h2 id="h80">v0.4 — 이름을 바꾸고, 잃는 길을 막았습니다</h2>
+<h3 id="h81">1. 「학급 자율 의사결정 보드」 → <b>「학급 회의」</b> ★</h3>
+<p>앞의 것은 <b>기획서의 말</b>입니다. 기획서 ④와 ⑦을 합칠 때 두 제목을 이어 붙인 이름이라 길고, 선생님이 찾을 때 쓰는 말이 아닙니다. 도구를 고르러 온 사람이 목록에서 읽는 말은 <b>「학급 회의」</b>입니다. 하는 일은 그대로입니다.</p>
+<p>검사가 옛 이름이 화면에 남아 있지 않은지 셉니다 — 남아도 되는 것은 「이렇게 바뀌었습니다」라고 적어 둔 머리 주석 하나뿐입니다.</p>
+<h3 id="h84">2. 모아 보기 창 (위 「실시간은 어디까지 되는가」)</h3>
+<h3 id="h85">3. 되돌릴 수 없는 일을 「예 / 아니오」로 묻지 않습니다 ★ — 마스터 함정 37·38번</h3>
+<p><b>v0.3 의 「파일에서 가져오기」가 가장 나빴습니다.</b></p>
+<pre><code>[확인] 지금 자료에 합치기
+[취소] 덮어쓰기 — 지금 자료를 지우고 가져온 것으로 바꿉니다</code></pre>
+<p>그만두려고 <b>[취소]를 누르면 자료를 지우는 쪽</b>으로 갔습니다. Esc 도 마찬가지입니다. 창을 닫는 행동이 가장 위험한 일을 고르는 자리였습니다.</p>
+<p>이제 <b>길을 갈라 놓고 잃지 않는 길을 맨 위에</b> 둡니다. 그만두기는 늘 있고, Esc 와 바깥 누르기는 <b>아무 일도 일으키지 않습니다.</b></p>
+<div class="tw"><table><thead><tr><th>어디</th><th>v0.3</th><th>v0.4</th></tr></thead><tbody><tr><td>회의 접기</td><td>빨간 「이 회의 취소하기」 + 「계속할까요?」</td><td>① 기록에 남기고 새로 ② 그냥 새로 ③ 그냥 두기. <b>모은 것이 없으면 아예 묻지 않음</b></td></tr><tr><td>파일 가져오기</td><td>[확인] 합치기 / <b>[취소] 덮어쓰기</b></td><td>① 합치기 ② 내보내고 바꾸기 ③ 그냥 바꾸기</td></tr><tr><td>전체 지우기</td><td>「계속할까요?」 두 번</td><td>① 내보내고 지우기 ② 그냥 지우기</td></tr></tbody></table></div>
+<p><b>두 번 묻는 것은 안전장치가 아닙니다.</b> 두 번 다 「예」를 누르게 될 뿐입니다. 앱 안에 <code>confirm</code> 이 하나도 남지 않았고, 검사가 그것을 고정합니다.</p>
+<h3 id="h92">4. 지우는 대신 되돌립니다 — 마스터 함정 39번</h3>
+<p>약속과 회의록은 이제 <b>묻지 않고 지워지고, 한 걸음 되돌릴 수 있습니다.</b> 「지울까요?」는 잘못 누르는 것을 못 막습니다 — 누르던 손이 그대로 「예」를 누릅니다. 되돌리면 <b>원래 있던 자리로</b> 돌아갑니다(맨 뒤에 붙이면 순서가 바뀌고, 순서가 바뀌면 되돌린 것이 아닙니다). 여러 걸음을 쌓지 않는 것은 일부러입니다.</p>
+<h3 id="h94">5. 「6명 중 4명」</h3>
+<p>학급 인원을 적어 두면 모으는 동안 <b>몇 명이 남았는지</b>가 띠와 함께 보입니다. 안 적으면 v0.3 과 똑같이 개수만 나옵니다 — <b>껐다 켜는 기능이 아니라 「안 적으면 없는 것」</b>입니다. <b>누가 안 냈는지는 앱도 모릅니다.</b> 세기만 합니다. 이름을 받는 칸은 여전히 없습니다.</p>
+<h3 id="h96">6. 미리보기 종이가 인쇄 종이와 폭이 달랐습니다 — 마스터 함정 31번</h3>
+<p>미리보기는 글이 놓이는 폭이 <b>162mm</b> 였는데 인쇄는 <b>186mm</b> 였습니다. 24mm 차이로 14일 실천 띠가 미리보기에서만 좁아 보였습니다. 이제 <code>@page</code> 와 같은 값(210mm · 14/12mm)입니다.</p>
+<h3 id="h98">7. PDF 파일 이름 — 마스터 함정 27번</h3>
+<p>브라우저는 「PDF 로 저장」의 이름으로 <code>document.title</code> 을 씁니다. 회의록 열 장을 뽑으면 열 장이 같은 이름이었습니다. 이제 <code>학급회의록_3학년 1반_9월 첫째 주 학급 회의_2026-09-04</code> 꼴입니다.</p>
+<h3 id="h100">8. AI 초안이 엉뚱한 회의를 가리키고 있었습니다 — 마스터 함정 28번</h3>
+<p>프롬프트를 만드는 조각이 <code>current</code> 를 <b>id</b> 로 알고 <code>m.id === x.current</code> 로 찾았는데, 앱 본체에서 <code>current</code> 는 <b>회의 객체</b>입니다. 늘 빗나가서 오늘 여는 회의가 아니라 <b>가장 최근에 마친 회의</b>의 제목이 들어갔습니다. 한 파일 안의 두 조각이 자료의 모양을 다르게 알고 있던 자리입니다.</p>
+<h3 id="h102">9. 걷어낸 것</h3>
+<p>세 번째 걸음(해결책 모으기)에서 무기명 안내 넉 줄을 <b>다시 펼치지 않습니다.</b> 같은 넉 줄을 두 번 읽는 사람은 없고, 읽지 않는 안내는 자리만 차지하고 아래를 밀어냅니다. 한 줄로 줄이고 「아까와 같습니다」라고만 적습니다.</p>
+<hr>
+<h2 id="h105">다음</h2>
+<ol><li><b>9월 개학 후 학급 적용</b> — 담임 참여자가 실제로 회의를 돌려 보기</li><li><b>모아 보기 창을 실제 빔프로젝터로</b> 띄워 보기 — 뒷자리에서 숫자가 읽히는지</li><li>종이(회의록·학급 약속)로 뽑아 확인</li></ol>
+</main>
+<div class="foot">© 2026 TEAM LEAP · 경북교육 AI Lab · AI 활용 분과</div>
+</body>
+</html>

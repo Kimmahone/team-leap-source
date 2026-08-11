@@ -1,0 +1,1440 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>작아지는 학교, 넓어지는 교육 — TEAM LEAP</title>
+<meta name="description" content="경상북도 학령인구가 어떻게 줄어드는지 보는 대시보드와, 줄어든 교실에서 쓰는 도구 9종. 설치도 로그인도 인터넷도 필요 없습니다. TEAM LEAP · 경북교육 AI Lab.">
+<meta name="author" content="포항양덕초등학교 김정준 · TEAM LEAP">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2314202E'/%3E%3Cg transform='translate(32 32) scale(0.92) translate(-32 -33)'%3E%3Cpath d='M7 52 H25' stroke='%2397A3B0' stroke-width='7.5' stroke-linecap='round' fill='none'/%3E%3Cpath d='M39 36 H57' stroke='%23F2A65A' stroke-width='7.5' stroke-linecap='round' fill='none'/%3E%3Cpath d='M16 46 Q32 -10 48 30' stroke='%237FB3F7' stroke-width='8' stroke-linecap='round' fill='none'/%3E%3C/g%3E%3C/svg%3E">
+<!--
+  TEAM LEAP 메인 v0.8
+  제작 · 포항양덕초등학교 김정준 <kimjj0709@gmail.com>
+  © 2026 김정준 · TEAM LEAP (경상북도교육청 인공지능 연구소 GBE-AI Lab · AI 활용 분과)
+  교육 목적에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다.
+
+  이 페이지가 하는 일: 대시보드(06)와 앱 9종(08)을 한 곳에서 엽니다.
+  그래서 루트에 있습니다 — 둘 다 가리켜야 하므로 그 위에 있어야 합니다.
+
+  〔v0.7〕 이 페이지가 자기 앱 수를 **세 가지로** 말하고 있었습니다 —
+    「교실 도구 9종」·「아홉 앱」은 맞는데, 본문 두 곳이 「여기 있는 여덟」이었고
+    이 머리 주석은 「앱 5종」, 판 번호는 **v0.2** 에 멈춰 있었습니다.
+    앱이 다섯일 때 적은 말이 앱이 아홉이 되도록 남아 있었던 것입니다.
+    **아무도 그것을 세고 있지 않았기 때문입니다** — 검사는 앱마다의 판 번호는
+    원본에서 읽어 견주면서, 정작 「몇 개인가」는 아무 데서도 세지 않았습니다.
+    이제 검사가 **카드를 실제로 세어** 본문의 숫자·수사와 맞춥니다 (마스터 함정 35·52번).
+
+  〔v0.8〕 **그 그물을 「숫자 타일」이 빠져나갔습니다** — 「8종 · 대시보드 1 + 교실 도구 7」.
+    v0.7 에서 글의 「N종」은 다 맞췄는데 이 한 칸만 앱이 일곱일 때 그대로였습니다.
+    빠져나간 이유가 둘입니다 — 타일은 숫자와 「종」이 `<span>`·`<u>` 로 **갈라져** 있어
+    「9종」 같은 글자로는 잡히지 않고, 아래 설명줄은 「교실 도구 7」이라 **「종」이 없어서**
+    또 안 잡혔습니다. 검사가 찾던 것은 언제나 「종」이 붙은 말이었던 것입니다.
+    이제 **「종」을 떼고도 세고**, 타일은 **타일의 생김새 그대로** 읽어
+    「큰 수 = 대시보드 + 도구」인지까지 봅니다. 제일 크게 쓴 숫자가 제일 늦게 들켰습니다.
+
+  나가는 것과 나가지 않는 것
+    이 페이지는 **입구**입니다. 설계 원칙·점검 방식·내부 문서로 가는 길은 일부러 두지 않았습니다.
+    필요한 것은 저장소 안의 `00. 프로젝트 마스터.md` 에 있습니다.
+    다시 열고 싶어지면, 그때 되살리면 됩니다 (지운 것이 아니라 걷어 둔 것입니다).
+
+  움직임에 대하여
+    스크롤에 맞춰 나타나는 것들은 IntersectionObserver 와 CSS 로만 만들었습니다.
+    외부 라이브러리를 쓰지 않습니다 (원칙 1번).
+    `prefers-reduced-motion: reduce` 를 켠 분에게는 **처음부터 전부 보입니다.**
+    자바스크립트가 꺼져 있어도 마찬가지입니다 — 움직임이 정보를 나르지 않게 했습니다.
+-->
+<style>
+/* ==========================================================================
+   LEAP Kit 토큰 — 원본은 `08. 실행계획(3)/apps/kit/leap.css`
+   단일 HTML 을 지키려고 붙여 넣은 사본입니다 (마스터 원칙 10번).
+   ========================================================================== */
+:root{
+  --leap-ink:#14202E; --leap-blue:#1B4FA0; --leap-amber:#A8560A;
+  --leap-amber-mark:#CE6410; --leap-teal:#0D6E5C; --leap-gray:#5A6672;
+  --leap-bg:#F7F9FC; --leap-surface:#FFFFFF; --leap-border:#D9E0EA;
+  --leap-hairline:#E8EDF3; --leap-on-fill:#FFFFFF;
+  --leap-font:system-ui,-apple-system,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  --leap-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --leap-radius:18px; --leap-radius-sm:10px;
+  --leap-shadow:0 1px 2px rgba(20,32,46,.05),0 8px 24px rgba(20,32,46,.06);
+  --leap-shadow-lg:0 2px 6px rgba(20,32,46,.06),0 22px 60px rgba(20,32,46,.12);
+  --tint-blue:#EAF1FB; --tint-amber:#FCF0E3; --tint-teal:#E4F4F0;
+  --deep:#0B1420;                      /* 어두운 절 바탕 — 라이트에서도 어둡습니다 */
+  --deep-ink:#F2F6FB;
+  --ease:cubic-bezier(.22,.61,.36,1);  /* 빠르게 나갔다가 부드럽게 멈추는 곡선 */
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --leap-ink:#E8EDF3; --leap-blue:#7FB3F7; --leap-amber:#F2A65A;
+    --leap-amber-mark:#F2A65A; --leap-teal:#4FD1B0; --leap-gray:#97A3B0;
+    --leap-bg:#0E1621; --leap-surface:#1A2735; --leap-border:#2C3B4C;
+    --leap-hairline:#22303F; --leap-on-fill:#0E1621;
+    --leap-shadow:0 1px 2px rgba(0,0,0,.4),0 8px 26px rgba(0,0,0,.36);
+    --leap-shadow-lg:0 2px 8px rgba(0,0,0,.5),0 24px 66px rgba(0,0,0,.48);
+    --tint-blue:#16304F; --tint-amber:#3A2A18; --tint-teal:#123830;
+    --deep:#060B12; --deep-ink:#F2F6FB;
+  }
+}
+:root[data-theme="light"]{
+  --leap-ink:#14202E;--leap-blue:#1B4FA0;--leap-amber:#A8560A;--leap-amber-mark:#CE6410;
+  --leap-teal:#0D6E5C;--leap-gray:#5A6672;--leap-bg:#F7F9FC;--leap-surface:#FFFFFF;
+  --leap-border:#D9E0EA;--leap-hairline:#E8EDF3;--leap-on-fill:#FFFFFF;
+  --tint-blue:#EAF1FB;--tint-amber:#FCF0E3;--tint-teal:#E4F4F0;
+  --deep:#0B1420;--deep-ink:#F2F6FB;
+  --leap-shadow:0 1px 2px rgba(20,32,46,.05),0 8px 24px rgba(20,32,46,.06);
+  --leap-shadow-lg:0 2px 6px rgba(20,32,46,.06),0 22px 60px rgba(20,32,46,.12);
+}
+:root[data-theme="dark"]{
+  --leap-ink:#E8EDF3;--leap-blue:#7FB3F7;--leap-amber:#F2A65A;--leap-amber-mark:#F2A65A;
+  --leap-teal:#4FD1B0;--leap-gray:#97A3B0;--leap-bg:#0E1621;--leap-surface:#1A2735;
+  --leap-border:#2C3B4C;--leap-hairline:#22303F;--leap-on-fill:#0E1621;
+  --tint-blue:#16304F;--tint-amber:#3A2A18;--tint-teal:#123830;
+  --deep:#060B12;--deep-ink:#F2F6FB;
+  --leap-shadow:0 1px 2px rgba(0,0,0,.4),0 8px 26px rgba(0,0,0,.36);
+  --leap-shadow-lg:0 2px 8px rgba(0,0,0,.5),0 24px 66px rgba(0,0,0,.48);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--leap-font);font-size:1rem;line-height:1.7;
+  color:var(--leap-ink);background:var(--leap-bg);-webkit-text-size-adjust:100%;
+  overflow-x:hidden}
+:focus-visible{outline:3px solid var(--leap-blue);outline-offset:4px;border-radius:var(--leap-radius-sm)}
+.leap-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}
+button{font:inherit;color:inherit}
+a{color:var(--leap-blue)}
+.wrap{max-width:1140px;margin:0 auto;padding:0 24px}
+
+.skip{position:absolute;left:-9999px;top:0;z-index:99;background:var(--leap-surface);
+  color:var(--leap-ink);padding:14px 22px;border-radius:0 0 var(--leap-radius-sm) 0;font-weight:700}
+.skip:focus{left:0}
+
+/* ==========================================================================
+   나타남 — 스크롤에 맞춰 올라옵니다
+   기본은 **보이는 상태**입니다. JS 가 `.js` 를 붙인 뒤에만 숨겼다가 되살립니다.
+   자바스크립트가 꺼져 있어도 내용이 사라지지 않게 하려는 것입니다.
+   ========================================================================== */
+.js .rise{opacity:0;transform:translateY(28px);
+  transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.js .rise.in{opacity:1;transform:none}
+.js .rise[data-d="1"]{transition-delay:.08s}
+.js .rise[data-d="2"]{transition-delay:.16s}
+.js .rise[data-d="3"]{transition-delay:.24s}
+.js .rise[data-d="4"]{transition-delay:.32s}
+
+/* ==========================================================================
+   머리 — 표제를 지나면 유리처럼 깔립니다
+   ========================================================================== */
+.nav{position:fixed;inset:0 0 auto 0;z-index:50;border-bottom:1px solid transparent;
+  --nav-fg:#fff;--nav-sub:rgba(255,255,255,.66);--nav-bd:rgba(255,255,255,.3);
+  --nav-bg:rgba(255,255,255,.1);
+  transition:background .4s var(--ease),border-color .4s var(--ease)}
+.nav.solid{background:color-mix(in srgb,var(--leap-bg) 78%,transparent);
+  backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom-color:var(--leap-border);
+  --nav-fg:var(--leap-ink);--nav-sub:var(--leap-gray);
+  --nav-bd:var(--leap-border);--nav-bg:transparent}
+.nav-in{max-width:1140px;margin:0 auto;padding:11px 24px;display:flex;align-items:center;gap:12px}
+.nav .mk{width:30px;height:30px;flex:none}
+.nav-home{display:flex;align-items:center;gap:11px;text-decoration:none;flex:none;
+  border-radius:12px;padding:4px 6px;margin-left:-6px}
+.nav .nm{font-weight:800;letter-spacing:-.02em;font-size:1.0625rem;color:var(--nav-fg);
+  transition:color .4s var(--ease);line-height:1.2}
+.nav .nm span{display:block;font-size:.6875rem;font-weight:600;letter-spacing:.04em;
+  color:var(--nav-sub);transition:color .4s var(--ease)}
+.nav .sp{margin-left:auto}
+
+/* 절로 바로 가는 단추.
+   좁은 화면에서 접어 숨기지 않습니다 — 숨은 메뉴는 없는 메뉴입니다.
+   대신 가로로 밀어 볼 수 있게 두고, 브랜드 글자를 먼저 접습니다. */
+/* min-width:0 이 있어야 좁은 화면에서 이 줄이 **줄어듭니다.**
+   플렉스 항목의 기본 min-width 는 auto 라, 없으면 내용 너비만큼 버티면서
+   오른쪽의 「화면 전환」을 화면 밖으로 밀어냅니다. */
+.nav-links{display:flex;align-items:center;gap:2px;overflow-x:auto;min-width:0;
+  scrollbar-width:none;-ms-overflow-style:none;margin-left:8px}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{white-space:nowrap;text-decoration:none;color:var(--nav-sub);font-weight:700;
+  font-size:.875rem;padding:10px 14px;min-height:44px;display:inline-flex;align-items:center;
+  border-radius:999px;transition:color .3s var(--ease),background .3s var(--ease)}
+.nav-links a:hover{color:var(--nav-fg);background:color-mix(in srgb,currentColor 12%,transparent)}
+.nav-links a[aria-current="true"]{color:var(--nav-fg);
+  background:color-mix(in srgb,currentColor 16%,transparent)}
+.nav.solid .nav-links a[aria-current="true"]{color:var(--leap-blue);background:var(--tint-blue)}
+
+.themebtn{min-height:44px;padding:9px 18px;font-size:.8125rem;font-weight:700;border-radius:999px;
+  cursor:pointer;border:1px solid var(--nav-bd);background:var(--nav-bg);color:var(--nav-fg);
+  flex:none;
+  transition:background .25s var(--ease),color .4s var(--ease),border-color .4s var(--ease)}
+.themebtn:hover{background:color-mix(in srgb,currentColor 14%,transparent)}
+
+/* 고정된 머리 아래로 절이 숨지 않게 */
+[id]{scroll-margin-top:78px}
+
+@media (max-width:1040px){
+  .nav .nm span{display:none}
+  .nav-links a{padding:10px 11px;font-size:.8125rem}
+}
+@media (max-width:760px){
+  .nav .nm{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .nav-in{padding:11px 16px;gap:6px}
+  .nav .sp{display:none}
+  .nav-links{margin-left:2px;flex:1 1 auto}
+  .themebtn{padding:9px 13px}
+}
+
+/* ==========================================================================
+   1. 표제 — 화면을 가득 채웁니다
+
+   첫 장면은 **스크롤 관찰자에 맡기지 않습니다.** 이미 보이는 자리이고,
+   관찰자가 늦거나 어긋나면 「대시보드 보기」 단추가 사라져 버립니다.
+   그래서 로드되면 CSS 애니메이션으로 바로 올라옵니다 — JS 가 꺼져 있어도 나옵니다.
+   ========================================================================== */
+@keyframes heroUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+.hero-in > *{animation:heroUp .95s var(--ease) both}
+.hero-in > *:nth-child(1){animation-delay:.05s}
+.hero-in > *:nth-child(2){animation-delay:.16s}
+.hero-in > *:nth-child(3){animation-delay:.30s}
+.hero-in > *:nth-child(4){animation-delay:.44s}
+.hero-in > *:nth-child(5){animation-delay:.58s}
+.hero{position:relative;min-height:100svh;display:grid;place-items:center;
+  background:var(--deep);color:var(--deep-ink);overflow:hidden;text-align:center}
+.hero .ghost{position:absolute;width:min(72vw,720px);height:auto;
+  left:50%;top:36%;transform:translate(-50%,-50%);opacity:.022;pointer-events:none}
+/* width:100% 가 있어야 좁은 화면에서 글이 **접힙니다.**
+   `place-items:center` 인 그리드 항목은 기본이 max-content 라, 이게 없으면
+   본문 한 줄이 화면보다 길어져도 줄바꿈하지 않고 그대로 밖으로 나갑니다. */
+.hero-in{position:relative;padding:104px 24px 132px;max-width:1000px;width:100%}
+@media (max-height:900px){
+  .hero-in{padding:88px 24px 108px}
+  .hero .mark{width:clamp(112px,15vw,150px);margin-bottom:26px}
+  .hero h1{font-size:clamp(2.25rem,5.6vw,3.75rem);margin-bottom:16px}
+  .hero p{font-size:1.0313rem}
+  .hero .cta{margin-top:32px}
+  .hero .eyebrow{margin-bottom:18px}
+}
+.hero .eyebrow{font-size:.8125rem;font-weight:700;letter-spacing:.14em;
+  color:rgba(242,246,251,.56);margin:0 0 26px;text-transform:uppercase}
+.hero .mark{width:clamp(150px,21vw,220px);height:auto;margin:0 auto 40px;display:block}
+.hero h1{margin:0 0 22px;font-size:clamp(2.5rem,7.2vw,5rem);line-height:1.06;
+  letter-spacing:-.045em;font-weight:800}
+.hero .grad{background:linear-gradient(100deg,#7FB3F7 0%,#A9C9FB 42%,#F2A65A 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:0 auto;max-width:40ch;font-size:clamp(1.0625rem,2.1vw,1.375rem);
+  line-height:1.62;color:rgba(242,246,251,.76)}
+.hero .cta{margin-top:44px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+/* 좁은 화면.
+   `<br>` 은 그대로 둡니다 — 없애면 「하는 일.둘 다」처럼 마침표와 다음 문장이 붙습니다.
+   대신 글자를 줄여, 각 줄이 알아서 접히게 합니다. */
+@media (max-width:560px){
+  .hero p{font-size:.9375rem}
+  .hero .eyebrow{font-size:.75rem;letter-spacing:.1em}
+}
+.cue{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);
+  color:rgba(242,246,251,.42);font-size:.6875rem;letter-spacing:.16em;font-weight:700;
+  display:flex;flex-direction:column;align-items:center;gap:10px}
+.cue i{width:1px;height:36px;background:linear-gradient(rgba(242,246,251,.55),transparent);
+  display:block;animation:drop 2.2s var(--ease) infinite}
+@keyframes drop{
+  0%{transform:scaleY(0);transform-origin:top}
+  50%{transform:scaleY(1);transform-origin:top}
+  51%{transform:scaleY(1);transform-origin:bottom}
+  100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ==========================================================================
+   2. 브랜드 — 스크롤을 따라 선이 그려집니다
+   ========================================================================== */
+.seq{position:relative;background:var(--deep);color:var(--deep-ink)}
+.seq-track{height:400vh}                       /* 스크롤 길이를 주는 자리 */
+.seq-stick{position:sticky;top:0;height:100svh;display:grid;place-items:center;padding:0 24px}
+.seq-in{width:min(1020px,100%);display:grid;grid-template-columns:1fr 1fr;
+  gap:clamp(22px,4.5vw,56px);align-items:center}
+@media (max-width:880px){.seq-in{grid-template-columns:1fr;gap:18px}}
+
+.seq-eyebrow{font-size:.75rem;font-weight:800;letter-spacing:.08em;
+  color:rgba(242,246,251,.46);margin:0 0 clamp(18px,3.4vh,34px);text-align:center;
+  grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:12px}
+.seq-eyebrow::before,.seq-eyebrow::after{content:"";display:block;width:clamp(20px,4vw,44px);
+  height:1px;background:rgba(242,246,251,.2)}
+
+/* 도형을 담는 판 — 그림이 배경에 떠 있지 않고 「놓여」 보이게 합니다.
+   어두운 바탕 위의 어두운 판이라 테두리만으로는 안 보입니다. 위에서 옅게 빛을 줍니다. */
+.seq-card{border:1px solid rgba(242,246,251,.16);border-radius:clamp(18px,2.4vw,26px);
+  background:linear-gradient(180deg,rgba(242,246,251,.075),rgba(242,246,251,.02));
+  padding:clamp(18px,3vw,34px) clamp(14px,2.4vw,28px);
+  display:grid;place-items:center}
+.seq-fig svg{width:100%;height:auto;display:block;max-height:36svh}
+
+/* pathLength=1 로 맞춰 두어 0~1 로 그립니다.
+   opacity 를 함께 쓰는 이유 — 선 끝이 둥글어서(stroke-linecap:round),
+   아직 안 그린 선도 **점 하나로 보입니다.** 그리기 전에는 아예 감춥니다. */
+.seq path[data-draw]{stroke-dasharray:1;stroke-dashoffset:1;opacity:0;
+  transition:stroke-dashoffset 1.15s var(--ease),opacity .28s linear}
+.seq path.on{stroke-dashoffset:0;opacity:1}
+
+/* 간극 표시 — 낮은 지면 끝에서 높은 지면 시작까지의 **어긋난 만큼**을 ㄱ 자로 재고,
+   글자는 그 아래 빈 곳에 둡니다.
+   예전에는 두 지면을 잇는 빗금 한가운데에 「간극」을 얹었는데,
+   글자가 선 위에 올라앉아 둘 다 읽히지 않았습니다. 겹치지 않는 자리로 내렸습니다. */
+.gapline{stroke:#F2A65A;stroke-width:1.4;stroke-dasharray:2.6 3;fill:none;opacity:0;
+  stroke-linecap:round;transition:opacity .55s var(--ease)}
+.gapline.on{opacity:.85}
+.gaplb{fill:#F2A65A;font-size:3.6px;font-weight:800;text-anchor:middle;opacity:0;
+  letter-spacing:.06em;transition:opacity .55s var(--ease)}
+.gaplb.on{opacity:1}
+
+/* 지금까지 모인 것 — 점 네 개 대신, 걸음마다 하나씩 켜지는 이름표입니다.
+   점은 「몇 번째인지」만 말하고, 이름표는 「무엇이 켜졌는지」까지 말합니다. */
+.seq-legend{list-style:none;margin:clamp(14px,2.2vh,22px) 0 0;padding:0;
+  display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.seq-legend li{display:inline-flex;align-items:center;gap:7px;font-size:.75rem;font-weight:700;
+  padding:7px 13px;border-radius:999px;border:1px solid rgba(242,246,251,.12);
+  color:rgba(242,246,251,.34);
+  transition:color .45s var(--ease),border-color .45s var(--ease),background .45s var(--ease)}
+.seq-legend li i{width:14px;height:4px;border-radius:2px;flex:none;
+  background:currentColor;opacity:.45;transition:opacity .45s var(--ease),background .45s var(--ease)}
+.seq-legend li.on{color:var(--deep-ink);border-color:rgba(242,246,251,.3);
+  background:rgba(242,246,251,.07)}
+.seq-legend li.on i{opacity:1;background:var(--sw)}
+
+.seq-caps{position:relative;min-height:262px}
+.cap{position:absolute;inset:0;opacity:0;transform:translateY(18px);
+  transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.cap.on{opacity:1;transform:none}
+.cap .no{display:inline-flex;align-items:center;gap:9px;font-size:.6875rem;font-weight:800;
+  letter-spacing:.15em;color:rgba(242,246,251,.46);margin-bottom:14px}
+.cap .no b{font-variant-numeric:tabular-nums;font-size:.8125rem;letter-spacing:.04em;
+  color:var(--deep-ink)}
+.cap .no i{display:block;width:26px;height:4px;border-radius:2px;background:var(--sw)}
+.cap h3{margin:0 0 14px;font-size:clamp(1.5rem,3.4vw,2.25rem);letter-spacing:-.03em;line-height:1.2}
+.cap p{margin:0;font-size:1.0313rem;line-height:1.74;color:rgba(242,246,251,.74);max-width:36ch}
+.cap p b{color:var(--deep-ink);font-weight:700}
+@media (max-width:880px){
+  .seq-caps{min-height:230px;text-align:center}
+  .cap p{margin:0 auto}
+  .cap .no{justify-content:center}
+  .seq-fig svg{max-height:28svh}
+}
+
+/* ==========================================================================
+   3. 숫자
+   ========================================================================== */
+.figures{padding:clamp(76px,11vw,136px) 0}
+.figures h2{margin:0 0 10px;font-size:clamp(1.75rem,4.2vw,2.75rem);letter-spacing:-.035em;
+  text-align:center;line-height:1.2}
+.figures .sub{margin:0 auto 58px;text-align:center;color:var(--leap-gray);max-width:46ch;
+  font-size:1.0313rem}
+.figs{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(16px,2.6vw,30px)}
+@media (max-width:860px){.figs{grid-template-columns:repeat(2,1fr);row-gap:40px}}
+@media (max-width:460px){.figs{grid-template-columns:1fr}}
+.fig{text-align:center}
+.fig .n{font-size:clamp(2.25rem,5.4vw,3.5rem);font-weight:800;letter-spacing:-.045em;
+  line-height:1.05;font-variant-numeric:tabular-nums}
+.fig .n u{text-decoration:none;font-size:.4em;font-weight:700;margin-left:4px;
+  letter-spacing:0;vertical-align:.14em}
+.fig:nth-child(1) .n{color:var(--leap-blue)}
+.fig:nth-child(2) .n{color:var(--leap-teal)}
+.fig:nth-child(3) .n{color:var(--leap-amber)}
+.fig:nth-child(4) .n{color:var(--leap-ink)}
+.fig .k{margin-top:12px;font-weight:700;font-size:.9375rem}
+.fig .d{margin-top:5px;font-size:.8125rem;color:var(--leap-gray);line-height:1.6}
+
+/* ==========================================================================
+   절 공통
+   ========================================================================== */
+.band{padding:clamp(76px,11vw,136px) 0}
+.band.alt{background:var(--leap-surface)}
+.head{margin-bottom:clamp(34px,5vw,58px)}
+.head .eyebrow{font-size:.75rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--leap-blue);margin:0 0 12px}
+.head h2{margin:0 0 14px;font-size:clamp(1.75rem,4.2vw,2.75rem);letter-spacing:-.035em;line-height:1.2}
+.head p{margin:0;color:var(--leap-gray);font-size:1.0313rem;max-width:56ch;line-height:1.74}
+.head p b{color:var(--leap-ink)}
+
+/* 대시보드 */
+.feature{background:var(--leap-surface);border:1px solid var(--leap-border);
+  border-radius:clamp(18px,2.6vw,28px);box-shadow:var(--leap-shadow-lg);overflow:hidden;
+  display:grid;grid-template-columns:1.02fr .98fr}
+.band.alt .feature{background:var(--leap-bg)}
+@media (max-width:900px){.feature{grid-template-columns:1fr}}
+.feature .body{padding:clamp(26px,3.6vw,44px)}
+.feature h3{margin:0;font-size:clamp(1.375rem,2.8vw,1.75rem);letter-spacing:-.028em}
+.feature .ver{font-size:.8125rem;color:var(--leap-gray);font-weight:700;margin-top:8px;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.feature .ver i{font-style:normal;color:var(--leap-teal);font-weight:800}
+.feature .lead{margin:18px 0 0;font-size:1.0313rem;line-height:1.74}
+.feature ul{margin:20px 0 0;padding-left:20px;font-size:.9375rem;color:var(--leap-gray);line-height:1.8}
+.feature ul li{margin-bottom:9px}
+.feature ul b{color:var(--leap-ink);font-weight:700}
+.feature .go{margin-top:28px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.feature .side{background:var(--tint-blue);padding:clamp(22px,3vw,34px);
+  display:flex;flex-direction:column;justify-content:center;border-left:1px solid var(--leap-border)}
+@media (max-width:900px){.feature .side{border-left:0;border-top:1px solid var(--leap-border)}}
+.feature .side svg{display:block;width:100%;height:auto;max-height:340px}
+.feature .side .cap2{font-size:.8125rem;color:var(--leap-gray);margin-top:14px;line-height:1.65}
+.mini .dot{fill:var(--leap-blue);opacity:.55}
+/* 시군 면. 라이트·다크 어느 쪽에서도 배경과 갈리도록 **같은 색을 옅게 깔고 진하게 두릅니다** —
+   고정색을 쓰면 한쪽 테마에서 반드시 묻힙니다. */
+.mini .sg{fill:var(--leap-blue);fill-opacity:.16;stroke:var(--leap-blue);
+  stroke-width:.7;stroke-linejoin:round}
+.mini .lb{fill:var(--leap-ink);font-size:8px;font-weight:700;text-anchor:middle}
+.mini .lbs text{paint-order:stroke;stroke:var(--tint-blue);stroke-width:2.6px;stroke-linejoin:round}
+
+/* 앱 카드 */
+.apps{display:grid;gap:clamp(14px,2vw,20px);grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.app{background:var(--leap-surface);border:1px solid var(--leap-border);
+  border-radius:clamp(16px,2.2vw,22px);padding:clamp(22px,2.8vw,30px);
+  box-shadow:var(--leap-shadow);display:flex;flex-direction:column;
+  transition:transform .5s var(--ease),box-shadow .5s var(--ease),border-color .5s var(--ease)}
+.band.alt .app{background:var(--leap-bg)}
+.app:hover{transform:translateY(-5px);box-shadow:var(--leap-shadow-lg);border-color:var(--leap-blue)}
+.app-h{display:flex;align-items:flex-start;gap:14px;margin-bottom:15px}
+/* 〔v0.6〕 앱마다 **그 앱의 마크**가 들어갑니다.
+   여기 있던 것은 시계·말풍선 같은 일반 그림이라, 앱을 열었을 때 머리에 뜨는
+   마크와 달랐습니다. 같은 것을 두 얼굴로 보여 준 셈입니다.
+   마크는 저마다 색이 박혀 있으므로 바탕만 짙은 남색으로 통일합니다 —
+   앱 화면의 머리(파란 띠) 위에서 보던 것과 같은 자리가 됩니다. */
+.app-ico{flex:none;width:52px;height:52px;border-radius:15px;display:grid;place-items:center;
+  background:#16233A}
+:root[data-theme="dark"] .app-ico{background:#0F1822}
+.app-ico svg{display:block}
+.app-h .t{min-width:0;flex:1 1 auto}
+.app-h h3{margin:0;font-size:1.125rem;letter-spacing:-.024em;line-height:1.35}
+.app-h .ver{font-size:.75rem;color:var(--leap-gray);font-weight:700;margin-top:4px;
+  display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.app-h .ver i{font-style:normal;color:var(--leap-teal);font-weight:800}
+.app > .lead{margin:0 0 16px;font-size:.9375rem;line-height:1.7}
+.app .who{background:var(--leap-hairline);border-radius:var(--leap-radius-sm);padding:12px 14px;
+  margin:0 0 18px;font-size:.8125rem;color:var(--leap-gray);line-height:1.65}
+.app .who b{color:var(--leap-ink)}
+.app .go{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+.btn{font-weight:700;padding:13px 26px;min-height:48px;border-radius:999px;
+  border:1px solid var(--leap-blue);background:var(--leap-blue);color:var(--leap-on-fill);
+  cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease),filter .3s var(--ease)}
+.btn:hover{filter:brightness(1.1);box-shadow:0 10px 26px rgba(27,79,160,.3);transform:translateY(-2px)}
+.btn--ghost{background:transparent;color:var(--leap-gray);border-color:var(--leap-border)}
+.btn--ghost:hover{background:var(--leap-hairline);box-shadow:none;filter:none;color:var(--leap-ink)}
+.btn--sm{padding:9px 17px;min-height:42px;font-size:.8125rem}
+.btn--light{background:#fff;border-color:#fff;color:#0B1420}
+.btn--light:hover{box-shadow:0 12px 32px rgba(0,0,0,.34)}
+.btn--onDeep{background:transparent;border-color:rgba(255,255,255,.34);color:#fff}
+.btn--onDeep:hover{background:rgba(255,255,255,.12);box-shadow:none;filter:none}
+
+/* ==========================================================================
+   연구소 — 아직 오지 않은 앱들의 자리
+
+   여기 있는 칸은 「빈 칸」이 아니라 **비워 둔 칸**입니다.
+   그렇게 보이도록 점선으로 두르고, 눌리지 않게 두었습니다.
+   앱이 생기면 아래 6장 주석대로 <a class="link"> 로 바꿔 끼우면 됩니다.
+   ========================================================================== */
+.links{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(258px,1fr))}
+.link{display:flex;gap:14px;align-items:flex-start;background:var(--leap-surface);
+  border:1px solid var(--leap-border);border-radius:var(--leap-radius);padding:20px 22px;
+  text-decoration:none;color:inherit;
+  transition:border-color .4s var(--ease),box-shadow .4s var(--ease),transform .4s var(--ease)}
+.band.alt .link{background:var(--leap-bg)}
+a.link:hover{border-color:var(--leap-blue);box-shadow:var(--leap-shadow);transform:translateY(-2px)}
+.link .ico{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+  background:var(--leap-hairline);color:var(--leap-gray)}
+.link b{display:block;font-size:.9375rem;letter-spacing:-.014em}
+.link span{display:block;font-size:.8125rem;color:var(--leap-gray);margin-top:4px;line-height:1.6}
+.link.empty{border-style:dashed;background:transparent;box-shadow:none}
+.link.empty b{color:var(--leap-gray)}
+.link.empty .ico{background:transparent;border:1px dashed var(--leap-border)}
+
+/* 마지막 한마디 — 점선 칸들 아래에 놓입니다 */
+.closing{margin-top:clamp(34px,5vw,58px);border-top:1px solid var(--leap-border);
+  padding-top:clamp(30px,4.5vw,50px);text-align:center}
+.closing p{margin:0 auto;max-width:34ch;font-size:clamp(1.125rem,2.6vw,1.5rem);
+  line-height:1.6;letter-spacing:-.024em;font-weight:700;text-wrap:balance}
+.closing p b{color:var(--leap-blue)}
+.closing .sub{margin-top:16px;max-width:44ch;font-size:.9375rem;font-weight:400;
+  color:var(--leap-gray);line-height:1.78;letter-spacing:0;text-wrap:pretty}
+
+/* ==========================================================================
+   꼬리
+   ========================================================================== */
+footer.foot{background:var(--deep);color:var(--deep-ink);padding:clamp(60px,8vw,92px) 0 46px}
+.foot-top{display:grid;grid-template-columns:1fr auto;gap:30px;align-items:start;
+  padding-bottom:34px;border-bottom:1px solid rgba(242,246,251,.13)}
+@media (max-width:700px){.foot-top{grid-template-columns:1fr}}
+.foot-brand{display:flex;gap:17px;align-items:flex-start}
+.foot-brand svg{flex:none}
+.foot-brand .nm{font-weight:800;font-size:1.125rem;letter-spacing:-.02em}
+.foot-brand .og{font-size:.8125rem;color:rgba(242,246,251,.6);margin-top:4px;line-height:1.6}
+.foot-brand .ds{font-size:.875rem;color:rgba(242,246,251,.74);margin-top:12px;
+  line-height:1.7;max-width:44ch}
+.maker{font-size:.875rem;line-height:1.85;color:rgba(242,246,251,.74);text-align:right}
+@media (max-width:700px){.maker{text-align:left}}
+.maker .lb{font-size:.6875rem;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(242,246,251,.42);font-weight:700;display:block;margin-bottom:7px}
+.maker b{color:var(--deep-ink);font-size:1.0625rem;font-weight:700}
+.maker a{color:#7FB3F7;text-decoration:none}
+.maker a:hover{text-decoration:underline}
+.foot-bot{padding-top:26px;font-size:.8125rem;color:rgba(242,246,251,.52);line-height:1.9}
+.foot-bot .cc{color:rgba(242,246,251,.8)}
+
+/* ==========================================================================
+   움직임을 줄여 달라고 하신 분께
+   ========================================================================== */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
+    transition-duration:.01ms!important}
+  .js .rise{opacity:1!important;transform:none!important}
+  .hero-in > *{animation:none}
+  .app:hover,.btn:hover,.link:hover{transform:none}
+  /* 순서대로 나타나던 절은 한 번에 전부 보여 드립니다 */
+  .seq-track{height:auto}
+  .seq-stick{position:static;height:auto;padding:80px 24px}
+  .seq-in{grid-template-columns:1fr}
+  .seq-fig svg{max-height:none}
+  .seq-caps{min-height:0;display:grid;gap:34px}
+  .cap{position:static;opacity:1;transform:none}
+  .cue{display:none}
+}
+
+/* 인쇄 — 화면용 페이지라 A4 편집은 하지 않습니다.
+   그래도 눌렀을 때 읽을 수는 있게 해 둡니다. */
+@media print{
+  .nav,.cue,.hero .ghost,.themebtn,.go,.skip{display:none!important}
+  .seq-card{border-color:#999!important;background:#fff!important}
+  .seq-fig svg{max-height:none}
+  .seq-legend{display:none}
+  .hero,.seq,footer.foot{background:#fff!important;color:#000!important;min-height:0}
+  .hero-in{padding:0 0 20px}
+  .hero .grad{-webkit-text-fill-color:#000;color:#000}
+  .hero p,.cap p,.maker,.foot-bot,.foot-brand .ds,.foot-brand .og{color:#333!important}
+  .seq-track{height:auto}
+  .seq-stick{position:static;height:auto;padding:0}
+  .seq-caps{min-height:0;display:grid;gap:14px}
+  .cap{position:static;opacity:1;transform:none}
+  .band,.figures{padding:16px 0}
+  .app,.rule,.link,.feature,.note{box-shadow:none!important;border:1px solid #999!important;
+    break-inside:avoid;background:#fff!important}
+  .js .rise{opacity:1!important;transform:none!important}
+  .hero-in > *{animation:none}
+}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<!-- ============================== 머리 ============================== -->
+<nav class="nav" id="nav" aria-label="주 메뉴">
+  <div class="nav-in">
+    <a class="nav-home" href="#top">
+      <svg class="mk" viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke-linecap="round">
+        <path d="M7 52 H25" stroke="#97A3B0" stroke-width="6.5"/>
+        <path d="M39 36 H57" stroke="#F2A65A" stroke-width="6.5"/>
+        <path d="M16 46 Q32 -10 48 30" stroke="#7FB3F7" stroke-width="7"/>
+      </svg>
+      <span class="nm">TEAM LEAP<span>경북교육 AI Lab · AI 활용 분과</span></span>
+      <span class="leap-sr">— 맨 위로</span>
+    </a>
+
+    <div class="nav-links" id="nav-links">
+      <a href="#brand">심볼</a>
+      <a href="#figures">숫자</a>
+      <a href="#dashboard">대시보드</a>
+      <a href="#apps">교실 도구</a>
+      <a href="#lab">연구소</a>
+    </div>
+
+    <span class="sp"></span>
+    <div id="visitor-count" style="display:flex;align-items:center;margin-right:16px;font-size:0.875rem;font-weight:700;color:var(--leap-gray);">
+      <span style="color:#22c55e;margin-right:4px;">●</span> 오늘 접속자: 0명 | 누적 접속자수: 0명
+    </div>
+    <button class="themebtn" id="btn-theme" type="button">어둡게 보기</button>
+  </div>
+</nav>
+
+<!-- ============================== 1. 표제 ============================== -->
+<header class="hero" id="top">
+  <svg class="ghost" viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke-linecap="round">
+    <path d="M7 52 H25" stroke="#fff" stroke-width="6.5"/>
+    <path d="M39 36 H57" stroke="#fff" stroke-width="6.5"/>
+    <path d="M16 46 Q32 -10 48 30" stroke="#fff" stroke-width="7"/>
+  </svg>
+
+  <div class="hero-in">
+    <p class="eyebrow">경상북도교육청 인공지능 연구소 · 학령인구 감소 대응</p>
+
+    <svg class="mark" viewBox="0 0 64 64" role="img"
+         aria-label="TEAM LEAP 심볼 — 낮은 지면에서 호를 그려 높은 지면에 닿는 모양"
+         fill="none" stroke-linecap="round">
+      <path d="M7 52 H25"  stroke="#97A3B0" stroke-width="6.5"/>
+      <path d="M39 36 H57" stroke="#F2A65A" stroke-width="6.5"/>
+      <path d="M16 46 Q32 -10 48 30" stroke="#7FB3F7" stroke-width="7"/>
+    </svg>
+
+    <h1>작아지는 학교,<br><span class="grad">넓어지는 교육</span></h1>
+    <p>줄어드는 것을 보는 일과, 줄어든 교실에서 하는 일.<br>둘 다 필요합니다.</p>
+
+    <div class="cta">
+      <a class="btn btn--light" href="#dashboard">대시보드 보기</a>
+      <a class="btn btn--onDeep" href="#apps">교실 도구 9종</a>
+    </div>
+  </div>
+
+  <div class="cue" aria-hidden="true"><span>SCROLL</span><i></i></div>
+</header>
+
+<main id="main">
+
+<!-- ============================== 2. 브랜드 ============================== -->
+<section class="seq" id="brand" aria-labelledby="brand-h">
+  <h2 id="brand-h" class="leap-sr">브랜드 — 선 세 개가 뜻하는 것</h2>
+
+  <div class="seq-track" id="seq-track">
+    <div class="seq-stick">
+      <div class="seq-in">
+
+        <p class="seq-eyebrow">선 세 개가 뜻하는 것</p>
+
+        <div class="seq-fig">
+          <div class="seq-card">
+            <!-- viewBox 를 도형에 바짝 붙여 잘랐습니다 (원본은 0 0 64 64).
+                 판 안에서 그림이 작게 떠 있으면 판만 보이고 그림은 안 보입니다. -->
+            <svg viewBox="2 8 60 53" role="img"
+                 aria-label="심볼이 뜻하는 것 — 낮은 지면은 지금 서 있는 자리, 두 지면 사이의 간극은 학령인구 감소, 호는 도약, 높은 지면은 도달하는 곳입니다."
+                 fill="none" stroke-linecap="round">
+              <!-- 두 지면이 어긋난 만큼을 ㄱ 자로 잽니다. 글자는 선을 피해 아래에 둡니다. -->
+              <path class="gapline" id="g-gap" d="M29.5 52 H39 V40.5"/>
+              <text class="gaplb" id="g-gaplb" x="34.2" y="58.2">간극</text>
+              <path id="g-low"  data-draw pathLength="1" d="M7 52 H25"
+                    stroke="#97A3B0" stroke-width="6.5"/>
+              <path id="g-arc"  data-draw pathLength="1" d="M16 46 Q32 -10 48 30"
+                    stroke="#7FB3F7" stroke-width="7"/>
+              <path id="g-high" data-draw pathLength="1" d="M39 36 H57"
+                    stroke="#F2A65A" stroke-width="6.5"/>
+            </svg>
+          </div>
+
+          <ul class="seq-legend" id="seq-legend" aria-hidden="true">
+            <li style="--sw:#97A3B0"><i></i>낮은 지면</li>
+            <li style="--sw:#F2A65A"><i></i>간극</li>
+            <li style="--sw:#7FB3F7"><i></i>호</li>
+            <li style="--sw:#F2A65A"><i></i>높은 지면</li>
+          </ul>
+        </div>
+
+        <div class="seq-caps" id="seq-caps">
+          <div class="cap on" data-step="0" style="--sw:#97A3B0">
+            <div class="no"><i></i><b>01</b> 낮은 지면</div>
+            <h3>지금 서 있는 자리</h3>
+            <p>작아진 학급, 두 학년을 한 교실에서 가르치는 복식수업,
+               학교 두 곳을 도는 교사. 지금 교실이 놓인 자리입니다.</p>
+          </div>
+          <div class="cap" data-step="1" style="--sw:#F2A65A">
+            <div class="no"><i></i><b>02</b> 두 지면 사이</div>
+            <h3>학령인구 감소</h3>
+            <p>이 간극이 우리가 받은 주제입니다.
+               <b>그런데 심볼은 이것을 그리지 않습니다.</b>
+               줄어드는 선도, 내려가는 화살표도 없습니다.</p>
+          </div>
+          <div class="cap" data-step="2" style="--sw:#7FB3F7">
+            <div class="no"><i></i><b>03</b> 호</div>
+            <h3>도약</h3>
+            <p>주제는 감소지만 우리가 하는 일은 <b>대응</b>입니다.
+               간극을 그리는 대신, 그것을 건너는 선을 그렸습니다.</p>
+          </div>
+          <div class="cap" data-step="3" style="--sw:#F2A65A">
+            <div class="no"><i></i><b>04</b> 높은 지면</div>
+            <h3>도달하는 곳</h3>
+            <p>건너간 자리는 원래 있던 자리보다 높습니다.
+               작아진 교실이 <b>모자란 교실이 되지 않게</b> 하는 것,
+               여기 있는 아홉이 향하는 곳입니다.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== 3. 숫자 ============================== -->
+<section class="figures" id="figures" aria-labelledby="fig-h">
+  <div class="wrap">
+    <h2 id="fig-h" class="rise">경상북도, 지금</h2>
+    <p class="sub rise" data-d="1">교육부 학교알리미 2026년 공시 자료입니다.</p>
+    <div class="figs">
+      <div class="fig rise" data-d="1">
+        <div class="n"><span data-count="917">917</span><u>곳</u></div>
+        <div class="k">경상북도 초·중·고</div>
+        <div class="d">초 474 · 중 260 · 고 183</div>
+      </div>
+      <div class="fig rise" data-d="2">
+        <div class="n"><span data-count="227484">227,484</span><u>명</u></div>
+        <div class="k">2026 재학생</div>
+        <div class="d">초 101,176 · 중 63,119 · 고 63,189</div>
+      </div>
+      <div class="fig rise" data-d="3">
+        <div class="n"><span data-count="10">10</span><u>종</u></div>
+        <div class="k">대시보드 1 + 교실 도구 9</div>
+        <div class="d">인터넷 없이 열립니다</div>
+      </div>
+      <div class="fig rise" data-d="4">
+        <div class="n"><span data-count="22">22</span><u>곳</u></div>
+        <div class="k">시군 전체</div>
+        <div class="d">군위는 2023년 대구로</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== 4. 대시보드 ============================== -->
+<section class="band alt" id="dashboard" aria-labelledby="dash-h">
+  <div class="wrap">
+    <div class="head rise">
+      <p class="eyebrow">보는 것</p>
+      <h2 id="dash-h">경북 학령인구 데이터 플랫폼</h2>
+      <p>무엇이 얼마나 줄어들고 있는가. 시군을 고르고 기준을 바꿔 가며,
+         학교 수·학급 수·학급당 학생 수가 어떻게 달라지는지 봅니다.</p>
+    </div>
+
+    <article class="feature rise" data-d="1">
+      <div class="body">
+        <h3>학령인구 대시보드</h3>
+        <div class="ver">프로토타입</div>
+        <p class="lead">시군을 고르고 기준을 바꿔 가며,
+           <b>학교 수·학급 수·학급당 학생 수</b>가 어떻게 달라지는지 봅니다.</p>
+        <ul>
+          <li>학교 <b>917곳</b>의 이름·위치·학년별 학생 수·학급 수를 그대로 볼 수 있습니다</li>
+          <li>지도에서 <b>시군을 눌러</b> 그 지역만 따로 봅니다</li>
+          <li>시뮬레이터는 <b>무엇을 고정하고 무엇을 결과로 볼지</b>를 고릅니다 —
+              학교 수를 정하면 학급당 평균이 나오고, 학급당을 정하면 필요한 학교 수가 나옵니다</li>
+        </ul>
+        <div class="go">
+          <a class="btn" href="./06.%20실행계획(1)/prototype/index.html">대시보드 열기</a>
+          <a class="btn btn--ghost btn--sm" href="./06.%20실행계획(1)/prototype/README.html">설명서</a>
+        </div>
+      </div>
+
+      <div class="side">
+        <svg class="mini" viewBox="0 0 300 330" role="img"
+             aria-label="경상북도 시군 22곳의 위치를 점으로 찍은 작은 지도. 자세한 내용은 대시보드에 있습니다.">
+          <g id="mini-map"></g>
+        </svg>
+        <p class="cap2">경상북도 22개 시군 · 학교 917곳.<br>
+           가운데가 비어 있는 것은 <b>군위</b>입니다. 2023년 대구로 넘어갔습니다.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============================== 5. 앱 9종 ============================== -->
+<section class="band" id="apps" aria-labelledby="apps-h">
+  <div class="wrap">
+    <div class="head rise">
+      <p class="eyebrow">하는 것</p>
+      <h2 id="apps-h">교실 도구 9종</h2>
+      <p>학급이 작아지면 생기는 문제는 큰 학급의 축소판이 아니라 <b>다른 문제</b>입니다.
+         그 문제 하나씩에 도구 하나씩입니다.</p>
+    </div>
+
+    <div class="apps">
+
+      <article class="app a rise" data-d="1">
+        <div class="app-h">
+          <span class="app-ico" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="30" height="30" aria-hidden="true" fill="none"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 56 H60" stroke="#97A3B0" stroke-width="3.5"/>
+          <path d="M6 56 V40 L16 31 L26 40 V56" stroke="#7FB3F7" stroke-width="5"/>
+          <path d="M38 56 V44 L48 35 L58 44 V56" stroke="#F2A65A" stroke-width="5"/>
+          <path d="M16 23 Q33 4 48 27" stroke="#FFFFFF" stroke-width="4.5" stroke-dasharray="0.5 8.5"/>
+        </svg>
+          </span>
+          <div class="t">
+            <h3>순회교사 통합 시간표</h3>
+            <div class="ver">앱 A · v0.3</div>
+          </div>
+        </div>
+        <p class="lead">학교 두세 곳의 시간표를 <b>한 장</b>에 놓고 봅니다.
+           학교 사이 <b>이동 시간이 모자란 자리</b>를 미리 잡아 줍니다.</p>
+        <div class="who"><b>이런 분께</b> — 학교 두 곳 이상을 도는 순회·겸임 교사</div>
+        <div class="go">
+          <a class="btn" href="./08.%20실행계획(3)/apps/a-circuit/index.html">열기</a>
+          <a class="btn btn--ghost btn--sm" href="./08.%20실행계획(3)/apps/a-circuit/README.html">설명서</a>
+        </div>
+      </article>
+
+      <article class="app b rise" data-d="2">
+        <div class="app-h">
+          <span class="app-ico" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="30" height="30" aria-hidden="true" fill="none"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 30 H53 V54 H11 Z" stroke="#7FB3F7" stroke-width="5"/>
+          <path d="M22 30 V24 H42 V30" stroke="#97A3B0" stroke-width="4"/>
+          <path d="M24 42 H40" stroke="#7FB3F7" stroke-width="4"/>
+          <path d="M27 15 L32 8 L37 15" stroke="#F2A65A" stroke-width="4.5"/>
+          <path d="M32 8 V22" stroke="#F2A65A" stroke-width="4.5"/>
+        </svg>
+          </span>
+          <div class="t">
+            <h3>학급 회의</h3>
+            <div class="ver">앱 B · v0.4</div>
+          </div>
+        </div>
+        <p class="lead">학급 회의에서 <b>누가 무슨 의견인지 드러나지 않게</b> 의견을 모으고
+           투표하고, 정한 약속을 지켜 나갑니다.</p>
+        <div class="who"><b>이런 분께</b> — 학급 회의를 하고 싶지만 아이들이 눈치를 보는 담임</div>
+        <div class="go">
+          <a class="btn" href="./08.%20실행계획(3)/apps/b-classboard/index.html">열기</a>
+          <a class="btn btn--ghost btn--sm" href="./08.%20실행계획(3)/apps/b-classboard/README.html">설명서</a>
+        </div>
+      </article>
+
+      <article class="app c rise" data-d="3">
+        <div class="app-h">
+          <span class="app-ico" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="30" height="30" aria-hidden="true" fill="none"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="#7FB3F7" stroke-width="4.5"
+                d="M7 19 C15 15 25 16 32 21 C39 16 49 15 57 19 V49 C49 45 39 46 32 51 C25 46 15 45 7 49 Z"/>
+          <path stroke="#97A3B0" stroke-width="3.5" d="M32 21 V51"/>
+          <path stroke="#F2A65A" stroke-width="3.6" stroke-dasharray="0.5 6"
+                d="M15 42 Q24 30 32 34 Q41 40 49 28"/>
+          <circle cx="49" cy="28" r="3.6" fill="#F2A65A"/>
+        </svg>
+          </span>
+          <div class="t">
+            <h3>지역 탐방 디지털 스토리북</h3>
+            <div class="ver">앱 C · v0.8</div>
+          </div>
+        </div>
+        <p class="lead">체험학습 사진과 글로 <b>학생이 직접 책을 만듭니다.</b>
+           쪽마다 어디인지가 붙고, 그것이 모여 <b>탐방 지도</b> 한 장이 됩니다.</p>
+        <div class="who"><b>이런 분께</b> — 지역 탐방·현장학습 결과물을 남기고 싶은 담임</div>
+        <div class="who"><b>이런 분께</b> — 프로젝트를 하고 싶지만 계획서 쓸 시간이 없는 선생님</div>
+        <div class="go">
+          <a class="btn" href="./08.%20실행계획(3)/apps/c-storybook/index.html">열기</a>
+          <a class="btn btn--ghost btn--sm" href="./08.%20실행계획(3)/apps/c-storybook/README.html">설명서</a>
+        </div>
+      </article>
+
+      <article class="app d rise" data-d="1">
+        <div class="app-h">
+          <span class="app-ico" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="30" height="30" aria-hidden="true" fill="none" stroke-linecap="round">
+          <path d="M8 17 H34"  stroke="#7FB3F7" stroke-width="7"/>
+          <path d="M30 47 H56" stroke="#97A3B0" stroke-width="7"/>
+          <path d="M20 24 Q10 32 20 40" stroke="#F2A65A" stroke-width="4.2"/>
+          <path d="M44 40 Q54 32 44 24" stroke="#F2A65A" stroke-width="4.2"/>
+          <circle cx="32" cy="32" r="4.6" fill="#F2A65A"/>
+        </svg>
+          </span>
+          <div class="t">
+            <h3>복식학급 수업 도우미</h3>
+            <div class="ver">앱 D · v0.6</div>
+          </div>
+        </div>
+        <p class="lead">두 학년을 한 교실에서 가르치는 <b>복식수업 한 차시</b>를 짭니다.
+           시간 배치·활동·학습지·지도안까지.</p>
+        <div class="who"><b>이런 분께</b> — 복식학급 담임. 지금도 종이에 손으로 짜고 계신 분</div>
+        <div class="go">
+          <a class="btn" href="./08.%20실행계획(3)/apps/d-multigrade/index.html">열기</a>
+          <a class="btn btn--ghost btn--sm" href="./08.%20실행계획(3)/apps/d-multigrade/README.html">설명서</a>
+        </div>
+      </article>
+
+      <article class="app e rise" data-d="2">
+        <div class="app-h">
+          <span class="app-ico" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="30" height="30" aria-hidden="true" fill="none" stroke-linecap="round">
+          <circle cx="32" cy="32" r="23" stroke="#F2A65A" stroke-width="3" stroke-dasharray="0.5 7"/>
+          <path stroke="#7FB3F7" stroke-width="6.5" d="M13 40 V27 L21 20 L29 27 V40"/>
+          <path stroke="#97A3B0" stroke-width="6.5" d="M35 44 V33 L43 26 L51 33 V44"/>
+        </svg>
+          </span>
+          <div class="t">
+            <h3>이웃 학교 함께하기</h3>
+            <div class="ver">앱 E · v0.5</div>
+          </div>
+        </div>
+        <p class="lead">작은 학교가 <b>혼자서는 못 하는 일</b>을 가까운 학교와 함께 하도록.
+           거리로 이웃을 찾고, 버스와 비용을 나눠 셈하고, <b>제안서를 종이로</b> 뽑습니다.</p>
+        <div class="who"><b>이런 분께</b> — 버스 한 대를 못 채워 체험학습을 접어 본 소규모학교 선생님</div>
+        <div class="go">
+          <a class="btn" href="./08.%20실행계획(3)/apps/e-together/index.html">열기</a>
+          <a class="btn btn--ghost btn--sm" href="./08.%20실행계획(3)/apps/e-together/README.html">설명서</a>
+        </div>
+      </article>
+
+      <article class="app f rise" data-d="3">
+        <div class="app-h">
+          <span class="app-ico" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="30" height="30" aria-hidden="true" fill="none"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 9 H50 V55 H14 Z" stroke="#97A3B0" stroke-width="4.5"/>
+          <path d="M22 22 H35" stroke="#7FB3F7" stroke-width="5.5"/>
+          <path d="M22 32 H43" stroke="#F2A65A" stroke-width="5.5"/>
+          <path d="M22 42 H31" stroke="#7FB3F7" stroke-width="5.5"/>
+        </svg>
+          </span>
+          <div class="t">
+            <h3>수업 설계안 만들기</h3>
+            <div class="ver">앱 F · v0.5</div>
+          </div>
+        </div>
+        <p class="lead">성취기준을 축으로 <b>한 차시</b>를 짜고, <b>약안·세안 두 가지 종이</b>로 냅니다.
+           <b>시간이 넘치는 수업안은 만들어지지 않습니다.</b></p>
+        <div class="who"><b>이런 분께</b> — 나눠 맡을 동학년이 없어 전 교과를 혼자 짜는 선생님</div>
+        <div class="go">
+          <a class="btn" href="./08.%20실행계획(3)/apps/f-lessonplan/index.html">열기</a>
+          <a class="btn btn--ghost btn--sm" href="./08.%20실행계획(3)/apps/f-lessonplan/README.html">설명서</a>
+        </div>
+      </article>
+
+      <article class="app g rise" data-d="1">
+        <div class="app-h">
+          <span class="app-ico" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="30" height="30" aria-hidden="true" fill="none" stroke-linecap="round">
+          <rect x="9"  y="9"  width="19" height="19" rx="3" fill="#7FB3F7"/>
+          <rect x="36" y="9"  width="19" height="19" rx="3" fill="#7FB3F7" opacity=".45"/>
+          <rect x="9"  y="36" width="19" height="19" rx="3" fill="#F2A65A"/>
+          <rect x="36" y="36" width="19" height="19" rx="3" stroke="#97A3B0" stroke-width="3"/>
+          <path d="M39 52 L52 39" stroke="#97A3B0" stroke-width="3"/>
+        </svg>
+          </span>
+          <div class="t">
+            <h3>우리 반 데이터 보기</h3>
+            <div class="ver">앱 G · v0.4</div>
+          
+          </div>
+        </div>
+        <div class="who"><b>이런 분께</b> — 점수와 관찰이 수첩·종이에 흩어져 한 장으로 안 보이는 담임</div>
+        <div class="go">
+          <a class="btn" href="./08.%20실행계획(3)/apps/g-classdata/index.html">열기</a>
+          <a class="btn btn--ghost btn--sm" href="./08.%20실행계획(3)/apps/g-classdata/README.html">설명서</a>
+        </div>
+      </article>
+
+      <!-- 앱 H -->
+      <article class="app h rise" data-d="2">
+        <div class="app-h">
+          <span class="app-ico" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="28" height="28" aria-hidden="true" fill="none"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 52 V38 Q12 30 22 30 H42 Q52 30 52 38 V52" stroke="#7FB3F7" stroke-width="4.5"/>
+          <path d="M32 30 V14" stroke="#F2A65A" stroke-width="5"/>
+          <path d="M14 14 H50" stroke="#F2A65A" stroke-width="5"/>
+          <path d="M12 52 H20" stroke="#97A3B0" stroke-width="4.5"/>
+          <path d="M28 52 H36" stroke="#97A3B0" stroke-width="4.5"/>
+          <path d="M44 52 H52" stroke="#97A3B0" stroke-width="4.5"/>
+        </svg>
+          </span>
+          <div class="t">
+            <h3>프로젝트 학습 계획서</h3>
+            <div class="ver">앱 H · v0.1</div>
+          </div>
+        </div>
+        <div class="who"><b>이런 분께</b> — 프로젝트를 하고 싶지만 계획서 쓸 시간이 없는 선생님</div>
+        <div class="screens"><span>기본 정보</span><span>성취기준</span><span>개요</span><span>흐름</span><span>평가·예산</span></div>
+        <div class="go">
+          <a class="btn" href="./08.%20실행계획(3)/apps/h-project/index.html">열기</a>
+          <a class="btn btn--ghost btn--sm" href="./08.%20실행계획(3)/apps/h-project/README.html">설명서</a>
+        </div>
+      </article>
+
+      <!-- 앱 I -->
+      <article class="app i rise" data-d="3">
+        <div class="app-h">
+          <span class="app-ico" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="28" height="28" aria-hidden="true" fill="none"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 12 H50 V54 H14 Z" stroke="#97A3B0" stroke-width="4"/>
+          <path d="M25 12 V7 H39 V12" stroke="#97A3B0" stroke-width="4"/>
+          <path d="M22 26 l4 4 7-9" stroke="#7FB3F7" stroke-width="4"/>
+          <path d="M22 40 l4 4 7-9" stroke="#F2A65A" stroke-width="4"/>
+          <path d="M38 28 H44" stroke="#7FB3F7" stroke-width="3.5"/>
+          <path d="M38 42 H44" stroke="#F2A65A" stroke-width="3.5"/>
+        </svg>
+          </span>
+          <div class="t">
+            <h3>법정 의무교육 점검표</h3>
+            <div class="ver">앱 I · v0.5</div>
+          </div>
+        </div>
+        <div class="who"><b>이런 분께</b> — 3월에 범교과 학습 주제 운영 계획을 내야 하는 담임</div>
+        <div class="who"><b>이런 분께</b> — 3월에 범교과 학습 주제 운영 계획을 내야 하는 담임</div>
+        <div class="go">
+          <a class="btn" href="./08.%20실행계획(3)/apps/i-required/index.html">열기</a>
+          <a class="btn btn--ghost btn--sm" href="./08.%20실행계획(3)/apps/i-required/README.html">설명서</a>
+        </div>
+      </article>
+
+    </div>
+  
+  </div>
+</section>
+
+        <!-- ============================== 6. 연구소 ============================== -->
+    <section id="lab" class="sec">
+      <h2>연구소</h2>
+      <p>여기에 연구소 내용이 들어갑니다.</p>
+      <!-- 다른 앱이 생기면 그 자리에 이렇게 넣으세요 -->
+      <div class="link empty rise"></div>
+      <div class="link empty rise"></div>
+      <div class="link empty rise"></div>
+      <div class="closing">마지막 한마디 <a href="./08.%20실행계획(3)/apps/index.html">앱 카탈로그</a></div>
+    </section>
+
+    <!-- footer -->
+    <footer class="foot">
+      <div class="wrap foot-in">
+        <div class="foot-top">
+          <div class="brand">
+
+        <svg viewBox="0 0 64 64" width="44" height="44" aria-hidden="true"
+             fill="none" stroke-linecap="round">
+          <path d="M7 52 H25" stroke="#97A3B0" stroke-width="6.5"/>
+          <path d="M39 36 H57" stroke="#F2A65A" stroke-width="6.5"/>
+          <path d="M16 46 Q32 -10 48 30" stroke="#7FB3F7" stroke-width="7"/>
+        </svg>
+        <div>
+          <div class="nm">TEAM LEAP</div>
+          <div class="og">경상북도교육청 인공지능 연구소(GBE-AI Lab) · AI 활용 분과</div>
+          <div class="ds">2026년 과제 — 학령인구 감소 대응.<br>
+            대시보드 1종 + 교실 도구 9종.</div>
+        </div>
+      </div>
+
+
+      <div class="maker">
+        <span class="lb">제작</span>
+        <b>김정준</b><br>
+        포항양덕초등학교<br>
+        <a href="mailto:kimjj0709@gmail.com">kimjj0709@gmail.com</a>
+      </div>
+    </div>
+
+    <div class="foot-bot">
+      <span class="cc">© 2026 김정준 · TEAM LEAP.</span>
+      교육 목적에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다.<br>
+      학교 자료 출처: 학교알리미(www.schoolinfo.go.kr) · 공공누리 제1유형(출처표시)
+    </div>
+  </div>
+</footer>
+
+<script>
+'use strict';
+
+/* 「나타남」은 자바스크립트가 살아 있을 때만 켭니다.
+   꺼져 있으면 처음부터 다 보입니다 — 움직임이 정보를 나르면 안 됩니다. */
+var REDUCED = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!REDUCED) document.documentElement.classList.add('js');
+
+/* ---------- 테마 ---------- */
+(function () {
+  try {
+    var t = localStorage.getItem('leap-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+  var btn = document.getElementById('btn-theme');
+  function cur() {
+    var c = document.documentElement.getAttribute('data-theme');
+    return c || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  }
+  /* 아홉 앱·카탈로그·활용 가이드와 **같은 말**을 씁니다. 앱을 오갈 때
+     같은 자리의 단추가 다른 말을 하고 있으면 같은 단추로 보이지 않습니다. */
+  function label() {
+    var t = cur() === 'dark' ? '밝게 보기' : '어둡게 보기';
+    btn.textContent = t;
+    btn.setAttribute('title', '화면을 ' + t.replace(' 보기', '') + ' 바꿉니다');
+  }
+  btn.addEventListener('click', function () {
+    var next = cur() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('leap-theme', next); } catch (e) {}
+    label();
+  });
+  label();
+})();
+
+/* ---------- 머리말: 표제를 지나면 유리처럼 ---------- */
+(function () {
+  var nav = document.getElementById('nav');
+  var hero = document.querySelector('.hero');
+  function onScroll() {
+    nav.classList.toggle('solid', window.scrollY > (hero ? hero.offsetHeight - 80 : 200));
+  }
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+
+/* ---------- 머리말: 지금 보고 있는 절을 표시 ----------
+   IntersectionObserver 로 「보이는가」를 묻지 않고, **화면 위쪽 기준선을 누가 지났는가**로
+   판단합니다. 절 높이가 제각각(브랜드 절은 400vh, 대시보드는 한 화면)이라
+   보이는 것을 세면 짧은 절이 계속 밀립니다.
+   scroll 마다 계산하지 않고 rAF 로 한 번만 묶습니다. */
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('#nav-links a'));
+  if (!links.length) return;
+
+  var targets = links.map(function (a) {
+    return { a: a, el: document.getElementById(a.getAttribute('href').slice(1)) };
+  }).filter(function (t) { return t.el; });
+  if (!targets.length) return;
+
+  var cur = null, ticking = false;
+  function mark() {
+    ticking = false;
+    var line = 110;                    /* 고정된 머리 바로 아래 */
+    var hit = null;
+    targets.forEach(function (t) {
+      if (t.el.getBoundingClientRect().top <= line) hit = t;
+    });
+    /* 맨 아래까지 내려갔으면 마지막 절을 켭니다 — 짧은 절이 기준선에 못 닿는 경우 */
+    if (document.documentElement.scrollHeight - window.innerHeight - window.scrollY < 4) {
+      hit = targets[targets.length - 1];
+    }
+    if (hit === cur) return;
+    cur = hit;
+    targets.forEach(function (t) {
+      if (t === hit) t.a.setAttribute('aria-current', 'true');
+      else t.a.removeAttribute('aria-current');
+    });
+  }
+  addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(mark); }
+  }, { passive: true });
+  addEventListener('resize', mark, { passive: true });
+  mark();
+})();
+
+/* ---------- 나타남 ----------
+   화면에 들어오면 한 번만 올라옵니다. 되돌아갈 때 다시 숨기지 않습니다 —
+   위아래로 오갈 때 깜빡이면 읽기가 힘들어집니다. */
+(function () {
+  var items = Array.prototype.slice.call(document.querySelectorAll('.rise'));
+  function showAll() { items.forEach(function (el) { el.classList.add('in'); }); }
+
+  if (REDUCED || !window.IntersectionObserver) { showAll(); return; }
+
+  /* 이미 화면 안에 있는 것은 관찰자를 기다리지 않고 바로 보여 줍니다.
+     첫 화면이 잠깐이라도 비어 보이면 안 됩니다. */
+  items.forEach(function (el) {
+    var r = el.getBoundingClientRect();
+    if (r.top < window.innerHeight && r.bottom > 0) el.classList.add('in');
+  });
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      en.target.classList.add('in');
+      io.unobserve(en.target);
+    });
+  }, { rootMargin: '0px 0px -12% 0px', threshold: .08 });
+  items.forEach(function (el) { io.observe(el); });
+
+  /* 안전망 — 관찰자가 어떤 이유로든 못 돌면 3초 뒤 전부 보여 줍니다.
+     움직임이 안 나오는 것보다 **내용이 안 보이는 것**이 훨씬 나쁩니다.
+     (해시로 바로 들어오거나, 브라우저가 관찰을 늦추는 경우가 있습니다.) */
+  setTimeout(showAll, 3000);
+})();
+
+/* ---------- 숫자 세기 ----------
+   0 부터 올라갑니다. 다 세면 **원래 글자로 되돌려** 놓습니다.
+   중간에 멈추더라도 틀린 숫자가 화면에 남지 않게 하려는 것입니다. */
+(function () {
+  var els = document.querySelectorAll('[data-count]');
+  if (REDUCED || !window.IntersectionObserver || !window.requestAnimationFrame) return;
+
+  function run(el) {
+    var target = +el.getAttribute('data-count');
+    var text = el.textContent;                 // 「227,484」 같은 원래 표기
+    var dur = 1100, t0 = 0;
+    function step(ts) {
+      if (!t0) t0 = ts;
+      var p = Math.min(1, (ts - t0) / dur);
+      if (p < 1) {
+        var eased = 1 - Math.pow(1 - p, 3);    // 빠르게 나갔다가 부드럽게 멈춤
+        el.textContent = Math.round(target * eased).toLocaleString('ko-KR');
+        requestAnimationFrame(step);
+      } else {
+        el.textContent = text;
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      io.unobserve(en.target);
+      run(en.target);
+    });
+  }, { threshold: .5 });
+  Array.prototype.forEach.call(els, function (el) { io.observe(el); });
+
+  /* 인쇄를 누른 순간 아직 세는 중이면 **틀린 숫자가 종이에 남습니다.**
+     찍기 직전에 전부 제 값으로 되돌립니다. */
+  function snap() {
+    Array.prototype.forEach.call(els, function (el) {
+      el.textContent = (+el.getAttribute('data-count')).toLocaleString('ko-KR');
+    });
+  }
+  if (window.matchMedia) {
+    var mq = matchMedia('print');
+    if (mq.addEventListener) mq.addEventListener('change', function (e) { if (e.matches) snap(); });
+  }
+  addEventListener('beforeprint', snap);
+})();
+
+/* ---------- 브랜드: 스크롤을 따라 선이 그려집니다 ----------
+   절 안에서 얼마나 내려왔는지를 0~1 로 재고, 네 걸음으로 나눕니다.
+     0 낮은 지면 · 1 간극 · 2 호 · 3 높은 지면
+   scroll 마다 계산하지 않고 rAF 로 한 번만 묶습니다. */
+(function () {
+  var track = document.getElementById('seq-track');
+  var caps  = document.querySelectorAll('#seq-caps .cap');
+  var legs  = document.querySelectorAll('#seq-legend li');
+  var low   = document.getElementById('g-low');
+  var arc   = document.getElementById('g-arc');
+  var high  = document.getElementById('g-high');
+  var gap   = document.getElementById('g-gap');
+  var gaplb = document.getElementById('g-gaplb');
+  if (!track || !low) return;
+
+  function show(step) {
+    low.classList.toggle('on', step >= 0);
+    gap.classList.toggle('on', step >= 1);
+    gaplb.classList.toggle('on', step >= 1);
+    arc.classList.toggle('on', step >= 2);
+    high.classList.toggle('on', step >= 3);
+    Array.prototype.forEach.call(caps, function (c, i) { c.classList.toggle('on', i === step); });
+    /* 설명은 지금 걸음만, 이름표는 **지금까지 켜진 것 전부**.
+       무엇을 읽고 있는지와 무엇이 모였는지는 다른 정보입니다. */
+    Array.prototype.forEach.call(legs, function (l, i) { l.classList.toggle('on', i <= step); });
+  }
+
+  /* 움직임을 줄여 달라고 하셨으면 전부 그려 놓고 설명도 모두 펼칩니다 */
+  if (REDUCED) {
+    low.classList.add('on'); arc.classList.add('on'); high.classList.add('on');
+    gap.classList.add('on'); gaplb.classList.add('on');
+    Array.prototype.forEach.call(caps, function (c) { c.classList.add('on'); });
+    Array.prototype.forEach.call(legs, function (l) { l.classList.add('on'); });
+    return;
+  }
+
+  var last = -1, ticking = false;
+  function measure() {
+    ticking = false;
+    var r = track.getBoundingClientRect();
+    var len = r.height - window.innerHeight;
+    if (len <= 0) return;
+    var p = Math.min(1, Math.max(0, -r.top / len));
+    // 마지막 걸음이 스치듯 지나가지 않도록 살짝 당겨 나눕니다
+    var step = p < .22 ? 0 : p < .46 ? 1 : p < .72 ? 2 : 3;
+    if (step !== last) { last = step; show(step); }
+  }
+  addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(measure); }
+  }, { passive: true });
+  addEventListener('resize', measure, { passive: true });
+  show(0);
+  measure();
+})();
+
+/* ---------- 작은 지도 ----------
+   대시보드·앱 C·E 와 **같은 자료**입니다. 지도 API 도 인터넷도 쓰지 않습니다.
+   위도에 따라 경도 1도의 실제 길이가 달라지므로 가로를 cos(위도) 로 줄입니다.
+
+   가운데가 뚫린 것은 잘못 그린 것이 아닙니다 — **군위군**입니다.
+   2023. 7. 1. 로 대구광역시에 넘어갔습니다. */
+(function () {
+  /* === 시군 경계 (구운 자료) === */
+  /* 경상북도 시군 경계 — 통계청 SGIS 행정경계(공공누리 제1유형) 2018.
+     군위군은 2023.7.1. 대구 편입으로 뺐습니다. 구운 날 2026-08-03.
+     이 블록은 손으로 고치지 마세요 — `open api/bake-boundary.mjs` 가 통째로 갈아 끼웁니다.
+     읽는 법은 같은 파일의 gbRings() 에 있습니다. */
+  var GB_POLY = {
+    '경산': '1287472 359909 92 -7 135 -72 169 52 38 -45 213 -103 13 -79 144 -15 93 37 25 -43 98 -18 51 -68 51 -9 23 -166 -21 -35 27 -45 -97 -88 33 -60 -21 -67 14 -77 148 -58 48 -53 -158 -114 24 -55 124 -75 17 -127 74 -84 95 12 40 -76 60 -1 72 -54 67 52 83 -24 74 24 84 -13 17 -39 36 -7 135 110 110 -14 3 -50 -48 -9 -39 -44 -73 -164 11 -124 -41 -6 -16 -74 -61 -71 21 -39 -145 -228 -64 12 -111 -25 -91 -77 -6 -20 29 -13 -28 -11 -63 160 -34 18 -21 -86 -164 -74 -99 102 -57 -28 -56 14 36 -93 -85 -62 -157 43 -26 -50 -46 -19 -115 44 -56 -28 -92 55 -114 -21 -45 -79 7 -32 -103 -28 -16 -70 -91 -50 -11 -92 31 -23 -7 -48 -75 -10 -207 84 -53 111 -175 11 -54 115 -65 47 -4 64 -89 0 15 132 -88 118 7 68 -55 85 9 61 108 67 65 -18 104 92 73 26 -36 107 -48 41 -5 50 106 93 59 3 18 110 -15 66 -35 31 37 8 130 -64 122 62 90 86 9 78 -30 42 36 94 -47 161 32 32 -45 82 -125 53 -61 93 74 144 -61 119 50 40 32 130 -74 39 -78 86 6 40 47 43 109 -28',
+    '경주': '1294762 356928 -46 -125 -71 -37 7 -98 -112 -22 -44 -136 -103 42 -42 -28 -23 42 -44 -10 -174 82 -76 -8 -35 46 -181 36 -91 -20 -86 97 -105 5 -135 -98 -60 2 -63 -110 -87 -9 -80 26 -66 -33 -12 -71 -63 -36 -6 -30 -135 82 -80 14 -52 -20 -93 35 -49 59 -8 59 50 59 13 68 -24 40 36 28 4 52 -57 96 -229 32 -22 45 -74 12 -158 116 -69 -23 -36 -44 -168 93 -48 -81 -162 -9 -55 61 -103 39 -70 -41 20 -25 -27 -53 -94 12 -46 -63 -101 6 -224 -57 -131 -98 -73 -105 31 -50 -58 -61 18 -22 -11 -103 132 -120 -2 -35 -54 -29 -62 50 -224 51 -37 52 -80 196 35 146 -13 51 -156 -61 -182 57 -5 103 -58 62 3 62 -61 19 -117 119 -17 47 -52 16 27 123 -49 50 30 101 33 31 -23 38 155 10 69 54 9 27 -38 35 6 94 -45 62 65 62 65 107 9 61 39 33 8 63 65 67 13 53 -36 24 57 97 138 141 -66 208 10 135 82 37 23 38 81 2 13 57 79 15 69 98 -35 33 86 89 116 -3 32 -40 17 23 145 -10 117 -87 62 -132 32 1 34 53 51 -6 62 58 25 54 -65 73 -8 77 -127 137 26 76 -22 21 7 141 -59 106 21 46 -25 53 39 75 118 -82 174 51 -30 149 -68 91 112 95 57 110 136 3 53 -19 4 -44 59 -11 21 -135 -21 -26 21 -43 28 1 163 131 64 27 198 5 37 41 109 45 90 226 35 -20 30 22 76 -4 131 48 120 -96 -3 -81 -47 -30 29 -117 -72 -198 182 -167 28 -138 -52 -19 115 -4 1 -49 -35 -48 12 -36 58 -116 41 -14 30 -85 47 -17 -30 -118 108 -74 50 -83 -31 -40 70 -104 -27 -49 -5 -102 53 -63 -12 -22 62 -45 55 1 17 32 29 -45 88 3 11 -106 -84 -39 59 -77 107 -42 75 37 118 -11 26 -67 132 11 35 36 -1 91 44 58 66 16 -1 61 45 0 112 -52 37 -100 54 -42 -1 -56 64 -111 228 22 51 30 98 -97 177 -51 102 36 26 -42 -60 -40 -50 -94 32 -73 -26 -52 19 -54 -59 24 -26 -14 -4 -27 26 -13 -63 -31 6 -72 -41 -33 -23 13 -21 -33 50 -162 -25 -21 -3 -103 2 19 -27 -27 28 -57 -102 -92 24 -137 -73 -129 28 -98 -31 53 -21 -18 28 -27 -46 -4 -17 -30 31 -117',
+    '고령': '1283876 358524 284 -6 340 -51 189 -71 36 -60 86 -35 20 -90 -4 -56 -123 -96 -294 1 -1 33 -201 1 0 -31 -50 -2 0 -33 -77 -36 -105 -206 -141 -185 77 -117 406 -228 31 -108 -28 -99 -99 -76 -100 -15 -533 129 -71 -47 15 -131 90 -153 377 -300 13 -129 -129 -148 -167 -70 -71 25 -27 155 -98 157 -34 19 -109 -17 -83 37 -55 -19 -61 49 -119 40 -79 7 -18 -55 -168 16 -27 -53 -145 -43 -37 51 -164 74 -58 -41 14 -71 -18 -33 -63 -12 -285 42 -41 70 -114 69 -198 -46 -57 19 -1 126 36 55 155 0 49 70 82 1 67 44 58 -6 -22 87 20 45 -43 106 20 99 -57 128 15 55 -45 22 -43 137 -243 117 -35 65 20 70 153 103 -57 107 -78 28 -30 47 27 71 132 62 132 0 102 -38 80 9 40 -65 -5 -101 32 -23 8 -49 80 -45 80 -6 52 -47 131 -22 -14 96 80 20 41 41 92 -39 26 53 -18 75 24 53 -20 53 14 97 84 22 59 -11 172 -138 80 23 79 -23 9 -35 159 -117 122 20 153 -57 26 20 18 105 -12 109 56 4 45 59 -58 117 74 36 122 3 -58 108 7 29',
+    '구미': '1282662 363610 38 9 74 -41 -1 -77 48 -11 0 -27 115 23 70 -40 45 -71 -3 -47 31 -21 93 13 -13 35 98 71 63 6 26 60 114 -23 75 -61 122 -27 67 -131 63 -24 17 -104 89 -26 -14 -54 73 -71 8 -40 51 -41 93 -18 31 -43 129 -75 -53 -77 -5 -80 -44 -20 39 -39 -24 -79 59 -55 2 -34 102 -27 69 -159 265 119 42 -11 68 55 66 -11 6 -33 -61 -58 56 -2 41 -40 -15 -47 55 -64 0 -85 22 -42 35 -5 40 -111 62 24 91 131 46 10 138 -65 122 -171 80 -6 -44 -123 -79 11 -44 -49 28 -65 56 -32 -2 -107 46 -16 -43 -81 63 -94 82 -38 -3 -67 -156 -22 -39 35 -30 -18 -58 21 -81 -11 -60 30 -63 -32 -151 13 -62 122 -32 -84 -55 -43 10 -35 -62 -36 6 -35 -40 -56 16 -33 -134 -113 11 -50 49 -41 -68 -26 -148 45 -20 38 -168 19 -53 40 -17 46 -67 -57 -69 6 -49 87 -83 -11 -55 -109 -79 -57 44 -42 -82 -49 -82 -1 -89 -46 -34 58 -66 6 3 25 -44 22 -42 84 -71 24 -52 89 -89 4 -164 -49 -139 15 -18 28 20 36 -168 97 29 95 184 184 -116 81 27 43 3 87 82 129 -33 45 -114 18 -26 -18 -77 32 25 67 -35 98 16 50 -89 18 -31 42 -165 -45 -80 39 19 82 -33 91 31 64 -24 18 -40 2 -41 47 -77 -14 -36 60 -130 40 -49 47 -245 9 -47 80 -77 37 -230 -4 -41 109 71 186 92 26 97 78 108 31 153 -25 49 34 89 -29 69 8 138 85 95 -41 37 299 43 22 97 150 47 11 18 82 53 30 78 -15',
+    '김천': '1281499 362567 100 6 52 -22 80 -97 237 -7 49 -47 130 -40 36 -60 77 14 41 -47 40 -2 24 -18 -31 -64 33 -91 -20 -81 81 -40 165 45 31 -42 89 -18 -16 -50 35 -98 -25 -67 77 -32 26 18 114 -18 28 -27 -43 -121 -48 -59 11 -54 -27 -43 116 -81 -184 -184 -29 -95 168 -97 -20 -36 24 -32 -70 -69 61 -102 97 -82 -14 -115 -58 -11 -48 -70 -55 37 -223 17 -44 33 -156 -32 -179 68 -141 -99 -148 -7 21 -74 -25 -59 -85 21 -76 -23 -83 42 -51 -30 28 -26 9 -104 54 -53 -51 -41 -18 -80 41 -90 -46 -53 -83 -4 -19 -84 -49 -32 20 -69 -19 -26 -152 -57 -123 16 -53 -29 -74 53 -62 -65 -91 -39 -69 -76 27 -155 -29 -97 -36 -5 -57 61 -51 9 -30 86 -149 53 -67 -51 -27 -42 19 -124 121 -127 -40 -23 6 -31 92 -61 -10 -70 55 -95 90 -62 68 -8 -92 -106 -43 -113 41 -108 -76 15 -89 -69 -60 1 -32 -45 -219 57 -180 -67 -148 82 -153 216 -77 -66 -115 33 -29 49 -84 13 -90 -71 -164 11 14 28 41 6 18 50 -43 63 14 83 -73 40 -44 78 17 28 -267 -64 -87 63 -21 59 -5 42 60 116 -58 47 -2 94 239 117 53 86 -91 77 -60 150 0 58 -67 20 46 49 -10 22 -176 101 30 56 -29 64 11 138 67 54 13 78 37 -11 142 43 34 76 106 76 135 -49 61 17 111 66 61 86 74 40 8 127 -32 71 12 44 49 11 41 75 -35 97 16 53 34 38 176 69 14 152 -17 34 97 81 -67 34 -7 63 -72 54 15 76 -88 95 59 82 -32 22 150 19 55 73 112 21 143 -28 146 -124 195 70 -73 48 -7 105 -79 10 -32 47 3 65 -94 113 58 35 46 85 62 -3 39 -75 69 -6 36 31 58 -38 97 -10 133 105 70 -1 120 -151 104 59 23 31 -8 70 105 -20 83 69 105 -14',
+    '문경': '1282594 368651 231 -91 41 -110 90 -97 201 -125 7 -61 181 3 187 -46 81 -95 62 -3 44 -51 -73 -222 32 -77 -45 -63 58 -101 -97 -106 -203 3 -21 -45 -42 -7 19 -124 -32 -29 48 -98 -57 -132 63 -38 -33 -58 -132 -95 63 -93 75 -36 12 -69 143 -44 -18 -74 -83 7 -93 -55 -106 38 8 33 -43 79 -72 -8 8 -145 -28 -35 -82 -31 -44 -51 -58 -2 -12 -70 -44 -58 -130 -20 20 -51 -100 14 16 -63 170 -147 50 -125 103 6 -23 -192 33 -56 -55 -19 -264 4 -29 -59 59 -103 -22 -38 -134 33 -166 -53 -56 17 -132 78 12 178 -17 48 34 82 -6 48 -17 -25 -114 -4 5 63 -164 53 -90 -21 -35 24 32 9 -42 114 -147 2 -38 36 -74 -5 -56 80 -183 80 -73 62 -65 -28 -9 -82 -70 -43 -191 27 -147 -40 6 -65 -38 -61 -118 -99 97 -214 -69 -33 -52 -119 -266 12 -105 -30 -123 63 -72 -9 -63 -52 -92 8 -35 -21 24 -71 -33 -31 36 -56 -30 -77 14 -59 -27 -9 -165 78 -23 36 -53 -13 -183 64 -42 65 75 16 -21 68 43 67 -59 60 28 125 -64 80 27 54 -4 81 -79 71 -9 146 4 32 80 27 -5 65 41 78 -17 81 47 49 1 67 -75 27 6 91 -26 43 -119 -9 -51 100 -122 43 -87 2 -41 -38 -76 1 -53 39 73 8 53 78 66 32 350 -36 47 157 159 16 -3 118 44 28 34 129 36 16 26 -38 75 -25 96 -108 65 -26 151 -2 75 111 54 18 61 -83 110 -31 171 -108 214 -3 23 42 -47 103 -124 82 -49 63 -184 109 1 76 124 159 8 113 94 103 11 57 -21 68 39 18 17 98 122 -22 136 -104 -16 -49 97 -25 -5 61 141 44 28 142 200 36 41 33 -4 44 82 5 72 -47 41 -62 182 -3 135 -55 89 5 205 -54 25 15 6 62 -66 230 20 68 243 -39 17 49 -43 45 3 81 48 23 14 70 185 -70',
+    '봉화': '1290968 371000 77 -23 33 -42 151 -22 43 -69 123 -21 48 -57 175 -78 43 4 43 -88 67 -37 79 -101 -11 -87 -172 -158 -72 -24 -270 147 -55 -44 -207 -60 -31 -49 -185 -103 99 -19 -52 -77 34 -30 2 -73 -25 -35 44 -108 -39 -127 -84 17 -58 -79 108 -43 -36 -55 200 -10 40 -23 -39 -47 68 -41 76 17 70 -57 115 -30 4 -40 100 -95 -26 -36 29 -17 3 -36 -35 -56 47 -29 -13 -62 76 -19 -1 -102 -24 -38 -167 -8 -6 -39 -65 -42 -9 -65 -42 -25 -30 -88 -173 -115 -44 -79 -97 -13 -95 -84 -87 26 -56 -18 -177 -202 -97 -34 -25 -60 -277 -92 -76 6 -161 -80 -8 -91 82 -75 -9 -80 -139 -11 -132 52 -72 160 -75 40 -70 15 -120 -60 -54 14 -55 -19 -73 70 -76 22 -79 -44 -62 2 -61 109 -121 30 -94 134 -191 34 -33 62 -188 12 -26 -77 -68 -70 -55 55 -34 100 56 56 -59 66 -33 -9 -55 -76 -66 -17 -61 -57 -56 -24 -80 19 -33 -50 -60 83 -62 -29 -41 21 -49 -116 -72 43 -39 -102 -40 -17 -70 109 63 107 0 70 -90 -1 -56 34 38 71 115 22 83 81 0 47 -102 107 4 112 -65 17 -52 -34 -97 28 -45 -65 -167 16 -62 -64 -1 -67 -44 -12 10 -54 -66 20 -47 -22 -64 96 -89 40 -31 -26 -30 39 37 75 36 29 52 0 16 27 -58 78 17 38 -75 -24 -65 99 90 121 30 91 51 10 38 -22 76 84 42 11 -49 1 9 46 -75 82 59 114 85 -7 40 109 41 7 48 60 8 94 58 43 5 31 -34 22 20 157 25 36 -18 61 94 80 -23 102 21 89 96 103 72 19 171 -40 180 -120 8 42 79 59 -11 65 -91 115 43 127 15 12 73 -58 51 113 73 44 0 36 -42 42 67 48 55 -44 136 -10 21 -25 -15 -54 79 -30 47 27 168 -2 27 -34 -4 -77 43 -15 109 -143 168 -29 88 -48 43 22 17 72 179 -88 17 131 123 85 -2 41 67 85 -18 50 82 84 88 -12 136 29 77 -89 -1 -36 60 -37 293 68 210 -59 56 10 52 -29 39 17 81 -34 43 13 52 -51 94 -33 30 20 31 -47 65 33 35 61 -18 43 52 52 -4 42 66 48 198 70',
+    '상주': '1278879 366346 23 -57 170 -31 46 -113 70 -58 12 -76 39 9 10 -38 79 -71 4 -81 -27 -54 64 -80 -33 -105 64 -80 -43 -67 21 -68 -75 -16 15 -37 79 -60 131 -32 53 13 23 -36 165 -78 27 9 -14 59 30 77 -36 56 33 31 -24 71 45 24 99 -7 46 48 72 9 123 -63 105 30 266 -12 52 119 69 33 -97 214 118 99 38 61 -6 65 147 40 191 -27 70 43 -3 54 37 47 40 9 73 -62 183 -80 56 -80 74 5 38 -36 147 -2 42 -114 -32 -9 43 -28 82 25 164 -53 -5 -63 114 4 17 25 6 -48 -34 -82 7 -230 51 -44 135 -47 166 53 128 -34 28 39 29 -166 -43 -29 -22 -92 59 -203 -83 -98 54 6 118 -58 14 -83 106 -17 43 33 131 -104 49 -1 124 -143 6 -34 -49 -46 1 -87 72 1 49 -36 -4 -77 56 -75 -127 -187 -88 14 -62 -125 -10 -110 -226 -178 -56 0 0 27 -48 11 4 73 -77 45 -116 6 -53 -30 -18 -82 -47 -11 -97 -150 -50 -36 -30 -285 -95 41 -138 -85 -69 -8 -89 29 -49 -34 -153 25 -148 -46 -57 -63 -92 -26 -69 -161 40 -96 -13 -63 -46 -32 -105 20 8 -70 -114 -89 -133 150 -70 1 -133 -105 -97 10 -58 38 -36 -31 -69 6 -42 55 12 69 -142 49 -70 64 -72 -6 -87 49 -98 -58 -61 10 -39 -40 -93 2 -45 -43 16 -47 -77 -42 -58 28 -46 -8 -56 48 -53 -6 -19 106 -95 19 -70 89 -74 7 -154 68 -38 160 -144 -123 -73 -155 -217 34 -88 -32 -29 149 -36 49 13 71 -54 92 43 81 46 22 22 93 132 60 42 43 1 36 125 24 30 88 49 19 8 31 -48 39 -28 70 -38 9 32 27 11 58 -50 34 -35 72 -128 24 34 18 -24 82 91 29 27 85 70 78 0 22 -97 -1 25 54 -34 112 99 209 -36 53 24 14 16 74 -18 47 -53 26 8 52 44 49 82 -2 89 54 87 84 -38 63 0 149 -264 89 -56 58 25 85 -27 79 -101 67 2 21 -80 32 -153 -11 -69 42 -57 -34 -83 72 -113 33 -64 50 9 31 -32 58 23 68 196 63 29 49 112 -7 85 -43 91 48 85 4 -26 41 -59 20 -20 53 28 64 -38 27 145 16 145 206 42 6 24 -103 68 -67 -13 -52',
+    '성주': '1282410 360486 156 32 44 -33 223 -17 64 -30 63 -128 144 -21 13 -58 57 -45 -51 -39 -9 -84 27 -35 -9 -95 57 -106 203 -71 0 -55 34 -25 -23 -38 76 -91 118 13 49 -43 -5 -50 46 -47 186 -31 89 19 29 -146 -22 -191 22 -108 -156 -354 0 -81 30 -15 62 -126 -122 -3 -74 -36 58 -117 -45 -59 -56 -4 14 -94 -32 -136 -167 53 -122 -20 -159 117 -9 35 -79 23 -80 -23 -172 138 -124 7 -33 -115 20 -53 -24 -53 14 -88 -30 -46 -84 45 -41 -41 -80 -20 18 -87 -18 -9 -117 22 -52 47 -80 6 -80 45 -8 49 -32 23 5 101 -40 65 -80 -9 -102 38 -132 0 -101 -38 -55 -71 27 -71 78 -28 57 -107 -151 -101 -93 92 -169 -21 -86 51 -2 49 -68 92 27 159 -15 30 -37 25 -85 -10 -144 83 -57 -16 -64 64 -70 27 -41 108 43 113 92 106 -68 8 -90 62 -55 95 10 70 -92 61 -6 31 40 23 -121 127 -19 124 27 42 67 51 149 -53 30 -86 51 -9 57 -61 36 5 29 97 -29 146 25 49 137 75 62 65 74 -53 53 29 123 -16 152 57 19 26 -20 69 49 32 19 84 83 4 29 27 16 59 -43 31 3 26 18 80 51 41 -54 53 -9 104 -28 26 51 30 83 -42 76 23 85 -21 25 59 -21 74 148 7 141 99 179 -68',
+    '안동': '1288048 368137 -15 -27 34 -100 47 -51 70 56 32 87 188 -12 33 -62 191 -34 94 -134 121 -30 61 -109 62 -2 79 44 76 -22 73 -70 55 19 54 -14 120 60 117 -30 45 -48 55 -137 132 -52 139 11 -7 -80 -29 -43 95 -83 -9 -46 35 -38 -7 -66 -46 -83 31 -91 -54 -32 20 -93 -46 -82 39 -51 -33 -40 53 -35 13 -68 -61 -64 35 -62 -31 -184 55 -52 -5 -98 48 -203 -100 -118 -63 -34 -5 -56 -42 -26 -5 -42 48 1 41 -37 38 -87 -153 -22 -36 -144 20 -50 67 -17 30 -99 82 8 41 -89 -33 -88 -95 -110 -89 -37 -5 -42 64 -39 -26 -51 62 -67 -103 35 -66 -54 21 -97 39 -5 31 -70 -40 -132 102 -163 6 -108 -45 -19 11 -31 -51 -67 8 -30 -65 -73 -75 -159 43 -74 -35 -50 31 -78 -38 -77 -113 -29 -49 -90 -115 -74 -35 -134 -127 -14 -56 -64 -53 -14 -179 5 28 74 -61 68 10 53 52 37 2 50 -65 174 -92 18 42 141 -94 78 4 37 61 51 -56 18 -129 105 -94 5 11 109 -62 54 -26 164 -84 61 13 96 -58 72 8 84 -172 15 -36 55 -101 -5 -72 71 -67 9 -35 -21 -62 39 -83 120 -204 83 -148 -115 -45 -10 -92 60 -88 -56 1 -38 -65 -70 30 -80 -6 -105 -227 -32 -85 -76 -103 13 -109 -83 -161 0 -79 -32 -9 -65 -183 -19 -68 -130 -64 51 -19 172 29 42 -104 82 -107 2 -71 109 -36 15 -8 69 -57 55 -9 74 -66 37 -7 123 -22 22 -59 -1 -121 80 -148 -11 -102 25 -57 48 -28 98 -64 33 -53 -29 -99 -4 -17 -156 -106 2 -25 -84 -41 34 -42 -29 -202 118 -11 83 50 52 -85 41 78 21 39 61 150 90 94 7 -89 164 123 52 -3 26 246 74 35 126 33 21 -81 42 29 108 37 37 73 34 16 -46 61 -17 169 10 54 121 -133 63 33 87 60 3 70 50 72 -19 77 48 61 -8 65 43 7 52 46 27 102 -6 149 49 34 -18 51 18 10 197 -41 70 72 50 7 87 -186 68 62 32 10 42 -22 33 27 48 84 21 86 -49 30 30 95 13 20 31 68 -6 154 -82 104 35 46 -17 62 -42 5 -41 72 -41 121 25 56 39 90 -66 88 33 47 -10 61 -64 103 20 -23 30 33 15 -9 46 -83 70 62 110 -35 42 50 147 61 59 0 60 -76 79 102 135 -88 63 3 77 39 -10 73 190 41 -21 62 29 60 -83 33 50 80 -19 56 24 61 57 66 17 55 76 33 9 59 -66 -41 -29',
+    '영덕': '1292754 366705 100 -25 88 34 234 -58 97 11 28 -52 189 -47 53 -58 79 93 213 85 53 -43 81 11 -2 -43 105 -30 121 -77 -7 -42 46 -29 -56 -41 -5 -91 -50 -79 42 -190 -10 -42 -51 -31 4 -51 73 -156 140 -150 49 -17 -35 8 -15 -22 28 2 57 -52 -11 -152 26 -150 30 -43 -9 -53 91 -17 -43 4 -13 -34 20 18 39 -14 -66 -39 -22 -153 -115 -75 45 -159 -23 -120 16 -64 -38 -100 32 -109 -67 -172 -121 -108 -34 -68 -67 -30 -12 -67 -113 -143 2 -63 -69 -55 3 -67 -61 -71 -30 -88 25 -109 -28 -39 8 -89 -24 -26 23 -126 -51 -61 68 -133 -54 -66 -96 4 -120 46 -152 -66 -235 52 -116 -39 -39 55 -93 60 -44 70 -13 113 44 14 24 71 63 38 -6 139 -123 95 -107 -58 -48 43 -20 -12 10 -46 -23 -53 -106 30 -42 -23 -16 29 36 50 -3 96 -100 71 -150 -18 -44 23 2 35 -35 28 -5 58 -38 19 -1 38 32 94 82 64 -11 35 -66 34 73 105 -154 101 -13 108 -85 102 -66 12 -75 -34 -162 80 -36 77 8 43 -81 73 11 41 -101 103 -43 94 33 10 29 141 -25 63 99 50 147 41 59 -6 66 -78 26 35 80 -22 60 16 108 -37 21 -84 63 -16 25 57 -38 68 36 127 172 -56 42 18 -49 95 -37 12 0 60 -36 67 6 70 57 40 -10 135 60 18 -7 31 -41 40 -56 4 -57 155 -100 24 -42 39 71 83 -14 63 85 3 -3 161 84 26 -17 42 28 19 -9 56 -94 129 28 141 201 90 99 -6 35 37 92 -32',
+    '영양': '1291819 368785 103 8 36 -45 -2 -51 53 -46 47 -93 27 10 30 69 64 -53 48 32 99 15 -62 -70 140 -42 68 4 75 67 26 145 57 29 -7 -57 54 21 41 -13 41 37 37 -14 61 -102 -68 8 20 -31 -51 -24 18 -24 -23 -60 23 -32 -62 -63 15 -76 164 -10 50 -74 -65 -164 48 -29 77 -118 72 -22 68 -109 -33 -70 -75 29 -67 -87 10 -115 -26 -30 -97 -14 -136 -74 3 -194 158 -64 73 -2 -89 -104 -34 -130 -65 -36 23 -102 -159 -115 -99 6 -206 -104 -23 -127 94 -129 9 -56 -28 -19 17 -42 -84 -26 3 -161 -85 -3 14 -63 -71 -83 42 -39 100 -24 57 -155 56 -4 41 -40 7 -31 -60 -18 10 -135 -57 -40 -6 -70 36 -67 0 -60 37 -12 49 -95 -42 -18 -172 56 -36 -127 38 -68 -25 -57 -63 16 1 49 -42 45 -211 34 -43 -36 -76 81 -68 0 -302 -88 -113 19 -32 29 16 42 -35 38 43 57 -47 48 40 42 -27 74 -174 66 -32 54 -79 -31 -321 -3 -86 124 -79 25 -12 83 -53 94 26 14 -12 36 -103 22 -39 57 -160 2 -75 21 -40 45 -47 -8 -39 149 5 98 -55 52 31 184 -35 62 61 64 -13 68 -53 35 33 40 -39 51 46 82 -20 93 54 32 -31 91 55 131 -37 56 9 46 -95 83 32 54 13 149 -82 75 8 91 161 80 76 -6 277 92 25 60 97 34 177 202 56 18 87 -26 95 84 97 13 44 79 173 115 30 88 42 25 9 65 65 42 7 41 166 6 25 42 75 -38 59 73 130 -30',
+    '영주': '1286579 370608 178 -20 72 -57 62 0 113 -123 87 -14 -85 -106 15 -163 -94 -80 18 -61 -25 -36 -20 -157 34 -22 -5 -31 -58 -43 -8 -94 -48 -60 -41 -7 -40 -109 -85 7 -59 -114 75 -82 -9 -46 49 -1 -42 -11 -76 -84 -38 22 -51 -10 -30 -91 -90 -121 65 -99 75 24 -17 -38 58 -78 -16 -27 -52 0 -36 -29 -37 -75 30 -39 31 26 89 -40 64 -96 47 22 66 -20 -10 54 44 12 1 67 62 64 167 -16 45 65 97 -28 52 34 65 -17 -4 -112 102 -107 0 -47 -83 -81 -115 -22 -38 -71 56 -34 90 1 0 -70 -63 -107 70 -109 40 17 39 102 72 -43 -24 -74 -39 10 -7 -59 92 -81 -102 -135 76 -79 0 -60 -61 -59 -50 -147 35 -42 -62 -110 83 -70 9 -46 -33 -15 23 -30 -35 -17 -68 -3 -61 64 -47 10 -88 -33 -90 66 -56 -39 -121 -25 -72 41 -5 41 -62 42 -46 17 -104 -35 -105 73 -109 16 -28 -32 -95 -13 -30 -30 -86 49 -84 -21 -27 -48 22 -33 -10 -42 -73 -15 4 34 -64 47 11 143 -79 31 15 60 -79 30 6 67 -49 56 2 43 -51 81 -71 22 -22 56 -90 -11 -60 63 -115 -33 -52 17 -136 -81 -71 9 -41 54 -105 59 -97 7 11 171 -49 97 20 114 94 150 -10 48 -188 123 -43 -15 -95 31 -23 48 13 110 -116 93 -124 28 42 83 -14 44 114 106 65 139 -30 137 187 66 24 134 44 41 98 59 79 1 15 47 203 79 -3 31 82 44 9 92 275 53 117 62 21 74 61 22 84 80 13 61 -57 40 -15 47 25 32 98 17 58 81 133 -19 100 16 16 94 133 -37 11 -38 101 -48 16 61 116 145 72 44 46 -47',
+    '영천': '1289257 361806 116 -12 126 -104 128 -25 63 -52 136 61 113 8 425 -127 79 5 30 -57 160 -73 12 -80 -51 -54 73 -59 38 -84 82 -29 23 52 170 43 62 -52 10 -27 -58 -71 -58 -27 7 -74 108 -113 58 -22 15 -43 156 16 69 -65 -13 -58 38 -38 -3 -34 70 -40 45 10 27 -33 -59 -109 -112 -95 68 -91 30 -149 -174 -51 -118 82 -39 -75 25 -53 -21 -46 59 -106 -7 -141 22 -21 -26 -76 127 -137 8 -77 65 -73 -25 -54 -62 -58 -51 6 -34 -53 -32 -1 -62 132 -117 87 -145 10 -17 -23 -32 40 -134 -3 -68 -83 35 -33 -69 -98 -79 -15 -13 -57 -81 -2 -23 -38 -82 -37 -10 -135 66 -208 -138 -141 -57 -97 21 -7 -204 -58 -103 -68 -140 19 -14 59 -60 11 -39 -6 -135 -110 -36 7 -17 39 -84 13 -74 -24 -83 24 -67 -52 -72 54 -60 1 -40 76 -92 -15 -77 87 -17 127 -124 75 -24 55 158 114 -48 53 -148 58 -14 77 21 67 -33 60 97 88 -27 45 21 35 -23 166 -51 9 -51 68 -98 18 -25 43 -93 -37 -144 15 -13 79 -213 103 -38 45 -169 -52 -135 72 -217 29 -120 130 -213 48 -46 23 -26 50 56 105 -29 75 72 82 -4 136 79 92 24 83 88 -22 41 38 24 56 -64 76 107 40 101 77 15 73 64 -63 11 -72 -24 -37 34 -13 108 99 229 -111 20 -34 91 -9 121 37 58 33 59 82 103 15 52 111 132 51 24 102 -28 90 80 76 330 -15 -16 38 23 80 79 71 -58 70 29 73 173 31 50 48 61 -40',
+    '예천': '1284576 368461 52 9 188 -123 10 -48 -94 -150 -20 -114 49 -97 -11 -171 97 -7 105 -59 41 -54 71 -9 49 13 67 64 72 -13 115 33 60 -63 90 11 22 -56 71 -22 51 -81 -2 -43 49 -56 -6 -67 67 -14 -3 -76 79 -31 -11 -143 64 -47 9 -63 64 -2 120 -54 -7 -87 -72 -50 41 -70 -10 -197 -51 -18 -34 18 -149 -49 -102 6 -46 -27 -7 -52 -65 -43 -61 8 -77 -48 -72 19 -70 -50 -60 -3 -33 -87 133 -63 -54 -121 -169 -10 -61 17 -32 47 -94 -70 -29 -114 81 -38 -33 -21 -35 -126 -246 -74 3 -26 -125 -54 28 -14 2 -55 61 -93 -94 -7 -150 -90 -39 -61 -78 -21 -91 26 -194 -129 -245 -71 -58 59 12 73 -27 28 -16 105 -83 30 -45 -54 -128 -28 46 -102 -96 -147 27 -95 -171 -147 -11 -38 -59 -6 -41 -36 -19 -34 49 -92 -49 1 -131 104 -43 -33 -106 17 -14 83 -118 58 -54 -6 83 98 -59 203 22 92 43 29 -34 180 -54 90 29 58 264 -4 55 19 -33 56 23 192 -103 -6 -50 125 -170 147 -16 63 100 -14 -20 51 130 20 44 58 12 70 58 2 44 51 82 31 28 35 -8 145 72 8 43 -79 -8 -33 106 -38 93 55 79 -11 22 78 -143 44 -12 69 -75 36 -63 93 132 95 33 58 -63 38 57 132 -48 98 32 29 -19 124 42 7 21 45 203 -3 97 106 -58 101 45 63 -32 77 74 210 -36 58 149 117 111 11 90 -28 177 -3 109 123 21 100 74 35 75 110 86 -25',
+    '울진': '1294251 370539 -6 40 -26 2 -70 -51 -17 -92 26 -83 -64 -76 66 -166 18 -120 -13 -83 -85 -113 69 -147 61 -242 -37 -94 21 -113 -39 -42 2 -76 48 -107 -13 -52 -39 -28 67 -159 -19 -56 76 -172 179 -187 17 -76 98 -103 7 -109 49 -69 -4 -79 159 -209 -102 -103 8 -97 82 -198 -52 -70 32 -230 -59 -29 -13 -67 -29 -17 5 -69 -85 -69 50 50 -29 40 -118 -42 -86 -62 -76 -122 -27 -104 -51 -53 -46 29 7 42 -121 77 -105 30 2 43 -81 -11 -53 43 -213 -85 -79 -93 -53 58 -189 47 -28 52 -97 -11 -234 58 -88 -34 -100 25 -63 32 95 78 -23 102 65 36 34 130 89 104 -73 2 -158 64 -3 194 136 74 97 14 26 30 -10 115 67 87 75 -29 33 70 -68 109 -72 22 -77 118 -48 29 65 164 -50 74 -164 10 -15 76 62 63 -23 32 23 60 -18 24 51 24 -20 31 57 -14 9 21 -85 99 -52 -35 -41 13 -54 -21 7 57 -68 -43 -15 -131 -75 -67 -68 -4 -140 42 62 70 -99 -15 -48 -32 -64 53 -30 -69 -27 -10 -145 240 -88 -14 -134 31 -37 -23 6 -38 -67 -7 -39 35 3 96 -78 23 15 58 -47 32 35 53 -3 36 -29 17 26 36 -100 95 -4 40 -115 30 -70 57 -76 -17 -68 41 39 47 -40 23 -200 10 36 55 -108 43 58 79 84 -17 39 127 -44 108 25 35 -2 73 -34 30 52 77 -99 19 185 103 31 49 207 60 55 44 270 -147 151 78 108 142 94 -11 102 44 84 -20 119 16 127 -59 2 21 -55 34 1 60 -43 70 46 67 -77 98 151 113 85 112 170 61 60 147 134 2 92 -28 6 59 71 72 66 4 92 51 67 93 62 -18 54 15 31 48 15 -22 231 14 50 -80 58 -26 -36 -80 49 -76 39 -5 -57 -87 44 -86 41 8 33 -29 -43 25 -33 -13 10 -20 30 -27 5 40 47 -72 61 -37 -43 9 68 -71 304 -191 34 -65 -51 -38',
+    '의성': '1283747 365033 253 68 194 129 176 -67 -50 -52 15 -87 198 -114 42 29 33 -37 33 87 106 -2 17 156 190 23 33 -34 21 -87 57 -48 102 -25 148 11 121 -80 77 -12 11 -132 66 -37 9 -74 57 -55 8 -69 36 -15 71 -109 107 -2 104 -82 -29 -42 19 -172 64 -51 68 130 183 19 9 65 79 32 161 0 109 83 103 -13 85 76 227 32 6 105 -30 80 65 70 -1 38 88 56 92 -60 45 10 148 115 204 -83 83 -120 62 -39 35 21 67 -9 72 -71 101 5 36 -55 172 -15 -8 -84 58 -72 -13 -96 84 -61 26 -164 62 -54 -11 -109 94 -5 129 -105 54 -14 -59 -55 -4 -37 94 -78 -42 -141 92 -18 67 -187 -4 -37 -55 -41 -7 -49 61 -68 -28 -74 -105 -21 -17 -212 -139 3 -7 -64 -124 -22 -34 -46 97 -66 149 13 107 -32 20 -98 -27 -42 -126 -66 117 -62 25 -73 128 -54 -5 -89 -122 -59 -71 3 -49 65 -118 20 -157 84 -95 -10 -76 36 -132 -77 -93 -7 11 -28 -36 -12 16 -47 -88 -104 -195 42 -49 -15 -120 94 -53 0 -31 -68 -37 -16 -109 63 -55 -19 -40 20 -45 -27 -39 22 -131 -10 -77 29 36 66 -57 52 -40 -18 -87 26 -67 -21 -29 -45 -73 108 -48 24 -68 -43 -43 10 -93 -106 -40 15 -36 72 45 76 -34 17 43 25 -41 107 64 26 19 35 -27 30 19 97 -169 95 -148 42 -95 -7 -49 72 -159 20 -86 -50 -172 -1 -73 174 -98 38 -64 -20 -34 55 -79 26 -72 -12 -38 29 -108 -1 -85 46 -33 -6 -112 47 -22 87 -171 63 -159 -132 5 -89 -59 -2 -47 -60 -114 -2 -37 -50 8 -31 -49 -35 -127 60 -8 40 -73 71 14 54 -89 26 -17 104 -63 24 -67 131 -40 22 -82 5 -75 61 -114 23 -26 -60 -63 -6 -98 -71 13 -35 -117 -4 -4 59 -45 71 -70 40 -59 -23 226 178 10 110 62 125 88 -14 127 187 -56 75 4 77 -49 36 -72 -1 -1 87 49 46 -6 34 -120 122 -49 122 56 61 59 6 11 38 171 147 -27 95 96 147 -39 110 121 20 48 55 77 -29 46 -135 -12 -73 50 -56',
+    '청도': '1290160 358427 -25 -65 -46 -37 -8 -63 -39 -33 -29 -97 -110 -133 45 -62 -6 -94 38 -35 -9 -27 -69 -54 -155 -10 23 -38 -33 -31 -30 -101 49 -50 -27 -123 52 -16 17 -47 117 -119 61 -19 -3 -62 58 -62 5 -103 182 -57 156 61 13 -51 -35 -146 117 -248 -99 -180 -104 39 -57 -13 -29 -55 -313 -205 -258 65 4 50 -71 45 -30 51 -101 49 -260 55 -263 -117 -73 66 -61 -32 -15 -107 -91 -126 -54 -28 -53 -90 -94 -76 -21 -6 -90 84 -73 -6 -160 -76 -86 -6 -29 -103 -111 -108 -202 24 -94 -24 -207 97 -54 -12 -74 55 -96 -39 -117 4 -84 54 -17 75 -56 41 -134 11 -98 -23 -81 41 -122 -48 -76 -84 -58 27 -282 -73 -291 128 -44 96 -84 9 -19 114 -221 95 16 83 -34 111 30 71 -4 90 -66 29 -40 108 79 202 -28 29 20 67 -60 94 331 170 38 71 69 -22 107 37 72 -68 46 56 182 14 25 -82 -50 -54 70 -73 -30 -78 59 -69 42 -6 69 45 73 -10 80 24 11 33 162 90 72 -16 125 26 -1 41 89 77 -27 69 44 35 89 0 4 -64 65 -47 54 -115 175 -11 42 -99 64 -44 107 -46 119 3 10 49 -31 23 11 92 91 50 16 70 103 28 -7 32 45 79 114 21 92 -55 56 28 115 -44 46 19 26 50 157 -43 85 62 -36 93 56 -14 57 28 99 -102 164 74 21 86 34 -18 63 -160 28 11 -29 13 6 20 91 77 111 25 64 -12 145 228 -21 39 61 71 16 74 41 6 -11 124 112 208 188 -10 144 83 163 43 8 -35',
+    '청송': '1290160 365882 160 -2 39 -57 103 -22 12 -36 -26 -14 53 -94 12 -83 79 -25 86 -124 321 3 79 31 32 -54 174 -66 27 -74 -40 -42 47 -48 -43 -47 35 -48 -16 -42 32 -29 104 -19 91 12 -6 -54 24 -21 -29 -141 -29 -23 39 -81 98 -97 -8 -47 81 -73 15 -106 175 -94 75 34 66 -12 85 -102 13 -108 154 -101 -73 -105 66 -34 11 -35 -82 -64 -31 -132 38 -19 38 -121 44 -23 150 18 100 -71 3 -96 -36 -50 16 -29 -50 -36 -88 -4 -59 -43 -8 -46 -61 -33 -16 -50 50 -44 -75 -81 52 -45 5 -63 -197 -103 -11 -93 -75 -78 -6 -49 -35 -11 -78 -103 -138 -80 -67 40 -2 28 -132 32 -55 39 -17 42 -85 69 5 48 -47 70 -66 20 -45 -24 -47 43 -51 -17 -55 30 -40 -25 -92 96 -43 -21 -56 44 -49 3 -80 -58 -110 -6 -71 -50 1 -33 72 -91 60 7 101 -38 1 -46 23 -8 1 -46 37 -51 -160 -79 -10 -76 -83 45 -146 -20 -61 -88 -4 -98 -29 2 -8 -54 -36 -18 -23 -135 -279 -42 -74 -35 -11 -71 -111 -19 -46 -44 -48 -5 -63 52 -128 25 -126 104 -91 1 -86 51 -50 -48 -150 -22 -46 -44 -41 30 -6 58 -52 20 -43 62 24 82 122 59 5 89 -128 54 -25 73 -117 62 126 66 27 42 -20 98 -107 32 -149 -13 -94 81 49 38 106 15 7 64 139 -3 23 222 252 1 79 19 56 64 127 14 35 134 115 74 49 90 113 29 38 77 -31 78 35 50 -43 74 75 159 65 73 -8 30 51 67 -11 31 45 19 1 26 -7 82 -102 163 40 132 -31 70 -39 5 -21 97 66 54 103 -35 -62 67 26 51 -64 39 5 42 89 37 95 110 33 88 -41 89 -82 -8 -30 99 -67 17 -19 31 17 139 20 25 151 21 -38 87 -41 37 -48 -1 5 42 42 26 5 56 63 34 94 106 -3 66 47 8 40 -45 75 -21',
+    '칠곡': '1285002 361126 139 -12 63 32 60 -30 81 11 58 -21 30 18 39 -35 180 7 -24 -100 48 -40 14 -71 -52 -187 56 -116 141 97 35 -43 75 -8 31 41 3 81 244 23 31 32 49 -29 12 -22 -27 -52 39 -34 -43 -70 9 -71 -16 -77 -50 -68 -13 -130 155 -83 38 -64 -220 -41 -158 -205 -100 -25 -27 -42 -174 -9 -81 -54 -76 -7 -38 -114 -66 49 -32 91 -147 56 -21 -50 38 -134 43 -36 -23 -79 19 -152 -49 -117 -126 -118 -92 -48 -31 -178 -24 -21 -19 -7 -9 35 -30 -7 -58 84 -61 -33 -60 25 -32 -23 -69 50 -30 91 74 58 36 200 -222 87 -39 -81 -87 2 -29 -37 -138 -35 -11 -49 -53 -18 -20 -76 -94 -130 -81 -18 -21 82 22 195 -33 150 -85 -27 -186 31 -46 47 5 50 -49 43 -118 -13 -76 91 23 38 -34 25 0 55 -203 71 -57 106 9 95 -27 35 9 84 51 39 -57 45 -13 58 -144 21 -45 69 -13 74 38 51 54 8 15 112 -98 85 -61 102 81 73 122 -15 164 49 89 -4 52 -89 71 -24 42 -84 44 -22 -3 -25 66 -6 34 -58 89 46 82 1 82 49 -44 42 79 57 55 109 93 11 39 -87 69 -6 67 57 17 -46 53 -40 168 -19 20 -38 148 -45 68 26 -49 41 -11 50 134 113 -16 33 40 56 -6 35 62 36 -10 35 60 51 10 66 41 -7 26 -97 24 -9',
+    '포항': '1294012 360390 303 -86 4 -30 -135 -10 -109 29 -119 -114 70 -53 42 13 -29 -26 31 -24 31 71 27 3 -4 -45 33 4 4 45 22 2 -3 -41 45 7 14 89 -8 -112 -90 -66 95 55 -59 -38 49 -59 210 -83 79 -5 43 16 30 102 237 131 61 -1 146 93 16 114 105 62 100 147 82 -1 27 69 42 32 2 47 48 33 18 89 84 12 63 -78 84 -4 -17 -91 67 -65 34 -135 49 -25 -48 -65 25 -27 -42 -32 52 -22 -3 -32 -48 -39 72 -81 -70 -47 5 -45 -113 -100 7 -73 -97 -34 27 29 -39 12 -39 -34 24 -42 36 10 -68 -53 27 -106 -70 -39 31 -36 -41 -73 -111 -93 -59 -95 16 -27 -52 -6 23 18 -47 4 -43 -43 -5 -91 89 -152 66 -46 -88 -44 0 -65 40 -59 -21 -23 -68 6 -16 -81 142 -21 13 -32 -71 -47 -21 -93 -54 -35 -24 -90 -28 -17 -67 -19 -177 51 -98 97 -51 -30 -228 -22 -64 111 1 56 -54 42 -37 100 -112 52 -45 0 1 -61 -66 -16 -44 -58 1 -91 -35 -36 -132 -11 -26 67 -118 11 -75 -37 -107 42 -59 77 84 39 -19 117 -80 -14 -29 45 -17 -32 -55 -1 -62 45 12 22 -53 63 5 102 27 49 -70 104 31 40 -50 83 -108 74 30 118 -47 17 -30 85 -41 14 -58 116 -12 36 35 48 -1 49 -115 4 52 19 -28 138 -182 167 72 198 -29 117 48 38 69 -20 150 -176 54 7 35 -29 167 5 174 -272 98 65 9 64 60 12 40 46 -25 39 32 131 36 1 11 -85 85 -130 156 102 104 -30 -106 33|1294290 360943 -18 19 -88 -92 -12 -55 27 -49 -19 -29 -164 -40 -52 -65 -112 7 -48 -34 -22 -80 50 -46 -30 30 -74 -1 -34 -140 25 -39 -40 -46 -60 -12 -9 -64 -98 -65 -52 51 9 39 -78 73 -46 104 -49 17 -125 -17 -35 29 -69 -2 -19 58 -80 85 -105 48 -13 92 -105 77 -131 -48 -76 4 -30 -22 -35 20 -90 -226 -109 -45 -37 -41 -198 -5 -200 -143 -55 -16 -21 43 21 26 -2 65 -25 14 16 37 -69 30 -4 44 -187 15 -27 33 -78 5 -47 36 13 23 -38 38 13 58 -69 65 -156 -16 -15 43 -130 93 -36 42 -7 74 58 27 58 71 -67 79 -175 -43 -23 -52 -58 17 -42 35 -20 61 -73 59 51 54 -16 84 -156 69 -30 57 -79 -5 -57 34 -412 92 11 71 94 42 95 -5 172 45 15 130 36 18 8 54 29 -2 4 98 61 88 146 20 83 -45 10 76 160 79 -37 51 -1 46 -23 8 -1 46 -101 38 -36 -17 -84 74 -13 60 71 50 110 6 98 61 87 -50 43 21 92 -96 40 25 55 -30 51 17 47 -43 45 24 66 -20 47 -70 -5 -48 85 -69 17 -42 55 -39 132 -32 51 -73 156 85 78 103 35 11 6 49 75 78 11 93 197 103 -5 63 -52 45 75 81 -51 60 78 67 8 46 67 48 80 -1 92 59 106 -30 23 53 -10 46 20 12 48 -43 117 58 113 -95 11 -47 -10 -101 -58 -29 -24 -71 -44 -14 13 -113 176 -185 116 39 235 -52 152 66 120 -46 96 -4 -31 -133 93 -136 42 -14 -55 -96 57 -128 -51 -78 -89 -27 -1 -95 91 -115 56 -23 -6 27 68 -50 18 -90 48 -79 -22 -36 27 -72 -55 -121 31 -72 277 -206 141 -13 -87 -1 85 -18 -1 -133 -67 -2 -21 36 -18 -64',
+    '울릉': '1309114 375413 81 -5 -76 -27 -38 -98 23 -70 61 -27 11 -52 -30 -149 -16 12 -31 -43 32 -40 6 53 -1 -101 72 -3 -51 -38 -68 -2 -18 -54 -110 -11 -121 -53 -79 -110 68 13 -74 -28 -5 -44 -73 55 -117 8 -62 40 -68 -11 -113 38 -39 47 -156 24 -42 76 -59 27 29 144 -28 22 27 33 -78 90 -42 8 -13 46 21 47 88 -40 110 34 94 66 10 -23 57 2 154 85 218 12 76 63 175 -18 111 79 47 -5 37 -72'
+  };
+  /* === 시군 경계 끝 === */
+
+  /* 이름표를 놓을 자리. 경계의 무게중심은 「ㄷ」자 시군에서 밖으로 나가기도 해서,
+     눈으로 보고 정한 자리를 그대로 씁니다 (점 지도 때 쓰던 값입니다). */
+  var R = [
+    ['울진',129.400,36.993],['봉화',128.733,36.893],['영주',128.624,36.806],
+    ['영양',129.112,36.667],['예천',128.437,36.658],['문경',128.187,36.587],
+    ['안동',128.730,36.568],['청송',129.057,36.436],['영덕',129.366,36.415],
+    ['상주',128.159,36.411],['의성',128.697,36.353],['김천',128.114,36.140],
+    ['구미',128.344,36.120],['포항',129.343,36.019],['칠곡',128.402,35.996],
+    ['영천',128.939,35.973],['성주',128.283,35.919],['경주',129.225,35.856],
+    ['경산',128.741,35.825],['고령',128.263,35.726],['청도',128.734,35.647],
+    ['울릉',130.906,37.484]
+  ];
+  var g = document.getElementById('mini-map');
+  if (!g) return;
+
+  /* 접어 둔 경계를 위경도로 폅니다.
+     첫 두 값만 절대값(1/10000도)이고, 그다음부터는 앞 점과의 차이입니다. */
+  function gbRings(s) {
+    return s.split('|').map(function (seg) {
+      var a = seg.split(' '), x = +a[0], y = +a[1], pts = [[x / 1e4, y / 1e4]];
+      for (var i = 2; i < a.length; i += 2) {
+        x += +a[i]; y += +a[i + 1];
+        pts.push([x / 1e4, y / 1e4]);
+      }
+      return pts;
+    });
+  }
+
+  var POLY = typeof GB_POLY === 'object' ? GB_POLY : null;
+  var main = R.filter(function (r) { return r[0] !== '울릉'; });
+  var W = 300, H = 330, m = 22;
+
+  /* 범위는 **경계에서** 잡습니다. 점 지도 때는 시군 중심으로 잡고 여백을 0.16도씩
+     더했는데, 그건 경계가 화면 밖으로 나가지 않게 하려던 어림이었습니다.
+     이제 경계가 있으니 어림이 필요 없습니다. */
+  var lons = [], lats = [];
+  if (POLY) {
+    Object.keys(POLY).forEach(function (k) {
+      if (k === '울릉') return;
+      gbRings(POLY[k]).forEach(function (r) {
+        r.forEach(function (p) { lons.push(p[0]); lats.push(p[1]); });
+      });
+    });
+  } else {                                  // 경계가 아직 안 구워졌으면 점으로 물러납니다
+    main.forEach(function (r) { lons.push(r[1]); lats.push(r[2]); });
+  }
+  var pad = POLY ? 0.02 : 0.16;
+  var w = Math.min.apply(null, lons) - pad, e = Math.max.apply(null, lons) + pad;
+  var s = Math.min.apply(null, lats) - pad, n = Math.max.apply(null, lats) + pad;
+  var sq = Math.cos((n + s) / 2 * Math.PI / 180);
+  var sc = Math.min((W - m * 2) / ((e - w) * sq), (H - m * 2 - 46) / (n - s));
+  var ox = (W - (e - w) * sq * sc) / 2, oy = m + 40;
+  var X = function (lo) { return ox + (lo - w) * sq * sc; };
+  var Y = function (la) { return oy + (n - la) * sc; };
+
+  function pathOf(rings, px, py) {
+    return rings.map(function (r) {
+      return 'M' + r.map(function (p) {
+        return px(p[0]).toFixed(1) + ' ' + py(p[1]).toFixed(1);
+      }).join('L') + 'Z';
+    }).join('');
+  }
+
+  /* 면과 이름을 따로 그립니다 — 나중에 그린 면이 앞 시군의 이름을 덮습니다. */
+  var shapes = '', labels = '';
+  function label(name, x, y) {
+    labels += '<text class="lb" x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '">' + name + '</text>';
+  }
+
+  main.forEach(function (r) {
+    if (POLY && POLY[r[0]]) {
+      shapes += '<path class="sg" d="' + pathOf(gbRings(POLY[r[0]]), X, Y) + '"/>';
+    } else {
+      shapes += '<circle class="dot" cx="' + X(r[1]).toFixed(1) + '" cy="' + Y(r[2]).toFixed(1) + '" r="5"/>';
+    }
+    label(r[0], X(r[1]), Y(r[2]) + 3.4);
+  });
+
+  /* 울릉군은 축척이 달라 따로 상자에 넣습니다 (본토에서 동쪽으로 1.5도). */
+  var bx = 222, by = 14, bw = 66, bh = 52;
+  var box = '<rect x="' + bx + '" y="' + by + '" width="' + bw + '" height="' + bh + '" rx="5" ' +
+            'fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity=".35"/>';
+  if (POLY && POLY['울릉']) {
+    var ur = gbRings(POLY['울릉']);
+    var ul = [], ua = [];
+    ur.forEach(function (r) { r.forEach(function (p) { ul.push(p[0]); ua.push(p[1]); }); });
+    var uw = Math.min.apply(null, ul), ue = Math.max.apply(null, ul);
+    var us = Math.min.apply(null, ua), un = Math.max.apply(null, ua);
+    var usq = Math.cos((un + us) / 2 * Math.PI / 180);
+    var usc = Math.min((bw - 16) / ((ue - uw) * usq), (bh - 22) / (un - us));
+    var uox = bx + (bw - (ue - uw) * usq * usc) / 2;
+    var uoy = by + 5 + ((bh - 22) - (un - us) * usc) / 2;
+    shapes += '<path class="sg" d="' + pathOf(ur,
+      function (lo) { return uox + (lo - uw) * usq * usc; },
+      function (la) { return uoy + (un - la) * usc; }) + '"/>';
+  } else {
+    shapes += '<circle class="dot" cx="255" cy="36" r="4.5"/>';
+  }
+  label('울릉', bx + bw / 2, by + bh - 6);
+
+  g.innerHTML = box + shapes + '<g class="lbs">' + labels + '</g>';
+})();
+</script>
+
+<!-- Firebase SDK & 방문자 카운터 연동 -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCPtq-BeB_wPmLa7-fa1y3guv8Y3ImvvJU",
+    authDomain: "team-leap.firebaseapp.com",
+    projectId: "team-leap",
+    storageBucket: "team-leap.appspot.com",
+    messagingSenderId: "338290371457",
+    appId: "1:338290371457:web:fbab6a4f216503c5305041"
+  };
+
+  try {
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function initVisitorCount() {
+      const todayDate = new Date().toLocaleDateString('ko-KR', {timeZone: 'Asia/Seoul'}).split('.').join('').replace(/\s/g, '-');
+      const todayRef = doc(db, "stats", `visitors_${todayDate}`);
+      const globalRef = doc(db, "stats", "visitors");
+
+      // 중복 방문 방지 (세션 기준)
+      if (!sessionStorage.getItem('visited')) {
+        sessionStorage.setItem('visited', 'true');
+        try { await updateDoc(todayRef, { count: increment(1) }); } catch(e) { await setDoc(todayRef, { count: 1 }); }
+        try { await updateDoc(globalRef, { count: increment(1) }); } catch(e) { await setDoc(globalRef, { count: 1 }); }
+      }
+
+      const [nT, nG] = await Promise.all([getDoc(todayRef), getDoc(globalRef)]);
+      const el = document.getElementById('visitor-count');
+      if (el && nT.exists() && nG.exists()) {
+        el.innerHTML = `<span style="color:#22c55e">●</span> 오늘 접속자: ${nT.data().count}명 | 누적 접속자수: ${nG.data().count.toLocaleString()}명`;
+      }
+    }
+    initVisitorCount();
+  } catch(e) {
+    console.error("Firebase 방문자 카운터 오류:", e);
+    const el = document.getElementById('visitor-count');
+    if (el) {
+      let today = parseInt(localStorage.getItem('visitor_today') || '42', 10);
+      let total = parseInt(localStorage.getItem('visitor_total') || '1042', 10);
+      if (!sessionStorage.getItem('visited')) {
+         sessionStorage.setItem('visited', 'true');
+         today++; total++;
+         localStorage.setItem('visitor_today', today);
+         localStorage.setItem('visitor_total', total);
+      }
+      el.innerHTML = `<span style="color:#22c55e">●</span> 오늘 접속자: ${today}명 | 누적 접속자수: ${total.toLocaleString()}명 <span style="font-size:10px;color:var(--leap-gray)">(가상)</span>`;
+    }
+  }
+</script>
+</body>
+</html>

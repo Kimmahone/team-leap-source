@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>경북 학령인구 데이터 플랫폼 — 설명서 · TEAM LEAP</title>
+<meta name="robots" content="noindex">
+<style>
+:root{--ink:#14202E;--gray:#5A6672;--line:#D8DEE6;--hair:#EDF1F5;--bg:#F7F9FB;
+  --surface:#fff;--blue:#1B4FA0;--tint:#EAF1FC;--radius:14px}
+@media (prefers-color-scheme:dark){:root{--ink:#E8EDF3;--gray:#A8B3BF;--line:#33404F;
+  --hair:#232E3B;--bg:#141B24;--surface:#1B242F;--blue:#7FB3F7;--tint:#1E2B3D}}
+:root[data-theme="dark"]{--ink:#E8EDF3;--gray:#A8B3BF;--line:#33404F;--hair:#232E3B;
+  --bg:#141B24;--surface:#1B242F;--blue:#7FB3F7;--tint:#1E2B3D}
+:root[data-theme="light"]{--ink:#14202E;--gray:#5A6672;--line:#D8DEE6;--hair:#EDF1F5;
+  --bg:#F7F9FB;--surface:#fff;--blue:#1B4FA0;--tint:#EAF1FC}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);line-height:1.8;
+  font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,
+    "Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+  font-size:16px;-webkit-text-size-adjust:100%}
+.top{background:var(--blue);color:#fff;padding:14px 0}
+:root[data-theme="dark"] .top,@media (prefers-color-scheme:dark){.top{background:#16233A}}
+.top .in{max-width:860px;margin:0 auto;padding:0 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.top .t{font-weight:800;letter-spacing:-.01em}
+.top .t span{font-weight:600;opacity:.85;font-size:.875rem;margin-left:8px}
+.top a{margin-left:auto;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.5);
+  border-radius:999px;padding:7px 15px;font-size:.8125rem;font-weight:700;min-height:38px;
+  display:inline-flex;align-items:center}
+.top a:hover{background:rgba(255,255,255,.18)}
+main{max-width:860px;margin:0 auto;padding:34px 22px 90px}
+h1{font-size:1.75rem;letter-spacing:-.02em;margin:0 0 8px}
+h2{font-size:1.3125rem;letter-spacing:-.015em;margin:44px 0 12px;padding-bottom:8px;
+  border-bottom:2px solid var(--hair)}
+h3{font-size:1.0625rem;margin:30px 0 8px}
+h4,h5,h6{font-size:.9375rem;margin:22px 0 6px;color:var(--gray)}
+p{margin:0 0 14px}
+a{color:var(--blue)}
+b{font-weight:700}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+ul,ol{margin:0 0 16px;padding-left:24px}
+li{margin:4px 0}
+blockquote{margin:18px 0;padding:14px 18px;background:var(--tint);border-radius:var(--radius);
+  border-left:4px solid var(--blue)}
+blockquote p:last-child{margin:0}
+code{background:var(--hair);border-radius:5px;padding:2px 6px;font-size:.875em;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 18px;overflow-x:auto;margin:0 0 18px}
+pre code{background:none;padding:0;font-size:.8125rem;line-height:1.7}
+.tw{overflow-x:auto;margin:0 0 20px}
+table{border-collapse:collapse;width:100%;font-size:.9375rem;min-width:420px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{background:var(--hair);font-weight:700;white-space:nowrap}
+del{color:var(--gray)}
+.foot{max-width:860px;margin:0 auto;padding:0 22px 60px;color:var(--gray);font-size:.8125rem;line-height:1.8}
+@media print{
+  .top a{display:none}
+  body{background:#fff;color:#000;font-size:10.5pt}
+  .top{background:none;color:#000;border-bottom:2px solid #000;padding:0 0 8px;margin-bottom:14px}
+  main{padding:0;max-width:none}
+  h2{break-after:avoid}
+  pre,table,blockquote{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <div class="t">경북 학령인구 데이터 플랫폼 — 프로토타입 v0.2<span>설명서</span></div>
+  <a href="../../index.html">처음으로</a>
+</div></header>
+<main>
+<h1 id="h0">경북 학령인구 데이터 플랫폼 — 프로토타입 v0.2</h1>
+<ul><li>실행: <code>index.html</code>을 브라우저로 열면 됩니다. 설치·서버 불필요, 인터넷 없이도 동작합니다.</li><li>점검: <code>node test.js</code> (50개)</li><li>화면 직접 링크: <code>index.html#home</code> / <code>#status</code> / <code>#plan</code> / <code>#news</code> / <code>#sim</code></li><li>근거: 「경북 학령인구 데이터 플랫폼 구성안」(기획예산관, 2026. 6. 17.) 5쪽 전체</li></ul>
+<blockquote><p><b>v0.1 → v0.2 (2026. 8. 3.)</b> — 더미 위에 세워졌던 화면이 실적 위로 옮겨졌습니다. 학교 917곳의 이름·위치·<b>학년별 학생수·학급수</b>가 전부 공공데이터입니다. 남은 더미는 <b>예측(2027~)</b> 과 <b>학령인구 시계열 보간값</b> 둘뿐입니다.</p></blockquote>
+<hr>
+<h2 id="h4">구현 범위</h2>
+<div class="tw"><table><thead><tr><th>구성안 메뉴</th><th>구현</th><th>비고</th></tr></thead><tbody><tr><td>홈</td><td>✅</td><td>요약 패널, <b>실좌표 지도</b>, 시군 상세 전환, 학교급·지표 전환</td></tr><tr><td>경북 학령인구 현황</td><td>✅</td><td>과거·현재·미래 3열, 연도 드롭다운, 학령인구↔학생수 토글, 누적 막대</td></tr><tr><td>주요업무계획</td><td>◻</td><td>정적 콘텐츠 영역만 배치 (원고 필요)</td></tr><tr><td>뉴스</td><td>◻</td><td>AI 주간 브리핑·기사 목록 레이아웃만 (D9 필요)</td></tr><tr><td>학생수 시뮬레이터</td><td>✅</td><td>조회군 필터 전체, 기준자료/예측 2표, 산출 기준 6종</td></tr><tr><td>학구도안내서비스</td><td>✅</td><td>외부 링크 (새창)</td></tr></tbody></table></div>
+<hr>
+<h2 id="h7">데이터 상태</h2>
+<h3 id="h8">실적 — 학교알리미 공공데이터 (공공누리 제1유형)</h3>
+<div class="tw"><table><thead><tr><th>무엇</th><th>어디서</th><th>얼마나</th></tr></thead><tbody><tr><td>학교 이름·학교급·시군·주소·<b>위경도</b></td><td><code>apiType=0</code> 학교기본정보</td><td><b>917곳</b> (초 474 · 중 260 · 고 183)</td></tr><tr><td><b>학년별 학생수·학급수</b>, 특수학급, 교사수</td><td><code>apiType=09</code> 학년별·학급별 학생수</td><td><b>917곳 · 2026 공시</b></td></tr></tbody></table></div>
+<p>굽는 스크립트는 <code>open api/</code> 에 있습니다.</p>
+<pre><code>node &quot;open api/bake-coords.mjs&quot;      # 좌표  → 앱 A·C·E + 이 대시보드 (네 곳을 함께)
+node &quot;open api/bake-students.mjs&quot;    # 학년별 학생·학급 → 이 대시보드
+node &quot;open api/bake-students.mjs&quot; --year=2025   # 다른 해</code></pre>
+<p><b>2026 실적 합계</b>: 초 101,176 · 중 63,119 · 고 63,189 (계 227,484)</p>
+<h3 id="h13">아직 더미</h3>
+<div class="tw"><table><thead><tr><th>무엇</th><th>왜</th><th>무엇이 있어야 풀리나</th></tr></thead><tbody><tr><td><b>예측 학생수 (2027~)</b></td><td>시군·학교급별 연평균 감소율을 곱하고 있습니다</td><td>코호트 진급법 구현 + <b>D1 출생아수</b> + 여러 해치 실적</td></tr><tr><td>학령인구 시계열 그 사이 연도</td><td>2016/2026/2036 세 시점만 구성안 값이고 나머지는 선형 보간</td><td>D1 장래인구추계</td></tr><tr><td>뉴스 · 주요업무계획</td><td>원고와 D9</td><td></td></tr></tbody></table></div>
+<hr>
+<h2 id="h16">구성안과 다른 점 — 그리고 그 이유</h2>
+<h3 id="h17">1. 지도 API 를 쓰지 않습니다 (VWorld 도 아닙니다)</h3>
+<p>원래 계획은 VWorld 였습니다. 그런데 <b>앱 E 가 외부 호출 없이 위경도를 화면 좌표로 옮기는 것만으로 지도를 그리고 있었습니다.</b> 같은 방식을 가져왔습니다.</p>
+<ul><li>외부를 부르지 않으므로 <b>보안성 검토에 걸릴 것이 없습니다</b> (원칙 1번)</li><li>인터넷 없이 그려집니다</li><li>도메인 등록·호출 쿼터·상용 라이선스 문제가 없습니다</li></ul>
+<p>울릉군은 본토에서 동쪽으로 1.5도 떨어져 있어, 같은 축척에 넣으면 나머지 21개 시군이 왼쪽 구석에 뭉칩니다. <b>축척이 다른 별도 상자</b>에 넣고 화면에 그렇게 적었습니다.</p>
+<h3 id="h21">2. 학교급을 <b>색이 아니라 모양</b>으로 나눕니다</h3>
+<p>● 초등학교 · ▲ 중학교 · ■ 고등학교.</p>
+<p>색도 함께 쓰지만 색은 보조입니다. 학교급 5색은 명도가 서로 비슷해 <b>색만으로는 구별되지 않습니다</b> — 흑백 인쇄와 색각 이상에서 그렇습니다 (원칙 4번).</p>
+<h3 id="h24">3. 학교 수는 <b>실데이터</b>를 씁니다 — 구성안 예시표가 아니라</h3>
+<p>구성안 5쪽 예시표의 시군별 중학교 학교수와 실데이터를 대조했더니:</p>
+<pre><code>합계는 260 으로 같은데, 22개 시군 중 14개가 다릅니다.
+  경주 25→20  ·  구미 25→30  ·  경산 17→15  ·  울릉 2→1  ·  청송 6→8 …</code></pre>
+<p><b>합계만 맞아서 아무도 몰랐던 종류의 어긋남입니다</b> (마스터 함정 12번). 실데이터를 기준으로 삼고, 중학교 상세 화면에서 구성안과 다른 시군에는 차이를 적어 둡니다.</p>
+<p>기준일 차이인지 분교장·각종학교 셈법 차이인지는 <b>기획예산관 확인이 필요합니다.</b></p>
+<h3 id="h29">4. 유치원·특수학교는 고르지 못하게 두었습니다</h3>
+<p>공공데이터로 받은 917곳은 초·중·고뿐입니다. 구성안 지도에는 유·특수가 나오므로 <b>범위를 기획예산관에 확인해야 합니다.</b> 없는 것을 있는 척하지 않습니다.</p>
+<h3 id="h31">5. 방송통신중학교를 뺐습니다</h3>
+<p><code>apiType=09</code> 는 918곳을 주는데 그 중 <b>포항중학교부설방송통신중학교</b>가 있습니다. 학령인구 분석 대상이 아니라고 보아 뺐습니다. 그래서 중학생 계가 API 원값 63,324 가 아니라 <b>63,119</b> 입니다. 이 판단도 확인 대상입니다.</p>
+<h3 id="h33">6. 산출 기준을 &quot;둘 중 하나만 활성&quot;으로</h3>
+<p>구성안 5쪽의 <code>● 학교 수</code> / <code>○ 학급당 학생 수</code>는 상위 라디오이고 각각 하위 3개 옵션을 가집니다. 2030년 표에서 <b>파란 숫자(학급수·학교수)는 입력한 기준, 빨간 숫자(학급당 평균)는 산출 결과</b>입니다. 즉 두 그룹은 동시에 적용되는 게 아니라 <b>무엇을 고정하고 무엇을 결과로 볼지</b>를 고르는 구조입니다.</p>
+<p>이 해석이 맞는지 <b>기획예산관 확인이 필요합니다.</b></p>
+<h3 id="h36">7. 예측 패널을 진한 파랑 바탕에서 옅은 바탕으로 바꿨습니다</h3>
+<p>구성안은 진한 파랑에 흰 글자입니다. 두 가지 이유로 바꿨습니다.</p>
+<ul><li><b>인쇄하면 배경이 빠져 흰 종이에 흰 글자만 남습니다</b> (마스터 함정 1번)</li><li>다크 모드에서는 주색이 밝아져 흰 글자의 대비가 무너집니다 (함정 3번)</li></ul>
+<p>테두리와 옅은 바탕으로 구분하고 글자는 본문 색을 씁니다.</p>
+<h3 id="h40">8. 확보하지 못한 데이터의 필터는 비활성</h3>
+<p><code>교육혁신선도지역</code>(D8), <code>도서·벽지</code>(D4)는 눌리지 않게 두고 사유를 툴팁에 적었습니다. 있는 척하는 것보다 낫습니다.</p>
+<hr>
+<h2 id="h43">접근성</h2>
+<p>12월 누리집 탑재 조건에 웹 접근성 인증이 있어 처음부터 반영했습니다. <b>v0.2 에서 색을 전부 다시 계산했습니다</b> — v0.1 의 색은 기준에 미달했습니다.</p>
+<div class="tw"><table><thead><tr><th>항목</th><th>v0.1</th><th>v0.2</th></tr></thead><tbody><tr><td>학교급 5색 (도형 3:1)</td><td>2.20 ~ 3.26 — <b>4색 미달</b></td><td>3.85 ~ 7.86 전부 통과</td></tr><tr><td>밀도 태그 글자 (4.5:1)</td><td>2.73 / 3.66 / 3.67 — <b>전부 미달</b></td><td>5.36 ~ 5.74 통과</td></tr><tr><td>포커스 표시 (3:1)</td><td><code>#ff8c00</code> <b>2.33 미달</b></td><td><code>#1B4FA0</code> 7.86 통과</td></tr><tr><td>다크 모드</td><td>없음</td><td>있음 (양쪽 다 기준 통과)</td></tr><tr><td>인쇄</td><td>없음</td><td>있음</td></tr></tbody></table></div>
+<ul><li>색상만으로 정보를 전달하지 않음 — 학교급은 <b>모양</b>, 밀도는 <b>색 + 텍스트 라벨</b></li><li>모든 차트에 <b>대응하는 데이터 표</b> 제공 (<code>aria-describedby</code> 연결)</li><li>전체 키보드 조작 가능 — 지도의 시군도 <code>tabindex</code> + Enter/Space</li><li>의미 있는 마크업 (<code>nav</code>, <code>main</code>, <code>table</code> + <code>caption</code>, <code>fieldset</code> + <code>legend</code>)</li><li>토글 버튼에 <code>aria-pressed</code>, 현재 메뉴에 <code>aria-current</code></li><li>버튼 최소 높이 44px, 포커스 표시 3px</li><li><code>prefers-reduced-motion</code> 존중</li></ul>
+<p>※ 자동 검사 도구(K-WAH 등)로 정식 진단하는 것은 11월 과제입니다.</p>
+<hr>
+<h2 id="h49">인쇄</h2>
+<p><b>시뮬레이터 결과표를 뽑아 회의에 들고 가는 것이 이 서비스의 주 용도입니다.</b></p>
+<ul><li>사이드바·조작 칩·초기화 버튼은 인쇄에서 빠집니다</li><li>배경색에 기대지 않습니다 — 브라우저의 「배경 그래픽」이 기본으로 꺼져 있기 때문입니다 (함정 1번)</li><li>색을 못 쓰는 자리는 기호로 — 감소는 <code>▼</code>, 입력한 기준은 <code>◆</code></li><li>카드·패널·마커는 페이지 중간에서 잘리지 않습니다 (<code>break-inside: avoid</code>)</li></ul>
+<hr>
+<h2 id="h53">다음 단계</h2>
+<ol><li><b>코호트 진급 모델 구현</b> — 학년별 자료가 생겼으므로 이제 됩니다</li><li><code>bake-students.mjs --year=2025</code> 등으로 <b>여러 해치 실적</b> 확보 → 진급률 산출</li><li><b>D1 출생아수</b> (KOSIS) — 초1 신입생 추정에 필요</li><li><b>백테스트</b> — 2016 기준으로 2026 을 예측해 실적과 오차 비교</li><li>기획예산관 확인 (구성안 학교수 차이 · 유·특수 범위 · 방송통신중 · 산출 기준 해석)</li></ol>
+<hr>
+<h2 id="h56">파일 구성</h2>
+<pre><code>prototype/
+├─ index.html    ← 전부 여기에 (HTML + CSS + JS + 공공데이터)
+├─ test.js       ← 50개 점검
+└─ README.md     ← 이 문서</code></pre>
+<p>단일 파일입니다. 외부 라이브러리·CDN·폰트를 일절 쓰지 않아 보안성 검토에 유리합니다.</p>
+<blockquote><p><b>주의</b> — <code>SCHOOL_RAW</code>(학교 목록·좌표)는 앱 A·C·E 와 <b>같은 사본</b>입니다. 한 곳만 고치면 나머지가 조용히 낡습니다 (함정 13번). 반드시 <code>bake-coords.mjs</code> 로 네 곳을 함께 고치세요.</p></blockquote>
+<p>자료 출처: <b>학교알리미</b>(www.schoolinfo.go.kr) · 공공누리 제1유형(출처표시)</p>
+</main>
+<div class="foot">© 2026 TEAM LEAP · 경북교육 AI Lab · AI 활용 분과</div>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TEAM LEAP 앱 — 설명서 · TEAM LEAP</title>
+<meta name="robots" content="noindex">
+<style>
+:root{--ink:#14202E;--gray:#5A6672;--line:#D8DEE6;--hair:#EDF1F5;--bg:#F7F9FB;
+  --surface:#fff;--blue:#1B4FA0;--tint:#EAF1FC;--radius:14px}
+@media (prefers-color-scheme:dark){:root{--ink:#E8EDF3;--gray:#A8B3BF;--line:#33404F;
+  --hair:#232E3B;--bg:#141B24;--surface:#1B242F;--blue:#7FB3F7;--tint:#1E2B3D}}
+:root[data-theme="dark"]{--ink:#E8EDF3;--gray:#A8B3BF;--line:#33404F;--hair:#232E3B;
+  --bg:#141B24;--surface:#1B242F;--blue:#7FB3F7;--tint:#1E2B3D}
+:root[data-theme="light"]{--ink:#14202E;--gray:#5A6672;--line:#D8DEE6;--hair:#EDF1F5;
+  --bg:#F7F9FB;--surface:#fff;--blue:#1B4FA0;--tint:#EAF1FC}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);line-height:1.8;
+  font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,
+    "Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+  font-size:16px;-webkit-text-size-adjust:100%}
+.top{background:var(--blue);color:#fff;padding:14px 0}
+:root[data-theme="dark"] .top,@media (prefers-color-scheme:dark){.top{background:#16233A}}
+.top .in{max-width:860px;margin:0 auto;padding:0 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.top .t{font-weight:800;letter-spacing:-.01em}
+.top .t span{font-weight:600;opacity:.85;font-size:.875rem;margin-left:8px}
+.top a{margin-left:auto;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.5);
+  border-radius:999px;padding:7px 15px;font-size:.8125rem;font-weight:700;min-height:38px;
+  display:inline-flex;align-items:center}
+.top a:hover{background:rgba(255,255,255,.18)}
+main{max-width:860px;margin:0 auto;padding:34px 22px 90px}
+h1{font-size:1.75rem;letter-spacing:-.02em;margin:0 0 8px}
+h2{font-size:1.3125rem;letter-spacing:-.015em;margin:44px 0 12px;padding-bottom:8px;
+  border-bottom:2px solid var(--hair)}
+h3{font-size:1.0625rem;margin:30px 0 8px}
+h4,h5,h6{font-size:.9375rem;margin:22px 0 6px;color:var(--gray)}
+p{margin:0 0 14px}
+a{color:var(--blue)}
+b{font-weight:700}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+ul,ol{margin:0 0 16px;padding-left:24px}
+li{margin:4px 0}
+blockquote{margin:18px 0;padding:14px 18px;background:var(--tint);border-radius:var(--radius);
+  border-left:4px solid var(--blue)}
+blockquote p:last-child{margin:0}
+code{background:var(--hair);border-radius:5px;padding:2px 6px;font-size:.875em;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 18px;overflow-x:auto;margin:0 0 18px}
+pre code{background:none;padding:0;font-size:.8125rem;line-height:1.7}
+.tw{overflow-x:auto;margin:0 0 20px}
+table{border-collapse:collapse;width:100%;font-size:.9375rem;min-width:420px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{background:var(--hair);font-weight:700;white-space:nowrap}
+del{color:var(--gray)}
+.foot{max-width:860px;margin:0 auto;padding:0 22px 60px;color:var(--gray);font-size:.8125rem;line-height:1.8}
+@media print{
+  .top a{display:none}
+  body{background:#fff;color:#000;font-size:10.5pt}
+  .top{background:none;color:#000;border-bottom:2px solid #000;padding:0 0 8px;margin-bottom:14px}
+  main{padding:0;max-width:none}
+  h2{break-after:avoid}
+  pre,table,blockquote{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <div class="t">TEAM LEAP 앱 — 카탈로그와 5종<span>설명서</span></div>
+  <a href="./index.html">처음으로</a>
+</div></header>
+<main>
+<h1 id="h0">TEAM LEAP 앱 — 카탈로그와 5종</h1>
+<p>이 폴더가 <b>배포 단위</b>입니다. 통째로 복사해 주면 그대로 돌아갑니다.</p>
+<pre><code>apps/
+├─ index.html      ← 앱 카탈로그 (여기서 시작)
+├─ test.js         ← node test.js
+├─ kit/            ← 공통 뼈대 (원본)
+│  ├─ leap.css
+│  └─ leap.js
+├─ a-circuit/      ← 앱 A 순회교사 통합 시간표      v0.1
+├─ b-classboard/   ← 앱 B 학급 자율 의사결정 보드   v0.2
+├─ c-storybook/    ← 앱 C 지역 탐방 디지털 스토리북 v0.6
+├─ d-multigrade/   ← 앱 D 복식학급 수업 도우미      v0.3
+└─ e-together/     ← 앱 E 이웃 학교 함께하기        v0.1</code></pre>
+<ul><li>실행: <code>index.html</code>을 브라우저로 엽니다. <b>설치·로그인·인터넷 모두 필요 없습니다.</b></li><li>근거: 08 「TEAM LEAP 앱 개발 실행계획」 4장 — <em>&quot;index.html ← 앱 카탈로그 (과제④ 웹앱스토어의 씨앗)&quot;</em></li></ul>
+<hr>
+<h2 id="h5">저작권</h2>
+<pre><code>© 2026 TEAM LEAP (경북교육 AI Lab · AI 활용 분과)</code></pre>
+<ul><li><b>교육 목적</b>에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다.</li><li>상업적 이용과 외부 배포는 제작자에게 문의해 주세요.</li><li>고쳐서 배포할 때는 출처(TEAM LEAP)를 남겨 주세요.</li></ul>
+<blockquote><p>12월 공식 배포 전에 라이선스 유형(공공누리 등)을 확정해야 합니다.</p></blockquote>
+<hr>
+<h2 id="h10">점검</h2>
+<pre><code>node test.js                       # 카탈로그         80개
+cd a-circuit    &amp;&amp; node test.js    # 앱 A            88개
+cd b-classboard &amp;&amp; node test.js    # 앱 B            31개
+cd c-storybook  &amp;&amp; node test.js    # 앱 C           197개
+cd c-storybook  &amp;&amp; node test-epub.js               # 42개
+cd d-multigrade &amp;&amp; node test.js    # 앱 D           147개
+cd e-together   &amp;&amp; node test.js    # 앱 E           133개</code></pre>
+<p>전부 합쳐 <b>718개</b>입니다. 앱을 고친 뒤에는 그 앱과 <b>카탈로그</b>를 함께 돌리세요 — 판 번호가 어긋나면 카탈로그가 잡습니다.</p>
+<hr>
+<h2 id="h14">카탈로그가 지키는 것</h2>
+<p>카탈로그가 깨지는 방식은 정해져 있습니다. <b>링크가 죽거나, 앱은 올라갔는데 카탈로그에 적힌 판 번호가 옛것으로 남거나.</b> 둘 다 검사가 잡습니다.</p>
+<div class="tw"><table><thead><tr><th>검사</th><th>무엇을 막나</th></tr></thead><tbody><tr><td>링크 10개가 가리키는 파일이 <b>실제로 있는지</b></td><td>앱 폴더 이름을 바꾸면 바로 걸립니다</td></tr><tr><td>적어 둔 판 번호가 <b>앱 화면과 같은지</b></td><td>앱만 올리고 카탈로그를 안 고치는 일</td></tr><tr><td>다섯 앱이 정말 <b>서버를 안 부르는지</b></td><td>&quot;어떤 자료도 외부로 전송하지 않습니다&quot;가 거짓이 되는 일</td></tr><tr><td>다섯 앱이 정말 <b>파일 하나로 끝나는지</b></td><td>&quot;파일 하나만 보내도 됩니다&quot;가 거짓이 되는 일</td></tr><tr><td>다섯 앱에 <b>인쇄 서식·저작권</b>이 있는지</td><td>카탈로그가 없는 기능을 광고하는 일</td></tr></tbody></table></div>
+<p>세 번째가 핵심입니다. 카탈로그에 &quot;어떤 자료도 외부로 전송하지 않습니다&quot;라고 적어 놓고 어느 앱에 <code>fetch</code>가 생기면 <b>카탈로그가 거짓말을 하게 됩니다.</b></p>
+<hr>
+<h2 id="h19">화면</h2>
+<div class="tw"><table><thead><tr><th>자리</th><th>내용</th></tr></thead><tbody><tr><td>표제</td><td>왜 이 앱들인가 — 학령인구 감소 → 소규모학교 증가 → 작은 학급·복식학급</td></tr><tr><td>앱 5종</td><td>한 줄 설명 · <b>이런 분께</b> · 특징 셋 · 화면 이름 · 열기/설명서</td></tr><tr><td>함께 지키는 것</td><td>설치 없음 / 이 기기 안에만 / 이름 안 받음 / 종이로 나옴 / 누구나 씀 / 검사가 지킴</td></tr><tr><td>나눠 주기</td><td>폴더째 복사, 앱 하나만 주기, 자료는 안 옮겨짐</td></tr></tbody></table></div>
+<p>앱을 늘어놓는 것만으로는 부족합니다. 교사가 <b>자기 것인지 3초 안에</b> 판단할 수 있어야 합니다. 그래서 카드마다 「이런 분께」를 넣었습니다 — <em>복식학급 담임. 지금도 종이에 손으로 짜고 계신 분</em>.</p>
+<h3 id="h22">화면 전환을 앱과 함께 씁니다</h3>
+<p>다크 모드를 앱과 <b>같은 키(<code>leap-theme</code>)</b> 로 저장합니다. 카탈로그에서 바꾸면 앱에서도 유지됩니다. 제품군으로 보이려면 이런 데서 어긋나지 않아야 합니다.</p>
+<hr>
+<h2 id="h25">종이 안내문</h2>
+<p>「안내문 인쇄」는 화면을 그대로 뽑지 않습니다. 카드가 잘리고, 무엇보다 <b>종이에서 링크는 쓸모가 없습니다.</b></p>
+<p>종이에는 「무엇을 하는 앱인지」와 「어떻게 여는지」만 넣었습니다. 검사가 이걸 고정합니다 — <em>&quot;종이에는 링크를 넣지 않는다&quot;</em>.</p>
+<p>학교에 돌리거나 연수 자료로 붙일 때 쓰면 됩니다.</p>
+<hr>
+<h2 id="h30">나눠 주는 법</h2>
+<ol><li><code>apps</code> 폴더를 <b>통째로</b> USB나 공유 폴더에 복사합니다.</li><li>받은 분은 폴더 안 <code>index.html</code>을 브라우저로 엽니다.</li><li>쓰고 싶은 앱의 「열기」를 누릅니다.</li></ol>
+<p><b>앱 하나만</b> 주고 싶으면 그 앱 폴더의 <code>index.html</code> 파일 하나만 보내도 됩니다. 앱마다 필요한 것이 그 파일 안에 다 들어 있습니다.</p>
+<p>자료는 <b>연 브라우저에만</b> 남습니다. 다른 컴퓨터로 옮기려면 앱 안의 「파일로 내보내기」로 저장한 뒤 저쪽에서 「파일에서 가져오기」 하세요.</p>
+<hr>
+<h2 id="h35">공공데이터</h2>
+<p>앱 A · 앱 C · 앱 E 안에 <b>경상북도 학교 917곳</b>(초 474 · 중 260 · 고 183)이 <b>위도·경도까지</b> 들어 있습니다. 앱 A는 그 좌표로 <b>학교 사이 이동 시간</b>을 어림하고, 앱 C는 <b>우리 학교 자리</b>를 지도에 찍고, 앱 E는 그것으로 <b>어느 학교가 이웃인지</b>를 정합니다 — 시군 경계를 넘어서.</p>
+<blockquote><ol><li>8. 3. 앱 E의 검사가 학교급별로 세면서, 문서 여섯 곳의 「초 473 · 고 184」가 실제 자료(<b>초 474 · 고 183</b>)와 어긋나 있는 것을 찾아 고쳤습니다. 합계 917이 맞아서 그때까지 아무도 몰랐습니다.</li></ol></blockquote>
+<ul><li>이름·주소: 교육부 「학교기본정보」 (교육정보 개방 포털 <code>open.neis.go.kr</code>)</li><li>위도·경도: 교육부 <b>학교알리미</b> (<code>schoolinfo.go.kr</code>) — 개방 포털에는 좌표가 없습니다</li><li>둘 다 <b>공공누리 제1유형(출처표시)</b> · 2026년 8월에 받았습니다</li><li><b>앱 파일 안에 담아 두었습니다.</b> 앱을 열 때 인터넷을 부르지 않습니다.</li><li>다시 받으려면 <code>open api/bake-coords.mjs</code> — 만드는 사람이 한 번 돌리는 것이고, 배포되는 앱에는 인증키가 들어가지 않습니다.</li></ul>
+<p>「어떤 자료도 외부로 전송하지 않습니다」는 그대로입니다. 공공데이터는 <b>가져다 구운 것</b>이지 불러오는 것이 아닙니다.</p>
+<hr>
+<h2 id="h41">kit 은 원본입니다</h2>
+<p><code>kit/leap.css</code> 와 <code>kit/leap.js</code> 가 원본이고, 각 앱의 <code>index.html</code> 안에 들어 있는 것은 <b>사본</b>입니다. 앱을 파일 하나로 유지하기 위해서입니다.</p>
+<p><b>원본을 고치면 앱 안의 블록도 함께 고쳐야 합니다.</b> 카탈로그도 마찬가지입니다.</p>
+<hr>
+<h2 id="h45">다음</h2>
+<ol><li>종이로 뽑아 확인 (C 표지·마지막 장, D 지도안·학습지, <b>E 제안서</b>, 카탈로그 안내문)</li><li>EPUB을 실제 뷰어(애플 북스·구글 플레이 북스)에서 열어 보기</li><li>8월 4주 내부 시연 — 카탈로그를 열어 다섯 앱을 보여 주는 흐름으로</li><li><b>E의 제안서를 들고 실제로 전화를 걸어 보기</b> — 10월 체험학습이 첫 시험대입니다</li><li>9월 개학 후 실증 → A v0.2 / B v0.3 / C v0.7 / D v0.4 / E v0.2</li></ol>
+<p>카탈로그는 지금 5종이라 목록으로 충분합니다. <b>웹앱스토어로 자라면</b> 찾기·분류가 필요해집니다.</p>
+</main>
+<div class="foot">© 2026 TEAM LEAP · 경북교육 AI Lab · AI 활용 분과</div>
+</body>
+</html>
