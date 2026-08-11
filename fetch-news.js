@@ -4,12 +4,12 @@ const https = require('https');
 const CLIENT_ID = 'e6gxp2t8xr';
 const CLIENT_SECRET = 'iNJgQTDNxwQ004Rpt3s2iHGM5UJT25lAXdxWaoz';
 
-const query = encodeURIComponent('경북 학령인구');
+const query = encodeURIComponent('학령인구 감소');
 
 function tryFetchNcp() {
   const options = {
     hostname: 'naveropenapi.apigw.ntruss.com',
-    path: `/search/v1/news?query=${query}&display=5`,
+    path: `/search/v1/news?query=${query}&display=4`,
     headers: {
       'X-NCP-APIGW-API-KEY-ID': CLIENT_ID,
       'X-NCP-APIGW-API-KEY': CLIENT_SECRET
@@ -37,7 +37,7 @@ function tryFetchNcp() {
 function tryFetchDevelopers() {
   const options = {
     hostname: 'openapi.naver.com',
-    path: `/v1/search/news.json?query=${query}&display=5&sort=sim`,
+    path: `/v1/search/news.json?query=${query}&display=4&sort=sim`,
     headers: {
       'X-Naver-Client-Id': CLIENT_ID,
       'X-Naver-Client-Secret': CLIENT_SECRET

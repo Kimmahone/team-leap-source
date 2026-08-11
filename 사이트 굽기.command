@@ -106,6 +106,7 @@ echo "  설명서 굽는 중…"
 
 cp "index.html" "$OUT/index.html"
 [ -f "gbe-logo.png" ] && cp "gbe-logo.png" "$OUT/gbe-logo.png"
+[ -f "news-latest.json" ] && cp "news-latest.json" "$OUT/news-latest.json"
 mkdir -p "$OUT/dashboard"
 cp "$SRC_DASH/index.html" "$SRC_DASH/README.md" "$SRC_DASH/README.html" "$OUT/dashboard/"
 [ -f "$SRC_DASH/gbe-logo.png" ] && cp "$SRC_DASH/gbe-logo.png" "$OUT/dashboard/gbe-logo.png"
