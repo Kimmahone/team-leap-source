@@ -545,9 +545,6 @@ footer.foot{background:var(--deep);color:var(--deep-ink);padding:clamp(60px,8vw,
     </div>
 
     <span class="sp"></span>
-    <div id="visitor-count" style="display:flex;align-items:center;margin-right:16px;font-size:0.875rem;font-weight:700;color:var(--leap-gray);">
-      <span style="color:#22c55e;margin-right:4px;">●</span> 오늘 접속자: 0명 | 누적 접속자수: 0명
-    </div>
     <button class="themebtn" id="btn-theme" type="button">어둡게 보기</button>
   </div>
 </nav>
@@ -1385,58 +1382,5 @@ if (!REDUCED) document.documentElement.classList.add('js');
 })();
 </script>
 
-<!-- Firebase SDK & 방문자 카운터 연동 -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-  import { getFirestore, doc, setDoc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyCPtq-BeB_wPmLa7-fa1y3guv8Y3ImvvJU",
-    authDomain: "team-leap.firebaseapp.com",
-    projectId: "team-leap",
-    storageBucket: "team-leap.appspot.com",
-    messagingSenderId: "338290371457",
-    appId: "1:338290371457:web:fbab6a4f216503c5305041"
-  };
-
-  try {
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    async function initVisitorCount() {
-      const todayDate = new Date().toLocaleDateString('ko-KR', {timeZone: 'Asia/Seoul'}).split('.').join('').replace(/\s/g, '-');
-      const todayRef = doc(db, "stats", `visitors_${todayDate}`);
-      const globalRef = doc(db, "stats", "visitors");
-
-      // 중복 방문 방지 (세션 기준)
-      if (!sessionStorage.getItem('visited')) {
-        sessionStorage.setItem('visited', 'true');
-        try { await updateDoc(todayRef, { count: increment(1) }); } catch(e) { await setDoc(todayRef, { count: 1 }); }
-        try { await updateDoc(globalRef, { count: increment(1) }); } catch(e) { await setDoc(globalRef, { count: 1 }); }
-      }
-
-      const [nT, nG] = await Promise.all([getDoc(todayRef), getDoc(globalRef)]);
-      const el = document.getElementById('visitor-count');
-      if (el && nT.exists() && nG.exists()) {
-        el.innerHTML = `<span style="color:#22c55e">●</span> 오늘 접속자: ${nT.data().count}명 | 누적 접속자수: ${nG.data().count.toLocaleString()}명`;
-      }
-    }
-    initVisitorCount();
-  } catch(e) {
-    console.error("Firebase 방문자 카운터 오류:", e);
-    const el = document.getElementById('visitor-count');
-    if (el) {
-      let today = parseInt(localStorage.getItem('visitor_today') || '42', 10);
-      let total = parseInt(localStorage.getItem('visitor_total') || '1042', 10);
-      if (!sessionStorage.getItem('visited')) {
-         sessionStorage.setItem('visited', 'true');
-         today++; total++;
-         localStorage.setItem('visitor_today', today);
-         localStorage.setItem('visitor_total', total);
-      }
-      el.innerHTML = `<span style="color:#22c55e">●</span> 오늘 접속자: ${today}명 | 누적 접속자수: ${total.toLocaleString()}명 <span style="font-size:10px;color:var(--leap-gray)">(가상)</span>`;
-    }
-  }
-</script>
 </body>
 </html>

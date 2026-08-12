@@ -141,6 +141,35 @@ check('좌표가 경북 범위 안에 있다',
   q('SCHOOLS.filter(s=>s.lat!=null&&(s.lat<35.0||s.lat>37.6||s.lon<127.8||s.lon>131.2)).length') === 0);
 check('울릉군 학교는 동해 먼바다에 있다', q('SCHOOLS.filter(s=>s.s==="울릉"&&s.lon>130.5).length') > 0);
 
+/* ★ 〔2026. 8. 12.〕 여기 검사가 없어서 난수 좌표가 그냥 지나갔습니다.
+   「경북 범위 안인가」만 보고 있었는데, 난수도 경북 범위 안에서 뽑혔습니다.
+   그래서 **자기 시군 안에 있는가**를 봅니다. 울릉군 유치원이 본토에 찍혀 있어도
+   위 검사는 초록이었지만 이 검사는 빨개집니다.
+   (시군은 넓으므로 중심에서 40km 까지 봅니다 — 경북에서 가장 넓은 안동·상주도 들어옵니다.) */
+const farFromSigungu = q(`(function(){
+  const R = 6371, rad = x => x * Math.PI / 180;
+  const geo = {}; REGION_GEO.forEach(g => geo[g.c] = g);
+  return SCHOOLS.filter(s => {
+    if (s.lat == null || s.lon == null) return false;
+    const g = geo[s.s]; if (!g) return false;
+    const dLon = rad(s.lon - g.lon), dLat = rad(s.lat - g.lat);
+    const h = Math.sin(dLat/2)**2 + Math.cos(rad(g.lat)) * Math.cos(rad(s.lat)) * Math.sin(dLon/2)**2;
+    return 2 * R * Math.asin(Math.sqrt(h)) > 40;
+  }).map(s => s.name + '(' + s.s + ')');
+})()`);
+check('학교 좌표가 자기 시군 안에 있다', farFromSigungu.length === 0,
+  farFromSigungu.length + '곳 어긋남: ' + farFromSigungu.slice(0, 5).join(', '));
+
+/* 같은 학교가 두 번 들어오는 것 — 굽는 스크립트가 «덧붙이기»만 하면 생깁니다.
+   실제로 유치원이 두 번 구워져 614곳이 1,228곳이 되어 있었습니다. */
+const dupNames = q(`(function(){
+  const seen = {}, dup = [];
+  SCHOOLS.forEach(s => { const k = s.name + '|' + (s.addr || ''); if (seen[k]) dup.push(s.name); else seen[k] = 1; });
+  return dup;
+})()`);
+check('같은 학교가 두 번 들어 있지 않다', dupNames.length === 0,
+  dupNames.length + '곳 중복: ' + dupNames.slice(0, 5).join(', '));
+
 console.log('\n■ 시군별로 쪼개서 세기 (합계만 맞는 것을 잡기 위해)');
 LEVELS_CHECK();
 function LEVELS_CHECK(){
@@ -161,7 +190,12 @@ function LEVELS_CHECK(){
 
 /* ---------- D2 ---------- */
 console.log('\n■ 학년별 학생·학급 (D2 · apiType=09)');
-check('초·중·고 추정으로 남은 학교가 없다', q('SCHOOLS.filter(s=>s.est).length') <= 1250, '개수: ' + q('SCHOOLS.filter(s=>s.est).length'));
+/* ★ 이 문턱이 «1250» 이었습니다 〔2026. 8. 12.〕
+   원래 「추정으로 남은 학교가 없다」를 보는 검사인데, 지어낸 유치원 1,228곳과
+   특수학교 10곳이 전부 est:true 로 들어오면서 검사가 빨개지자 **문턱을 올려**
+   초록으로 만들어 두었습니다. 검사를 고친 것이 아니라 검사를 껐던 것입니다.
+   지어낸 자료를 걷어냈으므로 원래 뜻으로 되돌립니다 — 좌표가 없는 한 곳뿐입니다. */
+check('초·중·고 추정으로 남은 학교가 없다', q('SCHOOLS.filter(s=>s.est).length') <= 1, '개수: ' + q('SCHOOLS.filter(s=>s.est).length'));
 check('공시년도가 적혀 있다', q('D2_YEAR') === 2026, '연도: ' + q('D2_YEAR'));
 check('학년별 값이 학교마다 들어 있다',
   q('SCHOOLS.filter(s=>!s.est).every(s=>s.grades && s.grades.length === (s.lv==="초"?6:3))'));
@@ -189,9 +223,55 @@ check('차이가 1% 안쪽 (같은 것을 세고 있다는 뜻)',
 
 /* ---------- 원칙 ---------- */
 console.log('\n■ 설계 원칙');
-check('외부 CDN·웹폰트를 부르지 않는다',
-  !/<(script|link)[^>]+(src|href)\s*=\s*["']https?:/i.test(html));
-check('서버로 보내는 코드가 없다', !/XMLHttpRequest|navigator\.sendBeacon/.test(html) && (!/\bfetch\s*\(/.test(html) || /fetch\(p\)/.test(html)));
+/* ★ 2026. 8. 12. — 이 두 검사를 다시 세웠습니다.
+     「외부 CDN」은 태그 속성만 보고 있었습니다. import·Worker·CSS url() 도 밖으로 나가는 길입니다.
+
+     「서버로 보내는 코드가 없다」는 더 나빴습니다. 이렇게 되어 있었습니다 —
+         (!/\bfetch\s*\(/.test(html) || /fetch\(p\)/.test(html))
+     파일 어딘가에 `fetch(p)` 가 **한 번만** 있으면 나머지 fetch 가 전부 통과합니다.
+     검사가 아니라 통과권이었습니다.
+
+     처음에는 「fetch 를 부르는 자리가 한 곳뿐일 것」으로 고쳤습니다. 그런데
+     **뉴스를 굽는 방식으로 바꾸면서 그 한 곳도 없어졌습니다.** 이제 다른 앱과 같은
+     조건입니다 — fetch 가 아예 없어야 합니다. 뉴스는 굽을 때 심고 화면은 읽기만 합니다. */
+const EXTERNAL_PATTERNS = [
+  [/<(script|link|iframe|img)[^>]+(src|href)\s*=\s*["']https?:/i, '태그 속성'],
+  [/\bimport\s+[^;]*?\bfrom\s*["']https?:/i,                      'ES 모듈 import'],
+  [/\bimport\s*\(\s*["']https?:/i,                                '동적 import'],
+  [/new\s+Worker\s*\(\s*["']https?:/i,                            'Worker'],
+  [/@import\s+(url\()?["']?https?:/i,                             'CSS @import'],
+  [/url\(\s*["']?https?:\/\//i,                                   'CSS url()']
+];
+const externalHits = EXTERNAL_PATTERNS.filter(([re]) => re.test(html)).map(([, n]) => n);
+check('외부 CDN·웹폰트를 부르지 않는다', externalHits.length === 0,
+  externalHits.length ? '밖을 부르는 길: ' + externalHits.join(' · ') : '');
+
+const senders = [
+  [/\bfetch\s*\(/,             'fetch()'],
+  [/XMLHttpRequest/,           'XMLHttpRequest'],
+  [/navigator\.sendBeacon/,    'sendBeacon'],
+  [/new\s+WebSocket\s*\(/,     'WebSocket'],
+  [/new\s+EventSource\s*\(/,   'EventSource'],
+  [/\bfirebase|initializeApp|getFirestore/i, 'Firebase SDK']
+].filter(([re]) => re.test(html)).map(([, n]) => n);
+check('밖으로 보내는 코드가 없다', senders.length === 0,
+  senders.length ? '밖으로 나가는 길: ' + senders.join(' · ') : '');
+
+/* ---------- 뉴스 — 구운 것을 그리는가, 지어내지 않는가 ---------- */
+console.log('\n■ 주간 뉴스');
+check('뉴스를 심을 자리가 있다', /<script id="news-data" type="application\/json">/.test(html));
+check('원본에는 뉴스가 비어 있다 (굽을 때 채웁니다)',
+  /<script id="news-data" type="application\/json">\s*\[\s*\]\s*<\/script>/.test(html));
+check('밖에서 온 글자를 이스케이프한다',
+  /function esc\(/.test(html) && /replace\(\/&\/g, '&amp;'\)/.test(html));
+check('링크는 http·https 만 받는다', /function safeUrl\(/.test(html) && /\^https\?:\\\/\\\//.test(html));
+check('새 창 링크에 noopener 가 있다',
+  !/target="_blank"/.test(html) || /rel="noopener/.test(html));
+/* 주석에 그 낱말이 나오는 것은 위반이 아닙니다 — 왜 그랬는지 적어 둔 자리입니다.
+   그래서 주석을 걷어 낸 뒤에 봅니다. */
+const codeOnly = html.replace(/\/\*[\s\S]*?\*\//g, '').replace(/<!--[\s\S]*?-->/g, '');
+check('되돌이 안에서 innerHTML 을 더하지 않는다', !/innerHTML\s*\+=/.test(codeOnly));
+check('뉴스가 없으면 없다고 적는다', html.includes('아직 이번 주 뉴스를 싣지 않았습니다'));
 check('다크 모드가 있다', /@media \(prefers-color-scheme: dark\)/.test(html));
 check('인쇄 스타일이 있다', /@media print/.test(html));
 check('모션 축소 요청을 존중한다', /prefers-reduced-motion/.test(html));

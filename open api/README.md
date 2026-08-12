@@ -112,5 +112,5 @@ for d in a-circuit c-storybook e-together; do (cd $d && node test.js | tail -1);
 | `bake-coords.mjs` | 좌표를 받아 앱에 심는 스크립트 |
 | `bake-students.mjs` | 학년별 학생수·학급수·교사수를 받아 앱에 심는 스크립트 |
 | `bake-demographics.mjs` | 행안부 도로명별 주민등록 인구 API로 읍·면·동 인구를 심는 스크립트 |
-| `bake-map-vworld.mjs` | 국토지리정보원 지도 배경 타일 사전 구움 스크립트 |
+| `bake-kinder.mjs` | 유치원알리미에서 유치원 목록·원아수·학급수를 받아 대시보드에 심는 스크립트 |
 

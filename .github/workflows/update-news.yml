@@ -1,17 +1,33 @@
-name: Update News Daily
+name: 주간 뉴스 받아오기
+
+# ★ 이 워크플로가 하는 일과 «하지 않는 일» 〔2026. 8. 12.〕
+#
+#   하는 일  — 네이버에서 「학령인구 감소」 기사를 받아 news-latest.json 을 고칩니다.
+#   안 하는 일 — **사이트를 고치지 않습니다.**
+#
+#   예전에는 이것이 사이트까지 갱신하는 것처럼 적혀 있었지만 아닙니다.
+#   저장소가 둘이기 때문입니다 —
+#       team-leap-source  (여기)      전체 원본. 이 워크플로가 도는 곳
+#       team-leap                     Cloudflare Pages 가 서비스하는 «구운 결과»
+#   둘을 잇는 것은 사람이 돌리는 `사이트 굽기.command` 뿐입니다.
+#   그래서 여기서 뉴스를 받아 두면, 다음에 사이트를 구울 때 함께 실립니다.
+#
+#   열쇠는 저장소 Settings → Secrets and variables → Actions 에 넣습니다.
+#       NAVER_CLIENT_ID · NAVER_CLIENT_SECRET
+#   코드에 적지 않습니다. 예전에는 적혀 있었고 그대로 커밋됐습니다.
 
 on:
   schedule:
-    # 매일 아침 7시 (한국시간 기준. UTC로는 22시)
-    - cron: '0 22 * * *'
-  workflow_dispatch: # 수동으로 실행할 수 있는 버튼 활성화
+    # 한국시간 월요일 아침 7시 (UTC 일요일 22시). 주간 클리핑이라 매일 돌 까닭이 없습니다.
+    - cron: '0 22 * * 0'
+  workflow_dispatch:
 
 jobs:
   update-news:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # 깃허브 저장소에 쓰기 권한 부여
-      
+      contents: write
+
     steps:
       - name: 저장소 가져오기
         uses: actions/checkout@v4
@@ -21,18 +37,21 @@ jobs:
         with:
           node-version: '20'
 
-      - name: 뉴스 수집 스크립트 실행
+      - name: 뉴스 받아오기
+        env:
+          NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+          NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
         run: node fetch-news.js
 
-      - name: 새로운 뉴스 확인 및 자동 푸시 (Commit & Push)
+      - name: 바뀐 것이 있으면 커밋
         run: |
-          git config --global user.name "github-actions[bot]"
+          git config --global user.name  "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add news-latest.json
-          # 변경사항이 있을 때만 커밋하고 푸시합니다.
-          if ! git diff-index --quiet HEAD; then
-            git commit -m "🤖 주간 뉴스 클리핑 자동 업데이트"
-            git push
+          if git diff --cached --quiet; then
+            echo "새로운 뉴스가 없습니다."
           else
-            echo "새로운 뉴스가 없습니다. 업데이트를 건너뜁니다."
+            git commit -m "🤖 주간 뉴스 클리핑"
+            git push
+            echo "::notice::뉴스를 받았습니다. 사이트에 올리려면 '사이트 굽기.command' 를 돌려 배포하세요."
           fi

@@ -260,9 +260,43 @@ check('출처를 밝힌다 (공공누리 제1유형)',
 
 /* ---------- 원칙 ---------- */
 console.log('\n■ 설계 원칙');
-check('외부 CDN·웹폰트를 부르지 않는다',
-  !/<(script|link)[^>]+(src|href)\s*=\s*["']https?:/i.test(html));
-check('서버로 보내는 코드가 없다', !/\bfetch\s*\(|XMLHttpRequest|navigator\.sendBeacon/.test(html));
+/* ★ 2026. 8. 12. — 이 두 검사에 구멍이 있었습니다. 넓혔습니다.
+     예전 검사는 `<script src="https://…">` 같은 **태그의 속성만** 봤습니다.
+     그런데 밖을 부르는 길은 그것만이 아닙니다 —
+       import … from "https://…"   (ES 모듈. 속성이 아니라 스크립트 본문입니다)
+       import("https://…")          (동적 import)
+       new Worker('https://…')
+       @import url(https://…) · url(https://…)   (CSS 쪽 길)
+     Firebase SDK 가 첫 번째 길로 들어와 있었는데 검사는 초록이었습니다.
+
+     「서버로 보내는 코드」도 마찬가지입니다. fetch·XHR·sendBeacon 이라는
+     **낱말만** 찾고 있었습니다. SDK 는 그 낱말을 우리 파일에 남기지 않고
+     자기 안에서 통신합니다. 그래서 밖으로 나가는 SDK 이름 자체를 봅니다.
+     원칙 2번은 「fetch 를 안 쓴다」가 아니라 「아무것도 안 보낸다」입니다. */
+const EXTERNAL_PATTERNS = [
+  [/<(script|link|iframe|img)[^>]+(src|href)\s*=\s*["']https?:/i, '태그 속성'],
+  [/\bimport\s+[^;]*?\bfrom\s*["']https?:/i,                      'ES 모듈 import'],
+  [/\bimport\s*\(\s*["']https?:/i,                                '동적 import'],
+  [/new\s+Worker\s*\(\s*["']https?:/i,                            'Worker'],
+  [/@import\s+(url\()?["']?https?:/i,                             'CSS @import'],
+  [/url\(\s*["']?https?:\/\//i,                                   'CSS url()']
+];
+const externalHits = EXTERNAL_PATTERNS.filter(([re]) => re.test(html)).map(([, n]) => n);
+check('외부 CDN·웹폰트를 부르지 않는다', externalHits.length === 0,
+  externalHits.length ? '밖을 부르는 길: ' + externalHits.join(' · ') : '');
+
+const SEND_PATTERNS = [
+  [/\bfetch\s*\(/,                        'fetch()'],
+  [/XMLHttpRequest/,                      'XMLHttpRequest'],
+  [/navigator\.sendBeacon/,               'sendBeacon'],
+  [/new\s+WebSocket\s*\(/,                'WebSocket'],
+  [/new\s+EventSource\s*\(/,              'EventSource'],
+  [/\bfirebase|initializeApp|getFirestore|firestore\.googleapis/i, 'Firebase SDK'],
+  [/gtag\(|googletagmanager|google-analytics/i,                    '구글 애널리틱스']
+];
+const sendHits = SEND_PATTERNS.filter(([re]) => re.test(html)).map(([, n]) => n);
+check('서버로 보내는 코드가 없다', sendHits.length === 0,
+  sendHits.length ? '밖으로 보내는 길: ' + sendHits.join(' · ') : '');
 check('다크 모드가 있다', /@media \(prefers-color-scheme:\s*dark\)/.test(html));
 check('인쇄 스타일이 있다', /@media print/.test(html));
 check('모션 축소 요청을 존중한다', /prefers-reduced-motion/.test(html));

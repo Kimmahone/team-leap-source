@@ -106,12 +106,53 @@ echo "  설명서 굽는 중…"
 
 cp "index.html" "$OUT/index.html"
 [ -f "gbe-logo.png" ] && cp "gbe-logo.png" "$OUT/gbe-logo.png"
-[ -f "news-latest.json" ] && cp "news-latest.json" "$OUT/news-latest.json"
 mkdir -p "$OUT/dashboard"
 cp "$SRC_DASH/index.html" "$SRC_DASH/README.md" "$SRC_DASH/README.html" "$OUT/dashboard/"
 [ -f "$SRC_DASH/gbe-logo.png" ] && cp "$SRC_DASH/gbe-logo.png" "$OUT/dashboard/gbe-logo.png"
 cp -R "$SRC_APPS" "$OUT/apps"
 
+# ── 1-b. 주간 뉴스를 대시보드에 «심습니다» ────────────────────────
+#     〔2026. 8. 12.〕 예전에는 news-latest.json 을 사이트 뿌리에 복사해 두고
+#     대시보드가 화면에서 fetch 로 받아갔습니다. 그 fetch 한 줄 때문에
+#     CSP 의 connect-src 가 'none' → 'self' 로 열렸고, _headers 의 규칙은
+#     **사이트 전체**에 걸리므로 앱 9종까지 함께 열렸습니다.
+#     원칙 2번을 브라우저가 대신 지키게 한 장치가 뉴스 하나 때문에 풀린 것입니다.
+#
+#     이 프로젝트의 다른 자료(학교 좌표·학년별 학생수)는 전부 **굽는** 방식입니다.
+#     뉴스만 달랐습니다. 이제 같아졌습니다 — 여기서 심고, 화면은 받아오지 않습니다.
+#     대신 «심은 것은 조용히 낡습니다»(함정 13번). 그래서 날짜를 찍습니다.
+if [ -f "news-latest.json" ]; then
+  node - "$OUT/dashboard/index.html" "news-latest.json" <<'NODE'
+const fs = require('fs');
+const [target, src] = process.argv.slice(2);
+let raw;
+try { raw = JSON.parse(fs.readFileSync(src, 'utf8')); }
+catch (e) { console.log('  ⚠ news-latest.json 을 읽지 못했습니다 — 뉴스 없이 굽습니다: ' + e.message); process.exit(0); }
+if (!Array.isArray(raw)) { console.log('  ⚠ news-latest.json 이 배열이 아닙니다 — 뉴스 없이 굽습니다.'); process.exit(0); }
+
+/* 화면에 쓰는 다섯 칸만 남깁니다. 쓰지 않는 값을 굽지 않습니다. */
+const items = raw.slice(0, 4).map(n => ({
+  title: String(n.title || ''),
+  link: String(n.originallink || n.link || ''),
+  description: String(n.description || ''),
+  pubDate: String(n.pubDate || '')
+}));
+
+let html = fs.readFileSync(target, 'utf8');
+const tag = /(<script id="news-data" type="application\/json">)([\s\S]*?)(<\/script>)/;
+if (!tag.test(html)) { console.log('  ⚠ 대시보드에서 news-data 자리를 찾지 못했습니다.'); process.exit(1); }
+
+/* </script> 가 글자 안에 있으면 태그가 일찍 닫힙니다 — 그 길을 막습니다 */
+const json = JSON.stringify(items).replace(/<\//g, '<\\/');
+html = html.replace(tag, (m, a, _b, c) => a + json + c);
+fs.writeFileSync(target, html, 'utf8');
+
+const newest = items.map(i => i.pubDate).filter(Boolean).sort().slice(-1)[0] || '(날짜 없음)';
+console.log(`  ✓ 뉴스 ${items.length}건 심음 — 가장 최근: ${newest}`);
+NODE
+else
+  echo "  · news-latest.json 이 없어 뉴스 없이 굽습니다."
+fi
 
 # 검사 파일은 사이트에 필요 없습니다 (원본에는 그대로 있습니다)
 find "$OUT" -name 'test*.js' -delete
@@ -279,6 +320,15 @@ EOF
 #       막힙니다.** 누가 실수로 한 줄을 넣어도 나가지 않습니다.
 #       원칙 8번(잘못된 상태는 표현 불가능하게)을 배포 계층에 적용한 것입니다.
 #
+#     ★ 〔2026. 8. 12.〕 이 값이 한때 'self' 로 열려 있었습니다 — 되돌리지 마세요.
+#       대시보드가 뉴스 파일을 fetch 로 받으려고 열었던 것입니다. 그런데 _headers 의
+#       규칙은 **경로 하나가 아니라 사이트 전체**에 걸립니다. 뉴스 한 줄 때문에
+#       앱 9종의 자물쇠가 함께 풀렸고, 그 사이 Firebase 가 들어와 있었습니다.
+#       경로별로 나눠 주는 것도 답이 아닙니다 — 규칙 둘이 겹치면 브라우저는
+#       **둘의 교집합**을 적용하므로 'none' ∩ 'self' = 'none' 이라 어차피 막힙니다.
+#       그래서 뉴스를 **굽는 방식**으로 바꾸고(위 1-b) 이 값을 'none' 으로 되돌렸습니다.
+#       여기를 다시 열고 싶어지면, 그 자료를 구울 수 없는지부터 보세요.
+#
 #     'unsafe-inline' 이 들어가는 것은 앱이 단일 HTML 이라 스크립트·스타일이
 #     전부 문서 안에 있기 때문입니다(원칙 1번). 그 대신 **밖에서 들어오는 길**을
 #     전부 닫습니다 — default-src 'self' · object-src 'none' · base-uri 'none' ·
@@ -304,7 +354,7 @@ cat > "$OUT/_headers" <<'EOF'
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
   Permissions-Policy: geolocation=(), camera=(), microphone=(), interest-cohort=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
   Cache-Control: public, max-age=0, must-revalidate
 EOF
 
@@ -317,25 +367,59 @@ Disallow: /
 EOF
 
 # ── 6. 인증키가 섞이지 않았는가 ───────────────────────────────────
+#     ★ 2026. 8. 12. — 이 문지기에 구멍이 둘 있었습니다.
+#       ① 인증키.txt 의 **첫 번째** 32자리 16진수 하나만 봤습니다(`head -1`).
+#          그 파일에는 키가 여러 개 있고, 32자리가 아닌 키도 있습니다.
+#       ② 인증키.txt 에 **없는** 키는 아예 못 봅니다. 구글 키(AIza…)가
+#          메인 페이지에 박힌 채로 이 문지기를 그냥 지나갔습니다.
+#     그래서 ⓐ 키 파일의 키를 **전부** 대조하고, ⓑ 파일에 없더라도
+#     «키처럼 생긴 것»을 따로 찾습니다.
 KEYFILE="open api/인증키.txt"
+LEAK=""
+
 if [ -f "$KEYFILE" ]; then
-  KEY=$(grep -v '^[[:space:]]*#' "$KEYFILE" | grep -oE '[0-9a-fA-F]{32}' | head -1 || true)
-  if [ -n "$KEY" ]; then
+  while IFS= read -r KEY; do
+    [ -z "$KEY" ] && continue
     if grep -rqF "$KEY" "$OUT" 2>/dev/null; then
-      echo "✗ 사이트 안에서 인증키가 발견되었습니다. 폴더를 지웠습니다."
-      rm -rf "$OUT"
-      exit 1
+      LEAK="$LEAK\n    · 인증키.txt 의 키 …${KEY: -6}"
     fi
-    echo "  ✓ 인증키 없음"
-  fi
+  done <<< "$(grep -v '^[[:space:]]*#' "$KEYFILE" | grep -oE '[A-Za-z0-9_-]{20,}' || true)"
 fi
 
-# ── 7. 외부를 부르지 않는가 ───────────────────────────────────────
-if grep -rqE 'src="https?://|href="https?://[^"]*\.(js|css)' "$OUT" --include='*.html' 2>/dev/null; then
-  echo "⚠ 외부 요청으로 보이는 코드가 있습니다. 원칙 1번(외부 CDN 0)을 확인하세요."
-else
-  echo "  ✓ 외부 CDN 없음"
+# 키 파일에 없어도 키처럼 생긴 것 — 구글(AIza…) · 네이버 · 공공데이터 서비스키
+while IFS= read -r HIT; do
+  [ -n "$HIT" ] && LEAK="$LEAK\n    · $HIT"
+done <<< "$(grep -rhoE 'AIza[0-9A-Za-z_-]{35}|(apiKey|CLIENT_SECRET|serviceKey|X-NCP-APIGW-API-KEY)["'"'"']?[[:space:]]*[:=][[:space:]]*["'"'"'][A-Za-z0-9_+/=-]{15,}' "$OUT" 2>/dev/null | sort -u || true)"
+
+if [ -n "$LEAK" ]; then
+  echo "✗ 사이트 안에서 인증키로 보이는 것이 발견되었습니다. 폴더를 지웠습니다."
+  printf '%b\n' "$LEAK"
+  rm -rf "$OUT"
+  exit 1
 fi
+echo "  ✓ 인증키 없음"
+
+# ── 7. 외부를 부르지 않는가 ───────────────────────────────────────
+#     ★ 2026. 8. 12. — 여기도 구멍이 있었습니다. **태그의 속성만** 보고 있어서
+#       `import … from "https://www.gstatic.com/firebasejs/…"` 가 그냥 지나갔습니다.
+#       Firebase SDK 두 개가 이 줄을 통과해 라이브로 나갔고, 화면에는
+#       「✓ 외부 CDN 없음」이 찍혀 있었습니다.
+#
+#     ※ 평범한 <a href="https://…"> 바깥 링크는 **자원을 불러오지 않으므로**
+#       위반이 아닙니다. 그래서 링크는 일부러 빼고 봅니다.
+#
+#     그리고 이제 **경고가 아니라 실패**입니다. 원칙 1번은 물러설 자리가 없고,
+#     경고는 스크롤에 묻힙니다 — 실제로 묻혔습니다.
+EXT=$(grep -rnoE '<(script|link|iframe|img)[^>]+(src|href)="https?://[^"]*|import[^;]{0,120}from[[:space:]]*"https?://[^"]*|import\([[:space:]]*"https?://[^"]*|new[[:space:]]+Worker\([[:space:]]*"https?://[^"]*|@import[^;]*https?://[^;)]*|url\([[:space:]]*"?https?://[^)]*' \
+  "$OUT" --include='*.html' --include='*.css' --include='*.js' 2>/dev/null | head -10 || true)
+
+if [ -n "$EXT" ]; then
+  echo "✗ 밖을 부르는 코드가 있습니다 — 원칙 1번(외부 CDN 0) 위반. 폴더를 지웠습니다."
+  echo "$EXT" | sed 's/^/    · /'
+  rm -rf "$OUT"
+  exit 1
+fi
+echo "  ✓ 외부 CDN 없음"
 
 echo
 echo "완료: $OUT  ($(du -sh "$OUT" | cut -f1))"

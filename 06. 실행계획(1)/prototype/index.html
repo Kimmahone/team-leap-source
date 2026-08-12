@@ -491,9 +491,6 @@ table.data .hl{color:var(--brand);font-weight:800}
         <span class="ico" aria-hidden="true">⚑</span>학구도안내서비스<span class="ext">새창</span>
       </a>
     </div>
-    <div style="margin-top:auto; padding: 12px 16px; border-top:1px solid var(--line); font-size:11px; color:var(--ink-3); font-weight:500; background:var(--bg);" id="visitor-count">
-      <span style="color:#22c55e">●</span> Live: 통계 연결 중...
-    </div>
   </nav>
 
   <main class="main">
@@ -565,8 +562,10 @@ table.data .hl{color:var(--brand);font-weight:800}
               <option value="초">초등학교 474</option>
               <option value="중">중학교 260</option>
               <option value="고">고등학교 183</option>
-              <option value="유">유치원 330 (가상)</option>
-              <option value="특수">특수학교 44 (가상)</option>
+              <!-- 숫자는 화면이 켜지면서 채웁니다. 여기 적어 두면 조용히 낡습니다
+                   — 실제로 330·44 가 박혀 있었고 셈과 어긋나 있었습니다. -->
+              <option value="유">유치원 (가상)</option>
+              <option value="특수">특수학교 (가상)</option>
             </select>
             <input type="text" id="home-search" class="select" placeholder="학교 검색..." style="margin-left:8px; padding:4px 8px; border:1px solid var(--line); border-radius:4px; font-size:13px; width:120px;">
             <button type="button" class="chip" id="home-metric-sch" aria-pressed="true">학교 수</button>
@@ -757,7 +756,6 @@ table.data .hl{color:var(--brand);font-weight:800}
     <div class="card">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
         <h2>AI 주간 브리핑 & 뉴스 히스토리</h2>
-        <span style="font-size:11px;color:var(--ink-3);">※ 추후 Firebase 연동 시 자동 누적 예정</span>
       </div>
       
       <div class="map-toolbar" style="margin-bottom: 20px;">
@@ -767,8 +765,14 @@ table.data .hl{color:var(--brand);font-weight:800}
         <button type="button" class="chip" aria-pressed="false">최근 1개월</button>
       </div>
 
+      <!-- ★ 뉴스는 «구울 때» 여기 심깁니다 — 화면이 켜진 뒤에 받아오지 않습니다.
+           까닭: 받아오려면 fetch 가 필요하고, fetch 를 허용하려면 CSP 의
+           connect-src 를 열어야 합니다. 그 한 줄 때문에 앱 9종까지 전부 열렸습니다.
+           이 프로젝트의 다른 자료(좌표·학생수)는 전부 굽는 방식입니다. 뉴스만 달랐습니다.
+           `사이트 굽기.command` 가 news-latest.json 을 읽어 아래 [] 를 갈아 끼웁니다. -->
+      <script id="news-data" type="application/json">[]</script>
+
       <div class="news-grid" id="news-container">
-        <!-- JS로 동적 렌더링 됨 -->
         <div style="padding:40px; text-align:center; color:var(--ink-3); grid-column:1/-1;">뉴스를 불러오는 중입니다...</div>
       </div>
 
@@ -1014,60 +1018,98 @@ table.data .hl{color:var(--brand);font-weight:800}
 <script>
 'use strict';
 
-if (typeof window !== 'undefined' && typeof fetch !== 'undefined') {
-  window.addEventListener("DOMContentLoaded", () => {
-    const newsPaths = ['../../news-latest.json', '../news-latest.json', './news-latest.json', '/news-latest.json'];
-    async function loadNews() {
-      let data = null;
-      for (const p of newsPaths) {
-        try {
-          const res = await fetch(p);
-          if (res.ok) {
-            data = await res.json();
-            if (Array.isArray(data) && data.length > 0) break;
-          }
-        } catch (e) {}
-      }
-      const container = document.getElementById('news-container');
-      if (!container) return;
-      if (!data || !Array.isArray(data) || data.length === 0) {
-        container.innerHTML = '<div style="padding:40px; text-align:center; color:var(--over); grid-column:1/-1;">뉴스를 불러오지 못했습니다. API를 확인해주세요.</div>';
-        return;
-      }
-      container.innerHTML = '';
-      const emojis = ['📰', '🚌', '🏫', '👶', '📉', '🌏'];
-      data.slice(0, 4).forEach((news, idx) => {
-        const emoji = emojis[idx % emojis.length];
-        let dateStr = news.pubDate;
-        try {
-          const d = new Date(news.pubDate);
-          if(!isNaN(d.getTime())) {
-            const yy = d.getFullYear();
-            const mm = String(d.getMonth()+1).padStart(2, '0');
-            const dd = String(d.getDate()).padStart(2, '0');
-            dateStr = `${yy}.${mm}.${dd}.`;
-          }
-        } catch(e){}
-        
-        const card = `
-          <div style="border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--bg); display:flex; flex-direction:column; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-            <div style="height:120px; background:linear-gradient(45deg, var(--under), var(--brand)); opacity:0.85; display:flex; align-items:center; justify-content:center; color:#fff; font-size:40px;">${emoji}</div>
-            <div style="padding:16px; display:flex; flex-direction:column; flex:1;">
-              <div style="font-size:11.5px; color:var(--ink-3); margin-bottom:6px;">${dateStr}</div>
-              <div style="font-weight:700; font-size:15px; line-height:1.4; margin-bottom:10px; color:var(--ink); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;" title="${news.title}">${news.title}</div>
-              <div style="font-size:13px; color:var(--ink-2); line-height:1.5; margin-bottom:16px; flex:1; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden;">
-                ${news.description}
-              </div>
-              <a href="${news.link}" target="_blank" style="font-size:12.5px; font-weight:700; padding:8px 12px; background:var(--card); color:var(--brand); border:1px solid var(--brand); border-radius:6px; text-decoration:none; text-align:center; display:block; transition:all 0.2s;">원문 읽기 ↗</a>
-            </div>
-          </div>
-        `;
-        container.innerHTML += card;
-      });
+/* =========================================================
+   주간 뉴스 — 굽을 때 심어 둔 것을 그립니다
+   ---------------------------------------------------------
+   〔2026. 8. 12.〕 여기 있던 코드를 다시 썼습니다. 세 가지가 잘못돼 있었습니다.
+
+   ① **fetch 로 받아오고 있었습니다.** 그 한 줄 때문에 CSP 의 connect-src 가
+      'none' → 'self' 로 열렸고, 그것은 **사이트 전체**에 걸리므로 앱 9종까지
+      함께 열렸습니다. 원칙 2번을 브라우저가 대신 지키게 한 장치였는데
+      뉴스 파일 하나 때문에 풀린 것입니다. 이제 굽을 때 심습니다.
+
+   ② **글자를 그대로 HTML 에 넣고 있었습니다.** 제목이 `title="..."` 속성 안에
+      들어가는데 따옴표를 막지 않았습니다. 지금은 손으로 적은 자료라 괜찮지만
+      네이버에서 매일 받아오기 시작하면 **남이 쓴 글자가 매일 들어옵니다.**
+      esc() 로 막고, 링크는 http/https 만 받습니다(javascript: 차단).
+
+   ③ **`innerHTML +=` 를 되돌이 안에서** 썼습니다. 넣을 때마다 이미 그린 것을
+      전부 지우고 다시 그립니다. 모아서 한 번에 넣습니다.
+   ========================================================= */
+(function () {
+  if (typeof document === 'undefined') return;
+
+  /* 밖에서 온 글자를 HTML 에 넣기 전에 반드시 지납니다 */
+  function esc(v) {
+    return String(v == null ? '' : v)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  /* 링크는 http·https 만. javascript: 나 data: 는 버립니다 */
+  function safeUrl(u) {
+    const s = String(u == null ? '' : u).trim();
+    return /^https?:\/\//i.test(s) ? s : '';
+  }
+
+  function fmtDate(raw) {
+    const d = new Date(raw);
+    if (isNaN(d.getTime())) return '';
+    return d.getFullYear() + '.' +
+      String(d.getMonth() + 1).padStart(2, '0') + '.' +
+      String(d.getDate()).padStart(2, '0') + '.';
+  }
+
+  function readBakedNews() {
+    const tag = document.getElementById('news-data');
+    if (!tag) return [];
+    try {
+      const parsed = JSON.parse(tag.textContent || '[]');
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) { return []; }
+  }
+
+  function renderNews() {
+    const container = document.getElementById('news-container');
+    if (!container) return;
+
+    const items = readBakedNews();
+    if (items.length === 0) {
+      /* 없으면 «없다»고 적습니다. 지어내지 않습니다. */
+      container.innerHTML = '<div style="padding:40px; text-align:center; color:var(--ink-3); grid-column:1/-1;">' +
+        '아직 이번 주 뉴스를 싣지 않았습니다.<br>' +
+        '<span style="font-size:12px;">뉴스는 <code>news-latest.json</code> 을 채운 뒤 사이트를 다시 구우면 올라옵니다.</span></div>';
+      return;
     }
-    loadNews();
-  });
-}
+
+    const emojis = ['📰', '🚌', '🏫', '👶', '📉', '🌏'];
+    const cards = items.slice(0, 4).map(function (news, idx) {
+      const link = safeUrl(news.originallink || news.link);
+      const dateStr = fmtDate(news.pubDate);
+      const title = esc(news.title);
+      return '' +
+        '<div style="border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--bg); display:flex; flex-direction:column; box-shadow:0 2px 8px rgba(0,0,0,0.04);">' +
+          '<div aria-hidden="true" style="height:120px; background:linear-gradient(45deg, var(--under), var(--brand)); opacity:0.85; display:flex; align-items:center; justify-content:center; color:#fff; font-size:40px;">' + emojis[idx % emojis.length] + '</div>' +
+          '<div style="padding:16px; display:flex; flex-direction:column; flex:1;">' +
+            '<div style="font-size:11.5px; color:var(--ink-3); margin-bottom:6px;">' + esc(dateStr) + '</div>' +
+            '<div style="font-weight:700; font-size:15px; line-height:1.4; margin-bottom:10px; color:var(--ink); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;" title="' + title + '">' + title + '</div>' +
+            '<div style="font-size:13px; color:var(--ink-2); line-height:1.5; margin-bottom:16px; flex:1; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden;">' + esc(news.description) + '</div>' +
+            (link
+              ? '<a href="' + esc(link) + '" target="_blank" rel="noopener noreferrer" style="font-size:12.5px; font-weight:700; padding:8px 12px; background:var(--card); color:var(--brand); border:1px solid var(--brand); border-radius:6px; text-decoration:none; text-align:center; display:block;">원문 읽기 ↗</a>'
+              : '<span style="font-size:12.5px; color:var(--ink-3); text-align:center; display:block; padding:8px 12px;">원문 주소 없음</span>') +
+          '</div>' +
+        '</div>';
+    });
+
+    container.innerHTML = cards.join('');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderNews);
+  } else {
+    renderNews();
+  }
+})();
 
 /* =========================================================
    0. 공공데이터 — 경상북도 초·중·고 917곳
@@ -1193,1253 +1235,31 @@ const SIG_BY_CODE = {}; SIGUNGU.forEach(sg => { SIG_BY_CODE[sg.rc] = sg; });
    진짜처럼 보이는 것이 이 화면에서 가장 위험한 일이기 때문입니다. */
 const SCHOOL_KIND = { e:'초', m:'중', h:'고' };
 const SCHOOL_FULL = { e:'초등학교', m:'중학교', h:'고등학교' };
-const SCHOOLS = [{name:'포항명도학교',lv:'특수',s:'pohang',lat:36.019,lon:129.343,stu:145,cls:22,sped:145,teach:42,est:true},
-{name:'경주경희학교',lv:'특수',s:'gyeongju',lat:35.856,lon:129.225,stu:82,cls:14,sped:82,teach:28,est:true},
-{name:'김천한명학교',lv:'특수',s:'gimcheon',lat:36.142,lon:128.118,stu:65,cls:11,sped:65,teach:22,est:true},
-{name:'안동영명학교',lv:'특수',s:'andong',lat:36.568,lon:128.729,stu:110,cls:18,sped:110,teach:35,est:true},
-{name:'안동진명학교',lv:'특수',s:'andong',lat:36.542,lon:128.698,stu:98,cls:16,sped:98,teach:30,est:true},
-{name:'구미혜당학교',lv:'특수',s:'gumi',lat:36.132,lon:128.354,stu:160,cls:24,sped:160,teach:48,est:true},
-{name:'영주영광학교',lv:'특수',s:'yeongju',lat:36.815,lon:128.629,stu:72,cls:12,sped:72,teach:24,est:true},
-{name:'영천경북영광학교',lv:'특수',s:'yeongcheon',lat:35.973,lon:128.938,stu:88,cls:14,sped:88,teach:27,est:true},
-{name:'경산경은학교',lv:'특수',s:'gyeongsan',lat:35.825,lon:128.741,stu:105,cls:17,sped:105,teach:32,est:true},
-{name:'상주상희학교',lv:'특수',s:'sangju',lat:36.416,lon:128.163,stu:54,cls:10,sped:54,teach:19,est:true},
-{name:'효자초등학교병설유치원',lv:'유',s:'pohang',lat:36.059444403098794,lon:128.4360086524206,stu:28,cls:2,sped:0,teach:3,est:true},
-{name:'대도초등학교병설유치원',lv:'유',s:'pohang',lat:35.87018977536061,lon:128.3786357767411,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'대송초등학교병설유치원',lv:'유',s:'pohang',lat:36.53557288288473,lon:129.1861167045351,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'대해초등학교병설유치원',lv:'유',s:'pohang',lat:36.52633938990997,lon:129.20696927506657,stu:39,cls:1,sped:0,teach:3,est:true},
-{name:'포항이동유치원',lv:'유',s:'pohang',lat:36.50540614364098,lon:128.53071380497636,stu:26,cls:8,sped:0,teach:3,est:true},
-{name:'대이초등학교병설유치원',lv:'유',s:'pohang',lat:36.285843737779636,lon:129.33824397810537,stu:18,cls:1,sped:0,teach:3,est:true},
-{name:'인덕초등학교병설유치원',lv:'유',s:'pohang',lat:36.45591145913972,lon:128.308175988935,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'제2리라유치원',lv:'유',s:'pohang',lat:36.78389825344246,lon:129.02580214458945,stu:29,cls:5,sped:0,teach:3,est:true},
-{name:'포항제철유치원',lv:'유',s:'pohang',lat:36.516248946778724,lon:129.3438963241212,stu:21,cls:12,sped:0,teach:3,est:true},
-{name:'아이클유치원',lv:'유',s:'pohang',lat:36.76171466882882,lon:128.94269269211745,stu:33,cls:4,sped:0,teach:3,est:true},
-{name:'유강초등학교병설유치원',lv:'유',s:'pohang',lat:35.93675337737921,lon:129.35108467174103,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'하늘숲유치원',lv:'유',s:'pohang',lat:36.73395759434458,lon:129.16508228054673,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'포항유치원',lv:'유',s:'pohang',lat:35.80879516292206,lon:129.04015502762616,stu:10,cls:4,sped:0,teach:3,est:true},
-{name:'우리유치원',lv:'유',s:'pohang',lat:36.73564478887301,lon:128.3182340568564,stu:29,cls:8,sped:0,teach:3,est:true},
-{name:'구정초등학교병설유치원',lv:'유',s:'pohang',lat:36.46092313180714,lon:129.0870448176539,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'동해초등학교병설유치원',lv:'유',s:'pohang',lat:36.56522219388903,lon:129.19639049946596,stu:13,cls:3,sped:0,teach:3,est:true},
-{name:'대건유치원',lv:'유',s:'pohang',lat:36.045936029389644,lon:128.54467851027994,stu:36,cls:5,sped:0,teach:3,est:true},
-{name:'연일형산초등학교병설유치원',lv:'유',s:'pohang',lat:36.782617428972664,lon:128.7358882437567,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'오천제일유치원',lv:'유',s:'pohang',lat:35.90366926387156,lon:128.70999834150595,stu:32,cls:3,sped:0,teach:3,est:true},
-{name:'튜립유치원',lv:'유',s:'pohang',lat:36.41904195542179,lon:128.93272481943274,stu:19,cls:6,sped:0,teach:3,est:true},
-{name:'포항원동초등학교병설유치원',lv:'유',s:'pohang',lat:36.489335762730036,lon:128.8411746145676,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'가람유치원',lv:'유',s:'pohang',lat:36.48215268338601,lon:128.21490795820066,stu:23,cls:3,sped:0,teach:3,est:true},
-{name:'풀잎유치원',lv:'유',s:'pohang',lat:36.636699334374555,lon:129.18457261396728,stu:12,cls:4,sped:0,teach:3,est:true},
-{name:'연일초등학교병설유치원',lv:'유',s:'pohang',lat:36.123352762625345,lon:128.58794241988437,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'양포초등학교병설유치원',lv:'유',s:'pohang',lat:36.68266751270669,lon:128.48957281252785,stu:22,cls:1,sped:0,teach:3,est:true},
-{name:'문충초등학교병설유치원',lv:'유',s:'pohang',lat:35.84175738816231,lon:129.21281381486773,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'해맑은유치원',lv:'유',s:'pohang',lat:35.884177503206544,lon:128.22483536841344,stu:39,cls:5,sped:0,teach:3,est:true},
-{name:'포항송도초등학교병설유치원',lv:'유',s:'pohang',lat:36.50695916485503,lon:129.36214648315098,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'장기초등학교병설유치원',lv:'유',s:'pohang',lat:35.82522515512424,lon:129.13968708202844,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'하슬린유치원',lv:'유',s:'pohang',lat:36.64815799593742,lon:128.77432707646068,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'효성유치원',lv:'유',s:'pohang',lat:36.22649467712152,lon:128.46129291885913,stu:13,cls:3,sped:0,teach:3,est:true},
-{name:'동아유치원',lv:'유',s:'pohang',lat:36.63956572464085,lon:128.73611629286702,stu:31,cls:4,sped:0,teach:3,est:true},
-{name:'송림초등학교병설유치원',lv:'유',s:'pohang',lat:36.53079448328328,lon:128.30286566016346,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'신흥초등학교병설유치원',lv:'유',s:'pohang',lat:36.04840461489594,lon:128.46912839787748,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'아이누리유치원',lv:'유',s:'pohang',lat:36.73548452419485,lon:129.2428175548305,stu:34,cls:3,sped:0,teach:3,est:true},
-{name:'아름다운유치원',lv:'유',s:'pohang',lat:36.68184487230079,lon:128.76507926006556,stu:32,cls:6,sped:0,teach:3,est:true},
-{name:'오천초등학교병설유치원',lv:'유',s:'pohang',lat:36.78984053471725,lon:128.6157614378149,stu:29,cls:3,sped:0,teach:3,est:true},
-{name:'유강유치원',lv:'유',s:'pohang',lat:35.94766011627168,lon:128.26432845602247,stu:33,cls:5,sped:0,teach:3,est:true},
-{name:'청림초등학교병설유치원',lv:'유',s:'pohang',lat:36.14748251598595,lon:128.84209524557883,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'성바오로유치원',lv:'유',s:'pohang',lat:36.05091979003726,lon:129.16225521993604,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'이동한빛유치원',lv:'유',s:'pohang',lat:35.8389143409498,lon:128.3313886118749,stu:18,cls:6,sped:0,teach:3,est:true},
-{name:'문덕초등학교병설유치원',lv:'유',s:'pohang',lat:36.08437675413512,lon:129.25066946219448,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'상대초등학교병설유치원',lv:'유',s:'pohang',lat:36.14966142177518,lon:128.79446649966147,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'새봄유치원',lv:'유',s:'pohang',lat:36.59300584617648,lon:129.30595294683337,stu:29,cls:6,sped:0,teach:3,est:true},
-{name:'사랑으로유치원',lv:'유',s:'pohang',lat:36.64239728235963,lon:129.18454418318498,stu:20,cls:6,sped:0,teach:3,est:true},
-{name:'새롬유치원',lv:'유',s:'pohang',lat:36.674208252908166,lon:129.33198697309754,stu:11,cls:4,sped:0,teach:3,est:true},
-{name:'오해피데이유치원',lv:'유',s:'pohang',lat:36.772625613273725,lon:128.69396456642355,stu:29,cls:4,sped:0,teach:3,est:true},
-{name:'초곡초등학교병설유치원',lv:'유',s:'pohang',lat:35.873783495461005,lon:128.7152448893277,stu:13,cls:3,sped:0,teach:3,est:true},
-{name:'우리아이유치원',lv:'유',s:'pohang',lat:36.64168131869204,lon:129.1446346764535,stu:28,cls:3,sped:0,teach:3,est:true},
-{name:'포항대학교부속유치원',lv:'유',s:'pohang',lat:36.761178258458834,lon:128.65226636443697,stu:12,cls:6,sped:0,teach:3,est:true},
-{name:'포항초등학교병설유치원',lv:'유',s:'pohang',lat:35.8155758199324,lon:128.5533033395631,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'난나유치원',lv:'유',s:'pohang',lat:36.09646187570883,lon:128.72024474066922,stu:16,cls:7,sped:0,teach:3,est:true},
-{name:'행복한유치원',lv:'유',s:'pohang',lat:36.65751098546124,lon:129.2114333002731,stu:25,cls:6,sped:0,teach:3,est:true},
-{name:'새싹발트유치원',lv:'유',s:'pohang',lat:36.05074935883574,lon:129.23040501464104,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'리라유치원',lv:'유',s:'pohang',lat:35.83456045287527,lon:128.4323698504792,stu:34,cls:8,sped:0,teach:3,est:true},
-{name:'송라초등학교병설유치원',lv:'유',s:'pohang',lat:36.40244506574976,lon:128.68043773048075,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'상지아이들유치원',lv:'유',s:'pohang',lat:35.9755928517739,lon:128.7436126063006,stu:15,cls:3,sped:0,teach:3,est:true},
-{name:'포항대흥초등학교병설유치원',lv:'유',s:'pohang',lat:36.042301987390545,lon:128.52026195473957,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'포항항도초등학교병설유치원',lv:'유',s:'pohang',lat:36.46811718548987,lon:129.38221682162177,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'목원유치원',lv:'유',s:'pohang',lat:35.92300446570405,lon:129.38818200824204,stu:27,cls:3,sped:0,teach:3,est:true},
-{name:'죽장초등학교병설유치원',lv:'유',s:'pohang',lat:36.42855717800643,lon:128.88279380721153,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'예원유치원',lv:'유',s:'pohang',lat:36.1589575020848,lon:128.2817912497593,stu:25,cls:7,sped:0,teach:3,est:true},
-{name:'재능유치원',lv:'유',s:'pohang',lat:36.345002945989734,lon:128.8689109638526,stu:10,cls:3,sped:0,teach:3,est:true},
-{name:'산내들예능유치원',lv:'유',s:'pohang',lat:36.07803371055497,lon:128.34912915735273,stu:15,cls:6,sped:0,teach:3,est:true},
-{name:'자연과아이유치원',lv:'유',s:'pohang',lat:35.92236833243519,lon:128.57412225561544,stu:27,cls:10,sped:0,teach:3,est:true},
-{name:'고려유치원',lv:'유',s:'pohang',lat:36.209722536076626,lon:129.05928882748486,stu:38,cls:3,sped:0,teach:3,est:true},
-{name:'달전초등학교병설유치원',lv:'유',s:'pohang',lat:36.74676848718884,lon:128.54411730166152,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'대동유치원',lv:'유',s:'pohang',lat:36.593161111634714,lon:129.2425512119002,stu:23,cls:6,sped:0,teach:3,est:true},
-{name:'포항동부초등학교병설유치원',lv:'유',s:'pohang',lat:36.57239780507489,lon:128.72297880903108,stu:37,cls:5,sped:0,teach:3,est:true},
-{name:'포항대림유치원',lv:'유',s:'pohang',lat:36.723510483638755,lon:128.6416287004814,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'포항양덕초등학교병설유치원',lv:'유',s:'pohang',lat:36.397562302267474,lon:129.35125535917007,stu:16,cls:1,sped:0,teach:3,est:true},
-{name:'신광초등학교병설유치원',lv:'유',s:'pohang',lat:36.43935522779562,lon:128.66320547595822,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'숲속꿈의유치원',lv:'유',s:'pohang',lat:36.031262261072435,lon:128.82626098279366,stu:35,cls:4,sped:0,teach:3,est:true},
-{name:'포항장량유치원',lv:'유',s:'pohang',lat:36.49840250921505,lon:128.667212632926,stu:23,cls:9,sped:0,teach:3,est:true},
-{name:'양서초등학교병설유치원',lv:'유',s:'pohang',lat:36.118774969828884,lon:128.77763228764326,stu:21,cls:1,sped:0,teach:3,est:true},
-{name:'두호남부초등학교병설유치원',lv:'유',s:'pohang',lat:35.816891016227764,lon:128.43107056729295,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'아띠유치원',lv:'유',s:'pohang',lat:36.55684203196536,lon:128.22207653498683,stu:15,cls:3,sped:0,teach:3,est:true},
-{name:'이룸유치원',lv:'유',s:'pohang',lat:36.694450762581944,lon:128.93105878410933,stu:18,cls:6,sped:0,teach:3,est:true},
-{name:'항구초등학교병설유치원',lv:'유',s:'pohang',lat:36.189735304163605,lon:128.62650162374777,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'포항영흥초등학교병설유치원',lv:'유',s:'pohang',lat:36.02254075187043,lon:128.36408744027,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'포항제일유치원',lv:'유',s:'pohang',lat:36.19401749139516,lon:129.321831065951,stu:32,cls:6,sped:0,teach:3,est:true},
-{name:'포항중앙초등학교병설유치원',lv:'유',s:'pohang',lat:36.365050571486535,lon:128.66653273535331,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'죽도초등학교병설유치원',lv:'유',s:'pohang',lat:36.08594916116794,lon:128.22511535422777,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'포항서머힐유치원',lv:'유',s:'pohang',lat:36.779938197667605,lon:129.08754222962628,stu:18,cls:3,sped:0,teach:3,est:true},
-{name:'성심유치원',lv:'유',s:'pohang',lat:36.62162095747353,lon:128.71321858642978,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'대잠초등학교병설유치원',lv:'유',s:'pohang',lat:36.511541326604515,lon:129.30502713636102,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'꽃동산유치원',lv:'유',s:'pohang',lat:36.50860534733127,lon:128.73846281458393,stu:35,cls:4,sped:0,teach:3,est:true},
-{name:'흥해서부초등학교병설유치원',lv:'유',s:'pohang',lat:36.740103333622564,lon:129.24111337027787,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'흥해초등학교병설유치원',lv:'유',s:'pohang',lat:36.65759100537208,lon:129.16712272148195,stu:20,cls:1,sped:0,teach:3,est:true},
-{name:'용흥초등학교병설유치원',lv:'유',s:'pohang',lat:36.62976618418115,lon:128.5461486978762,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'장성초등학교병설유치원',lv:'유',s:'pohang',lat:36.120144432999645,lon:128.87832407934056,stu:16,cls:1,sped:0,teach:3,est:true},
-{name:'포항해맞이초등학교병설유치원',lv:'유',s:'pohang',lat:36.537022769105604,lon:128.4903448642898,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'민들레유치원',lv:'유',s:'pohang',lat:36.0296697468396,lon:128.3970448633162,stu:32,cls:4,sped:0,teach:3,est:true},
-{name:'이화유치원',lv:'유',s:'pohang',lat:36.47266205147784,lon:128.9905439532427,stu:38,cls:2,sped:0,teach:3,est:true},
-{name:'포항송곡초등학교병설유치원',lv:'유',s:'pohang',lat:36.26968628540799,lon:129.34455702140863,stu:39,cls:1,sped:0,teach:3,est:true},
-{name:'곡강초등학교병설유치원',lv:'유',s:'pohang',lat:36.27816270063849,lon:128.68604873222768,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'동산유치원',lv:'유',s:'pohang',lat:36.74369053515161,lon:128.28379987142426,stu:17,cls:9,sped:0,teach:3,est:true},
-{name:'죽천초등학교병설유치원',lv:'유',s:'pohang',lat:35.858354539378766,lon:129.29812850397752,stu:22,cls:1,sped:0,teach:3,est:true},
-{name:'양학초등학교병설유치원',lv:'유',s:'pohang',lat:36.28369609846373,lon:128.871182190291,stu:38,cls:3,sped:0,teach:3,est:true},
-{name:'대한유치원',lv:'유',s:'pohang',lat:36.752149100391165,lon:129.39660053247349,stu:38,cls:4,sped:0,teach:3,est:true},
-{name:'세이유치원',lv:'유',s:'pohang',lat:36.41173815101643,lon:129.22767181265058,stu:33,cls:2,sped:0,teach:3,est:true},
-{name:'기계초등학교병설유치원',lv:'유',s:'pohang',lat:35.87850265700061,lon:128.25390665486182,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'청하초등학교병설유치원',lv:'유',s:'pohang',lat:36.195036852903705,lon:128.24686660442478,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'월포초등학교병설유치원',lv:'유',s:'pohang',lat:36.54801650886496,lon:128.43996865747192,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'중앙유치원',lv:'유',s:'pohang',lat:36.087681858267395,lon:129.17630830389095,stu:16,cls:5,sped:0,teach:3,est:true},
-{name:'창포초등학교병설유치원',lv:'유',s:'pohang',lat:36.46317740104999,lon:128.31925781292665,stu:33,cls:3,sped:0,teach:3,est:true},
-{name:'학천초등학교병설유치원',lv:'유',s:'pohang',lat:36.456699592368004,lon:128.57380096459087,stu:21,cls:1,sped:0,teach:3,est:true},
-{name:'두호초등학교병설유치원',lv:'유',s:'pohang',lat:36.65433149671662,lon:128.91158805910544,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'하나유치원',lv:'유',s:'gyeongju',lat:36.15383052768068,lon:129.06919131966586,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'서라벌초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.527925163713014,lon:129.0084591115577,stu:18,cls:1,sped:0,teach:3,est:true},
-{name:'현곡초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.27352821491368,lon:129.38575135632237,stu:31,cls:3,sped:0,teach:3,est:true},
-{name:'강동초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.85300024398105,lon:128.5628134665177,stu:39,cls:1,sped:0,teach:3,est:true},
-{name:'괘릉초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.641160940791416,lon:129.1885246244271,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'금장초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.14127380446591,lon:128.7128171323231,stu:19,cls:3,sped:0,teach:3,est:true},
-{name:'아화초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.64105037698572,lon:129.07973927116933,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'안강제일유치원',lv:'유',s:'gyeongju',lat:36.369515839666335,lon:129.02697784930763,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'황남초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.5021089203099,lon:129.1031498352422,stu:26,cls:3,sped:0,teach:3,est:true},
-{name:'나산초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.7940857550619,lon:128.30328140914224,stu:39,cls:1,sped:0,teach:3,est:true},
-{name:'양북초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.938666601294756,lon:128.5762717987411,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'동천초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.73303012984088,lon:129.02708280841503,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'마루유치원',lv:'유',s:'gyeongju',lat:36.248460199848644,lon:128.6858956848335,stu:20,cls:6,sped:0,teach:3,est:true},
-{name:'황성초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.32923246928625,lon:128.34831353524555,stu:13,cls:3,sped:0,teach:3,est:true},
-{name:'모아초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.76275114503303,lon:128.41601907279215,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'양동초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.136502860794835,lon:129.0222462779576,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'연안초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.305465619958255,lon:129.04593080266375,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'유림초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.86133965836103,lon:128.63132434258875,stu:28,cls:1,sped:0,teach:3,est:true},
-{name:'입실초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.615290935863854,lon:128.8697929045794,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'천북초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.239448327894294,lon:129.1799776958222,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'화랑초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.51781524427778,lon:128.7176160955065,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'나원초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.14157487545866,lon:129.0789732596541,stu:36,cls:4,sped:0,teach:3,est:true},
-{name:'사방초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.463388010032816,lon:128.31286883294666,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'산대초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.87112191316733,lon:128.86932878158902,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'월성초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.9959963197025,lon:128.60328172336642,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'중앙유치원',lv:'유',s:'gyeongju',lat:36.43705736555249,lon:129.18382911945466,stu:30,cls:6,sped:0,teach:3,est:true},
-{name:'모화초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.384691514313275,lon:128.51597415986785,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'내남초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.87606833731066,lon:128.52730523658565,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'근화유치원',lv:'유',s:'gyeongju',lat:36.68851545145141,lon:129.12705016001115,stu:21,cls:1,sped:0,teach:3,est:true},
-{name:'불국사초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.947599281893204,lon:128.85480543942182,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'양남초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.587929327462476,lon:128.688602442135,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'불국유치원',lv:'유',s:'gyeongju',lat:36.23783493963473,lon:129.13673496388108,stu:17,cls:8,sped:0,teach:3,est:true},
-{name:'영지초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.91946068948925,lon:128.2436256176874,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'예송유치원',lv:'유',s:'gyeongju',lat:36.30021436281479,lon:128.67572450818614,stu:27,cls:7,sped:0,teach:3,est:true},
-{name:'예일유치원',lv:'유',s:'gyeongju',lat:36.201132775339715,lon:129.3065512762389,stu:21,cls:6,sped:0,teach:3,est:true},
-{name:'의곡초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.94139648160003,lon:128.3288765486925,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'감포초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.67471644109939,lon:129.00136364350095,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'흥무초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.0828836951101,lon:129.3279048278296,stu:30,cls:3,sped:0,teach:3,est:true},
-{name:'경주유치원',lv:'유',s:'gyeongju',lat:36.464185279006145,lon:129.25410183160926,stu:14,cls:3,sped:0,teach:3,est:true},
-{name:'경주여자정보고등학교병설동도유치원',lv:'유',s:'gyeongju',lat:36.282445919124136,lon:129.291767892053,stu:18,cls:3,sped:0,teach:3,est:true},
-{name:'신라초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.51556199564343,lon:129.36557030931178,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'옥산초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.31109197357906,lon:129.19987873325505,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'천포초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.36207731909658,lon:129.1808833090448,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'건천초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.178189853898765,lon:129.1324995715499,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'경주초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.72082463567854,lon:128.9949036885196,stu:10,cls:3,sped:0,teach:3,est:true},
-{name:'동국대학교부속유치원',lv:'유',s:'gyeongju',lat:36.743386120773124,lon:128.62936711501334,stu:26,cls:9,sped:0,teach:3,est:true},
-{name:'동방초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.55537312938709,lon:128.7967567754869,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'용강초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.98822292964182,lon:128.9990998089144,stu:33,cls:4,sped:0,teach:3,est:true},
-{name:'모량초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.20066886301381,lon:128.88644727446982,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'샛별유치원',lv:'유',s:'gyeongju',lat:36.586479864164616,lon:129.27380574083205,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'석계초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.85836432990194,lon:128.50088060118264,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'용황유치원',lv:'유',s:'gyeongju',lat:36.37268842924805,lon:128.4037527328991,stu:25,cls:6,sped:0,teach:3,est:true},
-{name:'현대유치원',lv:'유',s:'gyeongju',lat:36.750143498035655,lon:128.49446568019658,stu:22,cls:3,sped:0,teach:3,est:true},
-{name:'계림초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.674654951835606,lon:129.212302508708,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'화천초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.73286489035382,lon:128.9701122148442,stu:10,cls:3,sped:0,teach:3,est:true},
-{name:'율빛유치원',lv:'유',s:'gimcheon',lat:35.91324903068234,lon:128.79558993139034,stu:39,cls:10,sped:0,teach:3,est:true},
-{name:'김천부곡초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.01706148597362,lon:128.29364984368007,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'해오름유치원',lv:'유',s:'gimcheon',lat:36.22984495269715,lon:128.6346222164107,stu:18,cls:6,sped:0,teach:3,est:true},
-{name:'율곡유치원',lv:'유',s:'gimcheon',lat:36.61929204243801,lon:129.25328065683988,stu:17,cls:6,sped:0,teach:3,est:true},
-{name:'김천모암초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.17096315636571,lon:128.8172088939731,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'김천유치원',lv:'유',s:'gimcheon',lat:35.975476562082186,lon:129.336772594518,stu:20,cls:5,sped:0,teach:3,est:true},
-{name:'아천초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.078544650491885,lon:128.25308787002004,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'봉계초등학교병설유치원',lv:'유',s:'gimcheon',lat:35.89766158359239,lon:128.3388262273829,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'마리아유치원',lv:'유',s:'gimcheon',lat:36.47583243295091,lon:129.04467914938235,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'꿈나무유치원',lv:'유',s:'gimcheon',lat:36.66182679498543,lon:128.84649793085336,stu:16,cls:3,sped:0,teach:3,est:true},
-{name:'김천중앙초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.083715364368146,lon:128.67861567792892,stu:26,cls:3,sped:0,teach:3,est:true},
-{name:'대덕초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.295476672361325,lon:129.22740352391483,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'김천동부초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.76328110598783,lon:128.64849697223107,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'계명유치원',lv:'유',s:'gimcheon',lat:36.62489353567709,lon:128.79956807686432,stu:10,cls:3,sped:0,teach:3,est:true},
-{name:'조마초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.014113389587884,lon:128.61341759107177,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'위량초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.47196027300023,lon:128.59429522069408,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'녹야유치원',lv:'유',s:'gimcheon',lat:36.20929850633907,lon:129.25040612976966,stu:27,cls:4,sped:0,teach:3,est:true},
-{name:'감천초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.00415285317828,lon:128.54795545402263,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'운곡초등학교병설유치원',lv:'유',s:'gimcheon',lat:35.85747135049385,lon:128.69383323306806,stu:28,cls:4,sped:0,teach:3,est:true},
-{name:'직지초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.38636395770848,lon:128.27645141252344,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'리라유치원',lv:'유',s:'gimcheon',lat:36.24542366723908,lon:128.4337821470215,stu:15,cls:5,sped:0,teach:3,est:true},
-{name:'김천서부초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.66971448320039,lon:128.34635461977962,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'우리유치원',lv:'유',s:'gimcheon',lat:35.81090157207989,lon:129.19084102788193,stu:11,cls:6,sped:0,teach:3,est:true},
-{name:'개령서부초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.524486873083966,lon:128.23203955251304,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'지품천초등학교증산분교장병설유치원',lv:'유',s:'gimcheon',lat:36.68450281600461,lon:129.07019269757618,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'김천다수초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.552872996904334,lon:129.1671620880209,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'금강사금강유치원',lv:'유',s:'gimcheon',lat:36.545601115958135,lon:128.6428367028079,stu:28,cls:6,sped:0,teach:3,est:true},
-{name:'조은유치원',lv:'유',s:'gimcheon',lat:36.429208851015744,lon:128.5239011990947,stu:33,cls:5,sped:0,teach:3,est:true},
-{name:'김천신일초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.43030578812981,lon:129.11335978526432,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'김천동신초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.11244920344555,lon:128.92326710912346,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'농소유치원',lv:'유',s:'gimcheon',lat:35.98837340528024,lon:128.6944663521337,stu:15,cls:6,sped:0,teach:3,est:true},
-{name:'킨더하바유치원',lv:'유',s:'gimcheon',lat:36.50025193183705,lon:129.16371316720517,stu:27,cls:5,sped:0,teach:3,est:true},
-{name:'안동자연유치원',lv:'유',s:'andong',lat:36.57267999683778,lon:128.43042784719032,stu:15,cls:3,sped:0,teach:3,est:true},
-{name:'서선초등학교병설유치원',lv:'유',s:'andong',lat:36.728518048695726,lon:129.28838880774612,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'서후초등학교병설유치원',lv:'유',s:'andong',lat:35.80418004045739,lon:128.90484458594582,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'성심유치원',lv:'유',s:'andong',lat:36.40767696921178,lon:129.055003513367,stu:31,cls:6,sped:0,teach:3,est:true},
-{name:'안동서부초등학교병설유치원',lv:'유',s:'andong',lat:36.53724492789276,lon:128.46661847703655,stu:16,cls:3,sped:0,teach:3,est:true},
-{name:'안동송현초등학교병설유치원',lv:'유',s:'andong',lat:36.633100537295476,lon:129.20841778250247,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'남선초등학교병설유치원',lv:'유',s:'andong',lat:35.80188005936421,lon:128.78887816568908,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'동산유치원',lv:'유',s:'andong',lat:35.80426494841476,lon:129.12592276494965,stu:11,cls:3,sped:0,teach:3,est:true},
-{name:'송천초등학교병설유치원',lv:'유',s:'andong',lat:36.241399542897,lon:129.27463492548046,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'안동영호초등학교병설유치원',lv:'유',s:'andong',lat:36.475571159621495,lon:129.22098244959847,stu:19,cls:2,sped:0,teach:3,est:true},
-{name:'풍북초등학교병설유치원',lv:'유',s:'andong',lat:36.594964225519604,lon:128.28253787197914,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'안동꿈터유치원',lv:'유',s:'andong',lat:36.429583841065416,lon:129.04389572338468,stu:33,cls:5,sped:0,teach:3,est:true},
-{name:'안동유치원',lv:'유',s:'andong',lat:35.949624511018484,lon:129.21441977472267,stu:13,cls:6,sped:0,teach:3,est:true},
-{name:'해동사금강유치원',lv:'유',s:'andong',lat:36.75062603821894,lon:129.2850998964482,stu:36,cls:7,sped:0,teach:3,est:true},
-{name:'안동영재유치원',lv:'유',s:'andong',lat:36.421002983930045,lon:129.19864830999435,stu:19,cls:7,sped:0,teach:3,est:true},
-{name:'임동초등학교병설유치원',lv:'유',s:'andong',lat:35.871141425576106,lon:128.37282917152828,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'녹전초등학교병설유치원',lv:'유',s:'andong',lat:36.57723553492847,lon:128.57899989665785,stu:20,cls:1,sped:0,teach:3,est:true},
-{name:'꿈빛유치원',lv:'유',s:'andong',lat:36.79250351783007,lon:129.04950696322885,stu:16,cls:6,sped:0,teach:3,est:true},
-{name:'남후초등학교병설유치원',lv:'유',s:'andong',lat:36.64045747742714,lon:129.25637658526335,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'길주초등학교병설유치원',lv:'유',s:'andong',lat:36.3942046666655,lon:128.885628909321,stu:14,cls:3,sped:0,teach:3,est:true},
-{name:'안동오상유치원',lv:'유',s:'andong',lat:36.75687261927972,lon:128.55868795916507,stu:30,cls:5,sped:0,teach:3,est:true},
-{name:'신성초등학교병설유치원',lv:'유',s:'andong',lat:35.902144836407096,lon:128.77935468570504,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'영남초등학교병설유치원',lv:'유',s:'andong',lat:36.35331659372701,lon:128.6437471114113,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'와룡초등학교병설유치원',lv:'유',s:'andong',lat:36.64628242613413,lon:128.66902190283227,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'일직초등학교병설유치원',lv:'유',s:'andong',lat:36.39769975647813,lon:128.44775938707556,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'복주초등학교병설유치원',lv:'유',s:'andong',lat:36.4061081937736,lon:129.34299823716364,stu:29,cls:3,sped:0,teach:3,est:true},
-{name:'북후초등학교병설유치원',lv:'유',s:'andong',lat:36.32182267440849,lon:128.40649261679175,stu:22,cls:1,sped:0,teach:3,est:true},
-{name:'가톨릭상지대학부속상지유치원',lv:'유',s:'andong',lat:36.0109443472806,lon:129.10974873814294,stu:19,cls:6,sped:0,teach:3,est:true},
-{name:'풍산초등학교병설유치원',lv:'유',s:'andong',lat:35.97363485651325,lon:128.9041054609442,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'강남유치원',lv:'유',s:'andong',lat:36.58175923074583,lon:128.21915614822788,stu:14,cls:6,sped:0,teach:3,est:true},
-{name:'안동용상초등학교병설유치원',lv:'유',s:'andong',lat:36.54111206260008,lon:128.54427102132027,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'안동초등학교병설유치원',lv:'유',s:'andong',lat:36.43211189664747,lon:128.8421614872145,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'월곡초등학교병설유치원',lv:'유',s:'andong',lat:35.8122223325072,lon:128.23025243304266,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'안동강남초등학교병설유치원',lv:'유',s:'andong',lat:36.42936977307262,lon:128.42743907950046,stu:21,cls:4,sped:0,teach:3,est:true},
-{name:'영가초등학교병설유치원',lv:'유',s:'andong',lat:36.43546895410503,lon:128.5403811282552,stu:25,cls:3,sped:0,teach:3,est:true},
-{name:'임하초등학교병설유치원',lv:'유',s:'andong',lat:36.456033325529724,lon:128.7277808243863,stu:16,cls:1,sped:0,teach:3,est:true},
-{name:'길안초등학교병설유치원',lv:'유',s:'andong',lat:35.91884252279294,lon:128.70367912809954,stu:20,cls:1,sped:0,teach:3,est:true},
-{name:'풍천풍서초등학교병설유치원',lv:'유',s:'andong',lat:36.30709720704504,lon:128.52324175215418,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'진평초등학교병설유치원',lv:'유',s:'gumi',lat:36.74659328951148,lon:129.10199006390022,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'리더스숲유치원',lv:'유',s:'gumi',lat:36.75761627210846,lon:128.62129737561398,stu:10,cls:11,sped:0,teach:3,est:true},
-{name:'오태초등학교병설유치원',lv:'유',s:'gumi',lat:36.27976726594662,lon:129.1283504095569,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'아이누리유치원',lv:'유',s:'gumi',lat:36.19109934945959,lon:128.85708934119816,stu:20,cls:6,sped:0,teach:3,est:true},
-{name:'구미봉곡초등학교병설유치원',lv:'유',s:'gumi',lat:36.22753728897699,lon:128.8248386421855,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'주향유치원',lv:'유',s:'gumi',lat:36.32164634301847,lon:128.55774794596059,stu:36,cls:7,sped:0,teach:3,est:true},
-{name:'비산초등학교병설유치원',lv:'유',s:'gumi',lat:36.39228113189506,lon:128.9532237744719,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'해평초등학교병설유치원',lv:'유',s:'gumi',lat:36.645656877190795,lon:129.3364502929196,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'구미신평초등학교병설유치원',lv:'유',s:'gumi',lat:35.99779123010154,lon:128.74132637009382,stu:14,cls:3,sped:0,teach:3,est:true},
-{name:'선산초등학교병설유치원',lv:'유',s:'gumi',lat:36.715020196403295,lon:128.9821771254654,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'분도유치원',lv:'유',s:'gumi',lat:36.170897336270805,lon:128.41064350672102,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'도산유치원',lv:'유',s:'gumi',lat:36.350779498991926,lon:129.1640306496871,stu:10,cls:5,sped:0,teach:3,est:true},
-{name:'원남초등학교병설유치원',lv:'유',s:'gumi',lat:36.08881436755067,lon:129.05945586791123,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'효성유치원',lv:'유',s:'gumi',lat:36.04297373355409,lon:128.78047475847248,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'금오유치원',lv:'유',s:'gumi',lat:36.46608002227514,lon:128.83030435390538,stu:38,cls:6,sped:0,teach:3,est:true},
-{name:'세종유치원',lv:'유',s:'gumi',lat:36.45094504598629,lon:129.03861516484764,stu:29,cls:7,sped:0,teach:3,est:true},
-{name:'산동초등학교병설유치원',lv:'유',s:'gumi',lat:36.22491632420827,lon:128.9779788627025,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'사랑유치원',lv:'유',s:'gumi',lat:36.143420294776895,lon:128.61202675632128,stu:19,cls:6,sped:0,teach:3,est:true},
-{name:'태양유치원',lv:'유',s:'gumi',lat:36.64573897816213,lon:128.82284670835992,stu:22,cls:4,sped:0,teach:3,est:true},
-{name:'링컨유치원',lv:'유',s:'gumi',lat:36.77827328175547,lon:128.3984222039543,stu:13,cls:4,sped:0,teach:3,est:true},
-{name:'숲은성유치원',lv:'유',s:'gumi',lat:36.425727613703465,lon:129.0762981739639,stu:16,cls:3,sped:0,teach:3,est:true},
-{name:'색동유치원',lv:'유',s:'gumi',lat:36.3258624580689,lon:128.3041629305239,stu:28,cls:7,sped:0,teach:3,est:true},
-{name:'우리유치원',lv:'유',s:'gumi',lat:36.090824503821445,lon:129.14868661663192,stu:29,cls:5,sped:0,teach:3,est:true},
-{name:'한별유치원',lv:'유',s:'gumi',lat:36.38796684270234,lon:129.29203421745538,stu:30,cls:6,sped:0,teach:3,est:true},
-{name:'보눔유치원',lv:'유',s:'gumi',lat:35.98263666719101,lon:128.7296537311817,stu:21,cls:7,sped:0,teach:3,est:true},
-{name:'구미원당초등학교병설유치원',lv:'유',s:'gumi',lat:36.24120018150747,lon:128.5081638474275,stu:33,cls:3,sped:0,teach:3,est:true},
-{name:'드림유치원',lv:'유',s:'gumi',lat:36.00479377995489,lon:128.51800123439327,stu:32,cls:3,sped:0,teach:3,est:true},
-{name:'구미문성초등학교병설유치원',lv:'유',s:'gumi',lat:36.1164006091421,lon:129.3487083095132,stu:30,cls:3,sped:0,teach:3,est:true},
-{name:'위버조이유치원',lv:'유',s:'gumi',lat:36.0462167020835,lon:129.01436861593567,stu:26,cls:7,sped:0,teach:3,est:true},
-{name:'구미신당초등학교병설유치원',lv:'유',s:'gumi',lat:36.26780577781071,lon:129.3413421745725,stu:25,cls:3,sped:0,teach:3,est:true},
-{name:'구미인덕초등학교병설유치원',lv:'유',s:'gumi',lat:35.890073154130604,lon:129.13180704051786,stu:27,cls:3,sped:0,teach:3,est:true},
-{name:'라온유치원',lv:'유',s:'gumi',lat:35.937481503231105,lon:128.99395791873945,stu:38,cls:5,sped:0,teach:3,est:true},
-{name:'대자연유치원',lv:'유',s:'gumi',lat:35.93309425049888,lon:129.1504308386911,stu:39,cls:5,sped:0,teach:3,est:true},
-{name:'형남초등학교병설유치원',lv:'유',s:'gumi',lat:35.92749315361062,lon:128.2850940904435,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'선주초등학교병설유치원',lv:'유',s:'gumi',lat:36.145302806173476,lon:128.43488837586816,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'예일유치원',lv:'유',s:'gumi',lat:36.682451069168714,lon:128.88390189117942,stu:17,cls:5,sped:0,teach:3,est:true},
-{name:'구미왕산초등학교병설유치원',lv:'유',s:'gumi',lat:36.65420549322204,lon:129.36257816032955,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'인동초등학교병설유치원',lv:'유',s:'gumi',lat:36.66383064272462,lon:128.33131026470383,stu:15,cls:3,sped:0,teach:3,est:true},
-{name:'성심유치원',lv:'유',s:'gumi',lat:35.825429269150874,lon:128.26543134135,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'자연숲유치원',lv:'유',s:'gumi',lat:35.85662449682542,lon:128.42268895029895,stu:28,cls:3,sped:0,teach:3,est:true},
-{name:'브니엘유치원',lv:'유',s:'gumi',lat:36.258586094320606,lon:128.33026091672565,stu:32,cls:3,sped:0,teach:3,est:true},
-{name:'구미사곡초등학교병설유치원',lv:'유',s:'gumi',lat:36.14364091790297,lon:129.16993214870467,stu:18,cls:1,sped:0,teach:3,est:true},
-{name:'인의초등학교병설유치원',lv:'유',s:'gumi',lat:36.36023133190001,lon:129.00354968488213,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'구운초등학교병설유치원',lv:'유',s:'gumi',lat:36.22089957611429,lon:128.85021991859603,stu:39,cls:1,sped:0,teach:3,est:true},
-{name:'아이나라유치원',lv:'유',s:'gumi',lat:36.77812050957993,lon:128.93162248222603,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'나리유치원',lv:'유',s:'gumi',lat:36.78894602118525,lon:129.36774295207678,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'상모유치원',lv:'유',s:'gumi',lat:36.64767194436046,lon:128.2696709606637,stu:20,cls:5,sped:0,teach:3,est:true},
-{name:'명지유치원',lv:'유',s:'gumi',lat:36.53046170918612,lon:128.41218602160035,stu:13,cls:4,sped:0,teach:3,est:true},
-{name:'도량초등학교병설유치원',lv:'유',s:'gumi',lat:36.21624454958714,lon:129.31552323444217,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'장천초등학교병설유치원',lv:'유',s:'gumi',lat:36.22843230645017,lon:129.07067136325375,stu:16,cls:1,sped:0,teach:3,est:true},
-{name:'은성유치원',lv:'유',s:'gumi',lat:36.256595180087125,lon:128.25616664182334,stu:25,cls:4,sped:0,teach:3,est:true},
-{name:'선산유치원',lv:'유',s:'gumi',lat:36.169001130553504,lon:128.71170320985146,stu:16,cls:6,sped:0,teach:3,est:true},
-{name:'도개초등학교병설유치원',lv:'유',s:'gumi',lat:36.020063732503786,lon:128.34210601769902,stu:18,cls:1,sped:0,teach:3,est:true},
-{name:'남계초등학교병설유치원',lv:'유',s:'gumi',lat:36.33725038373637,lon:128.20129715421396,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'옥계동부초등학교병설유치원',lv:'유',s:'gumi',lat:36.438994872239775,lon:128.82620353397482,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'지산초등학교병설유치원',lv:'유',s:'gumi',lat:36.34161423177875,lon:128.33038338051003,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'옥성초등학교병설유치원',lv:'유',s:'gumi',lat:36.523520361031665,lon:128.7080783054159,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'신기초등학교병설유치원',lv:'유',s:'gumi',lat:36.78241725757936,lon:129.3916925674973,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'광평초등학교병설유치원',lv:'유',s:'gumi',lat:36.57486489014297,lon:128.70759257221098,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'천생초등학교병설유치원',lv:'유',s:'gumi',lat:35.94378463407057,lon:129.3239078654263,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'송정유치원',lv:'유',s:'gumi',lat:36.453454573521256,lon:129.02160268045344,stu:35,cls:6,sped:0,teach:3,est:true},
-{name:'성모유치원',lv:'유',s:'gumi',lat:36.2307574138557,lon:129.3912225648154,stu:16,cls:1,sped:0,teach:3,est:true},
-{name:'리라유치원',lv:'유',s:'gumi',lat:36.05708085511441,lon:128.3560461081406,stu:14,cls:7,sped:0,teach:3,est:true},
-{name:'동아유치원',lv:'유',s:'gumi',lat:36.26253210232827,lon:128.55773359432894,stu:25,cls:16,sped:0,teach:3,est:true},
-{name:'옥계우리유치원',lv:'유',s:'gumi',lat:36.166139719942834,lon:129.3748569210195,stu:33,cls:3,sped:0,teach:3,est:true},
-{name:'동화나라유치원',lv:'유',s:'gumi',lat:36.60665480995602,lon:128.21993174724975,stu:35,cls:4,sped:0,teach:3,est:true},
-{name:'라임유치원',lv:'유',s:'gumi',lat:35.99021767107966,lon:128.52147364111661,stu:12,cls:2,sped:0,teach:3,est:true},
-{name:'해마루초등학교병설유치원',lv:'유',s:'gumi',lat:36.163786702895244,lon:129.16514728216552,stu:28,cls:3,sped:0,teach:3,est:true},
-{name:'문장유치원',lv:'유',s:'gumi',lat:36.436750930679544,lon:128.68361449486198,stu:35,cls:3,sped:0,teach:3,est:true},
-{name:'맑은동심유치원',lv:'유',s:'gumi',lat:36.17062214974374,lon:129.20832667841728,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'가야유치원',lv:'유',s:'gumi',lat:36.6231309760857,lon:128.68459186360263,stu:28,cls:6,sped:0,teach:3,est:true},
-{name:'늘푸른유치원',lv:'유',s:'gumi',lat:36.12123025451946,lon:128.34500548952946,stu:13,cls:8,sped:0,teach:3,est:true},
-{name:'문장초등학교병설유치원',lv:'유',s:'gumi',lat:36.58707897213838,lon:128.4462273397644,stu:18,cls:3,sped:0,teach:3,est:true},
-{name:'원호초등학교병설유치원',lv:'유',s:'gumi',lat:35.81180010851078,lon:128.20688638049694,stu:13,cls:3,sped:0,teach:3,est:true},
-{name:'옥계초등학교병설유치원',lv:'유',s:'gumi',lat:35.95136626103682,lon:128.3257677266925,stu:30,cls:3,sped:0,teach:3,est:true},
-{name:'옥계유치원',lv:'유',s:'gumi',lat:36.37856132131271,lon:129.2183334665551,stu:37,cls:8,sped:0,teach:3,est:true},
-{name:'양포초등학교병설유치원',lv:'유',s:'gumi',lat:36.76192142749039,lon:128.5235475532946,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'구미초등학교병설유치원',lv:'유',s:'gumi',lat:36.51108317438728,lon:128.27472595628234,stu:28,cls:3,sped:0,teach:3,est:true},
-{name:'고아초등학교병설유치원',lv:'유',s:'gumi',lat:35.8755954394661,lon:128.79890422047635,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'계명유치원',lv:'유',s:'gumi',lat:35.91747356892859,lon:128.40510085916065,stu:35,cls:7,sped:0,teach:3,est:true},
-{name:'덕촌초등학교병설유치원',lv:'유',s:'gumi',lat:36.424129107308694,lon:129.10467498697457,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'옥계한별유치원',lv:'유',s:'gumi',lat:36.56336410736545,lon:129.1347960861048,stu:32,cls:4,sped:0,teach:3,est:true},
-{name:'킨더하바유치원',lv:'유',s:'gumi',lat:36.10328599018357,lon:128.97207624948248,stu:21,cls:7,sped:0,teach:3,est:true},
-{name:'문화유치원',lv:'유',s:'gumi',lat:36.72303205605536,lon:128.65763933577512,stu:20,cls:2,sped:0,teach:3,est:true},
-{name:'소나무유치원',lv:'유',s:'gumi',lat:35.90704090351651,lon:128.5548834368157,stu:16,cls:1,sped:0,teach:3,est:true},
-{name:'산동숲유치원',lv:'유',s:'gumi',lat:36.08446831923431,lon:128.68123451785044,stu:31,cls:7,sped:0,teach:3,est:true},
-{name:'천사유치원',lv:'유',s:'gumi',lat:36.58260446675403,lon:128.2034065402037,stu:18,cls:7,sped:0,teach:3,est:true},
-{name:'이화유치원',lv:'유',s:'gumi',lat:36.187983481556664,lon:128.4413691629783,stu:13,cls:3,sped:0,teach:3,est:true},
-{name:'홍익유치원',lv:'유',s:'gumi',lat:36.517667174748055,lon:129.33695884097895,stu:23,cls:13,sped:0,teach:3,est:true},
-{name:'무을초등학교병설유치원',lv:'유',s:'gumi',lat:36.39677769064689,lon:129.32361083093295,stu:18,cls:1,sped:0,teach:3,est:true},
-{name:'꽃가람유치원',lv:'유',s:'gumi',lat:36.24090352451969,lon:128.33708650905194,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'부석초등학교병설유치원',lv:'유',s:'yeongju',lat:35.94763551531419,lon:128.63022320678877,stu:39,cls:1,sped:0,teach:3,est:true},
-{name:'평은초등학교병설유치원',lv:'유',s:'yeongju',lat:36.22124757676734,lon:128.96171420108467,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'영주유치원',lv:'유',s:'yeongju',lat:36.58610728609842,lon:129.22076587403305,stu:13,cls:4,sped:0,teach:3,est:true},
-{name:'현대유치원',lv:'유',s:'yeongju',lat:36.594165753811396,lon:128.80512744194695,stu:34,cls:2,sped:0,teach:3,est:true},
-{name:'신영주유치원',lv:'유',s:'yeongju',lat:35.82423600453886,lon:128.8090162766265,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'문수초등학교병설유치원',lv:'유',s:'yeongju',lat:36.207498521435284,lon:129.1343747782852,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'풍기북부초등학교병설유치원',lv:'유',s:'yeongju',lat:36.03593891371644,lon:129.06946121810552,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'옥대초등학교병설유치원',lv:'유',s:'yeongju',lat:35.838662499604744,lon:128.9211036218866,stu:18,cls:1,sped:0,teach:3,est:true},
-{name:'영주서부초등학교병설유치원',lv:'유',s:'yeongju',lat:36.53293976748585,lon:128.75678504112125,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'풍기초등학교병설유치원',lv:'유',s:'yeongju',lat:35.95574260321481,lon:128.32705141776992,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'봉현초등학교병설유치원',lv:'유',s:'yeongju',lat:35.826788201170224,lon:129.30754107272836,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'자연유치원',lv:'유',s:'yeongju',lat:36.22059427814374,lon:128.34759065545038,stu:37,cls:5,sped:0,teach:3,est:true},
-{name:'이산초등학교병설유치원',lv:'유',s:'yeongju',lat:36.31176088361276,lon:128.65948115081298,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'영주남부초등학교병설유치원',lv:'유',s:'yeongju',lat:36.75217666953012,lon:128.26804166994873,stu:34,cls:3,sped:0,teach:3,est:true},
-{name:'영일초등학교병설유치원',lv:'유',s:'yeongju',lat:36.06639909745686,lon:129.10021834475634,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'영주초등학교병설유치원',lv:'유',s:'yeongju',lat:36.348161834259805,lon:128.7374189927231,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'샛별유치원',lv:'유',s:'yeongju',lat:36.25262590204183,lon:129.18920224471876,stu:39,cls:1,sped:0,teach:3,est:true},
-{name:'장수초등학교병설유치원',lv:'유',s:'yeongju',lat:36.42113901280934,lon:128.3944424763086,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'남산초등학교병설유치원',lv:'유',s:'yeongju',lat:36.096208205539746,lon:128.3656334250512,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'영주중앙초등학교병설유치원',lv:'유',s:'yeongju',lat:36.72787515342515,lon:128.71275748689834,stu:22,cls:1,sped:0,teach:3,est:true},
-{name:'영주동부초등학교병설유치원',lv:'유',s:'yeongju',lat:36.632564213691616,lon:129.2543277796578,stu:11,cls:3,sped:0,teach:3,est:true},
-{name:'안정초등학교병설유치원',lv:'유',s:'yeongju',lat:36.166253222751976,lon:129.27520485414342,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'영주가흥초등학교병설유치원',lv:'유',s:'yeongju',lat:36.14162994188705,lon:129.2749048705759,stu:38,cls:3,sped:0,teach:3,est:true},
-{name:'샛별유치원',lv:'유',s:'yeongcheon',lat:36.717824385205944,lon:128.6058327130265,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'지곡초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.570770860490626,lon:128.73018699705156,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'고경초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.14122086070069,lon:128.30725394634402,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'거여초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.648248943167985,lon:128.22736579952775,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'포은초등학교병설유치원',lv:'유',s:'yeongcheon',lat:35.851126693471244,lon:128.6760256765981,stu:24,cls:4,sped:0,teach:3,est:true},
-{name:'영천중앙유치원',lv:'유',s:'yeongcheon',lat:36.35346901332431,lon:128.5656332591186,stu:30,cls:5,sped:0,teach:3,est:true},
-{name:'금호초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.22096442388868,lon:128.5495024987958,stu:12,cls:3,sped:0,teach:3,est:true},
-{name:'자천초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.086083348897496,lon:129.33420186047664,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'화산초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.424545904647914,lon:129.25172102377553,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'한성유치원',lv:'유',s:'yeongcheon',lat:35.88621416777357,lon:128.8954382446698,stu:37,cls:5,sped:0,teach:3,est:true},
-{name:'영천동부초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.577193870710985,lon:128.79339308574774,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'북안초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.148129589898474,lon:129.02899376004063,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'문화유치원',lv:'유',s:'yeongcheon',lat:36.28027310154374,lon:129.03238612939603,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'신녕초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.78388429028387,lon:129.3635401121875,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'영천초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.659571962680154,lon:129.07209193486827,stu:26,cls:3,sped:0,teach:3,est:true},
-{name:'대창초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.65588740563019,lon:129.31620859729554,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'단포초등학교병설유치원',lv:'유',s:'yeongcheon',lat:35.938373285301154,lon:129.20375863088205,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'임고초등학교병설유치원',lv:'유',s:'yeongcheon',lat:35.92994419548524,lon:129.2478450615141,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'영화초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.31506994004555,lon:129.25280550946846,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'청통초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.25600504088297,lon:128.41786536331165,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'화령초등학교병설유치원',lv:'유',s:'sangju',lat:36.34010309644974,lon:128.54162191223992,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'상주초등학교병설유치원',lv:'유',s:'sangju',lat:36.36235059715742,lon:128.38856670952566,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'사벌초등학교병설유치원',lv:'유',s:'sangju',lat:36.372402883487204,lon:129.26229476499907,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'모서초등학교병설유치원',lv:'유',s:'sangju',lat:35.859260374506896,lon:128.47908718521225,stu:21,cls:1,sped:0,teach:3,est:true},
-{name:'상주감꽃유치원',lv:'유',s:'sangju',lat:36.214494776176004,lon:128.87746528594494,stu:11,cls:6,sped:0,teach:3,est:true},
-{name:'파티마유치원',lv:'유',s:'sangju',lat:36.513946606252055,lon:128.69527952336085,stu:14,cls:4,sped:0,teach:3,est:true},
-{name:'한마음유치원',lv:'유',s:'sangju',lat:36.587131848308296,lon:128.92208821252453,stu:14,cls:7,sped:0,teach:3,est:true},
-{name:'상주남부초등학교병설유치원',lv:'유',s:'sangju',lat:36.26579394300596,lon:129.32548760876554,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'함창중앙초등학교병설유치원',lv:'유',s:'sangju',lat:36.4791185946409,lon:129.341994860039,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'상주원광유치원',lv:'유',s:'sangju',lat:36.53901646344747,lon:129.3477191584038,stu:37,cls:7,sped:0,teach:3,est:true},
-{name:'상영초등학교병설유치원',lv:'유',s:'sangju',lat:36.43725062476344,lon:128.20252789484567,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'공검초등학교병설유치원',lv:'유',s:'sangju',lat:35.88167696288209,lon:129.18611447785923,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'은척초등학교병설유치원',lv:'유',s:'sangju',lat:36.694330697842226,lon:128.32090259980455,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'화북초등학교병설유치원',lv:'유',s:'sangju',lat:36.39047723231141,lon:129.28749727690038,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'상락유치원',lv:'유',s:'sangju',lat:36.22925384900961,lon:129.017812115765,stu:22,cls:6,sped:0,teach:3,est:true},
-{name:'모동초등학교병설유치원',lv:'유',s:'sangju',lat:36.52933000315621,lon:128.34915954678607,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'예영유치원',lv:'유',s:'sangju',lat:35.850531004722654,lon:129.01654274225277,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'함창초등학교병설유치원',lv:'유',s:'sangju',lat:36.112850028960814,lon:128.71805554557417,stu:28,cls:1,sped:0,teach:3,est:true},
-{name:'중모초등학교병설유치원',lv:'유',s:'sangju',lat:36.17335987855881,lon:129.19855710054705,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'옥산초등학교병설유치원',lv:'유',s:'sangju',lat:36.5382950759156,lon:128.99496333961508,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'낙서초등학교병설유치원',lv:'유',s:'sangju',lat:36.74335402403076,lon:128.9098580074123,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'낙동초등학교병설유치원',lv:'유',s:'sangju',lat:36.458730757431795,lon:128.66092351931093,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'청리초등학교병설유치원',lv:'유',s:'sangju',lat:36.123075737221384,lon:129.1312840087039,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'상주중앙초등학교병설유치원',lv:'유',s:'sangju',lat:36.28508235805438,lon:128.7817338020111,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'백원초등학교병설유치원',lv:'유',s:'sangju',lat:35.940851567546616,lon:128.20147083978793,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'화동초등학교병설유치원',lv:'유',s:'sangju',lat:36.77074538699755,lon:129.2593417257235,stu:20,cls:1,sped:0,teach:3,est:true},
-{name:'중동초등학교병설유치원',lv:'유',s:'sangju',lat:36.05085198486762,lon:128.644154684623,stu:18,cls:1,sped:0,teach:3,est:true},
-{name:'외남초등학교병설유치원',lv:'유',s:'sangju',lat:35.890171695702854,lon:128.37044565263065,stu:21,cls:1,sped:0,teach:3,est:true},
-{name:'상주동부초등학교병설유치원',lv:'유',s:'sangju',lat:35.84844549897931,lon:128.6487404653959,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'상산초등학교병설유치원',lv:'유',s:'sangju',lat:36.60619748894799,lon:128.67210462966327,stu:12,cls:3,sped:0,teach:3,est:true},
-{name:'이안초등학교병설유치원',lv:'유',s:'sangju',lat:35.826056106962014,lon:128.83490198798103,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'점촌중앙초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.367046050063976,lon:129.25478097406722,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'이화유치원',lv:'유',s:'mungyeong',lat:36.71918093095231,lon:129.36503466700404,stu:29,cls:3,sped:0,teach:3,est:true},
-{name:'영순초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.51420704016612,lon:129.12244327233253,stu:39,cls:1,sped:0,teach:3,est:true},
-{name:'상지유치원',lv:'유',s:'mungyeong',lat:36.63640741055831,lon:128.33287495244684,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'동로초등학교병설유치원',lv:'유',s:'mungyeong',lat:35.91741621358739,lon:128.8608904395726,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'신기초등학교병설유치원',lv:'유',s:'mungyeong',lat:35.84457509710727,lon:129.0429802747739,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'새싹유치원',lv:'유',s:'mungyeong',lat:36.79514648685052,lon:128.5651392306104,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'문경초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.35863001137204,lon:128.8627094818755,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'당포초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.36391086525394,lon:128.40748389838623,stu:16,cls:1,sped:0,teach:3,est:true},
-{name:'점촌초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.439369336108356,lon:128.7576355283517,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'점촌북초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.40006563192133,lon:128.54833803828564,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'산북초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.767913600632305,lon:128.59157031167925,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'동성초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.515090648730066,lon:129.10511474929137,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'가은초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.51062287850817,lon:129.26690018881376,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'농암초등학교병설유치원',lv:'유',s:'mungyeong',lat:35.88785156504247,lon:128.85917928985776,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'호계초등학교병설유치원',lv:'유',s:'mungyeong',lat:35.800265989644174,lon:128.51823966898402,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'용흥초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.48767136793972,lon:128.55894043819194,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'산양초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.54448038566773,lon:129.32842330466235,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'모전초등학교병설유치원',lv:'유',s:'mungyeong',lat:35.954955870158905,lon:129.23900238888615,stu:20,cls:3,sped:0,teach:3,est:true},
-{name:'문경유치원',lv:'유',s:'mungyeong',lat:35.94837379870704,lon:128.88401864997047,stu:18,cls:5,sped:0,teach:3,est:true},
-{name:'자인초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.314488978300524,lon:128.35326412914893,stu:18,cls:1,sped:0,teach:3,est:true},
-{name:'하양유치원',lv:'유',s:'gyeongsan',lat:36.028726662874675,lon:128.62248842731626,stu:34,cls:3,sped:0,teach:3,est:true},
-{name:'경산초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.13779797026603,lon:128.91303901855204,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'다문초등학교병설유치원',lv:'유',s:'gyeongsan',lat:35.82788021673365,lon:129.39393439169564,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'자연아이유치원',lv:'유',s:'gyeongsan',lat:35.96035405725874,lon:128.3889404563953,stu:33,cls:5,sped:0,teach:3,est:true},
-{name:'옥곡초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.1161493235898,lon:128.3893674961797,stu:22,cls:1,sped:0,teach:3,est:true},
-{name:'부림초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.61846387280058,lon:128.5989496109173,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'중방유치원',lv:'유',s:'gyeongsan',lat:35.894571828115154,lon:129.18613302319025,stu:16,cls:9,sped:0,teach:3,est:true},
-{name:'계당초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.367475254627124,lon:128.80074689224472,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'우리들숲유치원',lv:'유',s:'gyeongsan',lat:35.986996546085436,lon:129.15976281921277,stu:28,cls:2,sped:0,teach:3,est:true},
-{name:'동심유치원',lv:'유',s:'gyeongsan',lat:36.423015378569225,lon:129.1052565241093,stu:38,cls:3,sped:0,teach:3,est:true},
-{name:'라온유치원',lv:'유',s:'gyeongsan',lat:36.58842186572386,lon:128.3514303824262,stu:30,cls:2,sped:0,teach:3,est:true},
-{name:'대해유치원',lv:'유',s:'gyeongsan',lat:36.027440079213854,lon:128.29562191320628,stu:21,cls:9,sped:0,teach:3,est:true},
-{name:'경산압량초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.67347289101984,lon:128.9142831517802,stu:17,cls:3,sped:0,teach:3,est:true},
-{name:'은성유치원',lv:'유',s:'gyeongsan',lat:36.3232066076749,lon:129.00351129558453,stu:17,cls:7,sped:0,teach:3,est:true},
-{name:'진량초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.249826109733306,lon:128.2666462791733,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'대구대학교사범대학부속영광유치원',lv:'유',s:'gyeongsan',lat:35.83496856972157,lon:128.4500386205286,stu:10,cls:6,sped:0,teach:3,est:true},
-{name:'키다리아저씨유치원',lv:'유',s:'gyeongsan',lat:36.00115041783194,lon:129.00812276758694,stu:30,cls:3,sped:0,teach:3,est:true},
-{name:'경산유치원',lv:'유',s:'gyeongsan',lat:36.02396423195773,lon:128.60621631689878,stu:27,cls:6,sped:0,teach:3,est:true},
-{name:'책놀이숲놀이유치원',lv:'유',s:'gyeongsan',lat:35.980879463632576,lon:129.21157981178905,stu:30,cls:4,sped:0,teach:3,est:true},
-{name:'삼성현초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.11651331938202,lon:128.9556890543173,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'유선아이숲유치원',lv:'유',s:'gyeongsan',lat:35.97771220745144,lon:129.2713066537983,stu:37,cls:4,sped:0,teach:3,est:true},
-{name:'경산압량유치원',lv:'유',s:'gyeongsan',lat:36.357406846326846,lon:129.03722812933867,stu:39,cls:5,sped:0,teach:3,est:true},
-{name:'본(BON)유치원',lv:'유',s:'gyeongsan',lat:35.89726635596808,lon:129.31570439809937,stu:18,cls:6,sped:0,teach:3,est:true},
-{name:'영인유치원',lv:'유',s:'gyeongsan',lat:36.6960284355042,lon:129.396240095236,stu:15,cls:4,sped:0,teach:3,est:true},
-{name:'임당초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.287290583066245,lon:128.91371962364204,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'장은유치원',lv:'유',s:'gyeongsan',lat:36.38296783571698,lon:128.71944393817333,stu:16,cls:3,sped:0,teach:3,est:true},
-{name:'한사유치원',lv:'유',s:'gyeongsan',lat:36.53608325797223,lon:129.17674613064264,stu:28,cls:6,sped:0,teach:3,est:true},
-{name:'경산중앙유치원',lv:'유',s:'gyeongsan',lat:36.007666692431044,lon:128.23479085101127,stu:36,cls:7,sped:0,teach:3,est:true},
-{name:'남성초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.46058021063212,lon:128.84501390369917,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'창파유치원',lv:'유',s:'gyeongsan',lat:35.82610323309432,lon:128.5737297100656,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'경산성모유치원',lv:'유',s:'gyeongsan',lat:36.472703424205854,lon:129.07759184684275,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'청천초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.0835369030772,lon:128.5533851318128,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'남산초등학교병설유치원',lv:'유',s:'gyeongsan',lat:35.975079786684596,lon:129.39447837250026,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'평산초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.009399984990175,lon:128.94869995271617,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'경산서부초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.27786390110183,lon:128.39046091207382,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'예인유치원',lv:'유',s:'gyeongsan',lat:35.85417237272839,lon:128.9622527994136,stu:29,cls:5,sped:0,teach:3,est:true},
-{name:'운문유치원',lv:'유',s:'gyeongsan',lat:36.72963348829985,lon:128.70719244131973,stu:16,cls:8,sped:0,teach:3,est:true},
-{name:'계명유치원',lv:'유',s:'gyeongsan',lat:35.97271262078789,lon:128.55895056891427,stu:32,cls:4,sped:0,teach:3,est:true},
-{name:'남천초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.48427540435315,lon:128.22598215222735,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'성암초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.345045324237844,lon:128.29633028520857,stu:14,cls:3,sped:0,teach:3,est:true},
-{name:'서부유치원',lv:'유',s:'gyeongsan',lat:35.96205776670626,lon:129.12087441958835,stu:27,cls:5,sped:0,teach:3,est:true},
-{name:'용성초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.19019920851965,lon:128.66142042904204,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'경산중앙초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.33285133331319,lon:129.00186894930724,stu:21,cls:1,sped:0,teach:3,est:true},
-{name:'경산동부초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.7055909003341,lon:128.2621177727902,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'경산꽃재유치원',lv:'유',s:'gyeongsan',lat:36.31473679240102,lon:128.86571536358755,stu:12,cls:5,sped:0,teach:3,est:true},
-{name:'와촌초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.5239881904438,lon:128.90536235133584,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'진성초등학교병설유치원',lv:'유',s:'gyeongsan',lat:35.9265779079963,lon:129.2565109755071,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'대동초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.70158494560901,lon:129.0824260161357,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'예일유치원',lv:'유',s:'gyeongsan',lat:36.109546890484665,lon:128.24636648012955,stu:24,cls:2,sped:0,teach:3,est:true},
-{name:'하주초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.60619856707761,lon:128.4006755275581,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'현흥초등학교병설유치원',lv:'유',s:'gyeongsan',lat:35.88822002209148,lon:128.60700496269178,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'민들레유치원',lv:'유',s:'gyeongsan',lat:35.8035236232863,lon:129.27156924819346,stu:39,cls:5,sped:0,teach:3,est:true},
-{name:'비안초등학교병설유치원',lv:'유',s:'uiseong',lat:36.33427870138776,lon:128.7754884769636,stu:39,cls:1,sped:0,teach:3,est:true},
-{name:'의성남부초등학교병설유치원',lv:'유',s:'uiseong',lat:36.62139496082491,lon:129.14120887195233,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'도리원초등학교병설유치원',lv:'유',s:'uiseong',lat:36.252055304621194,lon:129.29558205000177,stu:28,cls:1,sped:0,teach:3,est:true},
-{name:'안평초등학교병설유치원',lv:'유',s:'uiseong',lat:36.69757152524443,lon:128.71640508182293,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'다인초등학교병설유치원',lv:'유',s:'uiseong',lat:36.397099572801245,lon:128.86934070001925,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'안계초등학교병설유치원',lv:'유',s:'uiseong',lat:36.253779834598035,lon:129.3851796622637,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'옥전초등학교병설유치원',lv:'유',s:'uiseong',lat:36.465940492167924,lon:128.87831332447206,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'단촌초등학교병설유치원',lv:'유',s:'uiseong',lat:36.79232302977384,lon:128.59501630833464,stu:22,cls:1,sped:0,teach:3,est:true},
-{name:'에덴유치원',lv:'유',s:'uiseong',lat:36.74509479539773,lon:128.3098122845058,stu:12,cls:3,sped:0,teach:3,est:true},
-{name:'점곡초등학교병설유치원',lv:'유',s:'uiseong',lat:36.23315570545172,lon:128.95347111691572,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'춘산초등학교병설유치원',lv:'유',s:'uiseong',lat:36.0956704054275,lon:128.39716663346135,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'안평초등학교신평분교장병설유치원',lv:'유',s:'uiseong',lat:36.46268055242734,lon:128.53860735899502,stu:21,cls:1,sped:0,teach:3,est:true},
-{name:'금성초등학교병설유치원',lv:'유',s:'uiseong',lat:35.80727678439703,lon:128.21668081667022,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'부남초등학교병설유치원',lv:'유',s:'cheongsong',lat:35.820526028612726,lon:128.25290614704096,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'청송초등학교병설유치원',lv:'유',s:'cheongsong',lat:35.97485396763071,lon:129.21688247465164,stu:15,cls:3,sped:0,teach:3,est:true},
-{name:'파천초등학교병설유치원',lv:'유',s:'cheongsong',lat:35.94409897310714,lon:129.16598031812336,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'안덕초등학교병설유치원',lv:'유',s:'cheongsong',lat:35.914278477213,lon:128.65424160501288,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'화목초등학교병설유치원',lv:'유',s:'cheongsong',lat:36.23700633668756,lon:129.0322014872677,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'진보초등학교병설유치원',lv:'유',s:'cheongsong',lat:36.228329115529185,lon:129.1573226635725,stu:17,cls:3,sped:0,teach:3,est:true},
-{name:'이전초등학교병설유치원',lv:'유',s:'cheongsong',lat:36.30826049474168,lon:128.5681410639475,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'도평초등학교병설유치원',lv:'유',s:'cheongsong',lat:36.64685554735315,lon:129.350540638499,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'입암초등학교병설유치원',lv:'유',s:'yeongyang',lat:36.09177348074723,lon:129.0277623351012,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'수비초등학교병설유치원',lv:'유',s:'yeongyang',lat:36.1338288599473,lon:129.0202822355306,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'일월초등학교병설유치원',lv:'유',s:'yeongyang',lat:36.736143829143224,lon:128.43754200994806,stu:21,cls:1,sped:0,teach:3,est:true},
-{name:'석보초등학교병설유치원',lv:'유',s:'yeongyang',lat:35.91785475087231,lon:128.972431399041,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'영양초등학교병설유치원',lv:'유',s:'yeongyang',lat:36.7186640319975,lon:128.58850767867614,stu:21,cls:1,sped:0,teach:3,est:true},
-{name:'영양중앙초등학교병설유치원',lv:'유',s:'yeongyang',lat:36.3967329337982,lon:128.9911035051579,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'일월초등학교청기분교장병설유치원',lv:'유',s:'yeongyang',lat:35.858054122951195,lon:128.505357792058,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'축산항초등학교병설유치원',lv:'유',s:'yeongdeok',lat:36.70902577093253,lon:128.70359310264325,stu:20,cls:1,sped:0,teach:3,est:true},
-{name:'병곡초등학교병설유치원',lv:'유',s:'yeongdeok',lat:36.164971689200776,lon:128.40118901975168,stu:18,cls:1,sped:0,teach:3,est:true},
-{name:'영해초등학교병설유치원',lv:'유',s:'yeongdeok',lat:36.40699820226907,lon:128.85009770648736,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'지품초등학교병설유치원',lv:'유',s:'yeongdeok',lat:36.08198994107834,lon:129.23059300306866,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'창수초등학교병설유치원',lv:'유',s:'yeongdeok',lat:36.267084591038596,lon:129.25140500529963,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'원황초등학교병설유치원',lv:'유',s:'yeongdeok',lat:36.116096863231185,lon:128.3060015228538,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'남정초등학교병설유치원',lv:'유',s:'yeongdeok',lat:36.038749287638844,lon:129.39303681060773,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'영덕야성초등학교병설유치원',lv:'유',s:'yeongdeok',lat:35.844644236944816,lon:128.7266136963159,stu:21,cls:1,sped:0,teach:3,est:true},
-{name:'강구초등학교병설유치원',lv:'유',s:'yeongdeok',lat:36.77288369126604,lon:129.14633073724494,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'화양초등학교병설유치원',lv:'유',s:'cheongdo',lat:35.801438555182884,lon:128.40707821051868,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'덕산초등학교병설유치원',lv:'유',s:'cheongdo',lat:36.052794458235915,lon:128.48979895820855,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'향뜰유치원',lv:'유',s:'cheongdo',lat:36.495518420490534,lon:128.37783739273476,stu:13,cls:3,sped:0,teach:3,est:true},
-{name:'유천초등학교병설유치원',lv:'유',s:'cheongdo',lat:36.245954020155416,lon:128.21306791074505,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'청도중앙초등학교병설유치원',lv:'유',s:'cheongdo',lat:36.31014798996396,lon:128.30058524512606,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'청도초등학교병설유치원',lv:'유',s:'cheongdo',lat:36.623329544236405,lon:128.31523710533347,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'금천초등학교병설유치원',lv:'유',s:'cheongdo',lat:36.08886853682927,lon:129.28462468350614,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'동산초등학교병설유치원',lv:'유',s:'cheongdo',lat:36.38957199099923,lon:128.94045364898318,stu:22,cls:1,sped:0,teach:3,est:true},
-{name:'풍각초등학교병설유치원',lv:'유',s:'cheongdo',lat:35.88433042492929,lon:128.52612446152966,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'이서초등학교병설유치원',lv:'유',s:'cheongdo',lat:36.42639116545671,lon:128.80322325762347,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'각남초등학교병설유치원',lv:'유',s:'cheongdo',lat:36.457181735722884,lon:128.74138222017504,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'아이세상유치원',lv:'유',s:'cheongdo',lat:36.662398274813654,lon:128.52047006828985,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'청도성모유치원',lv:'유',s:'cheongdo',lat:36.05653756583108,lon:129.09668463357804,stu:32,cls:3,sped:0,teach:3,est:true},
-{name:'남성현초등학교병설유치원',lv:'유',s:'cheongdo',lat:36.63336422836144,lon:128.3540296495016,stu:21,cls:1,sped:0,teach:3,est:true},
-{name:'우곡초등학교병설유치원',lv:'유',s:'goryeong',lat:36.745338196592314,lon:128.6004951447346,stu:16,cls:1,sped:0,teach:3,est:true},
-{name:'운수초등학교병설유치원',lv:'유',s:'goryeong',lat:36.50325300936714,lon:128.5186192180317,stu:22,cls:1,sped:0,teach:3,est:true},
-{name:'고령초등학교병설유치원',lv:'유',s:'goryeong',lat:36.499716760031504,lon:129.13204018098898,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'선재유치원',lv:'유',s:'goryeong',lat:35.974743476054655,lon:129.37278319235818,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'다산초등학교병설유치원',lv:'유',s:'goryeong',lat:36.50069062085996,lon:128.84073517328565,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'성산초등학교병설유치원',lv:'유',s:'goryeong',lat:36.75906837472203,lon:129.25543534324925,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'쌍림초등학교병설유치원',lv:'유',s:'goryeong',lat:36.45410063154819,lon:129.2023772708723,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'성주초등학교병설유치원',lv:'유',s:'seongju',lat:35.85343720345996,lon:128.55982547050525,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'초전초등학교병설유치원',lv:'유',s:'seongju',lat:35.89037349564679,lon:128.9976970003628,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'도원초등학교병설유치원',lv:'유',s:'seongju',lat:35.83950278516561,lon:128.50137866176905,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'성주중앙초등학교병설유치원',lv:'유',s:'seongju',lat:36.6394232197427,lon:128.91500032780536,stu:20,cls:1,sped:0,teach:3,est:true},
-{name:'대가초등학교병설유치원',lv:'유',s:'seongju',lat:36.603348191016934,lon:128.6169943824856,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'대동초등학교병설유치원',lv:'유',s:'seongju',lat:36.545390996889395,lon:128.71779034268607,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'월항초등학교병설유치원',lv:'유',s:'seongju',lat:36.78458202900456,lon:128.3643956493649,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'가천초등학교병설유치원',lv:'유',s:'seongju',lat:36.632289899547544,lon:129.10496921671222,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'벽진초등학교병설유치원',lv:'유',s:'seongju',lat:36.30558946378969,lon:128.5837376013964,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'선남초등학교병설유치원',lv:'유',s:'seongju',lat:36.22251334683829,lon:129.1339108833187,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'수륜초등학교병설유치원',lv:'유',s:'seongju',lat:36.472207658933236,lon:128.3745045775295,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'신성유치원',lv:'유',s:'seongju',lat:36.08962762332907,lon:128.8244481882582,stu:12,cls:3,sped:0,teach:3,est:true},
-{name:'무지개유치원',lv:'유',s:'chilgok',lat:36.39586644837292,lon:128.67762116412894,stu:30,cls:7,sped:0,teach:3,est:true},
-{name:'남율유치원',lv:'유',s:'chilgok',lat:36.405059184639825,lon:128.34948990368474,stu:27,cls:5,sped:0,teach:3,est:true},
-{name:'리라유치원',lv:'유',s:'chilgok',lat:35.97637582290241,lon:129.31511320858368,stu:34,cls:4,sped:0,teach:3,est:true},
-{name:'북삼초등학교병설유치원',lv:'유',s:'chilgok',lat:36.039845886012195,lon:128.60496215545655,stu:39,cls:3,sped:0,teach:3,est:true},
-{name:'가산초등학교병설유치원',lv:'유',s:'chilgok',lat:36.194266938725235,lon:128.73638514569075,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'제일유치원',lv:'유',s:'chilgok',lat:36.606480766264376,lon:128.73441991894512,stu:39,cls:3,sped:0,teach:3,est:true},
-{name:'한송이유치원',lv:'유',s:'chilgok',lat:36.09664084381568,lon:128.39871500937647,stu:24,cls:2,sped:0,teach:3,est:true},
-{name:'왜관동부초등학교병설유치원',lv:'유',s:'chilgok',lat:36.53395597068511,lon:128.61374863941592,stu:20,cls:3,sped:0,teach:3,est:true},
-{name:'약목초등학교병설유치원',lv:'유',s:'chilgok',lat:35.93757969537413,lon:128.76748147194343,stu:18,cls:1,sped:0,teach:3,est:true},
-{name:'바움유치원',lv:'유',s:'chilgok',lat:36.672883907249336,lon:129.25305063102286,stu:18,cls:3,sped:0,teach:3,est:true},
-{name:'인평초등학교병설유치원',lv:'유',s:'chilgok',lat:36.51777833947843,lon:128.3604119579072,stu:21,cls:1,sped:0,teach:3,est:true},
-{name:'동명초등학교병설유치원',lv:'유',s:'chilgok',lat:36.4870101580444,lon:128.21979939550658,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'순심유치원',lv:'유',s:'chilgok',lat:36.74254037955596,lon:128.6248758700962,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'초록유치원',lv:'유',s:'chilgok',lat:36.06723287474519,lon:128.52083107815284,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'왜관초등학교병설유치원',lv:'유',s:'chilgok',lat:36.047827224031586,lon:128.48740870477775,stu:21,cls:3,sped:0,teach:3,est:true},
-{name:'신동초등학교병설유치원',lv:'유',s:'chilgok',lat:36.64664935169354,lon:129.33664626411806,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'아람유치원',lv:'유',s:'chilgok',lat:36.063811286896666,lon:128.64030869119085,stu:16,cls:1,sped:0,teach:3,est:true},
-{name:'신영유치원',lv:'유',s:'chilgok',lat:36.16072352171025,lon:128.30538942130946,stu:25,cls:2,sped:0,teach:3,est:true},
-{name:'매원초등학교병설유치원',lv:'유',s:'chilgok',lat:35.84198307767986,lon:128.208692004214,stu:28,cls:1,sped:0,teach:3,est:true},
-{name:'낙산초등학교병설유치원',lv:'유',s:'chilgok',lat:36.68518160436304,lon:129.33120849825923,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'지천초등학교병설유치원',lv:'유',s:'chilgok',lat:36.310477610171766,lon:128.7402023421229,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'숭산초등학교병설유치원',lv:'유',s:'chilgok',lat:35.84928803544844,lon:128.20430833511014,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'동명동부초등학교병설유치원',lv:'유',s:'chilgok',lat:36.412119250580965,lon:129.0871539782299,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'관호초등학교병설유치원',lv:'유',s:'chilgok',lat:36.23487368677894,lon:129.09660409164755,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'약동초등학교병설유치원',lv:'유',s:'chilgok',lat:35.920963627624985,lon:128.25031706188807,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'학림초등학교병설유치원',lv:'유',s:'chilgok',lat:36.50482695232918,lon:129.19187400708708,stu:39,cls:1,sped:0,teach:3,est:true},
-{name:'왜관중앙초등학교병설유치원',lv:'유',s:'chilgok',lat:36.29312690962776,lon:128.72937435525657,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'신비유치원',lv:'유',s:'chilgok',lat:36.08280786202212,lon:128.51251918903432,stu:13,cls:3,sped:0,teach:3,est:true},
-{name:'석적유치원',lv:'유',s:'chilgok',lat:36.1293087544568,lon:128.35731555434805,stu:19,cls:5,sped:0,teach:3,est:true},
-{name:'용궁초등학교병설유치원',lv:'유',s:'yecheon',lat:36.240273418171924,lon:128.88819670832729,stu:16,cls:1,sped:0,teach:3,est:true},
-{name:'은풍초등학교병설유치원',lv:'유',s:'yecheon',lat:36.478019529046676,lon:128.5372007183324,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'풍양초등학교병설유치원',lv:'유',s:'yecheon',lat:36.58470388563531,lon:129.36449469929693,stu:22,cls:1,sped:0,teach:3,est:true},
-{name:'용문초등학교병설유치원',lv:'유',s:'yecheon',lat:36.53490252020754,lon:128.9267330585293,stu:28,cls:1,sped:0,teach:3,est:true},
-{name:'지보초등학교병설유치원',lv:'유',s:'yecheon',lat:36.115975825278454,lon:129.12171245199738,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'예천초등학교병설유치원',lv:'유',s:'yecheon',lat:35.890376851100626,lon:129.11347842196585,stu:27,cls:3,sped:0,teach:3,est:true},
-{name:'유천초등학교병설유치원',lv:'유',s:'yecheon',lat:36.32917878901377,lon:129.29686601858535,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'감천초등학교병설유치원',lv:'유',s:'yecheon',lat:36.643758486768604,lon:128.37490448818548,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'예천동부초등학교병설유치원',lv:'유',s:'yecheon',lat:36.59497873124659,lon:128.3342348740541,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'예천남부초등학교병설유치원',lv:'유',s:'yecheon',lat:36.12857386570651,lon:128.7838063574879,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'호명초등학교병설유치원',lv:'유',s:'yecheon',lat:35.84350823472906,lon:128.34957970106234,stu:19,cls:4,sped:0,teach:3,est:true},
-{name:'호명라온유치원',lv:'유',s:'yecheon',lat:36.452117719167994,lon:129.1455057480305,stu:38,cls:9,sped:0,teach:3,est:true},
-{name:'새벗유치원',lv:'유',s:'yecheon',lat:36.40698374992083,lon:129.38147767049372,stu:12,cls:6,sped:0,teach:3,est:true},
-{name:'단샘유치원',lv:'유',s:'yecheon',lat:35.81638066013767,lon:129.24274212888022,stu:26,cls:5,sped:0,teach:3,est:true},
-{name:'소천초등학교두음분교장병설유치원',lv:'유',s:'bonghwa',lat:36.342870386400214,lon:128.65797587150377,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'석포초등학교병설유치원',lv:'유',s:'bonghwa',lat:36.211443021473855,lon:128.50947443564385,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'재산초등학교병설유치원',lv:'유',s:'bonghwa',lat:36.3347737492246,lon:128.20969959744764,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'도촌초등학교병설유치원',lv:'유',s:'bonghwa',lat:35.87143880147219,lon:128.95193186748375,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'동양초등학교병설유치원',lv:'유',s:'bonghwa',lat:36.21674405104891,lon:129.08246027036063,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'봉화초등학교병설유치원',lv:'유',s:'bonghwa',lat:36.39074551049186,lon:129.0340462049116,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'서벽초등학교병설유치원',lv:'유',s:'bonghwa',lat:36.717671310925226,lon:129.17058066310972,stu:20,cls:1,sped:0,teach:3,est:true},
-{name:'명호초등학교병설유치원',lv:'유',s:'bonghwa',lat:36.0526825486694,lon:129.2161094389906,stu:20,cls:1,sped:0,teach:3,est:true},
-{name:'물야초등학교병설유치원',lv:'유',s:'bonghwa',lat:35.80030595743395,lon:129.05974524685925,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'소천초등학교병설유치원',lv:'유',s:'bonghwa',lat:35.98394396167112,lon:129.0576249288154,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'법전중앙초등학교병설유치원',lv:'유',s:'bonghwa',lat:36.334860022027975,lon:129.1003146374427,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'성심유치원',lv:'유',s:'bonghwa',lat:36.52315535672898,lon:129.1311892680277,stu:10,cls:3,sped:0,teach:3,est:true},
-{name:'내성초등학교병설유치원',lv:'유',s:'bonghwa',lat:35.87081423193829,lon:128.65646969539617,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'춘양초등학교병설유치원',lv:'유',s:'bonghwa',lat:35.94825313912101,lon:128.83380833398806,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'삼근초등학교병설유치원',lv:'유',s:'uljin',lat:36.65773657575565,lon:128.72638460199204,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'죽변초등학교병설유치원',lv:'유',s:'uljin',lat:35.93916419996539,lon:129.28792721529513,stu:18,cls:1,sped:0,teach:3,est:true},
-{name:'매화초등학교병설유치원',lv:'유',s:'uljin',lat:36.346782272752584,lon:128.5378206523738,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'후포초등학교병설유치원',lv:'유',s:'uljin',lat:35.946629106374466,lon:128.33930625499823,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'노음초등학교병설유치원',lv:'유',s:'uljin',lat:36.22836337616479,lon:128.98797346582575,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'기성초등학교병설유치원',lv:'유',s:'uljin',lat:36.651102993279025,lon:128.60671080838347,stu:39,cls:1,sped:0,teach:3,est:true},
-{name:'온정초등학교병설유치원',lv:'유',s:'uljin',lat:36.17315701862796,lon:128.40694687884687,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'울진초등학교병설유치원',lv:'유',s:'uljin',lat:35.83957505950413,lon:129.0214420554627,stu:17,cls:3,sped:0,teach:3,est:true},
-{name:'평해초등학교병설유치원',lv:'유',s:'uljin',lat:36.56338927054627,lon:128.51987420128074,stu:28,cls:1,sped:0,teach:3,est:true},
-{name:'부구초등학교삼당분교장병설유치원',lv:'유',s:'uljin',lat:36.48085997769747,lon:128.5778050005675,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'울진남부초등학교병설유치원',lv:'유',s:'uljin',lat:36.587011318998265,lon:129.1765332147163,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'남양초등학교병설유치원',lv:'유',s:'ulleung',lat:36.01562736333398,lon:128.62351549650288,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'천부초등학교병설유치원',lv:'유',s:'ulleung',lat:36.19763949150214,lon:128.49488473543445,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'저동초등학교병설유치원',lv:'유',s:'ulleung',lat:36.68872210205435,lon:128.40598725129013,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'울릉초등학교병설유치원',lv:'유',s:'ulleung',lat:36.54326785393839,lon:128.96906087112362,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'도동유치원',lv:'유',s:'ulleung',lat:36.591075168797666,lon:128.26263363292227,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:"포항명도학교",lv:"특수",s:"pohang",lat:36.082,lon:129.387,stu:269,cls:40,sped:269,teach:30,est:true},
-{name:"한동글로벌학교",lv:"특수",s:"pohang",lat:36.103,lon:129.39,stu:422,cls:18,sped:422,teach:65,est:true},
-{name:"경희학교",lv:"특수",s:"gyeongju",lat:35.836,lon:129.215,stu:159,cls:29,sped:159,teach:18,est:true},
-{name:"안동영명학교",lv:"특수",s:"andong",lat:36.568,lon:128.729,stu:225,cls:40,sped:225,teach:32,est:true},
-{name:"안동진명학교",lv:"특수",s:"andong",lat:36.55,lon:128.73,stu:163,cls:31,sped:163,teach:27,est:true},
-{name:"구미혜당학교",lv:"특수",s:"gumi",lat:36.119,lon:128.344,stu:150,cls:25,sped:150,teach:20,est:true},
-{name:"경북영광학교",lv:"특수",s:"yeongcheon",lat:35.973,lon:128.938,stu:120,cls:20,sped:120,teach:15,est:true},
-{name:"상희학교",lv:"특수",s:"sangju",lat:36.41,lon:128.161,stu:180,cls:30,sped:180,teach:25,est:true},
-{name:"경산자인학교",lv:"특수",s:"gyeongsan",lat:35.825,lon:128.738,stu:140,cls:22,sped:140,teach:18,est:true},
-{name:'효자초등학교병설유치원',lv:'유',s:'pohang',lat:35.806470956308864,lon:128.21848939593465,stu:25,cls:2,sped:0,teach:3,est:true},
-{name:'대도초등학교병설유치원',lv:'유',s:'pohang',lat:36.280830550057196,lon:129.25111166637868,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'대송초등학교병설유치원',lv:'유',s:'pohang',lat:36.56733072615619,lon:129.0884720750303,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'대해초등학교병설유치원',lv:'유',s:'pohang',lat:36.47479846350859,lon:128.89954126624508,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'포항이동유치원',lv:'유',s:'pohang',lat:35.966343368417995,lon:129.3441600105987,stu:29,cls:8,sped:0,teach:3,est:true},
-{name:'대이초등학교병설유치원',lv:'유',s:'pohang',lat:35.943032724374106,lon:129.24540825467818,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'인덕초등학교병설유치원',lv:'유',s:'pohang',lat:36.084582483860494,lon:128.32096449751066,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'제2리라유치원',lv:'유',s:'pohang',lat:36.632038139053215,lon:128.31474644592998,stu:30,cls:5,sped:0,teach:3,est:true},
-{name:'포항제철유치원',lv:'유',s:'pohang',lat:36.736444443037826,lon:129.30152039499438,stu:27,cls:12,sped:0,teach:3,est:true},
-{name:'아이클유치원',lv:'유',s:'pohang',lat:36.184250297685146,lon:128.32902540182675,stu:27,cls:4,sped:0,teach:3,est:true},
-{name:'유강초등학교병설유치원',lv:'유',s:'pohang',lat:36.333016090882694,lon:128.8394317049413,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'하늘숲유치원',lv:'유',s:'pohang',lat:35.99202105105409,lon:129.2355761570988,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'포항유치원',lv:'유',s:'pohang',lat:36.09271713676101,lon:129.0425734400677,stu:35,cls:4,sped:0,teach:3,est:true},
-{name:'우리유치원',lv:'유',s:'pohang',lat:36.53454163601485,lon:128.73112832620316,stu:36,cls:8,sped:0,teach:3,est:true},
-{name:'구정초등학교병설유치원',lv:'유',s:'pohang',lat:36.04930914376213,lon:129.2110999648365,stu:20,cls:1,sped:0,teach:3,est:true},
-{name:'동해초등학교병설유치원',lv:'유',s:'pohang',lat:36.05271734688276,lon:128.8690501591014,stu:10,cls:3,sped:0,teach:3,est:true},
-{name:'대건유치원',lv:'유',s:'pohang',lat:35.914102671438854,lon:129.05123310287655,stu:13,cls:5,sped:0,teach:3,est:true},
-{name:'연일형산초등학교병설유치원',lv:'유',s:'pohang',lat:36.30103714249203,lon:128.32042052893146,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'오천제일유치원',lv:'유',s:'pohang',lat:36.50110169624957,lon:128.85903504123962,stu:14,cls:3,sped:0,teach:3,est:true},
-{name:'튜립유치원',lv:'유',s:'pohang',lat:36.29913892921381,lon:128.67658823373515,stu:29,cls:6,sped:0,teach:3,est:true},
-{name:'포항원동초등학교병설유치원',lv:'유',s:'pohang',lat:36.338190757133944,lon:128.31977790053247,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'가람유치원',lv:'유',s:'pohang',lat:36.68904320221038,lon:128.73048545646333,stu:36,cls:3,sped:0,teach:3,est:true},
-{name:'풀잎유치원',lv:'유',s:'pohang',lat:36.58315489336054,lon:128.61504735590813,stu:31,cls:4,sped:0,teach:3,est:true},
-{name:'연일초등학교병설유치원',lv:'유',s:'pohang',lat:36.526559082124514,lon:129.27830437421585,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'양포초등학교병설유치원',lv:'유',s:'pohang',lat:36.79725874420605,lon:128.2571622752919,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'문충초등학교병설유치원',lv:'유',s:'pohang',lat:36.31066322992998,lon:128.79103181388808,stu:18,cls:1,sped:0,teach:3,est:true},
-{name:'해맑은유치원',lv:'유',s:'pohang',lat:36.50160025914707,lon:128.23716954404549,stu:37,cls:5,sped:0,teach:3,est:true},
-{name:'포항송도초등학교병설유치원',lv:'유',s:'pohang',lat:36.59797388857258,lon:129.18241247419385,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'장기초등학교병설유치원',lv:'유',s:'pohang',lat:36.79380846508777,lon:128.8397915351721,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'하슬린유치원',lv:'유',s:'pohang',lat:35.95966378910971,lon:128.55691922236775,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'효성유치원',lv:'유',s:'pohang',lat:36.2945092549163,lon:129.01195368821266,stu:35,cls:3,sped:0,teach:3,est:true},
-{name:'동아유치원',lv:'유',s:'pohang',lat:36.62830461042967,lon:128.82931525987448,stu:33,cls:4,sped:0,teach:3,est:true},
-{name:'송림초등학교병설유치원',lv:'유',s:'pohang',lat:36.695650584375116,lon:129.12953461275683,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'신흥초등학교병설유치원',lv:'유',s:'pohang',lat:35.95843762920358,lon:129.22973340082882,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'아이누리유치원',lv:'유',s:'pohang',lat:36.208628432259665,lon:129.30063689482057,stu:12,cls:3,sped:0,teach:3,est:true},
-{name:'아름다운유치원',lv:'유',s:'pohang',lat:36.5814612613448,lon:128.69012537414648,stu:23,cls:6,sped:0,teach:3,est:true},
-{name:'오천초등학교병설유치원',lv:'유',s:'pohang',lat:36.12437959905648,lon:128.73913307296021,stu:23,cls:3,sped:0,teach:3,est:true},
-{name:'유강유치원',lv:'유',s:'pohang',lat:36.333340160340626,lon:128.54407001021835,stu:19,cls:5,sped:0,teach:3,est:true},
-{name:'청림초등학교병설유치원',lv:'유',s:'pohang',lat:36.10320994063487,lon:128.7248050861044,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'성바오로유치원',lv:'유',s:'pohang',lat:35.8511523331832,lon:128.58447526258269,stu:16,cls:1,sped:0,teach:3,est:true},
-{name:'이동한빛유치원',lv:'유',s:'pohang',lat:35.92898841531825,lon:128.25478803129516,stu:10,cls:6,sped:0,teach:3,est:true},
-{name:'문덕초등학교병설유치원',lv:'유',s:'pohang',lat:36.568973685758394,lon:128.52807486149308,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'상대초등학교병설유치원',lv:'유',s:'pohang',lat:36.229538499226216,lon:128.4836342950669,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'새봄유치원',lv:'유',s:'pohang',lat:36.46262292002884,lon:128.90579218161955,stu:19,cls:6,sped:0,teach:3,est:true},
-{name:'사랑으로유치원',lv:'유',s:'pohang',lat:36.789097503665204,lon:128.64561948044425,stu:37,cls:6,sped:0,teach:3,est:true},
-{name:'새롬유치원',lv:'유',s:'pohang',lat:36.73950191321873,lon:129.00154472032762,stu:13,cls:4,sped:0,teach:3,est:true},
-{name:'오해피데이유치원',lv:'유',s:'pohang',lat:35.812578333157056,lon:129.2103836709862,stu:26,cls:4,sped:0,teach:3,est:true},
-{name:'초곡초등학교병설유치원',lv:'유',s:'pohang',lat:36.364187977771074,lon:129.11001470519108,stu:22,cls:3,sped:0,teach:3,est:true},
-{name:'우리아이유치원',lv:'유',s:'pohang',lat:35.89748551111373,lon:128.2208064291735,stu:39,cls:3,sped:0,teach:3,est:true},
-{name:'포항대학교부속유치원',lv:'유',s:'pohang',lat:36.729844035557015,lon:129.19678608925054,stu:36,cls:6,sped:0,teach:3,est:true},
-{name:'포항초등학교병설유치원',lv:'유',s:'pohang',lat:36.09568356242148,lon:128.55688026983927,stu:18,cls:1,sped:0,teach:3,est:true},
-{name:'난나유치원',lv:'유',s:'pohang',lat:36.202544189042314,lon:128.41158066162942,stu:17,cls:7,sped:0,teach:3,est:true},
-{name:'행복한유치원',lv:'유',s:'pohang',lat:36.26352959917223,lon:129.0964938929077,stu:39,cls:6,sped:0,teach:3,est:true},
-{name:'새싹발트유치원',lv:'유',s:'pohang',lat:36.36326255975951,lon:128.91390161043049,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'리라유치원',lv:'유',s:'pohang',lat:36.430980832907274,lon:128.30577463917987,stu:12,cls:8,sped:0,teach:3,est:true},
-{name:'송라초등학교병설유치원',lv:'유',s:'pohang',lat:36.78461496270785,lon:128.38581854260664,stu:20,cls:1,sped:0,teach:3,est:true},
-{name:'상지아이들유치원',lv:'유',s:'pohang',lat:35.931247326106,lon:128.23735873640777,stu:12,cls:3,sped:0,teach:3,est:true},
-{name:'포항대흥초등학교병설유치원',lv:'유',s:'pohang',lat:36.695247454011366,lon:128.97712354716134,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'포항항도초등학교병설유치원',lv:'유',s:'pohang',lat:36.02623620928226,lon:128.6324835443259,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'목원유치원',lv:'유',s:'pohang',lat:35.885747960632564,lon:128.97264614096812,stu:28,cls:3,sped:0,teach:3,est:true},
-{name:'죽장초등학교병설유치원',lv:'유',s:'pohang',lat:36.38180042066665,lon:128.60906853955763,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'예원유치원',lv:'유',s:'pohang',lat:35.926116467162025,lon:128.45872287445582,stu:25,cls:7,sped:0,teach:3,est:true},
-{name:'재능유치원',lv:'유',s:'pohang',lat:35.93225943677395,lon:129.3679135381174,stu:35,cls:3,sped:0,teach:3,est:true},
-{name:'산내들예능유치원',lv:'유',s:'pohang',lat:36.42360867703128,lon:128.9390721575131,stu:38,cls:6,sped:0,teach:3,est:true},
-{name:'자연과아이유치원',lv:'유',s:'pohang',lat:36.50326324388742,lon:128.8151579224226,stu:37,cls:10,sped:0,teach:3,est:true},
-{name:'고려유치원',lv:'유',s:'pohang',lat:35.968891700578745,lon:129.3644326556923,stu:17,cls:3,sped:0,teach:3,est:true},
-{name:'달전초등학교병설유치원',lv:'유',s:'pohang',lat:36.58309541290692,lon:128.4124224643385,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'대동유치원',lv:'유',s:'pohang',lat:36.34706674595452,lon:129.0788251296084,stu:17,cls:6,sped:0,teach:3,est:true},
-{name:'포항동부초등학교병설유치원',lv:'유',s:'pohang',lat:36.69326657293608,lon:128.3537234096545,stu:34,cls:5,sped:0,teach:3,est:true},
-{name:'포항대림유치원',lv:'유',s:'pohang',lat:36.08591784568314,lon:128.8305440105712,stu:21,cls:1,sped:0,teach:3,est:true},
-{name:'포항양덕초등학교병설유치원',lv:'유',s:'pohang',lat:36.13031112698877,lon:129.23971230951065,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'신광초등학교병설유치원',lv:'유',s:'pohang',lat:36.53177598423463,lon:128.72316884833006,stu:28,cls:1,sped:0,teach:3,est:true},
-{name:'숲속꿈의유치원',lv:'유',s:'pohang',lat:35.990474361284086,lon:128.7590975066068,stu:36,cls:4,sped:0,teach:3,est:true},
-{name:'포항장량유치원',lv:'유',s:'pohang',lat:36.596864672308094,lon:128.65851759382937,stu:10,cls:9,sped:0,teach:3,est:true},
-{name:'양서초등학교병설유치원',lv:'유',s:'pohang',lat:36.18719594541228,lon:128.7731375844049,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'두호남부초등학교병설유치원',lv:'유',s:'pohang',lat:35.91155725870214,lon:129.25942385456548,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'아띠유치원',lv:'유',s:'pohang',lat:36.15793401862243,lon:128.89375520016605,stu:20,cls:3,sped:0,teach:3,est:true},
-{name:'이룸유치원',lv:'유',s:'pohang',lat:36.74111170994496,lon:128.75558374219054,stu:28,cls:6,sped:0,teach:3,est:true},
-{name:'항구초등학교병설유치원',lv:'유',s:'pohang',lat:36.572693772066835,lon:129.2150396621096,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'포항영흥초등학교병설유치원',lv:'유',s:'pohang',lat:36.705500461954735,lon:128.91482760965079,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'포항제일유치원',lv:'유',s:'pohang',lat:36.693075206148016,lon:128.45715396348427,stu:34,cls:6,sped:0,teach:3,est:true},
-{name:'포항중앙초등학교병설유치원',lv:'유',s:'pohang',lat:36.50647136295967,lon:129.33469752191223,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'죽도초등학교병설유치원',lv:'유',s:'pohang',lat:36.4112726906182,lon:128.89965280709214,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'포항서머힐유치원',lv:'유',s:'pohang',lat:36.3981522518188,lon:128.49276167060634,stu:19,cls:3,sped:0,teach:3,est:true},
-{name:'성심유치원',lv:'유',s:'pohang',lat:36.77407740862681,lon:128.9627092485329,stu:28,cls:1,sped:0,teach:3,est:true},
-{name:'대잠초등학교병설유치원',lv:'유',s:'pohang',lat:36.33297850113704,lon:128.52590776194833,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'꽃동산유치원',lv:'유',s:'pohang',lat:35.94400280349093,lon:128.80974948461346,stu:23,cls:4,sped:0,teach:3,est:true},
-{name:'흥해서부초등학교병설유치원',lv:'유',s:'pohang',lat:36.46323403757831,lon:128.9852483033751,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'흥해초등학교병설유치원',lv:'유',s:'pohang',lat:36.14885036006194,lon:129.24640363347586,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'용흥초등학교병설유치원',lv:'유',s:'pohang',lat:35.805109077628636,lon:128.22908856886477,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'장성초등학교병설유치원',lv:'유',s:'pohang',lat:36.29624235398398,lon:128.21990879848838,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'포항해맞이초등학교병설유치원',lv:'유',s:'pohang',lat:36.59711535546151,lon:128.74813642189181,stu:20,cls:1,sped:0,teach:3,est:true},
-{name:'민들레유치원',lv:'유',s:'pohang',lat:36.55270579905724,lon:128.4301497914625,stu:31,cls:4,sped:0,teach:3,est:true},
-{name:'이화유치원',lv:'유',s:'pohang',lat:36.74544952720261,lon:128.88212463959582,stu:21,cls:2,sped:0,teach:3,est:true},
-{name:'포항송곡초등학교병설유치원',lv:'유',s:'pohang',lat:36.70875793749571,lon:128.32095554911314,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'곡강초등학교병설유치원',lv:'유',s:'pohang',lat:36.568426202840996,lon:128.40460906203467,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'동산유치원',lv:'유',s:'pohang',lat:35.933283034130305,lon:128.75577108716632,stu:10,cls:9,sped:0,teach:3,est:true},
-{name:'죽천초등학교병설유치원',lv:'유',s:'pohang',lat:36.49421944196725,lon:128.7994507969185,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'양학초등학교병설유치원',lv:'유',s:'pohang',lat:36.54702273911607,lon:128.89651890225963,stu:27,cls:3,sped:0,teach:3,est:true},
-{name:'대한유치원',lv:'유',s:'pohang',lat:36.70260230304592,lon:128.70571600404924,stu:23,cls:4,sped:0,teach:3,est:true},
-{name:'세이유치원',lv:'유',s:'pohang',lat:36.744063178399216,lon:128.75839871607621,stu:11,cls:2,sped:0,teach:3,est:true},
-{name:'기계초등학교병설유치원',lv:'유',s:'pohang',lat:36.328647659962314,lon:129.22986588279272,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'청하초등학교병설유치원',lv:'유',s:'pohang',lat:36.14530527800105,lon:128.85987688827177,stu:21,cls:1,sped:0,teach:3,est:true},
-{name:'월포초등학교병설유치원',lv:'유',s:'pohang',lat:36.42421899619798,lon:129.36429200381295,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'중앙유치원',lv:'유',s:'pohang',lat:36.06989764929197,lon:128.84733432271543,stu:21,cls:5,sped:0,teach:3,est:true},
-{name:'창포초등학교병설유치원',lv:'유',s:'pohang',lat:36.01506475008814,lon:129.20085173707722,stu:12,cls:3,sped:0,teach:3,est:true},
-{name:'학천초등학교병설유치원',lv:'유',s:'pohang',lat:36.4310974823585,lon:129.07177072455164,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'두호초등학교병설유치원',lv:'유',s:'pohang',lat:36.14613263737835,lon:128.95420823175104,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'하나유치원',lv:'유',s:'gyeongju',lat:36.43588815382647,lon:129.22513371301616,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'서라벌초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.91241265689386,lon:129.32237780276478,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'현곡초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.484573252971764,lon:128.5464201040799,stu:23,cls:3,sped:0,teach:3,est:true},
-{name:'강동초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.60625199595987,lon:128.48220565580755,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'괘릉초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.62581927498229,lon:129.30526294415782,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'금장초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.88884078120521,lon:129.16986422786437,stu:38,cls:3,sped:0,teach:3,est:true},
-{name:'아화초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.90489537179059,lon:128.7036044848,stu:18,cls:1,sped:0,teach:3,est:true},
-{name:'안강제일유치원',lv:'유',s:'gyeongju',lat:36.508780955373346,lon:129.1713197521636,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'황남초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.37674052737158,lon:128.67099899252926,stu:11,cls:3,sped:0,teach:3,est:true},
-{name:'나산초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.93733974742711,lon:128.71751589018734,stu:20,cls:1,sped:0,teach:3,est:true},
-{name:'양북초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.047422221789624,lon:129.01253677844468,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'동천초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.427132395812436,lon:128.8883729815564,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'마루유치원',lv:'유',s:'gyeongju',lat:35.80911323470044,lon:128.538203597356,stu:19,cls:6,sped:0,teach:3,est:true},
-{name:'황성초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.36022972415023,lon:128.367162543647,stu:20,cls:3,sped:0,teach:3,est:true},
-{name:'모아초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.64247036856819,lon:128.45057407320957,stu:22,cls:1,sped:0,teach:3,est:true},
-{name:'양동초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.31906059472642,lon:128.43660757939094,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'연안초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.19857952013581,lon:129.3357047463869,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'유림초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.681845285066785,lon:128.91281771877908,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'입실초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.33513537649877,lon:128.49631661251948,stu:18,cls:1,sped:0,teach:3,est:true},
-{name:'천북초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.32588629009015,lon:129.37396801146485,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'화랑초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.31031477042167,lon:128.9862168485323,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'나원초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.05034958105317,lon:128.69703202666435,stu:35,cls:4,sped:0,teach:3,est:true},
-{name:'사방초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.88591337681117,lon:128.5672006410679,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'산대초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.69324293595528,lon:128.35378123088537,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'월성초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.73837476751995,lon:129.19359334546132,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'중앙유치원',lv:'유',s:'gyeongju',lat:35.84155661661998,lon:129.23560549935195,stu:38,cls:6,sped:0,teach:3,est:true},
-{name:'모화초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.31693423508958,lon:128.68165408235387,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'내남초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.04240309791749,lon:128.8219568420765,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'근화유치원',lv:'유',s:'gyeongju',lat:36.51774567427018,lon:128.93939376099374,stu:28,cls:1,sped:0,teach:3,est:true},
-{name:'불국사초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.79738356616085,lon:128.5670297717262,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'양남초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.494486496259206,lon:129.18785892494716,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'불국유치원',lv:'유',s:'gyeongju',lat:36.27620243474528,lon:128.9678201656991,stu:13,cls:8,sped:0,teach:3,est:true},
-{name:'영지초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.3253672867295,lon:128.88238802580508,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'예송유치원',lv:'유',s:'gyeongju',lat:36.76898045010059,lon:129.0044973540388,stu:20,cls:7,sped:0,teach:3,est:true},
-{name:'예일유치원',lv:'유',s:'gyeongju',lat:35.82887653985332,lon:128.4840987820852,stu:25,cls:6,sped:0,teach:3,est:true},
-{name:'의곡초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.663867807173936,lon:128.50159589270243,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'감포초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.87465986446784,lon:128.46226298310634,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'흥무초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.91512921824592,lon:128.67192640758321,stu:20,cls:3,sped:0,teach:3,est:true},
-{name:'경주유치원',lv:'유',s:'gyeongju',lat:36.56997434757851,lon:129.37068458527406,stu:18,cls:3,sped:0,teach:3,est:true},
-{name:'경주여자정보고등학교병설동도유치원',lv:'유',s:'gyeongju',lat:36.15668157370615,lon:128.45016801429048,stu:24,cls:3,sped:0,teach:3,est:true},
-{name:'신라초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.317349814945146,lon:128.785508562439,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'옥산초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.855262231943136,lon:128.31550091743517,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'천포초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.45059668496777,lon:128.77622302853743,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'건천초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.202497798144435,lon:128.99943203016701,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'경주초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.89841819303159,lon:128.5485561755792,stu:37,cls:3,sped:0,teach:3,est:true},
-{name:'동국대학교부속유치원',lv:'유',s:'gyeongju',lat:36.28808096255248,lon:128.82343050131837,stu:23,cls:9,sped:0,teach:3,est:true},
-{name:'동방초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.405416586240655,lon:128.43239372275355,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'용강초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.20852216922054,lon:128.9505292577788,stu:29,cls:4,sped:0,teach:3,est:true},
-{name:'모량초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.92782813892835,lon:128.5945903998809,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'샛별유치원',lv:'유',s:'gyeongju',lat:36.711789000679644,lon:128.23442008314458,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'석계초등학교병설유치원',lv:'유',s:'gyeongju',lat:35.92411605781555,lon:128.48868648616423,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'용황유치원',lv:'유',s:'gyeongju',lat:35.85432961603735,lon:129.224257980168,stu:39,cls:6,sped:0,teach:3,est:true},
-{name:'현대유치원',lv:'유',s:'gyeongju',lat:36.72554876813842,lon:128.8490656304873,stu:26,cls:3,sped:0,teach:3,est:true},
-{name:'계림초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.52445257151887,lon:128.55261712801456,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'화천초등학교병설유치원',lv:'유',s:'gyeongju',lat:36.001929766914145,lon:128.371414439289,stu:35,cls:3,sped:0,teach:3,est:true},
-{name:'율빛유치원',lv:'유',s:'gimcheon',lat:36.15211630400149,lon:128.30621842249718,stu:19,cls:10,sped:0,teach:3,est:true},
-{name:'김천부곡초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.36436488966144,lon:129.15259862483404,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'해오름유치원',lv:'유',s:'gimcheon',lat:36.02828387852229,lon:128.9538541666118,stu:25,cls:6,sped:0,teach:3,est:true},
-{name:'율곡유치원',lv:'유',s:'gimcheon',lat:36.483408802546215,lon:128.78134846419223,stu:17,cls:6,sped:0,teach:3,est:true},
-{name:'김천모암초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.772028348172555,lon:129.16589042531976,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'김천유치원',lv:'유',s:'gimcheon',lat:36.47582891601655,lon:129.30394172469846,stu:24,cls:5,sped:0,teach:3,est:true},
-{name:'아천초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.25501683870155,lon:128.36510622580624,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'봉계초등학교병설유치원',lv:'유',s:'gimcheon',lat:35.957846145355795,lon:128.47237530863967,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'마리아유치원',lv:'유',s:'gimcheon',lat:36.37447214048278,lon:129.1226581419361,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'꿈나무유치원',lv:'유',s:'gimcheon',lat:35.98420342385446,lon:128.98077748282194,stu:32,cls:3,sped:0,teach:3,est:true},
-{name:'김천중앙초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.16065355218652,lon:128.5922871147021,stu:24,cls:3,sped:0,teach:3,est:true},
-{name:'대덕초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.2361583311478,lon:128.47997901520858,stu:16,cls:1,sped:0,teach:3,est:true},
-{name:'김천동부초등학교병설유치원',lv:'유',s:'gimcheon',lat:35.96005148214601,lon:128.2200144443211,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'계명유치원',lv:'유',s:'gimcheon',lat:35.92554383369019,lon:128.75988394473845,stu:35,cls:3,sped:0,teach:3,est:true},
-{name:'조마초등학교병설유치원',lv:'유',s:'gimcheon',lat:35.80770326429029,lon:129.03050581306195,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'위량초등학교병설유치원',lv:'유',s:'gimcheon',lat:35.849463405753006,lon:129.30354622897536,stu:39,cls:1,sped:0,teach:3,est:true},
-{name:'녹야유치원',lv:'유',s:'gimcheon',lat:36.00674468952176,lon:129.21313659283757,stu:39,cls:4,sped:0,teach:3,est:true},
-{name:'감천초등학교병설유치원',lv:'유',s:'gimcheon',lat:35.91370947820505,lon:128.26174772835802,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'운곡초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.441961464665006,lon:128.45879385663358,stu:23,cls:4,sped:0,teach:3,est:true},
-{name:'직지초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.3460051066756,lon:128.47076917927154,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'리라유치원',lv:'유',s:'gimcheon',lat:36.581377270061864,lon:129.01098056433648,stu:19,cls:5,sped:0,teach:3,est:true},
-{name:'김천서부초등학교병설유치원',lv:'유',s:'gimcheon',lat:35.92115107579399,lon:128.74780381690053,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'우리유치원',lv:'유',s:'gimcheon',lat:36.27963708766824,lon:129.16343563566525,stu:27,cls:6,sped:0,teach:3,est:true},
-{name:'개령서부초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.15762965721585,lon:128.51249402451947,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'지품천초등학교증산분교장병설유치원',lv:'유',s:'gimcheon',lat:36.28837448121439,lon:129.14758032936132,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'김천다수초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.38942764142228,lon:128.7054444501073,stu:21,cls:1,sped:0,teach:3,est:true},
-{name:'금강사금강유치원',lv:'유',s:'gimcheon',lat:36.628127966109076,lon:128.32294853642804,stu:28,cls:6,sped:0,teach:3,est:true},
-{name:'조은유치원',lv:'유',s:'gimcheon',lat:36.78351734716478,lon:129.39926208484155,stu:15,cls:5,sped:0,teach:3,est:true},
-{name:'김천신일초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.248171226636735,lon:128.41324197246928,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'김천동신초등학교병설유치원',lv:'유',s:'gimcheon',lat:36.31880683201351,lon:128.52325405944927,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'농소유치원',lv:'유',s:'gimcheon',lat:35.837898419559686,lon:128.33271550812017,stu:12,cls:6,sped:0,teach:3,est:true},
-{name:'킨더하바유치원',lv:'유',s:'gimcheon',lat:36.107271038616204,lon:128.4759169707356,stu:38,cls:5,sped:0,teach:3,est:true},
-{name:'안동자연유치원',lv:'유',s:'andong',lat:36.103946200197875,lon:129.14851328784874,stu:35,cls:3,sped:0,teach:3,est:true},
-{name:'서선초등학교병설유치원',lv:'유',s:'andong',lat:36.500042800764014,lon:128.31610938669368,stu:22,cls:1,sped:0,teach:3,est:true},
-{name:'서후초등학교병설유치원',lv:'유',s:'andong',lat:36.66494382146148,lon:128.53231009942616,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'성심유치원',lv:'유',s:'andong',lat:36.67890847783601,lon:128.24928598200216,stu:22,cls:6,sped:0,teach:3,est:true},
-{name:'안동서부초등학교병설유치원',lv:'유',s:'andong',lat:36.01848694712742,lon:129.2098776621916,stu:28,cls:3,sped:0,teach:3,est:true},
-{name:'안동송현초등학교병설유치원',lv:'유',s:'andong',lat:36.0961421041336,lon:129.25264089516588,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'남선초등학교병설유치원',lv:'유',s:'andong',lat:36.70105681919075,lon:129.27631046111344,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'동산유치원',lv:'유',s:'andong',lat:36.03968525380641,lon:128.47093837227828,stu:26,cls:3,sped:0,teach:3,est:true},
-{name:'송천초등학교병설유치원',lv:'유',s:'andong',lat:36.001735329863465,lon:129.04403439900565,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'안동영호초등학교병설유치원',lv:'유',s:'andong',lat:36.05118279670929,lon:128.92151682309068,stu:13,cls:2,sped:0,teach:3,est:true},
-{name:'풍북초등학교병설유치원',lv:'유',s:'andong',lat:36.65879056070143,lon:128.98202005088388,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'안동꿈터유치원',lv:'유',s:'andong',lat:36.558999948940865,lon:128.74722483378662,stu:17,cls:5,sped:0,teach:3,est:true},
-{name:'안동유치원',lv:'유',s:'andong',lat:36.439807810331345,lon:128.2892795875092,stu:29,cls:6,sped:0,teach:3,est:true},
-{name:'해동사금강유치원',lv:'유',s:'andong',lat:36.56334219613899,lon:129.31767170955942,stu:28,cls:7,sped:0,teach:3,est:true},
-{name:'안동영재유치원',lv:'유',s:'andong',lat:36.714182853160494,lon:128.36956915680233,stu:26,cls:7,sped:0,teach:3,est:true},
-{name:'임동초등학교병설유치원',lv:'유',s:'andong',lat:36.39769859208082,lon:128.76614142732393,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'녹전초등학교병설유치원',lv:'유',s:'andong',lat:36.24511281443082,lon:129.19697341116196,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'꿈빛유치원',lv:'유',s:'andong',lat:35.91068639422823,lon:128.36696746788704,stu:23,cls:6,sped:0,teach:3,est:true},
-{name:'남후초등학교병설유치원',lv:'유',s:'andong',lat:36.5161478848078,lon:129.01610617991088,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'길주초등학교병설유치원',lv:'유',s:'andong',lat:35.88307916383998,lon:129.3805972375406,stu:10,cls:3,sped:0,teach:3,est:true},
-{name:'안동오상유치원',lv:'유',s:'andong',lat:36.62959868703356,lon:128.78125781923885,stu:23,cls:5,sped:0,teach:3,est:true},
-{name:'신성초등학교병설유치원',lv:'유',s:'andong',lat:36.75023167097634,lon:128.58118407563228,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'영남초등학교병설유치원',lv:'유',s:'andong',lat:35.92624652268901,lon:128.2797631512923,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'와룡초등학교병설유치원',lv:'유',s:'andong',lat:36.62550494692501,lon:129.24520115766424,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'일직초등학교병설유치원',lv:'유',s:'andong',lat:36.38166163954129,lon:129.33957924904644,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'복주초등학교병설유치원',lv:'유',s:'andong',lat:36.59219438539407,lon:129.39838053811212,stu:39,cls:3,sped:0,teach:3,est:true},
-{name:'북후초등학교병설유치원',lv:'유',s:'andong',lat:36.263300400877846,lon:129.32910821310506,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'가톨릭상지대학부속상지유치원',lv:'유',s:'andong',lat:35.928610243953514,lon:129.39878147497595,stu:26,cls:6,sped:0,teach:3,est:true},
-{name:'풍산초등학교병설유치원',lv:'유',s:'andong',lat:36.59136094157165,lon:128.73639019078874,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'강남유치원',lv:'유',s:'andong',lat:36.26731699832053,lon:128.7874189485392,stu:22,cls:6,sped:0,teach:3,est:true},
-{name:'안동용상초등학교병설유치원',lv:'유',s:'andong',lat:36.17764757594956,lon:129.0377687040177,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'안동초등학교병설유치원',lv:'유',s:'andong',lat:36.40967828881693,lon:128.38200350981703,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'월곡초등학교병설유치원',lv:'유',s:'andong',lat:36.21492871580632,lon:129.00736663192058,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'안동강남초등학교병설유치원',lv:'유',s:'andong',lat:36.45746517555201,lon:128.88508519515162,stu:34,cls:4,sped:0,teach:3,est:true},
-{name:'영가초등학교병설유치원',lv:'유',s:'andong',lat:36.418968339383795,lon:128.91068407677548,stu:19,cls:3,sped:0,teach:3,est:true},
-{name:'임하초등학교병설유치원',lv:'유',s:'andong',lat:36.54353973854195,lon:128.39375832279018,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'길안초등학교병설유치원',lv:'유',s:'andong',lat:36.07405420127245,lon:128.3818024585799,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'풍천풍서초등학교병설유치원',lv:'유',s:'andong',lat:36.034717100724734,lon:129.06117108098533,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'진평초등학교병설유치원',lv:'유',s:'gumi',lat:36.62542830196386,lon:128.5636100615644,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'리더스숲유치원',lv:'유',s:'gumi',lat:36.583524932091144,lon:128.6898070789532,stu:22,cls:11,sped:0,teach:3,est:true},
-{name:'오태초등학교병설유치원',lv:'유',s:'gumi',lat:36.500476196189,lon:129.05496469590412,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'아이누리유치원',lv:'유',s:'gumi',lat:35.83222330557316,lon:128.7214808638696,stu:16,cls:6,sped:0,teach:3,est:true},
-{name:'구미봉곡초등학교병설유치원',lv:'유',s:'gumi',lat:36.559202668949574,lon:128.38212225862847,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'주향유치원',lv:'유',s:'gumi',lat:35.982885159523605,lon:129.34236844605002,stu:36,cls:7,sped:0,teach:3,est:true},
-{name:'비산초등학교병설유치원',lv:'유',s:'gumi',lat:36.12006850895089,lon:129.2696319587705,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'해평초등학교병설유치원',lv:'유',s:'gumi',lat:36.73466869270185,lon:129.083241431515,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'구미신평초등학교병설유치원',lv:'유',s:'gumi',lat:36.53263992990847,lon:128.83682195037744,stu:39,cls:3,sped:0,teach:3,est:true},
-{name:'선산초등학교병설유치원',lv:'유',s:'gumi',lat:36.43229010934914,lon:129.22008092451105,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'분도유치원',lv:'유',s:'gumi',lat:36.75566370262434,lon:129.2547199853244,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'도산유치원',lv:'유',s:'gumi',lat:36.23125309352921,lon:128.8907632825148,stu:35,cls:5,sped:0,teach:3,est:true},
-{name:'원남초등학교병설유치원',lv:'유',s:'gumi',lat:36.10467188789968,lon:129.10097823413588,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'효성유치원',lv:'유',s:'gumi',lat:36.57722950751804,lon:128.45718799054407,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'금오유치원',lv:'유',s:'gumi',lat:35.826077460185175,lon:129.20142719084362,stu:16,cls:6,sped:0,teach:3,est:true},
-{name:'세종유치원',lv:'유',s:'gumi',lat:35.82418254537957,lon:128.43146977426255,stu:19,cls:7,sped:0,teach:3,est:true},
-{name:'산동초등학교병설유치원',lv:'유',s:'gumi',lat:35.88567648467412,lon:128.85688282955277,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'사랑유치원',lv:'유',s:'gumi',lat:35.8872631301621,lon:129.29762206174772,stu:23,cls:6,sped:0,teach:3,est:true},
-{name:'태양유치원',lv:'유',s:'gumi',lat:35.83562564716633,lon:129.34446161279484,stu:35,cls:4,sped:0,teach:3,est:true},
-{name:'링컨유치원',lv:'유',s:'gumi',lat:35.95631068105413,lon:129.30856544363752,stu:31,cls:4,sped:0,teach:3,est:true},
-{name:'숲은성유치원',lv:'유',s:'gumi',lat:36.799974685700455,lon:128.26736726006635,stu:18,cls:3,sped:0,teach:3,est:true},
-{name:'색동유치원',lv:'유',s:'gumi',lat:36.277704196230914,lon:129.28639776653245,stu:26,cls:7,sped:0,teach:3,est:true},
-{name:'우리유치원',lv:'유',s:'gumi',lat:36.3547103758394,lon:128.62521329076867,stu:18,cls:5,sped:0,teach:3,est:true},
-{name:'한별유치원',lv:'유',s:'gumi',lat:36.52895463555578,lon:129.03279390535747,stu:17,cls:6,sped:0,teach:3,est:true},
-{name:'보눔유치원',lv:'유',s:'gumi',lat:35.914195934749074,lon:128.6771384091551,stu:13,cls:7,sped:0,teach:3,est:true},
-{name:'구미원당초등학교병설유치원',lv:'유',s:'gumi',lat:36.60754145538532,lon:128.59260051281635,stu:29,cls:3,sped:0,teach:3,est:true},
-{name:'드림유치원',lv:'유',s:'gumi',lat:36.69204074418574,lon:128.99716480748828,stu:27,cls:3,sped:0,teach:3,est:true},
-{name:'구미문성초등학교병설유치원',lv:'유',s:'gumi',lat:36.48641395479715,lon:128.9837125211402,stu:32,cls:3,sped:0,teach:3,est:true},
-{name:'위버조이유치원',lv:'유',s:'gumi',lat:36.79758468907772,lon:128.696442007409,stu:28,cls:7,sped:0,teach:3,est:true},
-{name:'구미신당초등학교병설유치원',lv:'유',s:'gumi',lat:35.88284007132884,lon:128.75271229664284,stu:25,cls:3,sped:0,teach:3,est:true},
-{name:'구미인덕초등학교병설유치원',lv:'유',s:'gumi',lat:36.72155314928833,lon:129.2768544993705,stu:10,cls:3,sped:0,teach:3,est:true},
-{name:'라온유치원',lv:'유',s:'gumi',lat:35.983533646017904,lon:129.25289103381536,stu:30,cls:5,sped:0,teach:3,est:true},
-{name:'대자연유치원',lv:'유',s:'gumi',lat:36.29214198365805,lon:128.72146801451342,stu:11,cls:5,sped:0,teach:3,est:true},
-{name:'형남초등학교병설유치원',lv:'유',s:'gumi',lat:36.33009401551898,lon:128.33399094356005,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'선주초등학교병설유치원',lv:'유',s:'gumi',lat:36.71876528591032,lon:129.14458904643823,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'예일유치원',lv:'유',s:'gumi',lat:36.3138110603648,lon:128.22979789240887,stu:32,cls:5,sped:0,teach:3,est:true},
-{name:'구미왕산초등학교병설유치원',lv:'유',s:'gumi',lat:36.74925942591444,lon:128.99573425274917,stu:22,cls:1,sped:0,teach:3,est:true},
-{name:'인동초등학교병설유치원',lv:'유',s:'gumi',lat:36.73908407791801,lon:129.21050590905267,stu:39,cls:3,sped:0,teach:3,est:true},
-{name:'성심유치원',lv:'유',s:'gumi',lat:36.37828804543819,lon:128.70835342548733,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'자연숲유치원',lv:'유',s:'gumi',lat:36.01072992080715,lon:128.84637479848502,stu:33,cls:3,sped:0,teach:3,est:true},
-{name:'브니엘유치원',lv:'유',s:'gumi',lat:36.4727673924746,lon:129.23035746593848,stu:17,cls:3,sped:0,teach:3,est:true},
-{name:'구미사곡초등학교병설유치원',lv:'유',s:'gumi',lat:36.379517013731615,lon:128.68158493551837,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'인의초등학교병설유치원',lv:'유',s:'gumi',lat:36.62045733668181,lon:129.1504361633761,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'구운초등학교병설유치원',lv:'유',s:'gumi',lat:36.305473760891694,lon:129.16502822364978,stu:20,cls:1,sped:0,teach:3,est:true},
-{name:'아이나라유치원',lv:'유',s:'gumi',lat:36.70347868088331,lon:129.0370625853511,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'나리유치원',lv:'유',s:'gumi',lat:36.01792257349639,lon:129.0328336284356,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'상모유치원',lv:'유',s:'gumi',lat:36.68197276017951,lon:129.12712832023507,stu:35,cls:5,sped:0,teach:3,est:true},
-{name:'명지유치원',lv:'유',s:'gumi',lat:36.114091712685365,lon:129.1366626159811,stu:31,cls:4,sped:0,teach:3,est:true},
-{name:'도량초등학교병설유치원',lv:'유',s:'gumi',lat:36.276208451257695,lon:128.6128070737454,stu:21,cls:1,sped:0,teach:3,est:true},
-{name:'장천초등학교병설유치원',lv:'유',s:'gumi',lat:36.291783411189236,lon:129.20784794927704,stu:22,cls:1,sped:0,teach:3,est:true},
-{name:'은성유치원',lv:'유',s:'gumi',lat:36.572648034580695,lon:128.81490824507497,stu:34,cls:4,sped:0,teach:3,est:true},
-{name:'선산유치원',lv:'유',s:'gumi',lat:35.88902840058768,lon:129.37063476494373,stu:24,cls:6,sped:0,teach:3,est:true},
-{name:'도개초등학교병설유치원',lv:'유',s:'gumi',lat:36.432234709985686,lon:129.07328125010125,stu:21,cls:1,sped:0,teach:3,est:true},
-{name:'남계초등학교병설유치원',lv:'유',s:'gumi',lat:35.97484211398793,lon:129.1424799722754,stu:21,cls:1,sped:0,teach:3,est:true},
-{name:'옥계동부초등학교병설유치원',lv:'유',s:'gumi',lat:35.97709452106926,lon:129.35690408715536,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'지산초등학교병설유치원',lv:'유',s:'gumi',lat:36.47216236398908,lon:128.56084468621498,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'옥성초등학교병설유치원',lv:'유',s:'gumi',lat:36.07869388770187,lon:128.44777656710247,stu:22,cls:1,sped:0,teach:3,est:true},
-{name:'신기초등학교병설유치원',lv:'유',s:'gumi',lat:36.78081918487903,lon:128.85935922639567,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'광평초등학교병설유치원',lv:'유',s:'gumi',lat:36.157254357378804,lon:129.21723822451608,stu:28,cls:1,sped:0,teach:3,est:true},
-{name:'천생초등학교병설유치원',lv:'유',s:'gumi',lat:36.484647183792326,lon:128.5202952801282,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'송정유치원',lv:'유',s:'gumi',lat:36.62405713869482,lon:128.71161604924475,stu:15,cls:6,sped:0,teach:3,est:true},
-{name:'성모유치원',lv:'유',s:'gumi',lat:36.10498171719951,lon:129.25653480824116,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'리라유치원',lv:'유',s:'gumi',lat:35.86603187310355,lon:129.14735155073436,stu:35,cls:7,sped:0,teach:3,est:true},
-{name:'동아유치원',lv:'유',s:'gumi',lat:35.9472250470829,lon:128.60468635487115,stu:32,cls:16,sped:0,teach:3,est:true},
-{name:'옥계우리유치원',lv:'유',s:'gumi',lat:36.00457516507967,lon:129.0877369711101,stu:29,cls:3,sped:0,teach:3,est:true},
-{name:'동화나라유치원',lv:'유',s:'gumi',lat:36.07624682987788,lon:128.59304886344532,stu:26,cls:4,sped:0,teach:3,est:true},
-{name:'라임유치원',lv:'유',s:'gumi',lat:36.357593558783606,lon:128.76065027257027,stu:25,cls:2,sped:0,teach:3,est:true},
-{name:'해마루초등학교병설유치원',lv:'유',s:'gumi',lat:36.36529121372966,lon:128.4531835282062,stu:24,cls:3,sped:0,teach:3,est:true},
-{name:'문장유치원',lv:'유',s:'gumi',lat:36.41662016423431,lon:128.2011019059613,stu:33,cls:3,sped:0,teach:3,est:true},
-{name:'맑은동심유치원',lv:'유',s:'gumi',lat:35.80270661910864,lon:129.26369917164908,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'가야유치원',lv:'유',s:'gumi',lat:36.58161354809531,lon:128.48641735969807,stu:11,cls:6,sped:0,teach:3,est:true},
-{name:'늘푸른유치원',lv:'유',s:'gumi',lat:36.02994578482674,lon:129.15383314789884,stu:34,cls:8,sped:0,teach:3,est:true},
-{name:'문장초등학교병설유치원',lv:'유',s:'gumi',lat:36.169172137768406,lon:129.29236609674302,stu:36,cls:3,sped:0,teach:3,est:true},
-{name:'원호초등학교병설유치원',lv:'유',s:'gumi',lat:36.288820843784734,lon:128.68247504188986,stu:33,cls:3,sped:0,teach:3,est:true},
-{name:'옥계초등학교병설유치원',lv:'유',s:'gumi',lat:35.86918868257128,lon:128.80637355210078,stu:16,cls:3,sped:0,teach:3,est:true},
-{name:'옥계유치원',lv:'유',s:'gumi',lat:36.69863197427514,lon:129.31590412017053,stu:29,cls:8,sped:0,teach:3,est:true},
-{name:'양포초등학교병설유치원',lv:'유',s:'gumi',lat:36.299740505716365,lon:128.87416548743929,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'구미초등학교병설유치원',lv:'유',s:'gumi',lat:36.24853108765214,lon:128.52517867545083,stu:26,cls:3,sped:0,teach:3,est:true},
-{name:'고아초등학교병설유치원',lv:'유',s:'gumi',lat:36.35760041133454,lon:128.7795410369705,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'계명유치원',lv:'유',s:'gumi',lat:36.25192166640512,lon:129.20336591232845,stu:28,cls:7,sped:0,teach:3,est:true},
-{name:'덕촌초등학교병설유치원',lv:'유',s:'gumi',lat:36.78740538480572,lon:128.55812814518632,stu:20,cls:1,sped:0,teach:3,est:true},
-{name:'옥계한별유치원',lv:'유',s:'gumi',lat:36.478865639346964,lon:128.7449651499529,stu:30,cls:4,sped:0,teach:3,est:true},
-{name:'킨더하바유치원',lv:'유',s:'gumi',lat:36.55767434902547,lon:128.22342983542865,stu:29,cls:7,sped:0,teach:3,est:true},
-{name:'문화유치원',lv:'유',s:'gumi',lat:36.25655248789604,lon:128.54330924896433,stu:16,cls:2,sped:0,teach:3,est:true},
-{name:'소나무유치원',lv:'유',s:'gumi',lat:35.91966245530418,lon:128.51662388708743,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'산동숲유치원',lv:'유',s:'gumi',lat:36.7281043603461,lon:128.61273413169351,stu:23,cls:7,sped:0,teach:3,est:true},
-{name:'천사유치원',lv:'유',s:'gumi',lat:36.267893643842775,lon:128.66897106831095,stu:17,cls:7,sped:0,teach:3,est:true},
-{name:'이화유치원',lv:'유',s:'gumi',lat:36.304168621882525,lon:128.43638593895795,stu:38,cls:3,sped:0,teach:3,est:true},
-{name:'홍익유치원',lv:'유',s:'gumi',lat:35.82663156747572,lon:128.6281138442001,stu:37,cls:13,sped:0,teach:3,est:true},
-{name:'무을초등학교병설유치원',lv:'유',s:'gumi',lat:36.28423418732547,lon:128.71075724701308,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'꽃가람유치원',lv:'유',s:'gumi',lat:36.487346184946134,lon:128.47096689432507,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'부석초등학교병설유치원',lv:'유',s:'yeongju',lat:36.10034085599707,lon:128.85339956716297,stu:39,cls:1,sped:0,teach:3,est:true},
-{name:'평은초등학교병설유치원',lv:'유',s:'yeongju',lat:36.44699624092339,lon:128.40178601286712,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'영주유치원',lv:'유',s:'yeongju',lat:35.81500185650737,lon:128.9816990235466,stu:12,cls:4,sped:0,teach:3,est:true},
-{name:'현대유치원',lv:'유',s:'yeongju',lat:36.02085017698029,lon:128.7159845274388,stu:12,cls:2,sped:0,teach:3,est:true},
-{name:'신영주유치원',lv:'유',s:'yeongju',lat:36.748855345905056,lon:128.21116355499018,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'문수초등학교병설유치원',lv:'유',s:'yeongju',lat:35.80287049362875,lon:128.90549262543593,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'풍기북부초등학교병설유치원',lv:'유',s:'yeongju',lat:35.975572289217254,lon:128.7372513250887,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'옥대초등학교병설유치원',lv:'유',s:'yeongju',lat:36.17772149828038,lon:129.0590778325701,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'영주서부초등학교병설유치원',lv:'유',s:'yeongju',lat:36.475786826798554,lon:128.50157302563363,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'풍기초등학교병설유치원',lv:'유',s:'yeongju',lat:36.30739197927937,lon:129.38392460406038,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'봉현초등학교병설유치원',lv:'유',s:'yeongju',lat:36.005518052791516,lon:128.43262114630633,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'자연유치원',lv:'유',s:'yeongju',lat:36.06451753260366,lon:128.91620005958148,stu:29,cls:5,sped:0,teach:3,est:true},
-{name:'이산초등학교병설유치원',lv:'유',s:'yeongju',lat:36.35582257620214,lon:128.27647832467906,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'영주남부초등학교병설유치원',lv:'유',s:'yeongju',lat:36.68458400625414,lon:128.4947098736972,stu:31,cls:3,sped:0,teach:3,est:true},
-{name:'영일초등학교병설유치원',lv:'유',s:'yeongju',lat:36.7154085430604,lon:129.28958664900432,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'영주초등학교병설유치원',lv:'유',s:'yeongju',lat:36.73074913367505,lon:128.93639180675711,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'샛별유치원',lv:'유',s:'yeongju',lat:36.10295495990221,lon:129.09540237433734,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'장수초등학교병설유치원',lv:'유',s:'yeongju',lat:36.58904078993778,lon:128.30107783858733,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'남산초등학교병설유치원',lv:'유',s:'yeongju',lat:36.489308639096436,lon:128.66286723714288,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'영주중앙초등학교병설유치원',lv:'유',s:'yeongju',lat:36.217267613643195,lon:128.25588480407868,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'영주동부초등학교병설유치원',lv:'유',s:'yeongju',lat:36.20114994382791,lon:129.26607698664446,stu:28,cls:3,sped:0,teach:3,est:true},
-{name:'안정초등학교병설유치원',lv:'유',s:'yeongju',lat:36.484207418053956,lon:129.05320003449663,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'영주가흥초등학교병설유치원',lv:'유',s:'yeongju',lat:36.044031664464725,lon:128.65316889563425,stu:24,cls:3,sped:0,teach:3,est:true},
-{name:'샛별유치원',lv:'유',s:'yeongcheon',lat:36.561269313186244,lon:129.00881048473872,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'지곡초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.31236821960029,lon:128.3261239874544,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'고경초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.147617127540784,lon:129.14133591823438,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'거여초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.08743734233007,lon:128.2762329449355,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'포은초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.773597780640124,lon:128.64356690902386,stu:38,cls:4,sped:0,teach:3,est:true},
-{name:'영천중앙유치원',lv:'유',s:'yeongcheon',lat:36.19207432694419,lon:129.35917255655636,stu:32,cls:5,sped:0,teach:3,est:true},
-{name:'금호초등학교병설유치원',lv:'유',s:'yeongcheon',lat:35.81448908833863,lon:128.92494418340587,stu:32,cls:3,sped:0,teach:3,est:true},
-{name:'자천초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.445522655145474,lon:129.1577072378685,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'화산초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.13339136843759,lon:128.6646056916292,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'한성유치원',lv:'유',s:'yeongcheon',lat:36.79996495982699,lon:129.37516268550664,stu:34,cls:5,sped:0,teach:3,est:true},
-{name:'영천동부초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.691545748982534,lon:129.0391588476469,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'북안초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.69315503104098,lon:128.5600785581127,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'문화유치원',lv:'유',s:'yeongcheon',lat:36.588079928498104,lon:129.0125664895238,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'신녕초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.08313742888864,lon:129.08833302918612,stu:16,cls:1,sped:0,teach:3,est:true},
-{name:'영천초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.34451096731767,lon:128.52423958265356,stu:16,cls:3,sped:0,teach:3,est:true},
-{name:'대창초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.44964280646834,lon:129.13772278136875,stu:39,cls:1,sped:0,teach:3,est:true},
-{name:'단포초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.141974893869616,lon:128.92578662159121,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'임고초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.07299790801664,lon:129.21851174960673,stu:28,cls:1,sped:0,teach:3,est:true},
-{name:'영화초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.21338326608967,lon:128.31642273841788,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'청통초등학교병설유치원',lv:'유',s:'yeongcheon',lat:36.67387663479739,lon:128.88065081451745,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'화령초등학교병설유치원',lv:'유',s:'sangju',lat:36.58942800867265,lon:128.22673519518023,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'상주초등학교병설유치원',lv:'유',s:'sangju',lat:36.52202002363507,lon:128.95321512333592,stu:28,cls:1,sped:0,teach:3,est:true},
-{name:'사벌초등학교병설유치원',lv:'유',s:'sangju',lat:36.02819102164624,lon:129.32360586404482,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'모서초등학교병설유치원',lv:'유',s:'sangju',lat:36.58561717969598,lon:129.3148693393538,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'상주감꽃유치원',lv:'유',s:'sangju',lat:35.83249719750655,lon:128.54119141998038,stu:33,cls:6,sped:0,teach:3,est:true},
-{name:'파티마유치원',lv:'유',s:'sangju',lat:36.06469394628566,lon:128.93522268532305,stu:35,cls:4,sped:0,teach:3,est:true},
-{name:'한마음유치원',lv:'유',s:'sangju',lat:36.31454052539826,lon:128.9747870429009,stu:37,cls:7,sped:0,teach:3,est:true},
-{name:'상주남부초등학교병설유치원',lv:'유',s:'sangju',lat:36.576736800653144,lon:128.45831948689133,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'함창중앙초등학교병설유치원',lv:'유',s:'sangju',lat:36.542635075116095,lon:128.39578975525538,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'상주원광유치원',lv:'유',s:'sangju',lat:36.32541969561157,lon:128.31297205842398,stu:38,cls:7,sped:0,teach:3,est:true},
-{name:'상영초등학교병설유치원',lv:'유',s:'sangju',lat:36.237524867665876,lon:128.5903394917397,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'공검초등학교병설유치원',lv:'유',s:'sangju',lat:36.32021772799653,lon:129.19238430450145,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'은척초등학교병설유치원',lv:'유',s:'sangju',lat:36.52510514551789,lon:128.6810523127629,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'화북초등학교병설유치원',lv:'유',s:'sangju',lat:36.119493895338636,lon:128.86404698537848,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'상락유치원',lv:'유',s:'sangju',lat:35.84751055091943,lon:128.25752313892207,stu:17,cls:6,sped:0,teach:3,est:true},
-{name:'모동초등학교병설유치원',lv:'유',s:'sangju',lat:36.225120727684065,lon:128.62939268927963,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'예영유치원',lv:'유',s:'sangju',lat:36.7758631493846,lon:129.3858230303702,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'함창초등학교병설유치원',lv:'유',s:'sangju',lat:36.11684733767313,lon:128.67768917013703,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'중모초등학교병설유치원',lv:'유',s:'sangju',lat:36.766286477694244,lon:128.49128777492487,stu:28,cls:1,sped:0,teach:3,est:true},
-{name:'옥산초등학교병설유치원',lv:'유',s:'sangju',lat:36.77494570743218,lon:128.4836142592613,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'낙서초등학교병설유치원',lv:'유',s:'sangju',lat:36.19789993443055,lon:128.41031787557387,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'낙동초등학교병설유치원',lv:'유',s:'sangju',lat:35.86959741656696,lon:129.19352620383296,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'청리초등학교병설유치원',lv:'유',s:'sangju',lat:36.3935376440324,lon:128.67428523441833,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'상주중앙초등학교병설유치원',lv:'유',s:'sangju',lat:36.41327827547356,lon:128.38312024687954,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'백원초등학교병설유치원',lv:'유',s:'sangju',lat:35.835447196684214,lon:128.24348848615404,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'화동초등학교병설유치원',lv:'유',s:'sangju',lat:35.99401313272822,lon:128.88393705263357,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'중동초등학교병설유치원',lv:'유',s:'sangju',lat:35.858863555699294,lon:128.87764906259375,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'외남초등학교병설유치원',lv:'유',s:'sangju',lat:36.78353176257443,lon:128.89466773445665,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'상주동부초등학교병설유치원',lv:'유',s:'sangju',lat:36.01038663646781,lon:129.33061810167732,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'상산초등학교병설유치원',lv:'유',s:'sangju',lat:36.042109580252344,lon:128.96610384811754,stu:14,cls:3,sped:0,teach:3,est:true},
-{name:'이안초등학교병설유치원',lv:'유',s:'sangju',lat:36.714374521914024,lon:129.37150352715173,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'점촌중앙초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.132029885769725,lon:129.19696731142943,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'이화유치원',lv:'유',s:'mungyeong',lat:36.35409783341886,lon:128.46614185464944,stu:37,cls:3,sped:0,teach:3,est:true},
-{name:'영순초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.70721347656059,lon:128.47673176186296,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'상지유치원',lv:'유',s:'mungyeong',lat:36.420360312727595,lon:129.10661218226392,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'동로초등학교병설유치원',lv:'유',s:'mungyeong',lat:35.88387511206317,lon:128.79460122291076,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'신기초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.43117358871582,lon:128.5603712873038,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'새싹유치원',lv:'유',s:'mungyeong',lat:36.5528402180598,lon:129.0850540932126,stu:20,cls:1,sped:0,teach:3,est:true},
-{name:'문경초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.775731861725625,lon:129.06345088502914,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'당포초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.692656699771966,lon:129.24926332566616,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'점촌초등학교병설유치원',lv:'유',s:'mungyeong',lat:35.86251054107745,lon:128.62506602948594,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'점촌북초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.4699370047294,lon:128.7690053632959,stu:18,cls:1,sped:0,teach:3,est:true},
-{name:'산북초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.434665323714206,lon:128.7477080202341,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'동성초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.382703273188135,lon:129.06363262208302,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'가은초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.24494657150421,lon:128.80474549367082,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'농암초등학교병설유치원',lv:'유',s:'mungyeong',lat:35.931638114160236,lon:129.36437882537405,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'호계초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.36868593522859,lon:128.5165022156052,stu:28,cls:1,sped:0,teach:3,est:true},
-{name:'용흥초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.27831566948237,lon:129.03260865182602,stu:22,cls:1,sped:0,teach:3,est:true},
-{name:'산양초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.443403946091706,lon:128.58566426555237,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'모전초등학교병설유치원',lv:'유',s:'mungyeong',lat:36.2094130951074,lon:128.42751950051186,stu:20,cls:3,sped:0,teach:3,est:true},
-{name:'문경유치원',lv:'유',s:'mungyeong',lat:36.53790941671012,lon:128.3126738063577,stu:11,cls:5,sped:0,teach:3,est:true},
-{name:'자인초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.052122323517,lon:128.22588056912718,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'하양유치원',lv:'유',s:'gyeongsan',lat:36.56199783555593,lon:128.90497331933668,stu:37,cls:3,sped:0,teach:3,est:true},
-{name:'경산초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.13715500228865,lon:128.66013357455748,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'다문초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.131730983323486,lon:129.22718242510552,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'자연아이유치원',lv:'유',s:'gyeongsan',lat:36.66022005281629,lon:128.41202728543553,stu:20,cls:5,sped:0,teach:3,est:true},
-{name:'옥곡초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.441963347032555,lon:129.06581139032767,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'부림초등학교병설유치원',lv:'유',s:'gyeongsan',lat:35.8043957455694,lon:128.72799690794497,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'중방유치원',lv:'유',s:'gyeongsan',lat:36.20870393093299,lon:129.08767726874632,stu:12,cls:9,sped:0,teach:3,est:true},
-{name:'계당초등학교병설유치원',lv:'유',s:'gyeongsan',lat:35.97744130069958,lon:128.654114775742,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'우리들숲유치원',lv:'유',s:'gyeongsan',lat:36.61472051397097,lon:128.89651069694972,stu:14,cls:2,sped:0,teach:3,est:true},
-{name:'동심유치원',lv:'유',s:'gyeongsan',lat:36.291368026289376,lon:129.01490602092804,stu:20,cls:3,sped:0,teach:3,est:true},
-{name:'라온유치원',lv:'유',s:'gyeongsan',lat:35.94882204993706,lon:128.88742512416312,stu:34,cls:2,sped:0,teach:3,est:true},
-{name:'대해유치원',lv:'유',s:'gyeongsan',lat:36.034004553920944,lon:129.16719429227211,stu:23,cls:9,sped:0,teach:3,est:true},
-{name:'경산압량초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.279028197135645,lon:128.67045580352283,stu:27,cls:3,sped:0,teach:3,est:true},
-{name:'은성유치원',lv:'유',s:'gyeongsan',lat:35.927001383527205,lon:129.329356233123,stu:25,cls:7,sped:0,teach:3,est:true},
-{name:'진량초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.519298933365896,lon:129.33696734330667,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'대구대학교사범대학부속영광유치원',lv:'유',s:'gyeongsan',lat:36.145548778534945,lon:128.44292201891616,stu:11,cls:6,sped:0,teach:3,est:true},
-{name:'키다리아저씨유치원',lv:'유',s:'gyeongsan',lat:36.61379269986018,lon:129.05608479459045,stu:33,cls:3,sped:0,teach:3,est:true},
-{name:'경산유치원',lv:'유',s:'gyeongsan',lat:36.56385089439091,lon:128.93214601184482,stu:14,cls:6,sped:0,teach:3,est:true},
-{name:'책놀이숲놀이유치원',lv:'유',s:'gyeongsan',lat:35.86142171731082,lon:128.45867497244868,stu:21,cls:4,sped:0,teach:3,est:true},
-{name:'삼성현초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.10839027239575,lon:128.38375635772402,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'유선아이숲유치원',lv:'유',s:'gyeongsan',lat:36.139348668781295,lon:129.03976565071602,stu:24,cls:4,sped:0,teach:3,est:true},
-{name:'경산압량유치원',lv:'유',s:'gyeongsan',lat:36.00817971100399,lon:128.58468372005518,stu:12,cls:5,sped:0,teach:3,est:true},
-{name:'본(BON)유치원',lv:'유',s:'gyeongsan',lat:36.04909537879986,lon:128.24016620866607,stu:25,cls:6,sped:0,teach:3,est:true},
-{name:'영인유치원',lv:'유',s:'gyeongsan',lat:36.57406791538439,lon:128.2419064485611,stu:12,cls:4,sped:0,teach:3,est:true},
-{name:'임당초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.54353691097941,lon:128.30822987960445,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'장은유치원',lv:'유',s:'gyeongsan',lat:35.8983997211349,lon:128.9066520969195,stu:17,cls:3,sped:0,teach:3,est:true},
-{name:'한사유치원',lv:'유',s:'gyeongsan',lat:35.80150152078325,lon:128.30348823118726,stu:18,cls:6,sped:0,teach:3,est:true},
-{name:'경산중앙유치원',lv:'유',s:'gyeongsan',lat:36.32430949731963,lon:129.03291050514605,stu:27,cls:7,sped:0,teach:3,est:true},
-{name:'남성초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.5758738859292,lon:128.9812879982942,stu:16,cls:1,sped:0,teach:3,est:true},
-{name:'창파유치원',lv:'유',s:'gyeongsan',lat:36.610079057220254,lon:128.25054957213467,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'경산성모유치원',lv:'유',s:'gyeongsan',lat:35.83498137986046,lon:129.14296224203204,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'청천초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.296950059702006,lon:128.50926652686869,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'남산초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.19746224775948,lon:128.82935770441745,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'평산초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.47524500306782,lon:129.35146043092763,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'경산서부초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.241763650128476,lon:128.79916824508385,stu:18,cls:1,sped:0,teach:3,est:true},
-{name:'예인유치원',lv:'유',s:'gyeongsan',lat:36.010964441981514,lon:128.92638781908218,stu:35,cls:5,sped:0,teach:3,est:true},
-{name:'운문유치원',lv:'유',s:'gyeongsan',lat:36.62647568808661,lon:128.40935480445066,stu:19,cls:8,sped:0,teach:3,est:true},
-{name:'계명유치원',lv:'유',s:'gyeongsan',lat:35.86844287498565,lon:128.51388413115643,stu:10,cls:4,sped:0,teach:3,est:true},
-{name:'남천초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.37095656545354,lon:128.77022045887733,stu:16,cls:1,sped:0,teach:3,est:true},
-{name:'성암초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.0124276737515,lon:128.64596672501716,stu:25,cls:3,sped:0,teach:3,est:true},
-{name:'서부유치원',lv:'유',s:'gyeongsan',lat:36.65280490286898,lon:128.6654087877063,stu:12,cls:5,sped:0,teach:3,est:true},
-{name:'용성초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.33107416166543,lon:129.16339116288003,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'경산중앙초등학교병설유치원',lv:'유',s:'gyeongsan',lat:35.99752683544017,lon:129.3984333055316,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'경산동부초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.17898510308635,lon:129.38262378518024,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'경산꽃재유치원',lv:'유',s:'gyeongsan',lat:36.01491042099658,lon:129.15727402640792,stu:19,cls:5,sped:0,teach:3,est:true},
-{name:'와촌초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.501088806458085,lon:128.99894356313678,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'진성초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.359746036820624,lon:128.38512972746793,stu:21,cls:1,sped:0,teach:3,est:true},
-{name:'대동초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.18534940554309,lon:129.0713423522477,stu:20,cls:1,sped:0,teach:3,est:true},
-{name:'예일유치원',lv:'유',s:'gyeongsan',lat:36.487046325351145,lon:129.08354214905677,stu:15,cls:2,sped:0,teach:3,est:true},
-{name:'하주초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.706839904715515,lon:128.23847901464296,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'현흥초등학교병설유치원',lv:'유',s:'gyeongsan',lat:36.027638599973436,lon:128.9461174142839,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'민들레유치원',lv:'유',s:'gyeongsan',lat:36.73996888884154,lon:128.90582287525234,stu:34,cls:5,sped:0,teach:3,est:true},
-{name:'비안초등학교병설유치원',lv:'유',s:'uiseong',lat:36.17315655939182,lon:128.78762778495306,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'의성남부초등학교병설유치원',lv:'유',s:'uiseong',lat:36.450196656284206,lon:128.5046120958338,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'도리원초등학교병설유치원',lv:'유',s:'uiseong',lat:36.134745804005085,lon:128.771070112367,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'안평초등학교병설유치원',lv:'유',s:'uiseong',lat:35.95806567409176,lon:128.57939922695027,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'다인초등학교병설유치원',lv:'유',s:'uiseong',lat:36.06865173324835,lon:128.95638607452747,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'안계초등학교병설유치원',lv:'유',s:'uiseong',lat:36.44007313751638,lon:129.03440142369348,stu:22,cls:1,sped:0,teach:3,est:true},
-{name:'옥전초등학교병설유치원',lv:'유',s:'uiseong',lat:35.81462958540894,lon:128.85727394518233,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'단촌초등학교병설유치원',lv:'유',s:'uiseong',lat:36.08110963077879,lon:129.23398759650553,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'에덴유치원',lv:'유',s:'uiseong',lat:36.27606603080901,lon:128.29060181934784,stu:16,cls:3,sped:0,teach:3,est:true},
-{name:'점곡초등학교병설유치원',lv:'유',s:'uiseong',lat:36.33350468052281,lon:128.56499757711723,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'춘산초등학교병설유치원',lv:'유',s:'uiseong',lat:36.611236421870146,lon:128.22497660414933,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'안평초등학교신평분교장병설유치원',lv:'유',s:'uiseong',lat:36.237888060272894,lon:129.0875127709,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'금성초등학교병설유치원',lv:'유',s:'uiseong',lat:36.21124072122006,lon:128.8117075982253,stu:39,cls:1,sped:0,teach:3,est:true},
-{name:'부남초등학교병설유치원',lv:'유',s:'cheongsong',lat:36.01511772679509,lon:128.33573405787786,stu:39,cls:1,sped:0,teach:3,est:true},
-{name:'청송초등학교병설유치원',lv:'유',s:'cheongsong',lat:35.95255698754181,lon:128.90531558615845,stu:26,cls:3,sped:0,teach:3,est:true},
-{name:'파천초등학교병설유치원',lv:'유',s:'cheongsong',lat:35.90108901535717,lon:129.1791346575693,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'안덕초등학교병설유치원',lv:'유',s:'cheongsong',lat:35.97503739463221,lon:128.9969362863111,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'화목초등학교병설유치원',lv:'유',s:'cheongsong',lat:36.371440683727776,lon:129.3432465661246,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'진보초등학교병설유치원',lv:'유',s:'cheongsong',lat:36.41816940409958,lon:129.1953627459322,stu:17,cls:3,sped:0,teach:3,est:true},
-{name:'이전초등학교병설유치원',lv:'유',s:'cheongsong',lat:36.53738102136203,lon:129.22809791864904,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'도평초등학교병설유치원',lv:'유',s:'cheongsong',lat:36.31715136629193,lon:129.26289388166776,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'입암초등학교병설유치원',lv:'유',s:'yeongyang',lat:36.58382940583291,lon:129.16649585247802,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'수비초등학교병설유치원',lv:'유',s:'yeongyang',lat:36.68870448337651,lon:129.35540361794878,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'일월초등학교병설유치원',lv:'유',s:'yeongyang',lat:36.615228625944134,lon:128.9708346919616,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'석보초등학교병설유치원',lv:'유',s:'yeongyang',lat:35.92851758989075,lon:128.35006153586343,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'영양초등학교병설유치원',lv:'유',s:'yeongyang',lat:36.4613747735189,lon:128.8869055780767,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'영양중앙초등학교병설유치원',lv:'유',s:'yeongyang',lat:36.73567530081862,lon:128.91718654903278,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'일월초등학교청기분교장병설유치원',lv:'유',s:'yeongyang',lat:36.49046456693911,lon:128.24410667786435,stu:27,cls:1,sped:0,teach:3,est:true},
-{name:'축산항초등학교병설유치원',lv:'유',s:'yeongdeok',lat:36.78741869913682,lon:128.4902923092129,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'병곡초등학교병설유치원',lv:'유',s:'yeongdeok',lat:36.09967437101159,lon:128.93813854973342,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'영해초등학교병설유치원',lv:'유',s:'yeongdeok',lat:36.02172017997182,lon:128.98230947375234,stu:23,cls:1,sped:0,teach:3,est:true},
-{name:'지품초등학교병설유치원',lv:'유',s:'yeongdeok',lat:36.46000598619808,lon:129.25882385631294,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'창수초등학교병설유치원',lv:'유',s:'yeongdeok',lat:36.12163477055127,lon:128.63878418101055,stu:21,cls:1,sped:0,teach:3,est:true},
-{name:'원황초등학교병설유치원',lv:'유',s:'yeongdeok',lat:36.43063533319319,lon:128.45171250503324,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'남정초등학교병설유치원',lv:'유',s:'yeongdeok',lat:35.845991627854595,lon:129.28443490462098,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'영덕야성초등학교병설유치원',lv:'유',s:'yeongdeok',lat:36.450163004691134,lon:129.04168473582615,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'강구초등학교병설유치원',lv:'유',s:'yeongdeok',lat:35.97157403028135,lon:128.60361004056398,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'화양초등학교병설유치원',lv:'유',s:'cheongdo',lat:36.10775201138379,lon:129.0502661403771,stu:20,cls:1,sped:0,teach:3,est:true},
-{name:'덕산초등학교병설유치원',lv:'유',s:'cheongdo',lat:36.31905267300321,lon:128.36019438857076,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'향뜰유치원',lv:'유',s:'cheongdo',lat:36.604733160713266,lon:128.7748493726398,stu:28,cls:3,sped:0,teach:3,est:true},
-{name:'유천초등학교병설유치원',lv:'유',s:'cheongdo',lat:35.96935548664831,lon:128.85981830143285,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'청도중앙초등학교병설유치원',lv:'유',s:'cheongdo',lat:36.611649954481244,lon:128.7158358299151,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'청도초등학교병설유치원',lv:'유',s:'cheongdo',lat:36.725916218059325,lon:128.65632747349107,stu:22,cls:1,sped:0,teach:3,est:true},
-{name:'금천초등학교병설유치원',lv:'유',s:'cheongdo',lat:35.96633369157473,lon:128.88489854121917,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'동산초등학교병설유치원',lv:'유',s:'cheongdo',lat:36.143602665024595,lon:129.36078388087213,stu:39,cls:1,sped:0,teach:3,est:true},
-{name:'풍각초등학교병설유치원',lv:'유',s:'cheongdo',lat:36.79377023496977,lon:128.7156656851097,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'이서초등학교병설유치원',lv:'유',s:'cheongdo',lat:35.835453423690055,lon:129.0894451209073,stu:14,cls:1,sped:0,teach:3,est:true},
-{name:'각남초등학교병설유치원',lv:'유',s:'cheongdo',lat:36.12424566694262,lon:128.67497845777504,stu:10,cls:1,sped:0,teach:3,est:true},
-{name:'아이세상유치원',lv:'유',s:'cheongdo',lat:36.274427592223184,lon:128.44409736908992,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'청도성모유치원',lv:'유',s:'cheongdo',lat:36.49273728834254,lon:129.17692867558958,stu:25,cls:3,sped:0,teach:3,est:true},
-{name:'남성현초등학교병설유치원',lv:'유',s:'cheongdo',lat:35.96842955111051,lon:129.06048428255883,stu:22,cls:1,sped:0,teach:3,est:true},
-{name:'우곡초등학교병설유치원',lv:'유',s:'goryeong',lat:36.78812510244215,lon:128.67768124743517,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'운수초등학교병설유치원',lv:'유',s:'goryeong',lat:36.56657583464263,lon:129.00211580570635,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'고령초등학교병설유치원',lv:'유',s:'goryeong',lat:35.960154944862744,lon:129.0707134425025,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'선재유치원',lv:'유',s:'goryeong',lat:36.74480896462356,lon:129.23399421237585,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'다산초등학교병설유치원',lv:'유',s:'goryeong',lat:36.312476421486664,lon:128.87453345451132,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'성산초등학교병설유치원',lv:'유',s:'goryeong',lat:35.932409371365814,lon:128.62106327075065,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'쌍림초등학교병설유치원',lv:'유',s:'goryeong',lat:36.53325053204095,lon:128.89164236328526,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'성주초등학교병설유치원',lv:'유',s:'seongju',lat:35.87406532777242,lon:128.6817916808714,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'초전초등학교병설유치원',lv:'유',s:'seongju',lat:36.31475955053307,lon:128.59151541599059,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'도원초등학교병설유치원',lv:'유',s:'seongju',lat:36.54995840201777,lon:128.85575559142032,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'성주중앙초등학교병설유치원',lv:'유',s:'seongju',lat:36.77914532451572,lon:128.83219140786187,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'대가초등학교병설유치원',lv:'유',s:'seongju',lat:35.98920699638377,lon:129.39713898748886,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'대동초등학교병설유치원',lv:'유',s:'seongju',lat:36.78562523321662,lon:128.42500364333497,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'월항초등학교병설유치원',lv:'유',s:'seongju',lat:36.53860983511698,lon:128.27246518751974,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'가천초등학교병설유치원',lv:'유',s:'seongju',lat:36.38969908366113,lon:128.96817491647616,stu:16,cls:1,sped:0,teach:3,est:true},
-{name:'벽진초등학교병설유치원',lv:'유',s:'seongju',lat:35.86212992486743,lon:128.94084639419586,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'선남초등학교병설유치원',lv:'유',s:'seongju',lat:35.91821692697875,lon:129.27703982199827,stu:30,cls:1,sped:0,teach:3,est:true},
-{name:'수륜초등학교병설유치원',lv:'유',s:'seongju',lat:36.36713542709728,lon:128.3091728032094,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'신성유치원',lv:'유',s:'seongju',lat:36.05224773505348,lon:128.31341929207105,stu:29,cls:3,sped:0,teach:3,est:true},
-{name:'무지개유치원',lv:'유',s:'chilgok',lat:35.885334142019815,lon:128.75470911543428,stu:37,cls:7,sped:0,teach:3,est:true},
-{name:'남율유치원',lv:'유',s:'chilgok',lat:36.34018737142693,lon:128.29157512139295,stu:20,cls:5,sped:0,teach:3,est:true},
-{name:'리라유치원',lv:'유',s:'chilgok',lat:36.14239221525464,lon:129.2300077233064,stu:37,cls:4,sped:0,teach:3,est:true},
-{name:'북삼초등학교병설유치원',lv:'유',s:'chilgok',lat:36.54271828610017,lon:128.31723503588157,stu:31,cls:3,sped:0,teach:3,est:true},
-{name:'가산초등학교병설유치원',lv:'유',s:'chilgok',lat:36.162591862639424,lon:128.2781142180367,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'제일유치원',lv:'유',s:'chilgok',lat:36.388167348162796,lon:128.71541917575163,stu:24,cls:3,sped:0,teach:3,est:true},
-{name:'한송이유치원',lv:'유',s:'chilgok',lat:36.747741615740104,lon:129.15663427545104,stu:37,cls:2,sped:0,teach:3,est:true},
-{name:'왜관동부초등학교병설유치원',lv:'유',s:'chilgok',lat:36.478762143307755,lon:129.24814771572554,stu:31,cls:3,sped:0,teach:3,est:true},
-{name:'약목초등학교병설유치원',lv:'유',s:'chilgok',lat:36.445953746052595,lon:128.69942237776155,stu:18,cls:1,sped:0,teach:3,est:true},
-{name:'바움유치원',lv:'유',s:'chilgok',lat:35.86916478255642,lon:128.5466495675751,stu:15,cls:3,sped:0,teach:3,est:true},
-{name:'인평초등학교병설유치원',lv:'유',s:'chilgok',lat:36.78403556321987,lon:128.7586513026469,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'동명초등학교병설유치원',lv:'유',s:'chilgok',lat:36.296326340827804,lon:128.5908303577625,stu:16,cls:1,sped:0,teach:3,est:true},
-{name:'순심유치원',lv:'유',s:'chilgok',lat:36.19252102422566,lon:128.25254359467726,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'초록유치원',lv:'유',s:'chilgok',lat:36.729599549391814,lon:128.7207479944307,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'왜관초등학교병설유치원',lv:'유',s:'chilgok',lat:36.295935385415106,lon:128.2195241624876,stu:24,cls:3,sped:0,teach:3,est:true},
-{name:'신동초등학교병설유치원',lv:'유',s:'chilgok',lat:35.983318893038266,lon:128.7628256073589,stu:18,cls:1,sped:0,teach:3,est:true},
-{name:'아람유치원',lv:'유',s:'chilgok',lat:36.406157619584214,lon:129.04836517243388,stu:35,cls:1,sped:0,teach:3,est:true},
-{name:'신영유치원',lv:'유',s:'chilgok',lat:36.26113504101882,lon:128.34117870795112,stu:11,cls:2,sped:0,teach:3,est:true},
-{name:'매원초등학교병설유치원',lv:'유',s:'chilgok',lat:36.029331753762726,lon:128.79503802941858,stu:18,cls:1,sped:0,teach:3,est:true},
-{name:'낙산초등학교병설유치원',lv:'유',s:'chilgok',lat:36.147301772692295,lon:129.20752708042482,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'지천초등학교병설유치원',lv:'유',s:'chilgok',lat:36.2221061094866,lon:129.18629355466496,stu:20,cls:1,sped:0,teach:3,est:true},
-{name:'숭산초등학교병설유치원',lv:'유',s:'chilgok',lat:36.67532751939377,lon:129.03811579543057,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'동명동부초등학교병설유치원',lv:'유',s:'chilgok',lat:35.804178153149074,lon:129.27256427419493,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'관호초등학교병설유치원',lv:'유',s:'chilgok',lat:36.134542319796864,lon:129.10834650039644,stu:17,cls:1,sped:0,teach:3,est:true},
-{name:'약동초등학교병설유치원',lv:'유',s:'chilgok',lat:35.883101739620656,lon:128.3275025159126,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'학림초등학교병설유치원',lv:'유',s:'chilgok',lat:36.33146491807183,lon:129.30111820821153,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'왜관중앙초등학교병설유치원',lv:'유',s:'chilgok',lat:36.34307042095894,lon:128.3142741305281,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'신비유치원',lv:'유',s:'chilgok',lat:36.71414467161792,lon:129.0022839055119,stu:14,cls:3,sped:0,teach:3,est:true},
-{name:'석적유치원',lv:'유',s:'chilgok',lat:35.93407250450556,lon:128.54936871160183,stu:33,cls:5,sped:0,teach:3,est:true},
-{name:'용궁초등학교병설유치원',lv:'유',s:'yecheon',lat:35.991860524983636,lon:128.40250704752418,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'은풍초등학교병설유치원',lv:'유',s:'yecheon',lat:36.14349517900505,lon:129.38357182704902,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'풍양초등학교병설유치원',lv:'유',s:'yecheon',lat:36.11524605131637,lon:128.61966030544278,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'용문초등학교병설유치원',lv:'유',s:'yecheon',lat:36.78303924305049,lon:128.38412222548166,stu:26,cls:1,sped:0,teach:3,est:true},
-{name:'지보초등학교병설유치원',lv:'유',s:'yecheon',lat:36.69179865199172,lon:128.50724799524585,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'예천초등학교병설유치원',lv:'유',s:'yecheon',lat:36.656485582353035,lon:129.31582089141807,stu:10,cls:3,sped:0,teach:3,est:true},
-{name:'유천초등학교병설유치원',lv:'유',s:'yecheon',lat:36.4000633014451,lon:129.372623548557,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'감천초등학교병설유치원',lv:'유',s:'yecheon',lat:36.31994986102296,lon:128.6034946779356,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'예천동부초등학교병설유치원',lv:'유',s:'yecheon',lat:36.39968584253676,lon:129.38599141232766,stu:31,cls:1,sped:0,teach:3,est:true},
-{name:'예천남부초등학교병설유치원',lv:'유',s:'yecheon',lat:36.43255392236929,lon:128.28409820061802,stu:36,cls:1,sped:0,teach:3,est:true},
-{name:'호명초등학교병설유치원',lv:'유',s:'yecheon',lat:36.126795770643945,lon:129.01724993703968,stu:39,cls:4,sped:0,teach:3,est:true},
-{name:'호명라온유치원',lv:'유',s:'yecheon',lat:35.81908389580258,lon:129.38360934311018,stu:37,cls:9,sped:0,teach:3,est:true},
-{name:'새벗유치원',lv:'유',s:'yecheon',lat:36.449811710287996,lon:128.3731124064571,stu:31,cls:6,sped:0,teach:3,est:true},
-{name:'단샘유치원',lv:'유',s:'yecheon',lat:36.630457123125865,lon:129.03878867459224,stu:36,cls:5,sped:0,teach:3,est:true},
-{name:'소천초등학교두음분교장병설유치원',lv:'유',s:'bonghwa',lat:36.675693049232294,lon:128.48604453358618,stu:20,cls:1,sped:0,teach:3,est:true},
-{name:'석포초등학교병설유치원',lv:'유',s:'bonghwa',lat:36.02533718954065,lon:129.18349562274165,stu:25,cls:1,sped:0,teach:3,est:true},
-{name:'재산초등학교병설유치원',lv:'유',s:'bonghwa',lat:36.03889069670298,lon:129.24159036680138,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'도촌초등학교병설유치원',lv:'유',s:'bonghwa',lat:36.65856657894757,lon:128.9507056752578,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'동양초등학교병설유치원',lv:'유',s:'bonghwa',lat:36.33802087452768,lon:128.3699389976626,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'봉화초등학교병설유치원',lv:'유',s:'bonghwa',lat:35.983154570086874,lon:129.07351472058227,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'서벽초등학교병설유치원',lv:'유',s:'bonghwa',lat:36.72654194332728,lon:128.77268894764984,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'명호초등학교병설유치원',lv:'유',s:'bonghwa',lat:35.97339500607586,lon:129.2507521842812,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'물야초등학교병설유치원',lv:'유',s:'bonghwa',lat:35.984627618982785,lon:128.74040362901653,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'소천초등학교병설유치원',lv:'유',s:'bonghwa',lat:36.549355894192715,lon:128.55318353848656,stu:38,cls:1,sped:0,teach:3,est:true},
-{name:'법전중앙초등학교병설유치원',lv:'유',s:'bonghwa',lat:36.54228097258452,lon:128.65148804587403,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'성심유치원',lv:'유',s:'bonghwa',lat:36.50705434803494,lon:128.82113539937473,stu:31,cls:3,sped:0,teach:3,est:true},
-{name:'내성초등학교병설유치원',lv:'유',s:'bonghwa',lat:36.187186451200304,lon:128.4018534588479,stu:20,cls:1,sped:0,teach:3,est:true},
-{name:'춘양초등학교병설유치원',lv:'유',s:'bonghwa',lat:36.07811469909694,lon:128.4581250611492,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'삼근초등학교병설유치원',lv:'유',s:'uljin',lat:36.747880791264116,lon:128.29633654405336,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'죽변초등학교병설유치원',lv:'유',s:'uljin',lat:36.07214729222763,lon:129.07824669270465,stu:16,cls:1,sped:0,teach:3,est:true},
-{name:'매화초등학교병설유치원',lv:'유',s:'uljin',lat:36.57387205010308,lon:128.49166237136592,stu:16,cls:1,sped:0,teach:3,est:true},
-{name:'후포초등학교병설유치원',lv:'유',s:'uljin',lat:36.4953161614152,lon:128.90141698567473,stu:19,cls:1,sped:0,teach:3,est:true},
-{name:'노음초등학교병설유치원',lv:'유',s:'uljin',lat:36.469877460017216,lon:129.27072984255457,stu:11,cls:1,sped:0,teach:3,est:true},
-{name:'기성초등학교병설유치원',lv:'유',s:'uljin',lat:36.42124114520698,lon:129.0884683839115,stu:13,cls:1,sped:0,teach:3,est:true},
-{name:'온정초등학교병설유치원',lv:'유',s:'uljin',lat:36.727986895826845,lon:128.46838866951413,stu:37,cls:1,sped:0,teach:3,est:true},
-{name:'울진초등학교병설유치원',lv:'유',s:'uljin',lat:36.767719094233165,lon:128.63553785480937,stu:10,cls:3,sped:0,teach:3,est:true},
-{name:'평해초등학교병설유치원',lv:'유',s:'uljin',lat:36.19301028794046,lon:129.2294917190495,stu:29,cls:1,sped:0,teach:3,est:true},
-{name:'부구초등학교삼당분교장병설유치원',lv:'유',s:'uljin',lat:36.57859660687398,lon:128.5208550190337,stu:33,cls:1,sped:0,teach:3,est:true},
-{name:'울진남부초등학교병설유치원',lv:'유',s:'uljin',lat:36.22103337024396,lon:128.8311587075016,stu:15,cls:1,sped:0,teach:3,est:true},
-{name:'남양초등학교병설유치원',lv:'유',s:'ulleung',lat:36.2786680746328,lon:128.5196867109299,stu:32,cls:1,sped:0,teach:3,est:true},
-{name:'천부초등학교병설유치원',lv:'유',s:'ulleung',lat:36.28489987641582,lon:128.6006237388155,stu:24,cls:1,sped:0,teach:3,est:true},
-{name:'저동초등학교병설유치원',lv:'유',s:'ulleung',lat:35.964028406689756,lon:128.53166996088123,stu:34,cls:1,sped:0,teach:3,est:true},
-{name:'울릉초등학교병설유치원',lv:'유',s:'ulleung',lat:36.56766339971565,lon:128.31374183178866,stu:12,cls:1,sped:0,teach:3,est:true},
-{name:'도동유치원',lv:'유',s:'ulleung',lat:35.81284980957892,lon:128.93105852618982,stu:12,cls:1,sped:0,teach:3,est:true}];
+/* ★ 〔2026. 8. 12.〕 이 배열이 비어 있는 것은 «아직 안 채운» 것이 아니라
+     «지어낸 것을 걷어낸» 자리입니다. 되돌리지 마세요.
+
+     여기에는 유치원 1,228곳과 특수학교 10곳이 들어 있었습니다. 그런데 —
+
+       · 좌표가 **난수**였습니다. `Math.random()` 으로 경북을 덮는 네모 안
+         아무 데나 찍었습니다. 시군과 아무 상관이 없어서, 울릉군 유치원이
+         본토에 찍혀 있었습니다.
+       · 원아 수도 **난수**였습니다(10~39). 그런데 유치원알리미 API 는
+         `ppcnt3·ppcnt4·ppcnt5·mixppcnt` 로 **실제 원아 수를 줍니다.**
+         받아 놓고 버린 뒤 난수를 넣고 있었습니다.
+       · 굽는 스크립트가 **덧붙이기만** 하고 지우지 않아서 두 번 돌린 결과
+         614곳이 1,228곳이 되어 있었습니다. 이름은 579개뿐이고 나머지는
+         같은 유치원이 좌표만 다르게 두 번 있는 것이었습니다.
+       · 특수학교 10곳은 **이름만 진짜**였습니다. 학생·학급·교원 수는 지어낸
+         값이고 좌표는 그 시군의 중심점이었습니다.
+
+     지도는 「어디에 있는가」를 말하는 그림입니다. 없는 좌표를 난수로 채우면
+     그림이 거짓말을 합니다 — 마스터 원칙 ④「없는 것을 있는 척하지 않는다」.
+
+     되살리는 법: `open api/bake-kinder.mjs` 를 돌리면 실제 원아수·학급수·주소가
+     들어옵니다. 다만 **좌표는 지오코딩 열쇠가 있어야** 채워집니다. 그때까지
+     유치원은 지도에 점으로 찍지 않고 수치로만 셉니다. 그 스크립트가 좌표 없이는
+     지도에 올리지 않도록 스스로 막습니다. */
+const SCHOOLS = [];
 
 (function(){
   /* 학년별 학생·학급 (D2) — `open api/bake-students.mjs` 가 심습니다.
@@ -2839,8 +1659,11 @@ function renderTilemap(){
     selEl.options[1].text = `초등학교 ${totalC}`;
     selEl.options[2].text = `중학교 ${totalM}`;
     selEl.options[3].text = `고등학교 ${totalH}`;
-    if (selEl.options[4]) selEl.options[4].text = `유치원 ${totalK}`;
-    if (selEl.options[5]) selEl.options[5].text = `특수학교 ${totalS}`;
+    /* ★ 「(가상)」을 여기서도 붙입니다 — 붙박이 HTML 에는 있는데 이 줄이
+       덮어쓰면서 지워지고 있었습니다. 화면을 한 번 만지면 가상 표시가 사라져
+       실적처럼 보였습니다. 초·중·고는 실적이라 표시가 없는 것이 맞습니다. */
+    if (selEl.options[4]) selEl.options[4].text = `유치원 ${totalK} (가상)`;
+    if (selEl.options[5]) selEl.options[5].text = `특수학교 ${totalS} (가상)`;
   }
   
   const vals = {}; 
@@ -3231,6 +2054,21 @@ function renderDetail(){
 
   const box = document.getElementById('home-schools');
   box.innerHTML = '';
+
+  /* ★ 비었을 때 «왜» 비었는지 말합니다 〔2026. 8. 12.〕
+     유치원·특수학교는 시군 합계(가상)만 있고 **학교 하나하나의 자리는 없습니다.**
+     예전에는 이 자리를 난수 좌표로 채워서 지도에 점이 찍혔습니다. 걷어냈고,
+     빈 채로 두면 「자료를 못 불러왔나」로 읽히므로 그렇지 않다고 적습니다. */
+  if (list.length === 0) {
+    const why = (lv === '유' || lv === '특수')
+      ? `${lv === '유' ? '유치원' : '특수학교'}은 시군 합계(가상)만 있고 학교별 자료가 아직 없습니다.<br>` +
+        '<span style="font-size:12px;">실제 목록·원아수는 유치원알리미에서 받을 수 있고, 지도에 찍으려면 주소를 좌표로 바꾸는 열쇠가 더 필요합니다.</span>'
+      : (document.getElementById('home-search')?.value.trim()
+          ? '찾으시는 이름이 없습니다.'
+          : '이 조건에 해당하는 학교가 없습니다.');
+    box.innerHTML = `<div style="grid-column:1/-1; padding:28px; text-align:center; color:var(--ink-3); line-height:1.7;">${why}</div>`;
+  }
+
   list.forEach(s => {
     const sLv = lv === '전체' ? s.lv : lv;
     const per = s.stu/s.cls;
@@ -3830,66 +2668,6 @@ renderClosed();
 showView(location.hash.slice(1) || 'home');
 </script>
 
-<!-- Firebase 연동 (방문자 수 통계) -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-  import { getFirestore, doc, updateDoc, increment, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyCPtq-BeB_wPmLa7-fa1y3guv8Y3ImvvJU",
-    authDomain: "team-leap.firebaseapp.com",
-    projectId: "team-leap",
-    storageBucket: "team-leap.firebasestorage.app",
-    messagingSenderId: "351784948618",
-    appId: "1:351784948618:web:1c0fcb4de0b7a5a52f2e73"
-  };
-
-  try {
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    async function trackVisitor() {
-      try {
-        const dateStr = new Date().toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' }).replace(/\. /g, '-').replace('.', '');
-        const todayRef = doc(db, "stats", "visits_" + dateStr);
-        const globalRef = doc(db, "stats", "visitors");
-
-        const tSnap = await getDoc(todayRef);
-        if(!tSnap.exists()) await setDoc(todayRef, { count: 1 });
-        else await updateDoc(todayRef, { count: increment(1) });
-        
-        const gSnap = await getDoc(globalRef);
-        if(!gSnap.exists()) await setDoc(globalRef, { count: 1 });
-        else await updateDoc(globalRef, { count: increment(1) });
-
-        const nT = await getDoc(todayRef);
-        const nG = await getDoc(globalRef);
-        
-        const el = document.getElementById('visitor-count');
-        if (el) {
-          el.innerHTML = `<span style="color:#22c55e">●</span> 오늘 접속자: ${nT.data().count}명 | 누적 접속자수: ${nG.data().count.toLocaleString()}명`;
-        }
-      } catch(e) {
-        console.warn('Firebase error, using localStorage mock:', e);
-        const el = document.getElementById('visitor-count');
-        if (el) {
-          let today = parseInt(localStorage.getItem('visitor_today') || '42', 10);
-          let total = parseInt(localStorage.getItem('visitor_total') || '1042', 10);
-          if (!sessionStorage.getItem('visited')) {
-             today++; total++;
-             localStorage.setItem('visitor_today', today);
-             localStorage.setItem('visitor_total', total);
-             sessionStorage.setItem('visited', 'true');
-          }
-          el.innerHTML = `<span style="color:#22c55e">●</span> 오늘 접속자: ${today}명 | 누적 접속자수: ${total.toLocaleString()}명 <span style="font-size:10px;color:var(--ink-3)">(가상)</span>`;
-        }
-      }
-    }
-    trackVisitor();
-  } catch(e) {
-    console.warn("Firebase 초기화 에러", e);
-  }
-</script>
 </body>
 </html>
 
