@@ -527,17 +527,17 @@ table.data .hl{color:var(--brand);font-weight:800}
         <div class="card">
           <div style="display:flex;align-items:center;justify-content:space-between">
             <h2>주간 AI 뉴스 요약</h2>
-            <span style="font-size:10.5px;background:var(--card-2);padding:2px 6px;border-radius:4px;color:var(--ink-3)">매주 주간 자동 집계</span>
+            <span style="font-size:10.5px;background:var(--card-2);padding:2px 6px;border-radius:4px;color:var(--ink-3)">구울 때 갱신</span>
           </div>
-          <div class="brief">
-            <div class="hd" id="news-brief-date">2026년 8월 2주차 브리핑 (최신)</div>
-            이번 주 경북 학령인구 및 교육 관련 보도 <b>12건</b> 수집 완료. 소규모학교 적정규모화 <b>4건</b>, 농어촌 통학 지원 <b>3건</b>, 교육여건 개선 <b>2건</b>.<br>
-            <ul style="margin:8px 0 0;padding-left:18px;color:var(--ink);line-height:1.5;font-size:13.5px;">
-              <li style="margin-bottom:8px"><b>경북 소규모학교 적정규모화 기준 개선 논의</b><br>주민 의견수렴 및 설명회 절차 대폭 강화 전망. <a href="https://n.news.naver.com/mnews/article/056/0012181627?sid=102" target="_blank" style="font-size:12px;">원문보기 ↗</a></li>
-              <li style="margin-bottom:8px"><b>농어촌 통학 지원 확대 및 버스 운영비 10% 증가</b><br>원거리 통학 학생들을 위한 통학 지원금 조정안 검토 중. <a href="https://n.news.naver.com/mnews/article/056/0012220826?sid=102" target="_blank" style="font-size:12px;">원문보기 ↗</a></li>
-              <li><b>2027학년도 교원 정원 감축 예고, 교육계 반발</b><br>학령인구 감소에 따른 정원 재산정 및 소규모학교 유지 방안 강구. <a href="https://n.news.naver.com/mnews/article/661/0000081364?sid=102" target="_blank" style="font-size:12px;">원문보기 ↗</a></li>
-            </ul>
-            <div style="margin-top:10px;font-size:11px;color:var(--brand);font-weight:600">※ 뉴스 수집 파이프라인(사이트 굽기 명령) 실행 시 주간 동기화 자동 반영</div>
+          <!-- ★ 〔2026. 8. 12.〕 여기 있던 것은 **전부 손으로 적은 것**이었습니다 —
+               「보도 12건 수집 완료 · 적정규모화 4건 · 통학 지원 3건」이라는 숫자도,
+               기사 세 건도, 링크도. 「주간 자동 집계」라고 적혀 있었지만
+               아무것도 집계하지 않았습니다.
+
+               이제 **주간 뉴스 클리핑과 같은 자료**(news-data)에서 셈해 그립니다.
+               숫자를 손으로 적지 않습니다 — 손으로 적은 숫자는 반드시 낡습니다. -->
+          <div class="brief" id="news-brief">
+            <div class="hd" id="news-brief-date">뉴스를 불러오는 중…</div>
           </div>
         </div>
 
@@ -563,9 +563,10 @@ table.data .hl{color:var(--brand);font-weight:800}
               <option value="중">중학교 260</option>
               <option value="고">고등학교 183</option>
               <!-- 숫자는 화면이 켜지면서 채웁니다. 여기 적어 두면 조용히 낡습니다
-                   — 실제로 330·44 가 박혀 있었고 셈과 어긋나 있었습니다. -->
-              <option value="유">유치원 (가상)</option>
-              <option value="특수">특수학교 (가상)</option>
+                   — 실제로 330·44 가 박혀 있었고 셈과 어긋나 있었습니다.
+                   〔2026. 8. 12.〕 유치원·특수학교도 이제 **실적**입니다. -->
+              <option value="유">유치원</option>
+              <option value="특수">특수학교</option>
             </select>
             <input type="text" id="home-search" class="select" placeholder="학교 검색..." style="margin-left:8px; padding:4px 8px; border:1px solid var(--line); border-radius:4px; font-size:13px; width:120px;">
             <button type="button" class="chip" id="home-metric-sch" aria-pressed="true">학교 수</button>
@@ -1152,7 +1153,95 @@ table.data .hl{color:var(--brand);font-weight:800}
     });
   }
 
-  function startNews() { wireNewsFilter(); renderNews(); }
+  /* ── 종합 대시보드의 「주간 AI 뉴스 요약」 ─────────────────────────
+     예전에는 여기 숫자와 기사 셋이 **손으로 적혀** 있었습니다.
+     이제 뉴스 클리핑과 **같은 자료**에서 셈합니다 — 두 화면이 어긋날 수 없습니다.
+
+     무엇을 셈하나 — 「몇 건 왔다」만으로는 인사이트가 없습니다.
+       ① 이번 주 몇 건인가 (지난주와 견주어 늘었나 줄었나)
+       ② **무엇에 대한 이야기인가** — 주제별로 나눕니다
+       ③ 그중 **경북 이야기는 몇 건인가**
+       ④ 가장 굵은 줄기 하나를 문장으로 말합니다
+     주제는 기사 하나가 여럿에 걸릴 수 있습니다(통폐합이면서 재정 이야기).
+     그래서 합계가 건수보다 클 수 있고, 그 사실을 화면에 적습니다. */
+  const NEWS_TOPICS = [
+    ['통폐합·적정규모', /폐교|통폐합|통합 ?운영|적정규모|분교|학교 ?통합/],
+    ['교육재정',       /교부금|재정|예산|교육재정/],
+    ['교원·정원',      /교원|정원|교사 ?수|배치 ?기준|공무원 ?정원/],
+    ['통학·돌봄',      /통학|스쿨버스|돌봄|기숙/],
+    ['지역소멸·인구',  /지역소멸|인구감소|소멸위험|저출생|저출산|학령인구/],
+    ['교육혁신·특구',  /교육발전특구|교육혁신|미래교육|늘봄/]
+  ];
+  const GYEONGBUK = /경북|경상북도|포항|경주|김천|안동|구미|영주|영천|문경|경산|의성|청송|영덕|성주|칠곡|예천|봉화|울진|울릉|고령군|영양군|상주시|청도군/;
+
+  function renderNewsBrief() {
+    const box = document.getElementById('news-brief');
+    if (!box) return;
+    if (NEWS_ALL === null) NEWS_ALL = readBakedNews();
+
+    if (NEWS_ALL.length === 0) {
+      box.innerHTML = '<div class="hd">아직 실은 기사가 없습니다</div>' +
+        '<span style="font-size:12.5px;color:var(--ink-3)">' +
+        '<code>news-history.json</code> 을 채운 뒤 사이트를 다시 구우면 올라옵니다.</span>';
+      return;
+    }
+
+    const now = Date.now(), DAY = 24 * 60 * 60 * 1000;
+    const age = n => (now - new Date(n.pubDate).getTime()) / DAY;
+    const week = NEWS_ALL.filter(n => age(n) <= 7);
+    const prevWeek = NEWS_ALL.filter(n => age(n) > 7 && age(n) <= 14);
+    const base = week.length ? week : NEWS_ALL;   /* 이번 주가 비면 전체로 말합니다 */
+
+    const counts = NEWS_TOPICS.map(([name, re]) => ({
+      name, n: base.filter(x => re.test(x.title + ' ' + x.description)).length
+    })).filter(t => t.n > 0).sort((a, b) => b.n - a.n);
+
+    const local = base.filter(x => GYEONGBUK.test(x.title + ' ' + x.description)).length;
+    const top = counts[0];
+    const newest = NEWS_ALL[0] ? new Date(NEWS_ALL[0].pubDate) : null;
+    const stamp = newest && !isNaN(newest.getTime())
+      ? `${newest.getFullYear()}. ${newest.getMonth() + 1}. ${newest.getDate()}.`
+      : '';
+
+    /* 늘었나 줄었나 — 지난주가 있을 때만 말합니다 */
+    let trend = '';
+    if (week.length && prevWeek.length) {
+      const diff = week.length - prevWeek.length;
+      trend = diff === 0 ? ' (지난주와 같음)'
+            : ` (지난주보다 ${Math.abs(diff)}건 ${diff > 0 ? '늘었습니다' : '줄었습니다'})`;
+    }
+
+    const bars = counts.slice(0, 4).map(t => {
+      const pct = Math.round(t.n / base.length * 100);
+      return '<div style="display:flex;align-items:center;gap:8px;margin-top:5px;font-size:12.5px">' +
+        `<span style="width:104px;flex:none;color:var(--ink-2)">${esc(t.name)}</span>` +
+        `<span style="flex:1;height:7px;border-radius:4px;background:var(--card-2);overflow:hidden">` +
+          `<span style="display:block;height:100%;width:${pct}%;background:var(--brand)"></span></span>` +
+        `<b style="width:26px;text-align:right">${t.n}</b></div>`;
+    }).join('');
+
+    const picks = base.slice(0, 3).map(n => {
+      const link = safeUrl(n.link);
+      return '<li style="margin-bottom:7px">' +
+        `<b>${esc(n.title)}</b>` +
+        (link ? ` <a href="${esc(link)}" target="_blank" rel="noopener noreferrer" style="font-size:11.5px">원문 ↗</a>` : '') +
+        '</li>';
+    }).join('');
+
+    box.innerHTML =
+      `<div class="hd" id="news-brief-date">${esc(stamp)} 기준 · ${week.length ? '최근 7일' : '전체'} ${base.length}건${esc(trend)}</div>` +
+      (top
+        ? `<div style="font-size:13.5px;line-height:1.6">이번 자락의 가장 굵은 줄기는 <b>${esc(top.name)}</b>입니다 — ` +
+          `${base.length}건 가운데 <b>${top.n}건</b>. 경북 이야기는 <b>${local}건</b>입니다.</div>`
+        : '')
+      + bars
+      + `<ul style="margin:10px 0 0;padding-left:17px;color:var(--ink);line-height:1.45;font-size:13px">${picks}</ul>`
+      + '<div style="margin-top:9px;font-size:11px;color:var(--ink-3)">' +
+        '기사 하나가 여러 주제에 걸칠 수 있어 주제별 합이 건수보다 클 수 있습니다. ' +
+        '전체는 왼쪽 <b>주간 뉴스 클리핑</b>에서 봅니다.</div>';
+  }
+
+  function startNews() { wireNewsFilter(); renderNews(); renderNewsBrief(); }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', startNews);
@@ -1305,11 +1394,647 @@ const SCHOOL_FULL = { e:'초등학교', m:'중학교', h:'고등학교' };
      지도는 「어디에 있는가」를 말하는 그림입니다. 없는 좌표를 난수로 채우면
      그림이 거짓말을 합니다 — 마스터 원칙 ④「없는 것을 있는 척하지 않는다」.
 
-     되살리는 법: `open api/bake-kinder.mjs` 를 돌리면 실제 원아수·학급수·주소가
-     들어옵니다. 다만 **좌표는 지오코딩 열쇠가 있어야** 채워집니다. 그때까지
-     유치원은 지도에 점으로 찍지 않고 수치로만 셉니다. 그 스크립트가 좌표 없이는
-     지도에 올리지 않도록 스스로 막습니다. */
-const SCHOOLS = [];
+     〔2026. 8. 12. 이어서〕 **실적으로 다시 채웠습니다.**
+     카카오 로컬로 주소를 좌표로 바꿔 넣습니다. 이제 —
+       · 유치원 — 유치원알리미. 원아수·학급수는 실적, 좌표는 주소를 옮긴 것
+       · 특수학교 — 학교알리미 `schulKndCode=05`. 학생·학급·교원 수 전부 실적
+
+     ★ 배열이 **둘**인 까닭 — 굽는 스크립트가 둘이기 때문입니다.
+       각 스크립트는 자기 배열만 통째로 갈아 끼웁니다. 하나로 두면 나중에 돌린
+       쪽이 앞의 것을 지웁니다. **한 배열은 한 스크립트만 가집니다.**
+       손으로 고치지 마세요 — 다시 구우면 지워집니다. */
+
+/* ── `open api/bake-kinder.mjs` 가 갈아 끼웁니다 ───────────────── */
+const KINDERGARTENS = [
+{name:'효자초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 효성로30번길 5',lat:36.005668,lon:129.337514,stu:19,cls:2,sped:0,teach:0,est:false},
+{name:'대도초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 상공로92번길 25-10',lat:36.014099,lon:129.361833,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'대송초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 대송면 제내길 24',lat:35.983932,lon:129.362590,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'대해초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 양학천로150번길 58',lat:36.022559,lon:129.366867,stu:9,cls:1,sped:0,teach:0,est:false},
+{name:'포항이동유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 대잠길 88',lat:36.017300,lon:129.339115,stu:136,cls:8,sped:0,teach:0,est:false},
+{name:'대이초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 대이로46번길 35',lat:36.022393,lon:129.345648,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'인덕초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 서원재로170번길 9',lat:35.984660,lon:129.402127,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'제2리라유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 상대로 125-2',lat:36.013858,lon:129.360450,stu:79,cls:5,sped:0,teach:0,est:false},
+{name:'포항제철유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 지곡로260번길 7',lat:36.030159,lon:129.324040,stu:244,cls:12,sped:0,teach:0,est:false},
+{name:'아이클유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 상공로32번길 14-11',lat:36.010891,lon:129.357231,stu:43,cls:4,sped:0,teach:0,est:false},
+{name:'유강초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 유강길9번길 39',lat:36.003997,lon:129.314025,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'하늘숲유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 방산로 971',lat:35.943872,lon:129.444284,stu:155,cls:6,sped:0,teach:0,est:false},
+{name:'포항유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 중앙로78번길 24',lat:36.020427,lon:129.371816,stu:64,cls:4,sped:0,teach:0,est:false},
+{name:'우리유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 정몽주로 731-1',lat:35.983095,lon:129.410142,stu:133,cls:8,sped:0,teach:0,est:false},
+{name:'구정초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 구정길 11',lat:35.980906,lon:129.408661,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'동해초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 일월로 78',lat:35.987923,lon:129.441072,stu:32,cls:3,sped:0,teach:0,est:false},
+{name:'대건유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 남미질로 17',lat:36.105471,lon:129.345022,stu:81,cls:5,sped:0,teach:0,est:false},
+{name:'연일형산초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 형산강남로 262',lat:35.998544,lon:129.341744,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'오천제일유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 해병로231번길 20',lat:35.974591,lon:129.412395,stu:37,cls:3,sped:0,teach:0,est:false},
+{name:'튜립유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 철강로705번길 15',lat:35.964313,lon:129.403614,stu:102,cls:6,sped:0,teach:0,est:false},
+{name:'포항원동초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 냉천로340번길 64',lat:35.965395,lon:129.401075,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'가람유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 양학천로 80',lat:36.020634,lon:129.360199,stu:39,cls:3,sped:0,teach:0,est:false},
+{name:'풀잎유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 원서길 138',lat:35.987290,lon:129.330692,stu:78,cls:5,sped:0,teach:0,est:false},
+{name:'연일초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 철강로25번길 40',lat:35.995835,lon:129.346701,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'양포초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 장기로 33',lat:35.875740,lon:129.513152,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'문충초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 정몽주로 49',lat:35.930530,lon:129.398256,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'해맑은유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 냉천로270번길 13-9',lat:35.969940,lon:129.408362,stu:70,cls:5,sped:0,teach:0,est:false},
+{name:'포항송도초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 송도로 80',lat:36.033036,lon:129.380466,stu:13,cls:1,sped:0,teach:0,est:false},
+{name:'장기초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 장기면 장기로 336',lat:35.897003,lon:129.494328,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'하슬린유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 원서길118번길 26-30',lat:35.990903,lon:129.331213,stu:12,cls:1,sped:0,teach:0,est:false},
+{name:'효성유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 일월로 239',lat:35.987394,lon:129.458398,stu:30,cls:3,sped:0,teach:0,est:false},
+{name:'동아유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 효성로16번길 14',lat:36.005328,lon:129.335142,stu:51,cls:4,sped:0,teach:0,est:false},
+{name:'송림초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 축항로 55',lat:36.030125,lon:129.374279,stu:11,cls:1,sped:0,teach:0,est:false},
+{name:'신흥초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 중흥로100번길 13',lat:36.012996,lon:129.353127,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'아이누리유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 대잠길69번길 10',lat:36.016177,lon:129.336992,stu:20,cls:3,sped:0,teach:0,est:false},
+{name:'아름다운유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 대이로15번길 13',lat:36.016239,lon:129.342114,stu:162,cls:7,sped:0,teach:0,est:false},
+{name:'오천초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 정몽주로 572',lat:35.969692,lon:129.416949,stu:46,cls:4,sped:5,teach:0,est:false},
+{name:'유강유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 유강길9번길 60',lat:36.005964,lon:129.315115,stu:84,cls:5,sped:0,teach:0,est:false},
+{name:'청림초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 정몽주로 890',lat:35.996134,lon:129.404273,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'성바오로유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 장기로1520번길 22',lat:35.960141,lon:129.431443,stu:96,cls:4,sped:0,teach:0,est:false},
+{name:'이동한빛유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 포스코대로 147-8',lat:36.026635,lon:129.342283,stu:116,cls:6,sped:0,teach:0,est:false},
+{name:'문덕초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 해병로 397',lat:35.960527,lon:129.409206,stu:9,cls:1,sped:0,teach:0,est:false},
+{name:'상대초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 대해로 82',lat:36.022410,lon:129.361869,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'새봄유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 원서길 96',lat:35.988505,lon:129.334911,stu:108,cls:6,sped:0,teach:0,est:false},
+{name:'사랑으로유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 남원로 85',lat:35.966438,lon:129.400411,stu:116,cls:6,sped:0,teach:0,est:false},
+{name:'새롬유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 희망대로382번길 25',lat:36.032020,lon:129.332093,stu:53,cls:4,sped:0,teach:0,est:false},
+{name:'오해피데이유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 남구 철강로731번길 13',lat:35.963494,lon:129.406773,stu:65,cls:4,sped:0,teach:0,est:false},
+{name:'초곡초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 흥해읍 초곡지구로58번길 56',lat:36.097550,lon:129.333362,stu:60,cls:3,sped:0,teach:0,est:false},
+{name:'우리아이유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 양덕남로 13',lat:36.078399,lon:129.393767,stu:25,cls:3,sped:0,teach:0,est:false},
+{name:'포항대학교부속유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 흥해읍 포항대학로 7',lat:36.086429,lon:129.410691,stu:102,cls:6,sped:0,teach:0,est:false},
+{name:'포항초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 서동로47번길 23',lat:36.042788,lon:129.363970,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'난나유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 창흥로36번길 8-15',lat:36.063323,lon:129.368436,stu:151,cls:9,sped:0,teach:0,est:false},
+{name:'행복한유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 장량로128번길 50',lat:36.077354,lon:129.394189,stu:114,cls:7,sped:0,teach:0,est:false},
+{name:'새싹발트유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 용흥로291번길 15',lat:36.048970,lon:129.349979,stu:10,cls:1,sped:0,teach:0,est:false},
+{name:'리라유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 소티재로126번길 14-9',lat:36.062550,lon:129.355641,stu:195,cls:8,sped:0,teach:0,est:false},
+{name:'송라초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 보경로 57',lat:36.228887,lon:129.355750,stu:1,cls:1,sped:0,teach:0,est:false},
+{name:'상지아이들유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 장량로140번길 17',lat:36.080194,lon:129.396318,stu:36,cls:3,sped:0,teach:0,est:false},
+{name:'포항대흥초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 용흥로292번길 33',lat:36.045907,lon:129.352348,stu:16,cls:3,sped:4,teach:0,est:false},
+{name:'포항항도초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 항도길 13',lat:36.052320,lon:129.369039,stu:7,cls:2,sped:4,teach:0,est:false},
+{name:'목원유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 장량로17번길 7',lat:36.083354,lon:129.381930,stu:41,cls:3,sped:0,teach:0,est:false},
+{name:'죽장초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 새마을로 3575',lat:36.159910,lon:129.091410,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'예원유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 법원로79번길 43',lat:36.081724,lon:129.380697,stu:140,cls:7,sped:0,teach:0,est:false},
+{name:'재능유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 양덕남로8번길 1',lat:36.077619,lon:129.393475,stu:48,cls:3,sped:0,teach:0,est:false},
+{name:'산내들예능유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 장량로17번길 5-11',lat:36.082965,lon:129.381622,stu:101,cls:6,sped:0,teach:0,est:false},
+{name:'자연과아이유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 법원로40번길 81',lat:36.079555,lon:129.390656,stu:204,cls:10,sped:0,teach:0,est:false},
+{name:'고려유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 선착로 54',lat:36.049131,lon:129.369398,stu:160,cls:7,sped:0,teach:0,est:false},
+{name:'달전초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 흥해읍 이인로101번길 27-10',lat:36.069984,lon:129.336353,stu:31,cls:2,sped:0,teach:0,est:false},
+{name:'대동유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 중앙로419번길 27',lat:36.050114,lon:129.359503,stu:111,cls:6,sped:0,teach:0,est:false},
+{name:'포항동부초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 삼호로 273',lat:36.062553,lon:129.380940,stu:80,cls:6,sped:4,teach:0,est:false},
+{name:'포항대림유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 양학로34번길 24',lat:36.028570,lon:129.351382,stu:13,cls:2,sped:0,teach:0,est:false},
+{name:'포항양덕초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 양덕로 20-5',lat:36.079870,lon:129.403270,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'신광초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 신광면 토성길 31',lat:36.129540,lon:129.261926,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'숲속꿈의유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 신덕로 80-49',lat:36.090467,lon:129.407247,stu:97,cls:5,sped:0,teach:0,est:false},
+{name:'포항장량유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 장량로262번길 13',lat:36.081500,lon:129.409705,stu:157,cls:11,sped:8,teach:0,est:false},
+{name:'양서초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 천마로 89',lat:36.084733,lon:129.396520,stu:10,cls:1,sped:0,teach:0,est:false},
+{name:'두호남부초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 두호로52번길 13',lat:36.061699,lon:129.373962,stu:12,cls:1,sped:0,teach:0,est:false},
+{name:'아띠유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 용흥로292번길 35-3',lat:36.044633,lon:129.351883,stu:38,cls:3,sped:0,teach:0,est:false},
+{name:'이룸유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 신흥로861번길 7',lat:36.112655,lon:129.336767,stu:101,cls:6,sped:0,teach:0,est:false},
+{name:'항구초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 삼호로468번길 5-12',lat:36.071016,lon:129.400736,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'포항영흥초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 중앙로212번길 6-7 . 포항영흥초등학교병설유치원 (죽도동)',lat:36.031105,lon:129.367907,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'포항제일유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 새마을로 172',lat:36.045862,lon:129.344130,stu:166,cls:7,sped:0,teach:0,est:false},
+{name:'포항중앙초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 우창동로 73',lat:36.059071,lon:129.365642,stu:13,cls:1,sped:0,teach:0,est:false},
+{name:'죽도초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 중흥로 195',lat:36.022040,lon:129.356176,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'포항서머힐유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 학전로 55',lat:36.057866,lon:129.374263,stu:47,cls:3,sped:0,teach:0,est:false},
+{name:'성심유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 해동로 165',lat:36.033901,lon:129.369967,stu:61,cls:4,sped:0,teach:0,est:false},
+{name:'대잠초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 중흥로161번길 16',lat:36.020281,lon:129.353764,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'꽃동산유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 장량로17번길 58',lat:36.087619,lon:129.383489,stu:64,cls:4,sped:0,teach:0,est:false},
+{name:'흥해서부초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 북송길 53',lat:36.115849,lon:129.314656,stu:11,cls:1,sped:0,teach:0,est:false},
+{name:'흥해초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 흥해로 107',lat:36.114776,lon:129.346317,stu:28,cls:2,sped:0,teach:0,est:false},
+{name:'용흥초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 용흥로 118',lat:36.039137,lon:129.348877,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'장성초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 새천년대로1123번길 6',lat:36.070084,lon:129.371648,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'포항해맞이초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 환호로 37',lat:36.071144,lon:129.391226,stu:10,cls:1,sped:0,teach:0,est:false},
+{name:'민들레유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 삼호로 480-8',lat:36.071065,lon:129.400319,stu:65,cls:4,sped:0,teach:0,est:false},
+{name:'이화유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 도음로 947-3',lat:36.078852,lon:129.337412,stu:36,cls:3,sped:0,teach:0,est:false},
+{name:'포항송곡초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 장량중앙로 17',lat:36.091330,lon:129.382710,stu:9,cls:1,sped:0,teach:0,est:false},
+{name:'곡강초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 흥해읍 칠포로 7',lat:36.130686,lon:129.348777,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'동산유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 새천년대로 1201-26',lat:36.073673,lon:129.378500,stu:213,cls:9,sped:0,teach:0,est:false},
+{name:'죽천초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 죽천길185번길 30',lat:36.098268,lon:129.427909,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'양학초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 양학로 110',lat:36.032522,lon:129.343918,stu:25,cls:3,sped:0,teach:0,est:false},
+{name:'대한유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 학전로111번길 47-11',lat:36.062748,lon:129.372100,stu:110,cls:5,sped:0,teach:0,est:false},
+{name:'세이유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 법원로140번길 46-13',lat:36.085189,lon:129.391406,stu:87,cls:4,sped:0,teach:0,est:false},
+{name:'기계초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 기계로 122',lat:36.072229,lon:129.203569,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'청하초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 청하로217번길 19',lat:36.198721,lon:129.337780,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'월포초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 청하면 월포로 146',lat:36.203197,lon:129.367482,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'중앙유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 중흥로241번길 30-2',lat:36.026324,lon:129.356964,stu:119,cls:6,sped:0,teach:0,est:false},
+{name:'창포초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 새천년대로1075번길 32',lat:36.067043,lon:129.369486,stu:29,cls:3,sped:0,teach:0,est:false},
+{name:'학천초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 도음로856번길 17',lat:36.076856,lon:129.328108,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'두호초등학교병설유치원',lv:'유',s:'pohang',addr:'경상북도 포항시 북구 창흥로36번길 23',lat:36.064976,lon:129.368860,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'하나유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 구부랑길 73',lat:36.005006,lon:129.196214,stu:16,cls:2,sped:0,teach:0,est:false},
+{name:'서라벌초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 천군2길 24',lat:35.830889,lon:129.279329,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'현곡초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 현곡면 다경길 16-7',lat:35.886901,lon:129.180622,stu:60,cls:3,sped:0,teach:0,est:false},
+{name:'강동초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 강동로 80',lat:35.991897,lon:129.276239,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'괘릉초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 신계입실길 139-5',lat:35.760408,lon:129.322567,stu:8,cls:1,sped:0,teach:0,est:false},
+{name:'금장초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 등나무길 18-6',lat:35.873739,lon:129.205293,stu:51,cls:3,sped:0,teach:0,est:false},
+{name:'아화초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 내서로 461',lat:35.892782,lon:129.053476,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'안강제일유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 안강중앙로 179-11',lat:35.994071,lon:129.218821,stu:13,cls:1,sped:0,teach:0,est:false},
+{name:'황남초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 광중2길 28',lat:35.884947,lon:129.229737,stu:60,cls:3,sped:0,teach:0,est:false},
+{name:'나산초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 동해안로 625-9',lat:35.697687,lon:129.469871,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'양북초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 어일남길 2',lat:35.785592,lon:129.444239,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'동천초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 알천북로249번길 20',lat:35.848354,lon:129.227018,stu:15,cls:2,sped:0,teach:0,est:false},
+{name:'마루유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 불국로 80-8',lat:35.780790,lon:129.303653,stu:106,cls:6,sped:0,teach:0,est:false},
+{name:'황성초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 양정로287번길 12',lat:35.859383,lon:129.223366,stu:54,cls:3,sped:0,teach:0,est:false},
+{name:'모아초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 산업로 4974-5',lat:35.920581,lon:129.246672,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'양동초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 양동마을길 109',lat:35.998314,lon:129.253822,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'연안초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 연안1길 15',lat:35.727867,lon:129.318316,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'유림초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 용담로104번길 43-4',lat:35.868709,lon:129.212814,stu:9,cls:1,sped:0,teach:0,est:false},
+{name:'입실초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 입실로1길 94',lat:35.716993,lon:129.324515,stu:9,cls:1,sped:0,teach:0,est:false},
+{name:'천북초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 천북로 343',lat:35.897263,lon:129.267551,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'화랑초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 임해로 116',lat:35.842137,lon:129.229996,stu:9,cls:1,sped:0,teach:0,est:false},
+{name:'나원초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 안현로 20',lat:35.870174,lon:129.203336,stu:77,cls:4,sped:0,teach:0,est:false},
+{name:'사방초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 사방검단길 54',lat:35.938564,lon:129.225634,stu:8,cls:1,sped:0,teach:0,est:false},
+{name:'산대초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 구부랑길 54-5',lat:36.003083,lon:129.197736,stu:16,cls:1,sped:0,teach:0,est:false},
+{name:'월성초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 원효로 67',lat:35.842976,lon:129.208130,stu:21,cls:2,sped:0,teach:0,est:false},
+{name:'중앙유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 태종로 266-8',lat:35.835792,lon:129.164289,stu:119,cls:6,sped:0,teach:0,est:false},
+{name:'모화초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 계동1길 12',lat:35.677373,lon:129.333174,stu:20,cls:1,sped:0,teach:0,est:false},
+{name:'내남초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 내남면 경덕로 286',lat:35.764867,lon:129.196045,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'근화유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 승삼2길 19',lat:35.874906,lon:129.228682,stu:134,cls:6,sped:0,teach:0,est:false},
+{name:'불국사초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 불국사초등길 27',lat:35.778140,lon:129.301170,stu:8,cls:1,sped:0,teach:0,est:false},
+{name:'양남초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 양남로 335-1',lat:35.675433,lon:129.460611,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'불국유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 다불로 379-25',lat:35.850257,lon:129.238803,stu:173,cls:8,sped:0,teach:0,est:false},
+{name:'영지초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 영지로 449',lat:35.754175,lon:129.294866,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'예송유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 유림로 69',lat:35.869943,lon:129.217822,stu:151,cls:7,sped:0,teach:0,est:false},
+{name:'예일유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 강동로 129',lat:35.996953,lon:129.276821,stu:94,cls:6,sped:0,teach:0,est:false},
+{name:'의곡초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 문복로 1798-6',lat:35.755121,lon:129.047254,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'감포초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 감포읍 감포로10길 21',lat:35.809645,lon:129.501411,stu:11,cls:1,sped:0,teach:0,est:false},
+{name:'흥무초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 금성로347번길 30',lat:35.849752,lon:129.204170,stu:32,cls:3,sped:0,teach:0,est:false},
+{name:'경주유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 가삼골2길 27',lat:35.870493,lon:129.195804,stu:27,cls:3,sped:0,teach:0,est:false},
+{name:'경주여자정보고등학교병설동도유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 시동로 90',lat:35.773383,lon:129.289890,stu:40,cls:3,sped:0,teach:0,est:false},
+{name:'신라초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 금성로183번길 28',lat:35.834877,lon:129.204345,stu:8,cls:1,sped:0,teach:0,est:false},
+{name:'옥산초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 낙헌2길 48',lat:35.995258,lon:129.169689,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'천포초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 단석로 1929',lat:35.844952,lon:129.094143,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'건천초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 내서로 1105',lat:35.850562,lon:129.103721,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'경주초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 충효2길 20',lat:35.842651,lon:129.190080,stu:42,cls:3,sped:0,teach:0,est:false},
+{name:'동국대학교부속유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 동대로 159',lat:35.862975,lon:129.197845,stu:187,cls:9,sped:0,teach:0,est:false},
+{name:'동방초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 산업로 3485-8',lat:35.803649,lon:129.261861,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'용강초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 승삼2길 9',lat:35.876009,lon:129.229464,stu:72,cls:4,sped:0,teach:0,est:false},
+{name:'모량초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 내서로 1504',lat:35.823780,lon:129.130958,stu:11,cls:1,sped:0,teach:0,est:false},
+{name:'샛별유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 비화원로 112',lat:35.991977,lon:129.220184,stu:17,cls:1,sped:0,teach:0,est:false},
+{name:'석계초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 외동읍 석계평리길 79-31',lat:35.678724,lon:129.309332,stu:17,cls:1,sped:0,teach:0,est:false},
+{name:'용황유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 원지길12번길 49',lat:35.864602,lon:129.220791,stu:121,cls:6,sped:0,teach:0,est:false},
+{name:'현대유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 용담로92번길 43-9',lat:35.867862,lon:129.213363,stu:64,cls:3,sped:0,teach:0,est:false},
+{name:'계림초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 동문로43번길 16',lat:35.849302,lon:129.212368,stu:14,cls:1,sped:0,teach:0,est:false},
+{name:'화천초등학교병설유치원',lv:'유',s:'gyeongju',addr:'경상북도 경주시 건천읍 경주역세권3로 60',lat:35.803976,lon:129.137385,stu:60,cls:3,sped:0,teach:0,est:false},
+{name:'율빛유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 옥산길 128',lat:36.111950,lon:128.189038,stu:179,cls:11,sped:5,teach:0,est:false},
+{name:'김천부곡초등학교병설유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 부곡맛고을1길 147',lat:36.124866,lon:128.095056,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'해오름유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 해오름1로 46',lat:36.124284,lon:128.174185,stu:128,cls:6,sped:0,teach:0,est:false},
+{name:'율곡유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 용전4로1길 33',lat:36.121819,lon:128.192742,stu:119,cls:7,sped:5,teach:0,est:false},
+{name:'김천모암초등학교병설유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 모암사랑10길 6',lat:36.125830,lon:128.124606,stu:9,cls:1,sped:0,teach:0,est:false},
+{name:'김천유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 문당길 76',lat:36.140517,lon:128.092488,stu:92,cls:6,sped:2,teach:0,est:false},
+{name:'아천초등학교병설유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 어모문화1길 14',lat:36.178756,lon:128.116470,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'봉계초등학교병설유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 봉계길 74-15',lat:36.144415,lon:128.064011,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'마리아유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 학사대길 64',lat:36.116276,lon:128.121291,stu:20,cls:2,sped:0,teach:0,est:false},
+{name:'꿈나무유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 미곡길 75',lat:36.123111,lon:128.077800,stu:38,cls:3,sped:0,teach:0,est:false},
+{name:'김천중앙초등학교병설유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 김천로 156',lat:36.119976,lon:128.116707,stu:27,cls:4,sped:2,teach:0,est:false},
+{name:'대덕초등학교병설유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 관기2길 21',lat:35.917518,lon:127.971662,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'김천동부초등학교병설유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 황산로 83-15',lat:36.118866,lon:128.138333,stu:16,cls:2,sped:0,teach:0,est:false},
+{name:'계명유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 고래실길 39',lat:36.122118,lon:128.085398,stu:44,cls:3,sped:0,teach:0,est:false},
+{name:'조마초등학교병설유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 강곡1길 16-69',lat:36.032702,lon:128.099296,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'위량초등학교병설유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 문화로 6',lat:36.201539,lon:128.161165,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'녹야유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 호랑이2길 5',lat:36.116242,lon:128.118481,stu:65,cls:4,sped:0,teach:0,est:false},
+{name:'감천초등학교병설유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 금감로 1550-2',lat:36.065419,lon:128.126381,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'운곡초등학교병설유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 용전4로3길 7',lat:36.123519,lon:128.192884,stu:66,cls:4,sped:0,teach:0,est:false},
+{name:'직지초등학교병설유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 대성향천길 1603',lat:36.123085,lon:128.021841,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'리라유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 신음새동네2길 13',lat:36.133707,lon:128.119824,stu:85,cls:5,sped:0,teach:0,est:false},
+{name:'김천서부초등학교병설유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 원곡길 8',lat:36.122874,lon:128.107102,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'우리유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 부곡맛고을2길 86',lat:36.124337,lon:128.094297,stu:120,cls:6,sped:0,teach:0,est:false},
+{name:'개령서부초등학교병설유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 감문로 277',lat:36.156996,lon:128.152259,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'지품천초등학교증산분교장병설유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 증산면 증산1로 29',lat:35.902270,lon:128.035774,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'김천다수초등학교병설유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 영남대로 1286',lat:36.126308,lon:128.076168,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'금강사금강유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 가메실5길 58',lat:36.120593,lon:128.100797,stu:119,cls:6,sped:0,teach:0,est:false},
+{name:'조은유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 시청2길 32',lat:36.137155,lon:128.113380,stu:81,cls:5,sped:0,teach:0,est:false},
+{name:'김천신일초등학교병설유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 신음3길 42',lat:36.143679,lon:128.121356,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'김천동신초등학교병설유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 신음새동네길 116',lat:36.131442,lon:128.121813,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'농소유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 해오름1로1길 9',lat:36.122295,lon:128.175516,stu:115,cls:6,sped:0,teach:0,est:false},
+{name:'킨더하바유치원',lv:'유',s:'gimcheon',addr:'경상북도 김천시 해오름2로1길 5',lat:36.118131,lon:128.176158,stu:134,cls:6,sped:0,teach:0,est:false},
+{name:'안동자연유치원',lv:'유',s:'andong',addr:'경상북도 안동시 운동장길 175',lat:36.538975,lon:128.720515,stu:50,cls:3,sped:0,teach:0,est:false},
+{name:'서선초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 서선길 51',lat:36.591037,lon:128.639295,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'서후초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 학가산온천길 375',lat:36.617881,lon:128.662768,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'성심유치원',lv:'유',s:'andong',addr:'경상북도 안동시 서동문로 145-6',lat:36.567294,lon:128.728039,stu:132,cls:6,sped:0,teach:0,est:false},
+{name:'안동서부초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 서동문로 65',lat:36.567589,lon:128.719171,stu:40,cls:4,sped:3,teach:0,est:false},
+{name:'안동송현초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 경동로 313',lat:36.573401,lon:128.695793,stu:10,cls:1,sped:0,teach:0,est:false},
+{name:'남선초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 구미양지마길 26',lat:36.524863,lon:128.768689,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'동산유치원',lv:'유',s:'andong',addr:'경상북도 안동시 송하2길 51-13',lat:36.570379,lon:128.696672,stu:55,cls:3,sped:0,teach:0,est:false},
+{name:'송천초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 송천2길 119',lat:36.546266,lon:128.792228,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'안동영호초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 옥서4길 8',lat:36.560447,lon:128.691795,stu:17,cls:2,sped:0,teach:0,est:false},
+{name:'풍북초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 괴정2길 21-14',lat:36.597768,lon:128.534247,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'안동꿈터유치원',lv:'유',s:'andong',addr:'경상북도 안동시 하이마로 297',lat:36.550782,lon:128.682638,stu:108,cls:6,sped:4,teach:0,est:false},
+{name:'안동유치원',lv:'유',s:'andong',addr:'경상북도 안동시 서동문로 127',lat:36.567383,lon:128.725769,stu:132,cls:6,sped:0,teach:0,est:false},
+{name:'해동사금강유치원',lv:'유',s:'andong',addr:'경상북도 안동시 태사길 167',lat:36.565398,lon:128.739692,stu:135,cls:7,sped:0,teach:0,est:false},
+{name:'안동영재유치원',lv:'유',s:'andong',addr:'경상북도 안동시 마들3길 46',lat:36.552871,lon:128.756951,stu:112,cls:7,sped:0,teach:0,est:false},
+{name:'임동초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 편항길 42',lat:36.570150,lon:128.920819,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'녹전초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 녹전로 695',lat:36.741041,lon:128.774129,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'꿈빛유치원',lv:'유',s:'andong',addr:'경상북도 안동시 풍요5길 19',lat:36.575521,lon:128.499312,stu:116,cls:7,sped:2,teach:0,est:false},
+{name:'남후초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 무릉길 104',lat:36.521892,lon:128.691864,stu:1,cls:1,sped:0,teach:0,est:false},
+{name:'길주초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 경동로 947-20',lat:36.555716,lon:128.759623,stu:48,cls:3,sped:0,teach:0,est:false},
+{name:'안동오상유치원',lv:'유',s:'andong',addr:'경상북도 안동시 옹정골길 152',lat:36.551202,lon:128.743519,stu:71,cls:5,sped:0,teach:0,est:false},
+{name:'신성초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 신성장골길 1',lat:36.525004,lon:128.462615,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'영남초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 영남길 15',lat:36.573458,lon:128.720833,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'와룡초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 와룡면 문화마을길 11',lat:36.619573,lon:128.768536,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'일직초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 감시골길 6-3',lat:36.484433,lon:128.657428,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'복주초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 복주3길 23-13',lat:36.562997,lon:128.698156,stu:31,cls:4,sped:3,teach:0,est:false},
+{name:'북후초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 도장길 339',lat:36.676301,lon:128.697097,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'가톨릭상지대학부속상지유치원',lv:'유',s:'andong',addr:'경상북도 안동시 상지길 31',lat:36.569728,lon:128.733602,stu:137,cls:6,sped:0,teach:0,est:false},
+{name:'풍산초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 하리들길 32',lat:36.576243,lon:128.573662,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'강남유치원',lv:'유',s:'andong',addr:'경상북도 안동시 강남로 21',lat:36.547508,lon:128.703958,stu:93,cls:6,sped:0,teach:0,est:false},
+{name:'안동용상초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 경동로 900',lat:36.557801,lon:128.752762,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'안동초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 경동로 643',lat:36.564333,lon:128.728155,stu:6,cls:2,sped:2,teach:0,est:false},
+{name:'월곡초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 예안면 정산길 23',lat:36.661882,lon:128.888020,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'안동강남초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 강남1길 78',lat:36.549867,lon:128.731341,stu:71,cls:4,sped:0,teach:0,est:false},
+{name:'영가초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 서경지8길 2',lat:36.563110,lon:128.716040,stu:28,cls:3,sped:0,teach:0,est:false},
+{name:'임하초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 앞산밑길 9',lat:36.526505,lon:128.828060,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'길안초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 충효로 2230',lat:36.454859,lon:128.895932,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'풍천풍서초등학교병설유치원',lv:'유',s:'andong',addr:'경상북도 안동시 풍요5길 9',lat:36.574659,lon:128.498893,stu:16,cls:1,sped:0,teach:0,est:false},
+{name:'진평초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 인동30길 53',lat:36.091353,lon:128.427439,stu:11,cls:2,sped:4,teach:0,est:false},
+{name:'리더스숲유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 인동49길 16-45',lat:36.094625,lon:128.446913,stu:198,cls:11,sped:0,teach:0,est:false},
+{name:'오태초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 금오대로10길 19-9',lat:36.070194,lon:128.349435,stu:22,cls:2,sped:0,teach:0,est:false},
+{name:'아이누리유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 들성로9길 3-24',lat:36.161122,lon:128.344681,stu:103,cls:6,sped:0,teach:0,est:false},
+{name:'구미봉곡초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 봉곡남로1길 23',lat:36.153474,lon:128.303795,stu:8,cls:1,sped:0,teach:0,est:false},
+{name:'주향유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 형곡로25길 11',lat:36.108192,lon:128.333991,stu:126,cls:7,sped:0,teach:0,est:false},
+{name:'비산초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 비산로 24',lat:36.118297,lon:128.374767,stu:11,cls:1,sped:0,teach:0,est:false},
+{name:'해평초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 월호2길 5',lat:36.203964,lon:128.390165,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'구미신평초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 신비로4길 15',lat:36.121920,lon:128.365862,stu:42,cls:4,sped:5,teach:0,est:false},
+{name:'선산초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 선산읍 선산중앙로 87-4 (선산읍. 선산초등학교)',lat:36.243937,lon:128.300894,stu:16,cls:2,sped:0,teach:0,est:false},
+{name:'분도유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 원남로 120',lat:36.126721,lon:128.333054,stu:28,cls:2,sped:0,teach:0,est:false},
+{name:'도산유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 문장로 100',lat:36.141553,lon:128.332964,stu:91,cls:6,sped:4,teach:0,est:false},
+{name:'원남초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 원남로 12-50',lat:36.129116,lon:128.321145,stu:25,cls:2,sped:0,teach:0,est:false},
+{name:'효성유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 왕산로3길 42',lat:36.088465,lon:128.368330,stu:23,cls:2,sped:0,teach:0,est:false},
+{name:'금오유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 문장로22길 32',lat:36.151983,lon:128.333768,stu:96,cls:6,sped:0,teach:0,est:false},
+{name:'세종유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 상모로10길 21-33',lat:36.088846,lon:128.357478,stu:232,cls:11,sped:0,teach:0,est:false},
+{name:'산동초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 강동로 936-18',lat:36.167593,lon:128.445885,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'사랑유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 검성로 93',lat:36.118060,lon:128.427028,stu:49,cls:6,sped:0,teach:0,est:false},
+{name:'태양유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 관심1길 58-21',lat:36.214159,lon:128.326981,stu:68,cls:4,sped:0,teach:0,est:false},
+{name:'링컨유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 인동북길 183-20',lat:36.095012,lon:128.435681,stu:78,cls:5,sped:0,teach:0,est:false},
+{name:'숲은성유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 4공단로4길 5-9 (구포동)',lat:36.131954,lon:128.429501,stu:206,cls:8,sped:0,teach:0,est:false},
+{name:'색동유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 공원로 343',lat:36.106982,lon:128.329821,stu:120,cls:7,sped:0,teach:0,est:false},
+{name:'우리유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 옥계2공단로 280-2',lat:36.130346,lon:128.417405,stu:88,cls:5,sped:0,teach:0,est:false},
+{name:'한별유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 선기로2길 14-20',lat:36.131880,lon:128.320129,stu:108,cls:6,sped:0,teach:0,est:false},
+{name:'보눔유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 흥안로2길 37',lat:36.149773,lon:128.417197,stu:210,cls:9,sped:0,teach:0,est:false},
+{name:'구미원당초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 옥계신당로9길 21',lat:36.144371,lon:128.424854,stu:64,cls:4,sped:5,teach:0,est:false},
+{name:'드림유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 해마루공원로 115',lat:36.144619,lon:128.427886,stu:81,cls:4,sped:0,teach:0,est:false},
+{name:'구미문성초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 들성로9길 13',lat:36.161770,lon:128.345226,stu:50,cls:3,sped:0,teach:0,est:false},
+{name:'위버조이유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 형곡로8길 16-8',lat:36.116978,lon:128.331585,stu:127,cls:7,sped:0,teach:0,est:false},
+{name:'구미신당초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 신당4로 29',lat:36.160742,lon:128.431126,stu:60,cls:3,sped:0,teach:0,est:false},
+{name:'구미인덕초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 신당인덕3로 25',lat:36.162159,lon:128.437492,stu:60,cls:3,sped:0,teach:0,est:false},
+{name:'라온유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 봉곡남로25길 40-5',lat:36.155169,lon:128.316505,stu:192,cls:8,sped:0,teach:0,est:false},
+{name:'대자연유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 4공단로12길 30',lat:36.127826,lon:128.456249,stu:246,cls:11,sped:0,teach:0,est:false},
+{name:'형남초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 형곡동로 1-5',lat:36.101207,lon:128.335477,stu:23,cls:2,sped:0,teach:0,est:false},
+{name:'선주초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 봉곡로 134',lat:36.151121,lon:128.311021,stu:8,cls:1,sped:0,teach:0,est:false},
+{name:'예일유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 신비로9길 10',lat:36.121050,lon:128.370652,stu:99,cls:5,sped:0,teach:0,est:false},
+{name:'구미왕산초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 왕산로 32',lat:36.086123,lon:128.365477,stu:31,cls:3,sped:6,teach:0,est:false},
+{name:'인동초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 여헌로3길 34',lat:36.106884,lon:128.422082,stu:35,cls:4,sped:0,teach:0,est:false},
+{name:'성심유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 야은로45길 13',lat:36.124643,lon:128.362664,stu:22,cls:2,sped:0,teach:0,est:false},
+{name:'자연숲유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 옥계2공단로 248-30',lat:36.127631,lon:128.417052,stu:25,cls:3,sped:0,teach:0,est:false},
+{name:'브니엘유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 박정희로 599',lat:36.122011,lon:128.340272,stu:33,cls:3,sped:0,teach:0,est:false},
+{name:'구미사곡초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 상사동로24길 9',lat:36.099901,lon:128.360559,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'인의초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 인동13길 23',lat:36.101904,lon:128.426915,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'구운초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 송평구길 79',lat:36.170971,lon:128.368927,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'아이나라유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 상사동로13길 13',lat:36.093340,lon:128.357813,stu:25,cls:2,sped:0,teach:0,est:false},
+{name:'나리유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 산호대로41길 14-42',lat:36.139225,lon:128.439962,stu:36,cls:3,sped:0,teach:0,est:false},
+{name:'상모유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 상모로 71',lat:36.090795,lon:128.356383,stu:86,cls:7,sped:8,teach:0,est:false},
+{name:'명지유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 문장로12안길 14-4',lat:36.140598,lon:128.335051,stu:57,cls:4,sped:0,teach:0,est:false},
+{name:'도량초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 송동로7길 15-14',lat:36.144326,lon:128.319589,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'장천초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 강동로 236',lat:36.130933,lon:128.494575,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'은성유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 인동46길 37-22',lat:36.088881,lon:128.442038,stu:295,cls:12,sped:0,teach:0,est:false},
+{name:'선산유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 단계동길 109-11',lat:36.247298,lon:128.296677,stu:68,cls:6,sped:0,teach:0,est:false},
+{name:'도개초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 도안로 108',lat:36.300631,lon:128.331499,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'남계초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 봉한3길 16',lat:36.181094,lon:128.348438,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'옥계동부초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 옥계북로 89',lat:36.139109,lon:128.427625,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'지산초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 지산13길 17',lat:36.140451,lon:128.344545,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'옥성초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 주아2길 18-13',lat:36.296881,lon:128.276046,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'신기초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 신비로3길 37-1',lat:36.125767,lon:128.364484,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'광평초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 구미대로 285',lat:36.112939,lon:128.362483,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'천생초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 인동43길 8',lat:36.094052,lon:128.438111,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'송정유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 신시로10길 64-10',lat:36.115515,lon:128.346055,stu:102,cls:6,sped:0,teach:0,est:false},
+{name:'성모유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 수출대로36길 9-8',lat:36.110019,lon:128.427389,stu:25,cls:2,sped:0,teach:0,est:false},
+{name:'리라유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 들성로3길 35',lat:36.155765,lon:128.329101,stu:125,cls:7,sped:0,teach:0,est:false},
+{name:'동아유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 형곡로 211-9',lat:36.108425,lon:128.338379,stu:341,cls:16,sped:0,teach:0,est:false},
+{name:'옥계우리유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 옥계2공단로 278-3',lat:36.130374,lon:128.416673,stu:52,cls:3,sped:0,teach:0,est:false},
+{name:'동화나라유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 상사동로 103',lat:36.093731,lon:128.359028,stu:97,cls:6,sped:0,teach:0,est:false},
+{name:'라임유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 금오대로9길 30',lat:36.073935,lon:128.347889,stu:26,cls:2,sped:0,teach:0,est:false},
+{name:'해마루초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 산호대로 953',lat:36.140463,lon:128.433279,stu:57,cls:3,sped:0,teach:0,est:false},
+{name:'문장유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 문장로23길 22-19',lat:36.151026,lon:128.328075,stu:25,cls:3,sped:0,teach:0,est:false},
+{name:'맑은동심유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 박정희로19길 15',lat:36.097201,lon:128.352136,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'가야유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 옥계2공단로 264-11',lat:36.128952,lon:128.419036,stu:139,cls:6,sped:0,teach:0,est:false},
+{name:'늘푸른유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 산호대로23길 19',lat:36.139185,lon:128.414784,stu:190,cls:8,sped:0,teach:0,est:false},
+{name:'문장초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 문장로 168',lat:36.148580,lon:128.332762,stu:39,cls:4,sped:4,teach:0,est:false},
+{name:'원호초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 문장로22길 58',lat:36.154393,lon:128.332125,stu:36,cls:3,sped:0,teach:0,est:false},
+{name:'옥계초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 산호대로23길 21-7',lat:36.140475,lon:128.414387,stu:31,cls:3,sped:0,teach:0,est:false},
+{name:'옥계유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 흥안로2길 9-2',lat:36.147927,lon:128.416791,stu:158,cls:8,sped:0,teach:0,est:false},
+{name:'양포초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 흥안로3길 30',lat:36.144813,lon:128.415804,stu:9,cls:2,sped:3,teach:0,est:false},
+{name:'구미초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 역전로2길 23',lat:36.130160,lon:128.333872,stu:39,cls:3,sped:0,teach:0,est:false},
+{name:'고아초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 관심1길 46',lat:36.212405,lon:128.328717,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'계명유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 봉곡서로 100',lat:36.159840,lon:128.307524,stu:137,cls:7,sped:0,teach:0,est:false},
+{name:'덕촌초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 선상서로 584',lat:36.263234,lon:128.254543,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'옥계한별유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 산호대로41길 14-26',lat:36.138716,lon:128.441029,stu:215,cls:10,sped:0,teach:0,est:false},
+{name:'킨더하바유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 인동52길 42',lat:36.089165,lon:128.443917,stu:124,cls:7,sped:0,teach:0,est:false},
+{name:'문화유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 도봉로 57-2',lat:36.141093,lon:128.317907,stu:62,cls:3,sped:0,teach:0,est:false},
+{name:'소나무유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 검성로 31-5',lat:36.113349,lon:128.423846,stu:24,cls:2,sped:0,teach:0,est:false},
+{name:'산동숲유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 산동읍 강동로 816-16',lat:36.165213,lon:128.458207,stu:150,cls:7,sped:0,teach:0,est:false},
+{name:'천사유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 산책길 55-12',lat:36.123079,lon:128.329887,stu:146,cls:7,sped:0,teach:0,est:false},
+{name:'이화유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 인동31길 27-8',lat:36.097785,lon:128.431712,stu:48,cls:3,sped:0,teach:0,est:false},
+{name:'홍익유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 봉곡남로 182',lat:36.151988,lon:128.321004,stu:294,cls:13,sped:0,teach:0,est:false},
+{name:'무을초등학교병설유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 송삼1길 33',lat:36.263539,lon:128.197018,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'꽃가람유치원',lv:'유',s:'gumi',addr:'경상북도 구미시 들성로9길 20-57',lat:36.163162,lon:128.346696,stu:8,cls:1,sped:0,teach:0,est:false},
+{name:'부석초등학교병설유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 부석로65번길 5',lat:36.981049,lon:128.655306,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'평은초등학교병설유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 평은면 평은로 939 . 평은초등학교 (평은면)',lat:36.762019,lon:128.694552,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'영주유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 숫골길 14',lat:36.828465,lon:128.622046,stu:90,cls:4,sped:0,teach:0,est:false},
+{name:'현대유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 지천로 52',lat:36.804897,lon:128.619868,stu:46,cls:3,sped:0,teach:0,est:false},
+{name:'신영주유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 원당로 30',lat:36.817692,lon:128.619467,stu:17,cls:2,sped:0,teach:0,est:false},
+{name:'문수초등학교병설유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 문수로1406번길 15-4',lat:36.774372,lon:128.633777,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'풍기북부초등학교병설유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 금계로 72',lat:36.879493,lon:128.525644,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'옥대초등학교병설유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 아호로26번길 22',lat:36.950963,lon:128.620058,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'영주서부초등학교병설유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 신재로 12',lat:36.832029,lon:128.612213,stu:11,cls:1,sped:0,teach:0,est:false},
+{name:'풍기초등학교병설유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 풍기읍 기주로 110',lat:36.871408,lon:128.525233,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'봉현초등학교병설유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 소백로1623번길 6',lat:36.847594,lon:128.525809,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'자연유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 남간로71번길 55',lat:36.820787,lon:128.634881,stu:117,cls:5,sped:0,teach:0,est:false},
+{name:'이산초등학교병설유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 이산로 487',lat:36.830182,lon:128.681880,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'영주남부초등학교병설유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 대학로71번길 19',lat:36.807739,lon:128.618267,stu:48,cls:5,sped:8,teach:0,est:false},
+{name:'영일초등학교병설유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 영주로147번길 17',lat:36.826314,lon:128.614906,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'영주초등학교병설유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 광복로 55',lat:36.828207,lon:128.625479,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'샛별유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 기주로81번길 7',lat:36.869278,lon:128.526956,stu:13,cls:2,sped:0,teach:0,est:false},
+{name:'장수초등학교병설유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 장수로 35',lat:36.776106,lon:128.576552,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'남산초등학교병설유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 구성로 257',lat:36.815548,lon:128.626774,stu:5,cls:2,sped:1,teach:0,est:false},
+{name:'영주중앙초등학교병설유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 중앙로126번길 33',lat:36.826783,lon:128.628187,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'영주동부초등학교병설유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 남간로25번길 46',lat:36.821234,lon:128.631397,stu:49,cls:3,sped:0,teach:0,est:false},
+{name:'안정초등학교병설유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 용주로 1414',lat:36.844916,lon:128.554963,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'영주가흥초등학교병설유치원',lv:'유',s:'yeongju',addr:'경상북도 영주시 대동로70번길 8-9',lat:36.813780,lon:128.609760,stu:59,cls:3,sped:0,teach:0,est:false},
+{name:'샛별유치원',lv:'유',s:'yeongcheon',addr:'경상북도 영천시 최무선로 236',lat:35.963845,lon:128.926766,stu:118,cls:6,sped:0,teach:0,est:false},
+{name:'지곡초등학교병설유치원',lv:'유',s:'yeongcheon',addr:'경상북도 영천시 천문로 1597-5',lat:36.060155,lon:128.891116,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'고경초등학교병설유치원',lv:'유',s:'yeongcheon',addr:'경상북도 영천시 호국로 1276',lat:36.002760,lon:129.067612,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'거여초등학교병설유치원',lv:'유',s:'yeongcheon',addr:'경상북도 영천시 관정1길 31',lat:35.931718,lon:128.909908,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'포은초등학교병설유치원',lv:'유',s:'yeongcheon',addr:'경상북도 영천시 망정4길 72',lat:35.980179,lon:128.951195,stu:83,cls:4,sped:0,teach:0,est:false},
+{name:'영천중앙유치원',lv:'유',s:'yeongcheon',addr:'경상북도 영천시 조양길 71',lat:35.971830,lon:128.932355,stu:96,cls:5,sped:0,teach:0,est:false},
+{name:'금호초등학교병설유치원',lv:'유',s:'yeongcheon',addr:'경상북도 영천시 금호로 179',lat:35.934615,lon:128.880548,stu:24,cls:3,sped:0,teach:0,est:false},
+{name:'자천초등학교병설유치원',lv:'유',s:'yeongcheon',addr:'경상북도 영천시 화북길 75',lat:36.109859,lon:128.920688,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'화산초등학교병설유치원',lv:'유',s:'yeongcheon',addr:'경상북도 영천시 장수로 942-9',lat:36.020214,lon:128.854517,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'한성유치원',lv:'유',s:'yeongcheon',addr:'경상북도 영천시 향군로 35',lat:35.965193,lon:128.917810,stu:100,cls:5,sped:0,teach:0,est:false},
+{name:'영천동부초등학교병설유치원',lv:'유',s:'yeongcheon',addr:'경상북도 영천시 호국로 209',lat:35.978399,lon:128.959512,stu:27,cls:2,sped:0,teach:0,est:false},
+{name:'북안초등학교병설유치원',lv:'유',s:'yeongcheon',addr:'경상북도 영천시 운북로 1984',lat:35.914832,lon:129.010416,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'문화유치원',lv:'유',s:'yeongcheon',addr:'경상북도 영천시 영천고1길 46-13',lat:35.970874,lon:128.943890,stu:23,cls:2,sped:0,teach:0,est:false},
+{name:'신녕초등학교병설유치원',lv:'유',s:'yeongcheon',addr:'경상북도 영천시 신녕면 큰골길 9',lat:36.047253,lon:128.789962,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'영천초등학교병설유치원',lv:'유',s:'yeongcheon',addr:'경상북도 영천시 천문로 253',lat:35.961617,lon:128.932811,stu:54,cls:4,sped:4,teach:0,est:false},
+{name:'대창초등학교병설유치원',lv:'유',s:'yeongcheon',addr:'경상북도 영천시 금창로 787',lat:35.869659,lon:128.905895,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'단포초등학교병설유치원',lv:'유',s:'yeongcheon',addr:'경상북도 영천시 호국로 343',lat:35.981021,lon:128.974829,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'임고초등학교병설유치원',lv:'유',s:'yeongcheon',addr:'경상북도 영천시 임고면 포은로 491-2',lat:36.021643,lon:128.973363,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'영화초등학교병설유치원',lv:'유',s:'yeongcheon',addr:'경상북도 영천시 영화새싹길 22',lat:35.965619,lon:128.921251,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'청통초등학교병설유치원',lv:'유',s:'yeongcheon',addr:'경상북도 영천시 청통초등길 43',lat:35.995488,lon:128.823639,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'화령초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 화서면 화령로 57',lat:36.446610,lon:127.951894,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'상주초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 중앙로 167',lat:36.416258,lon:128.157557,stu:8,cls:1,sped:0,teach:0,est:false},
+{name:'사벌초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 덕담1길 53',lat:36.467833,lon:128.208423,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'모서초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 백화로 1387',lat:36.343068,lon:127.961061,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'상주감꽃유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 북천로 45',lat:36.428496,lon:128.155651,stu:114,cls:6,sped:0,teach:0,est:false},
+{name:'파티마유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 동수1길 106',lat:36.419269,lon:128.156650,stu:48,cls:4,sped:0,teach:0,est:false},
+{name:'한마음유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 왕산로 105',lat:36.410809,lon:128.161308,stu:133,cls:7,sped:0,teach:0,est:false},
+{name:'상주남부초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 지천1길 5',lat:36.363434,lon:128.150670,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'함창중앙초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 구향로 87-10',lat:36.573691,lon:128.177483,stu:8,cls:1,sped:0,teach:0,est:false},
+{name:'상주원광유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 상산새싹길 32',lat:36.420305,lon:128.161344,stu:126,cls:7,sped:0,teach:0,est:false},
+{name:'상영초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 상산로 202',lat:36.408455,lon:128.160715,stu:6,cls:2,sped:3,teach:0,est:false},
+{name:'공검초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 공검이안길 27',lat:36.515150,lon:128.154473,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'은척초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 봉중2길 10',lat:36.531913,lon:128.070919,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'화북초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 화북면 문장로 1803-12',lat:36.567631,lon:127.910759,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'상락유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 삼백로 272',lat:36.418650,lon:128.173338,stu:88,cls:6,sped:0,teach:0,est:false},
+{name:'모동초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 중화로 583-17',lat:36.317727,lon:127.958980,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'예영유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 경상대로 2729-16',lat:36.392600,lon:128.151413,stu:32,cls:2,sped:0,teach:0,est:false},
+{name:'함창초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 구향3길 38',lat:36.570878,lon:128.180329,stu:10,cls:1,sped:0,teach:0,est:false},
+{name:'중모초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 신천1길 15',lat:36.301161,lon:127.959406,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'옥산초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 공성면 산현3길 17',lat:36.287814,lon:128.097001,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'낙서초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 영남제일로 3173',lat:36.407196,lon:128.020648,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'낙동초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 장천로 457',lat:36.376442,lon:128.247888,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'청리초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 청리면 청하2길 39',lat:36.333490,lon:128.130475,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'상주중앙초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 상서문1길 112',lat:36.410937,lon:128.157467,stu:13,cls:1,sped:0,teach:0,est:false},
+{name:'백원초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 북상주로 591-14',lat:36.480166,lon:128.172136,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'화동초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 이소1길 78',lat:36.392716,lon:127.951249,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'중동초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 중동면 오상2길 17-4',lat:36.429631,lon:128.268320,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'외남초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 석단로 1064',lat:36.363077,lon:128.100250,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'상주동부초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 헌신1길 1',lat:36.417747,lon:128.208040,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'상산초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 왕산로 374',lat:36.422984,lon:128.160993,stu:42,cls:3,sped:0,teach:0,est:false},
+{name:'이안초등학교병설유치원',lv:'유',s:'sangju',addr:'경상북도 상주시 양범안룡길 39',lat:36.579216,lon:128.144364,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'점촌중앙초등학교병설유치원',lv:'유',s:'mungyeong',addr:'경상북도 문경시 중앙초등길 9',lat:36.599254,lon:128.194283,stu:4,cls:2,sped:1,teach:0,est:false},
+{name:'이화유치원',lv:'유',s:'mungyeong',addr:'경상북도 문경시 신흥7길 9',lat:36.604351,lon:128.207351,stu:39,cls:3,sped:0,teach:0,est:false},
+{name:'영순초등학교병설유치원',lv:'유',s:'mungyeong',addr:'경상북도 문경시 사근2길 14',lat:36.578580,lon:128.245145,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'상지유치원',lv:'유',s:'mungyeong',addr:'경상북도 문경시 점촌5길 39-9',lat:36.597097,lon:128.195438,stu:122,cls:5,sped:0,teach:0,est:false},
+{name:'동로초등학교병설유치원',lv:'유',s:'mungyeong',addr:'경상북도 문경시 동로면 노은2길 4',lat:36.771557,lon:128.315305,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'신기초등학교병설유치원',lv:'유',s:'mungyeong',addr:'경상북도 문경시 신기4길 15',lat:36.640048,lon:128.168488,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'새싹유치원',lv:'유',s:'mungyeong',addr:'경상북도 문경시 모전3길 32',lat:36.589245,lon:128.187266,stu:18,cls:1,sped:0,teach:0,est:false},
+{name:'문경초등학교병설유치원',lv:'유',s:'mungyeong',addr:'경상북도 문경시 문경읍 청운로 23',lat:36.736833,lon:128.104841,stu:21,cls:1,sped:0,teach:0,est:false},
+{name:'당포초등학교병설유치원',lv:'유',s:'mungyeong',addr:'경상북도 문경시 여우목로 580',lat:36.752443,lon:128.152581,stu:8,cls:1,sped:0,teach:0,est:false},
+{name:'점촌초등학교병설유치원',lv:'유',s:'mungyeong',addr:'경상북도 문경시 중앙로 63-16',lat:36.591925,lon:128.194985,stu:15,cls:2,sped:3,teach:0,est:false},
+{name:'점촌북초등학교병설유치원',lv:'유',s:'mungyeong',addr:'경상북도 문경시 유곡불정로 154',lat:36.626584,lon:128.157375,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'산북초등학교병설유치원',lv:'유',s:'mungyeong',addr:'경상북도 문경시 금천로 553-12',lat:36.655820,lon:128.257716,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'동성초등학교병설유치원',lv:'유',s:'mungyeong',addr:'경상북도 문경시 동성길 80',lat:36.682327,lon:128.127363,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'가은초등학교병설유치원',lv:'유',s:'mungyeong',addr:'경상북도 문경시 가은로 129',lat:36.643739,lon:128.063082,stu:11,cls:2,sped:2,teach:0,est:false},
+{name:'농암초등학교병설유치원',lv:'유',s:'mungyeong',addr:'경상북도 문경시 농암길 44-14',lat:36.602202,lon:128.003500,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'호계초등학교병설유치원',lv:'유',s:'mungyeong',addr:'경상북도 문경시 호계면 막곡길 16',lat:36.634765,lon:128.205312,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'용흥초등학교병설유치원',lv:'유',s:'mungyeong',addr:'경상북도 문경시 갈평길 34',lat:36.787634,lon:128.158790,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'산양초등학교병설유치원',lv:'유',s:'mungyeong',addr:'경상북도 문경시 산양로 51',lat:36.610304,lon:128.252107,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'모전초등학교병설유치원',lv:'유',s:'mungyeong',addr:'경상북도 문경시 매봉로 75',lat:36.591895,lon:128.180946,stu:60,cls:3,sped:0,teach:0,est:false},
+{name:'문경유치원',lv:'유',s:'mungyeong',addr:'경상북도 문경시 점촌로 60',lat:36.598924,lon:128.197774,stu:102,cls:7,sped:5,teach:0,est:false},
+{name:'자인초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 금학로 7',lat:35.821282,lon:128.823906,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'하양유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 하양로 119-9',lat:35.914831,lon:128.819494,stu:26,cls:3,sped:0,teach:0,est:false},
+{name:'경산초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 경안로 84',lat:35.815388,lon:128.739985,stu:10,cls:1,sped:0,teach:0,est:false},
+{name:'다문초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 다문로70길 85',lat:35.871653,lon:128.851523,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'자연아이유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 대학로13길 16',lat:35.835686,lon:128.730229,stu:87,cls:5,sped:0,teach:0,est:false},
+{name:'옥곡초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 경산로 54',lat:35.814947,lon:128.732103,stu:9,cls:1,sped:0,teach:0,est:false},
+{name:'부림초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 문천길 24',lat:35.898191,lon:128.825448,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'중방유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 대학로32길 35',lat:35.830918,lon:128.739891,stu:197,cls:9,sped:0,teach:0,est:false},
+{name:'계당초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 와촌면 계당길 27',lat:35.928425,lon:128.851338,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'우리들숲유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 계양로8길 63',lat:35.816408,lon:128.754127,stu:80,cls:5,sped:0,teach:0,est:false},
+{name:'동심유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 삼성현로31길 23',lat:35.819497,lon:128.722946,stu:41,cls:3,sped:0,teach:0,est:false},
+{name:'라온유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 청운2로7길 13-2',lat:35.841060,lon:128.750990,stu:47,cls:3,sped:0,teach:0,est:false},
+{name:'대해유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 성암로12길 17-5',lat:35.822328,lon:128.724488,stu:194,cls:9,sped:0,teach:0,est:false},
+{name:'경산압량초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 압독2로 38',lat:35.840500,lon:128.766565,stu:57,cls:3,sped:0,teach:0,est:false},
+{name:'은성유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 계양로16길 58-2',lat:35.819422,lon:128.753727,stu:112,cls:7,sped:0,teach:0,est:false},
+{name:'진량초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 낙산길 37',lat:35.876176,lon:128.815628,stu:9,cls:1,sped:0,teach:0,est:false},
+{name:'대구대학교사범대학부속영광유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 대구대로 201',lat:35.904539,lon:128.842813,stu:130,cls:6,sped:0,teach:0,est:false},
+{name:'키다리아저씨유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 성암로21길 73',lat:35.830955,lon:128.725449,stu:37,cls:3,sped:0,teach:0,est:false},
+{name:'경산유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 삼풍로 25',lat:35.822891,lon:128.755238,stu:98,cls:6,sped:0,teach:0,est:false},
+{name:'책놀이숲놀이유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 남매로6길 29',lat:35.812148,lon:128.743760,stu:80,cls:5,sped:0,teach:0,est:false},
+{name:'삼성현초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 경청로216길 20',lat:35.799901,lon:128.739507,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'유선아이숲유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 경안로8길 12',lat:35.810529,lon:128.741537,stu:87,cls:4,sped:0,teach:0,est:false},
+{name:'경산압량유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 압량읍 김유신로 25',lat:35.839650,lon:128.769080,stu:99,cls:6,sped:3,teach:0,est:false},
+{name:'본(BON)유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 선비길 25',lat:35.816851,lon:128.726085,stu:141,cls:7,sped:0,teach:0,est:false},
+{name:'영인유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 미래로 47',lat:35.809476,lon:128.760972,stu:66,cls:4,sped:0,teach:0,est:false},
+{name:'임당초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 임당로12길 7',lat:35.841573,lon:128.743613,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'장은유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 봉황길 70-5',lat:35.882830,lon:128.825792,stu:101,cls:5,sped:0,teach:0,est:false},
+{name:'한사유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 교리길 22',lat:35.924963,lon:128.821720,stu:101,cls:6,sped:0,teach:0,est:false},
+{name:'경산중앙유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 강변동로 358',lat:35.840295,lon:128.729374,stu:180,cls:8,sped:0,teach:0,est:false},
+{name:'남성초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 원효로 375',lat:35.813108,lon:128.776772,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'창파유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 삼성현로31길 23',lat:35.819497,lon:128.722946,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'경산성모유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 경산로 118',lat:35.819338,lon:128.729520,stu:13,cls:2,sped:0,teach:0,est:false},
+{name:'청천초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 하양읍 대경로 187',lat:35.884463,lon:128.773283,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'남산초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 남산면 하남로 316',lat:35.792610,lon:128.836592,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'평산초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 솔숲길 47',lat:35.807486,lon:128.756643,stu:10,cls:1,sped:0,teach:0,est:false},
+{name:'경산서부초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 경산로42길 22-11',lat:35.827307,lon:128.728621,stu:8,cls:1,sped:0,teach:0,est:false},
+{name:'예인유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 대학로295길 62',lat:35.908333,lon:128.817079,stu:92,cls:5,sped:0,teach:0,est:false},
+{name:'운문유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 장산로 347',lat:35.814199,lon:128.761434,stu:160,cls:8,sped:0,teach:0,est:false},
+{name:'계명유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 대학로12길 16',lat:35.832546,lon:128.729048,stu:49,cls:4,sped:0,teach:0,est:false},
+{name:'남천초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 남천면 남천로 481',lat:35.768220,lon:128.725484,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'성암초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 펜타힐즈3로 21',lat:35.826079,lon:128.719286,stu:57,cls:3,sped:0,teach:0,est:false},
+{name:'서부유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 경산로13길 12',lat:35.814903,lon:128.730363,stu:75,cls:5,sped:0,teach:0,est:false},
+{name:'용성초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 원효로 1405',lat:35.793902,lon:128.874524,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'경산중앙초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 중앙초등길 9',lat:35.822102,lon:128.731119,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'경산동부초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 원효로28길 60-6',lat:35.817520,lon:128.748237,stu:11,cls:2,sped:4,teach:0,est:false},
+{name:'경산꽃재유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 하양읍 대학로305길 25',lat:35.912962,lon:128.819583,stu:75,cls:6,sped:4,teach:0,est:false},
+{name:'와촌초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 와촌면 금송로 452-3',lat:35.950423,lon:128.837832,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'진성초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 진성로 115-5',lat:35.853823,lon:128.815511,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'대동초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 와촌면 팔공로 563-14',lat:35.959329,lon:128.803672,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'예일유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 경청로217길 14',lat:35.802630,lon:128.736810,stu:172,cls:7,sped:0,teach:0,est:false},
+{name:'하주초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 무학로 48',lat:35.920202,lon:128.812264,stu:8,cls:1,sped:0,teach:0,est:false},
+{name:'현흥초등학교병설유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 대학로 624',lat:35.861675,lon:128.772977,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'민들레유치원',lv:'유',s:'gyeongsan',addr:'경상북도 경산시 원효로40길 60',lat:35.814451,lon:128.754262,stu:151,cls:7,sped:0,teach:0,est:false},
+{name:'비안초등학교병설유치원',lv:'유',s:'uiseong',addr:'경상북도 의성군 강변길 105',lat:36.337489,lon:128.494914,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'의성남부초등학교병설유치원',lv:'유',s:'uiseong',addr:'경상북도 의성군 문소1길 24',lat:36.343198,lon:128.702215,stu:5,cls:2,sped:1,teach:0,est:false},
+{name:'도리원초등학교병설유치원',lv:'유',s:'uiseong',addr:'경상북도 의성군 도리원5길 9',lat:36.300417,lon:128.578542,stu:6,cls:2,sped:1,teach:0,est:false},
+{name:'안평초등학교병설유치원',lv:'유',s:'uiseong',addr:'경상북도 의성군 안평의성로 10',lat:36.376679,lon:128.581057,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'다인초등학교병설유치원',lv:'유',s:'uiseong',addr:'경상북도 의성군 서릉1길 19-6',lat:36.449384,lon:128.358093,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'안계초등학교병설유치원',lv:'유',s:'uiseong',addr:'경상북도 의성군 안계길 68',lat:36.381609,lon:128.445183,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'옥전초등학교병설유치원',lv:'유',s:'uiseong',addr:'경상북도 의성군 신감옥산로 1206',lat:36.394308,lon:128.806577,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'단촌초등학교병설유치원',lv:'유',s:'uiseong',addr:'경상북도 의성군 신기길 42',lat:36.425574,lon:128.671125,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'에덴유치원',lv:'유',s:'uiseong',addr:'경상북도 의성군 문소1길 94',lat:36.348923,lon:128.700334,stu:59,cls:3,sped:0,teach:0,est:false},
+{name:'점곡초등학교병설유치원',lv:'유',s:'uiseong',addr:'경상북도 의성군 점곡면 점곡길 8',lat:36.425067,lon:128.760942,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'춘산초등학교병설유치원',lv:'유',s:'uiseong',addr:'경상북도 의성군 금성현서로 1487',lat:36.237560,lon:128.812355,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'안평초등학교신평분교장병설유치원',lv:'유',s:'uiseong',addr:'경상북도 의성군 신평면 봉호로 2436',lat:36.473876,lon:128.504720,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'금성초등학교병설유치원',lv:'유',s:'uiseong',addr:'경상북도 의성군 탑리길 131',lat:36.263108,lon:128.679752,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'부남초등학교병설유치원',lv:'유',s:'cheongsong',addr:'경상북도 청송군 부남로 509',lat:36.313716,lon:129.097333,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'청송초등학교병설유치원',lv:'유',s:'cheongsong',addr:'경상북도 청송군 중앙로 229-10',lat:36.435523,lon:129.054540,stu:35,cls:4,sped:2,teach:0,est:false},
+{name:'파천초등학교병설유치원',lv:'유',s:'cheongsong',addr:'경상북도 청송군 안파로 1357',lat:36.445173,lon:129.031822,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'안덕초등학교병설유치원',lv:'유',s:'cheongsong',addr:'경상북도 청송군 노하길 35',lat:36.293479,lon:128.960822,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'화목초등학교병설유치원',lv:'유',s:'cheongsong',addr:'경상북도 청송군 구산동로 21',lat:36.275694,lon:128.894970,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'진보초등학교병설유치원',lv:'유',s:'cheongsong',addr:'경상북도 청송군 진보로 149',lat:36.529440,lon:129.048464,stu:37,cls:3,sped:0,teach:0,est:false},
+{name:'이전초등학교병설유치원',lv:'유',s:'cheongsong',addr:'경상북도 청송군 부동로 1011-74',lat:36.357536,lon:129.155137,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'도평초등학교병설유치원',lv:'유',s:'cheongsong',addr:'경상북도 청송군 청송로 2679',lat:36.290575,lon:129.019804,stu:9,cls:1,sped:0,teach:0,est:false},
+{name:'입암초등학교병설유치원',lv:'유',s:'yeongyang',addr:'경상북도 영양군 입암로 162',lat:36.599741,lon:129.087446,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'수비초등학교병설유치원',lv:'유',s:'yeongyang',addr:'경상북도 영양군 한티로 499',lat:36.766138,lon:129.201252,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'일월초등학교병설유치원',lv:'유',s:'yeongyang',addr:'경상북도 영양군 영양로 2410',lat:36.701662,lon:129.127832,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'석보초등학교병설유치원',lv:'유',s:'yeongyang',addr:'경상북도 영양군 원리길 3',lat:36.558428,lon:129.123141,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'영양초등학교병설유치원',lv:'유',s:'yeongyang',addr:'경상북도 영양군 영양읍 군청길 25',lat:36.666346,lon:129.111162,stu:21,cls:3,sped:2,teach:0,est:false},
+{name:'영양중앙초등학교병설유치원',lv:'유',s:'yeongyang',addr:'경상북도 영양군 영양창수로 53',lat:36.663917,lon:129.120156,stu:8,cls:1,sped:0,teach:0,est:false},
+{name:'일월초등학교청기분교장병설유치원',lv:'유',s:'yeongyang',addr:'경상북도 영양군 장갈로 1445',lat:36.699705,lon:129.058307,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'축산항초등학교병설유치원',lv:'유',s:'yeongdeok',addr:'경상북도 영덕군 축산항초교길 2',lat:36.509871,lon:129.442302,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'병곡초등학교병설유치원',lv:'유',s:'yeongdeok',addr:'경상북도 영덕군 영길 103-10',lat:36.601875,lon:129.409152,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'영해초등학교병설유치원',lv:'유',s:'yeongdeok',addr:'경상북도 영덕군 예주5길 22',lat:36.538656,lon:129.411331,stu:10,cls:2,sped:2,teach:0,est:false},
+{name:'지품초등학교병설유치원',lv:'유',s:'yeongdeok',addr:'경상북도 영덕군 지영로 7-4',lat:36.450310,lon:129.281344,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'창수초등학교병설유치원',lv:'유',s:'yeongdeok',addr:'경상북도 영덕군 영양창수로 3184',lat:36.544980,lon:129.343229,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'원황초등학교병설유치원',lv:'유',s:'yeongdeok',addr:'경상북도 영덕군 원황길 64',lat:36.569349,lon:129.393378,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'남정초등학교병설유치원',lv:'유',s:'yeongdeok',addr:'경상북도 영덕군 진불길 15-6',lat:36.283881,lon:129.372411,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'영덕야성초등학교병설유치원',lv:'유',s:'yeongdeok',addr:'경상북도 영덕군 덕곡길 96',lat:36.413241,lon:129.369140,stu:10,cls:2,sped:1,teach:0,est:false},
+{name:'강구초등학교병설유치원',lv:'유',s:'yeongdeok',addr:'경상북도 영덕군 나비산길 8',lat:36.357480,lon:129.378144,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'화양초등학교병설유치원',lv:'유',s:'cheongdo',addr:'경상북도 청도군 화양읍 동헌길 15',lat:35.647711,lon:128.706778,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'덕산초등학교병설유치원',lv:'유',s:'cheongdo',addr:'경상북도 청도군 덕남길 11-7',lat:35.705218,lon:128.583475,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'향뜰유치원',lv:'유',s:'cheongdo',addr:'경상북도 청도군 고수뒷길 74-4',lat:35.641823,lon:128.743173,stu:42,cls:3,sped:0,teach:0,est:false},
+{name:'유천초등학교병설유치원',lv:'유',s:'cheongdo',addr:'경상북도 청도군 유천강변길 68',lat:35.573069,lon:128.765788,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'청도중앙초등학교병설유치원',lv:'유',s:'cheongdo',addr:'경상북도 청도군 청도읍 중앙로 81',lat:35.647308,lon:128.752071,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'청도초등학교병설유치원',lv:'유',s:'cheongdo',addr:'경상북도 청도군 청화로 38-10',lat:35.647662,lon:128.730769,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'금천초등학교병설유치원',lv:'유',s:'cheongdo',addr:'경상북도 청도군 섶마리1길 27',lat:35.679328,lon:128.894562,stu:8,cls:1,sped:0,teach:0,est:false},
+{name:'동산초등학교병설유치원',lv:'유',s:'cheongdo',addr:'경상북도 청도군 동산길 43',lat:35.667457,lon:128.854794,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'풍각초등학교병설유치원',lv:'유',s:'cheongdo',addr:'경상북도 청도군 송서10길 22',lat:35.643480,lon:128.615942,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'이서초등학교병설유치원',lv:'유',s:'cheongdo',addr:'경상북도 청도군 학산2길 56',lat:35.663372,lon:128.668887,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'각남초등학교병설유치원',lv:'유',s:'cheongdo',addr:'경상북도 청도군 각남로 59',lat:35.642802,lon:128.657170,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'아이세상유치원',lv:'유',s:'cheongdo',addr:'경상북도 청도군 청화2길 8',lat:35.647776,lon:128.732406,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'청도성모유치원',lv:'유',s:'cheongdo',addr:'경상북도 청도군 고수뒷길 42',lat:35.642923,lon:128.740944,stu:47,cls:3,sped:0,teach:0,est:false},
+{name:'남성현초등학교병설유치원',lv:'유',s:'cheongdo',addr:'경상북도 청도군 화양읍 남성현로 473-11',lat:35.696451,lon:128.716382,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'우곡초등학교병설유치원',lv:'유',s:'goryeong',addr:'경상북도 고령군 객기나루길 374',lat:35.633782,lon:128.367319,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'운수초등학교병설유치원',lv:'유',s:'goryeong',addr:'경상북도 고령군 운용로 118',lat:35.770378,lon:128.291111,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'고령초등학교병설유치원',lv:'유',s:'goryeong',addr:'경상북도 고령군 대가야읍 왕정길 10',lat:35.734358,lon:128.269677,stu:15,cls:2,sped:0,teach:0,est:false},
+{name:'선재유치원',lv:'유',s:'goryeong',addr:'경상북도 고령군 주산순환길 147',lat:35.732991,lon:128.266564,stu:8,cls:1,sped:0,teach:0,est:false},
+{name:'다산초등학교병설유치원',lv:'유',s:'goryeong',addr:'경상북도 고령군 다산로 685-11',lat:35.823322,lon:128.451676,stu:18,cls:3,sped:2,teach:0,est:false},
+{name:'성산초등학교병설유치원',lv:'유',s:'goryeong',addr:'경상북도 고령군 성산로 902',lat:35.749182,lon:128.361076,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'쌍림초등학교병설유치원',lv:'유',s:'goryeong',addr:'경상북도 고령군 귀원1길 6',lat:35.681875,lon:128.242871,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'성주초등학교병설유치원',lv:'유',s:'seongju',addr:'경상북도 성주군 성주읍4길 9',lat:35.919458,lon:128.284747,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'초전초등학교병설유치원',lv:'유',s:'seongju',addr:'경상북도 성주군 대장1길 68',lat:35.976251,lon:128.263160,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'도원초등학교병설유치원',lv:'유',s:'seongju',addr:'경상북도 성주군 선노로 185',lat:35.896529,lon:128.381562,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'성주중앙초등학교병설유치원',lv:'유',s:'seongju',addr:'경상북도 성주군 시장1길 17',lat:35.916703,lon:128.286441,stu:6,cls:2,sped:1,teach:0,est:false},
+{name:'대가초등학교병설유치원',lv:'유',s:'seongju',addr:'경상북도 성주군 대가면 참별로 2188',lat:35.909089,lon:128.221927,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'대동초등학교병설유치원',lv:'유',s:'seongju',addr:'경상북도 성주군 운용로 1340-9',lat:35.858258,lon:128.357962,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'월항초등학교병설유치원',lv:'유',s:'seongju',addr:'경상북도 성주군 안포2길 16-2',lat:35.951554,lon:128.310579,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'가천초등학교병설유치원',lv:'유',s:'seongju',addr:'경상북도 성주군 가천로 52',lat:35.885230,lon:128.167633,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'벽진초등학교병설유치원',lv:'유',s:'seongju',addr:'경상북도 성주군 수촌3길 1',lat:35.951456,lon:128.216428,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'선남초등학교병설유치원',lv:'유',s:'seongju',addr:'경상북도 성주군 관화2길 2',lat:35.906565,lon:128.352006,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'수륜초등학교병설유치원',lv:'유',s:'seongju',addr:'경상북도 성주군 참별로 927',lat:35.834076,lon:128.191844,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'신성유치원',lv:'유',s:'seongju',addr:'경상북도 성주군 청사도서관길 6',lat:35.920375,lon:128.284437,stu:35,cls:3,sped:0,teach:0,est:false},
+{name:'무지개유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 동중리2길 16',lat:36.075835,lon:128.413919,stu:117,cls:7,sped:0,teach:0,est:false},
+{name:'남율유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 서중리4길 39',lat:36.075264,lon:128.401551,stu:68,cls:6,sped:4,teach:0,est:false},
+{name:'리라유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 석적로 955-10',lat:36.075897,lon:128.392822,stu:82,cls:4,sped:0,teach:0,est:false},
+{name:'북삼초등학교병설유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 인평중앙로 43',lat:36.064130,lon:128.342708,stu:32,cls:3,sped:0,teach:0,est:false},
+{name:'가산초등학교병설유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 경북대로 1500',lat:36.079163,lon:128.540216,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'제일유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 인평중앙로 67',lat:36.065613,lon:128.343543,stu:49,cls:3,sped:0,teach:0,est:false},
+{name:'한송이유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 북삼로2길 20',lat:36.072721,lon:128.344028,stu:52,cls:3,sped:0,teach:0,est:false},
+{name:'왜관동부초등학교병설유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 평장3길 31-4',lat:35.985665,lon:128.408026,stu:25,cls:3,sped:0,teach:0,est:false},
+{name:'약목초등학교병설유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 복성3길 30',lat:36.032874,lon:128.360534,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'바움유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 남중리6길 7',lat:36.074451,lon:128.412441,stu:45,cls:3,sped:0,teach:0,est:false},
+{name:'인평초등학교병설유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 북삼로8길 10',lat:36.072026,lon:128.336790,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'동명초등학교병설유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 금암동석3길 5',lat:35.987060,lon:128.554481,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'순심유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 관문로 25',lat:35.988169,lon:128.397360,stu:77,cls:5,sped:0,teach:0,est:false},
+{name:'초록유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 금오대로7길 57-7',lat:36.070501,lon:128.345750,stu:14,cls:1,sped:0,teach:0,est:false},
+{name:'왜관초등학교병설유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 구상길 204',lat:35.985124,lon:128.396589,stu:43,cls:4,sped:4,teach:0,est:false},
+{name:'신동초등학교병설유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 신동로 161',lat:35.956240,lon:128.490584,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'아람유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 남중리1길 18',lat:36.074573,lon:128.408779,stu:22,cls:3,sped:0,teach:0,est:false},
+{name:'신영유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 무림3길 16-20',lat:36.021160,lon:128.381168,stu:81,cls:4,sped:0,teach:0,est:false},
+{name:'매원초등학교병설유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 매원1길 5-32',lat:35.995037,lon:128.429492,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'낙산초등학교병설유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 강변대로 754',lat:35.945166,lon:128.402621,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'지천초등학교병설유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 용산로 77',lat:35.905914,lon:128.498252,stu:10,cls:1,sped:0,teach:0,est:false},
+{name:'숭산초등학교병설유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 보손4길 20',lat:36.053869,lon:128.314514,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'동명동부초등학교병설유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 한티로 562',lat:36.006186,lon:128.592995,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'관호초등학교병설유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 무림3길 16-59',lat:36.020537,lon:128.380247,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'약동초등학교병설유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 주산로 1195',lat:35.984910,lon:128.381410,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'학림초등학교병설유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 학하7길 5',lat:36.104989,lon:128.490860,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'왜관중앙초등학교병설유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 석전로 80',lat:35.998401,lon:128.406166,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'신비유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 관호11길 10-11',lat:36.014227,lon:128.393706,stu:36,cls:3,sped:0,teach:0,est:false},
+{name:'석적유치원',lv:'유',s:'chilgok',addr:'경상북도 칠곡군 포망로 10',lat:36.050849,lon:128.409918,stu:83,cls:6,sped:2,teach:0,est:false},
+{name:'용궁초등학교병설유치원',lv:'유',s:'yecheon',addr:'경상북도 예천군 용궁면 읍부1길 43',lat:36.609215,lon:128.276962,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'은풍초등학교병설유치원',lv:'유',s:'yecheon',addr:'경상북도 예천군 내동길 8',lat:36.748150,lon:128.442365,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'풍양초등학교병설유치원',lv:'유',s:'yecheon',addr:'경상북도 예천군 낙상1길 50-10',lat:36.512222,lon:128.299186,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'용문초등학교병설유치원',lv:'유',s:'yecheon',addr:'경상북도 예천군 금당실길 51-20',lat:36.690341,lon:128.408592,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'지보초등학교병설유치원',lv:'유',s:'yecheon',addr:'경상북도 예천군 지보로 136',lat:36.548028,lon:128.389536,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'예천초등학교병설유치원',lv:'유',s:'yecheon',addr:'경상북도 예천군 효자로 43',lat:36.655814,lon:128.450191,stu:52,cls:4,sped:3,teach:0,est:false},
+{name:'유천초등학교병설유치원',lv:'유',s:'yecheon',addr:'경상북도 예천군 유용로 34-10',lat:36.636911,lon:128.378531,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'감천초등학교병설유치원',lv:'유',s:'yecheon',addr:'경상북도 예천군 충효로 1395',lat:36.722735,lon:128.525832,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'예천동부초등학교병설유치원',lv:'유',s:'yecheon',addr:'경상북도 예천군 효자로 171',lat:36.661798,lon:128.459027,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'예천남부초등학교병설유치원',lv:'유',s:'yecheon',addr:'경상북도 예천군 남부초등길 17',lat:36.650447,lon:128.462776,stu:4,cls:1,sped:0,teach:0,est:false},
+{name:'호명초등학교병설유치원',lv:'유',s:'yecheon',addr:'경상북도 예천군 호명면 행복로 151',lat:36.579260,lon:128.480072,stu:72,cls:4,sped:0,teach:0,est:false},
+{name:'호명라온유치원',lv:'유',s:'yecheon',addr:'경상북도 예천군 봉호로 4241-6',lat:36.592601,lon:128.470574,stu:179,cls:10,sped:3,teach:0,est:false},
+{name:'새벗유치원',lv:'유',s:'yecheon',addr:'경상북도 예천군 양지1길 16',lat:36.576653,lon:128.478896,stu:122,cls:6,sped:0,teach:0,est:false},
+{name:'단샘유치원',lv:'유',s:'yecheon',addr:'경상북도 예천군 행복2길 24',lat:36.576250,lon:128.467951,stu:105,cls:6,sped:4,teach:0,est:false},
+{name:'소천초등학교두음분교장병설유치원',lv:'유',s:'bonghwa',addr:'경상북도 봉화군 두음길 567',lat:36.886204,lon:129.056067,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'석포초등학교병설유치원',lv:'유',s:'bonghwa',addr:'경상북도 봉화군 석포면 석포로1길 33',lat:37.046345,lon:129.063903,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'재산초등학교병설유치원',lv:'유',s:'bonghwa',addr:'경상북도 봉화군 재산로 514',lat:36.817164,lon:128.963064,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'도촌초등학교병설유치원',lv:'유',s:'bonghwa',addr:'경상북도 봉화군 봉화로 639',lat:36.879445,lon:128.686207,stu:9,cls:1,sped:0,teach:0,est:false},
+{name:'동양초등학교병설유치원',lv:'유',s:'bonghwa',addr:'경상북도 봉화군 다덕로 523-14',lat:36.913316,lon:128.791409,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'봉화초등학교병설유치원',lv:'유',s:'bonghwa',addr:'경상북도 봉화군 내성로7길 3',lat:36.892591,lon:128.740400,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'서벽초등학교병설유치원',lv:'유',s:'bonghwa',addr:'경상북도 봉화군 춘양로 1424',lat:37.008814,lon:128.833622,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'명호초등학교병설유치원',lv:'유',s:'bonghwa',addr:'경상북도 봉화군 노루목재길 28',lat:36.856421,lon:128.898966,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'물야초등학교병설유치원',lv:'유',s:'bonghwa',addr:'경상북도 봉화군 오록길 25',lat:36.979715,lon:128.737215,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'소천초등학교병설유치원',lv:'유',s:'bonghwa',addr:'경상북도 봉화군 소천로 1284',lat:36.938247,lon:129.001819,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'법전중앙초등학교병설유치원',lv:'유',s:'bonghwa',addr:'경상북도 봉화군 법전로 135',lat:36.914662,lon:128.877652,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'성심유치원',lv:'유',s:'bonghwa',addr:'경상북도 봉화군 내성로6길 22',lat:36.889403,lon:128.743043,stu:30,cls:3,sped:0,teach:0,est:false},
+{name:'내성초등학교병설유치원',lv:'유',s:'bonghwa',addr:'경상북도 봉화군 교촌1길 37',lat:36.885749,lon:128.735467,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'춘양초등학교병설유치원',lv:'유',s:'bonghwa',addr:'경상북도 봉화군 춘양면 의양로 24-1',lat:36.938883,lon:128.914727,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'삼근초등학교병설유치원',lv:'유',s:'uljin',addr:'경상북도 울진군 삼근2길 23',lat:36.935566,lon:129.246098,stu:2,cls:1,sped:0,teach:0,est:false},
+{name:'죽변초등학교병설유치원',lv:'유',s:'uljin',addr:'경상북도 울진군 죽변3길 17',lat:37.063687,lon:129.422022,stu:13,cls:2,sped:2,teach:0,est:false},
+{name:'매화초등학교병설유치원',lv:'유',s:'uljin',addr:'경상북도 울진군 매화4길 21-4',lat:36.913947,lon:129.381523,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'후포초등학교병설유치원',lv:'유',s:'uljin',addr:'경상북도 울진군 후포면 삼율5길 8',lat:36.681096,lon:129.441242,stu:28,cls:2,sped:0,teach:0,est:false},
+{name:'노음초등학교병설유치원',lv:'유',s:'uljin',addr:'경상북도 울진군 노음6길 22',lat:36.958739,lon:129.391666,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'기성초등학교병설유치원',lv:'유',s:'uljin',addr:'경상북도 울진군 척산2길 24-5',lat:36.797898,lon:129.449386,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'온정초등학교병설유치원',lv:'유',s:'uljin',addr:'경상북도 울진군 온정학교길 49',lat:36.725514,lon:129.346289,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'울진초등학교병설유치원',lv:'유',s:'uljin',addr:'경상북도 울진군 울진읍 울진중앙로 143',lat:36.995615,lon:129.400442,stu:59,cls:5,sped:5,teach:0,est:false},
+{name:'평해초등학교병설유치원',lv:'유',s:'uljin',addr:'경상북도 울진군 평해로 19',lat:36.723336,lon:129.439042,stu:3,cls:1,sped:0,teach:0,est:false},
+{name:'부구초등학교삼당분교장병설유치원',lv:'유',s:'uljin',addr:'경상북도 울진군 두천길 299',lat:37.040660,lon:129.322313,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'울진남부초등학교병설유치원',lv:'유',s:'uljin',addr:'경상북도 울진군 울진중앙로 52-5',lat:36.987467,lon:129.398866,stu:8,cls:1,sped:0,teach:0,est:false},
+{name:'남양초등학교병설유치원',lv:'유',s:'ulleung',addr:'경상북도 울릉군 남양1길 42-27',lat:37.468419,lon:130.840266,stu:5,cls:1,sped:0,teach:0,est:false},
+{name:'천부초등학교병설유치원',lv:'유',s:'ulleung',addr:'경상북도 울릉군 천부길 95-3',lat:37.536630,lon:130.871544,stu:7,cls:1,sped:0,teach:0,est:false},
+{name:'저동초등학교병설유치원',lv:'유',s:'ulleung',addr:'경상북도 울릉군 봉래길 128-3',lat:37.496289,lon:130.902799,stu:9,cls:1,sped:0,teach:0,est:false},
+{name:'울릉초등학교병설유치원',lv:'유',s:'ulleung',addr:'경상북도 울릉군 울릉읍 도동길 151-19',lat:37.484770,lon:130.902372,stu:6,cls:1,sped:0,teach:0,est:false},
+{name:'도동유치원',lv:'유',s:'ulleung',addr:'경상북도 울릉군 행남길 9',lat:37.484895,lon:130.905368,stu:22,cls:2,sped:0,teach:0,est:false}
+];
+
+/* ── `open api/bake-special.mjs` 가 갈아 끼웁니다 ──────────────── */
+const SPECIAL_SCHOOLS = [
+{name:'포항명도학교',lv:'특수',s:'pohang',addr:'경상북도 포항시 북구 소티재로 133',lat:36.062985,lon:129.350719,stu:269,cls:40,sped:269,teach:75,est:false},
+{name:'경희학교',lv:'특수',s:'gyeongju',addr:'경상북도 경주시 초당길15번길 15',lat:35.847304,lon:129.231252,stu:159,cls:29,sped:159,teach:48,est:false},
+{name:'안동영명학교',lv:'특수',s:'andong',addr:'경상북도 안동시 북후면 산약길 12',lat:36.621409,lon:128.709577,stu:225,cls:40,sped:225,teach:67,est:false},
+{name:'안동진명학교',lv:'특수',s:'andong',addr:'경상북도 안동시 평화7길 33',lat:36.568400,lon:128.715619,stu:163,cls:31,sped:163,teach:52,est:false},
+{name:'구미혜당학교',lv:'특수',s:'gumi',addr:'경상북도 구미시 선산대로 129-1',lat:36.141664,lon:128.345111,stu:297,cls:45,sped:297,teach:70,est:false},
+{name:'경북영광학교',lv:'특수',s:'yeongcheon',addr:'경상북도 영천시 북안면 신평탑골길 4',lat:35.893070,lon:129.014484,stu:136,cls:25,sped:136,teach:17,est:false},
+{name:'상희학교',lv:'특수',s:'sangju',addr:'경상북도 상주시 상서문1길 99',lat:36.412139,lon:128.157036,stu:128,cls:24,sped:128,teach:42,est:false},
+{name:'경산자인학교',lv:'특수',s:'gyeongsan',addr:'경상북도 경산시 자인면 원효로156길',lat:35.807382,lon:128.817110,stu:237,cls:38,sped:237,teach:64,est:false}
+];
+
+const SCHOOLS = [...KINDERGARTENS, ...SPECIAL_SCHOOLS];
 
 (function(){
   /* 학년별 학생·학급 (D2) — `open api/bake-students.mjs` 가 심습니다.
@@ -1393,8 +2118,13 @@ const MID_PLAN_SCH = {
 };
 
 /* 학교급별 배율 — 학생수만 더미입니다. 학교수는 실데이터를 씁니다.
-   유치원·특수학교는 목록이 없어 뺐습니다. 공공데이터로 받은 917교는 초·중·고뿐이고,
-   구성안 지도에는 유·특수가 나오므로 **범위를 기획예산관에 확인해야 합니다.** */
+   〔2026. 8. 12.〕 유치원·특수학교도 **실적으로 들어왔습니다.**
+     유치원 614곳   — 유치원알리미 (원아 24,562명 · 1,677학급)
+     특수학교 8곳   — 학교알리미 schulKndCode=05 (학생 1,614명 · 272학급 · 교원 435명)
+   그래서 아래 stuMul(배율)은 **초·중·고에만** 쓰입니다. 유·특수는 학교마다
+   자기 실적이 있으므로 BASE 가 배율을 쓰지 않고 실적을 그대로 더합니다.
+   다만 **시뮬레이터에 유·특수를 포함할지는 아직 정하지 않았습니다** —
+   마스터 9장 「사용자 결정 대기」 3번(기획예산관 확인). */
 const LEVELS = ['초','중','고','유','특수'];
 /* minCls = 한 학교가 가질 수 있는 최소 학급 수.
    초등학교만 학년 수(6)보다 작습니다. **소규모 초등학교는 복식학급을 운영**하기 때문입니다
@@ -1709,11 +2439,12 @@ function renderTilemap(){
     selEl.options[1].text = `초등학교 ${totalC}`;
     selEl.options[2].text = `중학교 ${totalM}`;
     selEl.options[3].text = `고등학교 ${totalH}`;
-    /* ★ 「(가상)」을 여기서도 붙입니다 — 붙박이 HTML 에는 있는데 이 줄이
-       덮어쓰면서 지워지고 있었습니다. 화면을 한 번 만지면 가상 표시가 사라져
-       실적처럼 보였습니다. 초·중·고는 실적이라 표시가 없는 것이 맞습니다. */
-    if (selEl.options[4]) selEl.options[4].text = `유치원 ${totalK} (가상)`;
-    if (selEl.options[5]) selEl.options[5].text = `특수학교 ${totalS} (가상)`;
+    /* 〔2026. 8. 12.〕 예전에는 여기에 「(가상)」을 붙였습니다. 이제 다섯 학교급이
+       모두 실적이라 붙이지 않습니다 —
+         유치원   유치원알리미 (원아수·학급수 실적, 좌표는 주소를 옮긴 것)
+         특수학교 학교알리미 schulKndCode=05 (학생·학급·교원 실적, 좌표도 API 값) */
+    if (selEl.options[4]) selEl.options[4].text = `유치원 ${totalK}`;
+    if (selEl.options[5]) selEl.options[5].text = `특수학교 ${totalS}`;
   }
   
   const vals = {}; 
@@ -2155,11 +2886,10 @@ function renderDetail(){
      예전에는 이 자리를 난수 좌표로 채워서 지도에 점이 찍혔습니다. 걷어냈고,
      빈 채로 두면 「자료를 못 불러왔나」로 읽히므로 그렇지 않다고 적습니다. */
   if (list.length === 0) {
-    const why = (lv === '유' || lv === '특수')
-      ? `${lv === '유' ? '유치원' : '특수학교'}은 시군 합계(가상)만 있고 학교별 자료가 아직 없습니다.<br>` +
-        '<span style="font-size:12px;">실제 목록·원아수는 유치원알리미에서 받을 수 있고, 지도에 찍으려면 주소를 좌표로 바꾸는 열쇠가 더 필요합니다.</span>'
-      : (document.getElementById('home-search')?.value.trim()
-          ? '찾으시는 이름이 없습니다.'
+    const why = document.getElementById('home-search')?.value.trim()
+      ? '찾으시는 이름이 없습니다.'
+      : (lv === '특수'
+          ? '이 시군에는 특수학교가 없습니다. 경북 전체에 8곳입니다.'
           : '이 조건에 해당하는 학교가 없습니다.');
     box.innerHTML = `<div style="grid-column:1/-1; padding:28px; text-align:center; color:var(--ink-3); line-height:1.7;">${why}</div>`;
   }

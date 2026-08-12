@@ -112,5 +112,7 @@ for d in a-circuit c-storybook e-together; do (cd $d && node test.js | tail -1);
 | `bake-coords.mjs` | 좌표를 받아 앱에 심는 스크립트 |
 | `bake-students.mjs` | 학년별 학생수·학급수·교사수를 받아 앱에 심는 스크립트 |
 | `bake-demographics.mjs` | 행안부 도로명별 주민등록 인구 API로 읍·면·동 인구를 심는 스크립트 |
-| `bake-kinder.mjs` | 유치원알리미에서 유치원 목록·원아수·학급수를 받아 대시보드에 심는 스크립트 |
+| `bake-kinder.mjs` | 유치원알리미에서 유치원 614곳(원아수·학급수·주소)을 받아 대시보드에 심는 스크립트 |
+| `bake-special.mjs` | 학교알리미 `schulKndCode=05` 로 특수학교 8곳(학생·학급·교원·좌표)을 심는 스크립트 |
+| `kakao-geocode.mjs` | 주소 → 좌표. 유치원알리미가 좌표를 주지 않아서 씁니다. 받은 것은 `data/geocode-cache.json` 에 쌓습니다 |
 

@@ -25,8 +25,9 @@
         「열쇠는 인증키.txt 에만」입니다.
 
    지금 판이 지키는 것 — **없는 것을 지어내지 않습니다.**
-   좌표가 없으면 좌표를 비운 채로 심고, 지도는 그런 곳을 점으로 찍지 않습니다.
-   좌표를 넣으려면 주소를 좌표로 바꾸는 열쇠(VWorld 등)가 따로 필요합니다.
+   좌표는 **카카오 로컬로 주소를 옮긴 것**입니다(`kakao-geocode.mjs`).
+   못 찾은 주소는 **비운 채로** 둡니다 — 가까운 아무 데나 찍지 않습니다.
+   지도는 좌표가 없는 곳을 그리지 않고, 몇 곳을 못 찾았는지 화면에 찍습니다.
 
    쓰는 법
      node "open api/bake-kinder.mjs"            인증키.txt 에서 열쇠를 읽습니다
@@ -37,6 +38,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { makeGeocoder, inGyeongbuk } from './kakao-geocode.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const KEYFILE = path.resolve(HERE, '인증키.txt');
@@ -152,36 +154,48 @@ async function main() {
   console.log(`원아 수가 있는 곳 ${withStu}곳 · 원아 0명 ${unique.length - withStu}곳`);
   console.log(`총 원아 ${unique.reduce((a, r) => a + r.stu, 0).toLocaleString()}명 · 총 학급 ${unique.reduce((a, r) => a + r.cls, 0).toLocaleString()}개`);
 
-  /* ★ 좌표는 이 API 가 주지 않습니다. 주소만 줍니다.
-     지어내지 않고 **비워 둡니다.** lat·lon 이 null 이면 대시보드가 점을 찍지 않습니다. */
-  console.log('\n※ 좌표는 이 API 에 없습니다 — lat·lon 을 비운 채 심습니다.');
-  console.log('  지도에 점으로 찍으려면 주소→좌표 변환 열쇠(VWorld 등)가 따로 필요합니다.');
+  /* ★ 좌표는 이 API 가 주지 않습니다 — 주소를 카카오로 옮깁니다.
+     못 찾으면 비워 둡니다. 지어내지 않습니다. */
+  console.log('\n주소를 좌표로 옮기는 중… (이미 아는 주소는 캐시에서 꺼냅니다)');
+  const geo = makeGeocoder();
+  let outside = 0;
+  for (const r of unique) {
+    const hit = r.addr ? await geo.lookup(r.addr) : null;
+    if (hit && inGyeongbuk(hit.lat, hit.lon)) { r.lat = hit.lat; r.lon = hit.lon; }
+    else { r.lat = null; r.lon = null; if (hit) outside++; }
+  }
+  geo.save();
+  const st = geo.stats();
+  const located = unique.filter(r => r.lat != null).length;
+  console.log(`  물어본 주소 ${st.asked}개 · 캐시에서 ${st.fromCache}개 · 못 찾음 ${st.missed}개` +
+    (outside ? ` · 경북 밖이라 버림 ${outside}개` : ''));
+  console.log(`  좌표를 얻은 곳 ${located} / ${unique.length}곳`);
 
   if (DRY) {
     console.log('\n— 확인만 (--dry). 파일을 고치지 않았습니다.');
-    console.log(unique.slice(0, 3).map(r => `  ${r.name} · ${r.s} · 원아 ${r.stu} · 학급 ${r.cls}`).join('\n'));
+    console.log(unique.slice(0, 3).map(r => `  ${r.name} · ${r.s} · 원아 ${r.stu} · 학급 ${r.cls} · ${r.lat ? r.lat.toFixed(4) + ',' + r.lon.toFixed(4) : '좌표 없음'}`).join('\n'));
     return;
   }
 
   const esc = s => String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
   const literal = unique.map(r =>
-    `{name:'${esc(r.name)}',lv:'유',s:'${r.s}',addr:'${esc(r.addr)}',lat:null,lon:null,` +
+    `{name:'${esc(r.name)}',lv:'유',s:'${r.s}',addr:'${esc(r.addr)}',` +
+    `lat:${r.lat == null ? 'null' : r.lat.toFixed(6)},lon:${r.lon == null ? 'null' : r.lon.toFixed(6)},` +
     `stu:${r.stu},cls:${r.cls},sped:${r.sped},teach:0,est:false}`
   ).join(',\n');
 
   let html = fs.readFileSync(TARGET, 'utf8');
 
   /* ★ **갈아 끼웁니다. 덧붙이지 않습니다.** 예전 판이 덧붙이기만 해서
-     두 번 돌리자 두 배가 됐습니다. 여기서는 `const SCHOOLS = [ … ];` 통째로
-     바꾸므로 몇 번을 돌려도 결과가 같습니다. */
-  const re = /const SCHOOLS = \[[\s\S]*?\n\];/;
-  const alt = /const SCHOOLS = \[\];/;
-  const block = 'const SCHOOLS = [\n' + literal + '\n];';
+     두 번 돌리자 두 배가 됐습니다. 여기서는 `const KINDERGARTENS = [ … ];`
+     통째로 바꾸므로 몇 번을 돌려도 결과가 같습니다.
+     특수학교는 **다른 배열**(SPECIAL_SCHOOLS)이라 서로 지우지 않습니다. */
+  const re = /const KINDERGARTENS = \[[\s\S]*?\n?\];/;
+  const block = 'const KINDERGARTENS = [\n' + literal + '\n];';
 
-  if (re.test(html))       html = html.replace(re, block);
-  else if (alt.test(html)) html = html.replace(alt, block);
+  if (re.test(html)) html = html.replace(re, block);
   else {
-    console.error('✗ 대시보드에서 `const SCHOOLS = [` 자리를 찾지 못했습니다.');
+    console.error('✗ 대시보드에서 `const KINDERGARTENS = [` 자리를 찾지 못했습니다.');
     process.exit(1);
   }
 

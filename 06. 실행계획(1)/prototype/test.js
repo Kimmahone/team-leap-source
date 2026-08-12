@@ -195,12 +195,22 @@ console.log('\n■ 학년별 학생·학급 (D2 · apiType=09)');
    특수학교 10곳이 전부 est:true 로 들어오면서 검사가 빨개지자 **문턱을 올려**
    초록으로 만들어 두었습니다. 검사를 고친 것이 아니라 검사를 껐던 것입니다.
    지어낸 자료를 걷어냈으므로 원래 뜻으로 되돌립니다 — 좌표가 없는 한 곳뿐입니다. */
-check('초·중·고 추정으로 남은 학교가 없다', q('SCHOOLS.filter(s=>s.est).length') <= 1, '개수: ' + q('SCHOOLS.filter(s=>s.est).length'));
+/* ★ 이 세 검사는 **초·중·고 전용**입니다 〔2026. 8. 12.〕
+   학년별 자료(D2)가 있는 것은 초·중·고뿐입니다. 유치원은 나이별(3·4·5세·혼합)이고,
+   특수학교는 초·중·고 과정을 한 학교에서 함께 운영해 학년이 18칸까지 갑니다.
+   그래서 둘 다 `grades` 배열이 없습니다 — 없는 것이 맞습니다.
+   예전에는 SCHOOLS 에 초·중·고밖에 없어서 굳이 적지 않았는데, 유치원 614곳과
+   특수학교 8곳이 들어오면서 이 검사가 그것들까지 보고 빨개졌습니다.
+   **검사의 범위를 넓히지 말고, 원래 보던 것을 분명히 적습니다.** */
+const K12 = 's=>["초","중","고"].includes(s.lv)';
+check('초·중·고 추정으로 남은 학교가 없다',
+  q(`SCHOOLS.filter(${K12}).filter(s=>s.est).length`) <= 1,
+  '개수: ' + q(`SCHOOLS.filter(${K12}).filter(s=>s.est).length`));
 check('공시년도가 적혀 있다', q('D2_YEAR') === 2026, '연도: ' + q('D2_YEAR'));
 check('학년별 값이 학교마다 들어 있다',
-  q('SCHOOLS.filter(s=>!s.est).every(s=>s.grades && s.grades.length === (s.lv==="초"?6:3))'));
+  q(`SCHOOLS.filter(${K12}).filter(s=>!s.est).every(s=>s.grades && s.grades.length === (s.lv==="초"?6:3))`));
 check('학년별 합 + 특수 = 학교 계',
-  q('SCHOOLS.filter(s=>!s.est).every(s=>s.grades.reduce((a,v)=>a+v,0)+s.sped === s.stu)'));
+  q(`SCHOOLS.filter(${K12}).filter(s=>!s.est).every(s=>s.grades.reduce((a,v)=>a+v,0)+s.sped === s.stu)`));
 
 const totals = q(`(function(){const o={};['초','중','고'].forEach(lv=>{o[lv]=SIGUNGU.reduce((a,sg)=>a+BASE[lv][sg.s].stu,0)});return o})()`);
 console.log(`     실적 — 초 ${totals.초.toLocaleString()} · 중 ${totals.중.toLocaleString()} · 고 ${totals.고.toLocaleString()}`);
@@ -304,6 +314,44 @@ check('기간 필터 단추에 기간이 붙어 있다',
 check('기간 필터 단추가 실제로 걸러 준다',
   /querySelectorAll\('\[data-news-days\]'\)/.test(html) && /withinDays/.test(html));
 check('몇 건인지 화면에 적는다', html.includes('id="news-count"'));
+
+/* ---------- 주간 AI 뉴스 요약 (종합 대시보드) ---------- */
+console.log('\n■ 주간 AI 뉴스 요약');
+/* 〔2026. 8. 12.〕 여기 있던 것은 **전부 손으로 적은 것**이었습니다 —
+   「보도 12건 수집 완료 · 적정규모화 4건 · 통학 지원 3건」이라는 숫자도,
+   기사 세 건도, 네이버 링크도. 그러면서 「주간 자동 집계」라고 적혀 있었습니다. */
+check('손으로 적은 건수가 없다',
+  !/보도 <b>\d+건<\/b> 수집 완료|수집 완료\./.test(html));
+check('손으로 적은 기사 링크가 없다',
+  !/n\.news\.naver\.com\/mnews\/article/.test(html));
+check('요약을 뉴스 클리핑과 같은 자료에서 셈한다',
+  /function renderNewsBrief/.test(html) && /NEWS_ALL/.test(html) && /NEWS_TOPICS/.test(html));
+check('주제별로 나눈다', (html.match(/^\s*\['[^']+',\s*\/.*\/\],?$/gm) || []).length >= 5
+  || /NEWS_TOPICS = \[[\s\S]{80,}\]/.test(html));
+check('경북 몫을 따로 센다', /GYEONGBUK\s*=/.test(html) && html.includes('경북 이야기는'));
+check('주제가 겹칠 수 있다고 알린다', html.includes('주제별 합이 건수보다 클 수 있습니다'));
+check('요약 글자도 이스케이프한다', /esc\(top\.name\)/.test(html) && /esc\(n\.title\)/.test(html));
+
+/* ---------- 유치원·특수학교 ---------- */
+console.log('\n■ 유치원 · 특수학교');
+/* 한 배열은 한 스크립트만 가집니다 — 하나로 두면 나중에 돌린 쪽이 앞의 것을 지웁니다 */
+check('굽는 배열이 둘로 나뉘어 있다',
+  /const KINDERGARTENS = \[/.test(html) && /const SPECIAL_SCHOOLS = \[/.test(html));
+const kg = q('SCHOOLS.filter(s=>s.lv==="유")');
+const sp = q('SCHOOLS.filter(s=>s.lv==="특수")');
+check('유치원이 들어 있다', kg.length >= 600, '개수: ' + kg.length);
+check('특수학교가 들어 있다', sp.length >= 8, '개수: ' + sp.length);
+check('유치원·특수학교가 전부 실적이다 (추정 0)',
+  q('SCHOOLS.filter(s=>(s.lv==="유"||s.lv==="특수")&&s.est).length') === 0);
+check('원아 수가 난수가 아니다 — 한 자릿수 유치원이 있다',
+  kg.filter(s => s.stu > 0 && s.stu < 10).length > 0,
+  '10명 미만: ' + kg.filter(s => s.stu > 0 && s.stu < 10).length + '곳');
+check('특수학교 학급당 인원이 특수학교답다 (12명 미만)',
+  sp.every(s => s.cls > 0 && s.stu / s.cls < 12));
+check('유치원·특수학교에 주소가 있다',
+  kg.every(s => s.addr) && sp.every(s => s.addr));
+check('「(가상)」 표시가 남아 있지 않다',
+  !/유치원 \$\{totalK\} \(가상\)|특수학교 \$\{totalS\} \(가상\)/.test(html));
 check('다크 모드가 있다', /@media \(prefers-color-scheme: dark\)/.test(html));
 check('인쇄 스타일이 있다', /@media print/.test(html));
 check('모션 축소 요청을 존중한다', /prefers-reduced-motion/.test(html));
