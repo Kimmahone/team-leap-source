@@ -430,6 +430,33 @@ check('낡은 공시를 표시한다',
   /function staleTerm/.test(html) && /tag-stale/.test(html));
 const staleN = q("SCHOOLS.filter(s=>s.lv==='유'&&s.term!=='20261').length");
 check('낡은 공시가 몇 곳인지 셀 수 있다', staleN > 0 && staleN < 200, staleN + '곳');
+
+/* ★ 〔2026. 8. 12.〕 폐교 탭의 사진 세 장이 **프로젝트 밖**을 가리키고 있었습니다 —
+   `../../../../../.gemini/antigravity-ide/brain/…` 라는 IDE 캐시 폴더입니다.
+   라이브에서 **404** 로 깨져 있었는데 아무 검사도 보지 않았습니다.
+   깨진 링크 검사는 굽기 스크립트에 있었지만 `href` 만 보고 `img src` 는 안 봤습니다. */
+const escapingSrc = [...CODE_ONLY.matchAll(/<img[^>]+src="([^"]+)"/g)]
+  .map(m => m[1])
+  .filter(u => /^(\.\.\/){3,}/.test(u) || /\/\.[a-z]/.test(u));
+check('그림이 프로젝트 밖을 가리키지 않는다', escapingSrc.length === 0,
+  '밖을 가리키는 그림: ' + escapingSrc.slice(0, 3).join(' · '));
+
+/* ---------- 지어낸 내용이 남아 있지 않은가 ---------- */
+console.log('\n■ 지어낸 내용');
+check('특수교육 탭이 셈해서 그린다',
+  /function spedStats/.test(html) && !/12% 돌파/.test(CODE_ONLY));
+check('다문화는 자료가 없다고 말한다',
+  html.includes('학교알리미 공시 항목에 다문화 학생 수가 없어'));
+check('지어낸 다문화 비율이 없다', !/경주시 8\.2%|경북 평균\(3\.4%\)/.test(CODE_ONLY));
+check('홈 인사이트를 셈해서 적는다',
+  /function renderHomeInsight/.test(html) && !/코호트 진급에 따른 시뮬레이션 결과/.test(CODE_ONLY));
+check('하지 않은 분석을 말하지 않는다', !/꾸준히 증가하고 있습니다/.test(CODE_ONLY));
+check('주요업무계획이 지어낸 정책을 싣지 않는다',
+  !/지능형 튜터링 시스템 도입|이중언어 강점 개발/.test(CODE_ONLY));
+check('폐교 탭이 지어낸 사례를 싣지 않는다',
+  !/dummyCases/.test(CODE_ONLY) && !/closed-pin/.test(CODE_ONLY));
+check('비운 자리는 무엇이 필요한지 적는다',
+  html.includes('지방교육재정알리미') && html.includes('원고를 누가 주는지'));
 check('다크 모드가 있다', /@media \(prefers-color-scheme: dark\)/.test(html));
 check('인쇄 스타일이 있다', /@media print/.test(html));
 check('모션 축소 요청을 존중한다', /prefers-reduced-motion/.test(html));

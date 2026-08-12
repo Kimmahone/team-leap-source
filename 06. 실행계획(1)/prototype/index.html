@@ -691,12 +691,14 @@ table.data .hl{color:var(--brand);font-weight:800}
             </p>
           </details>
 
-          <div class="spec" style="background-color: var(--under-bg); border: 1px solid var(--under); color: var(--ink);">
-            <div style="font-size: 14px; font-weight: bold; margin-bottom: 6px; color: var(--leap-blue);">💡 학령인구 감소 인사이트</div>
-            2026년 기준 경상북도 내 초·중·고 917곳 중 300명 이하 소규모 학교의 비율이 꾸준히 증가하고 있습니다. 
-            특히 군 단위 외곽 지역일수록 학급당 평균 학생 수가 급감하여 <b>적정규모화(통폐합 및 거점학교 육성) 논의가 시급</b>합니다.<br>
-            향후 5년간 코호트 진급에 따른 시뮬레이션 결과, 중학교 대비 초등학교의 인구 절벽 현상이 더욱 뚜렷하게 나타날 전망이므로, 원거리 통학 학생을 위한 교통 지원 및 유휴 교실 인프라 재배치 등 <b>선제적 정책 수립이 요구됩니다.</b>
-          </div>
+          <!-- ★ 〔2026. 8. 12.〕 여기 있던 글은 **손으로 적은 주장**이었습니다.
+                 「비율이 꾸준히 증가하고 있습니다」 — 우리는 2026년 한 해치만 갖고
+                 있어서 «증가»를 말할 수 없습니다.
+                 「향후 5년간 코호트 진급에 따른 시뮬레이션 결과」 — **그 시뮬레이션을
+                 한 적이 없습니다.** 코호트 모델은 아직 만들지 않았습니다(마스터 8장).
+                 지금은 **이 화면이 실제로 셈할 수 있는 것만** 말합니다. -->
+          <div class="spec" id="home-insight"
+               style="background-color: var(--under-bg); border: 1px solid var(--under); color: var(--ink);"></div>
         </div>
       </div>
     </div>
@@ -816,33 +818,32 @@ table.data .hl{color:var(--brand);font-weight:800}
 
   <!-- ================= 3. 주요업무계획 ================= -->
     <section id="view-plan" class="view" hidden>
+    <!-- ★ 〔2026. 8. 12.〕 여기 있던 정책 카드 셋(「AI 맞춤형 교육」·「소규모 학교 통폐합」·
+           「다문화 인재 양성」)은 **우리가 지어낸 것**이었습니다. 경북교육청이 실제로
+           내건 주요업무계획이 아닙니다. 그럴듯한 문장이라 더 위험합니다 —
+           도교육청 이름이 붙은 화면에서 읽는 사람은 실제 정책으로 받아들입니다.
+           마스터 9장 「사용자 결정 대기」 5번이 바로 이 자리입니다. -->
     <div class="page-head">
       <h1>주요업무계획</h1>
-      <span class="desc" style="color:var(--brand); font-weight:700; border:1px solid var(--brand); padding:2px 8px; border-radius:12px; font-size:12px; margin-left:8px;">미완성 (WIP)</span>
+      <span class="desc">원고를 받으면 채웁니다</span>
     </div>
-    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:24px; padding:24px; background:var(--card); border:1px solid var(--line); border-radius:16px;">
-      
-      <!-- Policy 1 -->
-      <div style="padding:20px; border-radius:12px; background:var(--bg); border:1px solid var(--line);">
-        <div style="font-size:28px; margin-bottom:12px;">🤖</div>
-        <h3 style="margin:0 0 8px; font-size:18px; color:var(--ink);">AI 맞춤형 교육</h3>
-        <p style="margin:0; font-size:14px; color:var(--ink-3); line-height:1.5;">학습 결손을 방지하고 개별 맞춤형 코칭을 지원하는 지능형 튜터링 시스템 도입</p>
+    <div class="card">
+      <h2>아직 비어 있습니다</h2>
+      <p style="margin:10px 0 0; font-size:14px; line-height:1.8; color:var(--ink-2)">
+        이 자리에는 <b>경상북도교육청의 학령인구 감소 대응 주요업무계획</b>이 들어갑니다.
+        지금은 <b>원고를 받지 못했습니다.</b>
+      </p>
+      <div class="spec" style="margin-top:14px">
+        <b>왜 비워 두나</b> — 예전에는 이 자리에 정책 카드 셋이 있었는데
+        <b>우리가 지어낸 것</b>이었습니다. 도교육청 이름이 붙은 화면에서 읽는 사람은
+        그것을 실제 정책으로 받아들입니다. 그래서 걷어냈습니다.
+        <b>없는 것을 있는 척하지 않습니다.</b>
       </div>
-
-      <!-- Policy 2 -->
-      <div style="padding:20px; border-radius:12px; background:var(--bg); border:1px solid var(--line);">
-        <div style="font-size:28px; margin-bottom:12px;">🏫</div>
-        <h3 style="margin:0 0 8px; font-size:18px; color:var(--ink);">소규모 학교 통폐합</h3>
-        <p style="margin:0; font-size:14px; color:var(--ink-3); line-height:1.5;">지역사회와 연계한 거점형 통합 학교 구축 및 최첨단 학습 환경 조성</p>
+      <div class="spec" style="margin-top:10px">
+        <b>채우려면</b> — ① 이 메뉴가 무엇을 담는 자리인지(도 단위 계획인가, 우리 과제 계획인가)
+        ② 원고를 누가 주는지 를 정해야 합니다.
+        마스터 문서 9장 「사용자 결정 대기」 5번에 올려 두었습니다.
       </div>
-
-      <!-- Policy 3 -->
-      <div style="padding:20px; border-radius:12px; background:var(--bg); border:1px solid var(--line);">
-        <div style="font-size:28px; margin-bottom:12px;">🌏</div>
-        <h3 style="margin:0 0 8px; font-size:18px; color:var(--ink);">다문화 인재 양성</h3>
-        <p style="margin:0; font-size:14px; color:var(--ink-3); line-height:1.5;">이중언어 강점 개발 및 문화 다양성을 존중하는 글로벌 세계시민 교육 강화</p>
-      </div>
-      
     </div>
   </section>
 
@@ -1029,44 +1030,49 @@ table.data .hl{color:var(--brand);font-weight:800}
 
   <!-- ================= 다문화 및 특수교육 모니터링 ================= -->
     <section id="view-multi" class="view" hidden>
+    <!-- ★ 〔2026. 8. 12.〕 이 절은 **전부 지어낸 것**이었습니다 —
+           꺾은선의 점 다섯 개가 손으로 찍은 좌표였고(「12% 돌파」),
+           도넛의 12% 도, 「경주시 8.2% · 경북 평균 3.4%」도 지어낸 숫자였습니다.
+           실제 특수교육 대상자 비율은 **2.1%** 입니다. 지어낸 12% 는 여섯 배였습니다.
+
+           지금은 **이미 갖고 있던 실적**으로 셈합니다 —
+             일반학교 특수학급 학생 = 917곳의 `sped` (학교알리미 apiType=09)
+             특수학교 학생          = 특수학교 8곳의 `stu`
+           둘을 더한 것이 특수교육 대상자입니다.
+
+           **다문화는 자료가 없습니다.** 그래서 지어내지 않고 «없다»고 적습니다. -->
     <div class="page-head">
-      <h1>다문화 및 특수교육 모니터링</h1>
-      <span class="desc">※ 가상 데이터입니다</span>
+      <h1>특수교육 모니터링</h1>
+      <span class="desc">경북 특수교육 대상자 — 학교알리미 2026 공시 실적</span>
     </div>
-    
-    <div style="display:grid; grid-template-columns:2fr 1fr; gap:20px;">
+
+    <div class="kpi" id="sped-kpi"></div>
+
+    <div style="display:grid; grid-template-columns:2fr 1fr; gap:20px; margin-top:16px;">
       <div class="card">
-        <h2>특수교육 대상자 추이 (가상)</h2>
-        <div class="chart-box" style="height:250px; background:var(--bg); border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--ink-3);">
-          <!-- 꺾은선 차트 위치 -->
-          <svg viewBox="0 0 500 200" width="100%" height="100%">
-            <polyline fill="none" stroke="var(--brand)" stroke-width="3" points="50,150 150,130 250,110 350,80 450,40" />
-            <circle cx="50" cy="150" r="5" fill="var(--brand)" />
-            <circle cx="150" cy="130" r="5" fill="var(--brand)" />
-            <circle cx="250" cy="110" r="5" fill="var(--brand)" />
-            <circle cx="350" cy="80" r="5" fill="var(--brand)" />
-            <circle cx="450" cy="40" r="5" fill="var(--brand)" />
-            <text x="450" y="25" font-size="12" fill="var(--brand)" text-anchor="middle" font-weight="bold">12% 돌파</text>
-          </svg>
+        <h2>시군별 특수교육 대상자</h2>
+        <div id="sped-bars"></div>
+        <div class="spec" style="margin-top:14px">
+          <b>막대 두 색이 다른 것을 말합니다</b> — 짙은 쪽은 <b>특수학교</b>에 다니는 학생,
+          옅은 쪽은 <b>일반학교 특수학급</b>에 다니는 학생입니다.
+          특수학교는 경북에 8곳뿐이라 그 시군에만 짙은 막대가 섭니다.
         </div>
       </div>
-      
+
       <div style="display:flex; flex-direction:column; gap:20px;">
-        <!-- Donut Chart -->
-        <div class="card" style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-          <h2 style="font-size:14px; color:var(--ink-3); margin-bottom:16px;">전체 대비 특수교육 비율</h2>
-          <svg viewBox="0 0 100 100" width="120" height="120">
-            <circle cx="50" cy="50" r="40" fill="none" stroke="var(--line)" stroke-width="12" />
-            <circle cx="50" cy="50" r="40" fill="none" stroke="var(--brand)" stroke-width="12" stroke-dasharray="30 220" stroke-linecap="round" />
-            <text x="50" y="55" font-size="20" font-weight="bold" fill="var(--ink)" text-anchor="middle">12%</text>
-          </svg>
+        <div class="card">
+          <h2 style="font-size:14px; color:var(--ink-3); margin-bottom:12px;">어디에서 배우는가</h2>
+          <div id="sped-donut" style="display:flex; flex-direction:column; align-items:center;"></div>
         </div>
-        
-        <!-- Summary Card -->
-        <div class="card" style="flex:1; background:linear-gradient(135deg, var(--brand), #5b8deb); color:#fff;">
-          <div style="font-size:12px; opacity:0.8; margin-bottom:4px;">가장 높은 다문화 비율</div>
-          <div style="font-size:24px; font-weight:800; margin-bottom:8px;">경주시 8.2%</div>
-          <div style="font-size:12px; opacity:0.9;">경북 평균(3.4%) 대비 +4.8%p</div>
+        <div class="card">
+          <h2 style="font-size:14px; color:var(--ink-3); margin-bottom:10px;">다문화 학생</h2>
+          <p style="margin:0; font-size:13px; line-height:1.7; color:var(--ink-2)">
+            <b>자료가 없습니다.</b> 학교알리미 공시 항목에 다문화 학생 수가 없어
+            이 화면에서 셈할 수 없습니다.<br>
+            <span style="color:var(--ink-3); font-size:12px;">
+              교육기본통계(한국교육개발원) 또는 도교육청 내부 자료를 받아야 합니다.
+              받기 전까지는 <b>지어내지 않고 비워 둡니다.</b></span>
+          </p>
         </div>
       </div>
     </div>
@@ -1074,47 +1080,42 @@ table.data .hl{color:var(--brand);font-weight:800}
 
   <!-- ================= 폐교 활용 우수 사례 맵 ================= -->
     <section id="view-closed" class="view" hidden>
-    <div class="page-head">
-      <h1>폐교 활용 우수 사례 맵</h1>
-      <span class="desc">※ 가상의 활용 사례 데이터를 지도에 표시합니다.</span>
-    </div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; height:calc(100vh - 140px); min-height:500px;">
-      <div style="border:1px solid var(--line); border-radius:12px; background:#e0e0e0; position:relative; overflow:hidden;" id="closed-map-container">
-        <!-- SVG 지도가 렌더링됩니다 -->
-      </div>
-      <div style="border:1px solid var(--line); border-radius:12px; overflow-y:auto; background:var(--bg); display:flex; flex-direction:column; gap:16px; padding:16px;" id="closed-info-panel">
-        <h2 style="font-size:16px; margin:0; padding-bottom:12px; border-bottom:1px solid var(--line);">주요 우수 사례 (가상)</h2>
-        
-        <!-- Case 1 -->
-        <div style="display:flex; gap:16px; background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:hidden; padding:12px; transition:border 0.2s;" onmouseover="this.style.borderColor='var(--brand)'" onmouseout="this.style.borderColor='var(--line)'">
-          <img src="../../../../../.gemini/antigravity-ide/brain/59f4e207-c63e-4500-b427-c05af332e495/case1_smartfarm_1786450388618.png" style="width:120px; height:120px; object-fit:cover; border-radius:8px;" alt="스마트팜">
-          <div style="display:flex; flex-direction:column; justify-content:center;">
-            <div style="font-size:11px; color:#fff; background:var(--fit); padding:2px 6px; border-radius:4px; align-self:flex-start; margin-bottom:8px;">스마트팜</div>
-            <h3 style="margin:0 0 6px; font-size:15px; color:var(--ink);">의성 구 상생초등학교</h3>
-            <p style="margin:0; font-size:12px; color:var(--ink-3); line-height:1.5;">최첨단 ICT 기술을 접목한 지역 특산물 스마트팜으로 개조하여 청년 농업인을 육성합니다.</p>
-          </div>
-        </div>
+    <!-- ★ 〔2026. 8. 12.〕 여기 있던 「우수 사례」 넷은 **지어낸 것**이었습니다.
+           · 사례 이름(「의성 구 상생초등학교」 등)과 설명이 지어낸 것이고
+           · 지도의 핀 좌표가 **그 시군의 중심점**이었습니다(함정 55번과 같은 자리)
+           · 사진 세 장은 프로젝트 **밖의 IDE 캐시 폴더**를 가리켜
+             (`../../../../../.gemini/antigravity-ide/brain/…`)
+             라이브에서 **404** 로 깨져 있었습니다.
 
-        <!-- Case 2 -->
-        <div style="display:flex; gap:16px; background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:hidden; padding:12px; transition:border 0.2s;" onmouseover="this.style.borderColor='var(--brand)'" onmouseout="this.style.borderColor='var(--line)'">
-          <img src="../../../../../.gemini/antigravity-ide/brain/59f4e207-c63e-4500-b427-c05af332e495/case2_camping_1786450388618.png" style="width:120px; height:120px; object-fit:cover; border-radius:8px;" alt="글램핑장">
-          <div style="display:flex; flex-direction:column; justify-content:center;">
-            <div style="font-size:11px; color:var(--fit); background:#fce7d8; padding:2px 6px; border-radius:4px; align-self:flex-start; margin-bottom:8px;">가족 캠핑장</div>
-            <h3 style="margin:0 0 6px; font-size:15px; color:var(--ink);">청송 구 햇살초등학교</h3>
-            <p style="margin:0; font-size:12px; color:var(--ink-3); line-height:1.5;">넓은 운동장을 활용하여 자연 친화적인 가족 단위 글램핑장 및 체험 숲으로 조성했습니다.</p>
-          </div>
+           폐교 재산 현황은 «있는 자료»입니다 — 다만 우리가 아직 받지 않았습니다.
+           받기 전까지 지어내지 않고, 무엇이 필요한지 적어 둡니다. -->
+    <div class="page-head">
+      <h1>폐교 활용 현황</h1>
+      <span class="desc">자료를 받으면 채웁니다</span>
+    </div>
+
+    <div class="card">
+      <h2>아직 비어 있습니다</h2>
+      <p style="margin:10px 0 0; font-size:14px; line-height:1.8; color:var(--ink-2)">
+        경북의 <b>폐교 재산 현황과 활용 실태</b>가 들어갈 자리입니다.
+        학령인구 감소의 «그 다음»을 보여 주는 화면이라 이 대시보드에서 값이 큽니다.
+        다만 지금은 <b>자료를 받지 못했습니다.</b>
+      </p>
+      <div class="spec" style="margin-top:14px">
+        <b>왜 비워 두나</b> — 예전에는 여기에 「우수 사례」 넷이 있었는데
+        <b>이름도 설명도 지어낸 것</b>이었고, 지도의 핀은 그 시군의 <b>중심점</b>에 찍혀
+        있었습니다. 사진 세 장은 프로젝트 밖의 폴더를 가리켜 <b>라이브에서 깨져</b> 있었습니다.
+      </div>
+      <div class="spec" style="margin-top:10px">
+        <b>채우려면</b> — 아래 가운데 하나가 필요합니다.
+        <ul style="margin:8px 0 0; padding-left:18px; line-height:1.8">
+          <li><b>지방교육재정알리미</b>(eduinfo.go.kr) 폐교재산 현황 — 학교명·소재지·활용 형태·매각/대부 여부</li>
+          <li><b>공공데이터포털</b> 「전국폐교재산현황」 표준데이터 (data.go.kr, 활용 신청 필요)</li>
+          <li><b>경상북도교육청</b> 재산관리 부서의 내부 자료</li>
+        </ul>
+        <div style="margin-top:8px">
+          좌표는 <b>주소만 있으면</b> 유치원과 같은 방법(카카오 로컬)으로 채울 수 있습니다.
         </div>
-        
-        <!-- Case 3 -->
-        <div style="display:flex; gap:16px; background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:hidden; padding:12px; transition:border 0.2s;" onmouseover="this.style.borderColor='var(--brand)'" onmouseout="this.style.borderColor='var(--line)'">
-          <img src="../../../../../.gemini/antigravity-ide/brain/59f4e207-c63e-4500-b427-c05af332e495/case3_gallery_1786450388618.png" style="width:120px; height:120px; object-fit:cover; border-radius:8px;" alt="문화센터">
-          <div style="display:flex; flex-direction:column; justify-content:center;">
-            <div style="font-size:11px; color:#fff; background:#e11d48; padding:2px 6px; border-radius:4px; align-self:flex-start; margin-bottom:8px;">문화 갤러리</div>
-            <h3 style="margin:0 0 6px; font-size:15px; color:var(--ink);">상주 구 별빛중학교</h3>
-            <p style="margin:0; font-size:12px; color:var(--ink-3); line-height:1.5;">오래된 학교 건물을 리모델링하여 지역 예술가들의 전시 공간과 마을 문화 쉼터로 변모시켰습니다.</p>
-          </div>
-        </div>
-        
       </div>
     </div>
   </section>
@@ -3661,81 +3662,134 @@ function renderGonRiskBadges() {
   container.innerHTML = h;
 }
 
-function renderMulti() {
-  const svg = document.getElementById('multi-chart');
-  if (!svg) return;
-  
-  const years = [2018, 2019, 2020, 2021, 2022, 2023, 2024];
-  const totalStu = [267000, 260000, 255000, 252000, 248000, 243000, 237000]; // 전체학생수 추이(가상)
-  const multiRatio = [0.022, 0.025, 0.028, 0.030, 0.032, 0.035, 0.038]; // 전국평균비율 기반 증가추세
-  
-  const w = svg.clientWidth || 800;
-  const h = 250;
-  const padX = 50, padY = 40;
-  
-  const maxStu = 300000;
-  const maxRatio = 0.05; // 5%
-  
-  const stepX = (w - padX * 2) / (years.length - 1);
-  
-  let html = `<g aria-label="다문화 학생 비율 추이(가상 차트)">`;
-  
-  // 막대 (전체 학생 수 - 회색)
-  years.forEach((y, i) => {
-    const x = padX + i * stepX;
-    const barH = (totalStu[i] / maxStu) * (h - padY * 2);
-    const yPos = h - padY - barH;
-    html += `<rect x="${x - 15}" y="${yPos}" width="30" height="${barH}" fill="var(--line-2)" rx="2"/>`;
-    html += `<text x="${x}" y="${h - padY + 20}" text-anchor="middle" font-size="12" fill="var(--ink-2)">${y}</text>`;
-  });
-  
-  // 꺾은선 (다문화 비율 - 주황색)
-  let pts = [];
-  years.forEach((y, i) => {
-    const x = padX + i * stepX;
-    const lineY = h - padY - (multiRatio[i] / maxRatio) * (h - padY * 2);
-    pts.push(`${x},${lineY}`);
-  });
-  
-  html += `<polyline points="${pts.join(' ')}" fill="none" stroke="var(--brand)" stroke-width="3"/>`;
-  years.forEach((y, i) => {
-    const x = padX + i * stepX;
-    const lineY = h - padY - (multiRatio[i] / maxRatio) * (h - padY * 2);
-    html += `<circle cx="${x}" cy="${lineY}" r="5" fill="#fff" stroke="var(--brand)" stroke-width="2"/>`;
-    html += `<text x="${x}" y="${lineY - 12}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--brand)">${(multiRatio[i]*100).toFixed(1)}%</text>`;
-  });
-  
-  html += `</g>`;
-  svg.innerHTML = html;
+/* =========================================================
+   특수교육 모니터링 — 갖고 있는 실적으로 셈합니다
+   ---------------------------------------------------------
+   ★ 〔2026. 8. 12.〕 예전 판은 **전부 지어낸 것**이었습니다.
+     `totalStu` 도 `multiRatio` 도 손으로 적은 배열이었고
+     (`// 전체학생수 추이(가상)`), 화면에는 「12% 돌파」가 찍혀 있었습니다.
+     **실제 특수교육 대상자 비율은 2.1% 입니다** — 여섯 배였습니다.
+
+   지금 쓰는 것은 이미 받아 둔 실적뿐입니다 —
+     일반학교 특수학급 학생 = 초·중·고 917곳의 `sped` (학교알리미 apiType=09)
+     특수학교 학생          = 특수학교 8곳의 `stu` (schulKndCode=05)
+   ========================================================= */
+/* 홈 인사이트 — «셈할 수 있는 것»만 말합니다
+   ---------------------------------------------------------
+   예전에는 「비율이 꾸준히 증가하고 있습니다」·「코호트 시뮬레이션 결과」처럼
+   **하지 않은 분석**이 적혀 있었습니다. 우리가 가진 것은 2026년 한 해치입니다.
+   그래서 «지금 이렇다»만 말하고, 추세와 예측은 말하지 않습니다. */
+function renderHomeInsight() {
+  const el = document.getElementById('home-insight');
+  if (!el) return;
+
+  const k12 = SCHOOLS.filter(s => ['초','중','고'].includes(s.lv));
+  const n = k12.length;
+  const le = v => k12.filter(s => s.stu <= v).length;
+  const small = le(60), mid = le(120);
+
+  /* 초등학교 학급당 평균이 가장 낮은 시군과 가장 높은 시군 — 격차가 이 화면의 요점입니다 */
+  const perSig = SIGUNGU.map(sg => {
+    const l = SCHOOLS.filter(s => s.s === sg.s && s.lv === '초');
+    const st = l.reduce((a, s) => a + s.stu, 0), c = l.reduce((a, s) => a + s.cls, 0);
+    return { s: sg.s, per: c ? st / c : 0 };
+  }).filter(x => x.per > 0).sort((a, b) => a.per - b.per);
+  const lo = perSig[0], hi = perSig[perSig.length - 1];
+
+  /* 복식학급이 될 만한 규모 — 경북 복식 편성 기준(두 학년 6명)에 닿는 초등학교 */
+  const dual = SCHOOLS.filter(s => s.lv === '초' && s.cls > 0 && s.stu / s.cls <= 6).length;
+
+  el.innerHTML =
+    '<div style="font-size:14px;font-weight:bold;margin-bottom:6px;color:var(--leap-blue)">💡 지금 이렇습니다 — 2026 공시 실적</div>' +
+    `경북 초·중·고 <b>${fmt(n)}곳</b> 가운데 학생 <b>60명 이하가 ${fmt(small)}곳(${(small / n * 100).toFixed(0)}%)</b>, ` +
+    `120명 이하가 ${fmt(mid)}곳(${(mid / n * 100).toFixed(0)}%)입니다.<br>` +
+    `초등학교 학급당 평균은 <b>${lo.s} ${lo.per.toFixed(1)}명</b>에서 <b>${hi.s} ${hi.per.toFixed(1)}명</b>까지 ` +
+    `<b>${(hi.per / lo.per).toFixed(1)}배</b> 벌어져 있습니다. ` +
+    `학급당 6명 이하인 초등학교는 <b>${fmt(dual)}곳</b>으로, 경북 복식학급 편성 기준(두 학년 6명)에 닿는 규모입니다.<br>` +
+    '<span style="color:var(--ink-3);font-size:12px">※ 여기 적은 것은 <b>2026년 한 해의 실적</b>입니다. ' +
+    '늘고 있는지 줄고 있는지는 여러 해치를 받아야 말할 수 있고, 예측은 아직 감소율을 곱한 값입니다.</span>';
 }
 
-function renderClosed() {
-  const container = document.getElementById('closed-map-container');
-  if (!container) return;
-  
-  const dummyCases = [
-    { name: '구미 폐교 (가상)', type: '지역문화센터', lat: 36.119, lon: 128.344, desc: '주민들을 위한 복합 문화 공간으로 리모델링' },
-    { name: '안동 폐교 (가상)', type: '스마트팜', lat: 36.568, lon: 128.729, desc: '청년 농업인을 위한 첨단 스마트팜 실습장' },
-    { name: '포항 폐교 (가상)', type: '캠핑장', lat: 36.019, lon: 129.343, desc: '해양 스포츠 체험이 가능한 가족 캠핑장' },
-    { name: '경주 폐교 (가상)', type: '예술창작소', lat: 35.856, lon: 129.224, desc: '지역 예술가들의 작업실 및 전시 공간' }
-  ];
-  
-  // 간단한 마커 렌더링 로직 (projX, projY 사용)
-  let html = `<svg viewBox="0 0 ${MAP_W} ${MAP_H}" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" style="position:absolute; top:0; left:0;">`;
-  html += gbLandLayer(GB, 'closed'); // 배경 렌더링
-  
-  dummyCases.forEach((d, i) => {
-    const x = projX(d.lon);
-    const y = projY(d.lat);
-    html += `<g class="closed-pin" tabindex="0" onclick="document.getElementById('closed-info-panel').innerHTML='<h3 style=\\\'font-size:16px;font-weight:bold;margin-bottom:8px;\\\'>${d.name}</h3><span style=\\\'display:inline-block;padding:2px 8px;background:var(--brand-pale);color:var(--brand);border-radius:4px;font-size:12px;margin-bottom:8px;\\\'>${d.type}</span><p style=\\\'color:var(--ink-2);font-size:14px;\\\'>${d.desc}</p>'">`;
-    html += `<circle cx="${x}" cy="${y}" r="8" fill="var(--over)" stroke="#fff" stroke-width="2" style="cursor:pointer;"/>`;
-    html += `<text x="${x}" y="${y - 12}" text-anchor="middle" font-size="12" font-weight="700" fill="var(--over)" style="pointer-events:none;">${d.name}</text>`;
-    html += `</g>`;
-  });
-  
-  html += `</svg>`;
-  container.innerHTML = html;
+function spedStats() {
+  const k12 = SCHOOLS.filter(s => ['초','중','고'].includes(s.lv));
+  const inClass = k12.reduce((a, s) => a + (s.sped || 0), 0);      // 일반학교 특수학급
+  const inSchool = SCHOOLS.filter(s => s.lv === '특수').reduce((a, s) => a + s.stu, 0);
+  const allStu = k12.reduce((a, s) => a + (s.stu || 0), 0) + inSchool;
+  return {
+    inClass, inSchool,
+    total: inClass + inSchool,
+    allStu,
+    ratio: allStu ? (inClass + inSchool) / allStu : 0,
+    withClass: k12.filter(s => (s.sped || 0) > 0).length,
+    k12n: k12.length,
+    schools: SCHOOLS.filter(s => s.lv === '특수').length,
+    teach: SCHOOLS.filter(s => s.lv === '특수').reduce((a, s) => a + (s.teach || 0), 0)
+  };
 }
+
+function renderMulti() {
+  const kpi = document.getElementById('sped-kpi');
+  if (!kpi) return;
+  const st = spedStats();
+
+  kpi.innerHTML =
+    `<div class="box"><div class="k">특수교육 대상자</div><div class="v">${fmt(st.total)}<span style="font-size:14px">명</span></div></div>` +
+    `<div class="box"><div class="k">전체 학생 대비</div><div class="v">${(st.ratio * 100).toFixed(1)}<span style="font-size:14px">%</span></div></div>` +
+    `<div class="box"><div class="k">특수학급을 둔 학교</div><div class="v">${fmt(st.withClass)}<span style="font-size:14px"> / ${fmt(st.k12n)}곳</span></div></div>` +
+    `<div class="box"><div class="k">특수학교</div><div class="v">${st.schools}<span style="font-size:14px">곳 · 교원 ${fmt(st.teach)}명</span></div></div>`;
+
+  /* 시군별 — 특수학교와 특수학급을 나눠 쌓습니다.
+     둘은 «어디에서 배우는가»가 다르고, 그것이 이 화면이 말하려는 것입니다. */
+  const rows = SIGUNGU.map(sg => {
+    const here = SCHOOLS.filter(s => s.s === sg.s);
+    return {
+      s: sg.s,
+      cls: here.filter(s => ['초','중','고'].includes(s.lv)).reduce((a, s) => a + (s.sped || 0), 0),
+      sch: here.filter(s => s.lv === '특수').reduce((a, s) => a + s.stu, 0)
+    };
+  }).map(r => Object.assign(r, { tot: r.cls + r.sch }))
+    .sort((a, b) => b.tot - a.tot);
+
+  const max = Math.max(1, ...rows.map(r => r.tot));
+  const bars = document.getElementById('sped-bars');
+  if (bars) {
+    bars.innerHTML = rows.map(r =>
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:12.5px">' +
+        `<span style="width:44px;flex:none;color:var(--ink-2)">${r.s}</span>` +
+        '<span style="flex:1;height:14px;border-radius:3px;background:var(--card-2);overflow:hidden;display:flex">' +
+          `<span title="특수학교 ${r.sch}명" style="height:100%;width:${r.sch / max * 100}%;background:var(--brand)"></span>` +
+          `<span title="특수학급 ${r.cls}명" style="height:100%;width:${r.cls / max * 100}%;background:color-mix(in srgb, var(--brand) 35%, var(--card))"></span>` +
+        '</span>' +
+        `<b style="width:44px;text-align:right">${fmt(r.tot)}</b>` +
+      '</div>'
+    ).join('');
+  }
+
+  /* 통합교육 비율 — 「몇 명인가」보다 「어디에서 배우는가」가 정책의 물음입니다 */
+  const donut = document.getElementById('sped-donut');
+  if (donut) {
+    const pct = st.total ? Math.round(st.inClass / st.total * 100) : 0;
+    const C = 2 * Math.PI * 40;
+    donut.innerHTML =
+      `<svg viewBox="0 0 100 100" width="126" height="126" role="img" aria-label="특수교육 대상자 ${fmt(st.total)}명 가운데 일반학교 특수학급 ${pct}%">` +
+        '<circle cx="50" cy="50" r="40" fill="none" stroke="var(--brand)" stroke-width="12"/>' +
+        `<circle cx="50" cy="50" r="40" fill="none" stroke="color-mix(in srgb, var(--brand) 35%, var(--card))" stroke-width="12"` +
+        ` stroke-dasharray="${(C * pct / 100).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 50 50)"/>` +
+        `<text x="50" y="48" font-size="19" font-weight="800" fill="var(--ink)" text-anchor="middle">${pct}%</text>` +
+        '<text x="50" y="62" font-size="8" fill="var(--ink-3)" text-anchor="middle">특수학급</text>' +
+      '</svg>' +
+      '<div style="margin-top:12px;font-size:12.5px;line-height:1.7;color:var(--ink-2);text-align:center">' +
+        `<span style="color:color-mix(in srgb, var(--brand) 55%, var(--ink))">■</span> 일반학교 특수학급 <b>${fmt(st.inClass)}명</b><br>` +
+        `<span style="color:var(--brand)">■</span> 특수학교 <b>${fmt(st.inSchool)}명</b>` +
+      '</div>';
+  }
+}
+
+/* 폐교 활용 현황 — 〔2026. 8. 12.〕 그리는 코드를 걷어냈습니다.
+   여기 있던 `dummyCases` 넷은 이름도 설명도 지어낸 것이었고, 핀 좌표는
+   그 시군의 **중심점**이었습니다. 사진은 프로젝트 밖의 IDE 캐시를 가리켜
+   라이브에서 404 였습니다. 자료를 받으면 유치원과 같은 방식으로 심습니다
+   (주소만 있으면 카카오 로컬로 좌표를 채울 수 있습니다). */
 
 /* =========================================================
    8. 초기화
@@ -3747,8 +3801,8 @@ renderStatus();
 renderSim();
 renderPaxPyramid();
 renderGonRiskBadges();
+renderHomeInsight();
 renderMulti();
-renderClosed();
 showView(location.hash.slice(1) || 'home');
 </script>
 
