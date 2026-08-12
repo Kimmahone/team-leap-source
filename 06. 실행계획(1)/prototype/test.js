@@ -386,6 +386,50 @@ check('유치원·특수학교에 주소가 있다',
   kg.every(s => s.addr) && sp.every(s => s.addr));
 check('「(가상)」 표시가 남아 있지 않다',
   !/유치원 \$\{totalK\} \(가상\)|특수학교 \$\{totalS\} \(가상\)/.test(html));
+
+/* ---------- 과밀·적정·과소 — 학교급마다 기준이 다른가 ---------- */
+console.log('\n■ 과밀 · 적정 · 과소');
+/* ★ 〔2026. 8. 12.〕 예전에는 두 갈래(초 15~25 / 나머지 18~28)뿐이라
+   **특수학교가 전부 「과소」**로 나왔습니다. 학급당 5~7명인데 18명 밑이면
+   과소로 셌기 때문입니다. 그런데 특수학교는 **법으로** 학급당 4~7명입니다. */
+check('학교급 다섯이 저마다 기준을 가진다',
+  ['초','중','고','유','특수'].every(lv => q(`!!DENSITY_STD['${lv}']`)));
+check('초·중은 동과 읍·면 기준이 다르다',
+  q("DENSITY_STD['초'].over.동") === 25 && q("DENSITY_STD['초'].over.읍면") === 21 &&
+  q("DENSITY_STD['중'].over.동") === 27 && q("DENSITY_STD['중'].over.읍면") === 26);
+check('특수학교 과밀선이 법정 상한(7명)이다', q("DENSITY_STD['특수'].over.동") === 7);
+check('특수학교는 과소를 판단하지 않는다', q("DENSITY_STD['특수'].under") === null);
+check('기준마다 근거가 적혀 있다',
+  q("['초','중','고','유','특수'].every(lv => !!DENSITY_STD[lv].overSrc)"));
+check('근거 없는 값은 「잠정」이라고 말한다',
+  q("DENSITY_STD['중'].underSrc.includes('잠정') && DENSITY_STD['고'].underSrc.includes('잠정')"));
+
+/* 실제로 그렇게 갈리는가 — 표만 고치고 쓰지 않으면 소용없습니다 */
+check('특수학교가 과소로 나오지 않는다',
+  q("SCHOOLS.filter(s=>s.lv==='특수').every(s=>densityOf('특수', s.stu/s.cls, areaOf(s)) !== 'under')"));
+check('학급당 5명 유치원은 과소다', q("densityOf('유', 5, '동')") === 'under');
+check('학급당 5명 특수학교는 과소가 아니다', q("densityOf('특수', 5, '동')") === 'fit');
+check('읍·면 초등학교는 22명이면 과밀이다',
+  q("densityOf('초', 22, '읍면')") === 'over' && q("densityOf('초', 22, '동')") === 'fit');
+check('군 지역은 읍·면으로 본다',
+  q("areaOf({s:'울릉', addr:'경상북도 울릉군 남양1길 42-27'})") === '읍면');
+
+/* ---------- 자료 출처 · 공시 시기 ---------- */
+console.log('\n■ 자료 출처');
+/* 공시 자료는 실제 운영과 다를 수 있습니다 — 포항양덕초등학교병설유치원은
+   2023년 2차 공시라 원아 5명으로 남아 있지만 지금은 운영하지 않습니다. */
+check('출처 표가 있다', html.includes('이 화면의 자료는 어디서 왔나'));
+check('공시가 실제와 다를 수 있다고 적는다',
+  html.includes('공시 자료는 실제 운영과 다를 수 있습니다'));
+check('실제로 어긋난 예를 든다', html.includes('포항양덕초등학교병설유치원'));
+check('어디에 확인해야 하는지 적는다', html.includes('해당 교육지원청에 확인'));
+check('유치원마다 공시 시기가 다르다고 적는다', html.includes('공시 시기가 유치원마다 달라'));
+check('유치원 자료에 공시 시기가 들어 있다',
+  q("SCHOOLS.filter(s=>s.lv==='유').every(s=>!!s.term)"));
+check('낡은 공시를 표시한다',
+  /function staleTerm/.test(html) && /tag-stale/.test(html));
+const staleN = q("SCHOOLS.filter(s=>s.lv==='유'&&s.term!=='20261').length");
+check('낡은 공시가 몇 곳인지 셀 수 있다', staleN > 0 && staleN < 200, staleN + '곳');
 check('다크 모드가 있다', /@media \(prefers-color-scheme: dark\)/.test(html));
 check('인쇄 스타일이 있다', /@media print/.test(html));
 check('모션 축소 요청을 존중한다', /prefers-reduced-motion/.test(html));

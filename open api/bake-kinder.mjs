@@ -126,13 +126,19 @@ async function main() {
            병설유치원은 대부분 혼합반이라 mix 를 빼면 0 이 됩니다 — 예전 판이 그랬습니다. */
         const stu = num(k.ppcnt3) + num(k.ppcnt4) + num(k.ppcnt5) + num(k.mixppcnt) + num(k.shppcnt);
         const cls = num(k.clcnt3) + num(k.clcnt4) + num(k.clcnt5) + num(k.mixclcnt) + num(k.shclcnt);
+        /* ★ pbnttmng = 공시 시기 (20261 = 2026년 1차).
+           **유치원마다 다릅니다.** 2026년 것이 82%지만 2023·2024·2025년 것도 섞여 있습니다.
+           낡은 공시는 «지금 문 닫은 곳»이 그대로 남아 있을 수 있습니다 —
+           실제로 포항양덕초등학교병설유치원은 2023년 2차 공시라 원아 5명으로 나오는데
+           지금은 운영하지 않습니다. 그래서 이 값을 **화면까지 들고 갑니다.** */
         rows.push({
           name: String(k.kindername || '').trim(),
           s: sig,
           addr: String(k.addr || '').trim(),
           establish: String(k.establish || '').trim(),
           stu, cls,
-          sped: num(k.shppcnt)
+          sped: num(k.shppcnt),
+          term: String(k.pbnttmng || '').trim()
         });
       }
       process.stdout.write(`  ${sig} ${list.length}곳\n`);
@@ -160,10 +166,24 @@ async function main() {
   });
   const dropped = rows.length - unique.length;
 
+  /* 공시 시기가 몇 년치나 섞여 있는지 — 낡은 것이 있으면 반드시 알립니다 */
+  const byTerm = {};
+  unique.forEach(r => { byTerm[r.term] = (byTerm[r.term] || 0) + 1; });
+  const terms = Object.keys(byTerm).sort();
+  const newest = terms[terms.length - 1];
+  const stale = unique.filter(r => r.term !== newest).length;
+
   const withStu = unique.filter(r => r.stu > 0).length;
   console.log(`\n받은 유치원 ${rows.length}곳` + (dropped ? ` (같은 곳 ${dropped}곳 걸러 ${unique.length}곳)` : ''));
   console.log(`원아 수가 있는 곳 ${withStu}곳 · 원아 0명 ${unique.length - withStu}곳`);
   console.log(`총 원아 ${unique.reduce((a, r) => a + r.stu, 0).toLocaleString()}명 · 총 학급 ${unique.reduce((a, r) => a + r.cls, 0).toLocaleString()}개`);
+  console.log('\n공시 시기 — 유치원마다 다릅니다:');
+  terms.forEach(t => console.log(`  ${t || '(없음)'} : ${byTerm[t]}곳` + (t === newest ? '  ← 가장 최근' : '')));
+  if (stale) {
+    console.log(`\n⚠ ${stale}곳이 ${newest} 보다 낡은 공시입니다.`);
+    console.log('  낡은 공시에는 «지금 문 닫은 곳»이 그대로 남아 있을 수 있습니다.');
+    console.log('  화면에 공시 시기를 함께 적어 보는 사람이 판단할 수 있게 합니다.');
+  }
 
   /* ★ 좌표는 이 API 가 주지 않습니다 — 주소를 카카오로 옮깁니다.
      못 찾으면 비워 둡니다. 지어내지 않습니다. */
@@ -192,7 +212,7 @@ async function main() {
   const literal = unique.map(r =>
     `{name:'${esc(r.name)}',lv:'유',s:'${SIG_KO[r.s] || r.s}',addr:'${esc(r.addr)}',` +
     `lat:${r.lat == null ? 'null' : r.lat.toFixed(6)},lon:${r.lon == null ? 'null' : r.lon.toFixed(6)},` +
-    `stu:${r.stu},cls:${r.cls},sped:${r.sped},teach:0,est:false}`
+    `stu:${r.stu},cls:${r.cls},sped:${r.sped},teach:0,term:'${esc(r.term)}',est:false}`
   ).join(',\n');
 
   let html = fs.readFileSync(TARGET, 'utf8');
