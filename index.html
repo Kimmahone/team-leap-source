@@ -450,8 +450,12 @@ a.link:hover{border-color:var(--leap-blue);box-shadow:var(--leap-shadow);transfo
 .closing p{margin:0 auto;max-width:34ch;font-size:clamp(1.125rem,2.6vw,1.5rem);
   line-height:1.6;letter-spacing:-.024em;font-weight:700;text-wrap:balance}
 .closing p b{color:var(--leap-blue)}
-.closing .sub{margin-top:16px;max-width:44ch;font-size:.9375rem;font-weight:400;
+.closing .sub{margin:16px auto 0;max-width:44ch;font-size:.9375rem;font-weight:400;
   color:var(--leap-gray);line-height:1.78;letter-spacing:0;text-wrap:pretty}
+/* 마지막 갈 곳 셋 — 여기가 페이지의 끝이라 「그래서 어디로 가면 되나」에 답합니다.
+   〔2026. 8. 12.〕 예전에는 「전체 앱 모아보기 앱 카탈로그 ↗」 한 줄이 전부였습니다. */
+.closing-go{margin-top:clamp(24px,3.4vw,34px);display:flex;gap:10px;
+  justify-content:center;flex-wrap:wrap}
 
 /* ==========================================================================
    꼬리
@@ -968,26 +972,66 @@ footer.foot{background:var(--deep);color:var(--deep-ink);padding:clamp(60px,8vw,
   </div>
 </section>
 
-    <!-- ============================== 6. 연구소 ============================== -->
-    <section id="lab" class="sec">
+    <!-- ============================== 6. 연구소 ==============================
+         ★ 〔2026. 8. 12.〕 이 절은 **스타일을 하나도 못 받고 있었습니다.**
+           `sec` · `sec-h` · `sec-p` 세 클래스를 쓰고 있었는데 CSS 에 그 이름이
+           **없습니다.** 그래서 다른 절과 달리 위아래 여백도, 눈썹 글자도,
+           제목 크기도 없이 날것으로 떠 있었습니다.
+           page 의 다른 절이 쓰는 짜임(band · wrap · head rise · eyebrow)으로 맞췄습니다.
+
+           비워 둔 칸 셋도 `<span>` 하나뿐이라 `.link` 가 기대하는 짜임
+           (아이콘 + 굵은 제목 + 설명)과 어긋나 있었습니다. 그래서 다른 카드와
+           생김새가 달랐습니다. 짜임을 맞추고, 세 칸이 **같은 말만 세 번**
+           되풀이하던 것도 고쳤습니다.
+         ====================================================================== -->
+    <section class="band alt" id="lab" aria-labelledby="lab-h">
       <div class="wrap">
-        <h2 class="sec-h">연구소</h2>
-        <p class="sec-p">다른 분과에서 개발하는 새로운 교실 도구가 추가되는 공간입니다.</p>
-        <div class="links">
-          <!-- 다른 앱이 생기면 그 자리에 이렇게 넣으세요 -->
-          <div class="link empty rise"><span>새 앱 연동 준비 중</span></div>
-          <div class="link empty rise"><span>새 앱 연동 준비 중</span></div>
-          <div class="link empty rise"><span>새 앱 연동 준비 중</span></div>
+        <div class="head rise">
+          <p class="eyebrow">앞으로</p>
+          <h2 id="lab-h">연구소</h2>
+          <p>다른 분과에서 만드는 새 교실 도구가 여기에 놓입니다.
+             <b>비어 있는 것이 아니라 비워 둔 자리</b>입니다.</p>
         </div>
-        <div class="closing">전체 앱 모아보기 <a href="./08.%20실행계획(3)/apps/index.html">앱 카탈로그 ↗</a></div>
+
+        <div class="links">
+          <!-- 다른 앱이 생기면 그 자리에 이렇게 넣으세요 —
+               이 <div> 를 <a class="link rise" href="…"> 로 바꿔 끼우면 됩니다.
+               빈 칸은 눌리면 안 되므로 지금은 일부러 <div> 입니다. -->
+          <div class="link empty rise">
+            <span class="ico" aria-hidden="true">＋</span>
+            <div><b>새 도구가 놓일 자리</b>
+              <span>분과에서 도구가 나오면 여기에서 바로 열립니다.</span></div>
+          </div>
+          <div class="link empty rise">
+            <span class="ico" aria-hidden="true">＋</span>
+            <div><b>현장에서 온 요청</b>
+              <span>선생님이 겪은 문제 하나가 도구 하나가 됩니다.</span></div>
+          </div>
+          <div class="link empty rise">
+            <span class="ico" aria-hidden="true">＋</span>
+            <div><b>9월 실증 뒤에</b>
+              <span>교실에서 써 본 뒤 남은 것만 여기에 올립니다.</span></div>
+          </div>
+        </div>
+
+        <div class="closing">
+          <p>도구는 <b>쓰이는 자리</b>에서 완성됩니다.</p>
+          <p class="sub">아홉 가지를 한자리에서 보고, 교실에서 쓰는 법과
+             학령인구가 어떻게 움직이는지까지 이어서 볼 수 있습니다.</p>
+          <div class="closing-go">
+            <a class="btn" href="./08.%20실행계획(3)/apps/index.html">앱 카탈로그</a>
+            <a class="btn btn--ghost" href="./08.%20실행계획(3)/apps/guide.html">교실에서 쓰는 법</a>
+            <a class="btn btn--ghost" href="./06.%20실행계획(1)/prototype/index.html">데이터 플랫폼</a>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- footer -->
     <footer class="foot">
-      <div class="wrap foot-in">
+      <div class="wrap">
         <div class="foot-top">
-          <div class="brand">
+          <div class="foot-brand">
 
         <svg viewBox="0 0 64 64" width="44" height="44" aria-hidden="true"
              fill="none" stroke-linecap="round">

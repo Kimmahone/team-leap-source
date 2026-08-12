@@ -332,6 +332,22 @@ check('비워 둔 자리가 3칸 있다', (html.match(/class="link empty rise"/g
 check('빈 자리는 눌리지 않는다 (a 가 아니라 div)', !/<a class="link empty/.test(html));
 check('자리를 채우는 법이 주석으로 적혀 있다', html.includes('그 자리에 이렇게 넣으세요'));
 check('마지막 한마디가 있다', /class="closing/.test(html));
+/* ★ 〔2026. 8. 12.〕 이 검사가 없어서 **스타일이 안 먹는 절**이 그대로 나갔습니다.
+   연구소 절이 `sec`·`sec-h`·`sec-p` 를 쓰고 있었는데 CSS 에 그 이름이 없었고,
+   푸터 브랜드는 `brand` 인데 CSS 는 `foot-brand` 였습니다. 정의가 **0개**라
+   두 곳 다 날것으로 떠 있었는데 아무 검사도 그것을 보지 않았습니다.
+   ※ 앱 카드의 한 글자 클래스(a~i)는 자리표라 색이 없습니다 — 빼고 봅니다. */
+const styleSheet = (html.match(/<style>[\s\S]*?<\/style>/g) || []).join('\n');
+const definedClasses = new Set([...styleSheet.matchAll(/\.([A-Za-z][\w-]*)/g)].map(m => m[1]));
+const usedClasses = new Set();
+for (const m of html.matchAll(/class="([^"]+)"/g)) {
+  m[1].split(/\s+/).forEach(c => { if (c) usedClasses.add(c); });
+}
+const orphanClasses = [...usedClasses]
+  .filter(c => !definedClasses.has(c))
+  .filter(c => !/^[a-i]$/.test(c));
+check('CSS 가 없는 클래스를 쓰지 않는다', orphanClasses.length === 0,
+  '정의가 없는 클래스: ' + orphanClasses.join(', '));
 check('숫자 세기는 원래 글자로 되돌린다', /el\.textContent = text;/.test(html));
 check('인쇄 직전에 숫자를 제 값으로 되돌린다', /beforeprint/.test(html));
 check('외부 애니메이션 라이브러리를 쓰지 않는다',

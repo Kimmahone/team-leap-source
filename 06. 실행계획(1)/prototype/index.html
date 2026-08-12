@@ -758,18 +758,22 @@ table.data .hl{color:var(--brand);font-weight:800}
         <h2>AI 주간 브리핑 & 뉴스 히스토리</h2>
       </div>
       
+      <!-- ★ 〔2026. 8. 12.〕 이 단추 셋은 **아무 데도 붙어 있지 않았습니다.**
+           `aria-pressed` 만 손으로 적힌 장식이었고, 눌러도 아무 일이 없었습니다.
+           히스토리를 심으면서 실제로 거르게 했습니다. data-days 가 기간입니다. -->
       <div class="map-toolbar" style="margin-bottom: 20px;">
         <span style="font-size: 13px; font-weight: 600; color: var(--ink-2); margin-right: 8px;">기간 필터:</span>
-        <button type="button" class="chip" aria-pressed="true">전체 보기</button>
-        <button type="button" class="chip" aria-pressed="false">최근 1주일</button>
-        <button type="button" class="chip" aria-pressed="false">최근 1개월</button>
+        <button type="button" class="chip" data-news-days="0" aria-pressed="true">전체 보기</button>
+        <button type="button" class="chip" data-news-days="7" aria-pressed="false">최근 1주일</button>
+        <button type="button" class="chip" data-news-days="30" aria-pressed="false">최근 1개월</button>
+        <span id="news-count" style="margin-left:auto; font-size:12px; color:var(--ink-3);"></span>
       </div>
 
       <!-- ★ 뉴스는 «구울 때» 여기 심깁니다 — 화면이 켜진 뒤에 받아오지 않습니다.
            까닭: 받아오려면 fetch 가 필요하고, fetch 를 허용하려면 CSP 의
            connect-src 를 열어야 합니다. 그 한 줄 때문에 앱 9종까지 전부 열렸습니다.
            이 프로젝트의 다른 자료(좌표·학생수)는 전부 굽는 방식입니다. 뉴스만 달랐습니다.
-           `사이트 굽기.command` 가 news-latest.json 을 읽어 아래 [] 를 갈아 끼웁니다. -->
+           `사이트 굽기.command` 가 news-history.json 을 읽어 아래 [] 를 갈아 끼웁니다. -->
       <script id="news-data" type="application/json">[]</script>
 
       <div class="news-grid" id="news-container">
@@ -1069,21 +1073,50 @@ table.data .hl{color:var(--brand);font-weight:800}
     } catch (e) { return []; }
   }
 
+  /* 기간 필터 — 0 이면 전체 */
+  var newsDays = 0;
+  var NEWS_ALL = null;
+
+  function withinDays(pubDate, days) {
+    if (!days) return true;
+    const t = new Date(pubDate).getTime();
+    if (isNaN(t)) return false;
+    return (Date.now() - t) <= days * 24 * 60 * 60 * 1000;
+  }
+
   function renderNews() {
     const container = document.getElementById('news-container');
     if (!container) return;
 
-    const items = readBakedNews();
-    if (items.length === 0) {
+    if (NEWS_ALL === null) NEWS_ALL = readBakedNews();
+    const countEl = document.getElementById('news-count');
+
+    if (NEWS_ALL.length === 0) {
       /* 없으면 «없다»고 적습니다. 지어내지 않습니다. */
       container.innerHTML = '<div style="padding:40px; text-align:center; color:var(--ink-3); grid-column:1/-1;">' +
         '아직 이번 주 뉴스를 싣지 않았습니다.<br>' +
-        '<span style="font-size:12px;">뉴스는 <code>news-latest.json</code> 을 채운 뒤 사이트를 다시 구우면 올라옵니다.</span></div>';
+        '<span style="font-size:12px;">뉴스는 <code>news-history.json</code> 을 채운 뒤 사이트를 다시 구우면 올라옵니다.</span></div>';
+      if (countEl) countEl.textContent = '';
+      return;
+    }
+
+    const items = NEWS_ALL.filter(function (n) { return withinDays(n.pubDate, newsDays); });
+
+    if (countEl) {
+      countEl.textContent = newsDays
+        ? `최근 ${newsDays}일 ${items.length}건 (전체 ${NEWS_ALL.length}건)`
+        : `모두 ${NEWS_ALL.length}건`;
+    }
+
+    if (items.length === 0) {
+      container.innerHTML = '<div style="padding:40px; text-align:center; color:var(--ink-3); grid-column:1/-1;">' +
+        `최근 ${newsDays}일 안에 실은 기사가 없습니다.<br>` +
+        '<span style="font-size:12px;">「전체 보기」로 지난 기사를 볼 수 있습니다.</span></div>';
       return;
     }
 
     const emojis = ['📰', '🚌', '🏫', '👶', '📉', '🌏'];
-    const cards = items.slice(0, 4).map(function (news, idx) {
+    const cards = items.map(function (news, idx) {
       const link = safeUrl(news.originallink || news.link);
       const dateStr = fmtDate(news.pubDate);
       const title = esc(news.title);
@@ -1104,10 +1137,27 @@ table.data .hl{color:var(--brand);font-weight:800}
     container.innerHTML = cards.join('');
   }
 
+  /* 기간 단추를 실제로 붙입니다 — 예전에는 붙어 있지 않았습니다 */
+  function wireNewsFilter() {
+    const btns = document.querySelectorAll('[data-news-days]');
+    if (!btns || !btns.length) return;
+    Array.prototype.forEach.call(btns, function (b) {
+      b.addEventListener('click', function () {
+        newsDays = parseInt(b.getAttribute('data-news-days'), 10) || 0;
+        Array.prototype.forEach.call(btns, function (o) {
+          o.setAttribute('aria-pressed', o === b ? 'true' : 'false');
+        });
+        renderNews();
+      });
+    });
+  }
+
+  function startNews() { wireNewsFilter(); renderNews(); }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', renderNews);
+    document.addEventListener('DOMContentLoaded', startNews);
   } else {
-    renderNews();
+    startNews();
   }
 })();
 
@@ -1686,16 +1736,47 @@ function renderTilemap(){
      원을 다 그린 뒤 이름을 그 위에 얹습니다. 이름에는 바탕색 테두리를 둘러
      원 위에 놓여도 읽히게 합니다.
      이름 층은 `aria-hidden` 입니다 — 같은 내용이 각 원의 aria-label 에 이미 있습니다. */
+  /* ★ 〔2026. 8. 12.〕 소멸 위기 지수 색이 **거꾸로** 나오고 있었습니다.
+     예전 식: color-mix(… var(--over) ${(rate-0.03)*1000}% …)
+     시(市)·초등학교의 감소율은 0.033 − 0.006 = **0.027** 이라
+     (0.027−0.03)×1000 = **−3** 이 됩니다. color-mix 는 음수 백분율을 받지 않으므로
+     **선언 전체가 무효**가 되고, 인라인 style 이 버려져
+     `.rg .dot{fill:var(--brand)}` 즉 **파란색**으로 떨어집니다.
+     화면에서는 그것이 가장 진해 보였습니다 — **가장 안전한 시가 가장 위험해 보였습니다.**
+
+     고친 것 ① 백분율을 0~100 으로 **가둡니다**(음수·100 초과 없음)
+             ② 붙박이 0.03 이 아니라 **실제 값의 최소~최대로** 폅니다
+             ③ 범례도 같은 램프를 씁니다 (아래 legend 참조)
+             ④ 원 넓이는 여전히 「학교 수」이므로 읽어 주는 말에 둘을 **함께** 적습니다 */
+  let extMin = Infinity, extMax = -Infinity;
+  if (homeState.metric === 'ext') {
+    SIGUNGU.forEach(sg => {
+      const r = (BASE['초'][sg.s] && BASE['초'][sg.s].rate) || 0.05;
+      if (r < extMin) extMin = r;
+      if (r > extMax) extMax = r;
+    });
+  }
+  const extPct = rate => {
+    if (!(extMax > extMin)) return 50;
+    const t = (rate - extMin) / (extMax - extMin);
+    return Math.round(Math.max(0, Math.min(1, t)) * 100);
+  };
+
   let dots = '', labels = '';
   const node = (sg, x, y) => {
     const v = vals[sg.s], r = rOf(v);
-    let extStyle = "";
+    let extStyle = '', extSay = '';
     if (homeState.metric === 'ext') {
-       const rate = BASE['초'][sg.s].rate || 0.05;
-       extStyle = ` style="fill:color-mix(in srgb, var(--over) ${Math.min(100, (rate-0.03)*1000)}%, var(--card))"`;
+      const rate = (BASE['초'][sg.s] && BASE['초'][sg.s].rate) || 0.05;
+      const pct = extPct(rate);
+      /* 옅은 쪽이 아주 흐려 안 보이던 것도 함께 고칩니다 — 12% 아래로는 안 내려갑니다 */
+      extStyle = ` style="fill:color-mix(in srgb, var(--over) ${Math.max(12, pct)}%, var(--card))"`;
+      extSay = `, 소멸 위기 지수 ${pct}점(가상)`;
     }
+    const metricSay = homeState.metric === 'ext' ? '학교 수'
+                    : homeState.metric === 'sch' ? '학교 수' : '학생 수';
     dots += `<g class="rg${sg.decline?' decline':''}" tabindex="0" role="button" data-sig="${sg.s}"
-       aria-label="${sg.name} ${homeState.metric==='sch'?'학교 수':'학생 수'} ${fmt(v)}${unit}${sg.decline?', 인구감소지역':''}. 선택하면 학교별 상세로 넘어갑니다">
+       aria-label="${sg.name} ${metricSay} ${fmt(v)}${unit}${extSay}${sg.decline?', 인구감소지역':''}. 선택하면 학교별 상세로 넘어갑니다">
       <circle class="dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}"${extStyle}/>
     </g>`;
     labels += `<text class="lb" x="${x.toFixed(1)}" y="${(y+r+11).toFixed(1)}">${sg.s}${sg.decline?' ▾':''}</text>
@@ -1730,9 +1811,23 @@ function renderTilemap(){
     });
   });
 
+  /* ★ 범례가 지도와 **다른 색**을 보여 주고 있었습니다 〔2026. 8. 12.〕
+     범례는 초록→노랑→빨강 세 색 띠였는데, 지도는 그런 색을 한 번도 쓰지 않았습니다
+     (card→over 한 색 램프입니다). 보는 사람이 초록을 찾다가 못 찾습니다.
+     이제 **지도와 똑같은 식**으로 띠를 만듭니다 — 한 곳만 고치면 어긋납니다. */
+  const extRamp = homeState.metric === 'ext'
+    ? '<span style="display:inline-flex; align-items:center; gap:6px;">' +
+        '<span style="color:var(--ink-2)">안전</span>' +
+        '<span style="width:100px; height:10px; border-radius:5px; border:1px solid var(--line); background:linear-gradient(to right, ' +
+          'color-mix(in srgb, var(--over) 12%, var(--card)), color-mix(in srgb, var(--over) 100%, var(--card)));"></span>' +
+        '<span style="color:var(--over); font-weight:700">소멸 위험 (가상)</span>' +
+        '<span style="color:var(--ink-3)">— 색은 감소율이고, <b>원 넓이는 학교 수</b>입니다</span>' +
+      '</span>'
+    : '';
+
   document.getElementById('home-legend').innerHTML =
     `<span>원 넓이 = ${homeState.metric==='stu'?'학생 수':'학교 수'}</span>
-     ${homeState.metric==='ext' ? '<div style="display:inline-flex; align-items:center; font-size:12px; font-weight:600;"><span style="color:var(--ink-2); margin-right:6px;">안전</span><div style="width:100px; height:8px; border-radius:4px; background:linear-gradient(to right, #4ade80, #facc15, #f87171); margin-right:6px;"></div><span style="color:var(--over);">소멸 위험 (가상)</span></div>' : ''}
+     ${extRamp}
      <span style="color:var(--ink-3)">▾ 표시 = 인구감소지역 (D7 미검증)</span>
      <span style="color:var(--ink-3)">울릉군은 축척이 다른 별도 상자입니다</span>
      <span style="margin-left:auto;color:var(--ink-3)">단위: ${unit}</span>`;

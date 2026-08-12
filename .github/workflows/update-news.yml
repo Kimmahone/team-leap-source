@@ -2,7 +2,7 @@ name: 주간 뉴스 받아오기
 
 # ★ 이 워크플로가 하는 일과 «하지 않는 일» 〔2026. 8. 12.〕
 #
-#   하는 일  — 네이버에서 「학령인구 감소」 기사를 받아 news-latest.json 을 고칩니다.
+#   하는 일  — 네이버에서 학령인구·소규모학교 기사를 받아 news-history.json 에 «더합니다».
 #   안 하는 일 — **사이트를 고치지 않습니다.**
 #
 #   예전에는 이것이 사이트까지 갱신하는 것처럼 적혀 있었지만 아닙니다.
@@ -47,7 +47,7 @@ jobs:
         run: |
           git config --global user.name  "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add news-latest.json
+          git add news-history.json
           if git diff --cached --quiet; then
             echo "새로운 뉴스가 없습니다."
           else

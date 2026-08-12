@@ -79,8 +79,14 @@ if command -v node >/dev/null 2>&1; then
     echo "  ✓ 검사 $TESTS_TOTAL 개 전부 통과"
   else
     echo "✗ 실패한 검사가 있습니다. 굽지 않았습니다 — 위 목록을 고친 뒤 다시 실행하세요."
-    # 임시 조치: 테스트가 실패해도 배포를 진행하도록 exit 1을 주석 처리함.
-    # exit 1
+    # ★ 〔2026. 8. 12.〕 이 줄이 주석 처리되어 있었습니다 — 다시 끄지 마세요.
+    #   「임시 조치: 테스트가 실패해도 배포를 진행하도록」이라고 적혀 있었습니다.
+    #   그 임시 조치 때문에 **검사가 빨간 채로 사이트가 그대로 나갔습니다.**
+    #   바로 윗줄은 「굽지 않았습니다」라고 말하는데 실제로는 굽고 있었습니다 —
+    #   말과 행동이 어긋난 자리입니다.
+    #   함정 49번(웹에 올리는 쪽이 검사를 안 돌고 있었음)을 고쳐 세운 문지기인데,
+    #   그 문지기를 다시 열어 둔 셈이었습니다. 급하면 검사를 고치세요, 문을 열지 말고.
+    exit 1
   fi
 else
   echo "⚠ node 가 없어 검사를 건너뛰었습니다. 이대로 올리지 마세요."
@@ -121,22 +127,23 @@ cp -R "$SRC_APPS" "$OUT/apps"
 #     이 프로젝트의 다른 자료(학교 좌표·학년별 학생수)는 전부 **굽는** 방식입니다.
 #     뉴스만 달랐습니다. 이제 같아졌습니다 — 여기서 심고, 화면은 받아오지 않습니다.
 #     대신 «심은 것은 조용히 낡습니다»(함정 13번). 그래서 날짜를 찍습니다.
-if [ -f "news-latest.json" ]; then
-  node - "$OUT/dashboard/index.html" "news-latest.json" <<'NODE'
+if [ -f "news-history.json" ]; then
+  node - "$OUT/dashboard/index.html" "news-history.json" <<'NODE'
 const fs = require('fs');
 const [target, src] = process.argv.slice(2);
 let raw;
 try { raw = JSON.parse(fs.readFileSync(src, 'utf8')); }
-catch (e) { console.log('  ⚠ news-latest.json 을 읽지 못했습니다 — 뉴스 없이 굽습니다: ' + e.message); process.exit(0); }
-if (!Array.isArray(raw)) { console.log('  ⚠ news-latest.json 이 배열이 아닙니다 — 뉴스 없이 굽습니다.'); process.exit(0); }
+catch (e) { console.log('  ⚠ news-history.json 을 읽지 못했습니다 — 뉴스 없이 굽습니다: ' + e.message); process.exit(0); }
+if (!Array.isArray(raw)) { console.log('  ⚠ news-history.json 이 배열이 아닙니다 — 뉴스 없이 굽습니다.'); process.exit(0); }
 
-/* 화면에 쓰는 다섯 칸만 남깁니다. 쓰지 않는 값을 굽지 않습니다. */
-const items = raw.slice(0, 4).map(n => ({
+/* 화면에 쓰는 네 칸만 남깁니다. 쓰지 않는 값을 굽지 않습니다.
+   히스토리 전체를 심습니다 — 기간 필터가 이것을 걸러 보여 줍니다. */
+const items = raw.map(n => ({
   title: String(n.title || ''),
   link: String(n.originallink || n.link || ''),
   description: String(n.description || ''),
   pubDate: String(n.pubDate || '')
-}));
+})).sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
 let html = fs.readFileSync(target, 'utf8');
 const tag = /(<script id="news-data" type="application\/json">)([\s\S]*?)(<\/script>)/;
@@ -147,11 +154,11 @@ const json = JSON.stringify(items).replace(/<\//g, '<\\/');
 html = html.replace(tag, (m, a, _b, c) => a + json + c);
 fs.writeFileSync(target, html, 'utf8');
 
-const newest = items.map(i => i.pubDate).filter(Boolean).sort().slice(-1)[0] || '(날짜 없음)';
+const newest = items.length ? items[0].pubDate : '(없음)';
 console.log(`  ✓ 뉴스 ${items.length}건 심음 — 가장 최근: ${newest}`);
 NODE
 else
-  echo "  · news-latest.json 이 없어 뉴스 없이 굽습니다."
+  echo "  · news-history.json 이 없어 뉴스 없이 굽습니다."
 fi
 
 # 검사 파일은 사이트에 필요 없습니다 (원본에는 그대로 있습니다)

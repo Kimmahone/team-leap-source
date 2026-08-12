@@ -257,6 +257,31 @@ const senders = [
 check('밖으로 보내는 코드가 없다', senders.length === 0,
   senders.length ? '밖으로 나가는 길: ' + senders.join(' · ') : '');
 
+/* ---------- 소멸 위기 지수 — 색이 뜻과 같은 쪽을 가리키는가 ---------- */
+console.log('\n■ 소멸 위기 지수');
+/* 주석에 옛 식이 나오는 것은 위반이 아닙니다 — 왜 그랬는지 적어 둔 자리입니다.
+   그래서 주석을 걷어 낸 뒤에 봅니다. */
+const CODE_ONLY = html.replace(/\/\*[\s\S]*?\*\//g, '').replace(/<!--[\s\S]*?-->/g, '');
+/* 〔2026. 8. 12.〕 채우기 백분율이 **음수**가 될 수 있었습니다.
+   시(市)·초등학교 감소율 0.027 → (0.027−0.03)×1000 = −3 →
+   color-mix 가 음수를 못 받아 선언이 통째로 무효 → .dot 의 기본 파란색으로
+   떨어졌고, 화면에서는 그것이 가장 진해 보였습니다.
+   **가장 안전한 시가 가장 위험해 보이는** 뒤집힘이었습니다. */
+check('채우기 백분율이 음수가 될 수 없다', !/\(rate-0\.03\)\*1000/.test(CODE_ONLY.replace(/\s/g, '')));
+check('채우기 백분율을 0~100 으로 가둔다',
+  /Math\.max\(0,\s*Math\.min\(1,\s*t\)\)/.test(html) && /Math\.max\(12,\s*pct\)/.test(html));
+check('실제 값의 최소~최대로 편다 (붙박이 문턱이 아니다)',
+  /extMin/.test(html) && /extMax/.test(html));
+/* 범례가 지도와 «다른 색»을 보여 주고 있었습니다 — 초록→노랑→빨강 세 색 띠였는데
+   지도는 그런 색을 한 번도 쓰지 않았습니다. 한 곳만 고치면 또 어긋납니다. */
+check('범례가 초록·노랑 세 색 띠를 쓰지 않는다',
+  !/#4ade80|#facc15|#f87171/i.test(html));
+check('범례가 지도와 같은 램프를 쓴다',
+  /안전[\s\S]{0,400}color-mix\(in srgb, var\(--over\)/.test(html));
+check('색이 무엇이고 넓이가 무엇인지 적는다',
+  html.includes('원 넓이는 학교 수'));
+check('읽어 주는 말에도 소멸 위기 지수가 들어간다', html.includes('소멸 위기 지수 ${pct}점(가상)'));
+
 /* ---------- 뉴스 — 구운 것을 그리는가, 지어내지 않는가 ---------- */
 console.log('\n■ 주간 뉴스');
 check('뉴스를 심을 자리가 있다', /<script id="news-data" type="application\/json">/.test(html));
@@ -268,10 +293,17 @@ check('링크는 http·https 만 받는다', /function safeUrl\(/.test(html) && 
 check('새 창 링크에 noopener 가 있다',
   !/target="_blank"/.test(html) || /rel="noopener/.test(html));
 /* 주석에 그 낱말이 나오는 것은 위반이 아닙니다 — 왜 그랬는지 적어 둔 자리입니다.
-   그래서 주석을 걷어 낸 뒤에 봅니다. */
-const codeOnly = html.replace(/\/\*[\s\S]*?\*\//g, '').replace(/<!--[\s\S]*?-->/g, '');
-check('되돌이 안에서 innerHTML 을 더하지 않는다', !/innerHTML\s*\+=/.test(codeOnly));
+   그래서 주석을 걷어 낸 CODE_ONLY 로 봅니다 (위 「소멸 위기 지수」에서 만들었습니다). */
+check('되돌이 안에서 innerHTML 을 더하지 않는다', !/innerHTML\s*\+=/.test(CODE_ONLY));
 check('뉴스가 없으면 없다고 적는다', html.includes('아직 이번 주 뉴스를 싣지 않았습니다'));
+/* 〔2026. 8. 12.〕 기간 필터 단추 셋은 **아무 데도 붙어 있지 않았습니다** —
+   aria-pressed 만 손으로 적힌 장식이라 눌러도 아무 일이 없었습니다.
+   화면에 단추가 있으면 그 단추는 무언가를 해야 합니다. */
+check('기간 필터 단추에 기간이 붙어 있다',
+  (html.match(/data-news-days="\d+"/g) || []).length === 3);
+check('기간 필터 단추가 실제로 걸러 준다',
+  /querySelectorAll\('\[data-news-days\]'\)/.test(html) && /withinDays/.test(html));
+check('몇 건인지 화면에 적는다', html.includes('id="news-count"'));
 check('다크 모드가 있다', /@media \(prefers-color-scheme: dark\)/.test(html));
 check('인쇄 스타일이 있다', /@media print/.test(html));
 check('모션 축소 요청을 존중한다', /prefers-reduced-motion/.test(html));
