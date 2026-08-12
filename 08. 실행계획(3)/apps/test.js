@@ -46,15 +46,15 @@ function check(name, cond, extra) {
 
 /* 카탈로그가 광고하는 앱 — 폴더 / 화면에 적힌 판 번호 */
 const CLAIMS = [
-  { dir: 'a-circuit',    name: '순회교사 통합 시간표',   ver: 'v0.3' },
-  { dir: 'b-classboard', name: '학급 회의',               ver: 'v0.4' },
-  { dir: 'c-storybook',  name: '지역 탐방 디지털 스토리북', ver: 'v0.8' },
-  { dir: 'd-multigrade', name: '복식학급 수업 도우미',     ver: 'v0.6' },
-  { dir: 'e-together',   name: '이웃 학교 함께하기',       ver: 'v0.5' },
-  { dir: 'f-lessonplan', name: '수업 설계안 만들기',       ver: 'v0.5' },
-  { dir: 'g-classdata',  name: '우리 반 데이터 보기',       ver: 'v0.4' },
-  { dir: 'h-project',    name: '프로젝트 학습 계획서',   ver: 'v0.1' },
-  { dir: 'i-required',   name: '법정 의무교육 점검표',  ver: 'v0.5' }
+  { dir: 'a-circuit',    name: '순회교사 통합 시간표' },
+  { dir: 'b-classboard', name: '학급 회의' },
+  { dir: 'c-storybook',  name: '지역 탐방 디지털 스토리북' },
+  { dir: 'd-multigrade', name: '복식학급 수업 도우미' },
+  { dir: 'e-together',   name: '이웃 학교 함께하기' },
+  { dir: 'f-lessonplan', name: '수업 설계안 만들기' },
+  { dir: 'g-classdata',  name: '우리 반 데이터 보기' },
+  { dir: 'h-project',    name: '프로젝트 학습 계획서' },
+  { dir: 'i-required',   name: '법정 의무교육 점검표' }
 ];
 
 console.log('\n[1] 링크가 살아 있다 — 카탈로그가 깨지는 첫 번째 방식');
@@ -68,14 +68,27 @@ CLAIMS.forEach(c => {
   check(c.dir + ' 열기 링크', hrefs.includes(c.dir + '/index.html'));
 });
 
-console.log('\n[2] 적어 둔 판 번호가 앱과 같다 — 두 번째 방식');
+/* ★ 〔2026. 8. 12. v1〕 여기는 「카탈로그에 적어 둔 판 번호가 앱과 같은가」를
+   보던 자리입니다. 그 검사는 제 몫을 했습니다 — 카탈로그가 낡는 두 번째 방식이
+   바로 판 번호였습니다.
+
+   그런데 **판 번호를 아예 쓰지 않기로 했습니다.** 선생님에게 `v0.6` 은
+   「아직 덜 됐다」로 읽히는데, 아홉 앱 모두 교실에서 쓸 수 있습니다.
+   그래서 «같은가»가 아니라 **«없는가»**를 봅니다.
+   판 이력은 `판 번호 이력.md` 에 있습니다. */
+console.log('\n[2] 판 번호를 화면에 두지 않는다 — 두 번째 방식');
+const bareOf = t => t.replace(/\/\*[\s\S]*?\*\//g, '')
+                     .replace(/<!--[\s\S]*?-->/g, '')
+                     .replace(/\/\/[^\n]*/g, '');
+check('카탈로그 화면에 판 번호가 없다', !/v0\.\d+|프로토타입/.test(bareOf(html)),
+  (bareOf(html).match(/v0\.\d+|프로토타입/g) || []).slice(0, 4).join(' · '));
 CLAIMS.forEach(c => {
   const app = fs.readFileSync(path.join(__dirname, c.dir, 'index.html'), 'utf8');
-  const m = app.match(/<div class="name">[^<]*<span>(v[\d.]+)<\/span>/);
-  const real = m ? m[1] : '(못 찾음)';
-  check(c.dir + ' 판 번호 ' + c.ver, real === c.ver, '앱 화면에는 ' + real);
+  const hit = bareOf(app).match(/v0\.\d+|프로토타입/g);
+  check(c.dir + ' 화면에 판 번호가 없다', !hit, hit ? '남은 것: ' + hit.slice(0, 3).join(' · ') : '');
   check(c.dir + ' 이름이 같다', app.includes(c.name) && html.includes(c.name));
 });
+check('판 번호 이력 문서가 있다', fs.existsSync(path.join(__dirname, '판 번호 이력.md')));
 
 /* 문서가 무엇을 불러오는지는 「마크업」을 봐야 한다.
    스크립트 안의 문자열까지 세면 앱 C가 EPUB 안에 넣는 style.css 같은 것이

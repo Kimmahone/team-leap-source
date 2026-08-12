@@ -89,6 +89,11 @@ button,input,textarea,select{font:inherit;color:inherit}
 
 header.top{background:var(--grad-head);color:#fff;position:relative;overflow:hidden}
 header.top .deco{position:absolute;right:-40px;top:-30px;width:280px;height:280px;opacity:.13;pointer-events:none}
+/* ★ 〔2026. 8. 12.〕 아홉 앱의 좌우 여백을 하나로 맞췄습니다.
+   머리·탭·본문이 **같은 폭**(1360px)이라야 세로선이 한 줄로 섭니다.
+   예전에는 앱마다 880~1360px 로 제각각이었고, 한 앱 안에서도 어긋나 있었습니다
+   (d-multigrade 는 머리 1000 · 본문 1360, h-project 는 탭 880 · 본문 1180).
+   폭을 바꿀 때는 **세 줄을 함께** 고치세요. */
 .top-in{max-width:1360px;margin:0 auto;padding:22px 20px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:relative}
 .brand{display:flex;align-items:center;gap:13px;min-width:0}
 .brand .badge{flex:none;width:48px;height:48px;border-radius:13px;background:rgba(255,255,255,.13);
@@ -524,7 +529,10 @@ table.grid.xlprev td.k-guide{background:#FFF6D8;color:#A8560A;font-weight:700}
           <path class="mk-arc"  d="M16 46 Q32 -10 48 30" stroke-width="7"/>
         </svg>
         <div class="body">
-          <div class="name">우리 반 데이터 보기 <span>v0.4</span></div>
+          <!-- 판 번호는 화면에 두지 않습니다 〔2026. 8. 12. v1〕
+     선생님에게 v0.6 은 「아직 덜 됐다」로 읽힙니다. 판 이력은
+     `08. 실행계획(3)/apps/판 번호 이력.md` 에 있습니다. -->
+          <div class="name">우리 반 데이터 보기</div>
           <p>TEAM LEAP · 경북교육 AI Lab · AI 활용 분과</p>
           <p class="cc">© 2026 TEAM LEAP. All rights reserved.</p>
           <p>교육 목적에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다.
@@ -3028,7 +3036,7 @@ global.LEAP=LEAP;})(window);
       }).join('') + '</tbody></table>';
     }
 
-    h += '<p class="sig">TEAM LEAP · 경북교육 AI Lab — 우리 반 데이터 보기 v0.4<br>' +
+    h += '<p class="sig">TEAM LEAP · 경북교육 AI Lab — 우리 반 데이터 보기<br>' +
       '이 문서는 학급 안에서 쓰는 자료입니다. 밖으로 낼 때는 학교의 절차를 따라 주세요.</p>';
     return h + '</div>';
   }

@@ -546,9 +546,14 @@ console.log('\n[19] 만드는 사람의 말이 일하는 화면에 없다');
     !/단일 HTML|서버 없/.test(r.panel + r.bar + r.mini));
   check('마스터 함정 번호가 화면에 없다', !/마스터 함정|함정 \d+번/.test(r.panel + r.bar + r.mini));
   check('저작권 표기가 있다', SRC.includes('© 2026 TEAM LEAP. All rights reserved.'));
-  check('판 번호가 머리 주석과 판권에서 같다',
-    /법정 의무교육 점검표 v0\.5/.test(SRC) &&
-    /<div class="name">법정 의무교육 점검표 <span>v0\.5<\/span><\/div>/.test(SRC));
+  /* ★ 〔2026. 8. 12. v1〕 판 번호를 화면에서 뗐습니다 — 「같은가」 대신 「없는가」를 봅니다.
+     선생님에게 v0.x 는 「아직 덜 됐다」로 읽힙니다. 이력은 apps/판 번호 이력.md 에 있습니다.
+     ※ 코드 «주석» 안의 〔v0.5〕 표시는 그대로 둡니다 — 저장한 자료를 읽는 코드에서
+       「이 칸은 v0.4 에서 생겼다」는 꼭 필요합니다. */
+  check('화면에 판 번호가 없다',
+    !/v0\.\d+|프로토타입/.test(SRC.replace(/\/\*[\s\S]*?\*\//g, '')
+                                 .replace(/<!--[\s\S]*?-->/g, '')
+                                 .replace(/\/\/[^\n]*/g, '')));
 }
 
 console.log('\n[20] 다른 앱과 어긋나지 않는다');

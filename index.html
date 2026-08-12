@@ -8,7 +8,7 @@
 <meta name="author" content="포항양덕초등학교 김정준 · TEAM LEAP">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2314202E'/%3E%3Cg transform='translate(32 32) scale(0.92) translate(-32 -33)'%3E%3Cpath d='M7 52 H25' stroke='%2397A3B0' stroke-width='7.5' stroke-linecap='round' fill='none'/%3E%3Cpath d='M39 36 H57' stroke='%23F2A65A' stroke-width='7.5' stroke-linecap='round' fill='none'/%3E%3Cpath d='M16 46 Q32 -10 48 30' stroke='%237FB3F7' stroke-width='8' stroke-linecap='round' fill='none'/%3E%3C/g%3E%3C/svg%3E">
 <!--
-  TEAM LEAP 메인 v0.8
+  TEAM LEAP 메인
   제작 · 포항양덕초등학교 김정준 <kimjj0709@gmail.com>
   © 2026 김정준 · TEAM LEAP (경상북도교육청 인공지능 연구소 GBE-AI Lab · AI 활용 분과)
   교육 목적에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다.
@@ -479,6 +479,18 @@ footer.foot{background:var(--deep);color:var(--deep-ink);padding:clamp(60px,8vw,
 .maker a:hover{text-decoration:underline}
 .foot-bot{padding-top:26px;font-size:.8125rem;color:rgba(242,246,251,.52);line-height:1.9}
 .foot-bot .cc{color:rgba(242,246,251,.8)}
+/* 자료 출처 — 여러 곳이 되어 목록으로 폈습니다 */
+.foot-src{margin-bottom:24px;padding-bottom:22px;border-bottom:1px solid rgba(242,246,251,.13)}
+.foot-src > b{display:block;margin-bottom:10px;color:rgba(242,246,251,.8);font-size:.8125rem;
+  letter-spacing:.06em}
+.foot-src ul{margin:0;padding-left:17px;line-height:1.85}
+.foot-src li{margin-bottom:3px}
+.foot-src li b{color:rgba(242,246,251,.78);font-weight:700}
+.foot-src .nuri{color:rgba(242,246,251,.42)}
+.foot-src .cav{color:var(--leap-amber-d,#F2A65A)}
+.foot-src p.cav{margin:14px 0 0;max-width:78ch;line-height:1.85}
+.foot-src p.cav b{color:#F2A65A}
+.foot-src a{color:rgba(242,246,251,.8);text-decoration:underline}
 
 /* ==========================================================================
    움직임을 줄여 달라고 하신 분께
@@ -700,7 +712,7 @@ footer.foot{background:var(--deep);color:var(--deep-ink);padding:clamp(60px,8vw,
     <article class="feature rise" data-d="1">
       <div class="body">
         <h3>학령인구 대시보드</h3>
-        <div class="ver">프로토타입</div>
+        <div class="ver">경북교육 AI Lab</div>
         <p class="lead">시군을 고르고 기준을 바꿔 가며,
            <b>학교 수·학급 수·학급당 학생 수</b>가 어떻게 달라지는지 봅니다.</p>
         <ul>
@@ -752,7 +764,7 @@ footer.foot{background:var(--deep);color:var(--deep-ink);padding:clamp(60px,8vw,
           </span>
           <div class="t">
             <h3>순회교사 통합 시간표</h3>
-            <div class="ver">앱 A · v0.3</div>
+            <div class="ver">앱 A</div>
           </div>
         </div>
         <p class="lead">학교 두세 곳의 시간표를 <b>한 장</b>에 놓고 봅니다.
@@ -778,7 +790,7 @@ footer.foot{background:var(--deep);color:var(--deep-ink);padding:clamp(60px,8vw,
           </span>
           <div class="t">
             <h3>학급 회의</h3>
-            <div class="ver">앱 B · v0.4</div>
+            <div class="ver">앱 B</div>
           </div>
         </div>
         <p class="lead">학급 회의에서 <b>누가 무슨 의견인지 드러나지 않게</b> 의견을 모으고
@@ -805,7 +817,7 @@ footer.foot{background:var(--deep);color:var(--deep-ink);padding:clamp(60px,8vw,
           </span>
           <div class="t">
             <h3>지역 탐방 디지털 스토리북</h3>
-            <div class="ver">앱 C · v0.8</div>
+            <div class="ver">앱 C</div>
           </div>
         </div>
         <p class="lead">체험학습 사진과 글로 <b>학생이 직접 책을 만듭니다.</b>
@@ -831,7 +843,7 @@ footer.foot{background:var(--deep);color:var(--deep-ink);padding:clamp(60px,8vw,
           </span>
           <div class="t">
             <h3>복식학급 수업 도우미</h3>
-            <div class="ver">앱 D · v0.6</div>
+            <div class="ver">앱 D</div>
           </div>
         </div>
         <p class="lead">두 학년을 한 교실에서 가르치는 <b>복식수업 한 차시</b>를 짭니다.
@@ -854,7 +866,7 @@ footer.foot{background:var(--deep);color:var(--deep-ink);padding:clamp(60px,8vw,
           </span>
           <div class="t">
             <h3>이웃 학교 함께하기</h3>
-            <div class="ver">앱 E · v0.5</div>
+            <div class="ver">앱 E</div>
           </div>
         </div>
         <p class="lead">작은 학교가 <b>혼자서는 못 하는 일</b>을 가까운 학교와 함께 하도록.
@@ -879,7 +891,7 @@ footer.foot{background:var(--deep);color:var(--deep-ink);padding:clamp(60px,8vw,
           </span>
           <div class="t">
             <h3>수업 설계안 만들기</h3>
-            <div class="ver">앱 F · v0.5</div>
+            <div class="ver">앱 F</div>
           </div>
         </div>
         <p class="lead">성취기준을 축으로 <b>한 차시</b>를 짜고, <b>약안·세안 두 가지 종이</b>로 냅니다.
@@ -904,7 +916,7 @@ footer.foot{background:var(--deep);color:var(--deep-ink);padding:clamp(60px,8vw,
           </span>
           <div class="t">
             <h3>우리 반 데이터 보기</h3>
-            <div class="ver">앱 G · v0.4</div>
+            <div class="ver">앱 G</div>
           
           </div>
         </div>
@@ -931,7 +943,7 @@ footer.foot{background:var(--deep);color:var(--deep-ink);padding:clamp(60px,8vw,
           </span>
           <div class="t">
             <h3>프로젝트 학습 계획서</h3>
-            <div class="ver">앱 H · v0.1</div>
+            <div class="ver">앱 H</div>
           </div>
         </div>
         <div class="who"><b>이런 분께</b> — 프로젝트를 하고 싶지만 계획서 쓸 시간이 없는 선생님</div>
@@ -957,7 +969,7 @@ footer.foot{background:var(--deep);color:var(--deep-ink);padding:clamp(60px,8vw,
           </span>
           <div class="t">
             <h3>법정 의무교육 점검표</h3>
-            <div class="ver">앱 I · v0.5</div>
+            <div class="ver">앱 I</div>
           </div>
         </div>
         <div class="who"><b>이런 분께</b> — 3월에 범교과 학습 주제 운영 계획을 내야 하는 담임</div>
@@ -1056,10 +1068,36 @@ footer.foot{background:var(--deep);color:var(--deep-ink);padding:clamp(60px,8vw,
       </div>
     </div>
 
+    <!-- 자료 출처 — 쓴 것을 전부 적습니다.
+         예전에는 학교알리미 한 줄뿐이었는데 그 사이 유치원·특수학교·경계·뉴스가
+         들어왔습니다. 어디서 온 자료인지 밝히는 것은 공공누리의 조건이기도 하고,
+         무엇보다 읽는 사람이 «확인할 수 있어야» 합니다. -->
     <div class="foot-bot">
+      <div class="foot-src">
+        <b>자료 출처</b>
+        <ul>
+          <li><b>초·중·고 917곳</b> · 학년별 학생·학급 · <b>특수학교 8곳</b> —
+            학교알리미(schoolinfo.go.kr) 2026 공시 · <span class="nuri">공공누리 제1유형</span></li>
+          <li><b>유치원 614곳</b> — 유치원알리미(e-childschoolinfo.moe.go.kr) ·
+            <span class="nuri">공공누리 제1유형</span>
+            <span class="cav">공시 시기가 유치원마다 다릅니다(2023~2026)</span></li>
+          <li><b>유치원 좌표</b> — 주소를 카카오 로컬로 옮긴 값 (원자료가 아닙니다)</li>
+          <li><b>시군 경계</b> — 통계청 SGIS 행정경계 2018 · <span class="nuri">공공누리 제1유형</span></li>
+          <li><b>주간 뉴스</b> — 네이버 검색 API. 제목·언론사·발행일·링크만 두고
+            <b>본문은 저장하지 않습니다</b></li>
+          <li><b>학급편성 기준</b> — 경상북도교육청 2026학년도 기준 ·
+            교육부 과밀학급 기준 · 장애인 등에 대한 특수교육법 제27조</li>
+        </ul>
+        <p class="cav">
+          공시 자료는 <b>실제 운영과 다를 수 있습니다.</b> 공시 뒤에 문을 닫거나 학생 수가
+          바뀌어도 다음 공시까지 그대로 남습니다.
+          <b>정확한 현황은 해당 교육지원청에 확인하셔야 합니다.</b>
+          자료마다 언제 것인지는 <a href="./06.%20실행계획(1)/prototype/index.html">데이터 플랫폼</a>
+          안의 「자료는 어디서 왔나」에 적어 두었습니다.
+        </p>
+      </div>
       <span class="cc">© 2026 김정준 · TEAM LEAP.</span>
-      교육 목적에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다.<br>
-      학교 자료 출처: 학교알리미(www.schoolinfo.go.kr) · 공공누리 제1유형(출처표시)
+      교육 목적에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다.
     </div>
   </div>
 </footer>

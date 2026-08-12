@@ -80,7 +80,12 @@ img{max-width:100%}
 
 header.top{background:var(--grad-head);color:#fff;position:relative;overflow:hidden}
 header.top .deco{position:absolute;right:-40px;top:-30px;width:280px;height:280px;opacity:.13;pointer-events:none}
-.top-in{max-width:1080px;margin:0 auto;padding:22px 20px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:relative}
+/* ★ 〔2026. 8. 12.〕 아홉 앱의 좌우 여백을 하나로 맞췄습니다.
+   머리·탭·본문이 **같은 폭**(1360px)이라야 세로선이 한 줄로 섭니다.
+   예전에는 앱마다 880~1360px 로 제각각이었고, 한 앱 안에서도 어긋나 있었습니다
+   (d-multigrade 는 머리 1000 · 본문 1360, h-project 는 탭 880 · 본문 1180).
+   폭을 바꿀 때는 **세 줄을 함께** 고치세요. */
+.top-in{max-width:1360px;margin:0 auto;padding:22px 20px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:relative}
 .brand{display:flex;align-items:center;gap:13px;min-width:0}
 .brand .badge{flex:none;width:48px;height:48px;border-radius:13px;background:rgba(255,255,255,.13);
   display:grid;place-items:center;border:1px solid rgba(255,255,255,.2)}
@@ -99,7 +104,7 @@ a.iconbtn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 .iconbtn--home:hover{background:rgba(255,255,255,.32)}
 
 nav.tabs{background:var(--leap-surface);border-bottom:1px solid var(--leap-border);position:sticky;top:0;z-index:20}
-.tabs-in{max-width:1080px;margin:0 auto;padding:9px 20px;display:flex;gap:6px;overflow-x:auto}
+.tabs-in{max-width:1360px;margin:0 auto;padding:9px 20px;display:flex;gap:6px;overflow-x:auto}
 [role="tab"]{background:none;border:0;padding:10px 18px;min-height:46px;border-radius:999px;
   font-weight:700;font-size:.9375rem;color:var(--leap-gray);cursor:pointer;white-space:nowrap}
 [role="tab"]:hover{background:var(--leap-hairline)}
@@ -144,7 +149,7 @@ nav.tabs{background:var(--leap-surface);border-bottom:1px solid var(--leap-borde
   margin-bottom:10px}
 @media print{.stepfoot{display:none!important}}
 
-main.wrap{max-width:1080px;margin:0 auto;padding:28px 20px 90px}
+main.wrap{max-width:1360px;margin:0 auto;padding:26px 20px 90px}
 
 .card{background:var(--leap-surface);border:1px solid var(--leap-border);border-radius:var(--leap-radius);
   padding:26px;box-shadow:var(--leap-shadow);margin-bottom:20px}
@@ -682,7 +687,10 @@ svg.gbmap text{font-family:var(--leap-font)}
           <path class="mk-arc"  d="M16 46 Q32 -10 48 30" stroke-width="7"/>
         </svg>
         <div class="body">
-          <div class="name">지역 탐방 디지털 스토리북 <span>v0.8</span></div>
+          <!-- 판 번호는 화면에 두지 않습니다 〔2026. 8. 12. v1〕
+     선생님에게 v0.6 은 「아직 덜 됐다」로 읽힙니다. 판 이력은
+     `08. 실행계획(3)/apps/판 번호 이력.md` 에 있습니다. -->
+          <div class="name">지역 탐방 디지털 스토리북</div>
           <p>TEAM LEAP · 경북교육 AI Lab · AI 활용 분과</p>
           <p class="cc">© 2026 TEAM LEAP. All rights reserved.</p>
           <p>교육 목적에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다.

@@ -281,7 +281,15 @@ console.log('\n[이름] 「학급 자율 의사결정 보드」가 아니라 「
 {
   check('제목이 학급 회의', /<title>학급 회의 — TEAM LEAP<\/title>/.test(SRC));
   check('머리에도 학급 회의', /<h1>학급 회의<\/h1>/.test(SRC));
-  check('판권에도 학급 회의', /<div class="name">학급 회의 <span>v0\.4<\/span><\/div>/.test(SRC));
+  check('판권에도 학급 회의', /<div class="name">학급 회의<\/div>/.test(SRC));
+  /* ★ 〔2026. 8. 12. v1〕 판 번호를 화면에서 뗐습니다 — 「같은가」 대신 「없는가」를 봅니다.
+     선생님에게 v0.x 는 「아직 덜 됐다」로 읽힙니다. 이력은 apps/판 번호 이력.md 에 있습니다.
+     ※ 코드 «주석» 안의 〔v0.5〕 표시는 그대로 둡니다 — 저장한 자료를 읽는 코드에서
+       「이 칸은 v0.4 에서 생겼다」는 꼭 필요합니다. */
+  check('화면에 판 번호가 없다',
+    !/v0\.\d+|프로토타입/.test(SRC.replace(/\/\*[\s\S]*?\*\//g, '')
+                                 .replace(/<!--[\s\S]*?-->/g, '')
+                                 .replace(/\/\/[^\n]*/g, '')));
   check('종이 머리에도 학급 회의', SRC.includes('TEAM LEAP<br>학급 회의'));
   check('옛 이름이 화면에 남아 있지 않다',
     (SRC.match(/학급 자율 의사결정 보드/g) || []).length === 1,

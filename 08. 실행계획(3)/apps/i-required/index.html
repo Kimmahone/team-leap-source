@@ -127,7 +127,12 @@ button,input,textarea,select{font:inherit;color:inherit}
 header.top{background:var(--grad-head);color:#fff;position:relative;overflow:hidden}
 header.top .deco{position:absolute;right:-40px;top:-30px;width:280px;height:280px;
   opacity:.13;pointer-events:none}
-.top-in{max-width:1340px;margin:0 auto;padding:22px 20px 24px;display:flex;
+/* ★ 〔2026. 8. 12.〕 아홉 앱의 좌우 여백을 하나로 맞췄습니다.
+   머리·탭·본문이 **같은 폭**(1360px)이라야 세로선이 한 줄로 섭니다.
+   예전에는 앱마다 880~1360px 로 제각각이었고, 한 앱 안에서도 어긋나 있었습니다
+   (d-multigrade 는 머리 1000 · 본문 1360, h-project 는 탭 880 · 본문 1180).
+   폭을 바꿀 때는 **세 줄을 함께** 고치세요. */
+.top-in{max-width:1360px;margin:0 auto;padding:22px 20px 24px;display:flex;
   align-items:center;gap:14px;flex-wrap:wrap;position:relative}
 .brand{display:flex;align-items:center;gap:13px;min-width:0}
 .brand .badge{flex:none;width:48px;height:48px;border-radius:13px;
@@ -151,7 +156,7 @@ a.iconbtn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 
 /* 표가 여덟 칸이라 좁으면 오른쪽(계·어디에)이 잘립니다.
    잘린 표는 «다 채웠는지»를 확인할 수 없어 이 앱의 존재 이유가 사라집니다. */
-main.wrap{max-width:1340px;margin:0 auto;padding:24px 20px 90px}
+main.wrap{max-width:1360px;margin:0 auto;padding:26px 20px 90px}
 
 /* ==========================================================================
    카드
@@ -663,7 +668,10 @@ footer.foot{margin-top:44px}
           <path class="mk-arc"  d="M16 46 Q32 -10 48 30" stroke-width="7"/>
         </svg>
         <div class="body">
-          <div class="name">법정 의무교육 점검표 <span>v0.5</span></div>
+          <!-- 판 번호는 화면에 두지 않습니다 〔2026. 8. 12. v1〕
+     선생님에게 v0.6 은 「아직 덜 됐다」로 읽힙니다. 판 이력은
+     `08. 실행계획(3)/apps/판 번호 이력.md` 에 있습니다. -->
+          <div class="name">법정 의무교육 점검표</div>
           <p>TEAM LEAP · 경북교육 AI Lab · AI 활용 분과</p>
           <p class="cc">© 2026 TEAM LEAP. All rights reserved.</p>
           <p>교육 목적에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다.

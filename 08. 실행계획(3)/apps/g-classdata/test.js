@@ -768,7 +768,12 @@ check('색만으로 말하지 않는다 — 칸에 값이 그대로 적힌다', 
 check('안 넣은 칸이 무엇인지 종이에 적는다', pg.includes('안 넣은 칸'));
 check('눈에 띄는 학생이 종이에 나간다', pg.includes('눈에 띄는 학생'));
 check('만든 곳을 종이에 밝힌다', pg.includes('TEAM LEAP'));
-check('판 번호가 종이에 적힌다', pg.includes('v0.4'));
+/* 〔2026. 8. 12. v1〕 종이에도 판 번호를 적지 않습니다. 만든 곳만 밝힙니다. */
+check('종이에 판 번호를 적지 않는다', !/v0\.\d+/.test(pg));
+check('화면에 판 번호가 없다',
+  !/v0\.\d+|프로토타입/.test(html.replace(/\/\*[\s\S]*?\*\//g, '')
+                                .replace(/<!--[\s\S]*?-->/g, '')
+                                .replace(/\/\/[^\n]*/g, '')));
 
 r = run(cls([I('a', '<img src=x onerror=alert(1)>', 'ach')], { a: { 1: '1' } }, 3, { 1: '<b>해커</b>' }));
 const badp = r.G.paperHTML();

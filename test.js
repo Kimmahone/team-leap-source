@@ -495,17 +495,9 @@ console.log('\n■ 앱이 몇 개인지 페이지가 한 가지로 말하는가 
   check('머리 주석도 같은 개수를 말한다', html.includes('앱 ' + n + '종(08)'),
     '머리 주석의 「앱 N종(08)」이 카드 수(' + n + ')와 다르다');
 
-  /* 머리 주석의 판 번호가 본문의 〔v0.x〕 기록보다 낡으면, 고쳐 놓고
-     판만 안 올린 것입니다. v0.2 라고 적힌 채 v0.6 작업이 들어 있었습니다. */
-  const head = html.match(/TEAM LEAP 메인 v(\d+)\.(\d+)/);
-  const notes = [...html.matchAll(/〔v(\d+)\.(\d+)〕/g)];
-  const val = m => +m[1] * 100 + +m[2];
-  check('머리 주석의 판 번호를 읽을 수 있다', !!head);
-  if (head && notes.length) {
-    const newest = Math.max(...notes.map(val));
-    check('머리 주석의 판 번호가 본문 기록보다 낡지 않았다', val(head) >= newest,
-      '머리 v' + head[1] + '.' + head[2] + ' · 본문에는 더 나중 기록이 있다');
-  }
+  /* 〔2026. 8. 12. v1〕 여기 있던 「머리 주석의 판 번호가 본문 기록보다 낡지 않았다」
+     검사는 없앴습니다. **판 번호 자체를 쓰지 않기로 했기 때문**입니다.
+     그 자리는 아래 「판 번호가 화면에 없다」가 대신합니다. */
 }
 
 /* 〔v0.6〕 **점검 개수를 페이지에서 뺐습니다.**
@@ -518,23 +510,39 @@ check('점검 개수를 앞에 내세우지 않는다', !/점검 [\d ,+]+개 통
   '선생님은 도구를 고르러 왔지 검사 결과를 보러 오지 않았다');
 check('「자동 점검 전부 통과」 같은 큰 숫자도 없다', !html.includes('자동 점검'));
 
-/* 판 번호는 남깁니다 — 「내가 쓰는 것이 최신인가」는 쓰는 사람에게도 뜻이 있습니다.
-   그리고 그 판 번호는 **앱이 스스로 말하는 것**과 맞아야 합니다.
-   〔2026. 8. 7.〕 일곱 앱이 전부 낡은 채로 여러 판이 지나갔습니다 (앱 E 는 화면 v0.4 · 메인 v0.1).
-   그때 이 자리의 검사는 **숫자를 손으로 베껴 적고 있어서** 아무 말도 하지 않았습니다.
-   검사가 검사할 대상을 베껴 적고 있으면 검사가 아닙니다. */
-const KIND = { 'a-circuit': 'A', 'b-classboard': 'B', 'c-storybook': 'C',
-               'd-multigrade': 'D', 'e-together': 'E', 'f-lessonplan': 'F', 'g-classdata': 'G',
-               'h-project': 'H', 'i-required': 'I' };
+/* ★ 〔2026. 8. 12. v1〕 **판 번호를 화면에서 뗐습니다.**
+   여기 있던 검사는 「앱이 스스로 말하는 판 번호」와 「메인에 적힌 판 번호」가
+   같은지 보는 것이었습니다. 그 검사는 제 몫을 했습니다 — 일곱 앱이 낡은 채로
+   여러 판이 지나간 것을 잡아 준 자리입니다.
+
+   그런데 이제 **판 번호를 아예 쓰지 않습니다.** 선생님에게 `v0.6` 은
+   「아직 덜 됐다」로 읽히는데, 아홉 앱 모두 교실에서 쓸 수 있고 자료도 실적입니다.
+   「점검 264개 통과」를 뺀 것과 같은 판단입니다.
+
+   그래서 검사를 **뒤집습니다** — 이제 «같은가»가 아니라 «없는가»를 봅니다.
+   판 이력은 `08. 실행계획(3)/apps/판 번호 이력.md` 에 있습니다.
+
+   ※ 코드 «주석» 안의 〔v0.5〕 표시는 그대로 둡니다. 화면에 나오지 않고,
+     저장한 자료를 읽는 코드에서 「이 칸은 v0.4 에서 생겼다」는 꼭 필요합니다. */
+const stripComments = t => t.replace(/\/\*[\s\S]*?\*\//g, '')
+                            .replace(/<!--[\s\S]*?-->/g, '')
+                            .replace(/\/\/[^\n]*/g, '');
+
+check('메인 페이지 화면에 판 번호가 없다',
+  !/v0\.\d+|프로토타입/.test(stripComments(html)),
+  (stripComments(html).match(/v0\.\d+|프로토타입/g) || []).slice(0, 4).join(' · '));
+
 APPS.forEach(a => {
   const f = path.join(ROOT, '08. 실행계획(3)/apps', a, 'index.html');
   if (!fs.existsSync(f)) { check(a + ' 파일이 있다', false); return; }
-  const m = fs.readFileSync(f, 'utf8').match(/class="name">[^<]*<span>(v[\d.]+)<\/span>/);
-  if (!m) { check(a + ' 판 번호를 읽을 수 있다', false); return; }
-  check(a + ' 판 번호 ' + m[1] + ' 가 메인에 적힌 것과 같다',
-    html.includes('앱 ' + KIND[a] + ' · ' + m[1] + '<'),
-    '앱 화면은 ' + m[1] + ' 인데 메인 페이지에는 다른 판이 적혀 있다');
+  const bare = stripComments(fs.readFileSync(f, 'utf8'));
+  const hit = bare.match(/v0\.\d+|프로토타입/g);
+  check(a + ' 화면에 판 번호가 없다', !hit, hit ? '남은 것: ' + hit.slice(0, 3).join(' · ') : '');
 });
+
+/* 판 이력을 어딘가에는 적어 두어야 합니다 — 화면에서 뺐다고 없던 일이 되면 안 됩니다 */
+check('판 번호 이력 문서가 있다',
+  fs.existsSync(path.join(ROOT, '08. 실행계획(3)/apps/판 번호 이력.md')));
 
 console.log(`\n${fail ? '✗' : '✓'}  통과 ${pass} · 실패 ${fail}\n`);
 process.exit(fail ? 1 : 0);

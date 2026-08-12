@@ -356,9 +356,14 @@ console.log('\n[15] 다른 앱과 어긋나지 않는다');
   check('나가도 잃는 것이 없다고 알린다', SRC.includes('이 앱에 적은 것은 그대로 남습니다'));
   check('테마 단추가 지금 누르면 어떻게 되는지 말한다', SRC.includes('LEAP.initThemeBtn'));
   check('토스트는 종이에 찍히지 않는다 (kit 규칙)', SRC.includes('.leap-toast'));
-  check('판 번호가 머리 주석과 판권에서 같다',
-    /프로젝트 학습 계획서 v0\.1/.test(SRC) &&
-    /<div class="name">프로젝트 학습 계획서 <span>v0\.1<\/span><\/div>/.test(SRC));
+  /* ★ 〔2026. 8. 12. v1〕 판 번호를 화면에서 뗐습니다 — 「같은가」 대신 「없는가」를 봅니다.
+     선생님에게 v0.x 는 「아직 덜 됐다」로 읽힙니다. 이력은 apps/판 번호 이력.md 에 있습니다.
+     ※ 코드 «주석» 안의 〔v0.5〕 표시는 그대로 둡니다 — 저장한 자료를 읽는 코드에서
+       「이 칸은 v0.4 에서 생겼다」는 꼭 필요합니다. */
+  check('화면에 판 번호가 없다',
+    !/v0\.\d+|프로토타입/.test(SRC.replace(/\/\*[\s\S]*?\*\//g, '')
+                                 .replace(/<!--[\s\S]*?-->/g, '')
+                                 .replace(/\/\/[^\n]*/g, '')));
   check('굽는 표시가 남아 있다', SRC.includes('/* STD-DATA-BEGIN */') && SRC.includes('/* STD-DATA-END */'),
     '표시가 없으면 bake-standards.mjs 가 이 앱을 건너뛴다');
 }
