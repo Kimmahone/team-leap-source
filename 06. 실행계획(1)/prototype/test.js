@@ -146,12 +146,28 @@ check('울릉군 학교는 동해 먼바다에 있다', q('SCHOOLS.filter(s=>s.s
    그래서 **자기 시군 안에 있는가**를 봅니다. 울릉군 유치원이 본토에 찍혀 있어도
    위 검사는 초록이었지만 이 검사는 빨개집니다.
    (시군은 넓으므로 중심에서 40km 까지 봅니다 — 경북에서 가장 넓은 안동·상주도 들어옵니다.) */
+/* ★★ 〔2026. 8. 12.〕 **이 검사가 조용히 건너뛰고 있었습니다.**
+   아래 거리 검사가 `geo[g.c]`(영문 코드)로 표를 만들고 `geo[s.s]` 로 찾은 뒤
+   **못 찾으면 `return false`** 였습니다. 그런데 화면이 쓰는 시군 이름은
+   **한글 약칭**(`REGION_GEO.s`)입니다. 그래서 917곳이 전부 «못 찾음»으로
+   조용히 빠지고, 영문 코드를 넣은 유치원만 검사되고 있었습니다.
+   그 사이 유치원·특수학교에 영문 코드가 들어가 **시군별 셈이 전부 0** 이 됐는데
+   검사는 초록이었습니다.
+   **모르는 시군이 나오면 건너뛰지 말고 «틀렸다»고 해야 합니다.** */
+const unknownSigungu = q(`(function(){
+  const known = {}; SIGUNGU.forEach(sg => known[sg.s] = 1);
+  return [...new Set(SCHOOLS.filter(s => !known[s.s]).map(s => s.s))];
+})()`);
+check('모든 학교의 시군이 SIGUNGU 에 있다', unknownSigungu.length === 0,
+  '모르는 시군: ' + unknownSigungu.slice(0, 6).join(', '));
+
 const farFromSigungu = q(`(function(){
   const R = 6371, rad = x => x * Math.PI / 180;
-  const geo = {}; REGION_GEO.forEach(g => geo[g.c] = g);
+  const geo = {}; REGION_GEO.forEach(g => { geo[g.s] = g; });   // 한글 약칭으로 찾습니다
   return SCHOOLS.filter(s => {
     if (s.lat == null || s.lon == null) return false;
-    const g = geo[s.s]; if (!g) return false;
+    const g = geo[s.s];
+    if (!g) return true;                    // 모르는 시군이면 «틀린 것»입니다
     const dLon = rad(s.lon - g.lon), dLat = rad(s.lat - g.lat);
     const h = Math.sin(dLat/2)**2 + Math.cos(rad(g.lat)) * Math.cos(rad(s.lat)) * Math.sin(dLon/2)**2;
     return 2 * R * Math.asin(Math.sqrt(h)) > 40;
@@ -159,6 +175,17 @@ const farFromSigungu = q(`(function(){
 })()`);
 check('학교 좌표가 자기 시군 안에 있다', farFromSigungu.length === 0,
   farFromSigungu.length + '곳 어긋남: ' + farFromSigungu.slice(0, 5).join(', '));
+
+/* 화면에 실제로 숫자가 뜨는가 — 리터럴이 있어도 시군 키가 어긋나면 전부 0 이 됩니다 */
+const lvTotals = q(`(function(){
+  const o = {};
+  ['초','중','고','유','특수'].forEach(lv => {
+    o[lv] = SIGUNGU.reduce((a, sg) => a + ((BASE[lv] && BASE[lv][sg.s]) ? BASE[lv][sg.s].sch : 0), 0);
+  });
+  return o;
+})()`);
+check('학교급마다 시군별 셈이 0 이 아니다', Object.values(lvTotals).every(v => v > 0),
+  JSON.stringify(lvTotals));
 
 /* 같은 학교가 두 번 들어오는 것 — 굽는 스크립트가 «덧붙이기»만 하면 생깁니다.
    실제로 유치원이 두 번 구워져 614곳이 1,228곳이 되어 있었습니다. */
@@ -314,6 +341,13 @@ check('기간 필터 단추에 기간이 붙어 있다',
 check('기간 필터 단추가 실제로 걸러 준다',
   /querySelectorAll\('\[data-news-days\]'\)/.test(html) && /withinDays/.test(html));
 check('몇 건인지 화면에 적는다', html.includes('id="news-count"'));
+/* 쪽 넘기기 — 한 쪽 20건(4열 × 5줄). 히스토리가 60건까지 쌓이므로 한 쪽에 다 넣으면 길어집니다. */
+check('한 쪽에 20건이다', /NEWS_PER_PAGE = 20/.test(html));
+check('쪽 넘기기 자리가 있다', html.includes('id="news-pager"'));
+check('쪽이 하나뿐이면 쪽 넘기기를 감춘다', /pageCount <= 1[\s\S]{0,80}hidden = true/.test(html));
+check('기간을 바꾸면 첫 쪽으로 돌아간다', /newsPage = 1;\s*\/\/ 기간을 바꾸면/.test(html));
+check('쪽 넘기기 단추가 44px 이상이다', /\.news-pager button\{[^}]*min-height:44px/.test(html));
+check('인쇄에서 쪽 넘기기를 감춘다', /@media print\{\.news-pager\{display:none\}\}/.test(html));
 
 /* ---------- 주간 AI 뉴스 요약 (종합 대시보드) ---------- */
 console.log('\n■ 주간 AI 뉴스 요약');

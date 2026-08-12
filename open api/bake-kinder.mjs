@@ -92,6 +92,17 @@ function getKey() {
 const KEY = getKey();
 console.log('유치원알리미 열쇠: …' + KEY.slice(-6));
 
+/* 화면이 쓰는 시군 이름은 **한글 약칭**입니다 (REGION_GEO 의 `s`).
+   영문 코드(`c`)가 아닙니다 — 초·중·고 917곳도 `s: sg.s` 로 한글을 넣습니다.
+   ★ 2026. 8. 12. 에 여기 영문 코드를 넣어 시군별 셈이 전부 0 이 된 적이 있습니다. */
+const SIG_KO = {
+  pohang:'포항', gyeongju:'경주', gimcheon:'김천', andong:'안동', gumi:'구미',
+  yeongju:'영주', yeongcheon:'영천', sangju:'상주', mungyeong:'문경', gyeongsan:'경산',
+  uiseong:'의성', cheongsong:'청송', yeongyang:'영양', yeongdeok:'영덕', cheongdo:'청도',
+  goryeong:'고령', seongju:'성주', chilgok:'칠곡', yecheon:'예천', bonghwa:'봉화',
+  uljin:'울진', ulleung:'울릉'
+};
+
 const num = v => { const n = parseInt(v, 10); return Number.isFinite(n) ? n : 0; };
 
 async function fetchSgg(code, sig) {
@@ -179,7 +190,7 @@ async function main() {
 
   const esc = s => String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
   const literal = unique.map(r =>
-    `{name:'${esc(r.name)}',lv:'유',s:'${r.s}',addr:'${esc(r.addr)}',` +
+    `{name:'${esc(r.name)}',lv:'유',s:'${SIG_KO[r.s] || r.s}',addr:'${esc(r.addr)}',` +
     `lat:${r.lat == null ? 'null' : r.lat.toFixed(6)},lon:${r.lon == null ? 'null' : r.lon.toFixed(6)},` +
     `stu:${r.stu},cls:${r.cls},sped:${r.sped},teach:0,est:false}`
   ).join(',\n');
