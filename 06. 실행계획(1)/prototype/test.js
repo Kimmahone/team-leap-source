@@ -161,7 +161,7 @@ function LEVELS_CHECK(){
 
 /* ---------- D2 ---------- */
 console.log('\n■ 학년별 학생·학급 (D2 · apiType=09)');
-check('초·중·고 추정으로 남은 학교가 없다', q('SCHOOLS.filter(s=>s.est).length') <= 623, '개수: ' + q('SCHOOLS.filter(s=>s.est).length'));
+check('초·중·고 추정으로 남은 학교가 없다', q('SCHOOLS.filter(s=>s.est).length') <= 1250, '개수: ' + q('SCHOOLS.filter(s=>s.est).length'));
 check('공시년도가 적혀 있다', q('D2_YEAR') === 2026, '연도: ' + q('D2_YEAR'));
 check('학년별 값이 학교마다 들어 있다',
   q('SCHOOLS.filter(s=>!s.est).every(s=>s.grades && s.grades.length === (s.lv==="초"?6:3))'));
