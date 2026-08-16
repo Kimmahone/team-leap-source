@@ -1,20 +1,15 @@
-name: 주간 뉴스 받아오기
+name: 주간 뉴스 받아오기 및 자동 배포
 
-# ★ 이 워크플로가 하는 일과 «하지 않는 일» 〔2026. 8. 12.〕
+# ★ 이 워크플로가 하는 일 〔2026. 8. 17.〕
 #
-#   하는 일  — 네이버에서 학령인구·소규모학교 기사를 받아 news-history.json 에 «더합니다».
-#   안 하는 일 — **사이트를 고치지 않습니다.**
+#   1. 네이버에서 학령인구·소규모학교 기사를 받아 news-history.json 에 반영 및 커밋.
+#   2. 사이트 굽기(각종 보안·링크·유닛 테스트 검사 포함) 실행하여 배포본 빌드.
+#   3. DEPLOY_PAT 시크릿을 사용해 team-leap 배포 저장소로 자동 푸시 (Cloudflare Pages 라이브 반영).
 #
-#   예전에는 이것이 사이트까지 갱신하는 것처럼 적혀 있었지만 아닙니다.
-#   저장소가 둘이기 때문입니다 —
-#       team-leap-source  (여기)      전체 원본. 이 워크플로가 도는 곳
-#       team-leap                     Cloudflare Pages 가 서비스하는 «구운 결과»
-#   둘을 잇는 것은 사람이 돌리는 `사이트 굽기.command` 뿐입니다.
-#   그래서 여기서 뉴스를 받아 두면, 다음에 사이트를 구울 때 함께 실립니다.
-#
-#   열쇠는 저장소 Settings → Secrets and variables → Actions 에 넣습니다.
-#       NAVER_CLIENT_ID · NAVER_CLIENT_SECRET
-#   코드에 적지 않습니다. 예전에는 적혀 있었고 그대로 커밋됐습니다.
+#   필요 시크릿 (저장소 Settings → Secrets and variables → Actions):
+#     - NAVER_CLIENT_ID
+#     - NAVER_CLIENT_SECRET
+#     - DEPLOY_PAT (team-leap 저장소 푸시 권한이 있는 GitHub Personal Access Token)
 
 on:
   schedule:
@@ -23,7 +18,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-news:
+  update-and-deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -43,7 +38,7 @@ jobs:
           NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
         run: node fetch-news.js
 
-      - name: 바뀐 것이 있으면 커밋
+      - name: 변경된 뉴스 커밋 (team-leap-source)
         run: |
           git config --global user.name  "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -53,5 +48,43 @@ jobs:
           else
             git commit -m "🤖 주간 뉴스 클리핑"
             git push
-            echo "::notice::뉴스를 받았습니다. 사이트에 올리려면 '사이트 굽기.command' 를 돌려 배포하세요."
+            echo "::notice::최신 뉴스를 team-leap-source에 반영했습니다."
           fi
+
+      - name: 사이트 굽기 (빌드 및 검사)
+        run: |
+          chmod +x "./사이트 굽기.command"
+          bash "./사이트 굽기.command"
+
+      - name: 배포 저장소(team-leap)로 자동 푸시
+        env:
+          DEPLOY_PAT: ${{ secrets.DEPLOY_PAT }}
+        run: |
+          if [ -z "$DEPLOY_PAT" ]; then
+            echo "::warning::DEPLOY_PAT 시크릿이 없어 team-leap 배포 푸시를 건너뜁니다."
+            exit 0
+          fi
+
+          DEPLOY_DIR=$(mktemp -d)
+          git clone "https://x-access-token:${DEPLOY_PAT}@github.com/Kimmahone/team-leap.git" "$DEPLOY_DIR"
+
+          # 기존 배포 파일 제거 (.git 보존)
+          find "$DEPLOY_DIR" -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+
+          # 새로 구운 파일 복사 (숨김 파일 포함)
+          cp -R 배포/site/* "$DEPLOY_DIR"/
+          cp -R 배포/site/.[!.]* "$DEPLOY_DIR"/ 2>/dev/null || true
+
+          cd "$DEPLOY_DIR"
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "배포 저장소에 변경 사항이 없습니다."
+          else
+            git commit -m "🚀 사이트 자동 배포 (주간 뉴스 및 업데이트)"
+            git push origin main
+            echo "::notice::team-leap 저장소로 배포가 성공적으로 완료되었습니다!"
+          fi
+
