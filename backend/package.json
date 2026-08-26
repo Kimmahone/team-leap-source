@@ -1,0 +1,8 @@
+{
+  "name": "team-leap-data-foundation",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node scripts/check.mjs"
+  }
+}

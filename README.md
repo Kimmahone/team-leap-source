@@ -65,7 +65,7 @@ open api/인증키.txt (검사용)  ──┘                          └─ �
 1. **Workers & Pages → Create application → Pages → Connect to Git**
 2. GitHub 저장소 **`Kimmahone/team-leap`**, 배포 브랜치 **`main`** 선택
 3. 프레임워크는 `None`, 빌드 명령은 비움, 출력 디렉터리는 `/`(저장소 루트)
-4. 프로젝트 **Settings → Variables and Secrets**에 아래 이름을 암호화 값으로 등록
+4. 프로젝트 **Settings → Variables and Secrets의 Runtime 영역**에 아래 이름을 암호화 값으로 등록
 
    - `GEMINI_API_KEY`
    - `SGIS_CONSUMER_KEY`
@@ -73,6 +73,10 @@ open api/인증키.txt (검사용)  ──┘                          └─ �
    - `KOSIS_API_KEY`
    - `SCHOOLINFO_API_KEY`
    - `KINDER_API_KEY`
+
+주의: **Build → Variables and Secrets**에만 넣으면 사이트를 굽는 과정에서는 보이지만
+Pages Function의 `context.env`에서는 보이지 않습니다. Gemini와 SGIS처럼 `/api/...`가
+읽는 키는 반드시 Runtime Secret에도 있어야 합니다.
 
 원본 저장소의 GitHub Actions가 `team-leap`에 푸시하려면 `team-leap-source`의
 **Settings → Secrets and variables → Actions**에 `DEPLOY_PAT`도 필요합니다.
@@ -90,6 +94,12 @@ DEPLOY_LIVE=1 ./사이트\ 굽기.command
 ```
 
 평소 `사이트 굽기.command`는 검사와 빌드만 하고 라이브 사이트를 임의로 바꾸지 않습니다.
+
+이미 연결된 프로젝트를 다시 배포하려면 원본 `main`에 커밋·푸시하면 됩니다.
+GitHub Actions가 끝나면 Cloudflare가 배포 저장소의 새 커밋을 감지합니다. 키만 바꾼 경우에는
+Cloudflare **Deployments → 최신 Production 배포 → Retry deployment**를 누릅니다.
+배포 뒤 `/api/data-status`에서 Gemini와 SGIS의 `configured` 값이 `true`인지 확인할 수 있으며,
+실제 키 값은 응답에 나오지 않습니다.
 
 > **배포 직후 확인은 캐시를 우회해서 하세요.**
 > `curl -sI "https://team-leap.pages.dev/?cb=$RANDOM"`

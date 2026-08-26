@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "team-leap-data",
+  "compatibility_date": "2026-08-26",
+  "d1_databases": [
+    {
+      "binding": "EDU_DATA_DB",
+      "database_name": "team-leap-data",
+      "database_id": "D1을 만든 뒤 표시되는 ID로 교체"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "EDU_DATA_RAW",
+      "bucket_name": "team-leap-data-raw"
+    }
+  ]
+}

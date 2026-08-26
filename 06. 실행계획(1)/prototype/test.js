@@ -137,6 +137,8 @@ check('SGIS 온라인 지도와 오프라인 대체 지도를 함께 제공한�
 check('지도 선택 명칭을 기술용어 대신 쉬운 말로 표시한다',
   html.includes('>간편 지도</button>') && html.includes('>실제 위치 지도</button>') &&
   !html.includes('>오프라인 경계 지도</button>'));
+check('실제 위치 지도를 간편 지도보다 앞에 배치한다',
+  html.indexOf('id="map-mode-online"') < html.indexOf('id="map-mode-offline"'));
 q("setMapMode('online')");
 check('SGIS를 못 불러오면 오프라인 지도를 유지한다',
   q("homeState.mapMode") === 'offline' && byId['home-tilemap'].hidden === false &&
@@ -154,7 +156,16 @@ check('온라인 SGIS 지도도 선택한 시군과 학교급으로 거른다',
   '영주시 유치원 온라인 마커: ' + q('onlineSchools().length'));
 q("homeState.mapMode='online';homeState.sel=SIGUNGU.find(sg=>sg.s==='영주');document.getElementById('home-online-map').hidden=false;document.getElementById('home-reset')._ev.click()");
 check('실제 위치 지도에서도 경북 전체로 돌아간다',
-  q('homeState.sel') === null && byId['home-online-map'].hidden === false && byId['home-tilemap'].hidden === true);
+  q('homeState.sel') === null && byId['home-online-map'].hidden === false && byId['home-tilemap'].hidden === true &&
+  byId['home-reset'].hidden === false);
+q(`window.sop={LatLng:function(lat,lon){this.x=lon;this.y=lat}};
+   sgisMap={getBounds:function(){return {contains:function(){return true}}}};
+   homeState.mapMode='online';homeState.level='전체';renderOnlineSchoolList()`);
+check('실제 위치 지도 아래에도 현재 화면 학교 목록이 나타난다',
+  byId['home-online-schools-wrap'].hidden === false &&
+  byId['home-online-schools'].children.length === 120 &&
+  /현재 화면/.test(byId['home-online-count'].textContent || ''));
+q('sgisMap=null;delete window.sop');
 q("homeState.sel=null;homeState.level='전체';renderTilemap()");
 check('학교 917곳 이상이 들어 있다', q('SCHOOLS.length') >= 917, '개수: ' + q('SCHOOLS.length'));
 const byLv = q('({초:SCHOOLS.filter(s=>s.lv==="초").length,중:SCHOOLS.filter(s=>s.lv==="중").length,고:SCHOOLS.filter(s=>s.lv==="고").length})');

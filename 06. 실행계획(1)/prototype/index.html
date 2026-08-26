@@ -262,6 +262,10 @@ a{color:var(--brand)}
 .mapbox{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px}
 .mapbox svg{display:block;width:100%;height:auto}
 .online-map{height:520px;padding:0;overflow:hidden;background:#eaf0f6}
+.online-school-list{margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--card-2)}
+.online-school-list .list-head{display:flex;gap:10px;align-items:baseline;justify-content:space-between;margin-bottom:9px}
+.online-school-list .list-head strong{font-size:13px;color:var(--ink)}
+.online-school-list .list-head span{font-size:11px;color:var(--ink-3);text-align:right}
 .map-status{width:100%;margin-top:-4px;color:var(--ink-3);font-size:11.5px}
 /* SGIS 기본 군집 이미지는 테마·보안정책에 따라 흐리거나 안 보일 수 있습니다.
    숫자와 학교급 글자를 자체 색으로 그려 외부 마커 그림 없이도 위치를 읽게 합니다. */
@@ -685,8 +689,8 @@ table.data .hl{color:var(--brand);font-weight:800}
             <input type="text" id="home-search" class="select" placeholder="학교 검색..." style="margin-left:8px; padding:4px 8px; border:1px solid var(--line); border-radius:4px; font-size:13px; width:120px;">
             <button type="button" class="chip" id="home-metric-sch" aria-pressed="true">학교 수</button>
             <button type="button" class="chip" id="home-metric-stu" aria-pressed="false">학생 수</button>
-            <button type="button" class="chip" id="map-mode-offline" aria-pressed="true" title="인터넷 연결이 없어도 사용할 수 있는 경계 지도">간편 지도</button>
             <button type="button" class="chip" id="map-mode-online" aria-pressed="false" title="SGIS를 이용해 실제 학교 위치를 표시하는 지도">실제 위치 지도</button>
+            <button type="button" class="chip" id="map-mode-offline" aria-pressed="true" title="인터넷 연결이 없어도 사용할 수 있는 경계 지도">간편 지도</button>
             <button type="button" class="chip" id="home-reset" hidden>← 경북 전체로</button>
             <span class="map-note" id="map-help">타일을 선택하면 시군 상세로 전환됩니다</span>
             <span class="map-status" id="sgis-status" aria-live="polite">간편 지도 사용 중 · 인터넷 연결 없이도 작동합니다</span>
@@ -697,6 +701,13 @@ table.data .hl{color:var(--brand);font-weight:800}
 
           <!-- 실제 위치 보기: SGIS 지도. SGIS를 못 불러오면 표시하지 않고 간편 지도를 유지합니다. -->
           <div id="home-online-map" class="mapbox online-map" hidden role="application" aria-label="SGIS 온라인 경상북도 학교 지도"></div>
+          <section id="home-online-schools-wrap" class="online-school-list" hidden aria-live="polite">
+            <div class="list-head">
+              <strong>현재 지도에 보이는 학교</strong>
+              <span id="home-online-count">지도를 움직이거나 확대하면 목록도 바뀝니다</span>
+            </div>
+            <div id="home-online-schools" class="school-grid"></div>
+          </section>
 
           <!-- 시군 상세: 학교 마커 -->
           <div id="home-detail" hidden>
@@ -2650,6 +2661,71 @@ function onlineSchools(){
   );
 }
 
+const ONLINE_SCHOOL_LIST_LIMIT = 120;
+
+/* 실제 위치 지도 아래 목록은 경북 전체 학교가 아니라 현재 화면 안에 있는 학교만 보여 줍니다.
+   지도를 확대하거나 옮길 때 목록도 같이 좁아져야 마커와 목록이 서로 맞습니다. */
+function visibleOnlineSchools(){
+  const list = onlineSchools();
+  if(!sgisMap || typeof sgisMap.getBounds !== 'function' || !window.sop) return list;
+  try{
+    const bounds = sgisMap.getBounds();
+    if(!bounds || typeof bounds.contains !== 'function') return list;
+    return list.filter(s => {
+      try{
+        const p = new window.sop.LatLng(+s.lat, +s.lon);
+        return bounds.contains([p.x, p.y]);
+      }catch(_e){ return false; }
+    });
+  }catch(_e){ return list; }
+}
+
+function createSchoolCard(s, colorBy){
+  const sLv = s.lv;
+  const per = s.stu / s.cls;
+  const area = areaOf(s);
+  const d = densityOf(sLv, per, area);
+  const el = document.createElement('div');
+  el.className = 'marker';
+  el.style.borderLeftColor = colorBy === 'density' ? densColor(d) : lvColor(sLv);
+  const stale = staleTerm(s);
+  el.innerHTML = `<span class="nm">${htmlEsc(s.name)}</span>
+    <span class="num">${fmt(s.stu)}</span><span style="color:var(--ink-3)">(${fmt(s.sped || 0)})</span>
+    <span class="lv">${htmlEsc(LEVEL_CFG[sLv]?.full || sLv)}${s.est ? ' · 추정' : ''}</span>
+    <span class="tag tag-${d}" title="${htmlEsc(densityWhy(sLv, area))}">${DENSITY_LABEL[d]}</span>` +
+    (stale ? ` <span class="tag tag-stale" title="${htmlEsc(stale.why)}">${htmlEsc(stale.label)}</span>` : '');
+  bindSchoolTooltip(el, s);
+  return el;
+}
+
+function renderSchoolCards(box, list, emptyMessage, colorBy){
+  box.innerHTML = '';
+  if(!list.length){
+    box.innerHTML = `<div style="width:100%;padding:22px;text-align:center;color:var(--ink-3);line-height:1.7">${htmlEsc(emptyMessage)}</div>`;
+    return;
+  }
+  list.forEach(s => box.appendChild(createSchoolCard(s, colorBy)));
+}
+
+function renderOnlineSchoolList(){
+  const wrap = document.getElementById('home-online-schools-wrap');
+  const box = document.getElementById('home-online-schools');
+  const count = document.getElementById('home-online-count');
+  if(!wrap || !box || !count) return;
+  if(homeState.mapMode !== 'online' || !sgisMap){
+    wrap.hidden = true;
+    return;
+  }
+
+  const visible = visibleOnlineSchools().sort((a,b) => (b.stu || 0) - (a.stu || 0) || a.name.localeCompare(b.name, 'ko'));
+  const shown = visible.slice(0, ONLINE_SCHOOL_LIST_LIMIT);
+  wrap.hidden = false;
+  count.textContent = visible.length > ONLINE_SCHOOL_LIST_LIMIT
+    ? `현재 화면 ${fmt(visible.length)}곳 · 학생 수 순 ${ONLINE_SCHOOL_LIST_LIMIT}곳 표시 · 확대하면 더 좁아집니다`
+    : `현재 화면 ${fmt(visible.length)}곳 · 지도를 움직이거나 확대하면 목록도 바뀝니다`;
+  renderSchoolCards(box, shown, '현재 지도 화면과 조건에 해당하는 학교가 없습니다.', 'level');
+}
+
 function renderSgisMarkers(){
   if(!sgisMap || !window.sop) return;
   try{
@@ -2680,6 +2756,7 @@ function renderSgisMarkers(){
     sgisMap.addLayer(sgisLayer);
     document.getElementById('sgis-status').textContent =
       `실제 위치 지도 · 현재 조건의 좌표 확보 학교 ${fmt(list.length)}곳 (SGIS)`;
+    renderOnlineSchoolList();
   }catch(_e){
     document.getElementById('sgis-status').textContent = '실제 위치를 표시하지 못했습니다. 간편 지도를 이용해 주세요.';
   }
@@ -2692,6 +2769,10 @@ function initSgisMap(){
     sgisMap = window.sop.map('home-online-map');
     const center = new window.sop.LatLng(36.35, 128.85);
     sgisMap.setView(window.sop.utmk(center.x, center.y), 3);
+    if(typeof sgisMap.on === 'function'){
+      sgisMap.on('moveend', renderOnlineSchoolList);
+      sgisMap.on('zoomend', renderOnlineSchoolList);
+    }
     renderSgisMarkers();
     return true;
   }catch(_e){
@@ -2714,16 +2795,22 @@ function setMapMode(mode){
   document.getElementById('map-mode-offline').setAttribute('aria-pressed', !isOnline);
   document.getElementById('map-mode-online').setAttribute('aria-pressed', isOnline);
   document.getElementById('home-online-map').hidden = !isOnline;
+  document.getElementById('home-online-schools-wrap').hidden = !isOnline;
   document.getElementById('home-tilemap').hidden = isOnline || !!homeState.sel;
   document.getElementById('home-detail').hidden = isOnline || !homeState.sel;
-  document.getElementById('home-reset').hidden = !homeState.sel;
+  /* 실제 위치 지도는 지도 자체를 움직일 수 있으므로 시군 선택 여부와 상관없이
+     언제든 경북 전체 범위로 돌아갈 길을 둡니다. */
+  document.getElementById('home-reset').hidden = !isOnline && !homeState.sel;
   document.getElementById('map-help').textContent = isOnline
     ? '마커를 선택하면 학교 정보가 표시됩니다'
     : '타일을 선택하면 시군 상세로 전환됩니다';
 
   if(isOnline){
     renderSgisMarkers();
-    if(sgisMap?.invalidateSize) setTimeout(() => sgisMap.invalidateSize(), 0);
+    if(sgisMap?.invalidateSize) setTimeout(() => {
+      sgisMap.invalidateSize();
+      renderOnlineSchoolList();
+    }, 0);
   }else{
     status.textContent = fallbackMessage || '간편 지도 사용 중 · 인터넷 연결 없이도 작동합니다';
     if(homeState.sel) renderDetail(); else renderTilemap();
@@ -3270,40 +3357,16 @@ function renderDetail(){
   renderDetailMap(sg, lv, list);
 
   const box = document.getElementById('home-schools');
-  box.innerHTML = '';
-
   /* ★ 비었을 때 «왜» 비었는지 말합니다 〔2026. 8. 12.〕
      유치원·특수학교는 시군 합계(가상)만 있고 **학교 하나하나의 자리는 없습니다.**
      예전에는 이 자리를 난수 좌표로 채워서 지도에 점이 찍혔습니다. 걷어냈고,
      빈 채로 두면 「자료를 못 불러왔나」로 읽히므로 그렇지 않다고 적습니다. */
-  if (list.length === 0) {
-    const why = document.getElementById('home-search')?.value.trim()
-      ? '찾으시는 이름이 없습니다.'
-      : (lv === '특수'
-          ? '이 시군에는 특수학교가 없습니다. 경북 전체에 8곳입니다.'
-          : '이 조건에 해당하는 학교가 없습니다.');
-    box.innerHTML = `<div style="grid-column:1/-1; padding:28px; text-align:center; color:var(--ink-3); line-height:1.7;">${why}</div>`;
-  }
-
-  list.forEach(s => {
-    const sLv = lv === '전체' ? s.lv : lv;
-    const per = s.stu/s.cls;
-    const area = areaOf(s);
-    const d = densityOf(sLv, per, area);
-    const el = document.createElement('div');
-    el.className='marker';
-    el.style.borderLeftColor = homeState.colorBy==='level' ? lvColor(sLv) : densColor(d);
-    /* ★ 공시 시기가 낡은 곳은 표시합니다 — 문 닫은 곳이 그대로 남아 있을 수 있습니다 */
-    const stale = staleTerm(s);
-    el.innerHTML = `<span class="nm">${s.name}</span>
-      <span class="num">${fmt(s.stu)}</span><span style="color:var(--ink-3)">(${s.sped})</span>
-      <span class="lv">${s.est?'추정':''}</span>
-      <span class="tag tag-${d}" title="${densityWhy(sLv, area).replace(/"/g,'&quot;')}">${DENSITY_LABEL[d]}</span>` +
-      (stale ? ` <span class="tag tag-stale" title="${stale.why}">${stale.label}</span>` : '');
-    
-    bindSchoolTooltip(el, s);
-    box.appendChild(el);
-  });
+  const why = document.getElementById('home-search')?.value.trim()
+    ? '찾으시는 이름이 없습니다.'
+    : (lv === '특수'
+        ? '이 시군에는 특수학교가 없습니다. 경북 전체에 8곳입니다.'
+        : '이 조건에 해당하는 학교가 없습니다.');
+  renderSchoolCards(box, list, why, homeState.colorBy);
 
   const planned = lv==='중' ? MID_PLAN_SCH[sg.s] : null;
   const real = (REAL_SCH[lv]&&REAL_SCH[lv][sg.s])||0;
@@ -3354,7 +3417,7 @@ document.getElementById('home-reset').addEventListener('click', () => {
   homeState.sel = null;
   document.getElementById('home-tilemap').hidden = homeState.mapMode === 'online';
   document.getElementById('home-detail').hidden = true;
-  document.getElementById('home-reset').hidden = true;
+  document.getElementById('home-reset').hidden = homeState.mapMode !== 'online';
   renderTilemap();
   if(homeState.mapMode === 'online'){
     renderSgisMarkers();
@@ -3362,6 +3425,7 @@ document.getElementById('home-reset').addEventListener('click', () => {
       const center = new window.sop.LatLng(36.35, 128.85);
       sgisMap.setView(window.sop.utmk(center.x, center.y), 3);
       if(sgisMap.invalidateSize) setTimeout(() => sgisMap.invalidateSize(), 0);
+      renderOnlineSchoolList();
     }
   }
 });
