@@ -14,11 +14,14 @@ let called='';
 globalThis.fetch=async (url,options)=>{
   called=String(url);
   check('키가 헤더로 전달됨', options.headers['x-goog-api-key']==='server-secret');
-  return new Response(JSON.stringify({candidates:[{content:{parts:[{text:'근거 기반 분석'}]}}]}),{status:200,headers:{'Content-Type':'application/json'}});
+  const requestBody=JSON.parse(options.body);
+  check('모델과 집계값 전달', requestBody.model==='gemini-3.7-flash' && requestBody.input.includes('집계값'));
+  check('응답 비저장', requestBody.store===false);
+  return new Response(JSON.stringify({steps:[{type:'model_output',content:[{type:'text',text:'근거 기반 분석'}]}]}),{status:200,headers:{'Content-Type':'application/json'}});
 };
 const ok=await onRequestPost({request:req({prompt:'집계값'}),env:{GEMINI_API_KEY:'server-secret'}});
 const data=await ok.json();
-check('지정 모델 호출', called.includes('/models/gemini-3.7-flash:generateContent'));
+check('Interactions API 호출', called.endsWith('/v1beta/interactions'));
 check('분석문 반환', ok.status===200 && data.text==='근거 기반 분석');
 globalThis.fetch=realFetch;
 
