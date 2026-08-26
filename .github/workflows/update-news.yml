@@ -75,6 +75,9 @@ jobs:
           cp -R 배포/site/* "$DEPLOY_DIR"/
           cp -R 배포/site/.[!.]* "$DEPLOY_DIR"/ 2>/dev/null || true
 
+          # Cloudflare Pages Functions는 정적 출력 폴더가 아니라 배포 저장소 루트에 둡니다.
+          cp -R functions "$DEPLOY_DIR/functions"
+
           cd "$DEPLOY_DIR"
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -87,4 +90,3 @@ jobs:
             git push origin main
             echo "::notice::team-leap 저장소로 배포가 성공적으로 완료되었습니다!"
           fi
-

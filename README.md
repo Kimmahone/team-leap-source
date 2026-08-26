@@ -51,18 +51,45 @@ open api/인증키.txt (검사용)  ──┘                          └─ �
 | `배포 묶기.command` | 검사를 전부 돌린 뒤 zip으로 묶음 |
 | `열어보기.command` | 로컬 서버를 띄워 원본 상태 그대로 확인 |
 
-### 배포 순서
+### 권장 배포 순서 — GitHub와 Cloudflare Pages 연결
 
 ```
-① 사이트 굽기.command 실행          ← 검사를 전부 돌고, 실패하면 굽지 않고 멈춥니다
-② cd "배포/site"
-③ git add -A && git commit -m "..." && git push
-④ npx wrangler pages deploy . --project-name=team-leap
+① 원본 저장소(team-leap-source)에 수정사항을 커밋·푸시
+② GitHub Actions가 검사·굽기를 실행
+③ Actions가 결과와 functions/를 배포 저장소(team-leap) main에 푸시
+④ Cloudflare Pages가 team-leap main의 변경을 감지해 자동 배포
 ```
 
-**④ 를 빠뜨리지 마세요.** 이 저장소는 Cloudflare Pages 에 **깃 연동이 되어 있지 않습니다**
-(`Git Provider: No`). **깃허브에 올리는 것만으로는 사이트가 바뀌지 않습니다** —
-깃허브는 기록이고, 실제로 서비스되는 것은 ④ 가 올린 것입니다.
+아직 Cloudflare Git 연동을 하지 않았다면 Cloudflare 대시보드에서 한 번만 설정합니다.
+
+1. **Workers & Pages → Create application → Pages → Connect to Git**
+2. GitHub 저장소 **`Kimmahone/team-leap`**, 배포 브랜치 **`main`** 선택
+3. 프레임워크는 `None`, 빌드 명령은 비움, 출력 디렉터리는 `/`(저장소 루트)
+4. 프로젝트 **Settings → Variables and Secrets**에 아래 이름을 암호화 값으로 등록
+
+   - `GEMINI_API_KEY`
+   - `SGIS_CONSUMER_KEY`
+   - `SGIS_CONSUMER_SECRET`
+   - `KOSIS_API_KEY`
+   - `SCHOOLINFO_API_KEY`
+   - `KINDER_API_KEY`
+
+원본 저장소의 GitHub Actions가 `team-leap`에 푸시하려면 `team-leap-source`의
+**Settings → Secrets and variables → Actions**에 `DEPLOY_PAT`도 필요합니다.
+GitHub의 **Settings → Developer settings → Personal access tokens → Fine-grained tokens**에서
+`team-leap` 저장소만 선택하고 `Contents: Read and write` 권한으로 만든 뒤 그 값을 `DEPLOY_PAT`에 넣습니다.
+만료일은 짧게 두고, 만료되면 같은 이름의 Secret 값만 교체합니다.
+
+로컬 키의 실제 값은 공개 문서가 아니라 루트의 `.dev.vars`에만 있습니다.
+이 파일은 Git에서 제외됩니다. 위치와 갱신 방법은 `API키_보관위치.md`를 참고합니다.
+
+Git 연동 전 임시로만 수동 배포하려면 다음처럼 명시적으로 실행합니다.
+
+```bash
+DEPLOY_LIVE=1 ./사이트\ 굽기.command
+```
+
+평소 `사이트 굽기.command`는 검사와 빌드만 하고 라이브 사이트를 임의로 바꾸지 않습니다.
 
 > **배포 직후 확인은 캐시를 우회해서 하세요.**
 > `curl -sI "https://team-leap.pages.dev/?cb=$RANDOM"`

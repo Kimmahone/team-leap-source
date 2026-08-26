@@ -131,6 +131,22 @@ check('시뮬레이터 예측 표가 채워진다', (byId['pred-tbody']._html ||
    함정 12번: 합계만 맞으면 틀린 것이 안 보입니다. 쪼개서 셉니다. */
 console.log('\n■ 공공데이터 917교');
 const q = expr => vm.runInContext(expr, sandbox);
+check('SGIS 온라인 지도와 오프라인 대체 지도를 함께 제공한다',
+  html.includes('id="map-mode-online"') && html.includes('id="map-mode-offline"') &&
+  html.includes('src="/api/sgis-map"') && /function setMapMode/.test(html));
+q("setMapMode('online')");
+check('SGIS를 못 불러오면 오프라인 지도를 유지한다',
+  q("homeState.mapMode") === 'offline' && byId['home-tilemap'].hidden === false &&
+  /오프라인 지도를 유지/.test(byId['sgis-status'].textContent || ''));
+byId['home-level'].options = Array.from({length:6}, () => makeEl('option'));
+q("homeState.sel=SIGUNGU.find(sg=>sg.s==='영주');homeState.level='유';renderDetail()");
+check('시군 상세의 유치원 수는 경북 전체가 아니라 해당 시군 값이다',
+  byId['home-level'].options[4].text === '유치원 23',
+  '영주시 표시: ' + byId['home-level'].options[4].text);
+check('시군 상세의 다섯 학교급 숫자를 모두 해당 시군 값으로 바꾼다',
+  byId['home-level'].options.slice(1,6).every(o => /\d+$/.test(o.text || '')) &&
+  byId['home-level'].options[4].text !== '유치원 614');
+q("homeState.sel=null;homeState.level='전체';renderTilemap()");
 check('학교 917곳 이상이 들어 있다', q('SCHOOLS.length') >= 917, '개수: ' + q('SCHOOLS.length'));
 const byLv = q('({초:SCHOOLS.filter(s=>s.lv==="초").length,중:SCHOOLS.filter(s=>s.lv==="중").length,고:SCHOOLS.filter(s=>s.lv==="고").length})');
 check('초 474 · 중 260 · 고 183', byLv.초 === 474 && byLv.중 === 260 && byLv.고 === 183, JSON.stringify(byLv));
@@ -283,41 +299,22 @@ const externalHits = EXTERNAL_PATTERNS.filter(([re]) => re.test(html)).map(([, n
 check('외부 CDN·웹폰트를 부르지 않는다', externalHits.length === 0,
   externalHits.length ? '밖을 부르는 길: ' + externalHits.join(' · ') : '');
 
+const CODE_ONLY = html.replace(/\/\*[\s\S]*?\*\//g, '').replace(/<!--[\s\S]*?-->/g, '');
+const fetchTargets = [...CODE_ONLY.matchAll(/\bfetch\s*\(\s*(['"])([^'"]+)\1/g)].map(m=>m[2]);
+check('fetch는 같은 출처 AI 중계만 호출한다',
+  fetchTargets.length===1 && fetchTargets[0]==='/api/ai-analysis', fetchTargets.join(', '));
 const senders = [
-  [/\bfetch\s*\(/,             'fetch()'],
   [/XMLHttpRequest/,           'XMLHttpRequest'],
   [/navigator\.sendBeacon/,    'sendBeacon'],
   [/new\s+WebSocket\s*\(/,     'WebSocket'],
   [/new\s+EventSource\s*\(/,   'EventSource'],
   [/\bfirebase|initializeApp|getFirestore/i, 'Firebase SDK']
 ].filter(([re]) => re.test(html)).map(([, n]) => n);
-check('밖으로 보내는 코드가 없다', senders.length === 0,
+check('AI 중계 외 다른 전송 코드가 없다', senders.length === 0,
   senders.length ? '밖으로 나가는 길: ' + senders.join(' · ') : '');
 
-/* ---------- 소멸 위기 지수 — 색이 뜻과 같은 쪽을 가리키는가 ---------- */
-console.log('\n■ 소멸 위기 지수');
-/* 주석에 옛 식이 나오는 것은 위반이 아닙니다 — 왜 그랬는지 적어 둔 자리입니다.
-   그래서 주석을 걷어 낸 뒤에 봅니다. */
-const CODE_ONLY = html.replace(/\/\*[\s\S]*?\*\//g, '').replace(/<!--[\s\S]*?-->/g, '');
-/* 〔2026. 8. 12.〕 채우기 백분율이 **음수**가 될 수 있었습니다.
-   시(市)·초등학교 감소율 0.027 → (0.027−0.03)×1000 = −3 →
-   color-mix 가 음수를 못 받아 선언이 통째로 무효 → .dot 의 기본 파란색으로
-   떨어졌고, 화면에서는 그것이 가장 진해 보였습니다.
-   **가장 안전한 시가 가장 위험해 보이는** 뒤집힘이었습니다. */
-check('채우기 백분율이 음수가 될 수 없다', !/\(rate-0\.03\)\*1000/.test(CODE_ONLY.replace(/\s/g, '')));
-check('채우기 백분율을 0~100 으로 가둔다',
-  /Math\.max\(0,\s*Math\.min\(1,\s*t\)\)/.test(html) && /Math\.max\(12,\s*pct\)/.test(html));
-check('실제 값의 최소~최대로 편다 (붙박이 문턱이 아니다)',
-  /extMin/.test(html) && /extMax/.test(html));
-/* 범례가 지도와 «다른 색»을 보여 주고 있었습니다 — 초록→노랑→빨강 세 색 띠였는데
-   지도는 그런 색을 한 번도 쓰지 않았습니다. 한 곳만 고치면 또 어긋납니다. */
-check('범례가 초록·노랑 세 색 띠를 쓰지 않는다',
-  !/#4ade80|#facc15|#f87171/i.test(html));
-check('범례가 지도와 같은 램프를 쓴다',
-  /안전[\s\S]{0,400}color-mix\(in srgb, var\(--over\)/.test(html));
-check('색이 무엇이고 넓이가 무엇인지 적는다',
-  html.includes('원 넓이는 학교 수'));
-check('읽어 주는 말에도 소멸 위기 지수가 들어간다', html.includes('소멸 위기 지수 ${pct}점(가상)'));
+console.log('\n■ 근거 없는 지표 제거');
+check('출처 없는 소멸위험지수가 없다', !/소멸\s*위기\s*지수|소멸위험지수|gon-risk-badges/.test(CODE_ONLY));
 
 /* ---------- 뉴스 — 구운 것을 그리는가, 지어내지 않는가 ---------- */
 console.log('\n■ 주간 뉴스');
@@ -499,11 +496,14 @@ const LSURF = '#FFFFFF', DSURF = '#1A2735';
   check(`포커스 표시 — 라이트 ${a.toFixed(2)} · 다크 ${b.toFixed(2)} (3:1 필요)`, a >= 3 && b >= 3);
 }
 
-/* ---------- 시각화 (PAX & gonpunclaw 모범 사례) ---------- */
-console.log('\n■ 고급 시각화 (PAX 인구 피라미드 & gonpunclaw 소멸위험 지표)');
-check('PAX 오프라인 SVG 인구 피라미드 차트가 존재한다', html.includes('id="pax-pyramid-svg"') && html.includes('renderPaxPyramid'));
-check('gonpunclaw 시군별 소멸위험 뱃지가 존재한다', html.includes('id="gon-risk-badges"') && html.includes('renderGonRiskBadges'));
+console.log('\n■ 실제 학년자료·AI·모바일');
+check('학년별 학생 차트가 학교알리미 grades를 합산한다', html.includes('id="pax-pyramid-svg"') && /Array\.isArray\(s\.grades\)/.test(html));
+check('유치원 수를 배열에서 동적으로 센다', /source-kinder-count[\s\S]*KINDERGARTENS\.length/.test(html));
+check('유치원 교원 수 미확보를 명시한다', html.includes("homeState.level==='유' ? '자료 미확보'"));
+check('KOSIS 공식 학령인구 시계열을 우선 사용한다', /const KOSIS_POP = \{/.test(html) && /kind==='pop' && KOSIS_POP\[year\]/.test(html));
+check('Gemini 키는 HTML에 없고 같은 출처 중계만 쓴다', html.includes("fetch('/api/ai-analysis'") && !/GEMINI_API_KEY|generativelanguage\.googleapis\.com/.test(html));
+check('720px 모바일 레이아웃이 있다', /@media \(max-width:720px\)[\s\S]*?\.shell\{display:block/.test(html));
+check('가짜 소재지 배정이 없다', !/i\s*%\s*3|임의 배정한 더미/.test(CODE_ONLY));
 
 console.log(`\n${fail ? '✗' : '✓'}  통과 ${pass} · 실패 ${fail}\n`);
 process.exit(fail ? 1 : 0);
-

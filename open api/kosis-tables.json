@@ -1,0 +1,29 @@
+{
+  "orgId": "101",
+  "source": "국가데이터처 KOSIS",
+  "tables": {
+    "births": {
+      "tblId": "DT_1B81A23",
+      "name": "시군구/출생아수, 합계출산율",
+      "itemId": "T1",
+      "period": "2000~2025"
+    },
+    "residentAge": {
+      "tblId": "DT_1B04006",
+      "name": "행정구역(시군구)별/1세별 주민등록인구",
+      "itemId": "T2",
+      "period": "2008~2025(연 자료)"
+    },
+    "projectionAge": {
+      "tblId": "INH_PB0001_2022_37",
+      "name": "성 및 연령별 추계인구(1세별, 5세별)/경상북도 시·군",
+      "itemId": "T10",
+      "period": "2022~2042"
+    },
+    "migrationAge": {
+      "tblId": "DT_1B26002",
+      "name": "시군구/성/연령(5세)별 순이동자수",
+      "period": "1970~2026"
+    }
+  }
+}

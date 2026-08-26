@@ -25,8 +25,8 @@
         「열쇠는 인증키.txt 에만」입니다.
 
    지금 판이 지키는 것 — **없는 것을 지어내지 않습니다.**
-   좌표는 **카카오 로컬로 주소를 옮긴 것**입니다(`kakao-geocode.mjs`).
-   못 찾은 주소는 **비운 채로** 둡니다 — 가까운 아무 데나 찍지 않습니다.
+   좌표는 유치원알리미 신규 기본현황(`basicInfo2.do`)의 공식 위·경도를 우선하고,
+   공식 좌표가 없는 주소만 카카오 로컬로 보완합니다. 둘 다 없으면 비워 둡니다.
    지도는 좌표가 없는 곳을 그리지 않고, 몇 곳을 못 찾았는지 화면에 찍습니다.
 
    쓰는 법
@@ -42,6 +42,7 @@ import { makeGeocoder, inGyeongbuk } from './kakao-geocode.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const KEYFILE = path.resolve(HERE, '인증키.txt');
+const ENVFILE = path.resolve(HERE, '../.dev.vars');
 const TARGET = path.resolve(HERE, '../06. 실행계획(1)/prototype/index.html');
 
 const ARGV = process.argv.slice(2);
@@ -68,6 +69,10 @@ const SGG = {
 
 function getKey() {
   if (ARG) return ARG;
+  try {
+    const envLine = fs.readFileSync(ENVFILE, 'utf8').split(/\r?\n/).find(l => l.startsWith('KINDER_API_KEY='));
+    if (envLine) return envLine.slice('KINDER_API_KEY='.length).trim();
+  } catch (_e) { /* 예전 인증키.txt 방식으로 계속 진행 */ }
   let raw;
   try { raw = fs.readFileSync(KEYFILE, 'utf8'); }
   catch (e) {
@@ -105,22 +110,40 @@ const SIG_KO = {
 
 const num = v => { const n = parseInt(v, 10); return Number.isFinite(n) ? n : 0; };
 
-async function fetchSgg(code, sig) {
-  const url = `https://e-childschoolinfo.moe.go.kr/api/notice/basicInfo.do?key=${KEY}&sidoCode=47&sggCode=${code}`;
+async function fetchSgg(endpoint, code, sig) {
+  const url = `https://e-childschoolinfo.moe.go.kr/api/notice/${endpoint}.do?key=${KEY}&sidoCode=47&sggCode=${code}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`${sig}(${code}) — HTTP ${res.status}`);
   const data = await res.json();
-  if (data.status !== 'SUCCESS') throw new Error(`${sig}(${code}) — ${data.status} ${data.message || ''}`);
-  return Array.isArray(data.kinderInfo) ? data.kinderInfo : [];
+  return {status:data.status, message:data.message || '', rows:Array.isArray(data.kinderInfo) ? data.kinderInfo : []};
+}
+
+function teacherCount(t) {
+  if (!t) return 0;
+  const modern = ['drcnt','adcnt','hdst_thcnt','asps_thcnt','gen_tcr_cnt',
+    'shtm_gen_tcr_cnt','shtm_spn_gen_tcr_cnt','spy_tcr_cnt','shtm_spy_tcr_cnt',
+    'shtm_spn_spy_tcr_cnt','hlt_tcr_cnt','shtm_hlt_tcr_cnt','shtm_spn_hlt_tcr_cnt',
+    'ntr_tcr_cnt','shtm_ntr_tcr_cnt','shtm_spn_ntr_tcr_cnt','insr_cnt'];
+  const modernTotal = modern.reduce((sum,k)=>sum+num(t[k]),0);
+  if (modernTotal) return modernTotal;
+  return ['drcnt','adcnt','hdst_thcnt','asps_thcnt','gnrl_thcnt','spcn_thcnt','ntcnt','ntrt_thcnt','shcnt_thcnt']
+    .reduce((sum,k)=>sum+num(t[k]),0);
 }
 
 async function main() {
   const rows = [];
   const failed = [];
+  const teacherNotices = new Set();
 
   for (const [code, sig] of Object.entries(SGG)) {
     try {
-      const list = await fetchSgg(code, sig);
+      const basic = await fetchSgg('basicInfo2', code, sig);
+      if (basic.status !== 'SUCCESS') throw new Error(`${sig}(${code}) — ${basic.status} ${basic.message}`);
+      const list = basic.rows;
+      const teachers = await fetchSgg('teachersInfo', code, sig);
+      if (teachers.status !== 'SUCCESS' && teachers.message) teacherNotices.add(teachers.message);
+      const teacherByCode = new Map(teachers.rows.map(t => [String(t.kindercode || ''), t]));
+      const teacherByName = new Map(teachers.rows.map(t => [String(t.kindername || '').trim(), t]));
       for (const k of list) {
         /* 원아 수 = 3·4·5세 + 혼합반 + 특수학급. 학급 수도 같은 방식입니다.
            병설유치원은 대부분 혼합반이라 mix 를 빼면 0 이 됩니다 — 예전 판이 그랬습니다. */
@@ -131,13 +154,19 @@ async function main() {
            낡은 공시는 «지금 문 닫은 곳»이 그대로 남아 있을 수 있습니다 —
            실제로 포항양덕초등학교병설유치원은 2023년 2차 공시라 원아 5명으로 나오는데
            지금은 운영하지 않습니다. 그래서 이 값을 **화면까지 들고 갑니다.** */
+        const teacher = teacherByCode.get(String(k.kindercode || '')) || teacherByName.get(String(k.kindername || '').trim());
+        const officialLat = Number(k.lttdcdnt), officialLon = Number(k.lngtcdnt);
         rows.push({
+          code: String(k.kindercode || '').trim(),
           name: String(k.kindername || '').trim(),
           s: sig,
           addr: String(k.addr || '').trim(),
           establish: String(k.establish || '').trim(),
           stu, cls,
           sped: num(k.shppcnt),
+          teach: teacherCount(teacher),
+          lat: Number.isFinite(officialLat) && Number.isFinite(officialLon) && inGyeongbuk(officialLat, officialLon) ? officialLat : null,
+          lon: Number.isFinite(officialLat) && Number.isFinite(officialLon) && inGyeongbuk(officialLat, officialLon) ? officialLon : null,
           term: String(k.pbnttmng || '').trim()
         });
       }
@@ -153,6 +182,11 @@ async function main() {
     failed.forEach(f => console.error('  · ' + f));
     console.error('\n  일부만 심으면 시군 합계가 조용히 틀립니다. 아무것도 고치지 않았습니다.');
     process.exit(1);
+  }
+  if (teacherNotices.size) {
+    console.log('\n⚠ 유치원 교직원 API 안내:');
+    teacherNotices.forEach(message => console.log('  · ' + message));
+    console.log('  제공이 재개될 때 같은 스크립트를 다시 실행하면 교원 수가 함께 반영됩니다.');
   }
 
   /* 같은 이름이 여러 번 나오는지 봅니다 — 병설유치원은 이름이 겹칠 수 있지만
@@ -174,9 +208,11 @@ async function main() {
   const stale = unique.filter(r => r.term !== newest).length;
 
   const withStu = unique.filter(r => r.stu > 0).length;
+  const withTeacher = unique.filter(r => r.teach > 0).length;
   console.log(`\n받은 유치원 ${rows.length}곳` + (dropped ? ` (같은 곳 ${dropped}곳 걸러 ${unique.length}곳)` : ''));
   console.log(`원아 수가 있는 곳 ${withStu}곳 · 원아 0명 ${unique.length - withStu}곳`);
   console.log(`총 원아 ${unique.reduce((a, r) => a + r.stu, 0).toLocaleString()}명 · 총 학급 ${unique.reduce((a, r) => a + r.cls, 0).toLocaleString()}개`);
+  console.log(`교원 수 확보 ${withTeacher}곳 / ${unique.length}곳`);
   console.log('\n공시 시기 — 유치원마다 다릅니다:');
   terms.forEach(t => console.log(`  ${t || '(없음)'} : ${byTerm[t]}곳` + (t === newest ? '  ← 가장 최근' : '')));
   if (stale) {
@@ -185,18 +221,18 @@ async function main() {
     console.log('  화면에 공시 시기를 함께 적어 보는 사람이 판단할 수 있게 합니다.');
   }
 
-  /* ★ 좌표는 이 API 가 주지 않습니다 — 주소를 카카오로 옮깁니다.
-     못 찾으면 비워 둡니다. 지어내지 않습니다. */
-  console.log('\n주소를 좌표로 옮기는 중… (이미 아는 주소는 캐시에서 꺼냅니다)');
-  const geo = makeGeocoder();
+  /* 신규 기본현황의 공식 좌표를 우선하고, 없는 곳만 주소 지오코딩으로 보완합니다. */
+  const missingOfficial = unique.filter(r => r.lat == null);
+  console.log(`\n유치원알리미 공식 좌표 ${unique.length - missingOfficial.length}곳 · 보완 필요 ${missingOfficial.length}곳`);
+  const geo = missingOfficial.length ? makeGeocoder() : null;
   let outside = 0;
-  for (const r of unique) {
+  for (const r of missingOfficial) {
     const hit = r.addr ? await geo.lookup(r.addr) : null;
     if (hit && inGyeongbuk(hit.lat, hit.lon)) { r.lat = hit.lat; r.lon = hit.lon; }
     else { r.lat = null; r.lon = null; if (hit) outside++; }
   }
-  geo.save();
-  const st = geo.stats();
+  if (geo) geo.save();
+  const st = geo ? geo.stats() : {asked:0,fromCache:0,missed:0};
   const located = unique.filter(r => r.lat != null).length;
   console.log(`  물어본 주소 ${st.asked}개 · 캐시에서 ${st.fromCache}개 · 못 찾음 ${st.missed}개` +
     (outside ? ` · 경북 밖이라 버림 ${outside}개` : ''));
@@ -212,7 +248,7 @@ async function main() {
   const literal = unique.map(r =>
     `{name:'${esc(r.name)}',lv:'유',s:'${SIG_KO[r.s] || r.s}',addr:'${esc(r.addr)}',` +
     `lat:${r.lat == null ? 'null' : r.lat.toFixed(6)},lon:${r.lon == null ? 'null' : r.lon.toFixed(6)},` +
-    `stu:${r.stu},cls:${r.cls},sped:${r.sped},teach:0,term:'${esc(r.term)}',est:false}`
+    `stu:${r.stu},cls:${r.cls},sped:${r.sped},teach:${r.teach},term:'${esc(r.term)}',est:false}`
   ).join(',\n');
 
   let html = fs.readFileSync(TARGET, 'utf8');

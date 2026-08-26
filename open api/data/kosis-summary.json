@@ -1,0 +1,1933 @@
+{
+  "generatedAt": "2026-08-26T06:13:25.141Z",
+  "source": "국가데이터처 KOSIS",
+  "orgId": "101",
+  "populationTables": [
+    {
+      "tblId": "DT_1B04006",
+      "name": "행정구역(시군구)별/1세별 주민등록인구",
+      "itemId": "T2",
+      "period": "2008~2025(연 자료)"
+    },
+    {
+      "tblId": "INH_PB0001_2022_37",
+      "name": "성 및 연령별 추계인구(1세별, 5세별)/경상북도 시·군",
+      "itemId": "T10",
+      "period": "2022~2042"
+    }
+  ],
+  "birthsTable": {
+    "tblId": "DT_1B81A23",
+    "name": "시군구/출생아수, 합계출산율",
+    "itemId": "T1",
+    "period": "2000~2025"
+  },
+  "population": {
+    "2016": {
+      "초": 131,
+      "중": 69,
+      "고": 121
+    },
+    "2017": {
+      "초": 133,
+      "중": 66,
+      "고": 113
+    },
+    "2018": {
+      "초": 135,
+      "중": 64,
+      "고": 106
+    },
+    "2019": {
+      "초": 133,
+      "중": 65,
+      "고": 97
+    },
+    "2020": {
+      "초": 131,
+      "중": 66,
+      "고": 90
+    },
+    "2021": {
+      "초": 131,
+      "중": 66,
+      "고": 88
+    },
+    "2022": {
+      "초": 128,
+      "중": 65,
+      "고": 88
+    },
+    "2023": {
+      "초": 121,
+      "중": 65,
+      "고": 87
+    },
+    "2024": {
+      "초": 112,
+      "중": 67,
+      "고": 88
+    },
+    "2025": {
+      "초": 105,
+      "중": 66,
+      "고": 88
+    },
+    "2026": {
+      "초": 100,
+      "중": 64,
+      "고": 88
+    },
+    "2027": {
+      "초": 91,
+      "중": 62,
+      "고": 88
+    },
+    "2028": {
+      "초": 82,
+      "중": 60,
+      "고": 88
+    },
+    "2029": {
+      "초": 75,
+      "중": 57,
+      "고": 88
+    },
+    "2030": {
+      "초": 69,
+      "중": 52,
+      "고": 86
+    },
+    "2031": {
+      "초": 64,
+      "중": 47,
+      "고": 83
+    },
+    "2032": {
+      "초": 61,
+      "중": 42,
+      "고": 79
+    },
+    "2033": {
+      "초": 59,
+      "중": 38,
+      "고": 74
+    },
+    "2034": {
+      "초": 58,
+      "중": 35,
+      "고": 68
+    },
+    "2035": {
+      "초": 58,
+      "중": 33,
+      "고": 61
+    },
+    "2036": {
+      "초": 58,
+      "중": 31,
+      "고": 55
+    }
+  },
+  "births": [
+    {
+      "year": "2016",
+      "regionCode": "37",
+      "region": "경상북도",
+      "value": 20616,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37",
+      "region": "경상북도",
+      "value": 17957,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37",
+      "region": "경상북도",
+      "value": 16079,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37",
+      "region": "경상북도",
+      "value": 14472,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37",
+      "region": "경상북도",
+      "value": 12873,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37",
+      "region": "경상북도",
+      "value": 12045,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37",
+      "region": "경상북도",
+      "value": 11311,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37",
+      "region": "경상북도",
+      "value": 10186,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37",
+      "region": "경상북도",
+      "value": 10333,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37",
+      "region": "경상북도",
+      "value": 10417,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37010",
+      "region": "포항시",
+      "value": 4088,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37010",
+      "region": "포항시",
+      "value": 3511,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37010",
+      "region": "포항시",
+      "value": 3109,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37010",
+      "region": "포항시",
+      "value": 2701,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37010",
+      "region": "포항시",
+      "value": 2461,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37010",
+      "region": "포항시",
+      "value": 2221,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37010",
+      "region": "포항시",
+      "value": 2187,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37010",
+      "region": "포항시",
+      "value": 2040,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37010",
+      "region": "포항시",
+      "value": 2231,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37010",
+      "region": "포항시",
+      "value": 2300,
+      "updated": "2026-02-24"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37011",
+      "region": "남구",
+      "value": 1956,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37011",
+      "region": "남구",
+      "value": 1608,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37011",
+      "region": "남구",
+      "value": 1440,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37011",
+      "region": "남구",
+      "value": 1221,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37011",
+      "region": "남구",
+      "value": 1070,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37011",
+      "region": "남구",
+      "value": 956,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37011",
+      "region": "남구",
+      "value": 888,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37011",
+      "region": "남구",
+      "value": 864,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37011",
+      "region": "남구",
+      "value": 909,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37011",
+      "region": "남구",
+      "value": 817,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37012",
+      "region": "북구",
+      "value": 2132,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37012",
+      "region": "북구",
+      "value": 1903,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37012",
+      "region": "북구",
+      "value": 1669,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37012",
+      "region": "북구",
+      "value": 1480,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37012",
+      "region": "북구",
+      "value": 1391,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37012",
+      "region": "북구",
+      "value": 1265,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37012",
+      "region": "북구",
+      "value": 1299,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37012",
+      "region": "북구",
+      "value": 1176,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37012",
+      "region": "북구",
+      "value": 1322,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37012",
+      "region": "북구",
+      "value": 1483,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37020",
+      "region": "경주시",
+      "value": 1627,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37020",
+      "region": "경주시",
+      "value": 1364,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37020",
+      "region": "경주시",
+      "value": 1251,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37020",
+      "region": "경주시",
+      "value": 1112,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37020",
+      "region": "경주시",
+      "value": 1103,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37020",
+      "region": "경주시",
+      "value": 1062,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37020",
+      "region": "경주시",
+      "value": 981,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37020",
+      "region": "경주시",
+      "value": 981,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37020",
+      "region": "경주시",
+      "value": 920,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37020",
+      "region": "경주시",
+      "value": 971,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37030",
+      "region": "김천시",
+      "value": 1123,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37030",
+      "region": "김천시",
+      "value": 1066,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37030",
+      "region": "김천시",
+      "value": 1017,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37030",
+      "region": "김천시",
+      "value": 878,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37030",
+      "region": "김천시",
+      "value": 842,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37030",
+      "region": "김천시",
+      "value": 809,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37030",
+      "region": "김천시",
+      "value": 754,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37030",
+      "region": "김천시",
+      "value": 675,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37030",
+      "region": "김천시",
+      "value": 630,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37030",
+      "region": "김천시",
+      "value": 658,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37040",
+      "region": "안동시",
+      "value": 1330,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37040",
+      "region": "안동시",
+      "value": 1185,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37040",
+      "region": "안동시",
+      "value": 947,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37040",
+      "region": "안동시",
+      "value": 868,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37040",
+      "region": "안동시",
+      "value": 726,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37040",
+      "region": "안동시",
+      "value": 737,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37040",
+      "region": "안동시",
+      "value": 661,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37040",
+      "region": "안동시",
+      "value": 600,
+      "updated": "2024-02-22"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37040",
+      "region": "안동시",
+      "value": 551,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37040",
+      "region": "안동시",
+      "value": 587,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37050",
+      "region": "구미시",
+      "value": 4286,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37050",
+      "region": "구미시",
+      "value": 3727,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37050",
+      "region": "구미시",
+      "value": 3360,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37050",
+      "region": "구미시",
+      "value": 2891,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37050",
+      "region": "구미시",
+      "value": 2695,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37050",
+      "region": "구미시",
+      "value": 2409,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37050",
+      "region": "구미시",
+      "value": 2201,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37050",
+      "region": "구미시",
+      "value": 1861,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37050",
+      "region": "구미시",
+      "value": 1993,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37050",
+      "region": "구미시",
+      "value": 2035,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37060",
+      "region": "영주시",
+      "value": 611,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37060",
+      "region": "영주시",
+      "value": 535,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37060",
+      "region": "영주시",
+      "value": 506,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37060",
+      "region": "영주시",
+      "value": 395,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37060",
+      "region": "영주시",
+      "value": 362,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37060",
+      "region": "영주시",
+      "value": 375,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37060",
+      "region": "영주시",
+      "value": 337,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37060",
+      "region": "영주시",
+      "value": 302,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37060",
+      "region": "영주시",
+      "value": 326,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37060",
+      "region": "영주시",
+      "value": 323,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37070",
+      "region": "영천시",
+      "value": 631,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37070",
+      "region": "영천시",
+      "value": 584,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37070",
+      "region": "영천시",
+      "value": 499,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37070",
+      "region": "영천시",
+      "value": 654,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37070",
+      "region": "영천시",
+      "value": 570,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37070",
+      "region": "영천시",
+      "value": 539,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37070",
+      "region": "영천시",
+      "value": 532,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37070",
+      "region": "영천시",
+      "value": 465,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37070",
+      "region": "영천시",
+      "value": 466,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37070",
+      "region": "영천시",
+      "value": 385,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37080",
+      "region": "상주시",
+      "value": 510,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37080",
+      "region": "상주시",
+      "value": 447,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37080",
+      "region": "상주시",
+      "value": 456,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37080",
+      "region": "상주시",
+      "value": 437,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37080",
+      "region": "상주시",
+      "value": 358,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37080",
+      "region": "상주시",
+      "value": 314,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37080",
+      "region": "상주시",
+      "value": 323,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37080",
+      "region": "상주시",
+      "value": 292,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37080",
+      "region": "상주시",
+      "value": 273,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37080",
+      "region": "상주시",
+      "value": 238,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37090",
+      "region": "문경시",
+      "value": 442,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37090",
+      "region": "문경시",
+      "value": 390,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37090",
+      "region": "문경시",
+      "value": 301,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37090",
+      "region": "문경시",
+      "value": 313,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37090",
+      "region": "문경시",
+      "value": 327,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37090",
+      "region": "문경시",
+      "value": 300,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37090",
+      "region": "문경시",
+      "value": 266,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37090",
+      "region": "문경시",
+      "value": 214,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37090",
+      "region": "문경시",
+      "value": 240,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37090",
+      "region": "문경시",
+      "value": 178,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37100",
+      "region": "경산시",
+      "value": 2509,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37100",
+      "region": "경산시",
+      "value": 2091,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37100",
+      "region": "경산시",
+      "value": 1859,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37100",
+      "region": "경산시",
+      "value": 1639,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37100",
+      "region": "경산시",
+      "value": 1340,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37100",
+      "region": "경산시",
+      "value": 1409,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37100",
+      "region": "경산시",
+      "value": 1300,
+      "updated": "2023-02-21"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37100",
+      "region": "경산시",
+      "value": 1179,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37100",
+      "region": "경산시",
+      "value": 1211,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37100",
+      "region": "경산시",
+      "value": 1338,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37310",
+      "region": "군위군(변동전)",
+      "value": 101,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37310",
+      "region": "군위군(변동전)",
+      "value": 100,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37310",
+      "region": "군위군(변동전)",
+      "value": 81,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37310",
+      "region": "군위군(변동전)",
+      "value": 79,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37310",
+      "region": "군위군(변동전)",
+      "value": 59,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37310",
+      "region": "군위군(변동전)",
+      "value": 54,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37310",
+      "region": "군위군(변동전)",
+      "value": 75,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37520",
+      "region": "의성군",
+      "value": 265,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37520",
+      "region": "의성군",
+      "value": 221,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37520",
+      "region": "의성군",
+      "value": 240,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37520",
+      "region": "의성군",
+      "value": 255,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37520",
+      "region": "의성군",
+      "value": 226,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37520",
+      "region": "의성군",
+      "value": 178,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37520",
+      "region": "의성군",
+      "value": 185,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37520",
+      "region": "의성군",
+      "value": 177,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37520",
+      "region": "의성군",
+      "value": 142,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37520",
+      "region": "의성군",
+      "value": 125,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37530",
+      "region": "청송군",
+      "value": 118,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37530",
+      "region": "청송군",
+      "value": 128,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37530",
+      "region": "청송군",
+      "value": 84,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37530",
+      "region": "청송군",
+      "value": 116,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37530",
+      "region": "청송군",
+      "value": 78,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37530",
+      "region": "청송군",
+      "value": 88,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37530",
+      "region": "청송군",
+      "value": 74,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37530",
+      "region": "청송군",
+      "value": 77,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37530",
+      "region": "청송군",
+      "value": 76,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37530",
+      "region": "청송군",
+      "value": 52,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37540",
+      "region": "영양군",
+      "value": 74,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37540",
+      "region": "영양군",
+      "value": 80,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37540",
+      "region": "영양군",
+      "value": 63,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37540",
+      "region": "영양군",
+      "value": 74,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37540",
+      "region": "영양군",
+      "value": 52,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37540",
+      "region": "영양군",
+      "value": 40,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37540",
+      "region": "영양군",
+      "value": 31,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37540",
+      "region": "영양군",
+      "value": 30,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37540",
+      "region": "영양군",
+      "value": 25,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37540",
+      "region": "영양군",
+      "value": 24,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37550",
+      "region": "영덕군",
+      "value": 163,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37550",
+      "region": "영덕군",
+      "value": 208,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37550",
+      "region": "영덕군",
+      "value": 152,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37550",
+      "region": "영덕군",
+      "value": 180,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37550",
+      "region": "영덕군",
+      "value": 151,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37550",
+      "region": "영덕군",
+      "value": 105,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37550",
+      "region": "영덕군",
+      "value": 108,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37550",
+      "region": "영덕군",
+      "value": 81,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37550",
+      "region": "영덕군",
+      "value": 80,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37550",
+      "region": "영덕군",
+      "value": 96,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37560",
+      "region": "청도군",
+      "value": 163,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37560",
+      "region": "청도군",
+      "value": 143,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37560",
+      "region": "청도군",
+      "value": 146,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37560",
+      "region": "청도군",
+      "value": 134,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37560",
+      "region": "청도군",
+      "value": 112,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37560",
+      "region": "청도군",
+      "value": 93,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37560",
+      "region": "청도군",
+      "value": 109,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37560",
+      "region": "청도군",
+      "value": 97,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37560",
+      "region": "청도군",
+      "value": 86,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37560",
+      "region": "청도군",
+      "value": 103,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37570",
+      "region": "고령군",
+      "value": 205,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37570",
+      "region": "고령군",
+      "value": 171,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37570",
+      "region": "고령군",
+      "value": 141,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37570",
+      "region": "고령군",
+      "value": 116,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37570",
+      "region": "고령군",
+      "value": 100,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37570",
+      "region": "고령군",
+      "value": 100,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37570",
+      "region": "고령군",
+      "value": 88,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37570",
+      "region": "고령군",
+      "value": 89,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37570",
+      "region": "고령군",
+      "value": 82,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37570",
+      "region": "고령군",
+      "value": 89,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37580",
+      "region": "성주군",
+      "value": 303,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37580",
+      "region": "성주군",
+      "value": 273,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37580",
+      "region": "성주군",
+      "value": 252,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37580",
+      "region": "성주군",
+      "value": 211,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37580",
+      "region": "성주군",
+      "value": 188,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37580",
+      "region": "성주군",
+      "value": 184,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37580",
+      "region": "성주군",
+      "value": 156,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37580",
+      "region": "성주군",
+      "value": 147,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37580",
+      "region": "성주군",
+      "value": 138,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37580",
+      "region": "성주군",
+      "value": 135,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37590",
+      "region": "칠곡군",
+      "value": 1307,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37590",
+      "region": "칠곡군",
+      "value": 1039,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37590",
+      "region": "칠곡군",
+      "value": 876,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37590",
+      "region": "칠곡군",
+      "value": 662,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37590",
+      "region": "칠곡군",
+      "value": 464,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37590",
+      "region": "칠곡군",
+      "value": 443,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37590",
+      "region": "칠곡군",
+      "value": 407,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37590",
+      "region": "칠곡군",
+      "value": 336,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37590",
+      "region": "칠곡군",
+      "value": 310,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37590",
+      "region": "칠곡군",
+      "value": 251,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37600",
+      "region": "예천군",
+      "value": 238,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37600",
+      "region": "예천군",
+      "value": 231,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37600",
+      "region": "예천군",
+      "value": 310,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37600",
+      "region": "예천군",
+      "value": 337,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37600",
+      "region": "예천군",
+      "value": 314,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37600",
+      "region": "예천군",
+      "value": 293,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37600",
+      "region": "예천군",
+      "value": 262,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37600",
+      "region": "예천군",
+      "value": 282,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37600",
+      "region": "예천군",
+      "value": 278,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37600",
+      "region": "예천군",
+      "value": 277,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37610",
+      "region": "봉화군",
+      "value": 181,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37610",
+      "region": "봉화군",
+      "value": 167,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37610",
+      "region": "봉화군",
+      "value": 153,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37610",
+      "region": "봉화군",
+      "value": 141,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37610",
+      "region": "봉화군",
+      "value": 108,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37610",
+      "region": "봉화군",
+      "value": 70,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37610",
+      "region": "봉화군",
+      "value": 70,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37610",
+      "region": "봉화군",
+      "value": 59,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37610",
+      "region": "봉화군",
+      "value": 51,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37610",
+      "region": "봉화군",
+      "value": 49,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37620",
+      "region": "울진군",
+      "value": 303,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37620",
+      "region": "울진군",
+      "value": 264,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37620",
+      "region": "울진군",
+      "value": 244,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37620",
+      "region": "울진군",
+      "value": 235,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37620",
+      "region": "울진군",
+      "value": 207,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37620",
+      "region": "울진군",
+      "value": 196,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37620",
+      "region": "울진군",
+      "value": 184,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37620",
+      "region": "울진군",
+      "value": 176,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37620",
+      "region": "울진군",
+      "value": 190,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37620",
+      "region": "울진군",
+      "value": 186,
+      "updated": "2026-08-19"
+    },
+    {
+      "year": "2016",
+      "regionCode": "37630",
+      "region": "울릉군",
+      "value": 38,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2017",
+      "regionCode": "37630",
+      "region": "울릉군",
+      "value": 32,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2018",
+      "regionCode": "37630",
+      "region": "울릉군",
+      "value": 32,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2019",
+      "regionCode": "37630",
+      "region": "울릉군",
+      "value": 44,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2020",
+      "regionCode": "37630",
+      "region": "울릉군",
+      "value": 30,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2021",
+      "regionCode": "37630",
+      "region": "울릉군",
+      "value": 26,
+      "updated": "2023-02-09"
+    },
+    {
+      "year": "2022",
+      "regionCode": "37630",
+      "region": "울릉군",
+      "value": 20,
+      "updated": "2023-08-20"
+    },
+    {
+      "year": "2023",
+      "regionCode": "37630",
+      "region": "울릉군",
+      "value": 26,
+      "updated": "2024-08-20"
+    },
+    {
+      "year": "2024",
+      "regionCode": "37630",
+      "region": "울릉군",
+      "value": 34,
+      "updated": "2025-08-24"
+    },
+    {
+      "year": "2025",
+      "regionCode": "37630",
+      "region": "울릉군",
+      "value": 17,
+      "updated": "2026-08-19"
+    }
+  ]
+}

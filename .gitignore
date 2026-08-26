@@ -12,6 +12,10 @@
 open api/인증키.txt
 open api/*.key
 **/인증키*
+.env*
+.dev.vars*
+!.env.example
+!.dev.vars.example
 
 # ── 굽는 결과물 (원본에서 매번 새로 굽습니다) ────────────
 배포/

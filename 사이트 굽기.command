@@ -69,6 +69,17 @@ run_all_tests() {
       echo "  ✗ c-storybook EPUB"; fail=1
     fi
   fi
+  # Cloudflare Pages Functions와 데이터 굽기 도구는 정적 HTML 밖에서 별도로 검사합니다.
+  local test_file
+  for test_file in tests/*.test.mjs; do
+    [ -f "$test_file" ] || continue
+    if out=$( node "$test_file" 2>&1 ); then
+      n=$(printf '%s' "$out" | grep -oE '([0-9]+)개 통과|통과 ([0-9]+)' | grep -oE '[0-9]+' | tail -1)
+      total=$(( total + ${n:-0} ))
+    else
+      echo "  ✗ $test_file"; fail=1
+    fi
+  done
   TESTS_TOTAL=$total
   return $fail
 }
@@ -361,8 +372,13 @@ cat > "$OUT/_headers" <<'EOF'
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
   Permissions-Policy: geolocation=(), camera=(), microphone=(), interest-cohort=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
   Cache-Control: public, max-age=0, must-revalidate
+/dashboard/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://sgisapi.mods.go.kr; img-src 'self' data: blob: https://sgisapi.mods.go.kr; font-src 'self'; connect-src 'self' https://sgisapi.mods.go.kr; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+/apps/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+/
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
 EOF
 
 #     아직 널리 알릴 단계가 아니므로 검색엔진을 막아 둡니다.
@@ -426,7 +442,7 @@ if [ -n "$EXT" ]; then
   rm -rf "$OUT"
   exit 1
 fi
-echo "  ✓ 외부 CDN 없음"
+echo "  ✓ 정적 파일의 외부 CDN 없음 (대시보드 SGIS 지도만 서버 중계·허용 목록 사용)"
 
 echo
 echo "완료: $OUT  ($(du -sh "$OUT" | cut -f1))"
@@ -436,11 +452,10 @@ echo "  /apps/            앱 카탈로그"
 echo "  /apps/guide.html  교실에서 쓰는 법"
 echo
 
-if command -v npx >/dev/null 2>&1; then
-  echo "🚀 Cloudflare Pages (team-leap) 자동 라이브 배포 중…"
-  npx wrangler pages deploy "$OUT" --project-name=team-leap --branch=main || true
+if [ "${DEPLOY_LIVE:-0}" = "1" ] && command -v npx >/dev/null 2>&1; then
+  echo "🚀 요청된 Cloudflare Pages 수동 라이브 배포 중…"
+  npx wrangler pages deploy "$OUT" --project-name=team-leap --branch=main
 fi
 
-echo "다음: cd \"배포/site\" && git add -A && git commit -m \"...\" && git push"
-echo
-echo "다음: cd \"$OUT\" && git add -A && git commit -m \"...\" && git push"
+echo "다음: 원본 저장소에 커밋·푸시하면 GitHub Actions가 배포 저장소를 갱신합니다."
+echo "Cloudflare Git 연동 전 임시 수동 배포만: DEPLOY_LIVE=1 ./사이트\ 굽기.command"
