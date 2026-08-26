@@ -174,13 +174,26 @@ a{color:var(--brand)}
 .nav .ext{font-size:11px;color:var(--ink-3);margin-left:auto}
 .side-foot{padding:14px 18px;border-top:1px solid var(--line-2);font-size:11px;color:var(--ink-3)}
 .side-foot strong{display:block;color:var(--ink-2);font-size:12px;margin-bottom:3px}
-.theme-btn{
-  position:absolute;top:16px;right:24px;z-index:100;
+.top-tools{position:absolute;top:16px;right:24px;z-index:100;display:flex;gap:8px}
+.theme-btn,.glossary-btn{
   min-height:36px;padding:0 16px;margin:0;
   border:1px solid var(--line);background:var(--card);border-radius:8px;
   color:var(--ink-2);font-size:12.5px;font-weight:600;
 }
-.theme-btn:hover{background:var(--brand-pale);color:var(--brand)}
+.theme-btn:hover,.glossary-btn:hover{background:var(--brand-pale);color:var(--brand)}
+.glossary-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.32);z-index:998;opacity:0;pointer-events:none;transition:opacity .2s}
+.glossary-backdrop.open{opacity:1;pointer-events:auto}
+.glossary-drawer{position:fixed;z-index:999;top:0;right:0;width:min(420px,92vw);height:100vh;overflow:auto;
+  padding:22px;background:var(--card);border-left:1px solid var(--line);box-shadow:-12px 0 32px rgba(15,23,42,.18);
+  transform:translateX(102%);transition:transform .22s ease}
+.glossary-drawer.open{transform:translateX(0)}
+.glossary-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
+.glossary-head h2{font-size:19px}.glossary-close{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;min-width:40px;min-height:40px;font-size:20px}
+.glossary-intro{font-size:12.5px;color:var(--ink-3);line-height:1.65;margin:0 0 14px}
+.glossary-list{display:grid;gap:8px}.glossary-list details{border:1px solid var(--line);border-radius:8px;background:var(--card-2)}
+.glossary-list summary{padding:11px 13px;font-size:13.5px;font-weight:800;cursor:pointer;color:var(--ink)}
+.glossary-list details div{padding:0 13px 13px;font-size:12.5px;line-height:1.7;color:var(--ink-2)}
+.glossary-list .source{display:block;margin-top:5px;color:var(--ink-3);font-size:11.5px}
 /* 메인 페이지로 나가는 문.
    아래 메뉴(.nav)에 섞지 않은 것은 일부러입니다 — 저기 있는 「홈」은 이 대시보드 안의
    홈 화면이라, 나란히 두면 어느 쪽이 밖으로 나가는 문인지 알 수 없습니다.
@@ -428,19 +441,28 @@ table.data .hl{color:var(--brand);font-weight:800}
 @media (max-width:600px){.news-grid{grid-template-columns:1fr;}}
 .ai-output{white-space:pre-wrap;word-break:keep-all;min-height:96px;margin-top:12px;padding:14px;
   border:1px solid var(--line);border-radius:8px;background:var(--bg);font:inherit;line-height:1.75;color:var(--ink)}
+.ai-briefing{margin-top:14px;border:2px solid var(--brand);background:linear-gradient(135deg,var(--brand-pale),var(--card) 68%);position:relative;overflow:hidden}
+.ai-briefing::after{content:"AI";position:absolute;right:18px;top:5px;font-size:54px;font-weight:900;color:var(--brand);opacity:.06;pointer-events:none}
+.ai-kicker{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 9px;background:var(--brand);color:var(--leap-on-fill);font-size:11px;font-weight:800;margin-bottom:8px}
+.ai-purpose{font-size:13px;line-height:1.7;color:var(--ink-2);max-width:820px;margin:0}
+.ai-purpose-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:12px 0}
+.ai-purpose-list span{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:8px 9px;font-size:11.5px;font-weight:700;color:var(--ink-2)}
+.ai-context-preview{border-left:3px solid var(--brand);padding:8px 10px;background:var(--card);font-size:11.5px;line-height:1.55;color:var(--ink-3);margin-bottom:10px}
+.result-actions{display:flex;justify-content:flex-end;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
 @media (max-width:720px){
   .dummy-banner{padding:8px 12px}.shell{display:block;min-height:0}
   .sidebar{width:auto;min-height:0;display:block;border-right:0;border-bottom:1px solid var(--line)}
   .brand{padding:12px 60px 8px 12px}.brand .brand-header{margin-bottom:4px}.brand .mk{width:30px;height:30px}
   .home-link{padding:8px 12px}.nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;padding:8px}
   .nav button,.nav a{margin:0;padding:8px;min-height:44px;font-size:12px}.nav .ext,.side-foot{display:none}
-  .theme-btn{position:fixed;top:10px;right:10px;padding:0 10px;background:var(--card)}
+  .top-tools{position:fixed;top:10px;right:10px;gap:5px}.theme-btn,.glossary-btn{padding:0 9px;background:var(--card);font-size:11px}
   .main{padding:18px 12px 40px}.page-head{padding-right:96px}.page-head h1{font-size:19px}
   .card{padding:14px 12px}.kpi{grid-template-columns:1fr}.map-toolbar{align-items:stretch}
   .map-toolbar .select,.map-toolbar input{max-width:100%;min-height:44px}.map-note{width:100%;margin-left:0}
   .sig-grid{grid-template-columns:repeat(3,1fr)}.era-row{gap:6px}.era .badge{padding:3px 8px}
   .era .yr select{font-size:17px}.era .tot{font-size:16px}.bars{gap:6px}
   .src-tbl{min-width:620px}.src-box{overflow-x:auto}
+  .ai-purpose-list{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 .chip.chip-ext:not([aria-pressed="true"]) { border-color: var(--over); color: var(--over); }
 .panel{border:1px solid var(--line);border-radius:9px;padding:13px 14px;background:var(--card)}
@@ -498,7 +520,7 @@ table.data .hl{color:var(--brand);font-weight:800}
   }
   @page{margin:14mm}
   body{font-size:10pt;background:#fff}
-  .no-print,.sidebar,.theme-btn,.map-toolbar .chip,#home-reset,#sim-clear{display:none !important}
+  .no-print,.sidebar,.top-tools,.glossary-drawer,.glossary-backdrop,.map-toolbar .chip,#home-reset,#sim-clear{display:none !important}
   .shell{display:block}
   .main{padding:0}
   .card{border:1px solid #999;box-shadow:none;break-inside:avoid;page-break-inside:avoid;margin-bottom:8mm}
@@ -528,6 +550,24 @@ table.data .hl{color:var(--brand);font-weight:800}
 </head>
 <body>
 <div id="custom-school-tooltip" class="custom-school-tooltip"></div>
+
+<div class="glossary-backdrop no-print" id="glossary-backdrop"></div>
+<aside class="glossary-drawer no-print" id="glossary-drawer" aria-hidden="true" aria-label="용어 도움말">
+  <div class="glossary-head">
+    <h2>용어 도움말</h2>
+    <button type="button" class="glossary-close" id="glossary-close" aria-label="용어 도움말 닫기">×</button>
+  </div>
+  <p class="glossary-intro">대시보드에서 사용하는 교육·인구 용어를 가나다순으로 정리했습니다. 수치의 출처와 예측의 한계는 각 화면의 ‘자료 출처’도 함께 확인해 주세요.</p>
+  <div class="glossary-list">
+    <details><summary>교원 수</summary><div>학교알리미 공시의 교원 현황을 학교별로 합산한 값입니다. 현재 전체 KPI는 유치원 교원을 제외합니다.<span class="source">출처: 학교알리미 공시</span></div></details>
+    <details><summary>인구감소지역</summary><div>인구·재정·지역 여건 등을 종합해 정부가 지정한 지역을 말합니다. 현재 화면의 표시는 고시 원문과 기준연도를 다시 대조하기 전 임시 참고값입니다.<span class="source">출처 확인 예정: 행정안전부 인구감소지역 지정 고시</span></div></details>
+    <details><summary>장래 학생수</summary><div>선택한 연도까지 시군·학교급별 임시 감소율을 적용한 모의값입니다. 출생 코호트와 전입·전출을 반영한 확정 예측이 아니므로 정책 결정의 단독 근거로 사용하면 안 됩니다.<span class="source">향후 출생아수·과거 학년별 실적·이동자료로 코호트 예측 예정</span></div></details>
+    <details><summary>적정규모학교</summary><div>학생 수와 소재지 기준에 따라 교육과정 운영 여건을 검토하기 위한 분류입니다. 학교 통폐합을 자동 결정하는 기준이 아니라 검토 신호입니다.<span class="source">출처: 2026년 경상북도교육청 적정규모 학교 육성 계획(내부 원문 확인 필요)</span></div></details>
+    <details><summary>초등학교</summary><div>초등 보통교육을 실시하는 6년제 학교입니다. 이 화면의 학교·학생·학급 값은 학교알리미 공시 자료를 사용합니다.<span class="source">출처: 초·중등교육법, 학교알리미</span></div></details>
+    <details><summary>학생 수</summary><div>해당 학교에 재학 중인 학생을 학교별·학교급별로 합산한 값입니다. 학령인구와는 범위가 다릅니다.<span class="source">출처: 학교알리미 2026 공시</span></div></details>
+    <details><summary>학령인구</summary><div>이 대시보드에서는 초·중·고교 학령에 해당하는 6~18세 인구를 뜻합니다. 실제 재학생 수와 같지 않습니다.<span class="source">출처: KOSIS 주민등록인구 및 장래인구추계</span></div></details>
+  </div>
+</aside>
 
 <div class="shell">
   <!-- ================= 사이드바 ================= -->
@@ -564,7 +604,10 @@ table.data .hl{color:var(--brand);font-weight:800}
   </nav>
 
   <main class="main">
-    <button type="button" class="theme-btn no-print" id="theme-toggle">화면 밝기 전환</button>
+    <div class="top-tools no-print">
+      <button type="button" class="glossary-btn" id="glossary-toggle" aria-expanded="false" aria-controls="glossary-drawer">용어 도움말</button>
+      <button type="button" class="theme-btn" id="theme-toggle">화면 밝기 전환</button>
+    </div>
 
   <!-- ================= 1. 홈 ================= -->
   <section id="view-home" class="view">
@@ -642,17 +685,17 @@ table.data .hl{color:var(--brand);font-weight:800}
             <input type="text" id="home-search" class="select" placeholder="학교 검색..." style="margin-left:8px; padding:4px 8px; border:1px solid var(--line); border-radius:4px; font-size:13px; width:120px;">
             <button type="button" class="chip" id="home-metric-sch" aria-pressed="true">학교 수</button>
             <button type="button" class="chip" id="home-metric-stu" aria-pressed="false">학생 수</button>
-            <button type="button" class="chip" id="map-mode-offline" aria-pressed="true">오프라인 경계 지도</button>
-            <button type="button" class="chip" id="map-mode-online" aria-pressed="false">온라인 SGIS 지도</button>
+            <button type="button" class="chip" id="map-mode-offline" aria-pressed="true" title="인터넷 연결이 없어도 사용할 수 있는 경계 지도">간편 지도</button>
+            <button type="button" class="chip" id="map-mode-online" aria-pressed="false" title="SGIS를 이용해 실제 학교 위치를 표시하는 지도">실제 위치 지도</button>
             <button type="button" class="chip" id="home-reset" hidden>← 경북 전체로</button>
             <span class="map-note" id="map-help">타일을 선택하면 시군 상세로 전환됩니다</span>
-            <span class="map-status" id="sgis-status" aria-live="polite">오프라인 지도 사용 중</span>
+            <span class="map-status" id="sgis-status" aria-live="polite">간편 지도 사용 중 · 인터넷 연결 없이도 작동합니다</span>
           </div>
 
           <!-- 전체 보기: 시군 타일 -->
           <div id="home-tilemap" class="mapbox" role="group" aria-label="경상북도 시군 지도"></div>
 
-          <!-- 온라인 보기: SGIS 지도. SGIS를 못 불러오면 표시하지 않고 위 지도를 유지합니다. -->
+          <!-- 실제 위치 보기: SGIS 지도. SGIS를 못 불러오면 표시하지 않고 간편 지도를 유지합니다. -->
           <div id="home-online-map" class="mapbox online-map" hidden role="application" aria-label="SGIS 온라인 경상북도 학교 지도"></div>
 
           <!-- 시군 상세: 학교 마커 -->
@@ -934,7 +977,8 @@ table.data .hl{color:var(--brand);font-weight:800}
     <div class="sim-wrap">
       <!-- 조회군 필터 -->
       <div class="card">
-        <h2>조회군 필터</h2>
+        <h2>기준연도 2026 · 조회 조건</h2>
+        <p style="margin:-4px 0 6px;color:var(--ink-3);font-size:11.5px;line-height:1.55">아래 조건은 기준자료와 예측자료에 함께 적용됩니다.</p>
 
         <div class="filter-group">
           <div class="lb">지역</div>
@@ -1018,9 +1062,28 @@ table.data .hl{color:var(--brand);font-weight:800}
           </div>
         </div>
 
+        <div class="result-actions no-print">
+          <span style="font-size:11.5px;color:var(--ink-3)">현재 조건의 기준·예측 비교표</span>
+          <button type="button" class="chip" id="sim-export-xls">Excel(.xls)로 저장</button>
+        </div>
+
+        <div class="card ai-briefing" id="ai-briefing">
+          <span class="ai-kicker">Gemini 3.7 Flash · 정책 검토 보조</span>
+          <h2>AI 정책 검토 브리핑</h2>
+          <p class="ai-purpose"><b>무엇을 하나요?</b> 지금 선택한 지역·학교급·예측연도의 집계값을 읽고, 회의에서 먼저 확인할 정책 쟁점을 초안으로 정리합니다. 정책을 자동 결정하거나 미래를 확정 예측하는 기능은 아닙니다.</p>
+          <div class="ai-purpose-list" aria-label="AI 분석 결과 구성">
+            <span>① 학생수 변화 요약</span><span>② 운영 위험·한계</span><span>③ 정책 검토 질문</span><span>④ 추가로 필요한 자료</span>
+          </div>
+          <div class="ai-context-preview" id="ai-context-preview">현재 조건을 계산하는 중입니다.</div>
+          <button type="button" class="chip" id="ai-analyze">이 결과로 정책 검토안 만들기</button>
+          <span id="ai-status" role="status" aria-live="polite" style="margin-left:8px;color:var(--ink-3);font-size:12px"></span>
+          <div id="ai-output" class="ai-output" aria-live="polite">아직 분석하지 않았습니다. 실행하면 변화 요약, 위험과 한계, 정책 검토 질문, 추가 확인자료가 여기에 표시됩니다.</div>
+          <p style="margin:9px 0 0;color:var(--ink-3);font-size:11.5px;line-height:1.55">개별 학생·교직원 정보는 보내지 않고 화면에 표시된 집계값만 전송합니다. 무료 사용량이 끝나거나 연결이 실패하면 같은 집계값의 기본 요약으로 전환합니다.</p>
+        </div>
+
         <!-- 기준 전환 -->
         <div class="basis">
-          <h3>산출 기준 <span style="font-weight:400;font-size:11.5px;color:var(--ink-3)">— 무엇을 고정할지 고르면 나머지가 결과로 나옵니다</span></h3>
+          <h3>예측연도 산출 기준 <span style="font-weight:400;font-size:11.5px;color:var(--ink-3)">— 무엇을 고정할지 고르면 나머지가 결과로 나옵니다</span></h3>
 
           <fieldset id="fs-sch">
             <legend><label><input type="radio" name="basis-mode" value="sch" checked> 학교 수 기준</label></legend>
@@ -1054,13 +1117,6 @@ table.data .hl{color:var(--brand);font-weight:800}
           <br>남은 입력은 <b>출생아수</b>(D1)와 여러 해치 실적입니다 — <code>bake-students.mjs --year=2025</code> 처럼 연도를 바꿔 돌리면 진급률이 나오고, 백테스트(2016→2026)도 됩니다.
         </div>
 
-        <div class="card" style="margin-top:14px">
-          <h2>Gemini 정책 분석</h2>
-          <p style="margin:0;color:var(--ink-2);font-size:12.5px">현재 필터의 <b>집계값만</b> Gemini 3.7 Flash로 보냅니다. 학생·교직원 개인자료는 입력하지 마세요.</p>
-          <button type="button" class="chip" id="ai-analyze" style="margin-top:12px">현재 결과 분석하기</button>
-          <span id="ai-status" role="status" aria-live="polite" style="margin-left:8px;color:var(--ink-3);font-size:12px"></span>
-          <div id="ai-output" class="ai-output" aria-live="polite">분석을 실행하면 여기에 결과가 표시됩니다.</div>
-        </div>
       </div>
     </div>
   </section>
@@ -2623,9 +2679,9 @@ function renderSgisMarkers(){
     });
     sgisMap.addLayer(sgisLayer);
     document.getElementById('sgis-status').textContent =
-      `SGIS 온라인 지도 · 현재 조건의 좌표 확보 학교 ${fmt(list.length)}곳`;
+      `실제 위치 지도 · 현재 조건의 좌표 확보 학교 ${fmt(list.length)}곳 (SGIS)`;
   }catch(_e){
-    document.getElementById('sgis-status').textContent = 'SGIS 마커를 표시하지 못했습니다. 오프라인 지도를 이용해 주세요.';
+    document.getElementById('sgis-status').textContent = '실제 위치를 표시하지 못했습니다. 간편 지도를 이용해 주세요.';
   }
 }
 
@@ -2649,7 +2705,7 @@ function setMapMode(mode){
   const status = document.getElementById('sgis-status');
   let fallbackMessage = '';
   if(online && !initSgisMap()){
-    fallbackMessage = 'SGIS 온라인 지도를 불러오지 못했습니다. 인터넷·배포 환경을 확인해 주세요. 오프라인 지도를 유지합니다.';
+    fallbackMessage = '실제 위치 지도를 불러오지 못했습니다. 인터넷·배포 환경을 확인해 주세요. 간편 지도를 유지합니다.';
     mode = 'offline';
   }
 
@@ -2660,7 +2716,7 @@ function setMapMode(mode){
   document.getElementById('home-online-map').hidden = !isOnline;
   document.getElementById('home-tilemap').hidden = isOnline || !!homeState.sel;
   document.getElementById('home-detail').hidden = isOnline || !homeState.sel;
-  document.getElementById('home-reset').hidden = isOnline || !homeState.sel;
+  document.getElementById('home-reset').hidden = !homeState.sel;
   document.getElementById('map-help').textContent = isOnline
     ? '마커를 선택하면 학교 정보가 표시됩니다'
     : '타일을 선택하면 시군 상세로 전환됩니다';
@@ -2669,7 +2725,7 @@ function setMapMode(mode){
     renderSgisMarkers();
     if(sgisMap?.invalidateSize) setTimeout(() => sgisMap.invalidateSize(), 0);
   }else{
-    status.textContent = fallbackMessage || '오프라인 경계 지도 사용 중 · 인터넷 연결 없이도 작동합니다';
+    status.textContent = fallbackMessage || '간편 지도 사용 중 · 인터넷 연결 없이도 작동합니다';
     if(homeState.sel) renderDetail(); else renderTilemap();
   }
 }
@@ -3112,7 +3168,7 @@ function renderDetailMap(sg, lv, list){
     <line x1="10" y1="-3" x2="10" y2="3" stroke="#334155" stroke-width="2"/>
     <line x1="60" y1="-3" x2="60" y2="3" stroke="#334155" stroke-width="2"/>
     <text x="35" y="-4" font-size="9" font-weight="bold" fill="#334155" text-anchor="middle">약 ${kmDist>0?kmDist:5}km</text>
-    <text x="68" y="2" font-size="8" fill="#64748b">오프라인 SGIS 경계 지도</text>
+    <text x="68" y="2" font-size="8" fill="#64748b">간편 경계 지도</text>
   </g>`;
 
   const missing = list.length - pts.length;
@@ -3296,10 +3352,18 @@ function setMetric(m){
 }
 document.getElementById('home-reset').addEventListener('click', () => {
   homeState.sel = null;
-  document.getElementById('home-tilemap').hidden = false;
+  document.getElementById('home-tilemap').hidden = homeState.mapMode === 'online';
   document.getElementById('home-detail').hidden = true;
   document.getElementById('home-reset').hidden = true;
   renderTilemap();
+  if(homeState.mapMode === 'online'){
+    renderSgisMarkers();
+    if(sgisMap && window.sop){
+      const center = new window.sop.LatLng(36.35, 128.85);
+      sgisMap.setView(window.sop.utmk(center.x, center.y), 3);
+      if(sgisMap.invalidateSize) setTimeout(() => sgisMap.invalidateSize(), 0);
+    }
+  }
 });
 document.getElementById('color-by-level').addEventListener('click', () => setColorBy('level'));
 document.getElementById('color-by-density').addEventListener('click', () => setColorBy('density'));
@@ -3566,20 +3630,23 @@ function project(base, predStu, drop){
 }
 
 let aiContext = '';
+let simExportRows = [];
 function renderSim(){
   const lv = sim.level;
   const list = filteredSigungu();
   const yrs = sim.year - 2026;
 
-  // 도 전체(필터 무관) 행
-  const allBase = SIGUNGU.reduce((a,sg)=>{
+  // '전체' 행도 현재 조회 조건을 따릅니다. 예전에는 지역 필터를 무시해
+  // AI가 '선택 지역'이라고 쓰면서 경북 전체 합계를 받는 모순이 있었습니다.
+  const allBase = list.reduce((a,sg)=>{
     const b=aggregate(sg,lv); a.stu+=b.stu; a.cls+=b.cls; a.sch+=b.sch; return a;
   },{stu:0,cls:0,sch:0});
   let allPredStu=0;
-  SIGUNGU.forEach(sg=>{ const b=aggregate(sg,lv); allPredStu += b.stu*Math.pow(1-BASE[lv][sg.s].rate, yrs); });
+  list.forEach(sg=>{ const b=aggregate(sg,lv); allPredStu += b.stu*Math.pow(1-BASE[lv][sg.s].rate, yrs); });
   allPredStu = Math.round(allPredStu);
 
   const rowsBase=[], rowsPred=[];
+  simExportRows = [];
   const push = (label, base, predStu, isTotal) => {
     const perBase = base.cls>0 ? base.stu/base.cls : 0;
     const drop = base.stu>0 ? 1 - predStu/base.stu : 0;
@@ -3591,6 +3658,7 @@ function renderSim(){
     const t = isTotal ? ' class="total"' : '';
     rowsBase.push(`<tr${t}><td>${label}</td><td>${fmt(base.stu)}</td><td>${fmt(base.cls)}</td><td>${fmt(base.sch)}</td><td>${perBase.toFixed(1)}</td></tr>`);
     rowsPred.push(`<tr${t}><td>${label}</td><td>${fmt(predStu)}</td><td class="down">${(drop*100).toFixed(1)}</td><td class="${cSC}">${fmt(p.cls)}</td><td class="${cSC}">${fmt(p.sch)}</td><td class="${cPP}">${perPred.toFixed(1)}</td></tr>`);
+    simExportRows.push({label,base:{...base},predStu,drop,projection:{...p},perBase,perPred,isTotal});
   };
 
   push('전체', allBase, allPredStu, true);
@@ -3603,14 +3671,22 @@ function renderSim(){
 
   document.getElementById('base-tbody').innerHTML = rowsBase.join('');
   document.getElementById('pred-tbody').innerHTML = rowsPred.join('');
+  const regionLabel = list.length===SIGUNGU.length ? '경북 전체' : (list.length ? list.map(s=>s.name).join(', ') : '선택된 지역 없음');
+  const totalRow = simExportRows[0];
+  const dropPct = allBase.stu>0 ? (100*(1-allPredStu/allBase.stu)).toFixed(1) : '0.0';
   aiContext = [
+    '분석 목적: 정책 검토 회의용 초안',
     `학교급: ${LEVEL_CFG[lv].full}`,
     `예측연도: ${sim.year}`,
-    `선택 지역: ${list.length===SIGUNGU.length?'경북 전체':list.map(s=>s.name).join(', ')}`,
+    `선택 지역: ${regionLabel}`,
     `2026 실적: 학생 ${fmt(allBase.stu)}명, 학급 ${fmt(allBase.cls)}개, 학교 ${fmt(allBase.sch)}교`,
-    `${sim.year} 모의값: 학생 ${fmt(allPredStu)}명`,
-    '주의: 예측값은 출생·이동 코호트가 아닌 임시 감소율 적용값이며 지역 간 이동을 제외함.'
+    `${sim.year} 모의값: 학생 ${fmt(allPredStu)}명, 학급 ${fmt(totalRow?.projection.cls || 0)}개, 학교 ${fmt(totalRow?.projection.sch || 0)}교`,
+    `학생수 변화율: -${dropPct}%`,
+    '주의: 예측값은 출생·이동 코호트가 아닌 임시 감소율 적용값이며 지역 간 이동을 제외함.',
+    '응답 형식: 1) 핵심 변화 2) 학교 운영 검토 신호 3) 정책 검토 질문 4) 추가 확인자료 5) 분석 한계'
   ].join('\n');
+  document.getElementById('ai-context-preview').textContent =
+    `${regionLabel} · ${LEVEL_CFG[lv].full} · 2026년 ${fmt(allBase.stu)}명 → ${sim.year}년 모의 ${fmt(allPredStu)}명 (${dropPct}% 감소)`;
 
   // 활성 모드에 따라 비활성 그룹 흐리게
   const mode = document.querySelector('input[name="basis-mode"]:checked').value;
@@ -3642,24 +3718,62 @@ function renderSim(){
 }
 
 function localAiFallback(){
-  return `오프라인 요약\n\n${aiContext}\n\n외부 AI에 연결하지 못해 수치만 요약했습니다. 예측값은 정책 판단의 확정 근거가 아니며, 코호트 자료와 지역 이동 자료를 확보한 뒤 다시 검증해야 합니다.`;
+  return `기본 정책 검토 요약\n\n[핵심 변화]\n${aiContext}\n\n[정책 검토 질문]\n- 현재 학교·학급 운영 여건에서 이 감소 폭을 감당할 수 있는가?\n- 통학거리, 교육과정 선택권, 지역 간 이동을 함께 검토했는가?\n\n[추가 확인자료]\n- 출생 코호트, 전입·전출, 읍면동별 학생 거주지, 학교별 시설·통학 자료\n\n[한계]\n외부 AI에 연결하지 못해 규칙 기반으로 정리했습니다. 모의값은 정책 판단의 확정 근거가 아닙니다.`;
 }
+
+function xmlEsc(v){
+  return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function exportSimXls(){
+  const head = ['지역','2026 학생수','2026 학급수','2026 학교수','2026 학급당 학생수',`${sim.year} 학생수`,'감소율(%)',`${sim.year} 학급수`,`${sim.year} 학교수`,`${sim.year} 학급당 학생수`];
+  const rowXml = values => `<tr>${values.map(v=>`<td>${xmlEsc(v)}</td>`).join('')}</tr>`;
+  const rows = simExportRows.map(r => rowXml([
+    r.label,r.base.stu,r.base.cls,r.base.sch,r.perBase.toFixed(1),r.predStu,(r.drop*100).toFixed(1),r.projection.cls,r.projection.sch,r.perPred.toFixed(1)
+  ])).join('');
+  const meta = aiContext.split('\n').map(line=>`<p>${xmlEsc(line)}</p>`).join('');
+  const workbook = `<!doctype html><html><head><meta charset="UTF-8"><style>table{border-collapse:collapse}th,td{border:1px solid #888;padding:6px}th{background:#eaf1fb}</style></head><body><h1>경북 학생수 시뮬레이션 비교표</h1>${meta}<table>${rowXml(head).replace(/td>/g,'th>')}${rows}</table><p>예측값은 임시 감소율 모의값이며 지역 간 이동을 제외합니다.</p></body></html>`;
+  const blob = new Blob(['\ufeff',workbook],{type:'application/vnd.ms-excel;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`경북_학생수_시뮬레이션_${sim.level}_${sim.year}.xls`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),0);
+}
+document.getElementById('sim-export-xls').addEventListener('click', exportSimXls);
 document.getElementById('ai-analyze').addEventListener('click', async () => {
   const btn=document.getElementById('ai-analyze'), status=document.getElementById('ai-status'), out=document.getElementById('ai-output');
-  btn.disabled=true; status.textContent='분석 중…'; out.textContent='집계값을 안전하게 전송하고 있습니다.';
+  btn.disabled=true; status.textContent='정책 검토안을 만드는 중…'; out.textContent='현재 조건의 집계값만 안전하게 전송하고 있습니다.';
   try{
     const res=await fetch('/api/ai-analysis',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:aiContext})});
     const data=await res.json();
     if(!res.ok || !data.text) throw new Error(data.error || 'AI 응답 오류');
-    out.textContent=data.text; status.textContent='Gemini 분석 완료';
+    out.textContent=data.text; status.textContent=`${data.model || 'Gemini'} 분석 완료`;
   }catch(e){
-    out.textContent=localAiFallback(); status.textContent='오프라인 요약으로 전환';
+    out.textContent=localAiFallback(); status.textContent=`기본 요약으로 전환 · ${e.message || 'AI 연결 실패'}`;
   }finally{ btn.disabled=false; }
 });
 
 /* =========================================================
-   6. 테마 — LEAP Kit 의 toggleTheme / restoreTheme 과 같은 방식
+   6. 용어 도움말 · 테마
    ========================================================= */
+(function(){
+  const openBtn=document.getElementById('glossary-toggle');
+  const closeBtn=document.getElementById('glossary-close');
+  const drawer=document.getElementById('glossary-drawer');
+  const backdrop=document.getElementById('glossary-backdrop');
+  function setOpen(open){
+    if(open){ drawer.classList.add('open'); backdrop.classList.add('open'); }
+    else { drawer.classList.remove('open'); backdrop.classList.remove('open'); }
+    drawer.setAttribute('aria-hidden', String(!open));
+    openBtn.setAttribute('aria-expanded', String(open));
+    if(open) closeBtn.focus(); else openBtn.focus();
+  }
+  openBtn.addEventListener('click',()=>setOpen(true));
+  closeBtn.addEventListener('click',()=>setOpen(false));
+  backdrop.addEventListener('click',()=>setOpen(false));
+  window.addEventListener('keydown',e=>{ if(e.key==='Escape' && drawer.getAttribute('aria-hidden')==='false') setOpen(false); });
+})();
+
 (function(){
   try{
     const t = localStorage.getItem('leap-theme');

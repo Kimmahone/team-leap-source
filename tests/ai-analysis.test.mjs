@@ -13,15 +13,15 @@ const realFetch=globalThis.fetch;
 let called='';
 globalThis.fetch=async (url,options)=>{
   called=String(url);
-  check('키가 인증 헤더로 전달됨', options.headers.Authorization==='Bearer server-secret');
+  check('키가 공식 x-goog-api-key 헤더로 전달됨', options.headers['x-goog-api-key']==='server-secret');
   const requestBody=JSON.parse(options.body);
-  check('모델·낮은 추론 단계·집계값 전달', requestBody.model==='gemini-3.7-flash' && requestBody.reasoning_effort==='low' && requestBody.messages.some(message=>message.content==='집계값'));
-  check('시스템 지침 전달', requestBody.messages.some(message=>message.role==='system' && message.content.includes('숫자를 만들지 마세요')));
-  return new Response(JSON.stringify({choices:[{message:{content:'근거 기반 분석'}}]}),{status:200,headers:{'Content-Type':'application/json'}});
+  check('모델·낮은 사고 단계·집계값 전달', requestBody.model==='gemini-3.7-flash' && requestBody.generation_config.thinking_level==='low' && requestBody.input==='집계값');
+  check('시스템 지침 전달', requestBody.system_instruction.includes('숫자를 만들지 마세요'));
+  return new Response(JSON.stringify({steps:[{type:'model_output',content:[{type:'text',text:'근거 기반 분석'}]}]}),{status:200,headers:{'Content-Type':'application/json'}});
 };
 const ok=await onRequestPost({request:req({prompt:'집계값'}),env:{GEMINI_API_KEY:'server-secret'}});
 const data=await ok.json();
-check('Gemini OpenAI 호환 API 호출', called.endsWith('/v1beta/openai/chat/completions'));
+check('Gemini 공식 Interactions API 호출', called.endsWith('/v1beta/interactions'));
 check('분석문 반환', ok.status===200 && data.text==='근거 기반 분석');
 globalThis.fetch=realFetch;
 

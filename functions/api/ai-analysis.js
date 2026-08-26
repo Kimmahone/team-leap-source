@@ -27,18 +27,15 @@ export async function onRequestPost(context){
 
   let upstream;
   try{
-    upstream=await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',{
+    upstream=await fetch('https://generativelanguage.googleapis.com/v1beta/interactions',{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':`Bearer ${context.env.GEMINI_API_KEY}`},
+      headers:{'Content-Type':'application/json','x-goog-api-key':context.env.GEMINI_API_KEY},
       signal:AbortSignal.timeout(45000),
       body:JSON.stringify({
         model:MODEL,
-        reasoning_effort:'low',
-        messages:[
-          {role:'system',content:SYSTEM_PROMPT},
-          {role:'user',content:prompt}
-        ],
-        max_tokens:1200
+        system_instruction:SYSTEM_PROMPT,
+        input:prompt,
+        generation_config:{thinking_level:'low',max_output_tokens:1200}
       })
     });
   }catch(error){
@@ -46,11 +43,18 @@ export async function onRequestPost(context){
   }
   if(!upstream.ok){
     const retry=upstream.status===429;
-    return json({error:retry?'무료 사용량 한도에 도달했습니다. 잠시 후 다시 시도하세요.':'Gemini 응답을 받지 못했습니다.'},upstream.status===429?429:502);
+    return json({
+      error:retry?'무료 사용량 한도에 도달했습니다. 잠시 후 다시 시도하세요.':`Gemini가 요청을 거절했습니다. 운영 코드: G${upstream.status}`,
+      upstreamStatus:upstream.status
+    },upstream.status===429?429:502);
   }
   const data=await upstream.json();
-  const content=data.choices?.[0]?.message?.content;
-  const text=typeof content==='string' ? content.trim() : '';
+  const text=(typeof data.output_text==='string' ? data.output_text : (data.steps||[])
+    .filter(step=>step.type==='model_output')
+    .flatMap(step=>step.content||[])
+    .filter(item=>item.type==='text')
+    .map(item=>item.text||'')
+    .join('')).trim();
   return text ? json({text,model:MODEL}) : json({error:'Gemini가 분석문을 반환하지 않았습니다.'},502);
 }
 

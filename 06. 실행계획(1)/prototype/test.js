@@ -134,10 +134,13 @@ const q = expr => vm.runInContext(expr, sandbox);
 check('SGIS 온라인 지도와 오프라인 대체 지도를 함께 제공한다',
   html.includes('id="map-mode-online"') && html.includes('id="map-mode-offline"') &&
   html.includes('src="/api/sgis-map"') && /function setMapMode/.test(html));
+check('지도 선택 명칭을 기술용어 대신 쉬운 말로 표시한다',
+  html.includes('>간편 지도</button>') && html.includes('>실제 위치 지도</button>') &&
+  !html.includes('>오프라인 경계 지도</button>'));
 q("setMapMode('online')");
 check('SGIS를 못 불러오면 오프라인 지도를 유지한다',
   q("homeState.mapMode") === 'offline' && byId['home-tilemap'].hidden === false &&
-  /오프라인 지도를 유지/.test(byId['sgis-status'].textContent || ''));
+  /간편 지도를 유지/.test(byId['sgis-status'].textContent || ''));
 byId['home-level'].options = Array.from({length:6}, () => makeEl('option'));
 q("homeState.sel=SIGUNGU.find(sg=>sg.s==='영주');homeState.level='유';renderDetail()");
 check('시군 상세의 유치원 수는 경북 전체가 아니라 해당 시군 값이다',
@@ -149,6 +152,9 @@ check('시군 상세의 다섯 학교급 숫자를 모두 해당 시군 값으�
 check('온라인 SGIS 지도도 선택한 시군과 학교급으로 거른다',
   q('onlineSchools().length') === 23,
   '영주시 유치원 온라인 마커: ' + q('onlineSchools().length'));
+q("homeState.mapMode='online';homeState.sel=SIGUNGU.find(sg=>sg.s==='영주');document.getElementById('home-online-map').hidden=false;document.getElementById('home-reset')._ev.click()");
+check('실제 위치 지도에서도 경북 전체로 돌아간다',
+  q('homeState.sel') === null && byId['home-online-map'].hidden === false && byId['home-tilemap'].hidden === true);
 q("homeState.sel=null;homeState.level='전체';renderTilemap()");
 check('학교 917곳 이상이 들어 있다', q('SCHOOLS.length') >= 917, '개수: ' + q('SCHOOLS.length'));
 const byLv = q('({초:SCHOOLS.filter(s=>s.lv==="초").length,중:SCHOOLS.filter(s=>s.lv==="중").length,고:SCHOOLS.filter(s=>s.lv==="고").length})');
@@ -205,6 +211,21 @@ const lvTotals = q(`(function(){
 })()`);
 check('학교급마다 시군별 셈이 0 이 아니다', Object.values(lvTotals).every(v => v > 0),
   JSON.stringify(lvTotals));
+
+console.log('\n■ 시뮬레이터 정책 검토 기능');
+q("sim.sigungu=new Set(['영주']);sim.level='중';renderSim()");
+const yjMid = q("aggregate(SIGUNGU.find(sg=>sg.s==='영주'),'중').stu");
+check('시뮬레이터 전체 행이 현재 지역 필터를 따른다',
+  q('simExportRows[0].base.stu') === yjMid && /선택 지역: 영주시/.test(q('aiContext')),
+  '영주 중학생: '+yjMid+' / 내보내기 합계: '+q('simExportRows[0].base.stu'));
+check('AI가 변화·위험·질문·추가자료 형식으로 정책 검토안을 요청한다',
+  /학교 운영 검토 신호/.test(q('aiContext')) && /추가 확인자료/.test(q('aiContext')));
+check('현재 조건 비교표를 Excel xls로 저장할 수 있다',
+  html.includes('id="sim-export-xls"') && /function exportSimXls/.test(html) && /\.xls`/.test(html));
+check('가나다순 용어 도움말을 오른쪽 서랍으로 제공한다',
+  html.includes('id="glossary-drawer"') && html.includes('id="glossary-toggle"') &&
+  html.indexOf('<summary>교원 수</summary>') < html.indexOf('<summary>학령인구</summary>'));
+q("sim.sigungu.clear();renderSim()");
 
 /* 같은 학교가 두 번 들어오는 것 — 굽는 스크립트가 «덧붙이기»만 하면 생깁니다.
    실제로 유치원이 두 번 구워져 614곳이 1,228곳이 되어 있었습니다. */
