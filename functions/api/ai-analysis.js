@@ -27,29 +27,29 @@ export async function onRequestPost(context){
 
   let upstream;
   try{
-    upstream=await fetch('https://generativelanguage.googleapis.com/v1beta/interactions',{
+    upstream=await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-goog-api-key':context.env.GEMINI_API_KEY},
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${context.env.GEMINI_API_KEY}`},
+      signal:AbortSignal.timeout(45000),
       body:JSON.stringify({
         model:MODEL,
-        store:false,
-        input:`${SYSTEM_PROMPT}\n\n[분석할 자료]\n${prompt}`,
-        generation_config:{max_output_tokens:1200,thinking_level:'low'}
+        messages:[
+          {role:'system',content:SYSTEM_PROMPT},
+          {role:'user',content:prompt}
+        ],
+        max_tokens:1200
       })
     });
-  }catch(_e){ return json({error:'Gemini 연결에 실패했습니다.'},502); }
+  }catch(error){
+    return json({error:error?.name==='TimeoutError'?'Gemini 응답 시간이 초과되었습니다. 잠시 후 다시 시도하세요.':'Gemini 연결에 실패했습니다.'},error?.name==='TimeoutError'?504:502);
+  }
   if(!upstream.ok){
     const retry=upstream.status===429;
     return json({error:retry?'무료 사용량 한도에 도달했습니다. 잠시 후 다시 시도하세요.':'Gemini 응답을 받지 못했습니다.'},upstream.status===429?429:502);
   }
   const data=await upstream.json();
-  const text=(data.steps||[])
-    .filter(step=>step.type==='model_output')
-    .flatMap(step=>step.content||[])
-    .filter(item=>item.type==='text')
-    .map(item=>item.text||'')
-    .join('')
-    .trim();
+  const content=data.choices?.[0]?.message?.content;
+  const text=typeof content==='string' ? content.trim() : '';
   return text ? json({text,model:MODEL}) : json({error:'Gemini가 분석문을 반환하지 않았습니다.'},502);
 }
 
