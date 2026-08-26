@@ -7,7 +7,7 @@
 - 로컬 개발용 실제 값: 프로젝트 루트의 `.dev.vars`
 - 값이 없는 공유용 견본: `.dev.vars.example`
 - 과거 데이터 굽기 스크립트용 키: `open api/인증키.txt`
-- 운영 배포용 실제 값: Cloudflare Pages 프로젝트의 **Settings → Variables and Secrets(Runtime)**
+- 운영 배포용 실제 값: Cloudflare Pages 프로젝트의 **Settings → Variables and Secrets**
 
 `.dev.vars`와 `open api/인증키.txt`는 `.gitignore`에 의해 GitHub에 올라가지 않는다. 새 키를 발급하면 `.dev.vars`를 먼저 갱신하고, 기존 굽기 스크립트가 사용하는 키는 `open api/인증키.txt`도 함께 갱신한다.
 
@@ -34,9 +34,9 @@ SGIS_CONSUMER_SECRET
 KINDER_API_KEY
 ```
 
-Cloudflare 화면 오른쪽 메뉴에서 **Build**가 선택된 상태의 변수는 빌드 전용이다.
-Pages Function이 읽는 키는 **Settings의 Runtime Variables and Secrets**에 같은 이름으로
-등록해야 한다. 키를 바꾼 뒤에는 Deployments에서 최신 Production 배포를 다시 실행한다.
+Cloudflare Pages의 Variables and Secrets에 저장한 값은 빌드와 Pages Function에서 함께 쓸 수 있다.
+다만 새로 등록하거나 바꾼 Secret은 **기존 배포에 소급되지 않으므로** Deployments에서 최신
+Production 배포를 다시 실행해야 `context.env`에 반영된다.
 `/api/data-status`는 실제 값을 노출하지 않고 런타임에서 각 묶음을 읽을 수 있는지만 알려 준다.
 
 키 값은 이 안내 문서나 HTML, JavaScript 소스, GitHub Actions YAML에 직접 적지 않는다.

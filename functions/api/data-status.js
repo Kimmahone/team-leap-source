@@ -7,7 +7,8 @@ export async function onRequestGet(context) {
     name: service.name,
     use: service.runtime ? 'runtime' : 'scheduled_ingest',
     configured: service.env.every(name => typeof env[name] === 'string' && env[name].trim().length > 0),
-    requiredVariables: service.env
+    requiredVariables: service.env,
+    optionalVariables: service.optionalEnv || []
   }));
 
   const body = {

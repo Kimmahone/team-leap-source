@@ -25,5 +25,14 @@ check('Gemini 공식 Interactions API 호출', called.endsWith('/v1beta/interact
 check('분석문 반환', ok.status===200 && data.text==='근거 기반 분석');
 globalThis.fetch=realFetch;
 
+globalThis.fetch=async ()=>new Response(JSON.stringify({error:{status:'RESOURCE_EXHAUSTED'}}),{
+  status:429,headers:{'Content-Type':'application/json'}
+});
+const limited=await onRequestPost({request:req({prompt:'집계값'}),env:{GEMINI_API_KEY:'server-secret'}});
+const limitedData=await limited.json();
+check('무료 한도 초과 원인을 사용량 확인 안내와 함께 반환',
+  limited.status===429 && limitedData.reason==='RESOURCE_EXHAUSTED' && /Google AI Studio/.test(limitedData.error));
+globalThis.fetch=realFetch;
+
 console.log(`✓  통과 ${pass} · 실패 ${fail}`);
 process.exit(fail?1:0);

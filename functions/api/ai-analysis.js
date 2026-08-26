@@ -43,9 +43,15 @@ export async function onRequestPost(context){
   }
   if(!upstream.ok){
     const retry=upstream.status===429;
+    let upstreamError={};
+    try{ upstreamError=await upstream.json(); }catch(_e){}
+    const reason=String(upstreamError?.error?.status || (retry ? 'RESOURCE_EXHAUSTED' : `G${upstream.status}`));
     return json({
-      error:retry?'무료 사용량 한도에 도달했습니다. 잠시 후 다시 시도하세요.':`Gemini가 요청을 거절했습니다. 운영 코드: G${upstream.status}`,
-      upstreamStatus:upstream.status
+      error:retry
+        ? 'Gemini 무료 사용량 한도에 도달했습니다. 잠시 후 다시 시도하고 Google AI Studio의 사용량을 확인하세요.'
+        :`Gemini가 요청을 거절했습니다. 운영 코드: G${upstream.status}`,
+      upstreamStatus:upstream.status,
+      reason
     },upstream.status===429?429:502);
   }
   const data=await upstream.json();

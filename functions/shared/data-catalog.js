@@ -60,7 +60,10 @@ export const DATASETS = [
 
 export const SERVICES = [
   { id: 'gemini', name: 'Gemini 정책 검토', env: ['GEMINI_API_KEY'], runtime: true },
-  { id: 'sgis', name: 'SGIS 실제 위치 지도', env: ['SGIS_CONSUMER_KEY', 'SGIS_CONSUMER_SECRET'], runtime: true },
+  {
+    id: 'sgis', name: 'SGIS 실제 위치 지도', env: ['SGIS_CONSUMER_KEY'],
+    optionalEnv: ['SGIS_CONSUMER_SECRET'], runtime: true
+  },
   { id: 'schoolinfo', name: '학교알리미 갱신', env: ['SCHOOLINFO_API_KEY'], runtime: false },
   { id: 'kosis', name: 'KOSIS 갱신', env: ['KOSIS_API_KEY'], runtime: false },
   { id: 'kinder', name: '유치원알리미 갱신', env: ['KINDER_API_KEY'], runtime: false }
