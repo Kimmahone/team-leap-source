@@ -12,6 +12,11 @@ name: 주간 뉴스 받아오기 및 자동 배포
 #     - DEPLOY_PAT (team-leap 저장소 푸시 권한이 있는 GitHub Personal Access Token)
 
 on:
+  push:
+    branches: [main]
+    # 주간 작업이 news-history.json만 커밋한 경우 같은 작업이 연달아 다시 돌지 않게 합니다.
+    paths-ignore:
+      - news-history.json
   schedule:
     # 한국시간 월요일 아침 7시 (UTC 일요일 22시). 주간 클리핑이라 매일 돌 까닭이 없습니다.
     - cron: '0 22 * * 0'
