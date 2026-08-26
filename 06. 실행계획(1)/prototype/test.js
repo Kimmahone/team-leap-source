@@ -146,6 +146,9 @@ check('시군 상세의 유치원 수는 경북 전체가 아니라 해당 시�
 check('시군 상세의 다섯 학교급 숫자를 모두 해당 시군 값으로 바꾼다',
   byId['home-level'].options.slice(1,6).every(o => /\d+$/.test(o.text || '')) &&
   byId['home-level'].options[4].text !== '유치원 614');
+check('온라인 SGIS 지도도 선택한 시군과 학교급으로 거른다',
+  q('onlineSchools().length') === 23,
+  '영주시 유치원 온라인 마커: ' + q('onlineSchools().length'));
 q("homeState.sel=null;homeState.level='전체';renderTilemap()");
 check('학교 917곳 이상이 들어 있다', q('SCHOOLS.length') >= 917, '개수: ' + q('SCHOOLS.length'));
 const byLv = q('({초:SCHOOLS.filter(s=>s.lv==="초").length,중:SCHOOLS.filter(s=>s.lv==="중").length,고:SCHOOLS.filter(s=>s.lv==="고").length})');

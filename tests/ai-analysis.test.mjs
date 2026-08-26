@@ -15,7 +15,7 @@ globalThis.fetch=async (url,options)=>{
   called=String(url);
   check('키가 인증 헤더로 전달됨', options.headers.Authorization==='Bearer server-secret');
   const requestBody=JSON.parse(options.body);
-  check('모델과 집계값 전달', requestBody.model==='gemini-3.7-flash' && requestBody.messages.some(message=>message.content==='집계값'));
+  check('모델·낮은 추론 단계·집계값 전달', requestBody.model==='gemini-3.7-flash' && requestBody.reasoning_effort==='low' && requestBody.messages.some(message=>message.content==='집계값'));
   check('시스템 지침 전달', requestBody.messages.some(message=>message.role==='system' && message.content.includes('숫자를 만들지 마세요')));
   return new Response(JSON.stringify({choices:[{message:{content:'근거 기반 분석'}}]}),{status:200,headers:{'Content-Type':'application/json'}});
 };

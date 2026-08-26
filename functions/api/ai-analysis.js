@@ -33,6 +33,7 @@ export async function onRequestPost(context){
       signal:AbortSignal.timeout(45000),
       body:JSON.stringify({
         model:MODEL,
+        reasoning_effort:'low',
         messages:[
           {role:'system',content:SYSTEM_PROMPT},
           {role:'user',content:prompt}

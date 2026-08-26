@@ -2588,6 +2588,7 @@ function onlineSchools(){
   const keyword = (document.getElementById('home-search')?.value || '').trim();
   return SCHOOLS.filter(s =>
     s.lat != null && s.lon != null &&
+    (!homeState.sel || s.s === homeState.sel.s) &&
     (homeState.level === '전체' || s.lv === homeState.level) &&
     (!keyword || s.name.includes(keyword))
   );
