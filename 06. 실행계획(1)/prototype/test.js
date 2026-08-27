@@ -259,6 +259,8 @@ check('종합 대시보드 인쇄는 요약·지도·기준을 의미 단위로 
   /#home-map-card\{break-before:page/.test(html) && /#home-map-card \.criteria-guide\{break-before:page/.test(html));
 check('정책 검토안은 보고서 HTML과 별도 인쇄 기능을 제공한다',
   html.includes('id="ai-print"') && /function policyMarkdown/.test(html) && /function renderPolicyReport/.test(html) && html.includes('id="ai-print-report"'));
+check('정책 검토안은 전용 인쇄 때만 나온다',
+  /#ai-print-report\{display:none !important\}/.test(html) && /body\.print-ai-only #ai-print-report\{display:block !important/.test(html));
 check('일반 사용자 화면에 서비스 사업자·모델명이 드러나지 않는다',
   !/>[^<]*(Gemini|Cloudflare|gemini-3\.7)[^<]*</i.test(html.split('<script>')[0]));
 check('경북교육청 상징 워터마크 파일과 화면·인쇄 스타일이 있다',
@@ -273,6 +275,10 @@ check('AI 정책 검토 브리핑은 시뮬레이터 설명 뒤 맨 아래에 �
 check('가나다순 용어 도움말을 오른쪽 서랍으로 제공한다',
   html.includes('id="glossary-drawer"') && html.includes('id="glossary-toggle"') &&
   html.indexOf('<summary>교원 수</summary>') < html.indexOf('<summary>학령인구</summary>'));
+check('사용 안내도 용어 도움말처럼 토글 목록으로 제공한다',
+  html.includes('id="guide-drawer"') && /<details><summary>종합 대시보드<\/summary>/.test(html));
+check('사용자가 자신의 브라우저에서 메뉴 순서를 바꿀 수 있다',
+  html.includes('id="nav-order-drawer"') && html.includes("NAV_ORDER_KEY = 'leap-nav-order-v1'") && /function applyNavOrder/.test(html));
 check('전체 작업을 설명하는 사용 안내 서랍을 제공한다',
   html.includes('id="guide-drawer"') && html.includes('id="guide-toggle"') && /출력 방법/.test(html));
 q("sim.sigungu.clear();renderSim()");

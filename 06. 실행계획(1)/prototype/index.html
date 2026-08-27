@@ -630,6 +630,8 @@ table.data .hl{color:var(--brand);font-weight:800}
   .legend i{border:1px solid #000}
   a[href^="http"]::after{content:" (" attr(href) ")";font-size:8pt;color:#333}
   .print-only{display:block !important}
+  /* 정책 검토안은 전용 인쇄를 누를 때만 다른 화면을 대신해 인쇄합니다. */
+  #ai-print-report{display:none !important}
   body.print-ai-only .shell{display:none !important}
   body.print-ai-only #ai-print-report{display:block !important;position:relative;z-index:1}
   body.print-ai-only::before{background-size:250px auto;opacity:.05}
@@ -665,14 +667,24 @@ table.data .hl{color:var(--brand);font-weight:800}
     <button type="button" class="glossary-close" id="guide-close" aria-label="대시보드 사용 안내 닫기">×</button>
   </div>
   <p class="glossary-intro">메뉴별로 무엇을 확인하고 어떤 결과를 저장할 수 있는지 정리했습니다. 화면 오른쪽 위의 인쇄·Excel 버튼은 지금 보고 있는 메뉴와 필터 조건을 그대로 사용합니다.</p>
-  <div class="guide-steps">
-    <section><h3>종합 대시보드</h3><p>학교급·학교명·학교 수/학생 수를 바꾸고, 간편 지도와 실제 위치 지도에서 시군 및 학교를 비교합니다.</p></section>
-    <section><h3>경북 학령인구 현황</h3><p>기준연도와 비교연도를 고르고 학령인구와 재학생 수의 변화·추이를 확인합니다.</p></section>
-    <section><h3>학생수 시뮬레이터</h3><p>인구감소지역·시군·학교급·학교 규모 조건을 함께 적용하고, 산출 기준별 모의 결과와 AI 정책 검토 질문을 만듭니다.</p></section>
-    <section><h3>뉴스 클리핑</h3><p>전체·주간·월간 및 주제별로 기사를 거른 뒤 현재 결과를 인쇄하거나 Excel로 저장합니다.</p></section>
-    <section><h3>그 밖의 메뉴</h3><p>주요업무계획·특수교육·폐교 활용 메뉴도 현재 확보된 자료와 미확보 상태를 그대로 출력합니다.</p></section>
-    <section><h3>출력 방법</h3><ul><li><b>현재 화면 인쇄</b>: 브라우저 인쇄창에서 PDF 저장도 가능</li><li><b>현재 메뉴 Excel</b>: 조건·원자료·요약·시각화 시트를 메뉴에 맞게 생성</li></ul></section>
+  <div class="glossary-list">
+    <details><summary>종합 대시보드</summary><div>학교급·학교명·학교 수/학생 수를 바꾸고, 간편 지도와 실제 위치 지도에서 시군 및 학교를 비교합니다.</div></details>
+    <details><summary>경북 학령인구 현황</summary><div>기준연도와 비교연도를 고르고 학령인구와 재학생 수의 변화·추이를 확인합니다.</div></details>
+    <details><summary>학생수 시뮬레이터</summary><div>인구감소지역·시군·학교급·학교 규모 조건을 함께 적용하고, 산출 기준별 모의 결과와 정책 검토 질문을 만듭니다.</div></details>
+    <details><summary>뉴스 클리핑</summary><div>전체·주간·월간 및 주제별로 기사를 거른 뒤 현재 결과를 인쇄하거나 Excel로 저장합니다. 새 기사는 기존의 6개 고정 주제로 분류되므로 주제 목록이 매주 늘어나지 않습니다.</div></details>
+    <details><summary>그 밖의 메뉴</summary><div>주요업무계획·특수교육·폐교 활용 메뉴도 현재 확보된 자료와 미확보 상태를 그대로 출력합니다.</div></details>
+    <details><summary>출력 방법</summary><div><ul><li><b>현재 화면 인쇄</b>: 브라우저 인쇄창에서 PDF 저장도 가능</li><li><b>현재 메뉴 Excel</b>: 조건·원자료·요약·시각화 시트를 메뉴에 맞게 생성</li></ul></div></details>
   </div>
+</aside>
+
+<aside class="glossary-drawer no-print" id="nav-order-drawer" aria-hidden="true" aria-label="메뉴 순서 설정">
+  <div class="glossary-head">
+    <h2>메뉴 순서</h2>
+    <button type="button" class="glossary-close" id="nav-order-close" aria-label="메뉴 순서 설정 닫기">×</button>
+  </div>
+  <p class="glossary-intro">위·아래 버튼으로 내 메뉴 순서를 바꾸세요. 이 설정은 현재 브라우저에만 저장되며, 기기를 바꾸면 다시 설정할 수 있습니다.</p>
+  <div class="glossary-list" id="nav-order-list"></div>
+  <button type="button" class="glossary-close" id="nav-order-reset" style="margin-top:12px;width:100%;font-size:13px">기본 순서로 복원</button>
 </aside>
 
 <div class="shell">
@@ -720,6 +732,7 @@ table.data .hl{color:var(--brand);font-weight:800}
     <div class="top-tools no-print">
       <button type="button" class="guide-btn" id="guide-toggle" aria-expanded="false" aria-controls="guide-drawer">사용 안내</button>
       <button type="button" class="glossary-btn" id="glossary-toggle" aria-expanded="false" aria-controls="glossary-drawer">용어 도움말</button>
+      <button type="button" class="guide-btn" id="nav-order-toggle" aria-expanded="false" aria-controls="nav-order-drawer">메뉴 순서</button>
       <button type="button" class="export-btn" id="export-current">현재 메뉴 Excel</button>
       <button type="button" class="print-btn" id="print-current">현재 화면 인쇄</button>
       <button type="button" class="theme-btn" id="theme-toggle">화면 밝기 전환</button>
@@ -1086,6 +1099,7 @@ table.data .hl{color:var(--brand);font-weight:800}
           <option value="전체">전체 주제</option><option>통폐합·적정규모</option><option>교육재정</option>
           <option>교원·정원</option><option>통학·돌봄</option><option>지역소멸·인구</option><option>교육혁신·특구</option>
         </select>
+        <span class="map-note" title="새 기사는 기존 분류 기준에 따라 태깅됩니다. 주제 목록은 자동으로 늘어나지 않습니다.">고정 주제 분류</span>
         <span id="news-count" style="margin-left:auto; font-size:12px; color:var(--ink-3);"></span>
       </div>
 
@@ -1257,9 +1271,9 @@ table.data .hl{color:var(--brand);font-weight:800}
           <div class="ai-purpose-list" aria-label="AI 분석 결과 구성">
             <span>① 학생수 변화 요약</span><span>② 운영 위험·한계</span><span>③ 정책 검토 질문</span><span>④ 추가로 필요한 자료</span>
           </div>
-          <div class="ai-connection" id="ai-connection">연결 상태를 확인하지 않았습니다.</div>
+          <div class="ai-connection" id="ai-connection">분석 설정을 확인하지 않았습니다.</div>
           <div class="ai-context-preview" id="ai-context-preview">현재 조건을 계산하는 중입니다.</div>
-          <button type="button" class="chip" id="ai-check">분석 서비스 확인</button>
+          <button type="button" class="chip" id="ai-check">분석 설정 확인</button>
           <button type="button" class="chip" id="ai-analyze">이 결과로 정책 검토안 만들기</button>
           <button type="button" class="chip" id="ai-print" disabled>정책 검토안 인쇄</button>
           <span id="ai-status" role="status" aria-live="polite" style="margin-left:8px;color:var(--ink-3);font-size:12px"></span>
@@ -2780,7 +2794,45 @@ const fmt = n => n.toLocaleString('ko-KR');
    2. 화면 전환
    ========================================================= */
 const navBtns = document.querySelectorAll('.nav button[data-view]');
+const navRoot = document.querySelector('.nav');
+const navOrderList = document.getElementById('nav-order-list');
+const NAV_ORDER_KEY = 'leap-nav-order-v1';
+const DEFAULT_NAV_ORDER = Array.from(navBtns, b => b.dataset.view);
 let activeView = 'home';
+
+function savedNavOrder(){
+  try{
+    const raw=JSON.parse(localStorage.getItem(NAV_ORDER_KEY)||'[]');
+    if(!Array.isArray(raw) || raw.length!==DEFAULT_NAV_ORDER.length) return DEFAULT_NAV_ORDER.slice();
+    return raw.every(id=>DEFAULT_NAV_ORDER.includes(id)) ? raw : DEFAULT_NAV_ORDER.slice();
+  }catch(_e){ return DEFAULT_NAV_ORDER.slice(); }
+}
+function applyNavOrder(order){
+  if(!navRoot) return;
+  const byView={}; navBtns.forEach(b=>{byView[b.dataset.view]=b;});
+  const external=navRoot.querySelector('a');
+  order.forEach(view=>{if(byView[view]) external&&typeof external.before==='function' ? external.before(byView[view]) : navRoot.appendChild(byView[view]);});
+  try{ localStorage.setItem(NAV_ORDER_KEY,JSON.stringify(order)); }catch(_e){}
+  renderNavOrder(order);
+}
+function renderNavOrder(order=savedNavOrder()){
+  if(!navOrderList) return;
+  navOrderList.innerHTML='';
+  const byView={}; navBtns.forEach(b=>{byView[b.dataset.view]=b;});
+  order.forEach((view,index)=>{
+    const row=document.createElement('section');
+    row.style.cssText='display:flex;align-items:center;gap:8px;padding:10px 11px;border:1px solid var(--line);border-radius:8px;background:var(--card-2)';
+    const name=document.createElement('strong'); name.style.cssText='flex:1;font-size:13px'; name.textContent=(byView[view]?.textContent||view).trim();
+    const up=document.createElement('button'); up.type='button'; up.className='glossary-close'; up.style.cssText='min-width:36px;min-height:36px;font-size:15px'; up.textContent='↑'; up.title='위로 이동'; up.disabled=index===0;
+    const down=document.createElement('button'); down.type='button'; down.className='glossary-close'; down.style.cssText='min-width:36px;min-height:36px;font-size:15px'; down.textContent='↓'; down.title='아래로 이동'; down.disabled=index===order.length-1;
+    const move=delta=>{const next=order.slice(),to=index+delta;[next[index],next[to]]=[next[to],next[index]];applyNavOrder(next);};
+    up.addEventListener('click',()=>move(-1)); down.addEventListener('click',()=>move(1));
+    row.appendChild(name); row.appendChild(up); row.appendChild(down); navOrderList.appendChild(row);
+  });
+}
+applyNavOrder(savedNavOrder());
+document.getElementById('nav-order-reset').addEventListener('click',()=>applyNavOrder(DEFAULT_NAV_ORDER.slice()));
+
 function showView(name){
   const target = document.getElementById('view-'+name);
   if(!target) return;
@@ -4199,7 +4251,7 @@ function renderPolicyReport(text){
 }
 function friendlyAnalysisError(message){
   const m=String(message||'');
-  if(/무료 사용량|RESOURCE_EXHAUSTED|429|quota/i.test(m)) return '분석 서비스의 현재 사용량 한도에 도달했습니다. 잠시 후 다시 시도해 주세요.';
+  if(/무료 사용량|RESOURCE_EXHAUSTED|429|quota/i.test(m)) return '두 분석 모드의 현재 무료 사용량이 모두 소진되었습니다. 잠시 후 다시 시도해 주세요.';
   if(/503|key|설정|configured/i.test(m)) return '분석 서비스가 아직 준비되지 않았습니다. 관리자에게 설정 상태를 확인해 주세요.';
   return '분석 서비스 응답을 받지 못했습니다.';
 }
@@ -4209,7 +4261,7 @@ document.getElementById('print-current').addEventListener('click',printCurrentVi
 document.getElementById('ai-print').addEventListener('click',()=>runPrint('ai'));
 document.getElementById('ai-check').addEventListener('click', async () => {
   const status=document.getElementById('ai-status'), connection=document.getElementById('ai-connection');
-  status.textContent='서버 설정을 확인하는 중…';
+  status.textContent='분석 설정을 확인하는 중…';
   try{
     const res=await fetch('/api/data-status');
     const data=await res.json();
@@ -4217,9 +4269,9 @@ document.getElementById('ai-check').addEventListener('click', async () => {
     if(!res.ok || !gemini) throw new Error('AI 서비스 상태를 읽지 못했습니다.');
     connection.className='ai-connection '+(gemini.configured?'ok':'warn');
     connection.textContent=gemini.configured
-      ? '분석 서비스가 준비되었습니다.'
+      ? '분석 키가 서버에 등록되어 있습니다. 실제 응답과 무료 사용량은 분석 실행 시 확인됩니다.'
       : '분석 서비스를 사용할 수 없습니다. 관리자에게 문의해 주세요.';
-    status.textContent=gemini.configured?'서비스 준비 완료':'서비스 준비 필요';
+    status.textContent=gemini.configured?'설정 확인 완료':'설정 필요';
   }catch(e){
     connection.className='ai-connection warn'; connection.textContent=e.message||'연결 상태 확인 실패';
     status.textContent='상태 확인 실패';
@@ -4232,8 +4284,8 @@ document.getElementById('ai-analyze').addEventListener('click', async () => {
     const res=await fetch('/api/ai-analysis',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:aiContext})});
     const data=await res.json();
     if(!res.ok || !data.text) throw new Error(data.error || 'AI 응답 오류');
-    renderPolicyReport(data.text); status.textContent='정책 검토안 작성 완료';
-    connection.className='ai-connection ok'; connection.textContent='분석 서비스가 현재 집계값으로 정책 검토안을 작성했습니다.';
+    renderPolicyReport(data.text); status.textContent=data.fallback?'대체 분석 모드로 정책 검토안 작성 완료':'정책 검토안 작성 완료';
+    connection.className='ai-connection ok'; connection.textContent=data.fallback?'주 분석 모드의 사용량을 아끼기 위해 대체 분석 모드로 정책 검토안을 작성했습니다.':'분석 서비스가 현재 집계값으로 정책 검토안을 작성했습니다.';
   }catch(e){
     renderPolicyReport(localAiFallback()); status.textContent='기본 검토안으로 전환';
     connection.className='ai-connection warn'; connection.textContent=friendlyAnalysisError(e.message);
@@ -4247,7 +4299,8 @@ document.getElementById('ai-analyze').addEventListener('click', async () => {
   const backdrop=document.getElementById('glossary-backdrop');
   const pairs=[
     {open:document.getElementById('guide-toggle'),close:document.getElementById('guide-close'),drawer:document.getElementById('guide-drawer')},
-    {open:document.getElementById('glossary-toggle'),close:document.getElementById('glossary-close'),drawer:document.getElementById('glossary-drawer')}
+    {open:document.getElementById('glossary-toggle'),close:document.getElementById('glossary-close'),drawer:document.getElementById('glossary-drawer')},
+    {open:document.getElementById('nav-order-toggle'),close:document.getElementById('nav-order-close'),drawer:document.getElementById('nav-order-drawer')}
   ];
   function setOpen(pair,open,focus=true){
     pairs.forEach(other=>{
