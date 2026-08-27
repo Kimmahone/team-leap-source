@@ -28,8 +28,8 @@
   --leap-hairline:#E8EDF3;
   --leap-on-fill: #FFFFFF;
 
-  --leap-font: system-ui, -apple-system, "Segoe UI", "Apple SD Gothic Neo",
-               "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --leap-font: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic",
+               system-ui, -apple-system, "Segoe UI", sans-serif;
   --leap-radius:10px;
   --leap-radius-sm:6px;
   --leap-shadow: 0 1px 2px rgba(20,32,46,.06), 0 4px 12px rgba(20,32,46,.07);
@@ -118,11 +118,12 @@ body{
   font-family:var(--leap-font);
   background:var(--bg);
   color:var(--ink);
-  font-size:14px;
+  font-size:15px;
+  font-weight:500;
   line-height:1.55;
   -webkit-text-size-adjust:100%;
 }
-h1,h2,h3,h4{margin:0;font-weight:700;letter-spacing:-.02em}
+h1,h2,h3,h4{margin:0;font-weight:800;letter-spacing:-.025em}
 button{font-family:inherit;font-size:inherit;cursor:pointer}
 a{color:var(--brand)}
 /* 포커스 표시는 반드시 보인다. 이전 값(#ff8c00)은 흰 배경 대비 2.33 이라 미달이었다. */
@@ -175,12 +176,12 @@ a{color:var(--brand)}
 .side-foot{padding:14px 18px;border-top:1px solid var(--line-2);font-size:11px;color:var(--ink-3)}
 .side-foot strong{display:block;color:var(--ink-2);font-size:12px;margin-bottom:3px}
 .top-tools{position:absolute;top:16px;right:24px;z-index:100;display:flex;gap:8px}
-.theme-btn,.glossary-btn{
+.theme-btn,.glossary-btn,.guide-btn,.export-btn,.print-btn{
   min-height:36px;padding:0 16px;margin:0;
   border:1px solid var(--line);background:var(--card);border-radius:8px;
   color:var(--ink-2);font-size:12.5px;font-weight:600;
 }
-.theme-btn:hover,.glossary-btn:hover{background:var(--brand-pale);color:var(--brand)}
+.theme-btn:hover,.glossary-btn:hover,.guide-btn:hover,.export-btn:hover,.print-btn:hover{background:var(--brand-pale);color:var(--brand)}
 .glossary-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.32);z-index:998;opacity:0;pointer-events:none;transition:opacity .2s}
 .glossary-backdrop.open{opacity:1;pointer-events:auto}
 .glossary-drawer{position:fixed;z-index:999;top:0;right:0;width:min(420px,92vw);height:100vh;overflow:auto;
@@ -194,6 +195,11 @@ a{color:var(--brand)}
 .glossary-list summary{padding:11px 13px;font-size:13.5px;font-weight:800;cursor:pointer;color:var(--ink)}
 .glossary-list details div{padding:0 13px 13px;font-size:12.5px;line-height:1.7;color:var(--ink-2)}
 .glossary-list .source{display:block;margin-top:5px;color:var(--ink-3);font-size:11.5px}
+.guide-steps{counter-reset:guide;display:grid;gap:9px;margin-top:12px}
+.guide-steps section{border:1px solid var(--line);border-radius:9px;padding:12px;background:var(--card-2)}
+.guide-steps h3{font-size:14px;margin-bottom:5px;color:var(--brand)}
+.guide-steps p,.guide-steps li{font-size:12.5px;line-height:1.7;color:var(--ink-2)}
+.guide-steps p{margin:0}.guide-steps ul{margin:5px 0 0;padding-left:18px}
 /* 메인 페이지로 나가는 문.
    아래 메뉴(.nav)에 섞지 않은 것은 일부러입니다 — 저기 있는 「홈」은 이 대시보드 안의
    홈 화면이라, 나란히 두면 어느 쪽이 밖으로 나가는 문인지 알 수 없습니다.
@@ -271,13 +277,16 @@ a{color:var(--brand)}
    숫자와 학교급 글자를 자체 색으로 그려 외부 마커 그림 없이도 위치를 읽게 합니다. */
 .online-map .marker-cluster{
   display:grid !important;place-items:center;border-radius:50%;
-  width:36px !important;height:36px !important;margin-left:-18px !important;margin-top:-18px !important;
+  width:var(--cluster-size,36px) !important;height:var(--cluster-size,36px) !important;
+  margin-left:calc(var(--cluster-size,36px) / -2) !important;margin-top:calc(var(--cluster-size,36px) / -2) !important;
   background-image:none !important;background:var(--brand) !important;
   color:#fff !important;border:3px solid rgba(255,255,255,.92);
   box-shadow:0 2px 8px rgba(20,32,46,.38);font-size:11px;font-weight:800;
 }
 .online-map .marker-cluster div{background:transparent !important;margin:0 !important;width:auto !important;height:auto !important}
 .online-map .marker-cluster span{line-height:1 !important;color:#fff !important}
+.online-map .marker-cluster.metric-stu{background:var(--leap-teal) !important;font-size:10px}
+.online-map .marker-cluster.cluster-md{--cluster-size:44px}.online-map .marker-cluster.cluster-lg{--cluster-size:52px}
 .sgis-school-icon{
   display:grid !important;place-items:center;width:26px !important;height:26px !important;
   margin-left:-13px !important;margin-top:-13px !important;border-radius:50%;
@@ -285,6 +294,10 @@ a{color:var(--brand)}
   border:2px solid #fff;box-shadow:0 1px 5px rgba(20,32,46,.42);
   font-size:11px;font-weight:800;line-height:1;
 }
+.sgis-school-icon.sgis-student-value{width:var(--school-size,30px) !important;height:var(--school-size,30px) !important;
+  margin-left:calc(var(--school-size,30px) / -2) !important;margin-top:calc(var(--school-size,30px) / -2) !important;
+  font-size:9px;letter-spacing:-.04em;background:var(--leap-teal) !important}
+.sgis-school-icon.school-md{--school-size:36px}.sgis-school-icon.school-lg{--school-size:42px}
 .sgis-lv-유{--pin:var(--lv-유-mark)}.sgis-lv-초{--pin:var(--lv-초-mark)}
 .sgis-lv-중{--pin:var(--lv-중-mark)}.sgis-lv-고{--pin:var(--lv-고-mark)}
 .sgis-lv-특수{--pin:var(--lv-특수-mark)}
@@ -426,6 +439,10 @@ table.data .hl{color:var(--brand);font-weight:800}
 .sig-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
 .sig-grid .chip{padding:4px 2px;font-size:11.5px;text-align:center;border-radius:5px}
 .sig-grid .chip[disabled]{opacity:.32;cursor:not-allowed}
+.filter-unavailable{border:1px dashed var(--line);border-radius:7px;padding:8px 9px;background:var(--bg);
+  color:var(--ink-3);font-size:11.5px;line-height:1.55}
+.filter-summary{margin-top:8px;padding:8px 9px;border-radius:7px;background:var(--brand-pale);
+  color:var(--brand);font-size:11.5px;font-weight:700;line-height:1.55}
 
 .sim-tables{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media (max-width:900px){.sim-tables{grid-template-columns:1fr}}
@@ -452,6 +469,9 @@ table.data .hl{color:var(--brand);font-weight:800}
 .ai-purpose-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:12px 0}
 .ai-purpose-list span{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:8px 9px;font-size:11.5px;font-weight:700;color:var(--ink-2)}
 .ai-context-preview{border-left:3px solid var(--brand);padding:8px 10px;background:var(--card);font-size:11.5px;line-height:1.55;color:var(--ink-3);margin-bottom:10px}
+.ai-connection{display:inline-flex;align-items:center;gap:6px;margin:0 0 10px;font-size:11.5px;color:var(--ink-3)}
+.ai-connection::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ink-3)}
+.ai-connection.ok::before{background:var(--fit)}.ai-connection.warn::before{background:var(--under)}
 .result-actions{display:flex;justify-content:flex-end;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
 @media (max-width:720px){
   .dummy-banner{padding:8px 12px}.shell{display:block;min-height:0}
@@ -459,7 +479,7 @@ table.data .hl{color:var(--brand);font-weight:800}
   .brand{padding:12px 60px 8px 12px}.brand .brand-header{margin-bottom:4px}.brand .mk{width:30px;height:30px}
   .home-link{padding:8px 12px}.nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;padding:8px}
   .nav button,.nav a{margin:0;padding:8px;min-height:44px;font-size:12px}.nav .ext,.side-foot{display:none}
-  .top-tools{position:fixed;top:10px;right:10px;gap:5px}.theme-btn,.glossary-btn{padding:0 9px;background:var(--card);font-size:11px}
+  .top-tools{position:static;justify-content:flex-end;flex-wrap:wrap;margin-bottom:10px;gap:5px}.theme-btn,.glossary-btn,.guide-btn,.export-btn,.print-btn{padding:0 9px;background:var(--card);font-size:11px}
   .main{padding:18px 12px 40px}.page-head{padding-right:96px}.page-head h1{font-size:19px}
   .card{padding:14px 12px}.kpi{grid-template-columns:1fr}.map-toolbar{align-items:stretch}
   .map-toolbar .select,.map-toolbar input{max-width:100%;min-height:44px}.map-note{width:100%;margin-left:0}
@@ -484,6 +504,11 @@ table.data .hl{color:var(--brand);font-weight:800}
 
 .basis{border:1px solid var(--brand);border-radius:9px;padding:12px 14px;background:var(--card);margin-top:14px}
 .basis h3{font-size:13px;margin-bottom:9px;color:var(--brand)}
+.basis-quick{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 10px}
+.basis-quick label{display:flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:999px;
+  padding:6px 10px;background:var(--card);font-size:11.5px;font-weight:700;color:var(--ink-2)}
+.basis-quick label:has(input:checked){background:var(--brand);border-color:var(--brand);color:var(--leap-on-fill)}
+.basis-quick input{accent-color:var(--brand)}
 .basis fieldset{border:0;padding:0;margin:0 0 10px}
 .basis legend{font-size:12.5px;font-weight:700;padding:0;margin-bottom:5px}
 .basis label{display:flex;align-items:center;gap:6px;font-size:12.5px;padding:5px 0;color:var(--ink-2)}
@@ -564,12 +589,28 @@ table.data .hl{color:var(--brand);font-weight:800}
   <p class="glossary-intro">대시보드에서 사용하는 교육·인구 용어를 가나다순으로 정리했습니다. 수치의 출처와 예측의 한계는 각 화면의 ‘자료 출처’도 함께 확인해 주세요.</p>
   <div class="glossary-list">
     <details><summary>교원 수</summary><div>학교알리미 공시의 교원 현황을 학교별로 합산한 값입니다. 현재 전체 KPI는 유치원 교원을 제외합니다.<span class="source">출처: 학교알리미 공시</span></div></details>
-    <details><summary>인구감소지역</summary><div>인구·재정·지역 여건 등을 종합해 정부가 지정한 지역을 말합니다. 현재 화면의 표시는 고시 원문과 기준연도를 다시 대조하기 전 임시 참고값입니다.<span class="source">출처 확인 예정: 행정안전부 인구감소지역 지정 고시</span></div></details>
+    <details><summary>인구감소지역</summary><div>인구·재정·지역 여건 등을 종합해 행정안전부가 지정한 지역입니다. 2021년 10월 처음 지정하며 지정 주기는 5년입니다. 경북은 고령·문경·봉화·상주·성주·안동·영덕·영양·영주·영천·울릉·울진·의성·청도·청송 15곳입니다.<span class="source">출처: 행정안전부 인구감소지역 지정 결과(89개)</span></div></details>
     <details><summary>장래 학생수</summary><div>선택한 연도까지 시군·학교급별 임시 감소율을 적용한 모의값입니다. 출생 코호트와 전입·전출을 반영한 확정 예측이 아니므로 정책 결정의 단독 근거로 사용하면 안 됩니다.<span class="source">향후 출생아수·과거 학년별 실적·이동자료로 코호트 예측 예정</span></div></details>
     <details><summary>적정규모학교</summary><div>학생 수와 소재지 기준에 따라 교육과정 운영 여건을 검토하기 위한 분류입니다. 학교 통폐합을 자동 결정하는 기준이 아니라 검토 신호입니다.<span class="source">출처: 2026년 경상북도교육청 적정규모 학교 육성 계획(내부 원문 확인 필요)</span></div></details>
     <details><summary>초등학교</summary><div>초등 보통교육을 실시하는 6년제 학교입니다. 이 화면의 학교·학생·학급 값은 학교알리미 공시 자료를 사용합니다.<span class="source">출처: 초·중등교육법, 학교알리미</span></div></details>
     <details><summary>학생 수</summary><div>해당 학교에 재학 중인 학생을 학교별·학교급별로 합산한 값입니다. 학령인구와는 범위가 다릅니다.<span class="source">출처: 학교알리미 2026 공시</span></div></details>
     <details><summary>학령인구</summary><div>이 대시보드에서는 초·중·고교 학령에 해당하는 6~18세 인구를 뜻합니다. 실제 재학생 수와 같지 않습니다.<span class="source">출처: KOSIS 주민등록인구 및 장래인구추계</span></div></details>
+  </div>
+</aside>
+
+<aside class="glossary-drawer no-print" id="guide-drawer" aria-hidden="true" aria-label="대시보드 사용 안내">
+  <div class="glossary-head">
+    <h2>대시보드 사용 안내</h2>
+    <button type="button" class="glossary-close" id="guide-close" aria-label="대시보드 사용 안내 닫기">×</button>
+  </div>
+  <p class="glossary-intro">메뉴별로 무엇을 확인하고 어떤 결과를 저장할 수 있는지 정리했습니다. 화면 오른쪽 위의 인쇄·Excel 버튼은 지금 보고 있는 메뉴와 필터 조건을 그대로 사용합니다.</p>
+  <div class="guide-steps">
+    <section><h3>종합 대시보드</h3><p>학교급·학교명·학교 수/학생 수를 바꾸고, 간편 지도와 실제 위치 지도에서 시군 및 학교를 비교합니다.</p></section>
+    <section><h3>경북 학령인구 현황</h3><p>기준연도와 비교연도를 고르고 학령인구와 재학생 수의 변화·추이를 확인합니다.</p></section>
+    <section><h3>학생수 시뮬레이터</h3><p>인구감소지역·시군·학교급·학교 규모 조건을 함께 적용하고, 산출 기준별 모의 결과와 AI 정책 검토 질문을 만듭니다.</p></section>
+    <section><h3>뉴스 클리핑</h3><p>전체·주간·월간 및 주제별로 기사를 거른 뒤 현재 결과를 인쇄하거나 Excel로 저장합니다.</p></section>
+    <section><h3>그 밖의 메뉴</h3><p>주요업무계획·특수교육·폐교 활용 메뉴도 현재 확보된 자료와 미확보 상태를 그대로 출력합니다.</p></section>
+    <section><h3>출력 방법</h3><ul><li><b>현재 화면 인쇄</b>: 브라우저 인쇄창에서 PDF 저장도 가능</li><li><b>현재 메뉴 Excel</b>: 조건·원자료·요약·시각화 시트를 메뉴에 맞게 생성</li></ul></section>
   </div>
 </aside>
 
@@ -609,7 +650,10 @@ table.data .hl{color:var(--brand);font-weight:800}
 
   <main class="main">
     <div class="top-tools no-print">
+      <button type="button" class="guide-btn" id="guide-toggle" aria-expanded="false" aria-controls="guide-drawer">사용 안내</button>
       <button type="button" class="glossary-btn" id="glossary-toggle" aria-expanded="false" aria-controls="glossary-drawer">용어 도움말</button>
+      <button type="button" class="export-btn" id="export-current">현재 메뉴 Excel</button>
+      <button type="button" class="print-btn" id="print-current">현재 화면 인쇄</button>
       <button type="button" class="theme-btn" id="theme-toggle">화면 밝기 전환</button>
     </div>
 
@@ -952,8 +996,13 @@ table.data .hl{color:var(--brand);font-weight:800}
       <div class="map-toolbar" style="margin-bottom: 20px;">
         <span style="font-size: 13px; font-weight: 600; color: var(--ink-2); margin-right: 8px;">기간 필터:</span>
         <button type="button" class="chip" data-news-days="0" aria-pressed="true">전체 보기</button>
-        <button type="button" class="chip" data-news-days="7" aria-pressed="false">최근 1주일</button>
-        <button type="button" class="chip" data-news-days="30" aria-pressed="false">최근 1개월</button>
+        <button type="button" class="chip" data-news-days="7" aria-pressed="false">주간(최근 7일)</button>
+        <button type="button" class="chip" data-news-days="30" aria-pressed="false">월간(최근 30일)</button>
+        <label class="sr-only" for="news-topic">뉴스 주제</label>
+        <select id="news-topic" class="select" aria-label="뉴스 주제 필터">
+          <option value="전체">전체 주제</option><option>통폐합·적정규모</option><option>교육재정</option>
+          <option>교원·정원</option><option>통학·돌봄</option><option>지역소멸·인구</option><option>교육혁신·특구</option>
+        </select>
         <span id="news-count" style="margin-left:auto; font-size:12px; color:var(--ink-3);"></span>
       </div>
 
@@ -999,10 +1048,7 @@ table.data .hl{color:var(--brand);font-weight:800}
             <button type="button" class="chip" data-f="decline" data-v="N">미해당</button>
           </div>
           <div class="sublb">교육혁신선도지역</div>
-          <div class="btn-row">
-            <button type="button" class="chip" data-f="innov" data-v="Y" disabled title="D8 미확보">해당</button>
-            <button type="button" class="chip" data-f="innov" data-v="N" disabled title="D8 미확보">미해당</button>
-          </div>
+          <div class="filter-unavailable"><b>공식 대상 명부 미확보</b><br>출처 없는 해당·미해당 버튼은 제거했습니다. 경북교육청 공식 명부를 받으면 같은 필터 자리에 연결합니다.</div>
           <div class="sublb">행정단위</div>
           <div class="btn-row">
             <button type="button" class="chip" data-f="admin" data-v="시">시</button>
@@ -1033,10 +1079,13 @@ table.data .hl{color:var(--brand);font-weight:800}
           <div class="lb">규모</div>
           <label class="sublb" for="size-min">학교 최소 학생 수: <b id="size-min-out">전체</b></label>
           <input type="range" id="size-min" min="0" max="900" step="30" value="0" style="width:100%">
+          <label class="sublb" for="size-max">학교 최대 학생 수: <b id="size-max-out">제한 없음</b></label>
+          <input type="range" id="size-max" min="30" max="2000" step="30" value="2000" style="width:100%">
         </div>
 
         <div class="filter-group">
           <button type="button" class="chip" id="sim-clear" style="width:100%;text-align:center">필터 초기화</button>
+          <div class="filter-summary" id="sim-filter-summary" aria-live="polite">필터를 계산하는 중입니다.</div>
         </div>
       </div>
 
@@ -1060,6 +1109,10 @@ table.data .hl{color:var(--brand);font-weight:800}
               <label class="sr-only" for="pred-year">예측 연도</label>
               <select id="pred-year" class="select" style="font-size:19px;font-weight:800"></select>
             </div>
+            <div class="basis-quick" aria-label="예측연도 산출 기준 선택">
+              <label><input type="radio" name="basis-mode" value="sch" checked> 학교 수 기준</label>
+              <label><input type="radio" name="basis-mode" value="cls"> 학급당 학생 수 기준</label>
+            </div>
             <div class="scroll-x">
               <table class="data">
                 <caption class="sr-only">예측연도 시군별 전망</caption>
@@ -1078,26 +1131,12 @@ table.data .hl{color:var(--brand);font-weight:800}
           <button type="button" class="chip" id="sim-export-xls">Excel(.xls)로 저장</button>
         </div>
 
-        <div class="card ai-briefing" id="ai-briefing">
-          <span class="ai-kicker">Gemini 3.7 Flash · 정책 검토 보조</span>
-          <h2>AI 정책 검토 브리핑</h2>
-          <p class="ai-purpose"><b>무엇을 하나요?</b> 지금 선택한 지역·학교급·예측연도의 집계값을 읽고, 회의에서 먼저 확인할 정책 쟁점을 초안으로 정리합니다. 정책을 자동 결정하거나 미래를 확정 예측하는 기능은 아닙니다.</p>
-          <div class="ai-purpose-list" aria-label="AI 분석 결과 구성">
-            <span>① 학생수 변화 요약</span><span>② 운영 위험·한계</span><span>③ 정책 검토 질문</span><span>④ 추가로 필요한 자료</span>
-          </div>
-          <div class="ai-context-preview" id="ai-context-preview">현재 조건을 계산하는 중입니다.</div>
-          <button type="button" class="chip" id="ai-analyze">이 결과로 정책 검토안 만들기</button>
-          <span id="ai-status" role="status" aria-live="polite" style="margin-left:8px;color:var(--ink-3);font-size:12px"></span>
-          <div id="ai-output" class="ai-output" aria-live="polite">아직 분석하지 않았습니다. 실행하면 변화 요약, 위험과 한계, 정책 검토 질문, 추가 확인자료가 여기에 표시됩니다.</div>
-          <p style="margin:9px 0 0;color:var(--ink-3);font-size:11.5px;line-height:1.55">개별 학생·교직원 정보는 보내지 않고 화면에 표시된 집계값만 전송합니다. 무료 사용량이 끝나거나 연결이 실패하면 같은 집계값의 기본 요약으로 전환합니다.</p>
-        </div>
-
         <!-- 기준 전환 -->
         <div class="basis">
           <h3>예측연도 산출 기준 <span style="font-weight:400;font-size:11.5px;color:var(--ink-3)">— 무엇을 고정할지 고르면 나머지가 결과로 나옵니다</span></h3>
 
           <fieldset id="fs-sch">
-            <legend><label><input type="radio" name="basis-mode" value="sch" checked> 학교 수 기준</label></legend>
+            <legend>학교 수 기준 세부 설정</legend>
             <label><input type="radio" name="sch-basis" value="fixed" checked> 기준연도 학교 수, 학급 수 기준</label>
             <label><input type="radio" name="sch-basis" value="rate"> 기준연도 학생수 감소율 반영 기준</label>
             <label><input type="radio" name="sch-basis" value="custom"> 기준연도 학교수 대비 지정 감소율
@@ -1105,7 +1144,7 @@ table.data .hl{color:var(--brand);font-weight:800}
           </fieldset>
 
           <fieldset id="fs-cls">
-            <legend><label><input type="radio" name="basis-mode" value="cls"> 학급당 학생 수 기준</label></legend>
+            <legend>학급당 학생 수 기준 세부 설정</legend>
             <label><input type="radio" name="cls-basis" value="base" checked> 기준연도 학급당 학생 수 기준</label>
             <label><input type="radio" name="cls-basis" value="pm"> 학급당 학생 수
               <input type="number" id="cls-n" value="20" min="5" max="40" aria-label="학급당 학생 수"> 명 ±
@@ -1126,6 +1165,22 @@ table.data .hl{color:var(--brand);font-weight:800}
           <br><b>예측(2027~)만 아직 더미입니다.</b> 시군·학교급별 연평균 감소율을 곱하고 있는데, 이제
           학년별 자료가 있으므로 <b>코호트 진급법</b>(g학년 → g+1학년 진급률, 초1은 6년 전 출생아수 × 취학률)으로 바꿀 수 있습니다.
           <br>남은 입력은 <b>출생아수</b>(D1)와 여러 해치 실적입니다 — <code>bake-students.mjs --year=2025</code> 처럼 연도를 바꿔 돌리면 진급률이 나오고, 백테스트(2016→2026)도 됩니다.
+        </div>
+
+        <div class="card ai-briefing" id="ai-briefing">
+          <span class="ai-kicker">Gemini 3.7 Flash · 정책 검토 보조</span>
+          <h2>AI 정책 검토 브리핑</h2>
+          <p class="ai-purpose"><b>무엇을 하나요?</b> 지금 선택한 지역·학교급·예측연도의 집계값을 읽고, 회의에서 먼저 확인할 정책 쟁점을 초안으로 정리합니다. 정책을 자동 결정하거나 미래를 확정 예측하는 기능은 아닙니다.</p>
+          <div class="ai-purpose-list" aria-label="AI 분석 결과 구성">
+            <span>① 학생수 변화 요약</span><span>② 운영 위험·한계</span><span>③ 정책 검토 질문</span><span>④ 추가로 필요한 자료</span>
+          </div>
+          <div class="ai-connection" id="ai-connection">연결 상태를 확인하지 않았습니다.</div>
+          <div class="ai-context-preview" id="ai-context-preview">현재 조건을 계산하는 중입니다.</div>
+          <button type="button" class="chip" id="ai-check">AI 연결 상태 확인</button>
+          <button type="button" class="chip" id="ai-analyze">이 결과로 정책 검토안 만들기</button>
+          <span id="ai-status" role="status" aria-live="polite" style="margin-left:8px;color:var(--ink-3);font-size:12px"></span>
+          <div id="ai-output" class="ai-output" aria-live="polite">아직 분석하지 않았습니다. 실행하면 변화 요약, 위험과 한계, 정책 검토 질문, 추가 확인자료가 여기에 표시됩니다.</div>
+          <p style="margin:9px 0 0;color:var(--ink-3);font-size:11.5px;line-height:1.55">개별 학생·교직원 정보는 보내지 않고 화면에 표시된 집계값만 전송합니다. 무료 사용량이 끝나거나 연결이 실패하면 같은 집계값의 기본 요약으로 전환합니다.</p>
         </div>
 
       </div>
@@ -1287,6 +1342,7 @@ table.data .hl{color:var(--brand);font-weight:800}
 
   /* 기간 필터 — 0 이면 전체 */
   var newsDays = 0;
+  var newsTopic = '전체';
   var NEWS_ALL = null;
 
   /* 한 쪽에 20건 — 4열 × 5줄이라 화면이 정확히 채워집니다.
@@ -1299,6 +1355,19 @@ table.data .hl{color:var(--brand);font-weight:800}
     const t = new Date(pubDate).getTime();
     if (isNaN(t)) return false;
     return (Date.now() - t) <= days * 24 * 60 * 60 * 1000;
+  }
+
+  function withinTopic(news, topic) {
+    if (!topic || topic === '전체') return true;
+    const row = NEWS_TOPICS.find(function (x) { return x[0] === topic; });
+    return row ? row[1].test(String(news.title || '') + ' ' + String(news.description || '')) : true;
+  }
+
+  function filteredNewsItems() {
+    if (NEWS_ALL === null) NEWS_ALL = readBakedNews();
+    return NEWS_ALL.filter(function (n) {
+      return withinDays(n.pubDate, newsDays) && withinTopic(n, newsTopic);
+    });
   }
 
   function renderNews() {
@@ -1317,7 +1386,7 @@ table.data .hl{color:var(--brand);font-weight:800}
       return;
     }
 
-    const items = NEWS_ALL.filter(function (n) { return withinDays(n.pubDate, newsDays); });
+    const items = filteredNewsItems();
 
     /* 쪽 수를 셈하고, 필터가 바뀌어 쪽이 사라졌으면 첫 쪽으로 되돌립니다 */
     const pageCount = Math.max(1, Math.ceil(items.length / NEWS_PER_PAGE));
@@ -1326,7 +1395,9 @@ table.data .hl{color:var(--brand);font-weight:800}
     const shown = items.slice(from, from + NEWS_PER_PAGE);
 
     if (countEl) {
-      const scope = newsDays ? `최근 ${newsDays}일 ${items.length}건` : `모두 ${NEWS_ALL.length}건`;
+      const period = newsDays ? `최근 ${newsDays}일` : '전체 기간';
+      const topic = newsTopic === '전체' ? '전체 주제' : newsTopic;
+      const scope = `${period} · ${topic} ${items.length}건`;
       countEl.textContent = pageCount > 1
         ? `${scope} · ${from + 1}~${from + shown.length}번째 (${newsPage}/${pageCount}쪽)`
         : scope;
@@ -1336,8 +1407,8 @@ table.data .hl{color:var(--brand);font-weight:800}
 
     if (items.length === 0) {
       container.innerHTML = '<div style="padding:40px; text-align:center; color:var(--ink-3); grid-column:1/-1;">' +
-        `최근 ${newsDays}일 안에 실은 기사가 없습니다.<br>` +
-        '<span style="font-size:12px;">「전체 보기」로 지난 기사를 볼 수 있습니다.</span></div>';
+        `선택한 기간·주제에 해당하는 기사가 없습니다.<br>` +
+        '<span style="font-size:12px;">기간이나 주제를 바꾸어 확인해 주세요.</span></div>';
       return;
     }
 
@@ -1413,6 +1484,12 @@ table.data .hl{color:var(--brand);font-weight:800}
         });
         renderNews();
       });
+    });
+    const topic = document.getElementById('news-topic');
+    if (topic) topic.addEventListener('change', function () {
+      newsTopic = topic.value || '전체';
+      newsPage = 1;
+      renderNews();
     });
   }
 
@@ -1503,6 +1580,10 @@ table.data .hl{color:var(--brand);font-weight:800}
         '기사 하나가 여러 주제에 걸칠 수 있어 주제별 합이 건수보다 클 수 있습니다. ' +
         '전체는 왼쪽 <b>주간 뉴스 클리핑</b>에서 봅니다.</div>';
   }
+
+  window.dashboardNewsExport = function () {
+    return {days:newsDays, topic:newsTopic, items:filteredNewsItems()};
+  };
 
   function startNews() { wireNewsFilter(); renderNews(); renderNewsBrief(); }
 
@@ -1613,7 +1694,8 @@ const REGION_GEO = [
 
 /* --- 시군 22곳 -----------------------------------------------------------
    좌표(lon·lat)는 앱 E 와 같은 값입니다. 원본은 `08.../apps/e-together`.
-   `decline`(인구감소지역)은 아직 **행안부 고시 원문으로 대조하지 않았습니다** (D7). */
+   `decline`은 행정안전부 「인구감소지역 지정 결과(89개)」의 경북 15곳과 대조했습니다.
+   2021년 10월 최초 지정, 5년 주기입니다. */
 const SIG_META = {
   포항:{code:'47110',type:'시',decline:false,r:4,c:5}, 경주:{code:'47130',type:'시',decline:false,r:5,c:5},
   김천:{code:'47150',type:'시',decline:false,r:4,c:1}, 안동:{code:'47170',type:'시',decline:true ,r:2,c:3},
@@ -1624,8 +1706,13 @@ const SIG_META = {
   영양:{code:'47760',type:'군',decline:true ,r:2,c:4}, 영덕:{code:'47770',type:'군',decline:true ,r:3,c:5},
   청도:{code:'47820',type:'군',decline:true ,r:5,c:4}, 고령:{code:'47830',type:'군',decline:true ,r:5,c:2},
   성주:{code:'47840',type:'군',decline:true ,r:5,c:1}, 칠곡:{code:'47850',type:'군',decline:false,r:4,c:3},
-  예천:{code:'47900',type:'군',decline:true ,r:2,c:2}, 봉화:{code:'47920',type:'군',decline:true ,r:1,c:3},
+  예천:{code:'47900',type:'군',decline:false,r:2,c:2}, 봉화:{code:'47920',type:'군',decline:true ,r:1,c:3},
   울진:{code:'47930',type:'군',decline:true ,r:1,c:5}, 울릉:{code:'47940',type:'군',decline:true ,r:1,c:7}
+};
+const EXPORT_SIGUNGU_ORDER = ['포항','경주','김천','안동','구미','영주','영천','상주','문경','경산','의성','청송','영양','영덕','청도','고령','성주','칠곡','예천','봉화','울진','울릉'];
+const exportSigunguIndex = name => {
+  const i=EXPORT_SIGUNGU_ORDER.indexOf(String(name||'').replace(/[시군]$/,''));
+  return i<0 ? EXPORT_SIGUNGU_ORDER.length : i;
 };
 const SIGUNGU = REGION_GEO.map(r => Object.assign({ name:r.n, s:r.s, rc:r.c, lon:r.lon, lat:r.lat }, SIG_META[r.s]));
 const SIG_BY_CODE = {}; SIGUNGU.forEach(sg => { SIG_BY_CODE[sg.rc] = sg; });
@@ -2621,6 +2708,7 @@ const fmt = n => n.toLocaleString('ko-KR');
    2. 화면 전환
    ========================================================= */
 const navBtns = document.querySelectorAll('.nav button[data-view]');
+let activeView = 'home';
 function showView(name){
   const target = document.getElementById('view-'+name);
   if(!target) return;
@@ -2630,6 +2718,7 @@ function showView(name){
   });
   document.querySelectorAll('.view').forEach(v => v.hidden = true);
   target.hidden = false;
+  activeView = name;
   window.scrollTo(0,0);
 }
 navBtns.forEach(b => b.addEventListener('click', () => { location.hash = b.dataset.view; }));
@@ -2726,25 +2815,52 @@ function renderOnlineSchoolList(){
   renderSchoolCards(box, shown, '현재 지도 화면과 조건에 해당하는 학교가 없습니다.', 'level');
 }
 
+function compactMapValue(value){
+  const n = Math.max(0, Number(value) || 0);
+  if(n >= 10000) return (n/10000).toFixed(n >= 100000 ? 0 : 1).replace(/\.0$/,'') + '만';
+  if(n >= 1000) return (n/1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/,'') + '천';
+  return String(Math.round(n));
+}
+
 function renderSgisMarkers(){
   if(!sgisMap || !window.sop) return;
   try{
     if(sgisLayer && sgisMap.removeLayer) sgisMap.removeLayer(sgisLayer);
+    const studentMetric = homeState.metric === 'stu';
+    const clusterOptions = {showCoverageOnHover:false, maxClusterRadius:70};
+    if(window.sop.divIcon) clusterOptions.iconCreateFunction = function(cluster){
+      const markers = typeof cluster.getAllChildMarkers === 'function' ? cluster.getAllChildMarkers() : [];
+      const value = studentMetric
+        ? markers.reduce((sum, marker) => sum + (Number(marker.options && marker.options.studentCount) || 0), 0)
+        : markers.length;
+      const sizeClass = value >= (studentMetric ? 10000 : 50) ? 'cluster-lg'
+        : value >= (studentMetric ? 3000 : 15) ? 'cluster-md' : '';
+      return window.sop.divIcon({
+        className:`marker-cluster ${studentMetric ? 'metric-stu' : 'metric-sch'} ${sizeClass}`,
+        html:`<span>${htmlEsc(compactMapValue(value))}</span>`,
+        iconSize:[36,36]
+      });
+    };
     sgisLayer = window.sop.markerClusterGroup
-      ? window.sop.markerClusterGroup({showCoverageOnHover:false, maxClusterRadius:70})
+      ? window.sop.markerClusterGroup(clusterOptions)
       : window.sop.layerGroup();
 
     const list = onlineSchools();
+    const maxStudents = Math.max(1, ...list.map(s => Number(s.stu) || 0));
     list.forEach(s => {
       const p = new window.sop.LatLng(+s.lat, +s.lon);
+      const studentSizeClass = !studentMetric ? ''
+        : (s.stu/maxStudents >= .45 ? 'school-lg' : s.stu/maxStudents >= .15 ? 'school-md' : '');
       const icon = typeof window.sop.divIcon === 'function'
         ? window.sop.divIcon({
-            className:`sgis-school-icon sgis-lv-${s.lv}`,
-            html:`<span aria-hidden="true">${htmlEsc(s.lv)}</span>`,
-            iconSize:[26,26]
+            className:`sgis-school-icon sgis-lv-${s.lv} ${studentMetric ? 'sgis-student-value' : ''} ${studentSizeClass}`,
+            html:`<span aria-hidden="true">${htmlEsc(studentMetric ? compactMapValue(s.stu) : s.lv)}</span>`,
+            iconSize:[studentMetric ? 30 : 26,studentMetric ? 30 : 26]
           })
         : null;
-      const marker = window.sop.marker([p.x, p.y], icon ? {icon} : undefined);
+      const markerOptions = {studentCount:Number(s.stu) || 0, schoolCount:1};
+      if(icon) markerOptions.icon = icon;
+      const marker = window.sop.marker([p.x, p.y], markerOptions);
       const lv = LEVEL_CFG[s.lv]?.full || s.lv;
       marker.bindInfoWindow(
         `<strong>${htmlEsc(s.name)}</strong><br>` +
@@ -2755,7 +2871,7 @@ function renderSgisMarkers(){
     });
     sgisMap.addLayer(sgisLayer);
     document.getElementById('sgis-status').textContent =
-      `실제 위치 지도 · 현재 조건의 좌표 확보 학교 ${fmt(list.length)}곳 (SGIS)`;
+      `실제 위치 지도 · ${studentMetric ? '학생 수 합계·크기 기준' : '학교 수 기준'} · 좌표 확보 학교 ${fmt(list.length)}곳 (SGIS)`;
     renderOnlineSchoolList();
   }catch(_e){
     document.getElementById('sgis-status').textContent = '실제 위치를 표시하지 못했습니다. 간편 지도를 이용해 주세요.';
@@ -3034,7 +3150,7 @@ function renderTilemap(){
 
   document.getElementById('home-legend').innerHTML =
     `<span>원 넓이 = ${homeState.metric==='stu'?'학생 수':'학교 수'}</span>
-     <span style="color:var(--ink-3)">▾ 표시 = 인구감소지역 (D7 미검증)</span>
+     <span style="color:var(--ink-3)">▾ 표시 = 행정안전부 지정 인구감소지역(경북 15곳)</span>
      <span style="color:var(--ink-3)">울릉군은 축척이 다른 별도 상자입니다</span>
      <span style="margin-left:auto;color:var(--ink-3)">단위: ${unit}</span>`;
 }
@@ -3570,7 +3686,7 @@ function setDs(k){
 /* =========================================================
    5. 시뮬레이터
    ========================================================= */
-const sim = { decline:null, admin:null, level:'중', area:null, sigungu:new Set(), minSize:0, year:2030 };
+const sim = { decline:null, admin:null, level:'중', area:null, sigungu:new Set(), minSize:0, maxSize:2000, year:2030 };
 
 const predYear = document.getElementById('pred-year');
 for(let y=2027;y<=2040;y++){ const o=new Option(y,y); if(y===2030)o.selected=true; predYear.add(o); }
@@ -3597,11 +3713,9 @@ function syncSigChips(){
   allChip.setAttribute('aria-pressed', sim.sigungu.size===0);
   sigGrid.querySelectorAll('[data-sig]').forEach(b=>{
     b.setAttribute('aria-pressed', sim.sigungu.has(b.dataset.sig));
-    // 지역/행정단위 필터에 걸리지 않는 시군은 비활성 표시
-    const sg = SIGUNGU.find(s=>s.s===b.dataset.sig);
-    const ok = (sim.decline===null || (sim.decline==='Y')===sg.decline)
-            && (sim.admin===null   || sim.admin===sg.type);
-    b.disabled = !ok;
+    /* 직접 선택과 인구감소·행정단위 조건을 함께 유지합니다.
+       예전에는 한 조건을 누를 때 직접 선택을 지워 다중 필터가 아니었습니다. */
+    b.disabled = false;
   });
 }
 
@@ -3613,23 +3727,34 @@ document.querySelectorAll('.chip[data-f]').forEach(btn => {
     else { sim[f==='decline'?'decline':f] = (sim[f]===v ? null : v); }
     document.querySelectorAll(`.chip[data-f="${f}"]`).forEach(x =>
       x.setAttribute('aria-pressed', String(sim[f]===x.dataset.v)));
-    if(f==='decline'||f==='admin'){ sim.sigungu.clear(); syncSigChips(); }
+    if(f==='decline'||f==='admin') syncSigChips();
     renderSim();
   });
 });
 
 const sizeRange = document.getElementById('size-min');
+const sizeMaxRange = document.getElementById('size-max');
 sizeRange.addEventListener('input', e => {
   sim.minSize = +e.target.value;
+  if(sim.minSize > sim.maxSize){ sim.maxSize=sim.minSize; sizeMaxRange.value=sim.maxSize; }
   document.getElementById('size-min-out').textContent = sim.minSize===0 ? '전체' : sim.minSize+'명 이상';
+  document.getElementById('size-max-out').textContent = sim.maxSize===2000 ? '제한 없음' : sim.maxSize+'명 이하';
+  renderSim();
+});
+sizeMaxRange.addEventListener('input', e => {
+  sim.maxSize = +e.target.value;
+  if(sim.maxSize < sim.minSize){ sim.minSize=sim.maxSize; sizeRange.value=sim.minSize; }
+  document.getElementById('size-min-out').textContent = sim.minSize===0 ? '전체' : sim.minSize+'명 이상';
+  document.getElementById('size-max-out').textContent = sim.maxSize===2000 ? '제한 없음' : sim.maxSize+'명 이하';
   renderSim();
 });
 document.getElementById('sim-clear').addEventListener('click', () => {
-  sim.decline=null; sim.admin=null; sim.area=null; sim.minSize=0; sim.sigungu.clear();
+  sim.decline=null; sim.admin=null; sim.area=null; sim.minSize=0; sim.maxSize=2000; sim.sigungu.clear();
   document.querySelectorAll('.chip[data-f]').forEach(x => {
     if(x.dataset.f!=='level') x.setAttribute('aria-pressed','false');
   });
   sizeRange.value=0; document.getElementById('size-min-out').textContent='전체';
+  sizeMaxRange.value=2000; document.getElementById('size-max-out').textContent='제한 없음';
   syncSigChips(); renderSim();
 });
 document.querySelectorAll('input[name="basis-mode"],input[name="sch-basis"],input[name="cls-basis"]')
@@ -3649,6 +3774,7 @@ function filteredSigungu(){
 function aggregate(sg, lv){
   let list = schoolsOf(sg.s, lv);
   if(sim.minSize>0) list = list.filter(s => s.stu >= sim.minSize);
+  if(sim.maxSize<2000) list = list.filter(s => s.stu <= sim.maxSize);
   const stu = list.reduce((a,s)=>a+s.stu,0);
   const cls = list.reduce((a,s)=>a+s.cls,0);
   return {stu, cls, sch:list.length};
@@ -3751,6 +3877,13 @@ function renderSim(){
   ].join('\n');
   document.getElementById('ai-context-preview').textContent =
     `${regionLabel} · ${LEVEL_CFG[lv].full} · 2026년 ${fmt(allBase.stu)}명 → ${sim.year}년 모의 ${fmt(allPredStu)}명 (${dropPct}% 감소)`;
+  const filterWords = [];
+  if(sim.decline!==null) filterWords.push(`인구감소지역 ${sim.decline==='Y'?'해당':'미해당'}`);
+  if(sim.admin!==null) filterWords.push(`행정단위 ${sim.admin}`);
+  if(sim.sigungu.size) filterWords.push(`직접 선택 ${sim.sigungu.size}곳`);
+  if(sim.minSize>0 || sim.maxSize<2000) filterWords.push(`학교 규모 ${sim.minSize}~${sim.maxSize===2000?'제한 없음':sim.maxSize}명`);
+  document.getElementById('sim-filter-summary').textContent =
+    `${filterWords.length ? filterWords.join(' + ') : '전체 지역·전체 규모'} · ${LEVEL_CFG[lv].full} · 결과 ${list.length}개 시군`;
 
   // 활성 모드에 따라 비활성 그룹 흐리게
   const mode = document.querySelector('input[name="basis-mode"]:checked').value;
@@ -3786,34 +3919,185 @@ function localAiFallback(){
 }
 
 function xmlEsc(v){
-  return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-function exportSimXls(){
-  const head = ['지역','2026 학생수','2026 학급수','2026 학교수','2026 학급당 학생수',`${sim.year} 학생수`,'감소율(%)',`${sim.year} 학급수`,`${sim.year} 학교수`,`${sim.year} 학급당 학생수`];
-  const rowXml = values => `<tr>${values.map(v=>`<td>${xmlEsc(v)}</td>`).join('')}</tr>`;
-  const rows = simExportRows.map(r => rowXml([
-    r.label,r.base.stu,r.base.cls,r.base.sch,r.perBase.toFixed(1),r.predStu,(r.drop*100).toFixed(1),r.projection.cls,r.projection.sch,r.perPred.toFixed(1)
-  ])).join('');
-  const meta = aiContext.split('\n').map(line=>`<p>${xmlEsc(line)}</p>`).join('');
-  const workbook = `<!doctype html><html><head><meta charset="UTF-8"><style>table{border-collapse:collapse}th,td{border:1px solid #888;padding:6px}th{background:#eaf1fb}</style></head><body><h1>경북 학생수 시뮬레이션 비교표</h1>${meta}<table>${rowXml(head).replace(/td>/g,'th>')}${rows}</table><p>예측값은 임시 감소율 모의값이며 지역 간 이동을 제외합니다.</p></body></html>`;
+function excelSheetName(name){
+  return String(name || 'Sheet').replace(/[\\/:?*\[\]]/g,' ').slice(0,31) || 'Sheet';
+}
+function spreadsheetCell(value, style){
+  const isNum = typeof value === 'number' && isFinite(value);
+  const type = isNum ? 'Number' : 'String';
+  const id = style || (isNum ? (Number.isInteger(value) ? 'NumberInt' : 'NumberDec') : 'Body');
+  return `<Cell ss:StyleID="${id}"><Data ss:Type="${type}">${xmlEsc(value)}</Data></Cell>`;
+}
+function spreadsheetXml(sheets){
+  const styles = `<Styles>
+    <Style ss:ID="Default" ss:Name="Normal"><Alignment ss:Vertical="Center"/><Font ss:FontName="맑은 고딕" ss:Size="10"/></Style>
+    <Style ss:ID="Title"><Font ss:FontName="맑은 고딕" ss:Size="16" ss:Bold="1" ss:Color="#1B4FA0"/><Alignment ss:Vertical="Center"/><Interior ss:Color="#E9F0FA" ss:Pattern="Solid"/></Style>
+    <Style ss:ID="Header"><Font ss:FontName="맑은 고딕" ss:Bold="1" ss:Color="#FFFFFF"/><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/><Interior ss:Color="#1B4FA0" ss:Pattern="Solid"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#D9E0EA"/></Borders></Style>
+    <Style ss:ID="Body"><Alignment ss:Vertical="Center" ss:WrapText="1"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E8EDF3"/></Borders></Style>
+    <Style ss:ID="NumberInt"><Alignment ss:Horizontal="Right" ss:Vertical="Center"/><NumberFormat ss:Format="#,##0;-#,##0;0"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E8EDF3"/></Borders></Style>
+    <Style ss:ID="NumberDec"><Alignment ss:Horizontal="Right" ss:Vertical="Center"/><NumberFormat ss:Format="#,##0.0;-#,##0.0;0.0"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E8EDF3"/></Borders></Style>
+    <Style ss:ID="Note"><Font ss:FontName="맑은 고딕" ss:Size="9" ss:Color="#5A6672"/><Alignment ss:Vertical="Center" ss:WrapText="1"/></Style>
+    <Style ss:ID="Bar"><Font ss:FontName="맑은 고딕" ss:Color="#0D6E5C" ss:Bold="1"/><Alignment ss:Vertical="Center"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E8EDF3"/></Borders></Style>
+  </Styles>`;
+  const tabs = sheets.map(sheet => {
+    const rows = Array.isArray(sheet.rows) ? sheet.rows : [];
+    const width = Math.max(1, ...rows.map(r => r.length));
+    const cols = Array.from({length:width}, (_,i) => {
+      const max = Math.max(8, ...rows.slice(0,120).map(r => String(r[i] == null ? '' : r[i]).length));
+      return `<Column ss:AutoFitWidth="0" ss:Width="${Math.min(260,Math.max(66,max*8))}"/>`;
+    }).join('');
+    const title = `<Row ss:Height="28"><Cell ss:MergeAcross="${Math.max(0,width-1)}" ss:StyleID="Title"><Data ss:Type="String">${xmlEsc(sheet.title || sheet.name)}</Data></Cell></Row>`;
+    const note = sheet.note ? `<Row><Cell ss:MergeAcross="${Math.max(0,width-1)}" ss:StyleID="Note"><Data ss:Type="String">${xmlEsc(sheet.note)}</Data></Cell></Row>` : '';
+    const body = rows.map((row,ri) => `<Row>${row.map((v,ci) => spreadsheetCell(v, ri===0 ? 'Header' : (sheet.barColumn===ci ? 'Bar' : null))).join('')}</Row>`).join('');
+    return `<Worksheet ss:Name="${xmlEsc(excelSheetName(sheet.name))}"><Table>${cols}${title}${note}${body}</Table><WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel"><FreezePanes/><FrozenNoSplit/><SplitHorizontal>3</SplitHorizontal><TopRowBottomPane>3</TopRowBottomPane><DoNotDisplayGridlines/></WorksheetOptions></Worksheet>`;
+  }).join('');
+  return `<?xml version="1.0" encoding="UTF-8"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet" xmlns:html="http://www.w3.org/TR/REC-html40">${styles}${tabs}</Workbook>`;
+}
+function downloadSpreadsheet(sheets, fileName){
+  const workbook = spreadsheetXml(sheets);
   const blob = new Blob(['\ufeff',workbook],{type:'application/vnd.ms-excel;charset=utf-8'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href=url; a.download=`경북_학생수_시뮬레이션_${sim.level}_${sim.year}.xls`;
+  a.href=url; a.download=fileName;
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   setTimeout(()=>URL.revokeObjectURL(url),0);
 }
+function currentBasisDescription(){
+  const mode = document.querySelector('input[name="basis-mode"]:checked').value;
+  if(mode==='sch'){
+    const m=document.querySelector('input[name="sch-basis"]:checked').value;
+    return m==='fixed' ? '학교 수·학급 수 유지' : m==='rate' ? '학생수 감소율 비례 축소' : `학교 수 ${document.getElementById('sch-rate').value}% 감축`;
+  }
+  const m=document.querySelector('input[name="cls-basis"]:checked').value;
+  return m==='base' ? '기준연도 학급당 학생 수 유지' : m==='pm'
+    ? `학급당 ${document.getElementById('cls-n').value}명 ± ${document.getElementById('cls-d').value}명`
+    : `학급당 ${document.getElementById('cls-g').value}명·학년당 ${document.getElementById('cls-c').value}학급`;
+}
+function simulatorSheets(){
+  const orderedExportRows = simExportRows.filter(r=>r.isTotal)
+    .concat(simExportRows.filter(r=>!r.isTotal).slice().sort((a,b)=>exportSigunguIndex(a.label)-exportSigunguIndex(b.label)));
+  const total = orderedExportRows[0];
+  const baseRows = [['지역','학생 수','학급 수','학교 수','학급당 평균 학생 수']]
+    .concat(orderedExportRows.map(r=>[r.label,r.base.stu,r.base.cls,r.base.sch,+r.perBase.toFixed(1)]));
+  const predRows = [['지역','예측 학생 수','감소율(%)','예측 학급 수','예측 학교 수','학급당 평균 학생 수']]
+    .concat(orderedExportRows.map(r=>[r.label,r.predStu,+((r.drop||0)*100).toFixed(1),r.projection.cls,r.projection.sch,+r.perPred.toFixed(1)]));
+  const maxDrop = Math.max(1,...orderedExportRows.slice(1).map(r=>Math.abs(r.drop||0)));
+  const visualRows = [['지역','2026 학생 수',`${sim.year} 학생 수`,'감소율(%)','변화 시각화']]
+    .concat(orderedExportRows.slice(1).map(r=>[r.label,r.base.stu,r.predStu,+((r.drop||0)*100).toFixed(1),'█'.repeat(Math.max(1,Math.round(Math.abs(r.drop||0)/maxDrop*20)))]));
+  const filters = [
+    ['항목','현재 설정'],['학교급',LEVEL_CFG[sim.level].full],['예측연도',sim.year],
+    ['인구감소지역',sim.decline===null?'전체':sim.decline==='Y'?'해당':'미해당'],['행정단위',sim.admin||'전체'],
+    ['직접 선택',sim.sigungu.size?[...sim.sigungu].join(', '):'전체'],['학교 규모',`${sim.minSize}명 이상 ~ ${sim.maxSize===2000?'제한 없음':sim.maxSize+'명 이하'}`],
+    ['산출 기준',currentBasisDescription()],['예측 한계','임시 감소율 모의값이며 출생 코호트·전입전출·지역 간 이동 미반영'],
+    ['학교 실적 출처','https://www.schoolinfo.go.kr'],['인구·장래인구 출처','https://kosis.kr']
+  ];
+  return [
+    {name:'요약',title:'경북 학생수 시뮬레이션 요약',note:'현재 화면의 다중 필터와 산출 기준을 적용한 결과입니다.',rows:[['지표','값'],['2026 학생 수',total?total.base.stu:0],[`${sim.year} 학생 수`,total?total.predStu:0],['학생 수 감소율(%)',total?+(total.drop*100).toFixed(1):0],['예측 학교 수',total?total.projection.sch:0],['예측 학급 수',total?total.projection.cls:0]]},
+    {name:'기준자료',title:'2026 기준자료',note:'시군 순서: 포항→경주→김천→안동→구미→영주→영천→상주→문경→경산→의성→청송→영양→영덕→청도→고령→성주→칠곡→예천→봉화→울진→울릉',rows:baseRows},
+    {name:'예측자료',title:`${sim.year} 예측자료`,note:'빨간 표시 대신 감소율 열의 부호와 값을 사용합니다.',rows:predRows},
+    {name:'변화시각화',title:'시군별 학생 수 감소 폭',note:'막대 길이는 현재 선택 결과 안에서의 상대적인 감소 폭입니다.',rows:visualRows,barColumn:4},
+    {name:'필터와산출기준',title:'조회 조건·산출 기준·출처',rows:filters}
+  ];
+}
+function exportSimXls(){
+  downloadSpreadsheet(simulatorSheets(),`경북_학생수_시뮬레이션_${sim.level}_${sim.year}.xls`);
+}
+function homeExportSheets(){
+  const keyword=(document.getElementById('home-search').value||'').trim();
+  const list=SCHOOLS.filter(s=>(!homeState.sel||s.s===homeState.sel.s)&&(homeState.level==='전체'||s.lv===homeState.level)&&(!keyword||s.name.includes(keyword)));
+  const levels=['유','초','중','고','특수'];
+  const summary=[['학교급','학교 수','학생 수','학급 수','교원 수']].concat(levels.map(lv=>{
+    const rows=list.filter(s=>s.lv===lv);
+    return [LEVEL_CFG[lv].full,rows.length,rows.reduce((a,s)=>a+(s.stu||0),0),rows.reduce((a,s)=>a+(s.cls||0),0),rows.reduce((a,s)=>a+(s.teach||0),0)];
+  }));
+  const regions=SIGUNGU.filter(sg=>!homeState.sel||sg.s===homeState.sel.s).slice().sort((a,b)=>exportSigunguIndex(a.s)-exportSigunguIndex(b.s)).map(sg=>{
+    const rows=list.filter(s=>s.s===sg.s);
+    return [sg.s,sg.name,sg.type,sg.decline?'해당':'미해당',rows.length,rows.reduce((a,s)=>a+(s.stu||0),0),rows.reduce((a,s)=>a+(s.sped||0),0)];
+  });
+  const schools=list.slice().sort((a,b)=>exportSigunguIndex(a.s)-exportSigunguIndex(b.s)||String(a.lv).localeCompare(String(b.lv),'ko')||a.name.localeCompare(b.name,'ko'));
+  return [
+    {name:'요약',title:'종합 대시보드 요약',note:`지역 ${homeState.sel?homeState.sel.name:'경북 전체'} · 학교급 ${homeState.level==='전체'?'전체':LEVEL_CFG[homeState.level].full} · 검색어 ${keyword||'없음'}`,rows:summary},
+    {name:'시군별분포',title:'시군별 학교·학생 분포',note:'인구감소지역은 행정안전부 지정 결과의 경북 15곳 기준입니다.',rows:[['시군','전체 명칭','행정단위','인구감소지역','학교 수','학생 수','특수학생 수']].concat(regions)},
+    {name:'학교목록',title:'현재 조건의 학교 목록',note:'자료 출처: 학교알리미·유치원알리미. 교원 수가 없는 유치원은 0으로 표시됩니다.',rows:[['시군','학교급','학교명','학생 수','특수학생 수','학급 수','교원 수','주소','공시시기']].concat(schools.map(s=>[s.s,LEVEL_CFG[s.lv]?.full||s.lv,s.name,s.stu||0,s.sped||0,s.cls||0,s.teach||0,s.addr||'',termLabel(s.term)||'2026 학교알리미']))}
+  ];
+}
+function statusExportSheets(){
+  const past=+yrPast.value, future=+yrFut.value;
+  const rows=[['학교급',`${past}년`,'2026년',`${future}년`,'증감','증감률(%)']];
+  const P=series(dsKind,past),N=series(dsKind,2026),F=series(dsKind,future);
+  [['초등학교','초'],['중학교','중'],['고등학교','고']].forEach(([label,k])=>rows.push([label,P[k],N[k],F[k],F[k]-P[k],+(100*(F[k]-P[k])/P[k]).toFixed(1)]));
+  const trend=[['연도','초등','중등','고등','합계']];
+  for(let y=2016;y<=2036;y++){const v=series(dsKind,y);trend.push([y,v.초,v.중,v.고,v.초+v.중+v.고]);}
+  return [
+    {name:'선택연도비교',title:dsKind==='pop'?'경북 학령인구 비교':'경북 학생 수 비교',note:'단위: 천 명',rows},
+    {name:'연도별추이',title:'2016~2036 연도별 추이',note:dsKind==='pop'?'2016~2025 주민등록인구, 2026~2036 장래인구추계':'학생 수의 미확보 연도는 앵커 선형 보간값',rows:trend},
+    {name:'출처와한계',title:'자료 출처와 해석 주의',rows:[['항목','내용'],['KOSIS','https://kosis.kr'],['학령인구','6~18세 인구, 실제 재학생 수와 다름'],['학생 수 장래값','내부 여러 해치 실적 확보 전 임시 보간값']]}
+  ];
+}
+function newsExportSheets(){
+  const state=window.dashboardNewsExport?window.dashboardNewsExport():{days:0,topic:'전체',items:[]};
+  const rows=[['발행일','주제','제목','요약','언론사','원문 링크']].concat(state.items.map(n=>[fmtDateForExport(n.pubDate),state.topic,n.title||'',n.description||'',n.source||n.press||'',n.originallink||n.link||'']));
+  return [{name:'뉴스클리핑',title:'학령인구 감소 뉴스 클리핑',note:`기간: ${state.days?`최근 ${state.days}일`:'전체'} · 주제: ${state.topic} · ${state.items.length}건`,rows}];
+}
+function fmtDateForExport(raw){const d=new Date(raw);return isNaN(d.getTime())?'':`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function multiExportSheets(){
+  const st=spedStats();
+  const regions=SIGUNGU.slice().sort((a,b)=>exportSigunguIndex(a.s)-exportSigunguIndex(b.s)).map(sg=>{const here=SCHOOLS.filter(s=>s.s===sg.s);const cls=here.filter(s=>['초','중','고'].includes(s.lv)).reduce((a,s)=>a+(s.sped||0),0);const sch=here.filter(s=>s.lv==='특수').reduce((a,s)=>a+(s.stu||0),0);return[sg.s,cls,sch,cls+sch];});
+  return [
+    {name:'요약',title:'특수교육 모니터링 요약',rows:[['지표','값'],['특수교육 대상자',st.total],['전체 학생 대비(%)',+(st.ratio*100).toFixed(1)],['특수학급을 둔 학교',st.withClass],['특수학교',st.schools],['특수학교 교원',st.teach]]},
+    {name:'시군별현황',title:'시군별 특수교육 대상자',note:'일반학교 특수학급 학생과 특수학교 학생을 구분합니다.',rows:[['시군','일반학교 특수학급','특수학교','합계']].concat(regions)},
+    {name:'자료상태',title:'자료 상태',rows:[['영역','상태','필요 자료'],['특수교육','학교알리미 2026 공시 실적','여러 해치 실적'],['다문화','미확보','교육기본통계 또는 경북교육청 내부자료']]}
+  ];
+}
+function currentViewExport(){
+  const names={home:'종합대시보드',status:'학령인구현황',sim:'학생수시뮬레이터',news:'뉴스클리핑',plan:'주요업무계획',multi:'특수교육모니터링',closed:'폐교활용현황'};
+  let sheets;
+  if(activeView==='home') sheets=homeExportSheets();
+  else if(activeView==='status') sheets=statusExportSheets();
+  else if(activeView==='sim') sheets=simulatorSheets();
+  else if(activeView==='news') sheets=newsExportSheets();
+  else if(activeView==='multi') sheets=multiExportSheets();
+  else if(activeView==='plan') sheets=[{name:'안내',title:'주요업무계획',rows:[['상태','내용'],['자료 미확보','경상북도교육청 학령인구 감소 대응 주요업무계획 원고를 받으면 게시·출력합니다.']]}];
+  else sheets=[{name:'안내',title:'폐교 활용 현황',rows:[['상태','내용'],['자료 미확보','폐교 재산 현황·활용 형태·주소 자료를 받으면 게시·출력합니다.']]}];
+  downloadSpreadsheet(sheets,`경북_${names[activeView]||'대시보드'}_${new Date().toISOString().slice(0,10)}.xls`);
+}
 document.getElementById('sim-export-xls').addEventListener('click', exportSimXls);
+document.getElementById('export-current').addEventListener('click', currentViewExport);
+document.getElementById('print-current').addEventListener('click',()=>{if(typeof window.print==='function')window.print();});
+document.getElementById('ai-check').addEventListener('click', async () => {
+  const status=document.getElementById('ai-status'), connection=document.getElementById('ai-connection');
+  status.textContent='서버 설정을 확인하는 중…';
+  try{
+    const res=await fetch('/api/data-status');
+    const data=await res.json();
+    const gemini=(data.services||[]).find(s=>s.id==='gemini');
+    if(!res.ok || !gemini) throw new Error('AI 서비스 상태를 읽지 못했습니다.');
+    connection.className='ai-connection '+(gemini.configured?'ok':'warn');
+    connection.textContent=gemini.configured
+      ? 'Cloudflare에서 Gemini 보안 키를 인식했습니다. 실제 생성은 무료 사용량 한도 안에서 실행됩니다.'
+      : '현재 배포본이 Gemini 보안 키를 인식하지 못했습니다. 저장 후 새 배포가 필요합니다.';
+    status.textContent=gemini.configured?'키 설정 확인 완료':'키 설정 미확인';
+  }catch(e){
+    connection.className='ai-connection warn'; connection.textContent=e.message||'연결 상태 확인 실패';
+    status.textContent='상태 확인 실패';
+  }
+});
 document.getElementById('ai-analyze').addEventListener('click', async () => {
-  const btn=document.getElementById('ai-analyze'), status=document.getElementById('ai-status'), out=document.getElementById('ai-output');
+  const btn=document.getElementById('ai-analyze'), status=document.getElementById('ai-status'), out=document.getElementById('ai-output'), connection=document.getElementById('ai-connection');
   btn.disabled=true; status.textContent='정책 검토안을 만드는 중…'; out.textContent='현재 조건의 집계값만 안전하게 전송하고 있습니다.';
   try{
     const res=await fetch('/api/ai-analysis',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:aiContext})});
     const data=await res.json();
     if(!res.ok || !data.text) throw new Error(data.error || 'AI 응답 오류');
     out.textContent=data.text; status.textContent=`${data.model || 'Gemini'} 분석 완료`;
+    connection.className='ai-connection ok'; connection.textContent='Gemini가 현재 집계값으로 정책 검토안을 생성했습니다.';
   }catch(e){
     out.textContent=localAiFallback(); status.textContent=`기본 요약으로 전환 · ${e.message || 'AI 연결 실패'}`;
+    connection.className='ai-connection warn'; connection.textContent=/무료 사용량|RESOURCE_EXHAUSTED|429/.test(e.message||'')
+      ? '키는 연결되어 있지만 Gemini 무료 사용량 한도에 도달했습니다.'
+      : '외부 AI 응답을 받지 못해 같은 집계값의 기본 요약을 표시했습니다.';
   }finally{ btn.disabled=false; }
 });
 
@@ -3821,21 +4105,27 @@ document.getElementById('ai-analyze').addEventListener('click', async () => {
    6. 용어 도움말 · 테마
    ========================================================= */
 (function(){
-  const openBtn=document.getElementById('glossary-toggle');
-  const closeBtn=document.getElementById('glossary-close');
-  const drawer=document.getElementById('glossary-drawer');
   const backdrop=document.getElementById('glossary-backdrop');
-  function setOpen(open){
-    if(open){ drawer.classList.add('open'); backdrop.classList.add('open'); }
-    else { drawer.classList.remove('open'); backdrop.classList.remove('open'); }
-    drawer.setAttribute('aria-hidden', String(!open));
-    openBtn.setAttribute('aria-expanded', String(open));
-    if(open) closeBtn.focus(); else openBtn.focus();
+  const pairs=[
+    {open:document.getElementById('guide-toggle'),close:document.getElementById('guide-close'),drawer:document.getElementById('guide-drawer')},
+    {open:document.getElementById('glossary-toggle'),close:document.getElementById('glossary-close'),drawer:document.getElementById('glossary-drawer')}
+  ];
+  function setOpen(pair,open,focus=true){
+    pairs.forEach(other=>{
+      const on=other===pair&&open;
+      if(on) other.drawer.classList.add('open'); else other.drawer.classList.remove('open');
+      other.drawer.setAttribute('aria-hidden',String(!on));
+      other.open.setAttribute('aria-expanded',String(on));
+    });
+    if(open) backdrop.classList.add('open'); else backdrop.classList.remove('open');
+    if(focus){if(open)pair.close.focus();else pair.open.focus();}
   }
-  openBtn.addEventListener('click',()=>setOpen(true));
-  closeBtn.addEventListener('click',()=>setOpen(false));
-  backdrop.addEventListener('click',()=>setOpen(false));
-  window.addEventListener('keydown',e=>{ if(e.key==='Escape' && drawer.getAttribute('aria-hidden')==='false') setOpen(false); });
+  pairs.forEach(pair=>{
+    pair.open.addEventListener('click',()=>setOpen(pair,true));
+    pair.close.addEventListener('click',()=>setOpen(pair,false));
+  });
+  backdrop.addEventListener('click',()=>{const open=pairs.find(p=>p.drawer.getAttribute('aria-hidden')==='false');if(open)setOpen(open,false,false);});
+  window.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const open=pairs.find(p=>p.drawer.getAttribute('aria-hidden')==='false');if(open)setOpen(open,false);});
 })();
 
 (function(){

@@ -165,6 +165,8 @@ check('실제 위치 지도 아래에도 현재 화면 학교 목록이 나타�
   byId['home-online-schools-wrap'].hidden === false &&
   byId['home-online-schools'].children.length === 120 &&
   /현재 화면/.test(byId['home-online-count'].textContent || ''));
+check('실제 위치 지도는 학생 수 선택 때 군집값을 학생 합계로 바꾼다',
+  /iconCreateFunction/.test(html) && /marker\.options\.studentCount/.test(html) && /metric-stu/.test(html));
 q('sgisMap=null;delete window.sop');
 q("homeState.sel=null;homeState.level='전체';renderTilemap()");
 check('학교 917곳 이상이 들어 있다', q('SCHOOLS.length') >= 917, '개수: ' + q('SCHOOLS.length'));
@@ -224,6 +226,8 @@ check('학교급마다 시군별 셈이 0 이 아니다', Object.values(lvTotals
   JSON.stringify(lvTotals));
 
 console.log('\n■ 시뮬레이터 정책 검토 기능');
+check('행정안전부 지정 경북 인구감소지역은 15곳이고 예천은 제외한다',
+  q('SIGUNGU.filter(sg=>sg.decline).length') === 15 && q("SIG_META['예천'].decline") === false);
 q("sim.sigungu=new Set(['영주']);sim.level='중';renderSim()");
 const yjMid = q("aggregate(SIGUNGU.find(sg=>sg.s==='영주'),'중').stu");
 check('시뮬레이터 전체 행이 현재 지역 필터를 따른다',
@@ -233,9 +237,29 @@ check('AI가 변화·위험·질문·추가자료 형식으로 정책 검토안�
   /학교 운영 검토 신호/.test(q('aiContext')) && /추가 확인자료/.test(q('aiContext')));
 check('현재 조건 비교표를 Excel xls로 저장할 수 있다',
   html.includes('id="sim-export-xls"') && /function exportSimXls/.test(html) && /\.xls`/.test(html));
+check('상세 Excel은 요약·기준·예측·시각화·산출기준 시트를 만든다',
+  (q('spreadsheetXml(simulatorSheets())').match(/<Worksheet /g)||[]).length===5 &&
+  /변화시각화/.test(q('spreadsheetXml(simulatorSheets())')));
+check('Excel 시군 행은 기능개선안의 표준 순서로 다시 정렬한다',
+  /EXPORT_SIGUNGU_ORDER\s*=\s*\['포항','경주','김천','안동','구미','영주','영천','상주','문경','경산','의성','청송','영양','영덕','청도','고령','성주','칠곡','예천','봉화','울진','울릉'\]/.test(html) &&
+  /orderedExportRows[\s\S]*exportSigunguIndex/.test(html));
+q("sim.sigungu=new Set();sim.decline=null;sim.admin=null;renderSim()");
+check('상세 Excel의 실제 행도 포항부터 울릉까지 표준 순서다',
+  q("simulatorSheets()[1].rows.slice(2).map(r=>r[0]).join(',')") === '포항,경주,김천,안동,구미,영주,영천,상주,문경,경산,의성,청송,영양,영덕,청도,고령,성주,칠곡,예천,봉화,울진,울릉');
+check('모든 메뉴에 현재 화면 인쇄와 Excel 출력 도구가 있다',
+  html.includes('id="export-current"') && html.includes('id="print-current"') && /function currentViewExport/.test(html));
+check('조회 조건을 지우지 않고 다중 필터를 교차 적용한다',
+  !/sim\.sigungu\.clear\(\);\s*syncSigChips\(\);\s*}\s*renderSim/.test(html) &&
+  /sim\.maxSize/.test(html) && html.includes('id="size-max"'));
+check('출처 없는 교육혁신선도지역 버튼 대신 자료 상태를 알린다',
+  !html.includes('data-f="innov"') && /공식 대상 명부 미확보/.test(html));
+check('AI 정책 검토 브리핑은 시뮬레이터 설명 뒤 맨 아래에 둔다',
+  html.indexOf('id="ai-briefing"') > html.indexOf('<b>계산 방식</b>'));
 check('가나다순 용어 도움말을 오른쪽 서랍으로 제공한다',
   html.includes('id="glossary-drawer"') && html.includes('id="glossary-toggle"') &&
   html.indexOf('<summary>교원 수</summary>') < html.indexOf('<summary>학령인구</summary>'));
+check('전체 작업을 설명하는 사용 안내 서랍을 제공한다',
+  html.includes('id="guide-drawer"') && html.includes('id="guide-toggle"') && /출력 방법/.test(html));
 q("sim.sigungu.clear();renderSim()");
 
 /* 같은 학교가 두 번 들어오는 것 — 굽는 스크립트가 «덧붙이기»만 하면 생깁니다.
@@ -336,8 +360,8 @@ check('외부 CDN·웹폰트를 부르지 않는다', externalHits.length === 0,
 
 const CODE_ONLY = html.replace(/\/\*[\s\S]*?\*\//g, '').replace(/<!--[\s\S]*?-->/g, '');
 const fetchTargets = [...CODE_ONLY.matchAll(/\bfetch\s*\(\s*(['"])([^'"]+)\1/g)].map(m=>m[2]);
-check('fetch는 같은 출처 AI 중계만 호출한다',
-  fetchTargets.length===1 && fetchTargets[0]==='/api/ai-analysis', fetchTargets.join(', '));
+check('fetch는 같은 출처 AI 분석·상태 중계만 호출한다',
+  fetchTargets.length===2 && fetchTargets.includes('/api/ai-analysis') && fetchTargets.includes('/api/data-status'), fetchTargets.join(', '));
 const senders = [
   [/XMLHttpRequest/,           'XMLHttpRequest'],
   [/navigator\.sendBeacon/,    'sendBeacon'],
@@ -372,6 +396,8 @@ check('기간 필터 단추에 기간이 붙어 있다',
   (html.match(/data-news-days="\d+"/g) || []).length === 3);
 check('기간 필터 단추가 실제로 걸러 준다',
   /querySelectorAll\('\[data-news-days\]'\)/.test(html) && /withinDays/.test(html));
+check('뉴스를 주간·월간·주제별로 필터링하고 출력한다',
+  html.includes('id="news-topic"') && /withinTopic/.test(html) && /function newsExportSheets/.test(html));
 check('몇 건인지 화면에 적는다', html.includes('id="news-count"'));
 /* 쪽 넘기기 — 한 쪽 20건(4열 × 5줄). 히스토리가 60건까지 쌓이므로 한 쪽에 다 넣으면 길어집니다. */
 check('한 쪽에 20건이다', /NEWS_PER_PAGE = 20/.test(html));
