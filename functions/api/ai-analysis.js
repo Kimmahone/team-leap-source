@@ -30,7 +30,9 @@ async function requestAnalysis(model, apiKey, prompt){
     upstream=await fetch('https://generativelanguage.googleapis.com/v1beta/interactions',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-goog-api-key':apiKey},
-      signal:AbortSignal.timeout(30000),
+      // 첫 모델이 응답하지 않을 때 화면이 오래 멈춘 것처럼 보이지 않도록 제한한다.
+      // 두 모델을 모두 시도해도 Pages 요청 제한 안에서 끝나도록 12초로 둔다.
+      signal:AbortSignal.timeout(12000),
       body:JSON.stringify({
         model,
         system_instruction:SYSTEM_PROMPT,
@@ -63,6 +65,8 @@ export async function onRequestPost(context){
     const model=MODELS[index];
     const result=await requestAnalysis(model,context.env.GEMINI_API_KEY,prompt);
     if(result.networkError){
+      // 시간 초과·일시적 연결 오류에는 다른 안정 모델을 한 번 시도한다.
+      if(index<MODELS.length-1) continue;
       return json({error:result.networkError?.name==='TimeoutError'?'분석 응답 시간이 초과되었습니다. 잠시 후 다시 시도하세요.':'분석 서비스에 연결하지 못했습니다.'},result.networkError?.name==='TimeoutError'?504:502);
     }
     const {upstream,data}=result;
