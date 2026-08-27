@@ -248,10 +248,15 @@ check('상세 Excel의 실제 행도 포항부터 울릉까지 표준 순서다'
   q("simulatorSheets()[1].rows.slice(2).map(r=>r[0]).join(',')") === '포항,경주,김천,안동,구미,영주,영천,상주,문경,경산,의성,청송,영양,영덕,청도,고령,성주,칠곡,예천,봉화,울진,울릉');
 check('모든 메뉴에 현재 화면 인쇄와 Excel 출력 도구가 있다',
   html.includes('id="export-current"') && html.includes('id="print-current"') && /function currentViewExport/.test(html));
-check('인쇄물에 전용 표제·바닥글과 A4 쪽 설정이 있다',
-  html.includes('class="print-letterhead print-only"') && html.includes('class="print-footer print-only"') && /@page\{size:A4 landscape/.test(html));
+check('인쇄물에 전용 표제와 A4 가로 쪽 설정이 있다',
+  html.includes('class="print-letterhead print-only"') && /@page\{size:A4 landscape/.test(html));
+check('본문을 덮던 고정 인쇄 꼬리말을 제거했다',
+  !html.includes('class="print-footer print-only"') && /\.print-footer\{display:none\s*!important\}/.test(html));
 check('긴 카드 전체를 한 쪽에 강제하지 않아 페이지 잘림을 막는다',
   !/\.card\{[^}]*break-inside:avoid/.test(html) && /thead\{display:table-header-group\}/.test(html));
+check('종합 대시보드 인쇄는 요약·지도·기준을 의미 단위로 쪽 나눔한다',
+  ['home-summary-card','home-news-card','home-kpi-card','home-map-card'].every(id=>html.includes(`id="${id}"`)) &&
+  /#home-map-card\{break-before:page/.test(html) && /#home-map-card \.criteria-guide\{break-before:page/.test(html));
 check('정책 검토안은 보고서 HTML과 별도 인쇄 기능을 제공한다',
   html.includes('id="ai-print"') && /function policyMarkdown/.test(html) && /function renderPolicyReport/.test(html) && html.includes('id="ai-print-report"'));
 check('일반 사용자 화면에 서비스 사업자·모델명이 드러나지 않는다',

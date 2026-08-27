@@ -573,9 +573,10 @@ table.data .hl{color:var(--brand);font-weight:800}
   .no-print,.sidebar,.top-tools,.glossary-drawer,.glossary-backdrop,.map-toolbar .chip,#home-reset,#sim-clear{display:none !important}
   .shell{display:block;position:relative;z-index:1}
   .main{padding:0;overflow:visible !important}
-  .print-letterhead{display:flex !important;align-items:flex-start;justify-content:space-between;border-bottom:2px solid #000;margin-bottom:6mm;padding-bottom:3mm}
-  .print-letterhead img{width:18mm;height:18mm;object-fit:contain}.print-letterhead h1{font-size:17pt}.print-letterhead p{margin:1mm 0 0;font-size:8.5pt;color:#333}
-  .print-footer{display:block !important;position:fixed;bottom:-10mm;left:0;right:0;border-top:1px solid #888;padding-top:2mm;text-align:right;font-size:7.5pt;color:#444}
+  .print-letterhead{display:grid !important;grid-template-columns:minmax(0,1fr) 15mm;align-items:center;column-gap:5mm;border-bottom:2px solid #000;margin-bottom:5mm;padding:0 0 3mm;width:100%;box-sizing:border-box}
+  .print-letterhead img{display:block;width:15mm;height:15mm;object-fit:contain;justify-self:end}.print-letterhead h1{font-size:16pt;line-height:1.2;margin:0}.print-letterhead p{margin:1mm 0 0;font-size:8.5pt;color:#333}
+  /* 고정 꼬리말은 Chromium이 다음 장의 본문 위에 반복해서 그립니다. 인쇄물에는 넣지 않습니다. */
+  .print-footer{display:none !important}
   .card{border:1px solid #999;box-shadow:none;margin-bottom:6mm;overflow:visible !important}
   .card + .card{margin-top:0}
   .view[hidden]{display:none !important}
@@ -584,7 +585,8 @@ table.data .hl{color:var(--brand);font-weight:800}
   .sim-tables{display:block}
   .panel{border:1px solid #999;margin-bottom:6mm}
   .panel.pred{border-top:3px solid #000}
-  h1,h2,h3,h4,.page-head,.print-keep{break-after:avoid;page-break-after:avoid}
+  .page-head{display:none !important}
+  h1,h2,h3,h4,.print-keep{break-after:avoid;page-break-after:avoid}
   table{break-inside:auto;page-break-inside:auto}thead{display:table-header-group}tfoot{display:table-footer-group}
   tr,.marker,.tile,.news-item,.criteria-guide-grid section,.ai-purpose-list span{break-inside:avoid;page-break-inside:avoid}
   .scroll-x,.src-box{overflow:visible !important}.src-box{break-inside:auto !important}.src-box summary{display:none}.src-box[open]{border:1px solid #999}
@@ -599,9 +601,29 @@ table.data .hl{color:var(--brand);font-weight:800}
   .tilemap{grid-template-columns:repeat(7,1fr);break-inside:avoid}
   .school-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3mm}
   .marker{min-width:0;padding:2mm}
-  .mapbox,.detail-map-box,.online-map{max-height:120mm;break-inside:avoid;page-break-inside:avoid}
+  .mapbox,.detail-map-box,.online-map{max-height:105mm;break-inside:avoid;page-break-inside:avoid}
   .news-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .criteria-guide{break-inside:avoid}.criteria-guide-grid{grid-template-columns:1fr 1fr}
+  /* 종합 대시보드는 의미 단위로 장을 나눠 지도·학교목록이 따로 떨어지지 않게 합니다. */
+  #home-summary-card,#home-news-card,#home-kpi-card{break-inside:avoid;page-break-inside:avoid;margin-bottom:4mm}
+  #home-summary-card,#home-news-card,#home-kpi-card{padding:3mm 4mm}
+  #home-summary-card .stat{padding:2mm 3mm}
+  #home-summary-card .stat-row{margin-bottom:1mm}
+  #home-summary-card h3{margin-top:3mm !important}
+  #home-summary-card .unit-note{margin-top:0}
+  #home-news-card .brief{padding:2.5mm 3mm}
+  #home-kpi-card .box{padding:2mm 3mm}
+  #home-map-card{break-before:page;page-break-before:always;border:0;padding:0;margin:0}
+  #home-map-card>.map-toolbar{break-after:avoid;page-break-after:avoid}
+  #home-map-card #home-online-map,#home-map-card #home-detail-map,#home-map-card #home-tilemap{height:112mm !important;max-height:112mm !important;overflow:hidden !important;box-sizing:border-box}
+  #home-map-card .mapbox svg,#home-map-card .detail-map-box svg{display:block;width:100% !important;height:100% !important;max-height:108mm !important}
+  #home-map-card .online-school-list{padding:2.5mm;margin-top:3mm;break-inside:avoid;page-break-inside:avoid}
+  #home-map-card .online-school-list .list-head{margin-bottom:2mm}
+  #home-map-card .school-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:2mm}
+  #home-map-card .marker{font-size:7.5pt;line-height:1.2;padding:1.5mm}
+  #home-map-card .criteria-guide{break-before:page;page-break-before:always;margin-top:0}
+  #home-map-card .src-box{margin-top:4mm}
+  #home-map-card .legend{break-inside:avoid;page-break-inside:avoid}
   .ai-output{padding:0;border:0}.policy-report h3{color:#000;border-left-color:#000}
   .dummy-banner{border:2px solid #000;color:#000;background:#fff;margin-bottom:6mm}
   .dummy-banner .tag{border:1px solid #000;background:#fff;color:#000}
@@ -695,7 +717,6 @@ table.data .hl{color:var(--brand);font-weight:800}
       </div>
       <img src="symbol1.jpg" alt="">
     </header>
-    <footer class="print-footer print-only" aria-hidden="true">경북 학령인구 데이터 플랫폼 · 화면의 기준일과 출처를 함께 확인해 주세요.</footer>
     <div class="top-tools no-print">
       <button type="button" class="guide-btn" id="guide-toggle" aria-expanded="false" aria-controls="guide-drawer">사용 안내</button>
       <button type="button" class="glossary-btn" id="glossary-toggle" aria-expanded="false" aria-controls="glossary-drawer">용어 도움말</button>
@@ -714,7 +735,7 @@ table.data .hl{color:var(--brand);font-weight:800}
     <div class="grid home">
       <!-- 좌측 요약 -->
       <div>
-        <div class="card">
+        <div class="card" id="home-summary-card">
           <h2>경북 학령인구 현황</h2>
           <div class="stat-row">
             <div class="stat"><div class="k">초등학교</div><div class="v">100</div><div class="u">천 명</div></div>
@@ -732,7 +753,7 @@ table.data .hl{color:var(--brand);font-weight:800}
           <div class="unit-note">2026년 · 단위 천 명</div>
         </div>
 
-        <div class="card">
+        <div class="card" id="home-news-card">
           <div style="display:flex;align-items:center;justify-content:space-between">
             <h2>주간 AI 뉴스 요약</h2>
             <span style="font-size:10.5px;background:var(--card-2);padding:2px 6px;border-radius:4px;color:var(--ink-3)">구울 때 갱신</span>
@@ -749,7 +770,7 @@ table.data .hl{color:var(--brand);font-weight:800}
           </div>
         </div>
 
-        <div class="card">
+        <div class="card" id="home-kpi-card">
           <h2>학령인구 지표</h2>
           <div class="kpi">
             <div class="box"><div class="k">학교당 평균 학생 수</div><div class="v" id="kpi-per-school">–</div></div>
@@ -762,7 +783,7 @@ table.data .hl{color:var(--brand);font-weight:800}
 
       <!-- 지도 -->
       <div>
-        <div class="card">
+        <div class="card" id="home-map-card">
           <h2>시군별 분포</h2>
           <div class="map-toolbar">
             <label class="sr-only" for="home-level">학교급</label>
