@@ -126,6 +126,7 @@ cp "index.html" "$OUT/index.html"
 mkdir -p "$OUT/dashboard"
 cp "$SRC_DASH/index.html" "$SRC_DASH/README.md" "$SRC_DASH/README.html" "$OUT/dashboard/"
 [ -f "$SRC_DASH/gbe-logo.png" ] && cp "$SRC_DASH/gbe-logo.png" "$OUT/dashboard/gbe-logo.png"
+[ -f "$SRC_DASH/symbol1.jpg" ] && cp "$SRC_DASH/symbol1.jpg" "$OUT/dashboard/symbol1.jpg"
 cp -R "$SRC_APPS" "$OUT/apps"
 
 # ── 1-b. 주간 뉴스를 대시보드에 «심습니다» ────────────────────────

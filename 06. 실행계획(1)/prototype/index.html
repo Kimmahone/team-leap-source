@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>경북 학령인구 데이터 플랫폼 · TEAM LEAP</title>
-<!-- Cloudflare Pages Function이 SGIS 지도 스크립트를 같은 출처에서 중계합니다.
-     로컬 파일·네트워크 장애 때는 이 요청이 실패해도 아래 오프라인 지도가 그대로 작동합니다. -->
+<!-- 지도 스크립트는 같은 출처의 서버 경로를 통해 불러옵니다.
+     로컬 파일·네트워크 장애 때는 이 요청이 실패해도 아래 간편 지도가 그대로 작동합니다. -->
 <link rel="stylesheet" href="/api/sgis-map-css">
 <script src="/api/sgis-map"></script>
 <style>
@@ -123,6 +123,11 @@ body{
   line-height:1.55;
   -webkit-text-size-adjust:100%;
 }
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:url("symbol1.jpg") center 52%/430px auto no-repeat;
+  opacity:.026;
+}
 h1,h2,h3,h4{margin:0;font-weight:800;letter-spacing:-.025em}
 button{font-family:inherit;font-size:inherit;cursor:pointer}
 a{color:var(--brand)}
@@ -150,7 +155,7 @@ a{color:var(--brand)}
 .dummy-banner .note{font-weight:400}
 
 /* ---------- 레이아웃 ---------- */
-.shell{display:flex;min-height:calc(100vh - 39px)}
+.shell{display:flex;min-height:calc(100vh - 39px);position:relative;z-index:1}
 .sidebar{
   width:230px;flex:0 0 230px;background:var(--card);
   border-right:1px solid var(--line);display:flex;flex-direction:column;
@@ -460,8 +465,22 @@ table.data .hl{color:var(--brand);font-weight:800}
 @media print{.news-pager{display:none}}
 @media (max-width:1080px){.news-grid{grid-template-columns:repeat(2, 1fr);}}
 @media (max-width:600px){.news-grid{grid-template-columns:1fr;}}
-.ai-output{white-space:pre-wrap;word-break:keep-all;min-height:96px;margin-top:12px;padding:14px;
-  border:1px solid var(--line);border-radius:8px;background:var(--bg);font:inherit;line-height:1.75;color:var(--ink)}
+.ai-output{word-break:keep-all;min-height:96px;margin-top:12px;padding:22px 24px;
+  border:1px solid var(--line);border-radius:10px;background:var(--card);font:inherit;line-height:1.75;color:var(--ink)}
+.policy-report{max-width:900px;margin:0 auto}
+.policy-report .report-cover{border-bottom:3px double var(--line);padding-bottom:15px;margin-bottom:20px}
+.policy-report .report-label{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--brand);text-transform:uppercase}
+.policy-report h2{font-size:22px;margin-top:5px}.policy-report h3{font-size:15px;color:var(--brand);margin:22px 0 8px;padding-left:9px;border-left:3px solid var(--brand)}
+.policy-report p{margin:7px 0}.policy-report ul,.policy-report ol{margin:7px 0 13px;padding-left:22px}
+.policy-report li{margin:4px 0}.policy-report code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg);padding:1px 4px;border-radius:3px}
+.policy-report .report-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:11.5px;color:var(--ink-3)}
+.policy-report .report-note{margin-top:22px;border-top:1px solid var(--line);padding-top:10px;color:var(--ink-3);font-size:11px}
+.criteria-guide{margin:13px 0 4px;padding:14px;border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:8px;background:var(--bg)}
+.criteria-guide h3{font-size:14px;margin-bottom:7px}.criteria-guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.criteria-guide-grid section{border:1px solid var(--line-2);border-radius:7px;background:var(--card);padding:10px 11px;font-size:11.5px;line-height:1.65}
+.criteria-guide-grid strong{display:block;color:var(--brand);font-size:12.5px;margin-bottom:3px}
+.criteria-guide .criteria-warning{margin:9px 0 0;color:var(--ink-2);font-size:11.5px;line-height:1.65}
+.tag-size{color:var(--brand);border-color:var(--brand);background:var(--brand-pale)}
 .ai-briefing{margin-top:14px;border:2px solid var(--brand);background:linear-gradient(135deg,var(--brand-pale),var(--card) 68%);position:relative;overflow:hidden}
 .ai-briefing::after{content:"AI";position:absolute;right:18px;top:5px;font-size:54px;font-weight:900;color:var(--brand);opacity:.06;pointer-events:none}
 .ai-kicker{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 9px;background:var(--brand);color:var(--leap-on-fill);font-size:11px;font-weight:800;margin-bottom:8px}
@@ -547,35 +566,55 @@ table.data .hl{color:var(--brand);font-weight:800}
     --over:#000; --fit:#000; --under:#000;
     --over-bg:#fff; --fit-bg:#fff; --under-bg:#fff;
   }
-  @page{margin:14mm}
-  body{font-size:10pt;background:#fff}
+  @page{size:A4 landscape;margin:12mm 11mm 15mm}
+  html,body{height:auto !important;overflow:visible !important}
+  body{font-size:9.5pt;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body::before{z-index:0;background-size:300px auto;opacity:.045}
   .no-print,.sidebar,.top-tools,.glossary-drawer,.glossary-backdrop,.map-toolbar .chip,#home-reset,#sim-clear{display:none !important}
-  .shell{display:block}
-  .main{padding:0}
-  .card{border:1px solid #999;box-shadow:none;break-inside:avoid;page-break-inside:avoid;margin-bottom:8mm}
+  .shell{display:block;position:relative;z-index:1}
+  .main{padding:0;overflow:visible !important}
+  .print-letterhead{display:flex !important;align-items:flex-start;justify-content:space-between;border-bottom:2px solid #000;margin-bottom:6mm;padding-bottom:3mm}
+  .print-letterhead img{width:18mm;height:18mm;object-fit:contain}.print-letterhead h1{font-size:17pt}.print-letterhead p{margin:1mm 0 0;font-size:8.5pt;color:#333}
+  .print-footer{display:block !important;position:fixed;bottom:-10mm;left:0;right:0;border-top:1px solid #888;padding-top:2mm;text-align:right;font-size:7.5pt;color:#444}
+  .card{border:1px solid #999;box-shadow:none;margin-bottom:6mm;overflow:visible !important}
   .card + .card{margin-top:0}
   .view[hidden]{display:none !important}
   /* 인쇄에서는 「지금 보고 있는 화면」만 나갑니다 */
   .sim-wrap,.grid.home{display:block}
   .sim-tables{display:block}
-  .panel{border:1px solid #999;margin-bottom:6mm;break-inside:avoid}
+  .panel{border:1px solid #999;margin-bottom:6mm}
   .panel.pred{border-top:3px solid #000}
-  table.data{font-size:9.5pt}
+  h1,h2,h3,h4,.page-head,.print-keep{break-after:avoid;page-break-after:avoid}
+  table{break-inside:auto;page-break-inside:auto}thead{display:table-header-group}tfoot{display:table-footer-group}
+  tr,.marker,.tile,.news-item,.criteria-guide-grid section,.ai-purpose-list span{break-inside:avoid;page-break-inside:avoid}
+  .scroll-x,.src-box{overflow:visible !important}.src-box{break-inside:auto !important}.src-box summary{display:none}.src-box[open]{border:1px solid #999}
+  table.data{font-size:8.5pt;table-layout:fixed}
   table.data th,table.data td{border:1px solid #999}
   table.data .down::after{content:" ▼"}      /* 색을 못 쓰니 기호로 */
   table.data .hl::after{content:" ◆"}
-  .bars{height:150px}
+  .bars{height:125px;break-inside:avoid}
   .seg{border:1px solid #666}
   .marker{border:1px solid #999;border-left:4px solid #000;break-inside:avoid}
   .tile{border:1px solid #999}
+  .tilemap{grid-template-columns:repeat(7,1fr);break-inside:avoid}
+  .school-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3mm}
+  .marker{min-width:0;padding:2mm}
+  .mapbox,.detail-map-box,.online-map{max-height:120mm;break-inside:avoid;page-break-inside:avoid}
+  .news-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .criteria-guide{break-inside:avoid}.criteria-guide-grid{grid-template-columns:1fr 1fr}
+  .ai-output{padding:0;border:0}.policy-report h3{color:#000;border-left-color:#000}
   .dummy-banner{border:2px solid #000;color:#000;background:#fff;margin-bottom:6mm}
   .dummy-banner .tag{border:1px solid #000;background:#fff;color:#000}
   .legend i{border:1px solid #000}
   a[href^="http"]::after{content:" (" attr(href) ")";font-size:8pt;color:#333}
   .print-only{display:block !important}
+  body.print-ai-only .shell{display:none !important}
+  body.print-ai-only #ai-print-report{display:block !important;position:relative;z-index:1}
+  body.print-ai-only::before{background-size:250px auto;opacity:.05}
 }
 .print-only{display:none}
 </style>
+<style id="print-page-mode"></style>
 </head>
 <body>
 <div id="custom-school-tooltip" class="custom-school-tooltip"></div>
@@ -591,7 +630,7 @@ table.data .hl{color:var(--brand);font-weight:800}
     <details><summary>교원 수</summary><div>학교알리미 공시의 교원 현황을 학교별로 합산한 값입니다. 현재 전체 KPI는 유치원 교원을 제외합니다.<span class="source">출처: 학교알리미 공시</span></div></details>
     <details><summary>인구감소지역</summary><div>인구·재정·지역 여건 등을 종합해 행정안전부가 지정한 지역입니다. 2021년 10월 처음 지정하며 지정 주기는 5년입니다. 경북은 고령·문경·봉화·상주·성주·안동·영덕·영양·영주·영천·울릉·울진·의성·청도·청송 15곳입니다.<span class="source">출처: 행정안전부 인구감소지역 지정 결과(89개)</span></div></details>
     <details><summary>장래 학생수</summary><div>선택한 연도까지 시군·학교급별 임시 감소율을 적용한 모의값입니다. 출생 코호트와 전입·전출을 반영한 확정 예측이 아니므로 정책 결정의 단독 근거로 사용하면 안 됩니다.<span class="source">향후 출생아수·과거 학년별 실적·이동자료로 코호트 예측 예정</span></div></details>
-    <details><summary>적정규모학교</summary><div>학생 수와 소재지 기준에 따라 교육과정 운영 여건을 검토하기 위한 분류입니다. 학교 통폐합을 자동 결정하는 기준이 아니라 검토 신호입니다.<span class="source">출처: 2026년 경상북도교육청 적정규모 학교 육성 계획(내부 원문 확인 필요)</span></div></details>
+    <details><summary>적정규모학교</summary><div>추가자료의 기능개선안은 학생 수 기준으로 최소규모 15명 이하, 소규모 100명 이하, 적정규모 참고선을 동 60명 이상·읍면 30명 이상으로 제시하며, 겹치면 적정규모를 우선합니다. 학급당 학생 수의 과밀 여부와는 별개이고, 학교 통폐합을 자동 결정하는 기준도 아닙니다.<span class="source">출처: 경북 학령인구 시각화 대시보드 기능개선(안). 2026 적정규모학교 육성 계획 원문·대상학교표는 추가 확인 필요</span></div></details>
     <details><summary>초등학교</summary><div>초등 보통교육을 실시하는 6년제 학교입니다. 이 화면의 학교·학생·학급 값은 학교알리미 공시 자료를 사용합니다.<span class="source">출처: 초·중등교육법, 학교알리미</span></div></details>
     <details><summary>학생 수</summary><div>해당 학교에 재학 중인 학생을 학교별·학교급별로 합산한 값입니다. 학령인구와는 범위가 다릅니다.<span class="source">출처: 학교알리미 2026 공시</span></div></details>
     <details><summary>학령인구</summary><div>이 대시보드에서는 초·중·고교 학령에 해당하는 6~18세 인구를 뜻합니다. 실제 재학생 수와 같지 않습니다.<span class="source">출처: KOSIS 주민등록인구 및 장래인구추계</span></div></details>
@@ -649,6 +688,14 @@ table.data .hl{color:var(--brand);font-weight:800}
   </nav>
 
   <main class="main">
+    <header class="print-letterhead print-only" aria-hidden="true">
+      <div>
+        <h1 id="print-report-title">경북 학령인구 데이터 플랫폼</h1>
+        <p id="print-report-subtitle">현재 조회 조건을 반영한 출력물</p>
+      </div>
+      <img src="symbol1.jpg" alt="">
+    </header>
+    <footer class="print-footer print-only" aria-hidden="true">경북 학령인구 데이터 플랫폼 · 화면의 기준일과 출처를 함께 확인해 주세요.</footer>
     <div class="top-tools no-print">
       <button type="button" class="guide-btn" id="guide-toggle" aria-expanded="false" aria-controls="guide-drawer">사용 안내</button>
       <button type="button" class="glossary-btn" id="glossary-toggle" aria-expanded="false" aria-controls="glossary-drawer">용어 도움말</button>
@@ -758,13 +805,28 @@ table.data .hl{color:var(--brand);font-weight:800}
             <div class="map-toolbar">
               <strong id="home-detail-title" style="font-size:15px"></strong>
               <button type="button" class="chip" id="color-by-level" aria-pressed="true">학교급별 색상</button>
-              <button type="button" class="chip" id="color-by-density" aria-pressed="false">과밀·적정·과소 색상</button>
+              <button type="button" class="chip" id="color-by-density" aria-pressed="false">학급 밀도 참고</button>
             </div>
             <div id="home-detail-map" class="detail-map-box" style="margin-bottom:10px"></div>
             <div id="home-schools" class="school-grid"></div>
           </div>
 
           <div class="legend" id="home-legend"></div>
+
+          <section class="criteria-guide" aria-labelledby="criteria-guide-title">
+            <h3 id="criteria-guide-title">판정 기준 설명 — 학교 규모와 학급 밀도는 서로 다른 지표입니다</h3>
+            <div class="criteria-guide-grid">
+              <section>
+                <strong>① 학교 전체 규모(학생 수)</strong>
+                최소규모는 15명 이하, 소규모는 100명 이하입니다. 적정규모 참고선은 동 지역 60명 이상, 읍·면 지역 30명 이상이며, 기준이 겹치면 적정규모를 우선합니다. 이 값은 통폐합을 자동 결정하는 기준이 아니라 정책 검토용 참고 분류입니다.
+              </section>
+              <section>
+                <strong>② 학급 밀도(학생 수 ÷ 학급 수)</strong>
+                학교급·소재지별 학급당 상한을 넘는지 참고합니다. 현재 확보 문서에는 모든 학교급에 공통으로 적용할 공식 ‘과소 학급’ 하한이 없으므로, 화면은 <b>과밀 기준 초과</b>와 <b>기준 이내</b>만 표시합니다.
+              </section>
+            </div>
+            <p class="criteria-warning"><b>왜 학생 수가 많은 학교가 서로 다르게 보이나요?</b> 학교 전체 학생 수가 같아도 학급 수가 다르면 학급당 학생 수가 달라집니다. 따라서 학교 전체 규모가 적정규모이면서 학급 밀도는 과밀 기준을 넘을 수 있습니다. 2026년 공식 적정규모학교 육성 계획의 대상학교표·학급편성 기준 원문을 받으면 이 설명과 기준값을 최종 확정해야 합니다.</p>
+          </section>
 
           <!-- ★ 자료 출처와 «언제 자료인가» 〔2026. 8. 12.〕
                공시 자료는 실제 운영과 다를 수 있습니다. 실제로 포항양덕초등학교병설유치원은
@@ -806,10 +868,10 @@ table.data .hl{color:var(--brand);font-weight:800}
                   <td>학교알리미 학교별 공시</td>
                 </tr>
                 <tr>
-                  <td><b>과밀·적정·과소 기준</b></td>
-                  <td>초·중·유 — 경북교육청 2026 학급편성 기준<br>고 — 교육부 과밀학급 기준(28명)<br>특수 — 장애인 등에 대한 특수교육법 제27조</td>
-                  <td>2026학년도</td>
-                  <td>과소 기준 일부는 <b>우리 잠정값</b>입니다<br>(꼬리표에 마우스를 올리면 근거가 나옵니다)</td>
+                  <td><b>학교 규모·학급 밀도 참고 기준</b></td>
+                  <td>추가자료의 기능개선안·적정규모학교 육성 업무 매뉴얼·교육부 소규모학교 정책자료</td>
+                  <td>2026학년도 참고</td>
+                  <td>근거 없는 과소 판정은 제거했습니다.<br>공식 대상학교표·최종 기준 원문은 <b>추가 확인 필요</b></td>
                 </tr>
                 <tr>
                   <td>시군 경계</td>
@@ -1168,7 +1230,7 @@ table.data .hl{color:var(--brand);font-weight:800}
         </div>
 
         <div class="card ai-briefing" id="ai-briefing">
-          <span class="ai-kicker">Gemini 3.7 Flash · 정책 검토 보조</span>
+          <span class="ai-kicker">정책 검토 보조</span>
           <h2>AI 정책 검토 브리핑</h2>
           <p class="ai-purpose"><b>무엇을 하나요?</b> 지금 선택한 지역·학교급·예측연도의 집계값을 읽고, 회의에서 먼저 확인할 정책 쟁점을 초안으로 정리합니다. 정책을 자동 결정하거나 미래를 확정 예측하는 기능은 아닙니다.</p>
           <div class="ai-purpose-list" aria-label="AI 분석 결과 구성">
@@ -1176,8 +1238,9 @@ table.data .hl{color:var(--brand);font-weight:800}
           </div>
           <div class="ai-connection" id="ai-connection">연결 상태를 확인하지 않았습니다.</div>
           <div class="ai-context-preview" id="ai-context-preview">현재 조건을 계산하는 중입니다.</div>
-          <button type="button" class="chip" id="ai-check">AI 연결 상태 확인</button>
+          <button type="button" class="chip" id="ai-check">분석 서비스 확인</button>
           <button type="button" class="chip" id="ai-analyze">이 결과로 정책 검토안 만들기</button>
+          <button type="button" class="chip" id="ai-print" disabled>정책 검토안 인쇄</button>
           <span id="ai-status" role="status" aria-live="polite" style="margin-left:8px;color:var(--ink-3);font-size:12px"></span>
           <div id="ai-output" class="ai-output" aria-live="polite">아직 분석하지 않았습니다. 실행하면 변화 요약, 위험과 한계, 정책 검토 질문, 추가 확인자료가 여기에 표시됩니다.</div>
           <p style="margin:9px 0 0;color:var(--ink-3);font-size:11.5px;line-height:1.55">개별 학생·교직원 정보는 보내지 않고 화면에 표시된 집계값만 전송합니다. 무료 사용량이 끝나거나 연결이 실패하면 같은 집계값의 기본 요약으로 전환합니다.</p>
@@ -1285,6 +1348,8 @@ table.data .hl{color:var(--brand);font-weight:800}
 
   </main>
 </div>
+
+<article id="ai-print-report" class="standalone-report print-only" aria-hidden="true"></article>
 
 <script>
 'use strict';
@@ -2609,44 +2674,22 @@ function schoolsOf(sgShort, lv){
   SCHOOL_CACHE[key]=out; return out;
 }
 /* =========================================================
-   과밀 · 적정 · 과소 — 학교급마다 기준이 다릅니다
+   학교 전체 규모와 학급 밀도를 분리합니다.
    ---------------------------------------------------------
-   ★ 〔2026. 8. 12.〕 예전에는 **두 갈래**뿐이었습니다 —
-       초등학교 15~25명, 그 밖에 전부 18~28명.
-     그래서 **특수학교가 전부 「과소」**로 나왔습니다. 학급당 5~7명인데
-     18명 밑이면 과소로 셌기 때문입니다. 그런데 특수학교는 **법으로**
-     학급당 4~7명입니다 — 그것이 «정상»이지 과소가 아닙니다.
-     유치원도 초·중·고 잣대로 재고 있었습니다.
+   추가자료의 기능개선안은 학생 수 기준으로 최소규모(15명 이하),
+   소규모(100명 이하), 적정규모 참고선(동 60명 이상·읍면 30명 이상)을
+   제시하며, 중복 시 적정규모를 우선하라고 합니다.
 
-   위쪽 선(과밀)은 **근거가 있습니다.** 아래쪽 선(과소)은 법에 없는 것이 많아
-   **우리가 정한 잠정값**이고, 화면이 그렇게 말합니다.
-
-   ┌ 학교급 │ 과밀 선 ────────────────── │ 근거
-   │ 초     │ 동 25 · 읍면 21            │ 경북 2026 학급편성 기준
-   │ 중     │ 동 27 · 읍면 26            │ 경북 2026 학급편성 기준
-   │ 고     │ 28                         │ 교육부 과밀학급 기준(경북 별도 공표 없음)
-   │ 유     │ 24                         │ 경북 2026 유치원 기준 혼합반 20~24
-   │ 특수   │ 7                          │ 장애인등에대한특수교육법 제27조(고 7·초중 6·유 4)
-   └────────┴────────────────────────────┘
-
-   ※ 유치원은 연령별(3세 16~18 · 4세 20~22 · 5세 24~26 · 혼합 20~24),
-     특수학교는 과정별(유 4 · 초중 6 · 고 7)로 기준이 갈립니다. 우리가 아는 것은
-     **학교 평균**뿐이므로 «가장 너그러운 쪽»을 씁니다 — 그래야 아닌 것을
-     과밀이라고 하지 않습니다. 그 사실도 화면에 적습니다.
+   반면 아래 DENSITY_STD는 학생 수 ÷ 학급 수의 상한 참고선입니다.
+   추가자료에는 모든 학교급의 공식 과소 하한이 없으므로 임의 하한과
+   「과소」 판정을 삭제합니다. 상한 원문도 최종 확인 전인 참고값입니다.
    ========================================================= */
 const DENSITY_STD = {
-  초:   { over:{동:25, 읍면:21}, under:6,    overSrc:'경북 2026 학급편성 기준 (동 25 · 읍면 21)',
-          underSrc:'경북 복식학급 편성 기준 (두 학년 6명)' },
-  중:   { over:{동:27, 읍면:26}, under:10,   overSrc:'경북 2026 학급편성 기준 (동 27 · 읍면 26)',
-          underSrc:'잠정값 — 근거 자료 없음' },
-  고:   { over:{동:28, 읍면:28}, under:10,   overSrc:'교육부 과밀학급 기준 28명 (경북 별도 공표 없음)',
-          underSrc:'잠정값 — 근거 자료 없음' },
-  유:   { over:{동:24, 읍면:24}, under:5,    overSrc:'경북 2026 유치원 학급편성 기준 (혼합반 20~24)',
-          underSrc:'잠정값 — 한 학급이 한 손에 꼽히는 수' },
-  /* 특수학교는 **과소를 판단하지 않습니다.** 법이 정한 것은 «넘지 마라»는 상한이고
-     하한은 없습니다. 학급당 5명은 모자란 것이 아니라 그렇게 하라는 것입니다. */
-  특수: { over:{동:7, 읍면:7},   under:null, overSrc:'장애인 등에 대한 특수교육법 제27조 (고 7 · 초중 6 · 유 4)',
-          underSrc:null }
+  초:   { over:{동:25, 읍면:21}, under:null, overSrc:'현재 저장소의 2026 학급편성 기준 메모 — 공식 원문 최종 확인 필요' },
+  중:   { over:{동:27, 읍면:26}, under:null, overSrc:'현재 저장소의 2026 학급편성 기준 메모 — 공식 원문 최종 확인 필요' },
+  고:   { over:{동:28, 읍면:28}, under:null, overSrc:'현재 저장소의 과밀학급 참고선 28명 — 경북 공식 원문 확인 필요' },
+  유:   { over:{동:24, 읍면:24}, under:null, overSrc:'현재 저장소의 유치원 혼합반 참고선 — 공식 원문 확인 필요' },
+  특수: { over:{동:7, 읍면:7},   under:null, overSrc:'장애인 등에 대한 특수교육법 제27조의 과정별 상한 중 최대값' }
 };
 
 /* 읍·면인가 동인가 — 초·중은 기준이 다릅니다.
@@ -2661,10 +2704,18 @@ function densityOf(lv, perClass, area){
   const std = DENSITY_STD[lv];
   if (!std || !isFinite(perClass) || perClass <= 0) return 'fit';
   if (perClass > std.over[area === '읍면' ? '읍면' : '동']) return 'over';
-  if (std.under != null && perClass <= std.under) return 'under';
   return 'fit';
 }
-const DENSITY_LABEL = {over:'과밀', fit:'적정', under:'과소'};
+const DENSITY_LABEL = {over:'과밀 기준 초과', fit:'기준 이내'};
+
+function schoolSizeOf(sc){
+  const students = Number(sc.stu) || 0;
+  const appropriate = students >= (areaOf(sc) === '읍면' ? 30 : 60);
+  if(appropriate) return {key:'appropriate',label:'적정규모 참고'};
+  if(students <= 15) return {key:'minimum',label:'최소규모 참고'};
+  if(students <= 100) return {key:'small',label:'소규모 참고'};
+  return {key:'unclassified',label:'규모 기준 미분류'};
+}
 
 /* ── 공시 시기가 낡았는가 ──────────────────────────────────────────
    ★ 〔2026. 8. 12.〕 유치원알리미는 **유치원마다 공시 시기가 다릅니다.**
@@ -2698,9 +2749,9 @@ function densityWhy(lv, area){
   const std = DENSITY_STD[lv];
   if (!std) return '';
   const hi = std.over[area === '읍면' ? '읍면' : '동'];
-  return `${lv} · ${area === '읍면' ? '읍·면' : '동'} 기준: 학급당 ${hi}명 초과면 과밀` +
-    (std.under != null ? ` · ${std.under}명 이하면 과소` : ' · 과소는 판단하지 않습니다(법정 상한만 있음)') +
-    `\n과밀 근거: ${std.overSrc}` + (std.underSrc ? `\n과소 근거: ${std.underSrc}` : '');
+  return `${lv} · ${area === '읍면' ? '읍·면' : '동'} 참고: 학급당 ${hi}명 초과면 과밀 기준 초과` +
+    '\n공식 과소 하한이 없어 과소 판정은 하지 않습니다.' +
+    `\n근거 상태: ${std.overSrc}`;
 }
 const fmt = n => n.toLocaleString('ko-KR');
 
@@ -2774,6 +2825,7 @@ function createSchoolCard(s, colorBy){
   const per = s.stu / s.cls;
   const area = areaOf(s);
   const d = densityOf(sLv, per, area);
+  const size = schoolSizeOf(s);
   const el = document.createElement('div');
   el.className = 'marker';
   el.style.borderLeftColor = colorBy === 'density' ? densColor(d) : lvColor(sLv);
@@ -2781,7 +2833,8 @@ function createSchoolCard(s, colorBy){
   el.innerHTML = `<span class="nm">${htmlEsc(s.name)}</span>
     <span class="num">${fmt(s.stu)}</span><span style="color:var(--ink-3)">(${fmt(s.sped || 0)})</span>
     <span class="lv">${htmlEsc(LEVEL_CFG[sLv]?.full || sLv)}${s.est ? ' · 추정' : ''}</span>
-    <span class="tag tag-${d}" title="${htmlEsc(densityWhy(sLv, area))}">${DENSITY_LABEL[d]}</span>` +
+    <span class="tag tag-${d}" title="${htmlEsc(densityWhy(sLv, area))}">${DENSITY_LABEL[d]}</span>
+    <span class="tag tag-size" title="학생 수 기준 참고 분류 · 동 60명 이상/읍면 30명 이상 적정규모 우선 · 15명 이하 최소규모 · 100명 이하 소규모">${htmlEsc(size.label)}</span>` +
     (stale ? ` <span class="tag tag-stale" title="${htmlEsc(stale.why)}">${htmlEsc(stale.label)}</span>` : '');
   bindSchoolTooltip(el, s);
   return el;
@@ -3491,17 +3544,14 @@ function renderDetail(){
 
   document.getElementById('home-legend').innerHTML = (homeState.colorBy==='level'
     ? `<span>${lv==='초'?'●':lv==='중'?'▲':'■'} ${LEVEL_CFG[lv].full}</span>`
-    /* 〔2026. 8. 12.〕 예전에는 「분류 기준은 잠정값」 한 마디였습니다.
-       이제 **학교급마다 기준이 다르므로** 지금 보고 있는 학교급의 기준을 그대로 적습니다. */
-    : `<span><i style="background:var(--over)"></i>과밀</span><span><i style="background:var(--fit)"></i>적정</span>` +
-      (lv !== '특수' ? `<span><i style="background:var(--under)"></i>과소</span>` : '') +
+    : `<span><i style="background:var(--over)"></i>과밀 기준 초과</span><span><i style="background:var(--fit)"></i>기준 이내</span>` +
       `<span style="color:var(--ink-3)" title="${(lv === '전체' ? '' : densityWhy(lv, '동')).replace(/"/g, '&quot;')}">${
         lv === '전체'
-          ? '기준은 학교급마다 다릅니다 — 학교급을 고르면 그 기준이 나옵니다'
+          ? '학급 밀도 상한은 학교급마다 다릅니다 — 공식 과소 하한이 없어 과소 판정은 하지 않습니다'
           : (DENSITY_STD[lv]
-              ? `${lv}: 학급당 ${DENSITY_STD[lv].over.동}명 초과 과밀` +
+              ? `${lv}: 학급당 ${DENSITY_STD[lv].over.동}명 초과 시 과밀 기준 초과` +
                 (DENSITY_STD[lv].over.읍면 !== DENSITY_STD[lv].over.동 ? ` (읍·면 ${DENSITY_STD[lv].over.읍면}명)` : '') +
-                (DENSITY_STD[lv].under != null ? ` · ${DENSITY_STD[lv].under}명 이하 과소` : ' · 과소 없음(법정 상한만)')
+                ' · 과소 판정 없음'
               : '')
       }</span>`)
     + `<span style="color:var(--ink-3)">표기: 학생수(특수학급 학생수) · 학교 마우스 호버 시 <b>1~6학년별 세부 팝업</b></span>`
@@ -3915,7 +3965,7 @@ function renderSim(){
 }
 
 function localAiFallback(){
-  return `기본 정책 검토 요약\n\n[핵심 변화]\n${aiContext}\n\n[정책 검토 질문]\n- 현재 학교·학급 운영 여건에서 이 감소 폭을 감당할 수 있는가?\n- 통학거리, 교육과정 선택권, 지역 간 이동을 함께 검토했는가?\n\n[추가 확인자료]\n- 출생 코호트, 전입·전출, 읍면동별 학생 거주지, 학교별 시설·통학 자료\n\n[한계]\n외부 AI에 연결하지 못해 규칙 기반으로 정리했습니다. 모의값은 정책 판단의 확정 근거가 아닙니다.`;
+  return `# 기본 정책 검토안\n\n[핵심 변화]\n${aiContext}\n\n[정책 검토 질문]\n- 현재 학교·학급 운영 여건에서 이 감소 폭을 감당할 수 있는가?\n- 통학거리, 교육과정 선택권, 지역 간 이동을 함께 검토했는가?\n\n[추가 확인자료]\n- 출생 코호트, 전입·전출, 읍면동별 학생 거주지, 학교별 시설·통학 자료\n\n[한계]\n분석 서비스 응답을 받지 못해 검증된 규칙으로 정리했습니다. 모의값은 정책 판단의 확정 근거가 아닙니다.`;
 }
 
 function xmlEsc(v){
@@ -4063,9 +4113,79 @@ function currentViewExport(){
   else sheets=[{name:'안내',title:'폐교 활용 현황',rows:[['상태','내용'],['자료 미확보','폐교 재산 현황·활용 형태·주소 자료를 받으면 게시·출력합니다.']]}];
   downloadSpreadsheet(sheets,`경북_${names[activeView]||'대시보드'}_${new Date().toISOString().slice(0,10)}.xls`);
 }
+const VIEW_PRINT_NAMES={home:'종합 대시보드',status:'경북 학령인구 현황',sim:'학생수 시뮬레이터',news:'뉴스 클리핑',plan:'주요업무계획',multi:'다문화 및 특수교육 모니터링',closed:'폐교 활용 현황'};
+function printStamp(){
+  return new Intl.DateTimeFormat('ko-KR',{dateStyle:'long',timeStyle:'short'}).format(new Date());
+}
+function finishPrintMode(){
+  document.body.classList.remove('print-ai-only');
+  document.getElementById('print-page-mode').textContent='';
+}
+function runPrint(mode){
+  const pageStyle=document.getElementById('print-page-mode');
+  pageStyle.textContent=mode==='ai'
+    ? '@media print{@page{size:A4 portrait;margin:16mm 17mm 18mm}}'
+    : '@media print{@page{size:A4 landscape;margin:12mm 11mm 15mm}}';
+  document.body.classList.toggle('print-ai-only',mode==='ai');
+  window.addEventListener('afterprint',finishPrintMode,{once:true});
+  if(typeof window.print==='function') window.print();
+}
+function printCurrentView(){
+  document.getElementById('print-report-title').textContent=VIEW_PRINT_NAMES[activeView]||'경북 학령인구 데이터 플랫폼';
+  document.getElementById('print-report-subtitle').textContent=`${printStamp()} · 현재 화면의 조회 조건 반영`;
+  document.querySelectorAll(`#view-${activeView} details.src-box`).forEach(el=>el.open=true);
+  runPrint('view');
+}
+
+function inlinePolicyMarkdown(value){
+  return htmlEsc(value)
+    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+    .replace(/__([^_]+)__/g,'<strong>$1</strong>')
+    .replace(/`([^`]+)`/g,'<code>$1</code>');
+}
+function policyMarkdown(value){
+  const lines=String(value||'').replace(/\r/g,'').split('\n');
+  let html='',list='';
+  const close=()=>{if(list){html+=`</${list}>`;list='';}};
+  lines.forEach(raw=>{
+    const line=raw.trim();
+    if(!line){close();return;}
+    const heading=line.match(/^#{1,4}\s+(.+)/) || line.match(/^\[([^\]]+)\]$/);
+    if(heading){close();html+=`<h3>${inlinePolicyMarkdown(heading[1])}</h3>`;return;}
+    const bullet=line.match(/^[-*]\s+(.+)/);
+    const numbered=line.match(/^\d+[.)]\s+(.+)/);
+    if(bullet||numbered){const kind=numbered?'ol':'ul';if(list!==kind){close();html+=`<${kind}>`;list=kind;}html+=`<li>${inlinePolicyMarkdown((bullet||numbered)[1])}</li>`;return;}
+    close();html+=`<p>${inlinePolicyMarkdown(line)}</p>`;
+  });
+  close();return html;
+}
+function policyReportHtml(text){
+  return `<article class="policy-report">
+    <header class="report-cover">
+      <div class="report-label">정책 검토 회의자료 · 초안</div>
+      <h2>학령인구 변화 정책 검토안</h2>
+      <div class="report-meta"><span>${htmlEsc(printStamp())}</span><span>현재 화면의 집계값 기준</span><span>정책 자동결정 자료가 아닌 검토 보조자료</span></div>
+    </header>
+    <div class="report-body">${policyMarkdown(text)}</div>
+    <p class="report-note">개별 학생·교직원 정보는 포함하지 않았습니다. 모의값과 분석 결과는 확정 예측 또는 행정결정의 근거가 아니며, 공식 원자료와 현장 확인을 거쳐야 합니다.</p>
+  </article>`;
+}
+function renderPolicyReport(text){
+  const html=policyReportHtml(text);
+  document.getElementById('ai-output').innerHTML=html;
+  document.getElementById('ai-print-report').innerHTML=html;
+  document.getElementById('ai-print').disabled=false;
+}
+function friendlyAnalysisError(message){
+  const m=String(message||'');
+  if(/무료 사용량|RESOURCE_EXHAUSTED|429|quota/i.test(m)) return '분석 서비스의 현재 사용량 한도에 도달했습니다. 잠시 후 다시 시도해 주세요.';
+  if(/503|key|설정|configured/i.test(m)) return '분석 서비스가 아직 준비되지 않았습니다. 관리자에게 설정 상태를 확인해 주세요.';
+  return '분석 서비스 응답을 받지 못했습니다.';
+}
 document.getElementById('sim-export-xls').addEventListener('click', exportSimXls);
 document.getElementById('export-current').addEventListener('click', currentViewExport);
-document.getElementById('print-current').addEventListener('click',()=>{if(typeof window.print==='function')window.print();});
+document.getElementById('print-current').addEventListener('click',printCurrentView);
+document.getElementById('ai-print').addEventListener('click',()=>runPrint('ai'));
 document.getElementById('ai-check').addEventListener('click', async () => {
   const status=document.getElementById('ai-status'), connection=document.getElementById('ai-connection');
   status.textContent='서버 설정을 확인하는 중…';
@@ -4076,9 +4196,9 @@ document.getElementById('ai-check').addEventListener('click', async () => {
     if(!res.ok || !gemini) throw new Error('AI 서비스 상태를 읽지 못했습니다.');
     connection.className='ai-connection '+(gemini.configured?'ok':'warn');
     connection.textContent=gemini.configured
-      ? 'Cloudflare에서 Gemini 보안 키를 인식했습니다. 실제 생성은 무료 사용량 한도 안에서 실행됩니다.'
-      : '현재 배포본이 Gemini 보안 키를 인식하지 못했습니다. 저장 후 새 배포가 필요합니다.';
-    status.textContent=gemini.configured?'키 설정 확인 완료':'키 설정 미확인';
+      ? '분석 서비스가 준비되었습니다.'
+      : '분석 서비스를 사용할 수 없습니다. 관리자에게 문의해 주세요.';
+    status.textContent=gemini.configured?'서비스 준비 완료':'서비스 준비 필요';
   }catch(e){
     connection.className='ai-connection warn'; connection.textContent=e.message||'연결 상태 확인 실패';
     status.textContent='상태 확인 실패';
@@ -4091,13 +4211,11 @@ document.getElementById('ai-analyze').addEventListener('click', async () => {
     const res=await fetch('/api/ai-analysis',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:aiContext})});
     const data=await res.json();
     if(!res.ok || !data.text) throw new Error(data.error || 'AI 응답 오류');
-    out.textContent=data.text; status.textContent=`${data.model || 'Gemini'} 분석 완료`;
-    connection.className='ai-connection ok'; connection.textContent='Gemini가 현재 집계값으로 정책 검토안을 생성했습니다.';
+    renderPolicyReport(data.text); status.textContent='정책 검토안 작성 완료';
+    connection.className='ai-connection ok'; connection.textContent='분석 서비스가 현재 집계값으로 정책 검토안을 작성했습니다.';
   }catch(e){
-    out.textContent=localAiFallback(); status.textContent=`기본 요약으로 전환 · ${e.message || 'AI 연결 실패'}`;
-    connection.className='ai-connection warn'; connection.textContent=/무료 사용량|RESOURCE_EXHAUSTED|429/.test(e.message||'')
-      ? '키는 연결되어 있지만 Gemini 무료 사용량 한도에 도달했습니다.'
-      : '외부 AI 응답을 받지 못해 같은 집계값의 기본 요약을 표시했습니다.';
+    renderPolicyReport(localAiFallback()); status.textContent='기본 검토안으로 전환';
+    connection.className='ai-connection warn'; connection.textContent=friendlyAnalysisError(e.message);
   }finally{ btn.disabled=false; }
 });
 

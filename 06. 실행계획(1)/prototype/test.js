@@ -248,6 +248,16 @@ check('상세 Excel의 실제 행도 포항부터 울릉까지 표준 순서다'
   q("simulatorSheets()[1].rows.slice(2).map(r=>r[0]).join(',')") === '포항,경주,김천,안동,구미,영주,영천,상주,문경,경산,의성,청송,영양,영덕,청도,고령,성주,칠곡,예천,봉화,울진,울릉');
 check('모든 메뉴에 현재 화면 인쇄와 Excel 출력 도구가 있다',
   html.includes('id="export-current"') && html.includes('id="print-current"') && /function currentViewExport/.test(html));
+check('인쇄물에 전용 표제·바닥글과 A4 쪽 설정이 있다',
+  html.includes('class="print-letterhead print-only"') && html.includes('class="print-footer print-only"') && /@page\{size:A4 landscape/.test(html));
+check('긴 카드 전체를 한 쪽에 강제하지 않아 페이지 잘림을 막는다',
+  !/\.card\{[^}]*break-inside:avoid/.test(html) && /thead\{display:table-header-group\}/.test(html));
+check('정책 검토안은 보고서 HTML과 별도 인쇄 기능을 제공한다',
+  html.includes('id="ai-print"') && /function policyMarkdown/.test(html) && /function renderPolicyReport/.test(html) && html.includes('id="ai-print-report"'));
+check('일반 사용자 화면에 서비스 사업자·모델명이 드러나지 않는다',
+  !/>[^<]*(Gemini|Cloudflare|gemini-3\.7)[^<]*</i.test(html.split('<script>')[0]));
+check('경북교육청 상징 워터마크 파일과 화면·인쇄 스타일이 있다',
+  fs.existsSync(path.join(path.dirname(APP),'symbol1.jpg')) && /body::before[\s\S]*symbol1\.jpg/.test(html) && /@media print[\s\S]*body::before/.test(html));
 check('조회 조건을 지우지 않고 다중 필터를 교차 적용한다',
   !/sim\.sigungu\.clear\(\);\s*syncSigChips\(\);\s*}\s*renderSim/.test(html) &&
   /sim\.maxSize/.test(html) && html.includes('id="size-max"'));
@@ -445,32 +455,36 @@ check('유치원·특수학교에 주소가 있다',
 check('「(가상)」 표시가 남아 있지 않다',
   !/유치원 \$\{totalK\} \(가상\)|특수학교 \$\{totalS\} \(가상\)/.test(html));
 
-/* ---------- 과밀·적정·과소 — 학교급마다 기준이 다른가 ---------- */
-console.log('\n■ 과밀 · 적정 · 과소');
-/* ★ 〔2026. 8. 12.〕 예전에는 두 갈래(초 15~25 / 나머지 18~28)뿐이라
-   **특수학교가 전부 「과소」**로 나왔습니다. 학급당 5~7명인데 18명 밑이면
-   과소로 셌기 때문입니다. 그런데 특수학교는 **법으로** 학급당 4~7명입니다. */
+/* ---------- 학교 전체 규모와 학급 밀도를 분리했는가 ---------- */
+console.log('\n■ 학교 규모 · 학급 밀도');
 check('학교급 다섯이 저마다 기준을 가진다',
   ['초','중','고','유','특수'].every(lv => q(`!!DENSITY_STD['${lv}']`)));
 check('초·중은 동과 읍·면 기준이 다르다',
   q("DENSITY_STD['초'].over.동") === 25 && q("DENSITY_STD['초'].over.읍면") === 21 &&
   q("DENSITY_STD['중'].over.동") === 27 && q("DENSITY_STD['중'].over.읍면") === 26);
 check('특수학교 과밀선이 법정 상한(7명)이다', q("DENSITY_STD['특수'].over.동") === 7);
-check('특수학교는 과소를 판단하지 않는다', q("DENSITY_STD['특수'].under") === null);
+check('모든 학교급에서 근거 없는 과소 판정을 하지 않는다',
+  q("['초','중','고','유','특수'].every(lv => DENSITY_STD[lv].under === null)"));
 check('기준마다 근거가 적혀 있다',
   q("['초','중','고','유','특수'].every(lv => !!DENSITY_STD[lv].overSrc)"));
-check('근거 없는 값은 「잠정」이라고 말한다',
-  q("DENSITY_STD['중'].underSrc.includes('잠정') && DENSITY_STD['고'].underSrc.includes('잠정')"));
+check('공식 원문 최종 확인이 필요함을 밝힌다', html.includes('공식 원문 최종 확인 필요'));
 
 /* 실제로 그렇게 갈리는가 — 표만 고치고 쓰지 않으면 소용없습니다 */
 check('특수학교가 과소로 나오지 않는다',
   q("SCHOOLS.filter(s=>s.lv==='특수').every(s=>densityOf('특수', s.stu/s.cls, areaOf(s)) !== 'under')"));
-check('학급당 5명 유치원은 과소다', q("densityOf('유', 5, '동')") === 'under');
+check('학급당 5명 유치원도 근거 없이 과소라 하지 않는다', q("densityOf('유', 5, '동')") === 'fit');
 check('학급당 5명 특수학교는 과소가 아니다', q("densityOf('특수', 5, '동')") === 'fit');
 check('읍·면 초등학교는 22명이면 과밀이다',
   q("densityOf('초', 22, '읍면')") === 'over' && q("densityOf('초', 22, '동')") === 'fit');
 check('군 지역은 읍·면으로 본다',
   q("areaOf({s:'울릉', addr:'경상북도 울릉군 남양1길 42-27'})") === '읍면');
+check('학교 규모 최소·소규모·적정규모 참고 분류를 별도로 계산한다',
+  q("schoolSizeOf({stu:15,s:'포항',addr:'경상북도 포항시 남구 오천읍'}).key") === 'minimum' &&
+  q("schoolSizeOf({stu:20,s:'포항',addr:'경상북도 포항시 남구 오천읍'}).key") === 'small' &&
+  q("schoolSizeOf({stu:30,s:'포항',addr:'경상북도 포항시 남구 오천읍'}).key") === 'appropriate' &&
+  q("schoolSizeOf({stu:60,s:'포항',addr:'경상북도 포항시 남구 대이로'}).key") === 'appropriate');
+check('학교 규모와 학급 밀도가 다른 지표임을 화면에서 설명한다',
+  html.includes('학교 규모와 학급 밀도는 서로 다른 지표입니다') && html.includes('공식 ‘과소 학급’ 하한'));
 
 /* ---------- 자료 출처 · 공시 시기 ---------- */
 console.log('\n■ 자료 출처');
@@ -562,7 +576,7 @@ check('학년별 학생 차트가 학교알리미 grades를 합산한다', html.
 check('유치원 수를 배열에서 동적으로 센다', /source-kinder-count[\s\S]*KINDERGARTENS\.length/.test(html));
 check('유치원 교원 수 미확보를 명시한다', html.includes("homeState.level==='유' ? '자료 미확보'"));
 check('KOSIS 공식 학령인구 시계열을 우선 사용한다', /const KOSIS_POP = \{/.test(html) && /kind==='pop' && KOSIS_POP\[year\]/.test(html));
-check('Gemini 키는 HTML에 없고 같은 출처 중계만 쓴다', html.includes("fetch('/api/ai-analysis'") && !/GEMINI_API_KEY|generativelanguage\.googleapis\.com/.test(html));
+check('분석 서비스 키는 HTML에 없고 같은 출처 중계만 쓴다', html.includes("fetch('/api/ai-analysis'") && !/GEMINI_API_KEY|generativelanguage\.googleapis\.com/.test(html));
 check('720px 모바일 레이아웃이 있다', /@media \(max-width:720px\)[\s\S]*?\.shell\{display:block/.test(html));
 check('가짜 소재지 배정이 없다', !/i\s*%\s*3|임의 배정한 더미/.test(CODE_ONLY));
 
