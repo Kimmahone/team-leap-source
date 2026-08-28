@@ -19,7 +19,8 @@
 |---|---|---|
 | Gemini | `GEMINI_API_KEY` | Cloudflare의 AI 분석 중계 |
 | 학교알리미 | `SCHOOLINFO_API_KEY` | 학교·학생·교원 자료 갱신 |
-| EDSS | `EDSS_API_KEY` | 학교속성 승인, 학생·학급·개황·위치정보 신청분 보완 |
+| EDSS 학교속성 | `EDSS_SCHOOL_ATTRIBUTE_API_KEY` | 승인된 학교코드·학교급·시군 기준정보 |
+| EDSS 학생·학급 등 | API별 `EDSS_…_API_KEY` | 신청 API별 학생·학급·개황·위치정보 보완 |
 | KOSIS | `KOSIS_API_KEY` | 출생아·연령별 인구·장래인구·이동 자료 |
 | SGIS | `SGIS_CONSUMER_KEY`, `SGIS_CONSUMER_SECRET` | 온라인 지도 인증 |
 | 유치원알리미 | `KINDER_API_KEY` | 유치원 기본현황·교직원 현황 갱신 |
@@ -36,19 +37,27 @@ SGIS_CONSUMER_KEY
 SGIS_CONSUMER_SECRET
 ```
 
-EDSS는 현재 브라우저·Cloudflare Pages Function이 직접 조회하지 않는다. 따라서 **EDSS 키를 Cloudflare에 넣을 필요가 없다.** 학교속성은 승인됐고 학생·학급·개황·위치정보는 신청 상태이므로, 인증키를 받으면 GitHub Actions의 Repository Secret에만 아래 이름으로 추가한다.
+EDSS는 현재 브라우저·Cloudflare Pages Function이 직접 조회하지 않는다. 따라서 **EDSS 키를 Cloudflare에 넣을 필요가 없다.** 여러 API의 키를 하나의 Secret 값에 줄바꿈·쉼표 등으로 합쳐 넣으면 안 된다. 학교속성은 승인됐고 학생·학급·개황·위치정보는 신청 상태이므로, 인증키를 받으면 GitHub Actions의 Repository Secret에 API별로 하나씩 추가한다.
 
 ```text
-EDSS_API_KEY
+EDSS_SCHOOL_ATTRIBUTE_API_KEY
+EDSS_CLASS_STUDENT_API_KEY
+EDSS_STUDENT_STATUS_API_KEY
+EDSS_CLASS_STATUS_API_KEY
+EDSS_SCHOOL_LOCATION_API_KEY
+EDSS_SCHOOL_OVERVIEW_API_KEY
+EDSS_EDU_STAT_SCHOOL_OVERVIEW_API_KEY
 ```
 
-GitHub Actions에는 정기 수집·배포에 필요한 `SCHOOLINFO_API_KEY`, `EDSS_API_KEY`(발급 후), `KOSIS_API_KEY`, `KINDER_API_KEY`, `NAVER_CLIENT_ID`, `NAVER_CLIENT_SECRET`, `DEPLOY_PAT`을 Repository Secret으로 등록한다. 기준 공시연도는 Secret이 아니라 Actions Variable `PUBLIC_DATA_YEAR`로 관리한다.
+지금은 **학교속성 키 한 개만** `EDSS_SCHOOL_ATTRIBUTE_API_KEY`에 넣는다. 다른 이름은 해당 API의 승인·키 수령 뒤에만 하나씩 만든다.
+
+GitHub Actions에는 정기 수집·배포에 필요한 `SCHOOLINFO_API_KEY`, EDSS API별 키, `KOSIS_API_KEY`, `KINDER_API_KEY`, `NAVER_CLIENT_ID`, `NAVER_CLIENT_SECRET`, `DEPLOY_PAT`을 Repository Secret으로 등록한다. 기준 공시연도는 Secret이 아니라 Actions Variable `PUBLIC_DATA_YEAR`로 관리한다.
 
 ### EDSS 키 등록 순서
 
 1. GitHub `Kimmahone/team-leap-source` → **Settings → Secrets and variables → Actions → Secrets**
 2. **New repository secret** 선택
-3. 이름에 정확히 `EDSS_API_KEY`, 값에 발급받은 키 입력
+3. 이름에 정확히 `EDSS_SCHOOL_ATTRIBUTE_API_KEY`, 값에 **학교속성 API 키 하나만** 입력
 4. **Add secret** 선택
 
 `Variables`에는 넣지 않는다. 현재 EDSS 수집 코드는 승인 문서의 URL·요청변수·응답필드를 확인한 뒤 연결하므로, 키 등록만으로 즉시 데이터가 바뀌지는 않는다.

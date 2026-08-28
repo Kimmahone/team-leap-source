@@ -6,26 +6,29 @@
 
 EDSS 인증키는 지금 **Cloudflare에 넣지 않는다**. 정기 수집 프로그램이 사용할 키이므로 원본 저장소 team-leap-source의 **GitHub Actions Repository Secret**으로만 등록한다.
 
-현재 공개 화면은 EDSS를 브라우저에서 직접 부르지 않는다. 따라서 Cloudflare Secret에 넣어도 현재 화면 기능은 달라지지 않으며, 필요한 곳보다 넓게 키를 보관하게 된다.
+현재 공개 화면은 EDSS를 브라우저에서 직접 부르지 않는다. 따라서 Cloudflare Secret에 넣어도 현재 화면 기능은 달라지지 않으며, 필요한 곳보다 넓게 키를 보관하게 된다. 여러 EDSS 키를 한 Secret 값에 합쳐 넣는 방식도 사용하지 않는다.
 
 ## 등록 위치와 이름
 
 | 구분 | 지금 등록할 곳 | 이름 | 이유 |
 |---|---|---|---|
-| EDSS 수집 키 | GitHub → team-leap-source → Settings → Secrets and variables → Actions → Secrets | EDSS_API_KEY | 이후 정기 수집 스크립트만 읽도록 제한 |
+| 학교속성 수집 키 | GitHub → team-leap-source → Settings → Secrets and variables → Actions → Secrets | EDSS_SCHOOL_ATTRIBUTE_API_KEY | **현재 승인분. 지금 이 키 하나만 등록** |
+| 나머지 EDSS API 키 | 같은 위치 | API별 EDSS_…_API_KEY | 각 API 승인·키 수령 뒤 하나씩 추가 |
 | Cloudflare Pages | 등록하지 않음 | 해당 없음 | 현재 Pages Function·브라우저가 EDSS를 호출하지 않음 |
-| 로컬 개발 | 필요할 때만 프로젝트 루트 .dev.vars | EDSS_API_KEY | 개발자가 승인 응답을 한 번 점검할 때만 사용 |
+| 로컬 개발 | 필요할 때만 프로젝트 루트 .dev.vars | EDSS_SCHOOL_ATTRIBUTE_API_KEY | 개발자가 승인 응답을 한 번 점검할 때만 사용 |
 
 ## GitHub에 안전하게 등록하는 방법
 
 1. GitHub에서 Kimmahone/team-leap-source 저장소를 연다.
 2. **Settings → Secrets and variables → Actions**를 연다.
 3. **Secrets** 탭에서 **New repository secret**을 누른다.
-4. Name에 정확히 EDSS_API_KEY를 입력한다.
-5. Value에 EDSS에서 받은 인증키만 붙여 넣는다.
+4. Name에 정확히 EDSS_SCHOOL_ATTRIBUTE_API_KEY를 입력한다.
+5. Value에 **학교속성[교육통계][EDSS] 키 하나만** 붙여 넣는다.
 6. **Add secret**을 누른다.
 
 Variables가 아니라 반드시 Secrets에 등록한다. 등록 후에는 값이 다시 표시되지 않는 것이 정상이다.
+
+다른 EDSS API가 승인되면 같은 방법으로 새 Secret을 만든다. 한 칸에 여러 키를 줄바꿈·쉼표로 연결하지 않는다. API별 정확한 이름은 EDSS 신청안의 “API별 Secret 이름” 표를 사용한다.
 
 ## 아직 자동 수집이 시작되지 않는 이유
 
@@ -41,7 +44,7 @@ Variables가 아니라 반드시 Secrets에 등록한다. 등록 후에는 값�
 
 ## Cloudflare에 키를 넣는 경우
 
-나중에 서버 기능이 EDSS를 실시간으로 조회해야 한다는 별도 결정이 있을 때만 Cloudflare Pages의 **Settings → Variables and Secrets → Production → Secret**에 같은 이름 EDSS_API_KEY로 추가한다. 이 경우에도 브라우저 JavaScript에는 키를 절대 넣지 않는다.
+나중에 서버 기능이 EDSS를 실시간으로 조회해야 한다는 별도 결정이 있을 때만 Cloudflare Pages의 **Settings → Variables and Secrets → Production → Secret**에 필요한 API별 같은 이름을 추가한다. 이 경우에도 브라우저 JavaScript에는 키를 절대 넣지 않는다.
 
 ## 전달할 때 지킬 원칙
 
