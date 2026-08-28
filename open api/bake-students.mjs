@@ -71,14 +71,14 @@ function keyFromFile() {
     return hit ? hit[0] : null;
   } catch (e) { return null; }
 }
-const KEY = ARG || keyFromFile();
+const KEY = ARG || process.env.SCHOOLINFO_API_KEY || keyFromFile();
 if (!KEY) {
   console.error('인증키가 없습니다.');
   console.error('  · ' + KEYFILE + ' 에 32자리 키를 한 줄 넣어 두거나');
   console.error('  · node bake-students.mjs <학교알리미 인증키> 로 주세요.');
   process.exit(1);
 }
-if (!ARG) console.log('인증키: 인증키.txt (…' + KEY.slice(-6) + ')');
+if (!ARG) console.log('인증키: ' + (process.env.SCHOOLINFO_API_KEY ? '환경변수' : '인증키.txt') + ' (…' + KEY.slice(-6) + ')');
 console.log('공시년도: ' + YEAR + (DRY ? '  · 확인만 하고 파일은 고치지 않습니다' : ''));
 
 /* 시군구 코드 — bake-coords.mjs 와 **같은 표**입니다. 둘이 어긋나면 안 됩니다.

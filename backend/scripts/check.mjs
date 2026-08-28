@@ -9,7 +9,15 @@ const root = path.resolve(here, '../..');
 export function validateBackendFoundation() {
   const errors = [];
   const ids = new Set();
-  const allowedStatus = new Set(['active', 'partial', 'planned', 'waiting_internal_data', 'needs_source_verification']);
+  const allowedStatus = new Set([
+    'active',
+    'partial',
+    'planned',
+    'waiting_internal_data',
+    'needs_source_verification',
+    'out_of_scope',
+    'reference_only'
+  ]);
 
   if (!/^\d{4}-\d{2}-\d{2}\.\d+$/.test(CATALOG_VERSION)) {
     errors.push(`목록 버전 형식 오류: ${CATALOG_VERSION}`);

@@ -1,6 +1,8 @@
 # API 키 보관 위치
 
-갱신: 2026-08-27
+갱신: 2026-08-28
+
+상세한 담당 역할·교체 순서·오류별 조치는 [API 키 갱신 매뉴얼](./06.%20실행계획(1)/00.%20운영문서/02_API키_갱신_매뉴얼.md)을 기준으로 합니다.
 
 ## 한 곳에서 찾기
 
@@ -17,22 +19,24 @@
 |---|---|---|
 | Gemini | `GEMINI_API_KEY` | Cloudflare의 AI 분석 중계 |
 | 학교알리미 | `SCHOOLINFO_API_KEY` | 학교·학생·교원 자료 갱신 |
+| EDSS | `EDSS_API_KEY` | 승인 후 학교속성·개황·학생·학급 자료 보완 |
 | KOSIS | `KOSIS_API_KEY` | 출생아·연령별 인구·장래인구·이동 자료 |
 | SGIS | `SGIS_CONSUMER_KEY`, `SGIS_CONSUMER_SECRET` | 온라인 지도 인증 |
 | 유치원알리미 | `KINDER_API_KEY` | 유치원 기본현황·교직원 현황 갱신 |
+| 네이버 뉴스 | `NAVER_CLIENT_ID`, `NAVER_CLIENT_SECRET` | 주간 뉴스 자동 갱신 |
+| GitHub 배포 | `DEPLOY_PAT` | 검증된 사이트를 배포 저장소로 자동 반영 |
 
 ## 운영 배포 때 등록할 Secret
 
-아래 여섯 이름을 모두 암호화된 Secret으로 등록한다.
+Cloudflare에는 화면 실행에 필요한 아래 세 묶음을 암호화된 Secret으로 등록한다.
 
 ```text
 GEMINI_API_KEY
-SCHOOLINFO_API_KEY
-KOSIS_API_KEY
 SGIS_CONSUMER_KEY
 SGIS_CONSUMER_SECRET
-KINDER_API_KEY
 ```
+
+GitHub Actions에는 정기 수집·배포에 필요한 `SCHOOLINFO_API_KEY`, `EDSS_API_KEY`(승인 후), `KOSIS_API_KEY`, `KINDER_API_KEY`, `NAVER_CLIENT_ID`, `NAVER_CLIENT_SECRET`, `DEPLOY_PAT`을 Repository Secret으로 등록합니다. 기준 공시연도는 Secret이 아니라 Actions Variable `PUBLIC_DATA_YEAR`로 관리합니다.
 
 Cloudflare Pages의 Variables and Secrets에 저장한 값은 빌드와 Pages Function에서 함께 쓸 수 있다.
 다만 새로 등록하거나 바꾼 Secret은 **기존 배포에 소급되지 않으므로** Deployments에서 최신

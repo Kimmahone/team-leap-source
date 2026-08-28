@@ -69,6 +69,7 @@ const SGG = {
 
 function getKey() {
   if (ARG) return ARG;
+  if (process.env.KINDER_API_KEY) return process.env.KINDER_API_KEY;
   try {
     const envLine = fs.readFileSync(ENVFILE, 'utf8').split(/\r?\n/).find(l => l.startsWith('KINDER_API_KEY='));
     if (envLine) return envLine.slice('KINDER_API_KEY='.length).trim();

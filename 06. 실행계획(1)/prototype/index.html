@@ -630,7 +630,7 @@ table.data .hl{color:var(--brand);font-weight:800}
   .legend i{border:1px solid #000}
   a[href^="http"]::after{content:" (" attr(href) ")";font-size:8pt;color:#333}
   .print-only{display:block !important}
-  /* 정책 검토안은 전용 인쇄를 누를 때만 다른 화면을 대신해 인쇄합니다. */
+  /* 변화 요약은 전용 인쇄를 누를 때만 다른 화면을 대신해 인쇄합니다. */
   #ai-print-report{display:none !important}
   body.print-ai-only .shell{display:none !important}
   body.print-ai-only #ai-print-report{display:block !important;position:relative;z-index:1}
@@ -653,7 +653,7 @@ table.data .hl{color:var(--brand);font-weight:800}
   <div class="glossary-list">
     <details><summary>교원 수</summary><div>학교알리미 공시의 교원 현황을 학교별로 합산한 값입니다. 현재 전체 KPI는 유치원 교원을 제외합니다.<span class="source">출처: 학교알리미 공시</span></div></details>
     <details><summary>인구감소지역</summary><div>인구·재정·지역 여건 등을 종합해 행정안전부가 지정한 지역입니다. 2021년 10월 처음 지정하며 지정 주기는 5년입니다. 경북은 고령·문경·봉화·상주·성주·안동·영덕·영양·영주·영천·울릉·울진·의성·청도·청송 15곳입니다.<span class="source">출처: 행정안전부 인구감소지역 지정 결과(89개)</span></div></details>
-    <details><summary>장래 학생수</summary><div>선택한 연도까지 시군·학교급별 임시 감소율을 적용한 모의값입니다. 출생 코호트와 전입·전출을 반영한 확정 예측이 아니므로 정책 결정의 단독 근거로 사용하면 안 됩니다.<span class="source">향후 출생아수·과거 학년별 실적·이동자료로 코호트 예측 예정</span></div></details>
+    <details><summary>모의 학생수</summary><div>선택한 연도까지 시군·학교급별 공개 실적에 임시 감소율을 적용한 비교값입니다. 공식 장래추계나 확정 예측이 아니며, 변화 방향과 계산 조건을 이해하는 참고값입니다.<span class="source">향후 공개된 출생아수와 여러 해의 학년별 실적으로 산출법을 개선</span></div></details>
     <details><summary>적정규모학교</summary><div>추가자료의 기능개선안은 학생 수 기준으로 최소규모 15명 이하, 소규모 100명 이하, 적정규모 참고선을 동 60명 이상·읍면 30명 이상으로 제시하며, 겹치면 적정규모를 우선합니다. 학급당 학생 수의 과밀 여부와는 별개이고, 학교 통폐합을 자동 결정하는 기준도 아닙니다.<span class="source">출처: 경북 학령인구 시각화 대시보드 기능개선(안). 2026 적정규모학교 육성 계획 원문·대상학교표는 추가 확인 필요</span></div></details>
     <details><summary>초등학교</summary><div>초등 보통교육을 실시하는 6년제 학교입니다. 이 화면의 학교·학생·학급 값은 학교알리미 공시 자료를 사용합니다.<span class="source">출처: 초·중등교육법, 학교알리미</span></div></details>
     <details><summary>학생 수</summary><div>해당 학교에 재학 중인 학생을 학교별·학교급별로 합산한 값입니다. 학령인구와는 범위가 다릅니다.<span class="source">출처: 학교알리미 2026 공시</span></div></details>
@@ -670,9 +670,9 @@ table.data .hl{color:var(--brand);font-weight:800}
   <div class="glossary-list">
     <details><summary>종합 대시보드</summary><div>학교급·학교명·학교 수/학생 수를 바꾸고, 간편 지도와 실제 위치 지도에서 시군 및 학교를 비교합니다.</div></details>
     <details><summary>경북 학령인구 현황</summary><div>기준연도와 비교연도를 고르고 학령인구와 재학생 수의 변화·추이를 확인합니다.</div></details>
-    <details><summary>학생수 시뮬레이터</summary><div>인구감소지역·시군·학교급·학교 규모 조건을 함께 적용하고, 산출 기준별 모의 결과와 정책 검토 질문을 만듭니다.</div></details>
+    <details><summary>학생수 시뮬레이터</summary><div>시군과 학교급을 선택해 현재 학생수·학급수·학교수와 조건별 모의 전망을 비교합니다. 학교별 미래 학생수를 확정적으로 예측하는 기능은 아닙니다.</div></details>
     <details><summary>뉴스 클리핑</summary><div>전체·주간·월간 및 주제별로 기사를 거른 뒤 현재 결과를 인쇄하거나 Excel로 저장합니다. 새 기사는 기존의 6개 고정 주제로 분류되므로 주제 목록이 매주 늘어나지 않습니다.</div></details>
-    <details><summary>그 밖의 메뉴</summary><div>주요업무계획·특수교육·폐교 활용 메뉴도 현재 확보된 자료와 미확보 상태를 그대로 출력합니다.</div></details>
+    <details><summary>그 밖의 메뉴</summary><div>특수교육과 폐교 활용 메뉴는 현재 공개자료와 미확보 상태를 구분해 보여 줍니다. 부서별 정책·사업 실적 메뉴는 공개 대시보드 범위에서 제외했습니다.</div></details>
     <details><summary>출력 방법</summary><div><ul><li><b>현재 화면 인쇄</b>: 브라우저 인쇄창에서 PDF 저장도 가능</li><li><b>현재 메뉴 Excel</b>: 조건·원자료·요약·시각화 시트를 메뉴에 맞게 생성</li></ul></div></details>
   </div>
 </aside>
@@ -712,7 +712,6 @@ table.data .hl{color:var(--brand);font-weight:800}
       <button type="button" data-view="status"><span class="ico" aria-hidden="true">◔</span>경북 학령인구 현황</button>
       <button type="button" data-view="sim"><span class="ico" aria-hidden="true">⊞</span>학생수 시뮬레이터</button>
       <button type="button" data-view="news"><span class="ico" aria-hidden="true">▣</span>주간 뉴스 클리핑</button>
-      <button type="button" data-view="plan"><span class="ico" aria-hidden="true">▤</span>주요업무계획</button>
       <button type="button" data-view="multi"><span class="ico" aria-hidden="true">◐</span>다문화 및 특수교육 모니터링</button>
       <button type="button" data-view="closed"><span class="ico" aria-hidden="true">★</span>폐교 활용 우수 사례 맵</button>
       <a href="https://schoolzone.emac.kr" target="_blank" rel="noopener">
@@ -852,7 +851,7 @@ table.data .hl{color:var(--brand);font-weight:800}
             <div class="criteria-guide-grid">
               <section>
                 <strong>① 학교 전체 규모(학생 수)</strong>
-                최소규모는 15명 이하, 소규모는 100명 이하입니다. 적정규모 참고선은 동 지역 60명 이상, 읍·면 지역 30명 이상이며, 기준이 겹치면 적정규모를 우선합니다. 이 값은 통폐합을 자동 결정하는 기준이 아니라 정책 검토용 참고 분류입니다.
+                최소규모는 15명 이하, 소규모는 100명 이하입니다. 적정규모 참고선은 동 지역 60명 이상, 읍·면 지역 30명 이상이며, 기준이 겹치면 적정규모를 우선합니다. 이 값은 통폐합을 자동 결정하는 기준이 아니라 학교 규모 현황을 읽기 위한 참고 분류입니다.
               </section>
               <section>
                 <strong>② 학급 밀도(학생 수 ÷ 학급 수)</strong>
@@ -1036,43 +1035,12 @@ table.data .hl{color:var(--brand);font-weight:800}
 
       <div class="spec" style="margin-top:24px">
         <b>데이터 정의</b> — <b>학령인구</b>: 국가데이터처 장래인구추계, 6~18세, 대학(19~24세) 인구 제외, 현재 기준 전후 10년.
-        <b>학생수</b>: 경상북도교육청 재학생 수, 현재 기준 전후 10년, 초등학교 재학생 예측 반영.
+        <b>학생수</b>: 학교알리미 2026 재학생 실적. 다른 연도의 미확보 구간은 단순 연결·모의값이므로 공식 학생수 전망으로 해석하지 않습니다.
         <br>※ 2016~2025년은 KOSIS 주민등록인구현황, 2026~2036년은 KOSIS 경상북도 시·군 장래인구추계의 1세별 자료를 합산했습니다.
       </div>
     </div>
   </section>
 
-
-  <!-- ================= 3. 주요업무계획 ================= -->
-    <section id="view-plan" class="view" hidden>
-    <!-- ★ 〔2026. 8. 12.〕 여기 있던 정책 카드 셋(「AI 맞춤형 교육」·「소규모 학교 통폐합」·
-           「다문화 인재 양성」)은 **우리가 지어낸 것**이었습니다. 경북교육청이 실제로
-           내건 주요업무계획이 아닙니다. 그럴듯한 문장이라 더 위험합니다 —
-           도교육청 이름이 붙은 화면에서 읽는 사람은 실제 정책으로 받아들입니다.
-           마스터 9장 「사용자 결정 대기」 5번이 바로 이 자리입니다. -->
-    <div class="page-head">
-      <h1>주요업무계획</h1>
-      <span class="desc">원고를 받으면 채웁니다</span>
-    </div>
-    <div class="card">
-      <h2>아직 비어 있습니다</h2>
-      <p style="margin:10px 0 0; font-size:14px; line-height:1.8; color:var(--ink-2)">
-        이 자리에는 <b>경상북도교육청의 학령인구 감소 대응 주요업무계획</b>이 들어갑니다.
-        지금은 <b>원고를 받지 못했습니다.</b>
-      </p>
-      <div class="spec" style="margin-top:14px">
-        <b>왜 비워 두나</b> — 예전에는 이 자리에 정책 카드 셋이 있었는데
-        <b>우리가 지어낸 것</b>이었습니다. 도교육청 이름이 붙은 화면에서 읽는 사람은
-        그것을 실제 정책으로 받아들입니다. 그래서 걷어냈습니다.
-        <b>없는 것을 있는 척하지 않습니다.</b>
-      </div>
-      <div class="spec" style="margin-top:10px">
-        <b>채우려면</b> — ① 이 메뉴가 무엇을 담는 자리인지(도 단위 계획인가, 우리 과제 계획인가)
-        ② 원고를 누가 주는지 를 정해야 합니다.
-        마스터 문서 9장 「사용자 결정 대기」 5번에 올려 두었습니다.
-      </div>
-    </div>
-  </section>
 
   <!-- ================= 4. 뉴스 ================= -->
   <section id="view-news" class="view" hidden>
@@ -1128,30 +1096,18 @@ table.data .hl{color:var(--brand);font-weight:800}
   <section id="view-sim" class="view" hidden>
     <div class="page-head">
       <h1>경북 학생수 시뮬레이터</h1>
-      <span class="desc">조회군 필터 · 기준 전환에 따른 학급/학교 수 변화</span>
+      <span class="desc">시군·학교급별 현재와 모의 전망 비교</span>
     </div>
 
     <div class="sim-wrap">
       <!-- 조회군 필터 -->
       <div class="card">
-        <h2>기준연도 2026 · 조회 조건</h2>
-        <p style="margin:-4px 0 6px;color:var(--ink-3);font-size:11.5px;line-height:1.55">아래 조건은 기준자료와 예측자료에 함께 적용됩니다.</p>
+        <h2>기준연도 2026 · 비교 조건</h2>
+        <p style="margin:-4px 0 6px;color:var(--ink-3);font-size:11.5px;line-height:1.55">공개된 시군·학교급 집계만 사용합니다. 선택 조건은 기준자료와 모의자료에 함께 적용됩니다.</p>
 
         <div class="filter-group">
-          <div class="lb">지역</div>
-          <div class="sublb">인구감소지역</div>
-          <div class="btn-row">
-            <button type="button" class="chip" data-f="decline" data-v="Y">해당</button>
-            <button type="button" class="chip" data-f="decline" data-v="N">미해당</button>
-          </div>
-          <div class="sublb">교육혁신선도지역</div>
-          <div class="filter-unavailable"><b>공식 대상 명부 미확보</b><br>출처 없는 해당·미해당 버튼은 제거했습니다. 경북교육청 공식 명부를 받으면 같은 필터 자리에 연결합니다.</div>
-          <div class="sublb">행정단위</div>
-          <div class="btn-row">
-            <button type="button" class="chip" data-f="admin" data-v="시">시</button>
-            <button type="button" class="chip" data-f="admin" data-v="군">군</button>
-          </div>
-          <div class="sublb">직접 선택</div>
+          <div class="lb">시군</div>
+          <div class="sublb">한 곳 또는 여러 곳 선택</div>
           <div class="sig-grid" id="sig-grid"></div>
         </div>
 
@@ -1163,25 +1119,10 @@ table.data .hl{color:var(--brand);font-weight:800}
             <button type="button" class="chip" data-f="level" data-v="중" aria-pressed="true">중학교</button>
             <button type="button" class="chip" data-f="level" data-v="고">고등학교</button>
           </div>
-          <div class="sublb">소재지</div>
-          <div class="btn-row">
-            <button type="button" class="chip" data-f="area" data-v="동" disabled title="행정동 코드 자료 미확보">동</button>
-            <button type="button" class="chip" data-f="area" data-v="읍" disabled title="행정동 코드 자료 미확보">읍</button>
-            <button type="button" class="chip" data-f="area" data-v="면" disabled title="행정동 코드 자료 미확보">면</button>
-            <button type="button" class="chip" data-f="area" data-v="도서벽지" disabled title="D4 미확보">도서·벽지</button>
-          </div>
         </div>
 
         <div class="filter-group">
-          <div class="lb">규모</div>
-          <label class="sublb" for="size-min">학교 최소 학생 수: <b id="size-min-out">전체</b></label>
-          <input type="range" id="size-min" min="0" max="900" step="30" value="0" style="width:100%">
-          <label class="sublb" for="size-max">학교 최대 학생 수: <b id="size-max-out">제한 없음</b></label>
-          <input type="range" id="size-max" min="30" max="2000" step="30" value="2000" style="width:100%">
-        </div>
-
-        <div class="filter-group">
-          <button type="button" class="chip" id="sim-clear" style="width:100%;text-align:center">필터 초기화</button>
+          <button type="button" class="chip" id="sim-clear" style="width:100%;text-align:center">시군 선택 초기화</button>
           <div class="filter-summary" id="sim-filter-summary" aria-live="polite">필터를 계산하는 중입니다.</div>
         </div>
       </div>
@@ -1202,35 +1143,35 @@ table.data .hl{color:var(--brand);font-weight:800}
 
           <div class="panel pred">
             <div class="ph">
-              <span class="t">예측연도</span>
-              <label class="sr-only" for="pred-year">예측 연도</label>
+              <span class="t">모의연도</span>
+              <label class="sr-only" for="pred-year">모의 연도</label>
               <select id="pred-year" class="select" style="font-size:19px;font-weight:800"></select>
             </div>
-            <div class="basis-quick" aria-label="예측연도 산출 기준 선택">
+            <div class="basis-quick" aria-label="모의연도 산출 기준 선택">
               <label><input type="radio" name="basis-mode" value="sch" checked> 학교 수 기준</label>
               <label><input type="radio" name="basis-mode" value="cls"> 학급당 학생 수 기준</label>
             </div>
             <div class="scroll-x">
               <table class="data">
-                <caption class="sr-only">예측연도 시군별 전망</caption>
+                <caption class="sr-only">모의연도 시군별 전망</caption>
                 <thead><tr><th scope="col">지역</th><th scope="col">학생수</th><th scope="col">대비<br>감소율</th><th scope="col">학급수</th><th scope="col">학교수</th><th scope="col">학급당<br>평균 학생수</th></tr></thead>
                 <tbody id="pred-tbody"></tbody>
               </table>
             </div>
             <div class="panel-note">
-              기준자료: 학교알리미 2026 공시 (학교 917곳 실적)<br>예측: 더미 감소율<br>* 지역간 학생 유입 및 유출을 배제함
+              기준자료: 학교알리미 2026 공시 (학교 917곳 실적)<br>모의전망: 시군·학교급별 임시 감소율 적용<br>* 공식 장래 학생수 추계가 아니며 지역 간 이동을 반영하지 않음
             </div>
           </div>
         </div>
 
         <div class="result-actions no-print">
-          <span style="font-size:11.5px;color:var(--ink-3)">현재 조건의 기준·예측 비교표</span>
+          <span style="font-size:11.5px;color:var(--ink-3)">현재 조건의 기준·모의 비교표</span>
           <button type="button" class="chip" id="sim-export-xls">Excel(.xls)로 저장</button>
         </div>
 
         <!-- 기준 전환 -->
         <div class="basis">
-          <h3>예측연도 산출 기준 <span style="font-weight:400;font-size:11.5px;color:var(--ink-3)">— 무엇을 고정할지 고르면 나머지가 결과로 나옵니다</span></h3>
+          <h3>모의연도 산출 기준 <span style="font-weight:400;font-size:11.5px;color:var(--ink-3)">— 무엇을 고정할지 고르면 나머지가 비교값으로 나옵니다</span></h3>
 
           <fieldset id="fs-sch">
             <legend>학교 수 기준 세부 설정</legend>
@@ -1259,25 +1200,25 @@ table.data .hl{color:var(--brand);font-weight:800}
           <br>· <b>학교 수 기준</b>: 학교수·학급수를 기준대로 정하고 → <b>학급당 평균 학생수</b>가 결과로 나옵니다.
           <br>· <b>학급당 학생 수 기준</b>: 학급당 학생수를 정하고 → <b>필요한 학급수·학교수</b>가 결과로 나옵니다.
           <br><b>기준자료(2026)는 실적입니다</b> — 학교알리미 2026 공시(<code>apiType=09</code>)를 학교 917곳에서 받아 시군별로 더한 값입니다.
-          <br><b>예측(2027~)만 아직 더미입니다.</b> 시군·학교급별 연평균 감소율을 곱하고 있는데, 이제
+          <br><b>모의전망(2027~)은 공식 예측이 아닙니다.</b> 현재는 시군·학교급별 연평균 감소율을 곱하고 있으며,
           학년별 자료가 있으므로 <b>코호트 진급법</b>(g학년 → g+1학년 진급률, 초1은 6년 전 출생아수 × 취학률)으로 바꿀 수 있습니다.
           <br>남은 입력은 <b>출생아수</b>(D1)와 여러 해치 실적입니다 — <code>bake-students.mjs --year=2025</code> 처럼 연도를 바꿔 돌리면 진급률이 나오고, 백테스트(2016→2026)도 됩니다.
         </div>
 
         <div class="card ai-briefing" id="ai-briefing">
-          <span class="ai-kicker">정책 검토 보조</span>
-          <h2>AI 정책 검토 브리핑</h2>
-          <p class="ai-purpose"><b>무엇을 하나요?</b> 지금 선택한 지역·학교급·예측연도의 집계값을 읽고, 회의에서 먼저 확인할 정책 쟁점을 초안으로 정리합니다. 정책을 자동 결정하거나 미래를 확정 예측하는 기능은 아닙니다.</p>
+          <span class="ai-kicker">데이터 읽기 도움</span>
+          <h2>AI 변화 읽기 도우미</h2>
+          <p class="ai-purpose"><b>무엇을 하나요?</b> 지금 선택한 시군·학교급·모의연도의 집계값을 읽고, 숫자의 변화와 해석할 때 주의할 점을 쉬운 말로 정리합니다. 미래를 확정하거나 행정 결정을 대신하는 기능은 아닙니다.</p>
           <div class="ai-purpose-list" aria-label="AI 분석 결과 구성">
-            <span>① 학생수 변화 요약</span><span>② 운영 위험·한계</span><span>③ 정책 검토 질문</span><span>④ 추가로 필요한 자료</span>
+            <span>① 학생수 변화</span><span>② 해석할 때 주의할 점</span><span>③ 함께 비교할 질문</span><span>④ 더 살펴볼 공개자료</span>
           </div>
           <div class="ai-connection" id="ai-connection">분석 설정을 확인하지 않았습니다.</div>
           <div class="ai-context-preview" id="ai-context-preview">현재 조건을 계산하는 중입니다.</div>
           <button type="button" class="chip" id="ai-check">분석 설정 확인</button>
-          <button type="button" class="chip" id="ai-analyze">이 결과로 정책 검토안 만들기</button>
-          <button type="button" class="chip" id="ai-print" disabled>정책 검토안 인쇄</button>
+          <button type="button" class="chip" id="ai-analyze">이 결과 쉽게 읽기</button>
+          <button type="button" class="chip" id="ai-print" disabled>변화 요약 인쇄</button>
           <span id="ai-status" role="status" aria-live="polite" style="margin-left:8px;color:var(--ink-3);font-size:12px"></span>
-          <div id="ai-output" class="ai-output" aria-live="polite">아직 분석하지 않았습니다. 실행하면 변화 요약, 위험과 한계, 정책 검토 질문, 추가 확인자료가 여기에 표시됩니다.</div>
+          <div id="ai-output" class="ai-output" aria-live="polite">아직 분석하지 않았습니다. 실행하면 학생수 변화, 해석 주의사항, 비교 질문과 더 살펴볼 공개자료가 표시됩니다.</div>
           <p style="margin:9px 0 0;color:var(--ink-3);font-size:11.5px;line-height:1.55">개별 학생·교직원 정보는 보내지 않고 화면에 표시된 집계값만 전송합니다. 무료 사용량이 끝나거나 연결이 실패하면 같은 집계값의 기본 요약으로 전환합니다.</p>
         </div>
 
@@ -3809,7 +3750,9 @@ function setDs(k){
 /* =========================================================
    5. 시뮬레이터
    ========================================================= */
-const sim = { decline:null, admin:null, level:'중', area:null, sigungu:new Set(), minSize:0, maxSize:2000, year:2030 };
+/* 공개 시뮬레이터의 조회 범위는 시군·학교급으로 한정합니다.
+   공개자료로 안정적으로 설명할 수 없는 내부 분류·학교별 미래값은 만들지 않습니다. */
+const sim = { level:'중', sigungu:new Set(), year:2030 };
 
 const predYear = document.getElementById('pred-year');
 for(let y=2027;y<=2040;y++){ const o=new Option(y,y); if(y===2030)o.selected=true; predYear.add(o); }
@@ -3846,38 +3789,15 @@ document.querySelectorAll('.chip[data-f]').forEach(btn => {
   if(btn.disabled) return;
   btn.addEventListener('click', () => {
     const f=btn.dataset.f, v=btn.dataset.v;
-    if(f==='level'){ sim.level=v; }
-    else { sim[f==='decline'?'decline':f] = (sim[f]===v ? null : v); }
+    if(f==='level') sim.level=v;
     document.querySelectorAll(`.chip[data-f="${f}"]`).forEach(x =>
       x.setAttribute('aria-pressed', String(sim[f]===x.dataset.v)));
-    if(f==='decline'||f==='admin') syncSigChips();
     renderSim();
   });
 });
 
-const sizeRange = document.getElementById('size-min');
-const sizeMaxRange = document.getElementById('size-max');
-sizeRange.addEventListener('input', e => {
-  sim.minSize = +e.target.value;
-  if(sim.minSize > sim.maxSize){ sim.maxSize=sim.minSize; sizeMaxRange.value=sim.maxSize; }
-  document.getElementById('size-min-out').textContent = sim.minSize===0 ? '전체' : sim.minSize+'명 이상';
-  document.getElementById('size-max-out').textContent = sim.maxSize===2000 ? '제한 없음' : sim.maxSize+'명 이하';
-  renderSim();
-});
-sizeMaxRange.addEventListener('input', e => {
-  sim.maxSize = +e.target.value;
-  if(sim.maxSize < sim.minSize){ sim.minSize=sim.maxSize; sizeRange.value=sim.minSize; }
-  document.getElementById('size-min-out').textContent = sim.minSize===0 ? '전체' : sim.minSize+'명 이상';
-  document.getElementById('size-max-out').textContent = sim.maxSize===2000 ? '제한 없음' : sim.maxSize+'명 이하';
-  renderSim();
-});
 document.getElementById('sim-clear').addEventListener('click', () => {
-  sim.decline=null; sim.admin=null; sim.area=null; sim.minSize=0; sim.maxSize=2000; sim.sigungu.clear();
-  document.querySelectorAll('.chip[data-f]').forEach(x => {
-    if(x.dataset.f!=='level') x.setAttribute('aria-pressed','false');
-  });
-  sizeRange.value=0; document.getElementById('size-min-out').textContent='전체';
-  sizeMaxRange.value=2000; document.getElementById('size-max-out').textContent='제한 없음';
+  sim.sigungu.clear();
   syncSigChips(); renderSim();
 });
 document.querySelectorAll('input[name="basis-mode"],input[name="sch-basis"],input[name="cls-basis"]')
@@ -3886,18 +3806,11 @@ document.querySelectorAll('input[name="basis-mode"],input[name="sch-basis"],inpu
   document.getElementById(id).addEventListener('input', renderSim));
 
 function filteredSigungu(){
-  return SIGUNGU.filter(sg => {
-    if(sim.sigungu.size && !sim.sigungu.has(sg.s)) return false;
-    if(sim.decline!==null && (sim.decline==='Y')!==sg.decline) return false;
-    if(sim.admin!==null && sim.admin!==sg.type) return false;
-    return true;
-  });
+  return SIGUNGU.filter(sg => !sim.sigungu.size || sim.sigungu.has(sg.s));
 }
-/* 규모·소재지 필터는 학교 단위로 적용 → 시군 집계 재산출 */
+/* 학교알리미의 공개 학교·학생·학급 자료를 시군·학교급으로 집계합니다. */
 function aggregate(sg, lv){
-  let list = schoolsOf(sg.s, lv);
-  if(sim.minSize>0) list = list.filter(s => s.stu >= sim.minSize);
-  if(sim.maxSize<2000) list = list.filter(s => s.stu <= sim.maxSize);
+  const list = schoolsOf(sg.s, lv);
   const stu = list.reduce((a,s)=>a+s.stu,0);
   const cls = list.reduce((a,s)=>a+s.cls,0);
   return {stu, cls, sch:list.length};
@@ -3905,7 +3818,7 @@ function aggregate(sg, lv){
 
 const numOf = id => Math.max(0, +document.getElementById(id).value || 0);
 
-/* 예측연도의 학급수·학교수 산출.
+/* 모의연도의 학급수·학교수 산출.
    구성안 5쪽 구조: 두 모드 중 하나만 활성. 고정한 쪽이 입력, 나머지가 결과. */
 function project(base, predStu, drop){
   const mode = document.querySelector('input[name="basis-mode"]:checked').value;
@@ -3949,8 +3862,7 @@ function renderSim(){
   const list = filteredSigungu();
   const yrs = sim.year - 2026;
 
-  // '전체' 행도 현재 조회 조건을 따릅니다. 예전에는 지역 필터를 무시해
-  // AI가 '선택 지역'이라고 쓰면서 경북 전체 합계를 받는 모순이 있었습니다.
+  // '전체' 행도 현재 시군·학교급 선택을 따릅니다.
   const allBase = list.reduce((a,sg)=>{
     const b=aggregate(sg,lv); a.stu+=b.stu; a.cls+=b.cls; a.sch+=b.sch; return a;
   },{stu:0,cls:0,sch:0});
@@ -3988,25 +3900,20 @@ function renderSim(){
   const totalRow = simExportRows[0];
   const dropPct = allBase.stu>0 ? (100*(1-allPredStu/allBase.stu)).toFixed(1) : '0.0';
   aiContext = [
-    '분석 목적: 정책 검토 회의용 초안',
+    '분석 목적: 공개 데이터 변화 이해를 돕는 쉬운 요약',
     `학교급: ${LEVEL_CFG[lv].full}`,
-    `예측연도: ${sim.year}`,
+    `모의연도: ${sim.year}`,
     `선택 지역: ${regionLabel}`,
     `2026 실적: 학생 ${fmt(allBase.stu)}명, 학급 ${fmt(allBase.cls)}개, 학교 ${fmt(allBase.sch)}교`,
     `${sim.year} 모의값: 학생 ${fmt(allPredStu)}명, 학급 ${fmt(totalRow?.projection.cls || 0)}개, 학교 ${fmt(totalRow?.projection.sch || 0)}교`,
     `학생수 변화율: -${dropPct}%`,
-    '주의: 예측값은 출생·이동 코호트가 아닌 임시 감소율 적용값이며 지역 간 이동을 제외함.',
-    '응답 형식: 1) 핵심 변화 2) 학교 운영 검토 신호 3) 정책 검토 질문 4) 추가 확인자료 5) 분석 한계'
+    '주의: 모의값은 공식 장래 학생수 추계가 아니며 임시 감소율을 적용하고 지역 간 이동을 제외함.',
+    '응답 형식: 1) 학생수 변화 2) 해석 주의사항 3) 함께 비교할 질문 4) 더 살펴볼 공개자료 5) 분석 한계'
   ].join('\n');
   document.getElementById('ai-context-preview').textContent =
     `${regionLabel} · ${LEVEL_CFG[lv].full} · 2026년 ${fmt(allBase.stu)}명 → ${sim.year}년 모의 ${fmt(allPredStu)}명 (${dropPct}% 감소)`;
-  const filterWords = [];
-  if(sim.decline!==null) filterWords.push(`인구감소지역 ${sim.decline==='Y'?'해당':'미해당'}`);
-  if(sim.admin!==null) filterWords.push(`행정단위 ${sim.admin}`);
-  if(sim.sigungu.size) filterWords.push(`직접 선택 ${sim.sigungu.size}곳`);
-  if(sim.minSize>0 || sim.maxSize<2000) filterWords.push(`학교 규모 ${sim.minSize}~${sim.maxSize===2000?'제한 없음':sim.maxSize}명`);
   document.getElementById('sim-filter-summary').textContent =
-    `${filterWords.length ? filterWords.join(' + ') : '전체 지역·전체 규모'} · ${LEVEL_CFG[lv].full} · 결과 ${list.length}개 시군`;
+    `${sim.sigungu.size ? `선택 시군 ${sim.sigungu.size}곳` : '경북 전체 22개 시군'} · ${LEVEL_CFG[lv].full}`;
 
   // 활성 모드에 따라 비활성 그룹 흐리게
   const mode = document.querySelector('input[name="basis-mode"]:checked').value;
@@ -4033,12 +3940,12 @@ function renderSim(){
     txt = `<b>학급당 학생 수 기준</b> — ${how} → <b>필요 학급수·학교수</b>가 결과로 산출됩니다.`;
   }
   document.getElementById('assump').innerHTML =
-    `${txt}<br>예측: 시군·학교급별 연평균 감소율을 ${yrs}년 적용 (지역간 유입·유출 배제)
-     <br>※ 소재지 필터는 행정동 코드 자료를 받기 전까지 비활성화했습니다.`;
+    `${txt}<br>모의전망: 시군·학교급별 연평균 감소율을 ${yrs}년 적용 (지역 간 유입·유출 미반영)
+     <br>※ 공개자료만 사용하며 학교별 미래 학생수는 제공하지 않습니다.`;
 }
 
 function localAiFallback(){
-  return `# 기본 정책 검토안\n\n[핵심 변화]\n${aiContext}\n\n[정책 검토 질문]\n- 현재 학교·학급 운영 여건에서 이 감소 폭을 감당할 수 있는가?\n- 통학거리, 교육과정 선택권, 지역 간 이동을 함께 검토했는가?\n\n[추가 확인자료]\n- 출생 코호트, 전입·전출, 읍면동별 학생 거주지, 학교별 시설·통학 자료\n\n[한계]\n분석 서비스 응답을 받지 못해 검증된 규칙으로 정리했습니다. 모의값은 정책 판단의 확정 근거가 아닙니다.`;
+  return `# 기본 변화 요약\n\n[학생수 변화]\n${aiContext}\n\n[함께 비교할 질문]\n- 기준연도와 모의연도의 차이는 어느 시군에서 크게 나타나는가?\n- 학교 수 기준과 학급당 학생 수 기준을 바꾸면 결과가 어떻게 달라지는가?\n\n[더 살펴볼 공개자료]\n- KOSIS 출생아수·연령별 인구·장래인구, 학교알리미 여러 해의 학년별 학생수\n\n[한계]\n분석 서비스 응답을 받지 못해 화면의 집계값을 규칙으로 정리했습니다. 모의값은 공식 장래 학생수 추계가 아닙니다.`;
 }
 
 function xmlEsc(v){
@@ -4104,22 +4011,21 @@ function simulatorSheets(){
   const total = orderedExportRows[0];
   const baseRows = [['지역','학생 수','학급 수','학교 수','학급당 평균 학생 수']]
     .concat(orderedExportRows.map(r=>[r.label,r.base.stu,r.base.cls,r.base.sch,+r.perBase.toFixed(1)]));
-  const predRows = [['지역','예측 학생 수','감소율(%)','예측 학급 수','예측 학교 수','학급당 평균 학생 수']]
+  const predRows = [['지역','모의 학생 수','감소율(%)','모의 학급 수','모의 학교 수','학급당 평균 학생 수']]
     .concat(orderedExportRows.map(r=>[r.label,r.predStu,+((r.drop||0)*100).toFixed(1),r.projection.cls,r.projection.sch,+r.perPred.toFixed(1)]));
   const maxDrop = Math.max(1,...orderedExportRows.slice(1).map(r=>Math.abs(r.drop||0)));
   const visualRows = [['지역','2026 학생 수',`${sim.year} 학생 수`,'감소율(%)','변화 시각화']]
     .concat(orderedExportRows.slice(1).map(r=>[r.label,r.base.stu,r.predStu,+((r.drop||0)*100).toFixed(1),'█'.repeat(Math.max(1,Math.round(Math.abs(r.drop||0)/maxDrop*20)))]));
   const filters = [
-    ['항목','현재 설정'],['학교급',LEVEL_CFG[sim.level].full],['예측연도',sim.year],
-    ['인구감소지역',sim.decline===null?'전체':sim.decline==='Y'?'해당':'미해당'],['행정단위',sim.admin||'전체'],
-    ['직접 선택',sim.sigungu.size?[...sim.sigungu].join(', '):'전체'],['학교 규모',`${sim.minSize}명 이상 ~ ${sim.maxSize===2000?'제한 없음':sim.maxSize+'명 이하'}`],
-    ['산출 기준',currentBasisDescription()],['예측 한계','임시 감소율 모의값이며 출생 코호트·전입전출·지역 간 이동 미반영'],
+    ['항목','현재 설정'],['학교급',LEVEL_CFG[sim.level].full],['모의연도',sim.year],
+    ['선택 시군',sim.sigungu.size?[...sim.sigungu].join(', '):'경북 전체 22개 시군'],
+    ['산출 기준',currentBasisDescription()],['모의 한계','공식 장래 학생수 추계가 아니며 임시 감소율 적용·지역 간 이동 미반영'],
     ['학교 실적 출처','https://www.schoolinfo.go.kr'],['인구·장래인구 출처','https://kosis.kr']
   ];
   return [
-    {name:'요약',title:'경북 학생수 시뮬레이션 요약',note:'현재 화면의 다중 필터와 산출 기준을 적용한 결과입니다.',rows:[['지표','값'],['2026 학생 수',total?total.base.stu:0],[`${sim.year} 학생 수`,total?total.predStu:0],['학생 수 감소율(%)',total?+(total.drop*100).toFixed(1):0],['예측 학교 수',total?total.projection.sch:0],['예측 학급 수',total?total.projection.cls:0]]},
+    {name:'요약',title:'경북 학생수 모의 비교 요약',note:'현재 화면의 시군·학교급과 산출 기준을 적용한 참고 결과입니다.',rows:[['지표','값'],['2026 학생 수',total?total.base.stu:0],[`${sim.year} 모의 학생 수`,total?total.predStu:0],['학생 수 감소율(%)',total?+(total.drop*100).toFixed(1):0],['모의 학교 수',total?total.projection.sch:0],['모의 학급 수',total?total.projection.cls:0]]},
     {name:'기준자료',title:'2026 기준자료',note:'시군 순서: 포항→경주→김천→안동→구미→영주→영천→상주→문경→경산→의성→청송→영양→영덕→청도→고령→성주→칠곡→예천→봉화→울진→울릉',rows:baseRows},
-    {name:'예측자료',title:`${sim.year} 예측자료`,note:'빨간 표시 대신 감소율 열의 부호와 값을 사용합니다.',rows:predRows},
+    {name:'모의자료',title:`${sim.year} 모의자료`,note:'공식 장래추계가 아닌 조건별 비교값입니다.',rows:predRows},
     {name:'변화시각화',title:'시군별 학생 수 감소 폭',note:'막대 길이는 현재 선택 결과 안에서의 상대적인 감소 폭입니다.',rows:visualRows,barColumn:4},
     {name:'필터와산출기준',title:'조회 조건·산출 기준·출처',rows:filters}
   ];
@@ -4175,18 +4081,17 @@ function multiExportSheets(){
   ];
 }
 function currentViewExport(){
-  const names={home:'종합대시보드',status:'학령인구현황',sim:'학생수시뮬레이터',news:'뉴스클리핑',plan:'주요업무계획',multi:'특수교육모니터링',closed:'폐교활용현황'};
+  const names={home:'종합대시보드',status:'학령인구현황',sim:'학생수시뮬레이터',news:'뉴스클리핑',multi:'특수교육모니터링',closed:'폐교활용현황'};
   let sheets;
   if(activeView==='home') sheets=homeExportSheets();
   else if(activeView==='status') sheets=statusExportSheets();
   else if(activeView==='sim') sheets=simulatorSheets();
   else if(activeView==='news') sheets=newsExportSheets();
   else if(activeView==='multi') sheets=multiExportSheets();
-  else if(activeView==='plan') sheets=[{name:'안내',title:'주요업무계획',rows:[['상태','내용'],['자료 미확보','경상북도교육청 학령인구 감소 대응 주요업무계획 원고를 받으면 게시·출력합니다.']]}];
   else sheets=[{name:'안내',title:'폐교 활용 현황',rows:[['상태','내용'],['자료 미확보','폐교 재산 현황·활용 형태·주소 자료를 받으면 게시·출력합니다.']]}];
   downloadSpreadsheet(sheets,`경북_${names[activeView]||'대시보드'}_${new Date().toISOString().slice(0,10)}.xls`);
 }
-const VIEW_PRINT_NAMES={home:'종합 대시보드',status:'경북 학령인구 현황',sim:'학생수 시뮬레이터',news:'뉴스 클리핑',plan:'주요업무계획',multi:'다문화 및 특수교육 모니터링',closed:'폐교 활용 현황'};
+const VIEW_PRINT_NAMES={home:'종합 대시보드',status:'경북 학령인구 현황',sim:'학생수 시뮬레이터',news:'뉴스 클리핑',multi:'다문화 및 특수교육 모니터링',closed:'폐교 활용 현황'};
 function printStamp(){
   return new Intl.DateTimeFormat('ko-KR',{dateStyle:'long',timeStyle:'short'}).format(new Date());
 }
@@ -4235,12 +4140,12 @@ function policyMarkdown(value){
 function policyReportHtml(text){
   return `<article class="policy-report">
     <header class="report-cover">
-      <div class="report-label">정책 검토 회의자료 · 초안</div>
-      <h2>학령인구 변화 정책 검토안</h2>
-      <div class="report-meta"><span>${htmlEsc(printStamp())}</span><span>현재 화면의 집계값 기준</span><span>정책 자동결정 자료가 아닌 검토 보조자료</span></div>
+      <div class="report-label">공개 데이터 해석 참고자료</div>
+      <h2>학령인구 변화 읽기</h2>
+      <div class="report-meta"><span>${htmlEsc(printStamp())}</span><span>현재 화면의 시군·학교급 집계 기준</span><span>공식 장래 학생수 추계가 아닌 모의 비교</span></div>
     </header>
     <div class="report-body">${policyMarkdown(text)}</div>
-    <p class="report-note">개별 학생·교직원 정보는 포함하지 않았습니다. 모의값과 분석 결과는 확정 예측 또는 행정결정의 근거가 아니며, 공식 원자료와 현장 확인을 거쳐야 합니다.</p>
+    <p class="report-note">개별 학생·교직원 정보는 포함하지 않았습니다. 모의값은 공개된 집계자료에 가정을 적용한 참고값이며 공식 장래 학생수 추계가 아닙니다.</p>
   </article>`;
 }
 function renderPolicyReport(text){
@@ -4279,15 +4184,15 @@ document.getElementById('ai-check').addEventListener('click', async () => {
 });
 document.getElementById('ai-analyze').addEventListener('click', async () => {
   const btn=document.getElementById('ai-analyze'), status=document.getElementById('ai-status'), out=document.getElementById('ai-output'), connection=document.getElementById('ai-connection');
-  btn.disabled=true; status.textContent='정책 검토안을 만드는 중…'; out.textContent='현재 조건의 집계값만 안전하게 전송하고 있습니다.';
+  btn.disabled=true; status.textContent='변화 요약을 만드는 중…'; out.textContent='현재 조건의 공개 집계값만 안전하게 전송하고 있습니다.';
   try{
     const res=await fetch('/api/ai-analysis',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:aiContext})});
     const data=await res.json();
     if(!res.ok || !data.text) throw new Error(data.error || 'AI 응답 오류');
-    renderPolicyReport(data.text); status.textContent=data.fallback?'대체 분석 모드로 정책 검토안 작성 완료':'정책 검토안 작성 완료';
-    connection.className='ai-connection ok'; connection.textContent=data.fallback?'주 분석 모드의 사용량을 아끼기 위해 대체 분석 모드로 정책 검토안을 작성했습니다.':'분석 서비스가 현재 집계값으로 정책 검토안을 작성했습니다.';
+    renderPolicyReport(data.text); status.textContent=data.fallback?'대체 분석 모드로 변화 요약 완료':'변화 요약 완료';
+    connection.className='ai-connection ok'; connection.textContent=data.fallback?'대체 분석 모드가 현재 집계값을 쉬운 말로 정리했습니다.':'분석 서비스가 현재 집계값을 쉬운 말로 정리했습니다.';
   }catch(e){
-    renderPolicyReport(localAiFallback()); status.textContent='기본 검토안으로 전환';
+    renderPolicyReport(localAiFallback()); status.textContent='기본 변화 요약으로 전환';
     connection.className='ai-connection warn'; connection.textContent=friendlyAnalysisError(e.message);
   }finally{ btn.disabled=false; }
 });

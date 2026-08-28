@@ -66,6 +66,7 @@ const SGG = {
 };
 
 function schoolinfoKey() {
+  if (process.env.SCHOOLINFO_API_KEY) return process.env.SCHOOLINFO_API_KEY;
   let raw;
   try { raw = fs.readFileSync(KEYFILE, 'utf8'); }
   catch (e) { console.error('✗ 인증키.txt 를 읽지 못했습니다: ' + KEYFILE); process.exit(1); }

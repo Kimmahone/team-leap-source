@@ -63,7 +63,7 @@ if (process.argv.includes('--help') || process.argv.includes('-h')) {
 }
 
 const ARG = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : null;
-const KEY = ARG || keyFromFile();
+const KEY = ARG || process.env.SCHOOLINFO_API_KEY || keyFromFile();
 const USE_CURL = process.argv.includes('--curl');
 if (!KEY) {
   console.error('인증키가 없습니다.');
@@ -71,7 +71,7 @@ if (!KEY) {
   console.error('  · node bake-coords.mjs <학교알리미 인증키> [--curl] 로 주세요.');
   process.exit(1);
 }
-if (!ARG) console.log('인증키: 인증키.txt (…' + KEY.slice(-6) + ')');
+if (!ARG) console.log('인증키: ' + (process.env.SCHOOLINFO_API_KEY ? '환경변수' : '인증키.txt') + ' (…' + KEY.slice(-6) + ')');
 
 /* 시군구 코드 — open api/시도시군구코드.xlsx 의 경상북도(47) 부분.
    군위군(47720)은 2023년 7월 1일 대구로 넘어가 여기 없습니다.

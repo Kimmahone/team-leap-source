@@ -225,7 +225,7 @@ const lvTotals = q(`(function(){
 check('학교급마다 시군별 셈이 0 이 아니다', Object.values(lvTotals).every(v => v > 0),
   JSON.stringify(lvTotals));
 
-console.log('\n■ 시뮬레이터 정책 검토 기능');
+console.log('\n■ 시군·학교급 시뮬레이터와 변화 읽기');
 check('행정안전부 지정 경북 인구감소지역은 15곳이고 예천은 제외한다',
   q('SIGUNGU.filter(sg=>sg.decline).length') === 15 && q("SIG_META['예천'].decline") === false);
 q("sim.sigungu=new Set(['영주']);sim.level='중';renderSim()");
@@ -233,8 +233,8 @@ const yjMid = q("aggregate(SIGUNGU.find(sg=>sg.s==='영주'),'중').stu");
 check('시뮬레이터 전체 행이 현재 지역 필터를 따른다',
   q('simExportRows[0].base.stu') === yjMid && /선택 지역: 영주시/.test(q('aiContext')),
   '영주 중학생: '+yjMid+' / 내보내기 합계: '+q('simExportRows[0].base.stu'));
-check('AI가 변화·위험·질문·추가자료 형식으로 정책 검토안을 요청한다',
-  /학교 운영 검토 신호/.test(q('aiContext')) && /추가 확인자료/.test(q('aiContext')));
+check('AI가 변화·주의·비교질문·공개자료 형식의 쉬운 해설을 요청한다',
+  /해석 주의사항/.test(q('aiContext')) && /더 살펴볼 공개자료/.test(q('aiContext')));
 check('현재 조건 비교표를 Excel xls로 저장할 수 있다',
   html.includes('id="sim-export-xls"') && /function exportSimXls/.test(html) && /\.xls`/.test(html));
 check('상세 Excel은 요약·기준·예측·시각화·산출기준 시트를 만든다',
@@ -243,7 +243,7 @@ check('상세 Excel은 요약·기준·예측·시각화·산출기준 시트를
 check('Excel 시군 행은 기능개선안의 표준 순서로 다시 정렬한다',
   /EXPORT_SIGUNGU_ORDER\s*=\s*\['포항','경주','김천','안동','구미','영주','영천','상주','문경','경산','의성','청송','영양','영덕','청도','고령','성주','칠곡','예천','봉화','울진','울릉'\]/.test(html) &&
   /orderedExportRows[\s\S]*exportSigunguIndex/.test(html));
-q("sim.sigungu=new Set();sim.decline=null;sim.admin=null;renderSim()");
+q("sim.sigungu=new Set();renderSim()");
 check('상세 Excel의 실제 행도 포항부터 울릉까지 표준 순서다',
   q("simulatorSheets()[1].rows.slice(2).map(r=>r[0]).join(',')") === '포항,경주,김천,안동,구미,영주,영천,상주,문경,경산,의성,청송,영양,영덕,청도,고령,성주,칠곡,예천,봉화,울진,울릉');
 check('모든 메뉴에 현재 화면 인쇄와 Excel 출력 도구가 있다',
@@ -257,20 +257,20 @@ check('긴 카드 전체를 한 쪽에 강제하지 않아 페이지 잘림을 �
 check('종합 대시보드 인쇄는 요약·지도·기준을 의미 단위로 쪽 나눔한다',
   ['home-summary-card','home-news-card','home-kpi-card','home-map-card'].every(id=>html.includes(`id="${id}"`)) &&
   /#home-map-card\{break-before:page/.test(html) && /#home-map-card \.criteria-guide\{break-before:page/.test(html));
-check('정책 검토안은 보고서 HTML과 별도 인쇄 기능을 제공한다',
+check('변화 요약은 보고서 HTML과 별도 인쇄 기능을 제공한다',
   html.includes('id="ai-print"') && /function policyMarkdown/.test(html) && /function renderPolicyReport/.test(html) && html.includes('id="ai-print-report"'));
-check('정책 검토안은 전용 인쇄 때만 나온다',
+check('변화 요약은 전용 인쇄 때만 나온다',
   /#ai-print-report\{display:none !important\}/.test(html) && /body\.print-ai-only #ai-print-report\{display:block !important/.test(html));
 check('일반 사용자 화면에 서비스 사업자·모델명이 드러나지 않는다',
   !/>[^<]*(Gemini|Cloudflare|gemini-3\.7)[^<]*</i.test(html.split('<script>')[0]));
 check('경북교육청 상징 워터마크 파일과 화면·인쇄 스타일이 있다',
   fs.existsSync(path.join(path.dirname(APP),'symbol1.jpg')) && /body::before[\s\S]*symbol1\.jpg/.test(html) && /@media print[\s\S]*body::before/.test(html));
-check('조회 조건을 지우지 않고 다중 필터를 교차 적용한다',
-  !/sim\.sigungu\.clear\(\);\s*syncSigChips\(\);\s*}\s*renderSim/.test(html) &&
-  /sim\.maxSize/.test(html) && html.includes('id="size-max"'));
-check('출처 없는 교육혁신선도지역 버튼 대신 자료 상태를 알린다',
-  !html.includes('data-f="innov"') && /공식 대상 명부 미확보/.test(html));
-check('AI 정책 검토 브리핑은 시뮬레이터 설명 뒤 맨 아래에 둔다',
+check('공개 시뮬레이터 범위를 시군·학교급으로 한정한다',
+  !html.includes('data-f="decline"') && !html.includes('data-f="admin"') &&
+  !html.includes('id="size-max"') && html.includes('id="sig-grid"') && html.includes('id="sim-level"'));
+check('내부 정책 명부를 요구하는 시뮬레이터 필터가 없다',
+  !html.includes('data-f="innov"') && !/공식 대상 명부 미확보/.test(html));
+check('AI 변화 읽기 도우미는 시뮬레이터 설명 뒤 맨 아래에 둔다',
   html.indexOf('id="ai-briefing"') > html.indexOf('<b>계산 방식</b>'));
 check('가나다순 용어 도움말을 오른쪽 서랍으로 제공한다',
   html.includes('id="glossary-drawer"') && html.includes('id="glossary-toggle"') &&
@@ -534,12 +534,12 @@ check('지어낸 다문화 비율이 없다', !/경주시 8\.2%|경북 평균\(3
 check('홈 인사이트를 셈해서 적는다',
   /function renderHomeInsight/.test(html) && !/코호트 진급에 따른 시뮬레이션 결과/.test(CODE_ONLY));
 check('하지 않은 분석을 말하지 않는다', !/꾸준히 증가하고 있습니다/.test(CODE_ONLY));
-check('주요업무계획이 지어낸 정책을 싣지 않는다',
-  !/지능형 튜터링 시스템 도입|이중언어 강점 개발/.test(CODE_ONLY));
+check('부서별 주요업무계획 메뉴를 공개 범위에서 제외한다',
+  !html.includes('data-view="plan"') && !html.includes('id="view-plan"'));
 check('폐교 탭이 지어낸 사례를 싣지 않는다',
   !/dummyCases/.test(CODE_ONLY) && !/closed-pin/.test(CODE_ONLY));
-check('비운 자리는 무엇이 필요한지 적는다',
-  html.includes('지방교육재정알리미') && html.includes('원고를 누가 주는지'));
+check('남아 있는 자료 미확보 영역은 필요한 공개 출처를 적는다',
+  html.includes('지방교육재정알리미') && html.includes('자료 미확보'));
 check('다크 모드가 있다', /@media \(prefers-color-scheme: dark\)/.test(html));
 check('인쇄 스타일이 있다', /@media print/.test(html));
 check('모션 축소 요청을 존중한다', /prefers-reduced-motion/.test(html));

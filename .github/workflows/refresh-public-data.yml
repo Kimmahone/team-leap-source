@@ -1,0 +1,86 @@
+name: 공공데이터 정기 확인 및 갱신
+
+on:
+  schedule:
+    # UTC 기준. 한국시간으로 매월 2일 06:10에 KOSIS 개정 여부를 확인합니다.
+    - cron: '10 21 1 * *'
+    # 한국시간 1·4·7·10월 2일 06:40에 학교·유치원 자료를 확인합니다.
+    - cron: '40 21 1 1,4,7,10 *'
+  workflow_dispatch:
+    inputs:
+      dataset:
+        description: 갱신할 공개자료
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - kosis
+          - schools
+          - kinder
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      KOSIS_API_KEY: ${{ secrets.KOSIS_API_KEY }}
+      SCHOOLINFO_API_KEY: ${{ secrets.SCHOOLINFO_API_KEY }}
+      KINDER_API_KEY: ${{ secrets.KINDER_API_KEY }}
+      PUBLIC_DATA_YEAR: ${{ vars.PUBLIC_DATA_YEAR || '2026' }}
+      CHOICE: ${{ inputs.dataset || 'scheduled' }}
+
+    steps:
+      - name: 저장소 가져오기
+        uses: actions/checkout@v4
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: KOSIS 학령인구·장래인구 확인
+        if: github.event.schedule == '10 21 1 * *' || inputs.dataset == 'all' || inputs.dataset == 'kosis'
+        run: |
+          if [ -z "$KOSIS_API_KEY" ]; then
+            echo "::warning::KOSIS_API_KEY가 없어 KOSIS 갱신을 건너뜁니다."
+          else
+            node "open api/bake-kosis.mjs"
+          fi
+
+      - name: 학교알리미 학생·학급·좌표 확인
+        if: github.event.schedule == '40 21 1 1,4,7,10 *' || inputs.dataset == 'all' || inputs.dataset == 'schools'
+        run: |
+          if [ -z "$SCHOOLINFO_API_KEY" ]; then
+            echo "::warning::SCHOOLINFO_API_KEY가 없어 학교알리미 갱신을 건너뜁니다."
+          else
+            node "open api/bake-students.mjs" "--year=$PUBLIC_DATA_YEAR"
+            node "open api/bake-special.mjs" "--year=$PUBLIC_DATA_YEAR"
+            node "open api/bake-coords.mjs"
+          fi
+
+      - name: 유치원알리미 기본현황 확인
+        if: github.event.schedule == '40 21 1 1,4,7,10 *' || inputs.dataset == 'all' || inputs.dataset == 'kinder'
+        run: |
+          if [ -z "$KINDER_API_KEY" ]; then
+            echo "::warning::KINDER_API_KEY가 없어 유치원알리미 갱신을 건너뜁니다."
+          else
+            node "open api/bake-kinder.mjs"
+          fi
+
+      - name: 전체 품질검사와 배포본 생성
+        run: bash "./사이트 굽기.command"
+
+      - name: 검증된 데이터만 원본 저장소에 반영
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "06. 실행계획(1)/prototype/index.html" "08. 실행계획(3)/apps" "open api/data"
+          if git diff --cached --quiet; then
+            echo "공식 원자료에 변경이 없어 현재 검증본을 유지합니다."
+          else
+            git commit -m "🤖 공공데이터 정기 갱신 ($PUBLIC_DATA_YEAR)"
+            git push
+            echo "::notice::검사를 통과한 공공데이터 갱신본을 반영했습니다."
+          fi
