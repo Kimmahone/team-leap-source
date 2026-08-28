@@ -2,7 +2,7 @@
  * 공개 대시보드와 향후 데이터 백엔드가 함께 쓰는 데이터 목록입니다.
  * 인증키 값은 절대 적지 않고 Cloudflare 런타임 환경변수 이름만 적습니다.
  */
-export const CATALOG_VERSION = '2026-08-28.1';
+export const CATALOG_VERSION = '2026-08-28.2';
 
 export const DATASETS = [
   {
@@ -65,7 +65,7 @@ export const SERVICES = [
     optionalEnv: ['SGIS_CONSUMER_SECRET'], runtime: true
   },
   { id: 'schoolinfo', name: '학교알리미 갱신', env: ['SCHOOLINFO_API_KEY'], runtime: false },
-  { id: 'edss', name: 'EDSS 보완 갱신(승인 대기)', env: ['EDSS_API_KEY'], runtime: false },
+  { id: 'edss', name: 'EDSS 학교속성 승인·학생·학급 보완 신청', env: ['EDSS_API_KEY'], runtime: false },
   { id: 'kosis', name: 'KOSIS 갱신', env: ['KOSIS_API_KEY'], runtime: false },
   { id: 'kinder', name: '유치원알리미 갱신', env: ['KINDER_API_KEY'], runtime: false }
 ];

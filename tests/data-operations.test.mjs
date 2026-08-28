@@ -11,9 +11,10 @@ const check=(name,ok)=>{if(ok){pass++;console.log('OK '+name);}else{fail++;conso
 
 const requiredDocs=[
   'README.md','01_서비스_범위와_운영원칙.md','02_API키_갱신_매뉴얼.md',
-  '03_데이터_기준연도와_오류관리.md','04_정기점검_체크리스트.md','05_자료요청_범위_정리.md'
+  '03_데이터_기준연도와_오류관리.md','04_정기점검_체크리스트.md','05_자료요청_범위_정리.md',
+  '06_EDSS_승인후_연결절차.md'
 ];
-check('운영자가 먼저 읽을 문서 6종이 한 폴더에 있다',requiredDocs.every(name=>fs.existsSync(path.join(ROOT,docs,name))));
+check('운영자가 먼저 읽을 문서 7종이 한 폴더에 있다',requiredDocs.every(name=>fs.existsSync(path.join(ROOT,docs,name))));
 
 const index=read(`${docs}/README.md`);
 check('운영문서 색인에 역할·자동화·상세문서가 연결된다',/데이터 운영/.test(index)&&/현재 자동화/.test(index)&&requiredDocs.slice(1).every(name=>index.includes(name)));
@@ -29,7 +30,7 @@ check('수집 스크립트가 GitHub Actions 환경변수를 읽는다',
   /process\.env\.SCHOOLINFO_API_KEY/.test(read('open api/bake-special.mjs'))&&
   /process\.env\.KINDER_API_KEY/.test(read('open api/bake-kinder.mjs')));
 
-check('EDSS 승인 대기 환경변수가 목록에 있다',SERVICES.some(s=>s.id==='edss'&&s.env.includes('EDSS_API_KEY')));
+check('EDSS 승인·신청 상태의 환경변수가 목록에 있다',SERVICES.some(s=>s.id==='edss'&&s.env.includes('EDSS_API_KEY')));
 check('내부 정책·사업 자료를 핵심 데이터에서 제외한다',DATASETS.some(d=>d.id==='D6'&&d.status==='out_of_scope'));
 check('이전 내부자료 요청 문서가 발송 금지로 표시된다',
   /발송하지 않음/.test(read('06. 실행계획(1)/경북교육청_내부자료_요청목록.md'))&&
