@@ -593,6 +593,9 @@ check('학령인구 현황은 실제 KOSIS 출처와 학생수 모의값을 구�
   !html.includes('국가데이터처 장래인구추계 (더미 보간값)'));
 check('학령인구·학생수 모드에 맞춰 추이 제목을 바꾼다',
   html.includes('id="trend-title"') && /학령인구 추이/.test(html) && /학생수 추이/.test(html));
+check('홈 화면의 자료 출처 표에 KOSIS 학령인구와 학생수 모의값의 성격이 함께 있다',
+  /KOSIS 주민등록인구현황·장래인구추계/.test(html) && /학령인구는 실제 재학생 수와 다릅니다/.test(html) &&
+  /미확보 연도는 비교용 단순 연결값/.test(html));
 check('분석 서비스 키는 HTML에 없고 같은 출처 중계만 쓴다', html.includes("fetch('/api/ai-analysis'") && !/GEMINI_API_KEY|generativelanguage\.googleapis\.com/.test(html));
 check('720px 모바일 레이아웃이 있다', /@media \(max-width:720px\)[\s\S]*?\.shell\{display:block/.test(html));
 check('가짜 소재지 배정이 없다', !/i\s*%\s*3|임의 배정한 더미/.test(CODE_ONLY));
