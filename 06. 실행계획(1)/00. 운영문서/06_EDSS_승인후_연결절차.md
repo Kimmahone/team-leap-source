@@ -1,10 +1,10 @@
 # EDSS 승인 후 연결 절차
 
-갱신: 2026-08-28
+갱신: 2026-08-29
 
 ## 결론
 
-EDSS 인증키는 지금 **Cloudflare에 넣지 않는다**. 정기 수집 프로그램이 사용할 키이므로 원본 저장소 team-leap-source의 **GitHub Actions Repository Secret**으로만 등록한다.
+신청한 EDSS API 7개가 모두 승인·인증키 발급 대기 상태이므로, 지금은 **어디에도 EDSS 인증키를 등록하지 않는다**. 인증키를 받은 API만 정기 수집 프로그램용으로 원본 저장소 team-leap-source의 **GitHub Actions Repository Secret**에 등록한다.
 
 현재 공개 화면은 EDSS를 브라우저에서 직접 부르지 않는다. 따라서 Cloudflare Secret에 넣어도 현재 화면 기능은 달라지지 않으며, 필요한 곳보다 넓게 키를 보관하게 된다. 여러 EDSS 키를 한 Secret 값에 합쳐 넣는 방식도 사용하지 않는다.
 
@@ -12,18 +12,17 @@ EDSS 인증키는 지금 **Cloudflare에 넣지 않는다**. 정기 수집 프�
 
 | 구분 | 지금 등록할 곳 | 이름 | 이유 |
 |---|---|---|---|
-| 학교속성 수집 키 | GitHub → team-leap-source → Settings → Secrets and variables → Actions → Secrets | EDSS_SCHOOL_ATTRIBUTE_API_KEY | **현재 승인분. 지금 이 키 하나만 등록** |
-| 나머지 EDSS API 키 | 같은 위치 | API별 EDSS_…_API_KEY | 각 API 승인·키 수령 뒤 하나씩 추가 |
+| EDSS API 수집 키 | GitHub → team-leap-source → Settings → Secrets and variables → Actions → Secrets | API별 `EDSS_…_API_KEY` | **현재는 모두 승인 대기 — 키 수령 뒤 해당 API만 하나씩 추가** |
 | Cloudflare Pages | 등록하지 않음 | 해당 없음 | 현재 Pages Function·브라우저가 EDSS를 호출하지 않음 |
-| 로컬 개발 | 필요할 때만 프로젝트 루트 .dev.vars | EDSS_SCHOOL_ATTRIBUTE_API_KEY | 개발자가 승인 응답을 한 번 점검할 때만 사용 |
+| 로컬 개발 | 필요할 때만 프로젝트 루트 .dev.vars | 승인된 API의 `EDSS_…_API_KEY` | 개발자가 승인 응답을 한 번 점검할 때만 사용 |
 
 ## GitHub에 안전하게 등록하는 방법
 
 1. GitHub에서 Kimmahone/team-leap-source 저장소를 연다.
 2. **Settings → Secrets and variables → Actions**를 연다.
 3. **Secrets** 탭에서 **New repository secret**을 누른다.
-4. Name에 정확히 EDSS_SCHOOL_ATTRIBUTE_API_KEY를 입력한다.
-5. Value에 **학교속성[교육통계][EDSS] 키 하나만** 붙여 넣는다.
+4. Name에 승인된 API에 해당하는 환경변수 이름(예: `EDSS_SCHOOL_ATTRIBUTE_API_KEY`)을 정확히 입력한다.
+5. Value에 **그 API의 키 하나만** 붙여 넣는다.
 6. **Add secret**을 누른다.
 
 Variables가 아니라 반드시 Secrets에 등록한다. 등록 후에는 값이 다시 표시되지 않는 것이 정상이다.
@@ -32,7 +31,7 @@ Variables가 아니라 반드시 Secrets에 등록한다. 등록 후에는 값�
 
 ## 아직 자동 수집이 시작되지 않는 이유
 
-현재는 학교속성 API만 승인됐고, EDSS의 실제 요청 URL·파라미터·응답 필드가 아직 대시보드 코드에 연결되지 않았다. 따라서 키를 등록해도 지금 즉시 화면의 숫자가 바뀌지는 않는다.
+현재는 신청한 모든 API가 승인 대기이고, EDSS의 실제 요청 URL·파라미터·응답 필드도 아직 대시보드 코드에 연결되지 않았다. 따라서 승인·키 수령 전에는 수집을 시작하지 않는다.
 
 학생·학급 API가 승인된 뒤 개발 문서와 키를 확인하면 다음 순서로 연결한다.
 

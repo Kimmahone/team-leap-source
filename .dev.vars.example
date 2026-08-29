@@ -1,7 +1,7 @@
 # 로컬 개발용 예시입니다. 실제 값은 .dev.vars에 넣고 커밋하지 마세요.
 GEMINI_API_KEY=replace_after_rotating_the_exposed_key
 SCHOOLINFO_API_KEY=replace_after_rotating_the_exposed_key
-EDSS_SCHOOL_ATTRIBUTE_API_KEY=add_approved_school_attribute_key
+EDSS_SCHOOL_ATTRIBUTE_API_KEY=add_after_approval
 EDSS_CLASS_STUDENT_API_KEY=add_after_approval
 EDSS_STUDENT_STATUS_API_KEY=add_after_approval
 EDSS_CLASS_STATUS_API_KEY=add_after_approval

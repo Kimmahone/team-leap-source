@@ -5,7 +5,7 @@
 | 서비스 | 환경변수 | 용도 | 운영 저장소 | 확인 주기 |
 |---|---|---|---|---|
 | 학교알리미 | `SCHOOLINFO_API_KEY` | 학교 기준정보·학생·학급·교원·좌표 | GitHub Actions Secret, 로컬 `.dev.vars` | 분기 상태 확인·연 1회 공시 갱신 |
-| EDSS 학교속성 | `EDSS_SCHOOL_ATTRIBUTE_API_KEY` | 학교코드·학교급·시군·운영상태 연결 | **GitHub Actions Secret만 등록** | 승인됨 — 지금 등록 |
+| EDSS 학교속성 | `EDSS_SCHOOL_ATTRIBUTE_API_KEY` | 학교코드·학교급·시군·운영상태 연결 | **GitHub Actions Secret만 등록** | 승인·키 수령 후 등록 |
 | EDSS 학생·학급 등 | API별 `EDSS_…_API_KEY` | 학생·학급·개황·위치정보 보완 | **GitHub Actions Secret만 등록** | 각 API 승인·키 수령 시 |
 | KOSIS | `KOSIS_API_KEY` | 출생아·연령별 인구·장래인구 | GitHub Actions Secret, 로컬 `.dev.vars` | 매월 개정 확인 |
 | SGIS | `SGIS_CONSUMER_KEY`, `SGIS_CONSUMER_SECRET` | 실제 위치 지도 | Cloudflare Secret, 로컬 `.dev.vars` | 분기 상태 확인 |

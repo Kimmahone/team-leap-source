@@ -23,6 +23,7 @@ await check('상태 API가 키 값을 노출하지 않고 설정 여부만 돌�
   assert.ok(body.datasets.length >= 10);
   assert.equal(body.services.find(s => s.id === 'gemini').configured, true);
   assert.equal(body.services.find(s => s.id === 'sgis').configured, false);
+  assert.equal(body.services.find(s => s.id === 'edss').configurationState, 'pending_approval');
   assert.equal(text.includes(secret), false);
 });
 

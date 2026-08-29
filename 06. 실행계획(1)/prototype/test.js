@@ -587,6 +587,12 @@ check('학년별 학생 차트가 학교알리미 grades를 합산한다', html.
 check('유치원 수를 배열에서 동적으로 센다', /source-kinder-count[\s\S]*KINDERGARTENS\.length/.test(html));
 check('유치원 교원 수 미확보를 명시한다', html.includes("homeState.level==='유' ? '자료 미확보'"));
 check('KOSIS 공식 학령인구 시계열을 우선 사용한다', /const KOSIS_POP = \{/.test(html) && /kind==='pop' && KOSIS_POP\[year\]/.test(html));
+check('학령인구 현황은 실제 KOSIS 출처와 학생수 모의값을 구분해 표시한다',
+  html.includes('id="status-source"') && html.includes('KOSIS 주민등록인구(2016~2025)') &&
+  html.includes('학교알리미 2026 공시 실적 · 그 외 연도는 비교용 단순 연결값') &&
+  !html.includes('국가데이터처 장래인구추계 (더미 보간값)'));
+check('학령인구·학생수 모드에 맞춰 추이 제목을 바꾼다',
+  html.includes('id="trend-title"') && /학령인구 추이/.test(html) && /학생수 추이/.test(html));
 check('분석 서비스 키는 HTML에 없고 같은 출처 중계만 쓴다', html.includes("fetch('/api/ai-analysis'") && !/GEMINI_API_KEY|generativelanguage\.googleapis\.com/.test(html));
 check('720px 모바일 레이아웃이 있다', /@media \(max-width:720px\)[\s\S]*?\.shell\{display:block/.test(html));
 check('가짜 소재지 배정이 없다', !/i\s*%\s*3|임의 배정한 더미/.test(CODE_ONLY));

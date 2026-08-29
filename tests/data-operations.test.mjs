@@ -30,7 +30,7 @@ check('수집 스크립트가 GitHub Actions 환경변수를 읽는다',
   /process\.env\.SCHOOLINFO_API_KEY/.test(read('open api/bake-special.mjs'))&&
   /process\.env\.KINDER_API_KEY/.test(read('open api/bake-kinder.mjs')));
 
-check('EDSS API별 비밀변수가 목록에 있다',SERVICES.some(s=>s.id==='edss'&&s.env.includes('EDSS_SCHOOL_ATTRIBUTE_API_KEY')&&s.optionalEnv.includes('EDSS_STUDENT_STATUS_API_KEY')));
+check('EDSS 승인 대기와 API별 비밀변수 목록이 분리되어 있다',SERVICES.some(s=>s.id==='edss'&&s.pendingApproval&&s.env.length===0&&s.optionalEnv.includes('EDSS_SCHOOL_ATTRIBUTE_API_KEY')&&s.optionalEnv.includes('EDSS_STUDENT_STATUS_API_KEY')));
 check('내부 정책·사업 자료를 핵심 데이터에서 제외한다',DATASETS.some(d=>d.id==='D6'&&d.status==='out_of_scope'));
 check('이전 내부자료 요청 문서가 발송 금지로 표시된다',
   /발송하지 않음/.test(read('06. 실행계획(1)/경북교육청_내부자료_요청목록.md'))&&

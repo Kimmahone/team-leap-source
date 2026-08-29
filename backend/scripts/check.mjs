@@ -38,7 +38,7 @@ export function validateBackendFoundation() {
   }
 
   for (const service of SERVICES) {
-    if (!service.env?.length) errors.push(`환경변수 이름 없음: ${service.id}`);
+    if (!service.env?.length && !service.pendingApproval) errors.push(`환경변수 이름 없음: ${service.id}`);
     for (const name of service.env || []) {
       if (!/^[A-Z][A-Z0-9_]+$/.test(name)) errors.push(`환경변수 이름 형식 오류: ${name}`);
     }

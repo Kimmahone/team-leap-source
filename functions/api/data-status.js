@@ -2,14 +2,19 @@ import { CATALOG_VERSION, DATASETS, SERVICES } from '../shared/data-catalog.js';
 
 export async function onRequestGet(context) {
   const env = context?.env || {};
-  const services = SERVICES.map(service => ({
-    id: service.id,
-    name: service.name,
-    use: service.runtime ? 'runtime' : 'scheduled_ingest',
-    configured: service.env.every(name => typeof env[name] === 'string' && env[name].trim().length > 0),
-    requiredVariables: service.env,
-    optionalVariables: service.optionalEnv || []
-  }));
+  const services = SERVICES.map(service => {
+    const pendingApproval = Boolean(service.pendingApproval);
+    const configured = !pendingApproval && service.env.every(name => typeof env[name] === 'string' && env[name].trim().length > 0);
+    return {
+      id: service.id,
+      name: service.name,
+      use: service.runtime ? 'runtime' : 'scheduled_ingest',
+      configured,
+      configurationState: pendingApproval ? 'pending_approval' : (configured ? 'configured' : 'not_configured'),
+      requiredVariables: service.env,
+      optionalVariables: service.optionalEnv || []
+    };
+  });
 
   const body = {
     ok: true,

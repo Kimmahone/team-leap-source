@@ -995,8 +995,8 @@ table.data .hl{color:var(--brand);font-weight:800}
           <div style="width:16px;height:16px;border-radius:4px;background:var(--seg-고);border:1px solid var(--line-2)"></div>
           <span style="font-weight:600;font-size:13px;color:var(--ink)">고등학교 (연한 주황)</span>
         </div>
-        <div style="margin-left:auto;color:var(--ink-3);font-size:12px;align-self:center">
-          자료출처: 국가데이터처 장래인구추계 (더미 보간값)
+        <div id="status-source" style="margin-left:auto;color:var(--ink-3);font-size:12px;align-self:center">
+          자료출처: KOSIS 주민등록인구·장래인구추계 (6~18세)
         </div>
       </div>
 
@@ -1024,7 +1024,7 @@ table.data .hl{color:var(--brand);font-weight:800}
       <!-- 연도별 추이 선 그래프 -->
       <div style="margin-top:24px;border-top:1px solid var(--line-2);padding-top:20px">
         <h3 style="font-size:14px;color:var(--brand);margin-bottom:10px;display:flex;align-items:center;gap:6px">
-          <span>연도별 학생수 추이 (Line Chart)</span>
+          <span id="trend-title">연도별 학령인구 추이 (Line Chart)</span>
           <span style="font-size:11px;font-weight:400;color:var(--ink-3)">(Pure SVG 오프라인 차트)</span>
         </h3>
         <div style="background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:16px;overflow-x:auto">
@@ -1034,7 +1034,7 @@ table.data .hl{color:var(--brand);font-weight:800}
       </div>
 
       <div class="spec" style="margin-top:24px">
-        <b>데이터 정의</b> — <b>학령인구</b>: 국가데이터처 장래인구추계, 6~18세, 대학(19~24세) 인구 제외, 현재 기준 전후 10년.
+        <b>데이터 정의</b> — <b>학령인구</b>: KOSIS 주민등록인구(2016~2025)와 장래인구추계(2026~2036)의 6~18세 합계입니다.
         <b>학생수</b>: 학교알리미 2026 재학생 실적. 다른 연도의 미확보 구간은 단순 연결·모의값이므로 공식 학생수 전망으로 해석하지 않습니다.
         <br>※ 2016~2025년은 KOSIS 주민등록인구현황, 2026~2036년은 KOSIS 경상북도 시·군 장래인구추계의 1세별 자료를 합산했습니다.
       </div>
@@ -3636,8 +3636,12 @@ function renderStatus(){
   document.getElementById('tot-future').textContent = tot(F);
   document.getElementById('chart-title').textContent =
     dsKind==='pop' ? '경북 학령인구(6~18세) 변동현황' : '경북 학생수 변동현황';
-  document.getElementById('ds-note').textContent =
-    dsKind==='pop' ? '국가데이터처 장래인구추계 · 대학(19~24세) 제외' : '경상북도교육청 재학생 수 · 초등 재학생 예측 반영';
+  const populationSource = 'KOSIS 주민등록인구(2016~2025) · 장래인구추계(2026~2036) · 6~18세';
+  const studentSource = '학교알리미 2026 공시 실적 · 그 외 연도는 비교용 단순 연결값';
+  document.getElementById('ds-note').textContent = dsKind==='pop' ? populationSource : studentSource;
+  document.getElementById('status-source').textContent = '자료출처: ' + (dsKind==='pop' ? populationSource : studentSource);
+  document.getElementById('trend-title').textContent = dsKind==='pop' ? '연도별 학령인구 추이 (Line Chart)' : '연도별 학생수 추이 (Line Chart)';
+  document.getElementById('trend-line-svg').setAttribute('aria-label', dsKind==='pop' ? '연도별 학령인구 추이 선 그래프' : '연도별 학생수 추이 선 그래프');
 
   const maxT = Math.max(tot(P),tot(N),tot(F));
   const bars = document.getElementById('bars'); bars.innerHTML='';
