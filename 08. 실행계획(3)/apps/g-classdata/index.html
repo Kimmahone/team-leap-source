@@ -1665,6 +1665,11 @@ global.LEAP=LEAP;})(window);
       subject: TPL[0].subject || '', scope: TPL[0].scope || '', date: '', comp: TPL[0].comp || '' }];
   }
 
+  /* 이 한 벌이 이미 들어와 있는가 — 같은 이름이 있으면 그렇게 봅니다 */
+  function bundleHas(b, item) {
+    return b.make().some(function (x) { return x.n === item.n; });
+  }
+
   /* 접어 둔 것 — 필요할 때 한 벌로 꺼냅니다 */
   var BUNDLES = [
     { k: 'ach', n: '성취·참여 한 벌', d: '단원평가 · 수행평가 · 발표 · 과제 — 다섯 항목',
@@ -2033,6 +2038,19 @@ global.LEAP=LEAP;})(window);
       '<p class="small muted" style="margin:8px 0 0">설문지를 실제로 돌리셨다면 오른쪽을 누르세요. ' +
       '한국교육과정평가원 「3~6학년 사회정서역량 진단도구」 문항 그대로 들어갑니다.</p>';
 
+    /* ★ 한 벌 더하기 — 처음에는 «한 항목»만 놓고, 필요할 때 꺼냅니다.
+       열두 항목을 처음부터 깔아 두면 「다 채워야 뭔가 나온다」로 읽힙니다. */
+    h += '<h3>한 벌 더하기</h3>' +
+      '<p class="small muted" style="margin:0 0 12px">자주 쓰는 항목을 묶어 두었습니다. ' +
+      '<b>지금 필요한 것만</b> 꺼내 쓰세요.</p>' +
+      '<div class="bundles">' + BUNDLES.map(function (b) {
+        var have = D().items.some(function (x) { return bundleHas(b, x); });
+        return '<button class="bundle" type="button" data-bundle="' + b.k + '"' +
+          (have ? ' disabled' : '') + '>' +
+          '<span class="n">' + esc(b.n) + (have ? ' <i>이미 있습니다</i>' : '') + '</span>' +
+          '<span class="d">' + esc(b.d) + '</span></button>';
+      }).join('') + '</div>';
+
     h += '<h3>직접 만들기</h3><div class="grid3">' +
       fld('이름', '<input class="txt" id="n-name" maxlength="80" placeholder="예: 2단원 단원평가">') +
       fld('범주', '<select class="txt" id="n-cat">' + CATS.map(function (c) {
@@ -2084,6 +2102,24 @@ global.LEAP=LEAP;})(window);
         var t = TPL[+b.getAttribute('data-tpl')];
         save(function (d) { addItem(d, t, t.type === 'text' ? '' : LEAP.todayISO()); });
         render(); LEAP.announce('「' + t.n.slice(0, 16) + '」을 더했습니다. 실시일을 확인해 주세요.');
+      });
+    });
+    each(P.set.querySelectorAll('[data-bundle]'), function (b) {
+      on(b, 'click', function () {
+        var k = b.getAttribute('data-bundle'), bun = null;
+        BUNDLES.forEach(function (x) { if (x.k === k) bun = x; });
+        if (!bun) return;
+        var add = bun.make().filter(function (x) {
+          return !D().items.some(function (y) { return y.n === x.n; });
+        });
+        if (!add.length) { LEAP.announce('이미 다 들어 있습니다.'); return; }
+        var before = JSON.stringify(D());
+        save(function (d) { add.forEach(function (x) { d.items.push(x); }); });
+        render();
+        LEAP.announce(bun.n + ' — ' + add.length + '개를 더했습니다.');
+        LEAP.offerUndo(bun.n + ' 을(를) 더했습니다.', function () {
+          db.set(JSON.parse(before)); render(); LEAP.announce('되돌렸습니다.');
+        });
       });
     });
     on(q('#btn-selset'), 'click', function () {
