@@ -837,9 +837,18 @@ console.log('\n[v0.4-7] 미리보기와 종이가 같은 폭이다');
 
 console.log('\n[v0.4-8] 인쇄 — 알림 말풍선이 종이에 찍히지 않는다');
 {
-  check('토스트를 인쇄에서 감춘다', /@media print\{[\s\S]{0,400}?\.leap-toast\{display:none/.test(html) ||
-    html.includes('footer.foot,.leap-toast{display:none !important}'),
+  /* 선택자를 «글자 그대로» 찾던 자리입니다. 숨길 것이 하나 늘자(main) 깨졌습니다.
+     지키려는 것은 「인쇄에서 토스트가 안 보인다」이므로, 인쇄 블록 안에서
+     .leap-toast 가 display:none 규칙에 들어 있는지만 봅니다. */
+  const printBlocks = [...html.matchAll(/@media\s+print\s*\{([\s\S]*?)\n\}/g)].map(m => m[1]).join('\n');
+  const hidesToast = [...printBlocks.matchAll(/([^{}]+)\{[^}]*display\s*:\s*none[^}]*\}/g)]
+    .some(m => m[1].includes('.leap-toast'));
+  check('토스트를 인쇄에서 감춘다', hidesToast,
     '인쇄를 누르기 직전에 뜬 알림이 종이 한가운데에 검은 말풍선으로 찍혔다');
+  check('일하는 화면 자체도 인쇄에서 감춘다',
+    [...printBlocks.matchAll(/([^{}]+)\{[^}]*display\s*:\s*none[^}]*\}/g)]
+      .some(m => /\bmain\b/.test(m[1])),
+    '패널 이름을 하나하나 적어 숨기면 탭이 늘 때 조용히 새어 나온다');
 }
 
 console.log('\n[v0.4-9] AI 초안 — 목적 이름을 베껴 적지 않는다');

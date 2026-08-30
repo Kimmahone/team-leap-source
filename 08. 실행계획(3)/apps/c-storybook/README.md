@@ -1,8 +1,8 @@
-# 지역 탐방 디지털 스토리북 (앱 C) — v0.8
+# 지역 탐방 디지털 스토리북 (앱 C)
 
 - 실행: `index.html`을 브라우저로 열면 됩니다. 설치·로그인·인터넷 모두 필요 없습니다.
 - 근거: 08 「TEAM LEAP 앱 개발 실행계획」 5장 / 07 기획서 ⑤ (축소)
-- 점검: `node test.js` (268개) · `node test-epub.js` (42개)
+- 점검: `node test.js` (270개) · `node test-epub.js` (42개)
 
 ---
 
@@ -566,7 +566,7 @@ after   .sheet(186×271mm) ─┬─ scale(0.74) → 화면
 ```
 c-storybook/
 ├─ index.html      ← 전부 여기에 (HTML + CSS + JS)
-├─ test.js         ← node test.js       화면·편집·탐방·책장·학교·표지·종이 221개
+├─ test.js         ← node test.js       화면·편집·탐방·책장·학교·표지·종이 270개
 ├─ test-epub.js    ← node test-epub.js  EPUB 파일 자체 42개
 ├─ verify-epub.py  ← test-epub.js 가 불러 쓰는 규격 검사
 └─ README.md

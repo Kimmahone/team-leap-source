@@ -2,12 +2,12 @@
 
 > **왼쪽에서 적으면 오른쪽에 나올 종이가 바로 보입니다.**
 > 차시안(1·2차시)과 단원안을 **A4 가로·세로** 두 양식으로 냅니다.
-> 서버 없는 단일 HTML. v0.5 · 점검 178개 통과
+> 서버 없는 단일 HTML. 점검 179개 통과
 
 ```
 f-lessonplan/
 ├─ index.html            ← 두 번 누르면 열립니다
-├─ test.js               ← node test.js  (178개)
+├─ test.js               ← node test.js  (179개)
 ├─ bake-standards.mjs    ← 성취기준·성취수준을 앱 안에 굽습니다
 ├─ .build/               ← 조각과 조립 스크립트 (아래 「고칠 때」)
 └─ README.md             ← 이 문서
@@ -297,7 +297,7 @@ API 키를 쓰지 않습니다. 학교에서 키 발급이 막히는 일이 잦�
 
 ```bash
 ./.build/assemble.sh     # 조각 → index.html → 성취기준 굽기
-node test.js             # 178개
+node test.js             # 179개
 ```
 
 | 조각 | 무엇 |
@@ -333,7 +333,7 @@ node test.js             # 178개
 ## 검사
 
 ```bash
-node test.js      # 178개
+node test.js      # 179개
 ```
 
 기능이 아니라 **약속한 규칙**을 봅니다.

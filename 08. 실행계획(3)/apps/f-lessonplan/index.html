@@ -70,6 +70,16 @@
 *{box-sizing:border-box}
 body{margin:0;font-family:var(--leap-font);font-size:1rem;line-height:1.65;
   color:var(--leap-ink);background:var(--leap-bg);-webkit-text-size-adjust:100%}
+/* 본문 바로가기 — 평소에는 화면 밖에, 초점이 오면 제자리로 */
+.skip{position:absolute;left:12px;top:-56px;z-index:300;
+  padding:11px 18px;min-height:44px;display:inline-flex;align-items:center;
+  border-radius:var(--leap-radius-sm);background:var(--leap-surface);
+  color:var(--leap-ink);border:2px solid var(--leap-blue);
+  font-weight:700;font-size:.9375rem;text-decoration:none;
+  transition:top .15s}
+.skip:focus{top:12px}
+@media (prefers-reduced-motion:reduce){.skip{transition:none}}
+@media print{.skip{display:none!important}}
 :focus-visible{outline:3px solid var(--leap-blue);outline-offset:3px;border-radius:var(--leap-radius-sm)}
 .leap-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
   clip:rect(0 0 0 0);white-space:nowrap;border:0}
@@ -80,6 +90,20 @@ button,input,textarea,select{font:inherit;color:inherit}
   font-size:.9375rem;font-weight:700;box-shadow:var(--leap-shadow-lg);
   opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:90;max-width:88vw;text-align:center}
 .leap-toast.is-on{opacity:1;transform:translateX(-50%) translateY(0)}
+/* 한 걸음 되돌리기 띠 — 화면 아래에 잠깐. 종이에는 찍히지 않습니다. */
+.leap-undobar{position:fixed;left:50%;bottom:22px;transform:translate(-50%,14px);
+  display:none;align-items:center;gap:12px;max-width:min(560px,calc(100vw - 32px));
+  padding:12px 14px 12px 18px;border-radius:999px;
+  background:var(--leap-surface);border:1px solid var(--leap-border);
+  box-shadow:var(--leap-shadow-lg);z-index:200;opacity:0;
+  transition:opacity .18s,transform .18s}
+.leap-undobar.is-on{display:flex;opacity:1;transform:translate(-50%,0)}
+.leap-undobar p{margin:0;font-size:.875rem;font-weight:700;color:var(--leap-ink)}
+.leap-undox{flex:none;width:28px;height:28px;border-radius:999px;border:0;
+  background:transparent;color:var(--leap-gray);font-size:.9rem;cursor:pointer;line-height:1}
+.leap-undox:hover{background:var(--leap-hairline);color:var(--leap-ink)}
+@media print{.leap-undobar{display:none!important}}
+@media (prefers-reduced-motion:reduce){.leap-undobar{transition:none}}
 
 header.top{background:var(--grad-head);color:#fff;position:relative;overflow:hidden}
 header.top .deco{position:absolute;right:-40px;top:-30px;width:280px;height:280px;opacity:.13;pointer-events:none}
@@ -94,7 +118,7 @@ header.top .deco{position:absolute;right:-40px;top:-30px;width:280px;height:280p
   display:grid;place-items:center;border:1px solid rgba(255,255,255,.2)}
 .brand h1{margin:0;font-size:1.25rem;letter-spacing:-.02em;line-height:1.25}
 .brand .sub{font-size:.75rem;color:rgba(255,255,255,.72);letter-spacing:.03em;margin-top:1px}
-.top-actions{margin-left:auto;display:flex;gap:8px}
+.top-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .iconbtn{min-height:42px;padding:8px 15px;font-size:.8125rem;font-weight:700;
   border:1px solid rgba(255,255,255,.28);border-radius:999px;background:rgba(255,255,255,.1);color:#fff;cursor:pointer}
 .iconbtn:hover{background:rgba(255,255,255,.2)}
@@ -145,6 +169,18 @@ main.wrap{max-width:1360px;margin:0 auto;padding:26px 20px 90px}
   background:var(--leap-hairline);color:var(--leap-gray);font-size:1rem;font-weight:700}
 .modal-x:hover{background:var(--leap-border);color:var(--leap-ink)}
 .modal-b{padding:20px 22px 24px;overflow:auto;-webkit-overflow-scrolling:touch}
+/* 갈림길 — 잃지 않는 길이 맨 위 (앱 A·B·D·H·I 와 같은 모양) */
+.picks2{display:grid;gap:9px}
+.pick2{text-align:left;border:2px solid var(--leap-border);background:var(--leap-surface);
+  border-radius:var(--leap-radius);padding:14px 16px;cursor:pointer;min-height:64px;
+  font:inherit;color:var(--leap-ink);width:100%}
+.pick2:hover{border-color:var(--leap-blue);background:var(--tint-blue)}
+.pick2 .n{display:block;font-weight:800;font-size:.9375rem}
+.pick2 .d{display:block;font-size:.8125rem;color:var(--leap-gray);margin-top:3px;line-height:1.6}
+.pick2--go{border-color:var(--leap-teal);background:var(--tint-teal)}
+.pick2--go:hover{border-color:var(--solid-teal)}
+.pick2--off{border-style:dashed}
+.pick2--off:hover{border-style:solid}
 .modal-b > .sheet{margin-bottom:0}
 
 /* AI 초안 도우미 단계 */
@@ -175,7 +211,7 @@ main.wrap{max-width:1360px;margin:0 auto;padding:26px 20px 90px}
 .btn--danger{background:transparent;color:var(--leap-amber);border-color:var(--leap-amber)}
 .btn--danger:hover{background:var(--tint-amber);box-shadow:none;filter:none}
 .btn:disabled{opacity:.4;cursor:not-allowed;filter:none;transform:none;box-shadow:none}
-.btn--sm{padding:8px 15px;min-height:40px;font-size:.8125rem}
+.btn--sm{padding:8px 15px;min-height:44px;font-size:.8125rem}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;align-items:center}
 
 label.fld{display:block;font-weight:700;font-size:.875rem;margin:0 0 8px}
@@ -498,7 +534,11 @@ footer.foot{margin-top:40px}
 .stg-g{display:grid;gap:9px}
 .stg-g .two{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 @media (max-width:560px){.stg-g .two{grid-template-columns:1fr}}
-.mini{font-size:.75rem;font-weight:800;margin:0 0 4px;color:var(--leap-gray)}
+/* .mini 는 «칸 위의 작은 이름표»입니다. <p> 로 두면 화면으로는 이름표처럼 보이지만
+   읽어 주는 기계에게는 그냥 글이라 칸에 붙지 않습니다. <label for> 로 바꾸면서
+   블록으로 서게 합니다(<label> 은 기본이 인라인). 남은 <p class="mini"> 는
+   칸 하나가 아니라 단추 묶음을 가리키는 자리들입니다. */
+.mini{display:block;font-size:.75rem;font-weight:800;margin:0 0 4px;color:var(--leap-gray)}
 textarea.sm{min-height:52px;font-size:.875rem}
 
 /* 성취기준 */
@@ -647,6 +687,10 @@ textarea.sm{min-height:52px;font-size:.875rem}
 <style id="page-size">@page{size:A4 landscape;margin:8mm}</style>
 </head>
 <body>
+<!-- 키보드만 쓰는 분은 화면을 열 때마다 머리 단추 넷과 탭 대여섯을 다 지나야
+     일하는 자리에 닿습니다. 한 번 건너뛰게 합니다. 눈으로 보는 사람에게는
+     보이지 않다가, 탭을 눌러 초점이 오면 나타납니다. -->
+<a class="skip" href="#main">본문으로 건너뛰기</a>
 
 <header class="top">
   <svg class="deco" viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="#fff"
@@ -681,6 +725,14 @@ textarea.sm{min-height:52px;font-size:.875rem}
         </svg>
         메인으로
       </a>
+      <a class="iconbtn" href="./README.html" title="이 앱의 설명서를 엽니다. 이 앱에 적은 것은 그대로 남습니다." aria-label="이 앱의 설명서 열기">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
+             stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 5.5A1.5 1.5 0 015.5 4H10a2.5 2.5 0 012.5 2.5V20a2 2 0 00-2-2H4z"/>
+          <path d="M20 5.5A1.5 1.5 0 0018.5 4H14a2.5 2.5 0 00-2.5 2.5V20a2 2 0 012-2H20z"/>
+        </svg>
+        설명서
+      </a>
       <button class="iconbtn iconbtn--ai" id="btn-ai" type="button" title="쓰던 챗봇에 붙여 넣을 프롬프트를 만들어 줍니다">
         <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
              stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -703,7 +755,7 @@ textarea.sm{min-height:52px;font-size:.875rem}
   </div>
 </nav>
 
-<main class="wrap">
+<main class="wrap" id="main" tabindex="-1">
   <section id="panel-s1"  role="tabpanel" aria-labelledby="tab-s1"></section>
   <section id="panel-s2"  role="tabpanel" aria-labelledby="tab-s2"  hidden></section>
   <section id="panel-s3"  role="tabpanel" aria-labelledby="tab-s3"  hidden></section>
@@ -763,7 +815,7 @@ LEAP.store=function(key,initial){
     try{var raw=localStorage.getItem(key);cache=raw?JSON.parse(raw):clone(initial);}
     catch(e){cache=clone(initial);}return cache;}
   return{get:read,set:function(n){cache=n;return flush();},
-    update:function(fn){var d=read();fn(d);flush();return d;},
+    update:function(fn){var d=read();fn(d);return flush();},
     reset:function(){cache=clone(initial);flush();return cache;}};
 };
 LEAP.uid=function(){if(global.crypto&&crypto.randomUUID)return crypto.randomUUID().slice(0,8);
@@ -800,6 +852,80 @@ LEAP.toggleTheme=function(){var r=document.documentElement,cur=r.getAttribute('d
   try{localStorage.setItem('leap-theme',next);}catch(e){}return next;};
 LEAP.restoreTheme=function(){try{var t=localStorage.getItem('leap-theme');
   if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}};
+/* 창 안에 초점 가두기 — `aria-modal="true"` 는 「이 창 밖은 없는 셈 치라」는 약속입니다.
+   Tab 을 막지 않으면 초점이 창 뒤로 넘어가, 화면을 안 보는 분은 자기가 어디 있는지
+   알 수 없게 됩니다. 창마다 손대지 않고 문서에 한 번만 걸어, 그때그때 열린 창을 찾습니다.
+   (position:fixed 는 offsetParent 가 null 이라 getClientRects 로 봅니다) */
+/* 내보낸 파일에 «어느 앱 것인지» 적기 — 아홉 앱이 모두 {v:1,…} 이라
+   받는 쪽이 v 만 보면 남의 앱 파일이 그대로 통과합니다(앱 B 가 실제로 그랬습니다).
+   모양으로만 가리면 두 앱이 닮는 순간 다시 뚫리므로 «이름»을 적어 둡니다.
+   표시가 없는 옛 파일은 막지 않습니다 — 그때는 예전처럼 모양으로 판단합니다. */
+/* 학생이 입력한 글이 그대로 화면에 들어가므로 반드시 거른다.
+   각 앱은 `var esc = LEAP.esc;` 로 별명을 붙여 씁니다 — 부르는 자리가 많아
+   짧은 이름이 필요하기 때문입니다. 별명이라 `LEAP.esc(` 로는 안 잡힙니다. */
+LEAP.esc=function(s){return String(s==null?'':s)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+  .replace(/"/g,'&quot;').replace(/'/g,'&#39;');};
+/* 다른 창이 같은 자료를 고쳤을 때 — LEAP.store 는 처음 한 번 읽고 메모리에
+   붙들고 있습니다. 두 창을 열면 늦게 고친 쪽이 앞의 것을 통째로 덮어씁니다.
+   자동으로 합치지 않습니다 — 어느 것이 맞는지는 사람이 압니다. 알려는 줍니다. */
+LEAP.watchOtherTabs=function(key,onChange){
+  if(!window.addEventListener)return;
+  window.addEventListener('storage',function(e){
+    if(e.key&&e.key!==key)return;   /* key 가 null 이면 저장소 전체가 지워진 것 */
+    if(onChange)onChange();
+    else LEAP.announce('다른 창에서 이 앱의 자료를 고쳤습니다. 새로고침해야 그 내용이 보입니다.');
+  });};
+LEAP.APP_NAMES={'leap-circuit':'순회교사 통합 시간표','leap-classboard':'학급 회의',
+  'leap-storybook':'지역 탐방 디지털 스토리북','leap-multigrade':'복식학급 수업 도우미',
+  'leap-together':'이웃 학교 함께하기','leap-lessonplan':'수업 설계안 만들기',
+  'leap-classdata':'우리 반 데이터 보기','leap-project':'프로젝트 학습 계획서',
+  'leap-required':'법정 의무교육 점검표'};
+LEAP.stamp=function(appId,data){var o=LEAP.clone(data);o.app=appId;return o;};
+LEAP.otherApp=function(appId,obj){var a=obj&&obj.app;
+  if(!a||a===appId)return null;return LEAP.APP_NAMES[a]||'다른 앱';};
+/* 한 걸음 되돌리기 — 되돌릴 수 없는 일 뒤에 화면 아래로 잠깐 뜹니다.
+   앱마다 그리는 자리가 달라 패널에 끼우지 않고 body 에 띄웁니다.
+   한 걸음만 둡니다 — 여러 걸음을 쌓으면 며칠 전 것을 가리키는 단추가 남습니다. */
+LEAP.offerUndo=function(label,restore,seconds){
+  if(!document.body)return;
+  var el=document.getElementById('leap-undo');
+  if(!el){el=document.createElement('div');el.id='leap-undo';
+    el.className='leap-undobar no-print';el.setAttribute('role','status');
+    el.setAttribute('aria-live','polite');document.body.appendChild(el);}
+  clearTimeout(el._t);el.innerHTML='';
+  var p=document.createElement('p');p.textContent=label;
+  var btn=document.createElement('button');btn.type='button';
+  btn.className='btn btn--quiet btn--sm';btn.textContent='되돌리기';
+  var x=document.createElement('button');x.type='button';x.className='leap-undox';
+  x.setAttribute('aria-label','되돌리기 닫기');x.textContent='✕';
+  function hide(){clearTimeout(el._t);el.classList.remove('is-on');}
+  btn.addEventListener('click',function(){hide();restore();});
+  x.addEventListener('click',hide);
+  el.appendChild(p);el.appendChild(btn);el.appendChild(x);
+  el.classList.add('is-on');
+  el._t=setTimeout(hide,(seconds||20)*1000);};
+LEAP.guardModals=function(){
+  if(!document.addEventListener||!document.querySelectorAll)return;   /* 검사의 흉내 document */
+  var SEL='a[href],button:not([disabled]),input:not([disabled]),'+
+    'select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  function seen(el){return !!(el&&el.getClientRects&&el.getClientRects().length);}
+  function box(){var a=document.querySelectorAll('[role="dialog"][aria-modal="true"]');
+    for(var i=a.length-1;i>=0;i--)if(seen(a[i]))return a[i];return null;}
+  function items(b){var o=[],a=b.querySelectorAll(SEL),i;
+    for(i=0;i<a.length;i++)if(seen(a[i]))o.push(a[i]);return o;}
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Tab')return;
+    var b=box();if(!b)return;
+    var l=items(b);if(!l.length){e.preventDefault();return;}
+    var first=l[0],last=l[l.length-1],now=document.activeElement,inside=b.contains(now);
+    if(e.shiftKey){if(!inside||now===first){e.preventDefault();last.focus();}}
+    else{if(!inside||now===last){e.preventDefault();first.focus();}}
+  },true);
+  document.addEventListener('focusin',function(e){
+    var b=box();if(!b||b.contains(e.target))return;
+    var l=items(b);if(l.length)l[0].focus();
+  });};
 LEAP.themeLabel=function(){var r=document.documentElement,cur=r.getAttribute('data-theme');
   if(!cur)cur=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
   return cur==='dark'?'밝게 보기':'어둡게 보기';};
@@ -810,20 +936,34 @@ LEAP.initThemeBtn=function(btn){if(!btn)return;
     btn.setAttribute('title','화면을 '+t.replace(' 보기','')+' 바꿉니다');
     btn.setAttribute('aria-label','화면을 '+t.replace(' 보기','')+' 바꿉니다');}
   paint();btn.addEventListener('click',function(){LEAP.toggleTheme();paint();});};
+/* 〔2026. 8. 30.〕 새로고침하면 늘 첫 탭으로 돌아갔고, 뒤로 가기는 앱을 떠났습니다.
+   주소 끝에 지금 탭을 적습니다(#panel-week). 새로고침해도 그 자리, 뒤로 가기로 앞 탭,
+   그리고 특정 탭을 링크로 줄 수 있습니다. 아는 탭 이름일 때만 움직이므로
+   「본문으로 건너뛰기」가 넣는 #main 에는 반응하지 않습니다. */
 LEAP.initTabs=function(listEl,onChange){
   var tabs=Array.prototype.slice.call(listEl.querySelectorAll('[role="tab"]'));
-  function select(tab){tabs.forEach(function(t){var on=t===tab;
-    t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1;
-    var p=document.getElementById(t.getAttribute('aria-controls'));if(p)p.hidden=!on;});
-    if(onChange)onChange(tab.getAttribute('aria-controls'));}
+  var ids=tabs.map(function(t){return t.getAttribute('aria-controls');});
+  function select(tab,writeHash){
+    tabs.forEach(function(t){var on=t===tab;
+      t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1;
+      var p=document.getElementById(t.getAttribute('aria-controls'));if(p)p.hidden=!on;});
+    var id=tab.getAttribute('aria-controls');
+    /* 사람이 눌렀을 때만 기록에 남깁니다 — 처음 그릴 때까지 남기면 뒤로 가기가 헛돕니다 */
+    if(writeHash&&window.location&&window.location.hash!=='#'+id){
+      try{window.location.hash='#'+id;}catch(e){}}
+    if(onChange)onChange(id);}
   tabs.forEach(function(tab,i){
-    tab.addEventListener('click',function(){select(tab);});
+    tab.addEventListener('click',function(){select(tab,true);});
     tab.addEventListener('keydown',function(e){
       var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(!d)return;e.preventDefault();
-      var n=tabs[(i+d+tabs.length)%tabs.length];n.focus();select(n);});});
-  select(tabs[0]);return{select:select,tabs:tabs};};
-LEAP.esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
-  .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');};
+      var n=tabs[(i+d+tabs.length)%tabs.length];n.focus();select(n,true);});});
+  function fromHash(){if(!window.location)return -1;
+    return ids.indexOf(String(window.location.hash||'').slice(1));}
+  var at=fromHash();
+  select(tabs[at>=0?at:0],false);
+  if(window.addEventListener)window.addEventListener('hashchange',function(){
+    var i=fromHash();if(i>=0)select(tabs[i],false);});
+  return{select:function(t){select(t,true);},tabs:tabs};};
 global.LEAP=LEAP;})(window);
 /* ==========================================================================
    수업 설계안 만들기 (앱 F) v0.3
@@ -969,6 +1109,7 @@ global.LEAP=LEAP;})(window);
   }
 
   var INIT = { v: 3, doc: null, box: [] };
+  var APP_ID = 'leap-lessonplan';   /* 내보낸 파일에 적히는 표시 — 남의 앱 파일을 가려냅니다 */
   var db = LEAP.store(KEY, INIT);
 
   /* 옛 저장본이 있어도 열립니다. 열리지 않는 것이 가장 나쁩니다(함정 10번). */
@@ -1444,7 +1585,7 @@ global.LEAP=LEAP;})(window);
         return { k: g, n: g + '학년' }; }), o.grade, 'sm')) +
       fld('학기', tglRow('semester', [{ k: '1', n: '1학기' }, { k: '2', n: '2학기' }], o.semester, 'sm')) +
       fld('교과', tglRow('subject', SUBJECTS, o.subject, 'sm') +
-        '<div class="field" style="margin:9px 0 0"><input class="txt" id="f-subject" value="' +
+        '<div class="field" style="margin:9px 0 0"><input class="txt" id="f-subject" aria-label="교과 이름" value="' +
         esc(o.subject) + '" maxlength="20" placeholder="직접 적기 — 예: 통합, 진로와 직업"></div>') +
       '<div class="grid2">' +
       fld('단원', '<input class="txt" id="f-unit" value="' + esc(o.unit) + '" maxlength="60" placeholder="예: 2. 우리 지역의 국가유산">') +
@@ -1490,7 +1631,7 @@ global.LEAP=LEAP;})(window);
     h += o.tools.length
       ? o.tools.map(function (t, i) {
           return '<div class="std"><span class="code">' + esc(t.name) + '</span>' +
-            '<span class="t"><input class="txt" data-tool-role="' + i + '" value="' + esc(t.role) +
+            '<span class="t"><input class="txt" data-tool-role="' + i + '" aria-label="이 도구가 맡는 역할" value="' + esc(t.role) +
             '" maxlength="60" placeholder="이 도구의 역할 — 예: 조사 자료 공유" style="min-height:38px;padding:7px 10px"></span>' +
             '<span class="sp"><button class="btn btn--ghost btn--sm" data-tool-del="' + i + '" type="button">지우기</button></span></div>';
         }).join('')
@@ -1499,7 +1640,7 @@ global.LEAP=LEAP;})(window);
       return '<button type="button" data-tool-add="' + esc(t) + '" aria-pressed="' +
         (o.tools.some(function (x) { return x.name === t; }) ? 'true' : 'false') + '">' + esc(t) + '</button>';
     }).join('') + '</div>' +
-      '<div class="row" style="margin-top:11px"><input class="txt" id="f-tool-new" maxlength="30" placeholder="목록에 없는 도구 이름">' +
+      '<div class="row" style="margin-top:11px"><input class="txt" id="f-tool-new" aria-label="목록에 없는 도구 이름" maxlength="30" placeholder="목록에 없는 도구 이름">' +
       '<button class="btn btn--quiet fixed" id="btn-tool-add" type="button">더하기</button></div></div>';
     return h;
   }
@@ -1599,7 +1740,7 @@ global.LEAP=LEAP;})(window);
     return '<div class="stg" data-i="' + i + '" id="stg-' + i + '">' +
       '<div class="stg-h">' +
       '<span class="stg-dot ' + groupClass(f.group) + '" aria-hidden="true"></span>' +
-      '<input class="txt nm" data-f="name" data-i="' + i + '" value="' + esc(f.name) + '" maxlength="20" placeholder="단계 이름">' +
+      '<input class="txt nm" data-f="name" data-i="' + i + '" aria-label="단계 이름" value="' + esc(f.name) + '" maxlength="20" placeholder="단계 이름">' +
       '<input class="txt mn" data-f="min" data-i="' + i + '" type="number" min="0" max="' + room +
       '" value="' + (+f.min || 0) + '" aria-label="시간(분)">' +
       '<span class="sp">' +
@@ -1610,52 +1751,63 @@ global.LEAP=LEAP;})(window);
         return '<button type="button" data-grp="' + g + '" data-i="' + i + '" aria-pressed="' +
           ((f.group || []).indexOf(g) >= 0 ? 'true' : 'false') + '">' + g + '</button>';
       }).join('') + '</div></div>' +
-      '<div><p class="mini">활동 제목</p><input class="txt" data-f="title" data-i="' + i +
+      '<div><label class="mini" for="fw-title-' + i + '">활동 제목</label>' +
+      '<input class="txt" id="fw-title-' + i + '" data-f="title" data-i="' + i +
       '" value="' + esc(f.title) + '" maxlength="60" placeholder="예: 우리 지역의 역사 찾아보기"></div>' +
       '<div class="two">' +
-      '<div><p class="mini">▪ 교사 활동 <span class="muted">한 줄에 하나 · 「~하기」로</span></p>' +
-      '<textarea class="txt sm" data-f="tAct" data-i="' + i + '" maxlength="400" placeholder="시를 낭송하고 마음에 남는 구절 묻기">' + esc(f.tAct) + '</textarea></div>' +
-      '<div><p class="mini">- 학생 활동 <span class="muted">한 줄에 하나 · 「~하기」로</span></p>' +
-      '<textarea class="txt sm" data-f="sAct" data-i="' + i + '" maxlength="400" placeholder="잔상이 남는 낱말 떠올리기">' + esc(f.sAct) + '</textarea></div>' +
+      '<div><label class="mini" for="fw-tact-' + i + '">▪ 교사 활동 <span class="muted">한 줄에 하나 · 「~하기」로</span></label>' +
+      '<textarea class="txt sm" id="fw-tact-' + i + '" data-f="tAct" data-i="' + i + '" maxlength="400" placeholder="시를 낭송하고 마음에 남는 구절 묻기">' + esc(f.tAct) + '</textarea></div>' +
+      '<div><label class="mini" for="fw-sact-' + i + '">- 학생 활동 <span class="muted">한 줄에 하나 · 「~하기」로</span></label>' +
+      '<textarea class="txt sm" id="fw-sact-' + i + '" data-f="sAct" data-i="' + i + '" maxlength="400" placeholder="잔상이 남는 낱말 떠올리기">' + esc(f.sAct) + '</textarea></div>' +
       '</div><div class="two">' +
-      '<div><p class="mini">도구</p><input class="txt" data-f="tool" data-i="' + i + '" value="' + esc(f.tool) + '" maxlength="40"></div>' +
-      '<div><p class="mini">도구의 역할</p><input class="txt" data-f="role" data-i="' + i + '" value="' + esc(f.role) + '" maxlength="40"></div>' +
+      '<div><label class="mini" for="fw-tool-' + i + '">도구</label>' +
+      '<input class="txt" id="fw-tool-' + i + '" data-f="tool" data-i="' + i + '" value="' + esc(f.tool) + '" maxlength="40"></div>' +
+      '<div><label class="mini" for="fw-role-' + i + '">도구의 역할</label>' +
+      '<input class="txt" id="fw-role-' + i + '" data-f="role" data-i="' + i + '" value="' + esc(f.role) + '" maxlength="40"></div>' +
       '</div></div></div>';
   }
   function unitRowHTML(f, i) {
     return '<div class="stg" data-i="' + i + '">' +
       '<div class="stg-h">' +
-      '<input class="txt nm" data-f="range" data-i="' + i + '" value="' + esc(f.range) + '" maxlength="20" placeholder="예: 2~3차시">' +
+      '<input class="txt nm" data-f="range" data-i="' + i + '" aria-label="차시 범위" value="' + esc(f.range) + '" maxlength="20" placeholder="예: 2~3차시">' +
       '<span class="sp">' +
       (i > 0 ? '<button class="btn btn--ghost btn--sm" data-up="' + i + '" type="button" aria-label="위로">↑</button>' : '') +
       '<button class="btn btn--ghost btn--sm" data-del="' + i + '" type="button">지우기</button></span></div>' +
       '<div class="stg-g">' +
       '<div><p class="mini">탐구 유형</p>' + tglRow('inq', INQUIRY, f.inquiry, 'sm').replace(/data-inq="/g, 'data-inq-' + i + '="') + '</div>' +
-      '<div><p class="mini">차시 주제</p><input class="txt" data-f="topic" data-i="' + i +
+      '<div><label class="mini" for="un-topic-' + i + '">차시 주제</label>' +
+      '<input class="txt" id="un-topic-' + i + '" data-f="topic" data-i="' + i +
       '" value="' + esc(f.topic) + '" maxlength="60"></div>' +
       '<div class="two">' +
-      '<div><p class="mini">▪ 활동명 <span class="muted">(한 줄에 하나)</span></p>' +
-      '<textarea class="txt sm" data-f="act" data-i="' + i + '" maxlength="400">' + esc(f.act) + '</textarea></div>' +
-      '<div><p class="mini">- 세부 활동 <span class="muted">(한 줄에 하나)</span></p>' +
-      '<textarea class="txt sm" data-f="detail" data-i="' + i + '" maxlength="400">' + esc(f.detail) + '</textarea></div>' +
+      '<div><label class="mini" for="un-act-' + i + '">▪ 활동명 <span class="muted">(한 줄에 하나)</span></label>' +
+      '<textarea class="txt sm" id="un-act-' + i + '" data-f="act" data-i="' + i + '" maxlength="400">' + esc(f.act) + '</textarea></div>' +
+      '<div><label class="mini" for="un-detail-' + i + '">- 세부 활동 <span class="muted">(한 줄에 하나)</span></label>' +
+      '<textarea class="txt sm" id="un-detail-' + i + '" data-f="detail" data-i="' + i + '" maxlength="400">' + esc(f.detail) + '</textarea></div>' +
       '</div><div class="two">' +
-      '<div><p class="mini">도구</p><input class="txt" data-f="tool" data-i="' + i + '" value="' + esc(f.tool) + '" maxlength="40"></div>' +
-      '<div><p class="mini">도구의 역할</p><input class="txt" data-f="role" data-i="' + i + '" value="' + esc(f.role) + '" maxlength="40"></div>' +
+      '<div><label class="mini" for="un-tool-' + i + '">도구</label>' +
+      '<input class="txt" id="un-tool-' + i + '" data-f="tool" data-i="' + i + '" value="' + esc(f.tool) + '" maxlength="40"></div>' +
+      '<div><label class="mini" for="un-role-' + i + '">도구의 역할</label>' +
+      '<input class="txt" id="un-role-' + i + '" data-f="role" data-i="' + i + '" value="' + esc(f.role) + '" maxlength="40"></div>' +
       '</div></div></div>';
   }
   function evrowHTML(a, i, u) {
     return '<div class="evrow" data-i="' + i + '">' +
       (u ? '' : '<p class="dm">' + esc(a.domain || '영역') + '</p>') +
       '<div class="two" style="display:grid;grid-template-columns:1fr 1fr;gap:9px">' +
-      '<div><p class="mini">평가요소</p><input class="txt" data-e="element" data-i="' + i +
+      '<div><label class="mini" for="ev-el-' + i + '">평가요소</label>' +
+      '<input class="txt" id="ev-el-' + i + '" data-e="element" data-i="' + i +
       '" value="' + esc(a.element) + '" maxlength="80"></div>' +
-      '<div><p class="mini">평가도구(방법)</p><input class="txt" data-e="method" data-i="' + i +
+      '<div><label class="mini" for="ev-me-' + i + '">평가도구(방법)</label>' +
+      '<input class="txt" id="ev-me-' + i + '" data-e="method" data-i="' + i +
       '" value="' + esc(a.method) + '" maxlength="40" list="ev-methods"></div></div>' +
       /* 기초 → 기본 → 심화. 종이와 같은 순서라야 옮겨 적을 때 헷갈리지 않습니다. */
       '<div class="three" style="margin-top:9px">' +
-      '<div><p class="mini">기초</p><textarea class="txt sm" data-e="low" data-i="' + i + '" maxlength="300">' + esc(a.low) + '</textarea></div>' +
-      '<div><p class="mini">기본</p><textarea class="txt sm" data-e="base" data-i="' + i + '" maxlength="300">' + esc(a.base) + '</textarea></div>' +
-      '<div><p class="mini">심화</p><textarea class="txt sm" data-e="adv" data-i="' + i + '" maxlength="300">' + esc(a.adv) + '</textarea></div>' +
+      '<div><label class="mini" for="ev-low-' + i + '">기초</label>' +
+      '<textarea class="txt sm" id="ev-low-' + i + '" data-e="low" data-i="' + i + '" maxlength="300">' + esc(a.low) + '</textarea></div>' +
+      '<div><label class="mini" for="ev-base-' + i + '">기본</label>' +
+      '<textarea class="txt sm" id="ev-base-' + i + '" data-e="base" data-i="' + i + '" maxlength="300">' + esc(a.base) + '</textarea></div>' +
+      '<div><label class="mini" for="ev-adv-' + i + '">심화</label>' +
+      '<textarea class="txt sm" id="ev-adv-' + i + '" data-e="adv" data-i="' + i + '" maxlength="300">' + esc(a.adv) + '</textarea></div>' +
       '</div>' +
       '<div class="actions" style="margin-top:9px">' +
       '<button class="btn btn--ghost btn--sm" data-ev-del="' + i + '" type="button">이 줄 지우기</button></div></div>';
@@ -1934,20 +2086,37 @@ global.LEAP=LEAP;})(window);
     window.print();
   }
 
-  /* ── 성취기준 찾기 ──────────────────────────────────────────────────── */
+  /* ── 성취기준 찾기 ────────────────────────────────────────────────────
+     ★ 이 창은 오래 **아무 표시 없는 <div>** 였습니다. 화면으로 보는 사람에게는
+     창이지만, 읽어 주는 기계에게는 그냥 글 상자였습니다 — 「지금 창이 열렸다」도,
+     「이 창의 이름이 무엇이다」도 말해 주지 않았습니다.
+     앱 G 가 같은 `.modal-box` 를 쓰면서 표시를 갖고 있었으므로 그쪽에 맞춥니다.
+
+     초점도 함께 옮깁니다. 창을 열면 첫 칸으로 데려가고, 닫으면 **누른 자리로
+     돌려보냅니다.** 그러지 않으면 닫는 순간 초점이 문서 맨 앞으로 튕겨,
+     키보드만 쓰는 분은 여기까지 오던 길을 처음부터 다시 걸어야 합니다. */
+  var lastFocus = null;
   function modal(title, body, wide) {
     var m = el('modal');
+    lastFocus = document.activeElement;
     m.innerHTML = '<div class="modal-back" data-close></div>' +
-      '<div class="modal-box' + (wide ? ' modal-box--wide' : '') + '">' +
+      '<div class="modal-box' + (wide ? ' modal-box--wide' : '') + '"' +
+      ' role="dialog" aria-modal="true" aria-label="' + esc(title) + '">' +
       '<div class="modal-h"><h2>' + esc(title) + '</h2>' +
       '<button class="modal-x" type="button" data-close aria-label="닫기">✕</button></div>' +
       '<div class="modal-b" id="modal-body">' + body + '</div></div>';
     m.hidden = false;
     each(m.querySelectorAll('[data-close]'), function (b) { on(b, 'click', closeModal); });
     document.addEventListener('keydown', escClose);
+    var f = m.querySelector('.modal-b input,.modal-b textarea,.modal-b select,.modal-b button');
+    if (f && f.focus) f.focus();
     return m.querySelector('#modal-body');
   }
-  function closeModal() { el('modal').hidden = true; document.removeEventListener('keydown', escClose); }
+  function closeModal() {
+    el('modal').hidden = true;
+    document.removeEventListener('keydown', escClose);
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
   function escClose(e) { if (e.key === 'Escape') closeModal(); }
 
   var fState = { band: '', subject: '', q: '' };
@@ -1959,7 +2128,7 @@ global.LEAP=LEAP;})(window);
     var body = '<div class="finder">' +
       '<div><p class="mini">학년군</p>' + tglRow('fb', BANDS, fState.band, 'sm') + '</div>' +
       '<div><p class="mini">교과</p><div id="f-subj"></div></div>' +
-      '<input class="txt" id="f-q" placeholder="검색 — 코드나 낱말 (예: 4사06, 국가유산)">' +
+      '<input class="txt" id="f-q" aria-label="성취기준 검색" placeholder="검색 — 코드나 낱말 (예: 4사06, 국가유산)">' +
       '<div class="fres" id="f-res"></div>' +
       '<p class="small muted" style="margin:0">출처: 2022 개정 교육과정에 따른 성취수준(한국교육과정평가원). ' +
       '고르면 <b>성취수준 A·B·C</b>도 함께 들어와, 평가의 심화·기본·기초를 한 번에 채울 수 있습니다.</p></div>';
@@ -2022,7 +2191,7 @@ global.LEAP=LEAP;})(window);
     var b = modal('성취기준 직접 적기',
       '<p class="small muted" style="margin:0 0 13px">목록에 없는 성취기준(중·고등학교, 창의적 체험활동 등)은 여기에 적으세요. ' +
       '교육과정 문서에서 긁어 온 것을 그대로 붙여 넣어도 됩니다.</p>' +
-      '<textarea class="txt" id="m-std" style="min-height:130px" placeholder="[4국01-01] 대화의 즐거움을 알고 대화를 나눈다.&#10;[4국01-02] 회의에서 의견을 적극적으로 교환한다."></textarea>' +
+      '<textarea class="txt" id="m-std" aria-label="성취기준을 직접 적는 곳" style="min-height:130px" placeholder="[4국01-01] 대화의 즐거움을 알고 대화를 나눈다.&#10;[4국01-02] 회의에서 의견을 적극적으로 교환한다."></textarea>' +
       '<div class="actions"><button class="btn" id="m-ok" type="button">넣기</button>' +
       '<button class="btn btn--ghost" data-close type="button">그만두기</button></div>');
     each(b.querySelectorAll('[data-close]'), function (x) { on(x, 'click', closeModal); });
@@ -2180,13 +2349,13 @@ global.LEAP=LEAP;})(window);
       '<div class="sec"><h2><span class="step">1</span>프롬프트 복사하기</h2>' +
       '<p class="sub">「① 개요」에서 <b>교과·학년·성취기준</b>을 먼저 적을수록 알맞은 초안이 옵니다. ' +
       '지금은 <b>' + esc(docName(o)) + '</b> 기준으로 만들었습니다.</p>' +
-      '<textarea class="promptbox" id="ai-prompt" readonly>' + esc(buildPrompt()) + '</textarea>' +
+      '<textarea class="promptbox" id="ai-prompt" readonly aria-label="복사할 프롬프트">' + esc(buildPrompt()) + '</textarea>' +
       '<div class="actions"><button class="btn" id="ai-copy" type="button">프롬프트 복사</button>' +
       '<button class="btn btn--ghost" id="ai-refresh" type="button">지금 내용으로 다시 만들기</button></div></div>' +
 
       '<div class="sec"><h2><span class="step">2</span>돌아온 답 붙여 넣기</h2>' +
       '<p class="sub">답 전체를 그대로 붙여 넣으면 됩니다. 앞뒤에 설명이 섞여 있어도 <b>{ }</b> 부분만 찾아 읽습니다.</p>' +
-      '<textarea class="txt" id="ai-paste" style="min-height:150px;font-size:.875rem" placeholder=\'{ "kind": "lesson", ... }\'></textarea>' +
+      '<textarea class="txt" id="ai-paste" aria-label="AI 가 준 답을 붙여 넣는 곳" style="min-height:150px;font-size:.875rem" placeholder=\'{ "kind": "lesson", ... }\'></textarea>' +
       '<div class="actions"><button class="btn" id="ai-check" type="button">무엇이 들어올지 보기</button></div>' +
       '<div id="ai-result"></div></div>' +
 
@@ -2537,12 +2706,7 @@ global.LEAP=LEAP;})(window);
       stash(nm.trim() || docName(doc()));
       renderBox(); LEAP.announce('보관함에 넣었습니다. 화면의 것은 그대로 있습니다.');
     });
-    on(el('bx-new'), 'click', function () {
-      if (!confirm('지금 화면의 설계안을 비우고 새로 짭니다.\n먼저 보관함에 한 벌 넣어 둘까요? (확인을 누르면 넣고 비웁니다)')) return;
-      stash(docName(doc()));
-      save(function (dd) { dd.doc = blankDoc('lesson'); });
-      render(); goStep('s1'); LEAP.announce('새로 짭니다.');
-    });
+    on(el('bx-new'), 'click', openNewDialog);
     each(P.box.querySelectorAll('[data-bx-open]'), function (b) {
       on(b, 'click', function () {
         var i = +b.getAttribute('data-bx-open');
@@ -2579,14 +2743,81 @@ global.LEAP=LEAP;})(window);
     });
   }
 
+  /* 이 설계안에 사람이 적어 넣은 것이 있는가.
+     blankDoc() 이 기본으로 채워 두는 것(교과·학년·단계 이름·평가 영역)은
+     «적은 것»이 아닙니다. 그것까지 세면 빈 설계안도 늘 「적은 것이 있다」가 됩니다. */
+  function wroteAny(o) {
+    if (o.unit || o.topic || o.question || o.intent || o.analysis ||
+        o.period || o.target || o.teacher) return true;
+    if ((o.stds || []).length || (o.tools || []).length) return true;
+    if ((o.flow || []).some(function (f) {
+      return f.title || f.tAct || f.sAct || f.tool || f.role ||
+             f.topic || f.act || f.detail;
+    })) return true;
+    return (o.assess || []).some(function (a) {
+      return a.element || a.adv || a.base || a.low || a.method;
+    });
+  }
+
+  /* ★ 여기는 `confirm` 하나로 묻던 자리입니다 —
+     「먼저 보관함에 한 벌 넣어 둘까요? (확인을 누르면 넣고 비웁니다)」.
+     확인은 「넣고 비우기」, 취소는 **아무 일도 안 함**이었습니다.
+     곧 **「보관함에 넣지 않고 그냥 비우기」를 고를 수 없었습니다** —
+     물음은 두 갈래인데 답은 사실 한 갈래였습니다.
+
+     앱 A·B·D·H·I 가 쓰는 갈림길로 맞춥니다:
+     잃지 않는 길이 맨 위, 그만두는 길은 늘 있고, Esc 는 그만두기. */
+  function openNewDialog() {
+    var o = doc();
+
+    /* 아무것도 안 적었으면 물을 것이 없습니다 */
+    if (!wroteAny(o)) {
+      save(function (dd) { dd.doc = blankDoc('lesson'); });
+      render(); goStep('s1'); LEAP.announce('새로 짭니다.');
+      return;
+    }
+
+    var body = modal('새로 짜기',
+      '<p class="sub" style="margin:0 0 16px">지금 화면의 <b>' + esc(docName(o)) + '</b> 을(를) ' +
+      '어떻게 할까요?</p>' +
+      '<div class="picks2">' +
+      '<button type="button" class="pick2 pick2--go" id="nw-save">' +
+      '<span class="n">보관함에 넣고 새로 짜기</span>' +
+      '<span class="d">아무것도 잃지 않습니다. 보관함에서 언제든 다시 엽니다.</span></button>' +
+      '<button type="button" class="pick2" id="nw-drop">' +
+      '<span class="n">넣지 않고 새로 짜기</span>' +
+      '<span class="d">지금 화면의 설계안은 <b>사라집니다.</b> 되돌릴 수 없습니다.</span></button>' +
+      '<button type="button" class="pick2 pick2--off" id="nw-no">' +
+      '<span class="n">그만두기</span>' +
+      '<span class="d">하던 것을 이어서 짭니다.</span></button>' +
+      '</div>');
+    if (!body) return;
+
+    function fresh(msg) {
+      save(function (dd) { dd.doc = blankDoc('lesson'); });
+      closeModal(); render(); goStep('s1'); LEAP.announce(msg);
+    }
+    var b;
+    if ((b = body.querySelector('#nw-save'))) b.addEventListener('click', function () {
+      stash(docName(doc()));
+      fresh('보관함에 넣고 새로 짭니다.');
+    });
+    if ((b = body.querySelector('#nw-drop'))) b.addEventListener('click', function () {
+      fresh('새로 짭니다.');
+    });
+    if ((b = body.querySelector('#nw-no'))) b.addEventListener('click', closeModal);
+  }
+
   /* ── 자료 관리 ─────────────────────────────────────────────────────── */
   function bindFoot() {
     on(el('btn-export'), 'click', function () {
-      LEAP.download('수업설계안-' + docName(doc()).replace(/[\s·\/]/g, '') + '-' + LEAP.todayISO() + '.json', D());
+      LEAP.download('수업설계안-' + docName(doc()).replace(/[\s·\/]/g, '') + '-' + LEAP.todayISO() + '.json', LEAP.stamp(APP_ID, D()));
       LEAP.announce('파일로 내보냈습니다.');
     });
     on(el('btn-import'), 'click', function () {
       LEAP.pickFile(function (obj) {
+        var from = LEAP.otherApp(APP_ID, obj);
+        if (from) { alert('「' + from + '」에서 내보낸 파일입니다. 이 앱의 파일이 아닙니다.'); return; }
         if (!obj || !obj.doc) { alert('이 앱에서 내보낸 파일이 아닙니다.'); return; }
         stash('불러오기 전 자동 보관');
         save(function (d) {
@@ -2597,8 +2828,16 @@ global.LEAP=LEAP;})(window);
       });
     });
     on(el('btn-clear'), 'click', function () {
-      if (!confirm('이 기기에 저장된 설계안과 보관함을 모두 지웁니다. 되돌릴 수 없습니다.')) return;
+    /* ★ 되돌릴 수 없는 일을 물음 하나로만 막고 있었습니다.
+       「예」를 누른 뒤에는 길이 없었습니다. 지우기 전 모습을 붙들어 두고
+       화면 아래에 한 걸음 되돌리는 길을 띄웁니다. */
+      if (!confirm('이 기기에 저장된 설계안과 보관함을 모두 지웁니다. 계속할까요?')) return;
+      var before = JSON.stringify(D());
       db.reset(); render(); LEAP.announce('전부 지웠습니다.');
+      LEAP.offerUndo('설계안과 보관함을 지웠습니다.', function () {
+        db.set(JSON.parse(before)); render();
+        LEAP.announce('되돌렸습니다.');
+      });
     });
     LEAP.initThemeBtn(el('btn-theme'));
     on(el('btn-ai'), 'click', openAI);
@@ -2610,6 +2849,8 @@ global.LEAP=LEAP;})(window);
   }
 
   LEAP.restoreTheme();
+  LEAP.guardModals();   /* 창이 열리면 Tab 이 그 안에서만 돕니다 */
+  LEAP.watchOtherTabs('leap-lessonplan-v1');   /* 두 창을 열었을 때 조용히 덮어쓰지 않게 */
   /* 탭이 바뀌면 지금 걸음을 기억해 둡니다 — 종이는 보고 있는 걸음의 것만 그립니다 */
   LEAP.initTabs(el('tablist'), function (panelId) {
     var id = String(panelId || '').replace('panel-', '');

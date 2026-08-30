@@ -799,7 +799,14 @@ console.log('\n[v0.8-7] AI 초안 도우미가 없다 — 학생이 쓰는 앱')
   check('도우미 조각이 통째로 빠졌다', !html.includes('LEAPAI') && !html.includes('leap-aim'));
   check('그래도 아무 데도 보내지 않는다',
     !/\bfetch\s*\(|XMLHttpRequest|navigator\.sendBeacon|WebSocket/.test(html));
-  check('머리에 남은 단추는 둘', (html.match(/class="iconbtn/g) || []).length === 2);
+  /* 개수로 세던 자리입니다(둘). 머리에 「설명서」가 늘면서 셋이 되었는데,
+     여기서 지키려는 것은 **개수가 아니라 「AI 단추가 없다」**입니다.
+     지킬 것을 그대로 적습니다 — 그래야 단추가 하나 늘 때마다 헛되이 깨지지 않습니다. */
+  const head = html.slice(html.indexOf('top-actions'), html.indexOf('</header>'));
+  check('머리에 AI 초안 단추가 없다', !/AI 초안|btn-ai/.test(head),
+    '학생이 쓰는 앱입니다. AI 는 교사용 앱에만 둡니다');
+  check('머리에 메인으로 · 설명서 · 화면 전환이 있다',
+    head.includes('메인으로') && head.includes('설명서') && head.includes('btn-theme'));
 }
 
 console.log('\n[v0.8-★] 새 책 만들기가 저장 방식에 따라 다른 일을 하던 것');

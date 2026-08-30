@@ -110,6 +110,16 @@
 *{box-sizing:border-box}
 body{margin:0;font-family:var(--leap-font);font-size:1rem;line-height:1.65;
   color:var(--leap-ink);background:var(--leap-bg);-webkit-text-size-adjust:100%}
+/* 본문 바로가기 — 평소에는 화면 밖에, 초점이 오면 제자리로 */
+.skip{position:absolute;left:12px;top:-56px;z-index:300;
+  padding:11px 18px;min-height:44px;display:inline-flex;align-items:center;
+  border-radius:var(--leap-radius-sm);background:var(--leap-surface);
+  color:var(--leap-ink);border:2px solid var(--leap-blue);
+  font-weight:700;font-size:.9375rem;text-decoration:none;
+  transition:top .15s}
+.skip:focus{top:12px}
+@media (prefers-reduced-motion:reduce){.skip{transition:none}}
+@media print{.skip{display:none!important}}
 :focus-visible{outline:3px solid var(--leap-blue);outline-offset:3px;border-radius:var(--leap-radius-sm)}
 .leap-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
   clip:rect(0 0 0 0);white-space:nowrap;border:0}
@@ -140,7 +150,7 @@ header.top .deco{position:absolute;right:-40px;top:-30px;width:280px;height:280p
   border:1px solid rgba(255,255,255,.2)}
 .brand h1{margin:0;font-size:1.25rem;letter-spacing:-.02em;line-height:1.25}
 .brand .sub{font-size:.75rem;color:rgba(255,255,255,.72);letter-spacing:.03em;margin-top:1px}
-.top-actions{margin-left:auto;display:flex;gap:8px}
+.top-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .iconbtn{min-height:42px;padding:8px 15px;font-size:.8125rem;font-weight:700;
   border:1px solid rgba(255,255,255,.28);border-radius:999px;
   background:rgba(255,255,255,.1);color:#fff;cursor:pointer}
@@ -181,7 +191,7 @@ main.wrap{max-width:1360px;margin:0 auto;padding:26px 20px 90px}
 .btn--danger{background:transparent;color:var(--leap-amber);border-color:var(--leap-amber)}
 .btn--danger:hover{background:var(--tint-amber);box-shadow:none;filter:none}
 .btn:disabled{opacity:.4;cursor:not-allowed;filter:none;transform:none;box-shadow:none}
-.btn--sm{font-size:.8125rem;padding:8px 16px;min-height:42px}
+.btn--sm{font-size:.8125rem;padding:8px 16px;min-height:44px}
 .actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:22px;align-items:center}
 
 /* 무기명 안내 상자 */
@@ -567,6 +577,10 @@ footer.foot{margin-top:44px}
 </style>
 </head>
 <body>
+<!-- 키보드만 쓰는 분은 화면을 열 때마다 머리 단추 넷과 탭 대여섯을 다 지나야
+     일하는 자리에 닿습니다. 한 번 건너뛰게 합니다. 눈으로 보는 사람에게는
+     보이지 않다가, 탭을 눌러 초점이 오면 나타납니다. -->
+<a class="skip" href="#main">본문으로 건너뛰기</a>
 
 <header class="top">
   <svg class="deco" viewBox="0 0 64 64" aria-hidden="true">
@@ -602,6 +616,14 @@ footer.foot{margin-top:44px}
         </svg>
         메인으로
       </a>
+      <a class="iconbtn" href="./README.html" title="이 앱의 설명서를 엽니다. 이 앱에 적은 것은 그대로 남습니다." aria-label="이 앱의 설명서 열기">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
+             stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 5.5A1.5 1.5 0 015.5 4H10a2.5 2.5 0 012.5 2.5V20a2 2 0 00-2-2H4z"/>
+          <path d="M20 5.5A1.5 1.5 0 0018.5 4H14a2.5 2.5 0 00-2.5 2.5V20a2 2 0 012-2H20z"/>
+        </svg>
+        설명서
+      </a>
       <button class="iconbtn iconbtn--plan" id="btn-plan" type="button" title="연간지도계획을 붙여 넣으면 표가 저절로 채워집니다">
         <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -622,7 +644,7 @@ footer.foot{margin-top:44px}
   </div>
 </header>
 
-<main class="wrap">
+<main class="wrap" id="main" tabindex="-1">
   <div class="planbar no-print" id="planbar"></div>
   <div class="grades no-print" id="grades" role="group" aria-label="학년"></div>
 
@@ -705,7 +727,7 @@ LEAP.store=function(key,initial){
     try{var raw=localStorage.getItem(key);cache=raw?JSON.parse(raw):clone(initial);}
     catch(e){cache=clone(initial);}return cache;}
   return{get:read,set:function(n){cache=n;return flush();},
-    update:function(fn){var d=read();fn(d);flush();return d;},
+    update:function(fn){var d=read();fn(d);return flush();},
     reset:function(){cache=clone(initial);flush();return cache;}};
 };
 LEAP.uid=function(){if(global.crypto&&crypto.randomUUID)return crypto.randomUUID().slice(0,8);
@@ -746,6 +768,59 @@ LEAP.toggleTheme=function(){var r=document.documentElement,cur=r.getAttribute('d
   try{localStorage.setItem('leap-theme',next);}catch(e){}return next;};
 LEAP.restoreTheme=function(){try{var t=localStorage.getItem('leap-theme');
   if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}};
+/* 창 안에 초점 가두기 — `aria-modal="true"` 는 「이 창 밖은 없는 셈 치라」는 약속입니다.
+   Tab 을 막지 않으면 초점이 창 뒤로 넘어가, 화면을 안 보는 분은 자기가 어디 있는지
+   알 수 없게 됩니다. 창마다 손대지 않고 문서에 한 번만 걸어, 그때그때 열린 창을 찾습니다.
+   (position:fixed 는 offsetParent 가 null 이라 getClientRects 로 봅니다) */
+/* 내보낸 파일에 «어느 앱 것인지» 적기 — 아홉 앱이 모두 {v:1,…} 이라
+   받는 쪽이 v 만 보면 남의 앱 파일이 그대로 통과합니다(앱 B 가 실제로 그랬습니다).
+   모양으로만 가리면 두 앱이 닮는 순간 다시 뚫리므로 «이름»을 적어 둡니다.
+   표시가 없는 옛 파일은 막지 않습니다 — 그때는 예전처럼 모양으로 판단합니다. */
+/* 학생이 입력한 글이 그대로 화면에 들어가므로 반드시 거른다.
+   각 앱은 `var esc = LEAP.esc;` 로 별명을 붙여 씁니다 — 부르는 자리가 많아
+   짧은 이름이 필요하기 때문입니다. 별명이라 `LEAP.esc(` 로는 안 잡힙니다. */
+LEAP.esc=function(s){return String(s==null?'':s)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+  .replace(/"/g,'&quot;').replace(/'/g,'&#39;');};
+/* 다른 창이 같은 자료를 고쳤을 때 — LEAP.store 는 처음 한 번 읽고 메모리에
+   붙들고 있습니다. 두 창을 열면 늦게 고친 쪽이 앞의 것을 통째로 덮어씁니다.
+   자동으로 합치지 않습니다 — 어느 것이 맞는지는 사람이 압니다. 알려는 줍니다. */
+LEAP.watchOtherTabs=function(key,onChange){
+  if(!window.addEventListener)return;
+  window.addEventListener('storage',function(e){
+    if(e.key&&e.key!==key)return;   /* key 가 null 이면 저장소 전체가 지워진 것 */
+    if(onChange)onChange();
+    else LEAP.announce('다른 창에서 이 앱의 자료를 고쳤습니다. 새로고침해야 그 내용이 보입니다.');
+  });};
+LEAP.APP_NAMES={'leap-circuit':'순회교사 통합 시간표','leap-classboard':'학급 회의',
+  'leap-storybook':'지역 탐방 디지털 스토리북','leap-multigrade':'복식학급 수업 도우미',
+  'leap-together':'이웃 학교 함께하기','leap-lessonplan':'수업 설계안 만들기',
+  'leap-classdata':'우리 반 데이터 보기','leap-project':'프로젝트 학습 계획서',
+  'leap-required':'법정 의무교육 점검표'};
+LEAP.stamp=function(appId,data){var o=LEAP.clone(data);o.app=appId;return o;};
+LEAP.otherApp=function(appId,obj){var a=obj&&obj.app;
+  if(!a||a===appId)return null;return LEAP.APP_NAMES[a]||'다른 앱';};
+LEAP.guardModals=function(){
+  if(!document.addEventListener||!document.querySelectorAll)return;   /* 검사의 흉내 document */
+  var SEL='a[href],button:not([disabled]),input:not([disabled]),'+
+    'select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  function seen(el){return !!(el&&el.getClientRects&&el.getClientRects().length);}
+  function box(){var a=document.querySelectorAll('[role="dialog"][aria-modal="true"]');
+    for(var i=a.length-1;i>=0;i--)if(seen(a[i]))return a[i];return null;}
+  function items(b){var o=[],a=b.querySelectorAll(SEL),i;
+    for(i=0;i<a.length;i++)if(seen(a[i]))o.push(a[i]);return o;}
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Tab')return;
+    var b=box();if(!b)return;
+    var l=items(b);if(!l.length){e.preventDefault();return;}
+    var first=l[0],last=l[l.length-1],now=document.activeElement,inside=b.contains(now);
+    if(e.shiftKey){if(!inside||now===first){e.preventDefault();last.focus();}}
+    else{if(!inside||now===last){e.preventDefault();first.focus();}}
+  },true);
+  document.addEventListener('focusin',function(e){
+    var b=box();if(!b||b.contains(e.target))return;
+    var l=items(b);if(l.length)l[0].focus();
+  });};
 LEAP.themeLabel=function(){var r=document.documentElement,cur=r.getAttribute('data-theme');
   if(!cur)cur=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
   return cur==='dark'?'밝게 보기':'어둡게 보기';};
@@ -756,8 +831,6 @@ LEAP.initThemeBtn=function(btn){if(!btn)return;
     btn.setAttribute('title','화면을 '+t.replace(' 보기','')+' 바꿉니다');
     btn.setAttribute('aria-label','화면을 '+t.replace(' 보기','')+' 바꿉니다');}
   paint();btn.addEventListener('click',function(){LEAP.toggleTheme();paint();});};
-LEAP.esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
-  .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');};
 global.LEAP=LEAP;})(window);
 </script>
 
@@ -1015,6 +1088,7 @@ global.LEAP=LEAP;})(window);
     musts: emptyMusts(),
     plan: null          /* 진도표에서 읽어 온 기록 〔v0.3〕 — 아래 참조 */
   };
+  var APP_ID = 'leap-required';   /* 내보낸 파일에 적히는 표시 — 남의 앱 파일을 가려냅니다 */
   var db = LEAP.store(KEY, DEFAULT);
 
   /* 옛 저장본에 없던 칸을 채웁니다 (마스터 함정 10번) */
@@ -1684,7 +1758,12 @@ global.LEAP=LEAP;})(window);
         '<th style="width:12%">시수</th><th style="width:50%">어느 주제입니까</th></tr></thead><tbody>';
       res.unknown.forEach(function (u) {
         h += '<tr><td>' + esc(u.raw) + '</td><td class="c">' + u.count + '</td>' +
-          '<td><select data-unk="' + esc(u.raw) + '">' + unitOptions(picks[u.raw] || '') + '</select></td></tr>';
+          /* 줄마다 하나씩 생기는 칸입니다. 이름표를 줄마다 또 적으면 화면이
+             시끄러워지므로, **그 줄이 무엇에 대한 것인지**를 이름으로 줍니다 —
+             「'어울림(감정조절)' 은 어느 주제입니까」. 표의 머리만 읽어서는
+             한 줄씩 옮겨 다닐 때 무엇을 고르는 칸인지 알 수 없습니다. */
+          '<td><select data-unk="' + esc(u.raw) + '" aria-label="「' + esc(u.raw) +
+          '」은 어느 주제입니까">' + unitOptions(picks[u.raw] || '') + '</select></td></tr>';
       });
       h += '</tbody></table>';
     }
@@ -1821,9 +1900,9 @@ global.LEAP=LEAP;})(window);
       '<span>' + (d.info.year ? esc(d.info.year) + ' · ' : '') +
       (d.info.grade ? esc(d.info.grade) + ' · ' : '') + '범교과 학습 주제 운영 계획</span></div>' +
       '<div class="pb-r">' +
-      '<input class="txt" id="f-school" placeholder="학교 이름" style="max-width:180px" value="' + esc(d.info.school) + '">' +
-      '<input class="txt" id="f-year" placeholder="예: 2026학년도" style="max-width:145px" value="' + esc(d.info.year) + '">' +
-      '<input class="txt" id="f-klass" placeholder="학급 (선택)" style="max-width:125px" value="' + esc(d.info.klass) + '">' +
+      '<input class="txt" id="f-school" aria-label="학교 이름" placeholder="학교 이름" style="max-width:180px" value="' + esc(d.info.school) + '">' +
+      '<input class="txt" id="f-year" aria-label="학년도" placeholder="예: 2026학년도" style="max-width:145px" value="' + esc(d.info.year) + '">' +
+      '<input class="txt" id="f-klass" aria-label="학급" placeholder="학급 (선택)" style="max-width:125px" value="' + esc(d.info.klass) + '">' +
       '</div>';
     [['f-school', 'school'], ['f-year', 'year'], ['f-klass', 'klass']].forEach(function (p) {
       var el = barEl.querySelector('#' + p[0]);
@@ -2695,7 +2774,7 @@ global.LEAP=LEAP;})(window);
 
   function doExport() {
     LEAP.download('법정의무교육-' + (db.get().info.school || '학교').replace(/\s/g, '') +
-      '-' + LEAP.todayISO() + '.json', db.get());
+      '-' + LEAP.todayISO() + '.json', LEAP.stamp(APP_ID, db.get()));
     LEAP.announce('파일로 내보냈습니다.');
   }
 
@@ -2706,6 +2785,8 @@ global.LEAP=LEAP;})(window);
 
   document.getElementById('btn-import').addEventListener('click', function () {
     LEAP.pickFile(function (incoming) {
+      var from = LEAP.otherApp(APP_ID, incoming);
+      if (from) { LEAP.announce('「' + from + '」에서 내보낸 파일입니다. 이 앱의 파일이 아닙니다.'); return; }
       if (!incoming || incoming.v !== 1 || !incoming.units) {
         LEAP.announce('이 앱에서 내보낸 파일이 아닙니다.'); return;
       }
@@ -2775,6 +2856,8 @@ global.LEAP=LEAP;})(window);
   };
 
   LEAP.restoreTheme();
+  LEAP.guardModals();   /* 창이 열리면 Tab 이 그 안에서만 돕니다 */
+  LEAP.watchOtherTabs('leap-required-v1');   /* 두 창을 열었을 때 조용히 덮어쓰지 않게 */
   renderAll();
 })();
 </script>
@@ -2832,7 +2915,7 @@ global.LEAP=LEAP;})(window);
 
     h += '<div class="aim-step"><h3><i>1</i>추가로 부탁할 것이 있나요</h3>' +
       '<p>없으면 비워 두세요. 앱에 적어 둔 것은 이미 프롬프트에 들어 있습니다.</p>' +
-      '<textarea class="aim-ta" id="aim-ask" placeholder="' + esc(CFG.hint || '') + '">' +
+      '<textarea class="aim-ta" id="aim-ask" aria-label="추가로 부탁할 것" placeholder="' + esc(CFG.hint || '') + '">' +
       esc(ask) + '</textarea></div>';
 
     h += '<div class="aim-step"><h3><i>2</i>이 프롬프트를 AI에게 주세요</h3>' +

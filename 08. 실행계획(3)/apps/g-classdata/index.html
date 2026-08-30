@@ -30,7 +30,7 @@
   --grad-bar:linear-gradient(90deg,#1B4FA0,#3C7FD8);
   --solid-teal:#0D6E5C; --solid-amber:#A8560A; --solid-gray:#5A6672; --solid-fg:#FFFFFF;
   /* 간격 — v0.2 에서 이름만 쓰이고 값이 없던 자리입니다 */
-  --leap-3:12px; --leap-4:16px; --leap-5:20px; --leap-6:26px;
+  --leap-3:12px; --leap-4:16px; --leap-5:24px; --leap-6:32px;
   /* 히트맵 다섯 단계. 색과 글자 대비를 짝지어 못박아 둡니다(원칙 4·6) */
   --h0:#EAF1FB; --h0f:#14202E; --h1:#CFE0F7; --h1f:#14202E; --h2:#A9C8F0; --h2f:#14202E;
   --h3:#5E93DC; --h3f:#FFFFFF; --h4:#24559F; --h4f:#FFFFFF;
@@ -76,6 +76,16 @@
 *{box-sizing:border-box}
 body{margin:0;font-family:var(--leap-font);font-size:1rem;line-height:1.65;
   color:var(--leap-ink);background:var(--leap-bg);-webkit-text-size-adjust:100%}
+/* 본문 바로가기 — 평소에는 화면 밖에, 초점이 오면 제자리로 */
+.skip{position:absolute;left:12px;top:-56px;z-index:300;
+  padding:11px 18px;min-height:44px;display:inline-flex;align-items:center;
+  border-radius:var(--leap-radius-sm);background:var(--leap-surface);
+  color:var(--leap-ink);border:2px solid var(--leap-blue);
+  font-weight:700;font-size:.9375rem;text-decoration:none;
+  transition:top .15s}
+.skip:focus{top:12px}
+@media (prefers-reduced-motion:reduce){.skip{transition:none}}
+@media print{.skip{display:none!important}}
 :focus-visible{outline:3px solid var(--leap-blue);outline-offset:3px;border-radius:var(--leap-radius-sm)}
 .leap-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
   clip:rect(0 0 0 0);white-space:nowrap;border:0}
@@ -86,6 +96,20 @@ button,input,textarea,select{font:inherit;color:inherit}
   font-size:.9375rem;font-weight:700;box-shadow:var(--leap-shadow-lg);
   opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:200;max-width:88vw;text-align:center}
 .leap-toast.is-on{opacity:1;transform:translateX(-50%) translateY(0)}
+/* 한 걸음 되돌리기 띠 — 화면 아래에 잠깐. 종이에는 찍히지 않습니다. */
+.leap-undobar{position:fixed;left:50%;bottom:22px;transform:translate(-50%,14px);
+  display:none;align-items:center;gap:12px;max-width:min(560px,calc(100vw - 32px));
+  padding:12px 14px 12px 18px;border-radius:999px;
+  background:var(--leap-surface);border:1px solid var(--leap-border);
+  box-shadow:var(--leap-shadow-lg);z-index:200;opacity:0;
+  transition:opacity .18s,transform .18s}
+.leap-undobar.is-on{display:flex;opacity:1;transform:translate(-50%,0)}
+.leap-undobar p{margin:0;font-size:.875rem;font-weight:700;color:var(--leap-ink)}
+.leap-undox{flex:none;width:28px;height:28px;border-radius:999px;border:0;
+  background:transparent;color:var(--leap-gray);font-size:.9rem;cursor:pointer;line-height:1}
+.leap-undox:hover{background:var(--leap-hairline);color:var(--leap-ink)}
+@media print{.leap-undobar{display:none!important}}
+@media (prefers-reduced-motion:reduce){.leap-undobar{transition:none}}
 
 header.top{background:var(--grad-head);color:#fff;position:relative;overflow:hidden}
 header.top .deco{position:absolute;right:-40px;top:-30px;width:280px;height:280px;opacity:.13;pointer-events:none}
@@ -100,7 +124,7 @@ header.top .deco{position:absolute;right:-40px;top:-30px;width:280px;height:280p
   display:grid;place-items:center;border:1px solid rgba(255,255,255,.2)}
 .brand h1{margin:0;font-size:1.25rem;letter-spacing:-.02em;line-height:1.25}
 .brand .sub{font-size:.75rem;color:rgba(255,255,255,.72);letter-spacing:.03em;margin-top:1px}
-.top-actions{margin-left:auto;display:flex;gap:8px}
+.top-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .iconbtn{min-height:42px;padding:8px 15px;font-size:.8125rem;font-weight:700;
   border:1px solid rgba(255,255,255,.28);border-radius:999px;background:rgba(255,255,255,.1);color:#fff;cursor:pointer}
 .iconbtn:hover{background:rgba(255,255,255,.2)}
@@ -171,7 +195,7 @@ main.wrap{max-width:1360px;margin:0 auto;padding:26px 20px 90px}
 .btn--danger{background:transparent;color:var(--leap-amber);border-color:var(--leap-amber)}
 .btn--danger:hover{background:var(--tint-amber);box-shadow:none;filter:none}
 .btn:disabled{opacity:.4;cursor:not-allowed;filter:none;transform:none;box-shadow:none}
-.btn--sm{padding:8px 15px;min-height:40px;font-size:.8125rem}
+.btn--sm{padding:8px 15px;min-height:44px;font-size:.8125rem}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:var(--leap-5);align-items:center}
 
 label.fld{display:block;font-weight:700;font-size:.875rem;margin:0 0 8px}
@@ -442,6 +466,10 @@ table.grid.xlprev td.k-guide{background:#FFF6D8;color:#A8560A;font-weight:700}
 </style>
 </head>
 <body>
+<!-- 키보드만 쓰는 분은 화면을 열 때마다 머리 단추 넷과 탭 대여섯을 다 지나야
+     일하는 자리에 닿습니다. 한 번 건너뛰게 합니다. 눈으로 보는 사람에게는
+     보이지 않다가, 탭을 눌러 초점이 오면 나타납니다. -->
+<a class="skip" href="#main">본문으로 건너뛰기</a>
 
 <header class="top">
   <svg class="deco" viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="#fff" stroke-linecap="round">
@@ -478,6 +506,14 @@ table.grid.xlprev td.k-guide{background:#FFF6D8;color:#A8560A;font-weight:700}
         </svg>
         메인으로
       </a>
+      <a class="iconbtn" href="./README.html" title="이 앱의 설명서를 엽니다. 이 앱에 적은 것은 그대로 남습니다." aria-label="이 앱의 설명서 열기">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
+             stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 5.5A1.5 1.5 0 015.5 4H10a2.5 2.5 0 012.5 2.5V20a2 2 0 00-2-2H4z"/>
+          <path d="M20 5.5A1.5 1.5 0 0018.5 4H14a2.5 2.5 0 00-2.5 2.5V20a2 2 0 012-2H20z"/>
+        </svg>
+        설명서
+      </a>
       <button class="iconbtn" id="btn-ai" type="button" title="쓰던 챗봇에 붙여 넣을 프롬프트를 만들어 줍니다">
         <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -501,7 +537,7 @@ table.grid.xlprev td.k-guide{background:#FFF6D8;color:#A8560A;font-weight:700}
   </div>
 </nav>
 
-<main class="wrap">
+<main class="wrap" id="main" tabindex="-1">
   <section id="panel-set" role="tabpanel" aria-labelledby="tab-set"></section>
   <section id="panel-file" role="tabpanel" aria-labelledby="tab-file" hidden></section>
   <section id="panel-in" role="tabpanel" aria-labelledby="tab-in" hidden></section>
@@ -560,7 +596,7 @@ LEAP.store=function(key,initial){
     try{var raw=localStorage.getItem(key);cache=raw?JSON.parse(raw):clone(initial);}
     catch(e){cache=clone(initial);}return cache;}
   return{get:read,set:function(n){cache=n;return flush();},
-    update:function(fn){var d=read();fn(d);flush();return d;},
+    update:function(fn){var d=read();fn(d);return flush();},
     reset:function(){cache=clone(initial);flush();return cache;}};
 };
 LEAP.uid=function(){if(global.crypto&&crypto.randomUUID)return crypto.randomUUID().slice(0,8);
@@ -596,6 +632,80 @@ LEAP.toggleTheme=function(){var r=document.documentElement,cur=r.getAttribute('d
   try{localStorage.setItem('leap-theme',next);}catch(e){}return next;};
 LEAP.restoreTheme=function(){try{var t=localStorage.getItem('leap-theme');
   if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}};
+/* 창 안에 초점 가두기 — `aria-modal="true"` 는 「이 창 밖은 없는 셈 치라」는 약속입니다.
+   Tab 을 막지 않으면 초점이 창 뒤로 넘어가, 화면을 안 보는 분은 자기가 어디 있는지
+   알 수 없게 됩니다. 창마다 손대지 않고 문서에 한 번만 걸어, 그때그때 열린 창을 찾습니다.
+   (position:fixed 는 offsetParent 가 null 이라 getClientRects 로 봅니다) */
+/* 내보낸 파일에 «어느 앱 것인지» 적기 — 아홉 앱이 모두 {v:1,…} 이라
+   받는 쪽이 v 만 보면 남의 앱 파일이 그대로 통과합니다(앱 B 가 실제로 그랬습니다).
+   모양으로만 가리면 두 앱이 닮는 순간 다시 뚫리므로 «이름»을 적어 둡니다.
+   표시가 없는 옛 파일은 막지 않습니다 — 그때는 예전처럼 모양으로 판단합니다. */
+/* 학생이 입력한 글이 그대로 화면에 들어가므로 반드시 거른다.
+   각 앱은 `var esc = LEAP.esc;` 로 별명을 붙여 씁니다 — 부르는 자리가 많아
+   짧은 이름이 필요하기 때문입니다. 별명이라 `LEAP.esc(` 로는 안 잡힙니다. */
+LEAP.esc=function(s){return String(s==null?'':s)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+  .replace(/"/g,'&quot;').replace(/'/g,'&#39;');};
+/* 다른 창이 같은 자료를 고쳤을 때 — LEAP.store 는 처음 한 번 읽고 메모리에
+   붙들고 있습니다. 두 창을 열면 늦게 고친 쪽이 앞의 것을 통째로 덮어씁니다.
+   자동으로 합치지 않습니다 — 어느 것이 맞는지는 사람이 압니다. 알려는 줍니다. */
+LEAP.watchOtherTabs=function(key,onChange){
+  if(!window.addEventListener)return;
+  window.addEventListener('storage',function(e){
+    if(e.key&&e.key!==key)return;   /* key 가 null 이면 저장소 전체가 지워진 것 */
+    if(onChange)onChange();
+    else LEAP.announce('다른 창에서 이 앱의 자료를 고쳤습니다. 새로고침해야 그 내용이 보입니다.');
+  });};
+LEAP.APP_NAMES={'leap-circuit':'순회교사 통합 시간표','leap-classboard':'학급 회의',
+  'leap-storybook':'지역 탐방 디지털 스토리북','leap-multigrade':'복식학급 수업 도우미',
+  'leap-together':'이웃 학교 함께하기','leap-lessonplan':'수업 설계안 만들기',
+  'leap-classdata':'우리 반 데이터 보기','leap-project':'프로젝트 학습 계획서',
+  'leap-required':'법정 의무교육 점검표'};
+LEAP.stamp=function(appId,data){var o=LEAP.clone(data);o.app=appId;return o;};
+LEAP.otherApp=function(appId,obj){var a=obj&&obj.app;
+  if(!a||a===appId)return null;return LEAP.APP_NAMES[a]||'다른 앱';};
+/* 한 걸음 되돌리기 — 되돌릴 수 없는 일 뒤에 화면 아래로 잠깐 뜹니다.
+   앱마다 그리는 자리가 달라 패널에 끼우지 않고 body 에 띄웁니다.
+   한 걸음만 둡니다 — 여러 걸음을 쌓으면 며칠 전 것을 가리키는 단추가 남습니다. */
+LEAP.offerUndo=function(label,restore,seconds){
+  if(!document.body)return;
+  var el=document.getElementById('leap-undo');
+  if(!el){el=document.createElement('div');el.id='leap-undo';
+    el.className='leap-undobar no-print';el.setAttribute('role','status');
+    el.setAttribute('aria-live','polite');document.body.appendChild(el);}
+  clearTimeout(el._t);el.innerHTML='';
+  var p=document.createElement('p');p.textContent=label;
+  var btn=document.createElement('button');btn.type='button';
+  btn.className='btn btn--quiet btn--sm';btn.textContent='되돌리기';
+  var x=document.createElement('button');x.type='button';x.className='leap-undox';
+  x.setAttribute('aria-label','되돌리기 닫기');x.textContent='✕';
+  function hide(){clearTimeout(el._t);el.classList.remove('is-on');}
+  btn.addEventListener('click',function(){hide();restore();});
+  x.addEventListener('click',hide);
+  el.appendChild(p);el.appendChild(btn);el.appendChild(x);
+  el.classList.add('is-on');
+  el._t=setTimeout(hide,(seconds||20)*1000);};
+LEAP.guardModals=function(){
+  if(!document.addEventListener||!document.querySelectorAll)return;   /* 검사의 흉내 document */
+  var SEL='a[href],button:not([disabled]),input:not([disabled]),'+
+    'select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  function seen(el){return !!(el&&el.getClientRects&&el.getClientRects().length);}
+  function box(){var a=document.querySelectorAll('[role="dialog"][aria-modal="true"]');
+    for(var i=a.length-1;i>=0;i--)if(seen(a[i]))return a[i];return null;}
+  function items(b){var o=[],a=b.querySelectorAll(SEL),i;
+    for(i=0;i<a.length;i++)if(seen(a[i]))o.push(a[i]);return o;}
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Tab')return;
+    var b=box();if(!b)return;
+    var l=items(b);if(!l.length){e.preventDefault();return;}
+    var first=l[0],last=l[l.length-1],now=document.activeElement,inside=b.contains(now);
+    if(e.shiftKey){if(!inside||now===first){e.preventDefault();last.focus();}}
+    else{if(!inside||now===last){e.preventDefault();first.focus();}}
+  },true);
+  document.addEventListener('focusin',function(e){
+    var b=box();if(!b||b.contains(e.target))return;
+    var l=items(b);if(l.length)l[0].focus();
+  });};
 LEAP.themeLabel=function(){var r=document.documentElement,cur=r.getAttribute('data-theme');
   if(!cur)cur=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
   return cur==='dark'?'밝게 보기':'어둡게 보기';};
@@ -606,20 +716,34 @@ LEAP.initThemeBtn=function(btn){if(!btn)return;
     btn.setAttribute('title','화면을 '+t.replace(' 보기','')+' 바꿉니다');
     btn.setAttribute('aria-label','화면을 '+t.replace(' 보기','')+' 바꿉니다');}
   paint();btn.addEventListener('click',function(){LEAP.toggleTheme();paint();});};
+/* 〔2026. 8. 30.〕 새로고침하면 늘 첫 탭으로 돌아갔고, 뒤로 가기는 앱을 떠났습니다.
+   주소 끝에 지금 탭을 적습니다(#panel-week). 새로고침해도 그 자리, 뒤로 가기로 앞 탭,
+   그리고 특정 탭을 링크로 줄 수 있습니다. 아는 탭 이름일 때만 움직이므로
+   「본문으로 건너뛰기」가 넣는 #main 에는 반응하지 않습니다. */
 LEAP.initTabs=function(listEl,onChange){
   var tabs=Array.prototype.slice.call(listEl.querySelectorAll('[role="tab"]'));
-  function select(tab){tabs.forEach(function(t){var on=t===tab;
-    t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1;
-    var p=document.getElementById(t.getAttribute('aria-controls'));if(p)p.hidden=!on;});
-    if(onChange)onChange(tab.getAttribute('aria-controls'));}
+  var ids=tabs.map(function(t){return t.getAttribute('aria-controls');});
+  function select(tab,writeHash){
+    tabs.forEach(function(t){var on=t===tab;
+      t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1;
+      var p=document.getElementById(t.getAttribute('aria-controls'));if(p)p.hidden=!on;});
+    var id=tab.getAttribute('aria-controls');
+    /* 사람이 눌렀을 때만 기록에 남깁니다 — 처음 그릴 때까지 남기면 뒤로 가기가 헛돕니다 */
+    if(writeHash&&window.location&&window.location.hash!=='#'+id){
+      try{window.location.hash='#'+id;}catch(e){}}
+    if(onChange)onChange(id);}
   tabs.forEach(function(tab,i){
-    tab.addEventListener('click',function(){select(tab);});
+    tab.addEventListener('click',function(){select(tab,true);});
     tab.addEventListener('keydown',function(e){
       var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(!d)return;e.preventDefault();
-      var n=tabs[(i+d+tabs.length)%tabs.length];n.focus();select(n);});});
-  select(tabs[0]);return{select:select,tabs:tabs};};
-LEAP.esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
-  .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');};
+      var n=tabs[(i+d+tabs.length)%tabs.length];n.focus();select(n,true);});});
+  function fromHash(){if(!window.location)return -1;
+    return ids.indexOf(String(window.location.hash||'').slice(1));}
+  var at=fromHash();
+  select(tabs[at>=0?at:0],false);
+  if(window.addEventListener)window.addEventListener('hashchange',function(){
+    var i=fromHash();if(i>=0)select(tabs[i],false);});
+  return{select:function(t){select(t,true);},tabs:tabs};};
 global.LEAP=LEAP;})(window);
 /* ==========================================================================
    우리 반 데이터 보기 (앱 G) v0.4
@@ -761,6 +885,7 @@ global.LEAP=LEAP;})(window);
 
   /* pick — 「성취 × 정서」 그림에서 선생님이 고른 두 축. 비어 있으면 앱이 고릅니다. */
   var INIT = { v: 4, className: '', size: 20, names: {}, items: [], cells: {}, pick: {} };
+  var APP_ID = 'leap-classdata';   /* 내보낸 파일에 적히는 표시 — 남의 앱 파일을 가려냅니다 */
   var db = LEAP.store(KEY, INIT);
 
   /* 예전 판(v1·v2)에 없던 칸은 여기서 채웁니다. 열리지 않는 것이 가장 나쁩니다. */
@@ -2249,9 +2374,15 @@ global.LEAP=LEAP;})(window);
       LEAP.announce(n ? n + '칸을 채웠습니다.' : '읽을 값이 없었습니다.');
     });
     on(q('#p-clear'), 'click', function () {
-      if (!confirm('넣은 값을 전부 비웁니다. 항목과 이름은 남습니다. 되돌릴 수 없습니다.')) return;
+      if (!confirm('넣은 값을 전부 비웁니다. 항목과 이름은 남습니다. 계속할까요?')) return;
+      /* 한 학기 넣은 것이 한 번에 날아가는 자리입니다. 되돌릴 길을 둡니다. */
+      var before = JSON.stringify(D());
       save(function (d) { d.cells = {}; d.items.forEach(function (it) { d.cells[it.id] = {}; }); });
       render(); LEAP.announce('값을 전부 비웠습니다.');
+      LEAP.offerUndo('넣은 값을 전부 비웠습니다.', function () {
+        db.set(JSON.parse(before)); render();
+        LEAP.announce('되돌렸습니다.');
+      });
     });
   }
 
@@ -2292,7 +2423,10 @@ global.LEAP=LEAP;})(window);
      ========================================================================== */
   function renderDash() {
     var d = D();
-    var h = '<div id="fillzone">' + fillHTML(d) + '</div>';
+    /* ★ 같은 id 를 「입력」 탭에도 그리고 있었습니다. 탭은 숨겨질 뿐 사라지지
+       않으므로 화면에 #fillzone 이 «둘» 있었습니다 — HTML 규격 위반이고,
+       읽어 주는 기계가 같은 자리를 두 번 셉니다. 탭마다 다른 이름을 줍니다. */
+    var h = '<div id="fillzone-dash">' + fillHTML(d) + '</div>';
 
     if (!d.items.length) {
       P.dash.innerHTML = h + '<p class="empty">「우리 반」에서 볼 항목을 먼저 고르거나, ' +
@@ -2908,22 +3042,56 @@ global.LEAP=LEAP;})(window);
      그 그림의 세로가 가로의 세 배가 되고, A4 폭에 맞추는 순간 한 장을
      통째로 넘겨 뒤의 내용이 밀렸습니다. 이제 표로 냅니다.
      ========================================================================== */
+
+  /* PDF 파일 이름 — 마스터 함정 27번
+     브라우저는 「PDF 로 저장」의 파일 이름으로 **document.title** 을 씁니다.
+     인쇄하는 동안만 제목을 바꾸고 afterprint 로 되돌립니다.
+     afterprint 가 오지 않는 브라우저가 있어 시간 안전망을 함께 둡니다.
+     (앱 A 가 먼저 겪은 자리입니다. 같은 방식을 씁니다.) */
+  function withFileName(name, run) {
+    var was = document.title;
+    document.title = name;
+    var done = false;
+    function back2() {
+      if (done) return;
+      done = true;
+      document.title = was;
+      window.removeEventListener('afterprint', back2);
+    }
+    window.addEventListener('afterprint', back2);
+    setTimeout(back2, 20000);
+    run();
+  }
+  function cleanName(s) {
+    return String(s).replace(/[\\/:*?"<>|]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  /* 3월·6월·9월에 뽑은 것이 전부 같은 이름이었습니다 —
+     학년 협의회에 가져갈 때 어느 것이 최근 것인지 알 수 없습니다. */
+  function printFileName() {
+    var d = D();
+    return cleanName('우리반데이터_' + (d.className || '학급') + '_' + LEAP.todayISO());
+  }
+
   function renderRead() {
     var h = '<div class="sheet"><h2>종이로 내기</h2>' +
       '<p class="small muted">학년 협의회나 상담 준비에 그대로 씁니다. ' +
       'A4 세로 한두 장으로 나옵니다.</p>' +
       '<div class="actions" style="margin-top:0">' +
       '<button class="btn" id="btn-print" type="button">인쇄 · PDF로 저장</button>' +
-      '<button class="btn btn--ghost" id="btn-ai" type="button">AI 초안 도우미</button>' +
+      /* 머리에도 id="btn-ai" 가 있습니다. P.read 안에서만 찾아 쓰고 있어
+         동작은 했지만, 같은 id 가 둘이면 규격 위반이고 보조기기가
+         「AI 초안」을 두 개로 읽습니다. */
+      '<button class="btn btn--ghost" id="btn-ai-read" type="button">AI 초안 도우미</button>' +
       '</div></div>' +
       '<div class="sheet"><h2>미리보기</h2>' +
       '<div class="pvwrap"><div id="paper-view">' + paperHTML() + '</div></div></div>';
     P.read.innerHTML = h;
     on(P.read.querySelector('#btn-print'), 'click', function () {
       el('print-area').innerHTML = paperHTML();
-      window.print();
+      withFileName(printFileName(), function () { window.print(); });
     });
-    on(P.read.querySelector('#btn-ai'), 'click', openAI);
+    on(P.read.querySelector('#btn-ai-read'), 'click', openAI);
   }
 
   /* 종이의 히트맵 — 이름은 짧게, 칸은 잘게. 표라서 스스로 쪽을 넘깁니다. */
@@ -3155,7 +3323,7 @@ global.LEAP=LEAP;})(window);
 
     h += '<div class="stepbox"><h3><span class="step">1</span>추가로 부탁할 것이 있나요</h3>' +
       '<p>없으면 비워 두세요.</p>' +
-      '<textarea class="txt" id="ai-ask" placeholder="예: 다음 주 학부모 상담에서 쓸 말을 준비하고 싶습니다.">' +
+      '<textarea class="txt" id="ai-ask" aria-label="추가로 부탁할 것" placeholder="예: 다음 주 학부모 상담에서 쓸 말을 준비하고 싶습니다.">' +
       esc(aiAsk) + '</textarea></div>';
 
     h += '<div class="stepbox"><h3><span class="step">2</span>이 프롬프트를 AI에게 주세요</h3>' +
@@ -3240,11 +3408,13 @@ global.LEAP=LEAP;})(window);
   function bindFoot() {
     on(el('btn-export'), 'click', function () {
       var d = D();
-      LEAP.download('우리반데이터-' + (d.className || '학급').replace(/\s/g, '') + '-' + LEAP.todayISO() + '.json', d);
+      LEAP.download('우리반데이터-' + (d.className || '학급').replace(/\s/g, '') + '-' + LEAP.todayISO() + '.json', LEAP.stamp(APP_ID, d));
       LEAP.announce('파일로 내보냈습니다.');
     });
     on(el('btn-import'), 'click', function () {
       LEAP.pickFile(function (obj) {
+        var from = LEAP.otherApp(APP_ID, obj);
+        if (from) { alert('「' + from + '」에서 내보낸 파일입니다. 이 앱의 파일이 아닙니다.'); return; }
         if (!obj || !obj.items) { alert('이 앱에서 내보낸 파일이 아닙니다.'); return; }
         var d = D(), had = 0;
         d.items.forEach(function (it) { had += filledCount(d, it); });
@@ -3258,12 +3428,22 @@ global.LEAP=LEAP;})(window);
       });
     });
     on(el('btn-clear'), 'click', function () {
-      if (!confirm('이 기기에 저장된 우리 반 자료를 모두 지웁니다. 되돌릴 수 없습니다.')) return;
+    /* ★ 되돌릴 수 없는 일을 물음 하나로만 막고 있었습니다.
+       「예」를 누른 뒤에는 길이 없었습니다. 지우기 전 모습을 붙들어 두고
+       화면 아래에 한 걸음 되돌리는 길을 띄웁니다. */
+      if (!confirm('이 기기에 저장된 우리 반 자료를 모두 지웁니다. 계속할까요?')) return;
+      var before = JSON.stringify(D());
       db.reset(); render(); LEAP.announce('전부 지웠습니다.');
+      LEAP.offerUndo('우리 반 자료를 모두 지웠습니다.', function () {
+        db.set(JSON.parse(before)); render();
+        LEAP.announce('되돌렸습니다.');
+      });
     });
   }
 
   LEAP.restoreTheme();
+  LEAP.guardModals();   /* 창이 열리면 Tab 이 그 안에서만 돕니다 */
+  LEAP.watchOtherTabs('leap-classdata-v1');   /* 두 창을 열었을 때 조용히 덮어쓰지 않게 */
   LEAP.initThemeBtn(el('btn-theme'));
   /* 머리의 「AI 초안」 — 여덟 앱이 같은 자리에 둡니다(처음으로 · AI 초안 · 밝게/어둡게) */
   on(el('btn-ai'), 'click', openAI);

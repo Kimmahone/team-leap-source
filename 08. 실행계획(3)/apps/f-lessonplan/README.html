@@ -71,10 +71,10 @@ del{color:var(--gray)}
 </div></header>
 <main>
 <h1 id="h0">수업 설계안 만들기 (앱 F)</h1>
-<blockquote><p><b>왼쪽에서 적으면 오른쪽에 나올 종이가 바로 보입니다.</b> 차시안(1·2차시)과 단원안을 <b>A4 가로·세로</b> 두 양식으로 냅니다. 서버 없는 단일 HTML. v0.5 · 점검 178개 통과</p></blockquote>
+<blockquote><p><b>왼쪽에서 적으면 오른쪽에 나올 종이가 바로 보입니다.</b> 차시안(1·2차시)과 단원안을 <b>A4 가로·세로</b> 두 양식으로 냅니다. 서버 없는 단일 HTML. 점검 179개 통과</p></blockquote>
 <pre><code>f-lessonplan/
 ├─ index.html            ← 두 번 누르면 열립니다
-├─ test.js               ← node test.js  (178개)
+├─ test.js               ← node test.js  (179개)
 ├─ bake-standards.mjs    ← 성취기준·성취수준을 앱 안에 굽습니다
 ├─ .build/               ← 조각과 조립 스크립트 (아래 「고칠 때」)
 └─ README.md             ← 이 문서</code></pre>
@@ -175,7 +175,7 @@ del{color:var(--gray)}
 <h2 id="h84">고칠 때 — 조각으로 나뉘어 있습니다</h2>
 <p><code>index.html</code> 은 <b>조립 결과물</b>입니다. 손으로 고치지 말고 <code>.build/</code> 의 조각을 고친 뒤 조립하세요. 성취기준 139K 가 한가운데 박혀 있어 통째로 편집하기 어렵기 때문입니다.</p>
 <pre><code>./.build/assemble.sh     # 조각 → index.html → 성취기준 굽기
-node test.js             # 178개</code></pre>
+node test.js             # 179개</code></pre>
 <div class="tw"><table><thead><tr><th>조각</th><th>무엇</th></tr></thead><tbody><tr><td><code>00-head.html</code> · <code>04-body.html</code></td><td>머리와 뼈대</td></tr><tr><td><code>01-kit.css</code> · <code>02-common.css</code></td><td>LEAP Kit 사본 (원본은 <code>apps/kit/</code>)</td></tr><tr><td><code>03-app.css</code></td><td>이 앱의 모양 — 두 칸 · A4 종이 · 인쇄</td></tr><tr><td><code>11-model.js</code></td><td>문서 모델 · 성취기준 · 시간</td></tr><tr><td><code>12-paper.js</code></td><td>종이 (가로·세로)</td></tr><tr><td><code>13-make.js</code> · <code>14-bind.js</code></td><td>왼쪽 입력 화면과 손잡이</td></tr><tr><td><code>15-ai.js</code></td><td>AI 초안</td></tr><tr><td><code>16-box.js</code></td><td>예시안 · 보관함 · 부팅</td></tr></tbody></table></div>
 <blockquote><p><b>파일이 476K 입니다.</b> 다른 앱보다 큰 것은 성취기준 611건 때문입니다. 다만 <b>내려받을 때는 gzip 87K</b> 로, 앱 C(86K)·앱 E(83K)와 같은 자리입니다. 오프라인 파일 하나로 들고 다닐 때만 476K 입니다.</p></blockquote>
 <hr>
@@ -183,7 +183,7 @@ node test.js             # 178개</code></pre>
 <div class="tw"><table><thead><tr><th>뺀 것</th><th>왜</th></tr></thead><tbody><tr><td>중·고등학교 성취기준 DB</td><td>초등만 611건입니다. 중·고는 <b>직접 적기</b>로 받습니다 — 이 앱을 쓸 학교가 대부분 초등입니다</td></tr><tr><td>DOCX·HWP 내보내기</td><td>HWP 는 독점 포맷입니다. <b>인쇄 → PDF</b> 가 가장 빠르고 어디서나 됩니다</td></tr><tr><td>에듀테크 자동 추천</td><td>학교마다 태블릿·인터넷 사정이 다릅니다. 자주 쓰는 12개를 칩으로 두고 <b>자유 입력</b>을 열어 두었습니다</td></tr><tr><td>부분 재생성 (이 단계만 다시)</td><td>지금은 프롬프트에 「추가 요청」을 적어 다시 받습니다</td></tr><tr><td>AI 응답 자동 반영</td><td><b>초안은 초안입니다.</b> 눌러서 받기 전에는 아무것도 바뀌지 않습니다</td></tr><tr><td>약안·세안 두 벌</td><td>v0.2 의 갈래였습니다. <b>가로·세로</b>가 현장에서 더 필요한 갈래라 그쪽으로 옮겼습니다</td></tr></tbody></table></div>
 <hr>
 <h2 id="h93">검사</h2>
-<pre><code>node test.js      # 178개</code></pre>
+<pre><code>node test.js      # 179개</code></pre>
 <p>기능이 아니라 <b>약속한 규칙</b>을 봅니다.</p>
 <ul><li><code>[2]</code> <b>한 화면에 입력과 종이가 함께 있는가</b> — v0.3 에서 가장 크게 바꾼 것.</li><li><code>[3]</code> <b>시간</b> — 넘치는 상태를 <em>만들 수 있는가</em>를 봅니다. 「경고가 뜨는가」가 아닙니다.</li><li><code>[4]</code> <b>성취기준</b> — 611건이 다 있는지, A·B·C 가 피드백으로 들어가는지, <b>이미 적은 것을 덮지 않는지</b>.</li><li><code>[6]</code> <b>종이</b> — 가로·세로에 개요·수업·평가가 모두 들어가는지, 꼬리말이 겹치지 않는지, <b>백지가 안 나오는지</b>.</li><li><code>[7]</code> <b>예시안</b> — 평가가 비어 있지 않은지, <b>예시안끼리 내용이 섞이지 않았는지</b>(실제로 한 번 섞였습니다).</li><li><code>[8]</code> <b>AI 초안</b> — 200분짜리를 40분으로 맞추는지, 빈 초안을 거르는지, <b>보기만 해서는 안 바뀌는지</b>.</li><li><code>[9]</code> <b>학생 자리</b> — 저장 구조에 학생을 담을 칸이 없는지.</li></ul>
 <hr>

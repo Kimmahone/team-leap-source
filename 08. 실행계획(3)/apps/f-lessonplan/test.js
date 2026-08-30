@@ -493,10 +493,13 @@ console.log('\n[13] 현장에서 짚어 준 것들');
     paper.indexOf('>기본<') < paper.indexOf('>심화<'),
     paper.indexOf('>기초<') + '/' + paper.indexOf('>기본<') + '/' + paper.indexOf('>심화<'));
   const inp = r.els['panel-s3'].innerHTML;
+  /* 이름표가 <p> 였다가 <label for> 이 되었습니다(칸에 안 붙는 이름표였습니다).
+     여기서 지키려는 것은 «순서»이지 «태그»가 아니므로 태그를 묻지 않습니다. */
+  const at = (t) => inp.search(new RegExp('>' + t + '<\\/(p|label)>'));
   check('입력 화면도 같은 순서다',
-    inp.indexOf('기초</p>') < inp.indexOf('기본</p>') &&
-    inp.indexOf('기본</p>') < inp.indexOf('심화</p>'),
-    '종이와 다르면 옮겨 적을 때 헷갈린다');
+    at('기초') >= 0 && at('기초') < at('기본') && at('기본') < at('심화'),
+    '종이와 다르면 옮겨 적을 때 헷갈린다 — ' +
+    at('기초') + '/' + at('기본') + '/' + at('심화'));
 
   /* 머리 단추 — 일곱 앱이 같은 자리 */
   const head = html.slice(html.indexOf('top-actions'), html.indexOf('</header>'));

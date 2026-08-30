@@ -8,6 +8,13 @@
    - 모든 텍스트 색은 배경 대비 4.5:1 이상 (검증값은 주석에 표기)
    - 라이트/다크 자동 대응
    - 인쇄 스타일을 처음부터 포함
+
+   〔2026. 8. 30.〕 **원본이 뒤처져 있었습니다.**
+   「원본을 고치면 사본도 고쳐라」라고 적어 두었는데, 실제로는 반대로 흘렀습니다 —
+   아홉 앱이 앞서 가고 이 파일이 뒤에 남았습니다. 모서리가 10px 대 14px,
+   그림자가 달랐고, 아홉 앱이 쓰는 `--tint-*` · `--grad-*` · `--solid-*` 가
+   여기 아예 없었습니다. 없는 토큰을 원본에서 베껴 가는 사람은 화면이 깨집니다.
+   아홉 앱의 지금 모습으로 끌어올렸고, **검사가 어긋남을 잡습니다**(`../test.js`).
    ========================================================================== */
 
 :root {
@@ -28,9 +35,27 @@
   /* --- 상태 (배경에 흰 글자를 얹는 용도) ------------------------------- */
   --leap-on-fill: #FFFFFF;
 
+  /* --- 옅은 바탕 — 알림·강조 상자의 배경 -------------------------------- */
+  --tint-blue:  #EAF1FB;
+  --tint-amber: #FCF0E3;
+  --tint-teal:  #E4F4F0;
+
+  /* --- 그러데이션 — 머리띠와 막대 --------------------------------------- */
+  --grad-head: linear-gradient(135deg,#14202E 0%,#1B4FA0 78%,#2C6FD1 100%);
+  --grad-bar:  linear-gradient(90deg,#1B4FA0,#3C7FD8);
+
+  /* --- 어두운 화면에서도 «그 색 그대로» 있어야 하는 것 --------------------
+     막대·점처럼 «색이 곧 뜻»인 자리는 화면이 바뀌어도 같은 색이라야
+     범례와 어긋나지 않습니다. 그래서 밝기용 토큰과 따로 둡니다. */
+  --solid-teal:  #0D6E5C;
+  --solid-amber: #A8560A;
+  --solid-gray:  #5A6672;
+  --solid-fg:    #FFFFFF;
+
   /* --- 타이포 ----------------------------------------------------------- */
   --leap-font: system-ui, -apple-system, "Segoe UI", "Apple SD Gothic Neo",
                "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --leap-serif: "Apple SD Gothic Neo", "Malgun Gothic", system-ui, serif;
   --leap-mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas,
                "D2Coding", monospace;
 
@@ -43,9 +68,10 @@
   --leap-1: 4px;  --leap-2: 8px;  --leap-3: 12px; --leap-4: 16px;
   --leap-5: 24px; --leap-6: 32px; --leap-7: 48px; --leap-8: 64px;
 
-  --leap-radius: 10px;
-  --leap-radius-sm: 6px;
-  --leap-shadow: 0 1px 2px rgba(20, 32, 46, .06), 0 4px 12px rgba(20, 32, 46, .07);
+  --leap-radius: 14px;
+  --leap-radius-sm: 8px;
+  --leap-shadow:    0 1px 2px rgba(20,32,46,.05), 0 6px 18px rgba(20,32,46,.07);
+  --leap-shadow-lg: 0 2px 4px rgba(20,32,46,.06), 0 14px 38px rgba(20,32,46,.11);
 }
 
 /* --- 다크 --------------------------------------------------------------- */
@@ -64,7 +90,21 @@
     --leap-hairline:#22303F;
 
     --leap-on-fill: #0E1621;
-    --leap-shadow: 0 1px 2px rgba(0,0,0,.4), 0 4px 14px rgba(0,0,0,.35);
+
+    --tint-blue:  #16304F;
+    --tint-amber: #3A2A18;
+    --tint-teal:  #123830;
+
+    --grad-head: linear-gradient(135deg,#0A111C 0%,#16345F 78%,#1E4C8C 100%);
+    --grad-bar:  linear-gradient(90deg,#3C7FD8,#7FB3F7);
+
+    --solid-teal:  #4FD1B0;
+    --solid-amber: #F2A65A;
+    --solid-gray:  #97A3B0;
+    --solid-fg:    #0E1621;
+
+    --leap-shadow:    0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.34);
+    --leap-shadow-lg: 0 2px 6px rgba(0,0,0,.45), 0 16px 44px rgba(0,0,0,.45);
   }
 }
 
@@ -74,12 +114,24 @@
   --leap-amber-mark: #CE6410; --leap-teal: #0D6E5C; --leap-gray: #5A6672;
   --leap-bg: #F7F9FC; --leap-surface: #FFFFFF;
   --leap-border: #D9E0EA; --leap-hairline: #E8EDF3; --leap-on-fill: #FFFFFF;
+  --tint-blue: #EAF1FB; --tint-amber: #FCF0E3; --tint-teal: #E4F4F0;
+  --grad-head: linear-gradient(135deg,#14202E 0%,#1B4FA0 78%,#2C6FD1 100%);
+  --grad-bar: linear-gradient(90deg,#1B4FA0,#3C7FD8);
+  --solid-teal: #0D6E5C; --solid-amber: #A8560A; --solid-gray: #5A6672; --solid-fg: #FFFFFF;
+  --leap-shadow: 0 1px 2px rgba(20,32,46,.05), 0 6px 18px rgba(20,32,46,.07);
+  --leap-shadow-lg: 0 2px 4px rgba(20,32,46,.06), 0 14px 38px rgba(20,32,46,.11);
 }
 :root[data-theme="dark"] {
   --leap-ink: #E8EDF3; --leap-blue: #7FB3F7; --leap-amber: #F2A65A;
   --leap-amber-mark: #F2A65A; --leap-teal: #4FD1B0; --leap-gray: #97A3B0;
   --leap-bg: #0E1621; --leap-surface: #1A2735;
   --leap-border: #2C3B4C; --leap-hairline: #22303F; --leap-on-fill: #0E1621;
+  --tint-blue: #16304F; --tint-amber: #3A2A18; --tint-teal: #123830;
+  --grad-head: linear-gradient(135deg,#0A111C 0%,#16345F 78%,#1E4C8C 100%);
+  --grad-bar: linear-gradient(90deg,#3C7FD8,#7FB3F7);
+  --solid-teal: #4FD1B0; --solid-amber: #F2A65A; --solid-gray: #97A3B0; --solid-fg: #0E1621;
+  --leap-shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.34);
+  --leap-shadow-lg: 0 2px 6px rgba(0,0,0,.45), 0 16px 44px rgba(0,0,0,.45);
 }
 
 /* --- 기본 --------------------------------------------------------------- */
@@ -175,3 +227,21 @@ body {
     transition-duration: .01ms !important;
   }
 }
+
+/* ==========================================================================
+   한 걸음 되돌리기 — 화면 아래에 잠깐 떠 있는 띠
+   앱마다 그리는 자리가 달라 패널에 끼우지 않습니다. 종이에는 찍히지 않습니다.
+   ========================================================================== */
+.leap-undobar{position:fixed;left:50%;bottom:22px;transform:translate(-50%,14px);
+  display:none;align-items:center;gap:12px;max-width:min(560px,calc(100vw - 32px));
+  padding:12px 14px 12px 18px;border-radius:999px;
+  background:var(--leap-surface);border:1px solid var(--leap-border);
+  box-shadow:0 2px 4px rgba(20,32,46,.06),0 14px 38px rgba(20,32,46,.16);
+  z-index:200;opacity:0;transition:opacity .18s,transform .18s}
+.leap-undobar.is-on{display:flex;opacity:1;transform:translate(-50%,0)}
+.leap-undobar p{margin:0;font-size:.875rem;font-weight:700;color:var(--leap-ink)}
+.leap-undox{flex:none;width:28px;height:28px;border-radius:999px;border:0;
+  background:transparent;color:var(--leap-gray);font-size:.9rem;cursor:pointer;line-height:1}
+.leap-undox:hover{background:var(--leap-hairline);color:var(--leap-ink)}
+@media print{.leap-undobar{display:none!important}}
+@media (prefers-reduced-motion:reduce){.leap-undobar{transition:none}}
