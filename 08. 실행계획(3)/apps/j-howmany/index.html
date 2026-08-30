@@ -1,0 +1,1808 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>몇 명이면 되나 — TEAM LEAP</title>
+<meta name="description" content="학생 수가 줄면 학교에서 무엇이 되고 무엇이 사라지는지 인원 기준으로 미리 봅니다. 안 되는 것은 어떻게 바꾸면 되는지 함께 봅니다. TEAM LEAP.">
+<meta name="author" content="TEAM LEAP · 경북교육 AI Lab">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2314202E'/%3E%3Cg transform='translate(32 32) scale(0.92) translate(-32 -33)'%3E%3Cpath d='M7 52 H25' stroke='%2397A3B0' stroke-width='7.5' stroke-linecap='round' fill='none'/%3E%3Cpath d='M39 36 H57' stroke='%23F2A65A' stroke-width='7.5' stroke-linecap='round' fill='none'/%3E%3Cpath d='M16 46 Q32 -10 48 30' stroke='%237FB3F7' stroke-width='8' stroke-linecap='round' fill='none'/%3E%3C/g%3E%3C/svg%3E">
+<!--
+  몇 명이면 되나 — 인원이 정하는 것들
+  TEAM LEAP · 경북교육 AI Lab · AI 활용 분과
+
+  왜 이 앱인가
+    학령인구 감소가 학교에서 실제로 나타나는 방식은 **인원 임계값을 하나씩
+    못 넘기는 것**입니다. 축구부 11명, 방과후 최소 개설 10명, 4부 합창,
+    45인승 버스, 학급 편성 기준. 지금 이 판단은 «경험과 감»으로 합니다 —
+    「작년에 됐으니 올해도 되겠지」.
+
+    이 앱은 두 가지를 합니다.
+      ① 지금 인원으로 **무엇이 되고 무엇이 안 되는지** 한 화면에 놓습니다.
+      ② 안 되는 것은 **어떻게 바꾸면 되는지**를 함께 적습니다.
+         (축구 11명이 안 되면 풋살 5명은 됩니다)
+
+    그리고 **내년·내후년을 밀어 볼 수 있습니다.** 「다섯 명 줄면 무엇이
+    사라지나」를 미리 보는 것이 이 앱의 전부입니다.
+
+  대규모 학교도 씁니다
+    학생이 주는 것은 모든 학교에서 일어납니다. 600명이 480명이 될 때도
+    무언가는 사라집니다. 이 앱은 학교 크기를 묻지 않습니다.
+
+  © 2026 TEAM LEAP (경북교육 AI Lab · AI 활용 분과)
+-->
+<style>/* ==========================================================================
+   LEAP Kit 토큰 (apps/kit/leap.css 사본 — 단일 HTML 유지를 위해 붙여 넣음)
+   ========================================================================== */
+:root{
+  --leap-ink:#14202E; --leap-blue:#1B4FA0; --leap-amber:#A8560A;
+  --leap-amber-mark:#CE6410; --leap-teal:#0D6E5C; --leap-gray:#5A6672;
+  --leap-bg:#F7F9FC; --leap-surface:#FFFFFF; --leap-border:#D9E0EA;
+  --leap-hairline:#E8EDF3; --leap-on-fill:#FFFFFF;
+  --leap-font:system-ui,-apple-system,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  --leap-1:4px; --leap-2:8px; --leap-3:12px; --leap-4:16px;
+  --leap-5:24px; --leap-6:32px; --leap-7:48px;
+  --leap-radius:14px; --leap-radius-sm:8px;
+  --leap-shadow:0 1px 2px rgba(20,32,46,.05),0 6px 18px rgba(20,32,46,.07);
+  --leap-shadow-lg:0 2px 4px rgba(20,32,46,.06),0 14px 38px rgba(20,32,46,.11);
+
+  /* 앱에서 더 쓰는 색 — 전부 배경용이며, 글자는 늘 --leap-ink 를 얹는다 */
+  --tint-blue:#EAF1FB; --tint-amber:#FCF0E3; --tint-teal:#E4F4F0;
+  --grad-head:linear-gradient(135deg,#14202E 0%,#1B4FA0 78%,#2C6FD1 100%);
+  --grad-bar:linear-gradient(90deg,#1B4FA0,#3C7FD8);
+  --grad-win:linear-gradient(90deg,#CE6410,#E8862B);
+  --solid-teal:#0D6E5C; --solid-amber:#A8560A; --solid-gray:#5A6672;
+  --solid-fg:#FFFFFF;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --leap-ink:#E8EDF3; --leap-blue:#7FB3F7; --leap-amber:#F2A65A;
+    --leap-amber-mark:#F2A65A; --leap-teal:#4FD1B0; --leap-gray:#97A3B0;
+    --leap-bg:#0E1621; --leap-surface:#1A2735; --leap-border:#2C3B4C;
+    --leap-hairline:#22303F; --leap-on-fill:#0E1621;
+    --leap-shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.34);
+    --leap-shadow-lg:0 2px 6px rgba(0,0,0,.45),0 16px 44px rgba(0,0,0,.45);
+    --tint-blue:#16304F; --tint-amber:#3A2A18; --tint-teal:#123830;
+    --grad-head:linear-gradient(135deg,#0A111C 0%,#16345F 78%,#1E4C8C 100%);
+    --grad-bar:linear-gradient(90deg,#3C7FD8,#7FB3F7);
+    --grad-win:linear-gradient(90deg,#C4691B,#F2A65A);
+    --solid-teal:#4FD1B0; --solid-amber:#F2A65A; --solid-gray:#97A3B0;
+    --solid-fg:#0E1621;
+  }
+}
+:root[data-theme="light"]{
+  --leap-ink:#14202E;--leap-blue:#1B4FA0;--leap-amber:#A8560A;--leap-amber-mark:#CE6410;
+  --leap-teal:#0D6E5C;--leap-gray:#5A6672;--leap-bg:#F7F9FC;--leap-surface:#FFFFFF;
+  --leap-border:#D9E0EA;--leap-hairline:#E8EDF3;--leap-on-fill:#FFFFFF;
+  --tint-blue:#EAF1FB;--tint-amber:#FCF0E3;--tint-teal:#E4F4F0;
+  --grad-head:linear-gradient(135deg,#14202E 0%,#1B4FA0 78%,#2C6FD1 100%);
+  --grad-bar:linear-gradient(90deg,#1B4FA0,#3C7FD8);
+  --grad-win:linear-gradient(90deg,#CE6410,#E8862B);
+  --solid-teal:#0D6E5C; --solid-amber:#A8560A; --solid-gray:#5A6672;
+  --solid-fg:#FFFFFF;
+}
+:root[data-theme="dark"]{
+  --leap-ink:#E8EDF3;--leap-blue:#7FB3F7;--leap-amber:#F2A65A;--leap-amber-mark:#F2A65A;
+  --leap-teal:#4FD1B0;--leap-gray:#97A3B0;--leap-bg:#0E1621;--leap-surface:#1A2735;
+  --leap-border:#2C3B4C;--leap-hairline:#22303F;--leap-on-fill:#0E1621;
+  --tint-blue:#16304F;--tint-amber:#3A2A18;--tint-teal:#123830;
+  --grad-head:linear-gradient(135deg,#0A111C 0%,#16345F 78%,#1E4C8C 100%);
+  --grad-bar:linear-gradient(90deg,#3C7FD8,#7FB3F7);
+  --grad-win:linear-gradient(90deg,#C4691B,#F2A65A);
+  --solid-teal:#4FD1B0; --solid-amber:#F2A65A; --solid-gray:#97A3B0;
+  --solid-fg:#0E1621;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--leap-font);font-size:1rem;line-height:1.65;
+  color:var(--leap-ink);background:var(--leap-bg);-webkit-text-size-adjust:100%}
+/* 본문 바로가기 — 평소에는 화면 밖에, 초점이 오면 제자리로 */
+.skip{position:absolute;left:12px;top:-56px;z-index:300;
+  padding:11px 18px;min-height:44px;display:inline-flex;align-items:center;
+  border-radius:var(--leap-radius-sm);background:var(--leap-surface);
+  color:var(--leap-ink);border:2px solid var(--leap-blue);
+  font-weight:700;font-size:.9375rem;text-decoration:none;
+  transition:top .15s}
+.skip:focus{top:12px}
+@media (prefers-reduced-motion:reduce){.skip{transition:none}}
+@media print{.skip{display:none!important}}
+:focus-visible{outline:3px solid var(--leap-blue);outline-offset:3px;border-radius:var(--leap-radius-sm)}
+.leap-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}
+button,input,textarea,select{font:inherit;color:inherit}
+
+.leap-toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(14px);
+  background:var(--leap-ink);color:var(--leap-bg);padding:13px 26px;border-radius:999px;
+  font-size:.9375rem;font-weight:700;box-shadow:var(--leap-shadow-lg);
+  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:90;max-width:88vw;text-align:center}
+.leap-toast.is-on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ==========================================================================
+   머리말 — 브랜드 그라디언트 + 배경에 깔린 도약 궤적
+   ========================================================================== */
+header.top{background:var(--grad-head);color:#fff;position:relative;overflow:hidden}
+header.top .deco{position:absolute;right:-40px;top:-30px;width:280px;height:280px;
+  opacity:.13;pointer-events:none}
+/* ★ 〔2026. 8. 12.〕 아홉 앱의 좌우 여백을 하나로 맞췄습니다.
+   머리·탭·본문이 **같은 폭**(1360px)이라야 세로선이 한 줄로 섭니다.
+   예전에는 앱마다 880~1360px 로 제각각이었고, 한 앱 안에서도 어긋나 있었습니다
+   (d-multigrade 는 머리 1000 · 본문 1360, h-project 는 탭 880 · 본문 1180).
+   폭을 바꿀 때는 **세 줄을 함께** 고치세요. */
+.top-in{max-width:1360px;margin:0 auto;padding:22px 20px 24px;display:flex;
+  align-items:center;gap:14px;flex-wrap:wrap;position:relative}
+.brand{display:flex;align-items:center;gap:13px;min-width:0}
+.brand .badge{flex:none;width:48px;height:48px;border-radius:13px;
+  background:rgba(255,255,255,.13);display:grid;place-items:center;
+  border:1px solid rgba(255,255,255,.2)}
+.brand h1{margin:0;font-size:1.25rem;letter-spacing:-.02em;line-height:1.25}
+.brand .sub{font-size:.75rem;color:rgba(255,255,255,.72);letter-spacing:.03em;margin-top:1px}
+.top-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.iconbtn{min-height:42px;padding:8px 15px;font-size:.8125rem;font-weight:700;
+  border:1px solid rgba(255,255,255,.28);border-radius:999px;
+  background:rgba(255,255,255,.1);color:#fff;cursor:pointer}
+.iconbtn:hover{background:rgba(255,255,255,.2)}
+
+/* 메인 페이지로 돌아가는 길.
+   링크지만 옆의 단추와 같은 모양이라야 눈이 한 줄로 읽습니다.
+   맨 앞에 두는 것은 일부러입니다 — 「나가는 문」은 늘 같은 자리에 있어야 합니다. */
+a.iconbtn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.iconbtn--home{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.44)}
+.iconbtn--home:hover{background:rgba(255,255,255,.32)}
+
+/* 탭 */
+nav.tabs{background:var(--leap-surface);border-bottom:1px solid var(--leap-border);
+  position:sticky;top:0;z-index:20;box-shadow:0 1px 0 var(--leap-border)}
+.tabs-in{max-width:1360px;margin:0 auto;padding:9px 20px;display:flex;gap:6px;overflow-x:auto}
+[role="tab"]{background:none;border:0;padding:10px 18px;min-height:46px;border-radius:999px;
+  font-weight:700;font-size:.9375rem;color:var(--leap-gray);cursor:pointer;white-space:nowrap}
+[role="tab"]:hover{background:var(--leap-hairline)}
+[role="tab"][aria-selected="true"]{color:var(--leap-blue);background:var(--tint-blue)}
+
+main.wrap{max-width:1360px;margin:0 auto;padding:26px 20px 90px}
+
+/* ==========================================================================
+   카드
+   ========================================================================== */
+.card{background:var(--leap-surface);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:28px;box-shadow:var(--leap-shadow);margin-bottom:20px}
+.card > h2{margin:0 0 5px;font-size:1.4375rem;letter-spacing:-.022em}
+.card > h2 + .sub{margin:0 0 24px;color:var(--leap-gray);font-size:.9375rem}
+.muted{color:var(--leap-gray)}
+.small{font-size:.8125rem}
+.prompt{margin:0 0 6px;font-size:1.3125rem;font-weight:800;letter-spacing:-.022em}
+.prompt-sub{margin:0 0 22px;color:var(--leap-gray)}
+
+/* 버튼 */
+.btn{font-weight:700;padding:12px 22px;min-height:46px;border-radius:999px;
+  border:1px solid var(--leap-blue);background:var(--leap-blue);color:var(--leap-on-fill);
+  cursor:pointer;transition:transform .12s,box-shadow .12s,filter .12s}
+.btn:hover{filter:brightness(1.09);box-shadow:0 6px 18px rgba(27,79,160,.28);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn--quiet{background:transparent;color:var(--leap-blue)}
+.btn--quiet:hover{background:var(--tint-blue);box-shadow:none}
+.btn--ghost{background:transparent;color:var(--leap-gray);border-color:var(--leap-border)}
+.btn--ghost:hover{background:var(--leap-hairline);box-shadow:none;filter:none}
+.btn--danger{background:transparent;color:var(--leap-amber);border-color:var(--leap-amber)}
+.btn--danger:hover{background:var(--tint-amber);box-shadow:none;filter:none}
+.btn--amber{background:var(--solid-amber);border-color:var(--solid-amber);color:var(--solid-fg)}
+.btn:disabled{opacity:.4;cursor:not-allowed;filter:none;transform:none;box-shadow:none}
+.btn--big{font-size:1.0625rem;padding:16px 30px;min-height:58px}
+.btn--sm{font-size:.8125rem;padding:8px 16px;min-height:44px}
+.btn .ico{margin-right:8px;vertical-align:-3px}
+.actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:22px;align-items:center}
+
+/* ==========================================================================
+   단계 표시 — 로고의 도약 궤적을 그대로 진행바로 쓴다
+   ========================================================================== */
+.arcwrap{background:var(--tint-blue);border-radius:var(--leap-radius);
+  padding:14px 10px 6px;margin:0 0 24px}
+.arcwrap svg{display:block;width:100%;max-width:430px;height:auto;margin:0 auto}
+/* ==========================================================================
+   이 앱의 화면
+   --------------------------------------------------------------------------
+   심장은 «미는 것»입니다. 표를 채우는 도구가 아니라, 인원을 밀어 보며
+   무엇이 갈리는지 눈으로 보는 도구입니다. 그래서 슬라이더가 맨 위에 있고
+   그 아래가 즉시 반응합니다.
+   ========================================================================== */
+.dial{position:sticky;top:0;z-index:40;background:var(--leap-bg);
+  padding:14px 0 12px;margin:0 0 18px;border-bottom:1px solid var(--leap-border)}
+.dial-in{background:var(--leap-surface);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:16px 18px;box-shadow:var(--leap-shadow)}
+.dial-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:0 0 12px}
+.dial-h .n{font-size:2rem;font-weight:800;letter-spacing:-.03em;
+  font-variant-numeric:tabular-nums;line-height:1}
+.dial-h .u{font-size:.9375rem;font-weight:700;color:var(--leap-gray)}
+.dial-h .w{margin-left:auto;font-size:.8125rem;color:var(--leap-gray)}
+.dial input[type=range]{width:100%;margin:0;accent-color:var(--leap-blue);height:32px}
+.dial-mark{display:flex;justify-content:space-between;font-size:.75rem;
+  color:var(--leap-gray);margin-top:2px;font-variant-numeric:tabular-nums}
+/* 무리별 사람 수 — 전교생만 보이면 「축구부 11명이 된다」가 거짓으로 읽힙니다 */
+.dial-pools{display:flex;gap:16px;flex-wrap:wrap;margin:11px 0 0;font-size:.8125rem;
+  color:var(--leap-gray);font-variant-numeric:tabular-nums}
+.dial-pools b{color:var(--leap-ink);font-weight:800}
+.dial-pools i{font-style:normal;font-size:.75rem;color:var(--leap-amber);font-weight:700}
+.years{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}
+.years button{flex:1 1 auto;min-height:44px;padding:9px 14px;border-radius:999px;
+  border:2px solid var(--leap-border);background:var(--leap-surface);color:var(--leap-ink);
+  font:inherit;font-size:.875rem;font-weight:700;cursor:pointer}
+.years button[aria-pressed=true]{border-color:var(--leap-blue);background:var(--tint-blue);
+  color:var(--leap-blue)}
+.years button .d{display:block;font-size:.75rem;font-weight:600;color:var(--leap-gray);margin-top:2px}
+.years button[aria-pressed=true] .d{color:var(--leap-blue)}
+/* 갈린 것 — 세 칸으로 셈해 보여 줍니다 */
+.tally{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:0 0 18px}
+.tally div{border-radius:var(--leap-radius);padding:13px 15px;border:1px solid var(--leap-border);
+  background:var(--leap-surface)}
+.tally b{display:block;font-size:1.5rem;font-weight:800;line-height:1.1;
+  font-variant-numeric:tabular-nums}
+.tally span{display:block;font-size:.8125rem;color:var(--leap-gray);margin-top:3px}
+.tally .t-go b{color:var(--solid-teal)}
+.tally .t-edge b{color:var(--solid-amber)}
+/* 「안 됨」은 토큰을 쓰지 않습니다 — 어두운 화면에서 뜻이 뒤집히면 안 되는 색입니다 */
+.tally .t-no b{color:#B42318}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .tally .t-no b{color:#FF8A7A}}
+:root[data-theme=dark] .tally .t-no b{color:#FF8A7A}
+/* 카드 한 장 = 「이것이 되나」 하나 */
+.cards{display:grid;gap:10px}
+.card2{border:1px solid var(--leap-border);border-left-width:5px;border-radius:var(--leap-radius);
+  background:var(--leap-surface);padding:15px 17px;box-shadow:var(--leap-shadow)}
+.card2--go{border-left-color:var(--solid-teal)}
+.card2--edge{border-left-color:var(--solid-amber);background:var(--tint-amber)}
+.card2--no{border-left-color:#B42318}
+.card2--unknown{border-left-color:var(--leap-border)}
+.card2-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.card2-h .nm{font-weight:800;font-size:1rem;letter-spacing:-.01em}
+.card2-h .cat{font-size:.75rem;font-weight:700;color:var(--leap-gray);
+  background:var(--leap-hairline);border-radius:999px;padding:2px 9px}
+.card2-h .st{margin-left:auto;font-weight:800;font-size:.875rem}
+.card2--go .st{color:var(--solid-teal)}
+.card2--edge .st{color:var(--solid-amber)}
+.card2--no .st{color:#B42318}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .card2--no .st{color:#FF8A7A}}
+:root[data-theme=dark] .card2--no .st{color:#FF8A7A}
+.card2-n{margin:9px 0 0;font-size:.875rem;color:var(--leap-gray);line-height:1.7;
+  font-variant-numeric:tabular-nums}
+.card2-n b{color:var(--leap-ink)}
+/* 「안 되면 이렇게」 — 이 앱이 하려는 말의 절반입니다 */
+.card2-alt{margin:11px 0 0;padding:11px 13px;border-radius:var(--leap-radius-sm);
+  background:var(--tint-teal);font-size:.875rem;line-height:1.7}
+.card2-alt .lb{display:block;font-size:.75rem;font-weight:800;color:var(--solid-teal);
+  margin-bottom:3px;letter-spacing:.02em}
+.card2-src{margin:9px 0 0;font-size:.75rem;color:var(--leap-gray)}
+.card2-x{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
+/* 저울 — 지금 인원이 기준선의 어디쯤인가 */
+.gauge{height:8px;border-radius:999px;background:var(--leap-hairline);
+  margin:11px 0 0;overflow:hidden}
+.gauge i{display:block;height:100%;border-radius:999px}
+.card2--go .gauge i{background:var(--solid-teal)}
+.card2--edge .gauge i{background:var(--solid-amber)}
+.card2--no .gauge i{background:#B42318}
+.grp{margin:0 0 22px}
+.grp > h3{margin:0 0 10px;font-size:.9375rem;letter-spacing:-.015em;
+  display:flex;align-items:center;gap:9px}
+.grp > h3 .c{font-size:.8125rem;font-weight:700;color:var(--leap-gray)}
+/* ── 창 ────────────────────────────────────────────────────────────────
+   화면 위에 «떠 있는» 상자입니다. 위치를 고정하고(position:fixed) 안쪽만
+   스크롤합니다 — 그러지 않으면 창이 길어질 때 화면 전체가 밀려 내려가
+   무엇을 고치고 있었는지 알 수 없게 됩니다.
+   ────────────────────────────────────────────────────────────────────── */
+.modal{position:fixed;inset:0;z-index:120;display:flex;align-items:flex-start;
+  justify-content:center;padding:38px 18px}
+.modal[hidden]{display:none}
+.modal-back{position:absolute;inset:0;background:rgba(10,17,28,.55);backdrop-filter:blur(2px)}
+.modal-box{position:relative;background:var(--leap-surface);border-radius:18px;width:100%;
+  max-width:640px;max-height:calc(100vh - 76px);display:flex;flex-direction:column;
+  box-shadow:var(--leap-shadow-lg);border:1px solid var(--leap-border);animation:pop .16s ease-out}
+.modal-box--wide{max-width:900px}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.modal-box{animation:none}}
+.modal-h{display:flex;align-items:center;gap:12px;padding:19px 22px 13px;
+  border-bottom:1px solid var(--leap-hairline);flex:none}
+.modal-h h2{margin:0;font-size:1.0625rem;letter-spacing:-.02em}
+.modal-x{margin-left:auto;flex:none;width:38px;height:38px;border-radius:50%;border:0;
+  cursor:pointer;background:var(--leap-hairline);color:var(--leap-gray);font-size:1rem;font-weight:700}
+.modal-x:hover{background:var(--leap-border);color:var(--leap-ink)}
+.modal-b{padding:19px 22px 22px;overflow:auto;-webkit-overflow-scrolling:touch;min-height:0}
+/* 창 안의 단추 줄은 바닥에 붙여 둡니다 — 길어져도 늘 손 닿는 자리에 */
+.modal-b .actions{position:sticky;bottom:-22px;margin:18px -22px -22px;padding:16px 22px;
+  background:var(--leap-surface);border-top:1px solid var(--leap-hairline);
+  display:flex;gap:9px;flex-wrap:wrap}
+.promptbox{width:100%;min-height:210px;padding:13px 15px;border-radius:var(--leap-radius-sm);
+  border:2px solid var(--leap-border);background:var(--leap-bg);color:var(--leap-ink);
+  font-size:.78rem;line-height:1.6;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;resize:vertical}
+
+/* 첫 화면 — 한 가지만 묻습니다.
+   밀 것이 없는 슬라이더를 내놓는 대신, 할 일 하나를 크게 놓습니다. */
+.start{background:var(--leap-surface);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:30px 30px 28px;box-shadow:var(--leap-shadow)}
+.start h2{margin:0 0 10px;font-size:1.25rem;letter-spacing:-.022em}
+.start > p{margin:0 0 22px;color:var(--leap-gray);line-height:1.75;font-size:.9375rem}
+.start > p b{color:var(--leap-ink)}
+.start-in{background:var(--tint-blue);border-radius:var(--leap-radius);padding:18px 20px}
+.start-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.start-row .txt{max-width:170px}
+/* 고치기 창 — 칸을 눕혀 한 화면에 들어오게 */
+.ed-row{display:grid;grid-template-columns:1.3fr 1fr .7fr;gap:12px}
+@media (max-width:620px){.ed-row{grid-template-columns:1fr}}
+.ed-row .field{margin-bottom:14px}
+.ed-row .txt--n{max-width:none}
+/* 글 속의 단추 — 링크처럼 보이되 진짜 단추입니다 */
+.linky{border:0;background:none;padding:0;font:inherit;font-weight:700;
+  color:var(--leap-blue);text-decoration:underline;cursor:pointer}
+.linky:hover{color:var(--leap-ink)}
+
+/* 우리 학교 화면 */
+.field{margin:0 0 14px}
+label.fld{display:block;font-weight:700;font-size:.875rem;margin:0 0 8px}
+label.fld .hint{font-weight:600;color:var(--leap-gray);font-size:.8125rem}
+.txt{width:100%;padding:11px 14px;min-height:46px;border-radius:var(--leap-radius-sm);
+  border:2px solid var(--leap-border);background:var(--leap-bg);color:var(--leap-ink);
+  font-family:inherit;font-size:1rem}
+.txt:focus{border-color:var(--leap-blue);outline:none}
+.txt--n{max-width:150px;font-variant-numeric:tabular-nums}
+textarea.txt{min-height:80px;resize:vertical;line-height:1.6}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+@media (max-width:620px){.grid2,.tally{grid-template-columns:1fr}}
+/* 종이 */
+.p-tally{display:flex;gap:14px;margin:0 0 10px;font-size:10pt}
+.p-tally b{font-variant-numeric:tabular-nums}
+.p-src{font-size:9pt;color:#555;line-height:1.7}
+/* 빈 화면 */
+.empty{text-align:center;padding:52px 24px}
+.empty svg{opacity:.34;margin-bottom:16px}
+.empty p{margin:0;color:var(--leap-gray);font-size:1.0625rem;line-height:1.75}
+
+/* 바닥 — 자료 관리 + 저작권 */
+footer.foot{margin-top:44px}
+.foot-card{background:var(--leap-surface);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:24px;box-shadow:var(--leap-shadow)}
+.foot-card h2{margin:0 0 5px;font-size:1.0625rem}
+.foot-actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:18px}
+.colophon{display:flex;gap:16px;align-items:flex-start;margin-top:30px;
+  padding-top:26px;border-top:1px solid var(--leap-border)}
+.colophon svg{flex:none;opacity:.8}
+.colophon .body{font-size:.8125rem;color:var(--leap-gray);line-height:1.75}
+.colophon .name{font-weight:800;color:var(--leap-ink);font-size:.9375rem;letter-spacing:-.01em}
+.colophon .name span{font-weight:600;color:var(--leap-gray);font-size:.8125rem;margin-left:7px}
+.colophon p{margin:5px 0 0}
+.colophon .cc{color:var(--leap-ink);font-weight:600}
+/* ==========================================================================
+   갈림길 〔v0.4〕 — 마스터 함정 37번
+   --------------------------------------------------------------------------
+   되돌릴 수 없는 일을 「예 / 아니오」로 물으면 **잃는 쪽에 「예」를 눌러야** 합니다.
+   길을 갈라 놓고 **잃지 않는 길을 맨 위에** 둡니다. 앱 D 와 같은 이름을 씁니다.
+   ========================================================================== */
+.picks2{display:grid;gap:9px}
+.pick2{text-align:left;border:2px solid var(--leap-border);background:var(--leap-surface);
+  border-radius:var(--leap-radius);padding:14px 16px;cursor:pointer;min-height:64px;width:100%}
+.pick2:hover{border-color:var(--leap-blue);background:var(--tint-blue)}
+.pick2 .n{display:block;font-weight:800;font-size:.9375rem}
+.pick2 .d{display:block;font-size:.8125rem;color:var(--leap-gray);margin-top:3px;line-height:1.6}
+.pick2--go{border-color:var(--leap-teal);background:var(--tint-teal)}
+.pick2--go:hover{border-color:var(--solid-teal)}
+.pick2--off{border-style:dashed}
+.pick2--off:hover{border-style:solid}
+
+/* 되돌리기 〔v0.4〕 — 마스터 함정 39번
+   「지울까요?」는 잘못 누르는 것을 못 막습니다. 누르던 손이 그대로 「예」를 누릅니다.
+   묻지 않고 지우되, **한 걸음은 되돌릴 수 있게** 합니다. */
+.undo{display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  background:var(--tint-amber);border:1px solid var(--leap-amber-mark);
+  border-radius:var(--leap-radius);padding:12px 16px;margin:0 0 16px}
+.undo p{margin:0;font-size:.875rem;font-weight:700}
+.undo .btn{margin-left:auto}
+
+/* 몇 사람이 냈는지 〔v0.4〕 — 누가 냈는지는 여전히 모릅니다.
+   학급 인원을 적어 두면 「6명 중 4명」이 되고, 안 적으면 개수만 나옵니다. */
+.pbar{height:10px;border-radius:6px;background:var(--leap-hairline);margin-top:14px;overflow:hidden}
+.pbar > i{display:block;height:100%;background:var(--grad-bar);border-radius:6px;
+  transition:width .45s cubic-bezier(.22,1,.36,1)}
+.tally .of{font-weight:800;color:var(--leap-gray);font-size:1.0625rem}
+/* 한 걸음 되돌리기 띠 — 화면 아래에 잠깐. 종이에는 찍히지 않습니다. */
+.leap-undobar{position:fixed;left:50%;bottom:22px;transform:translate(-50%,14px);
+  display:none;align-items:center;gap:12px;max-width:min(560px,calc(100vw - 32px));
+  padding:12px 14px 12px 18px;border-radius:999px;
+  background:var(--leap-surface);border:1px solid var(--leap-border);
+  box-shadow:var(--leap-shadow-lg);z-index:200;opacity:0;
+  transition:opacity .18s,transform .18s}
+.leap-undobar.is-on{display:flex;opacity:1;transform:translate(-50%,0)}
+.leap-undobar p{margin:0;font-size:.875rem;font-weight:700;color:var(--leap-ink)}
+.leap-undox{flex:none;width:28px;height:28px;border-radius:999px;border:0;
+  background:transparent;color:var(--leap-gray);font-size:.9rem;cursor:pointer;line-height:1}
+.leap-undox:hover{background:var(--leap-hairline);color:var(--leap-ink)}
+@media print{.leap-undobar{display:none!important}}
+/* ── 일터 — 왼쪽에서 적고 오른쪽에서 봅니다 ─────────────────────────────
+   앱마다 「종이」가 따로 있는 탭이었습니다. 그래서 다 적고 나서야 무엇이
+   나오는지 알았습니다. 이제 열 앱이 같은 뼈대를 씁니다.
+   줄이는 것은 transform 입니다 — zoom 은 사파리에서 인쇄에 새어 나갑니다. */
+.wb{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:20px;align-items:start}
+.wb-pane{min-width:0}
+.wb-out{position:sticky;top:70px}
+@media (max-width:1100px){.wb{grid-template-columns:minmax(0,1fr)}.wb-out{position:static}}
+.outbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 0 11px}
+.outbar > b{font-size:.9375rem}
+.outbar .sp{margin-left:auto;display:flex;gap:7px;flex-wrap:wrap}
+.pgtag{font-size:.75rem;font-weight:800;padding:4px 11px;border-radius:999px;
+  background:var(--tint-teal);color:var(--solid-teal);white-space:nowrap}
+.pgtag.over{background:var(--tint-amber);color:var(--leap-amber)}
+.pv{background:var(--leap-hairline);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:14px;overflow:auto;max-height:calc(100vh - 190px)}
+.pv-fit{transform-origin:top left}
+@media print{.pv,.wb-out{display:none!important}}
+
+@media (prefers-reduced-motion:reduce){.leap-undobar{transition:none}}
+/* ==========================================================================
+   모아 보기 창 〔v0.4〕 — 서버 없이 되는 「실시간」의 한계선
+   --------------------------------------------------------------------------
+   다른 **기기**와는 실시간이 되지 않습니다. 브라우저는 같은 랜 안의 다른 기기를
+   스스로 찾지 못하고, 찾아 주는 일은 서버가 합니다 (마스터 원칙 1·2번).
+   되는 것은 **같은 브라우저의 다른 창**입니다. 그것만으로도 쓸 자리가 있습니다 —
+   교사는 노트북에서 회의를 돌리고, 빔프로젝터에는 이 창을 띄웁니다.
+
+   이 창에는 **개수만** 나갑니다. 내용이 여기 뜨면 무기명이 그 자리에서 무너집니다.
+   ========================================================================== */
+/* 색을 토큰으로 주지 않습니다. `--leap-ink` 는 다크 모드에서 **밝은 색**이 되므로
+   그대로 쓰면 흰 바탕에 흰 글자가 됩니다. 이 창은 빔프로젝터 전용이라
+   테마와 상관없이 늘 어둡습니다 — 교실 불을 끄고 보는 화면입니다. */
+body.is-board{background:#0E1621}
+.board{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:8px;padding:40px 24px;text-align:center;color:#fff}
+.board .bt{font-size:clamp(1.5rem,4vw,2.5rem);font-weight:800;letter-spacing:-.02em;margin:0}
+.board .bs{font-size:clamp(.9375rem,2vw,1.25rem);color:rgba(255,255,255,.66);
+  font-weight:700;margin:0 0 26px}
+.board .bn{font-size:clamp(5rem,22vw,14rem);font-weight:800;line-height:.95;
+  font-variant-numeric:tabular-nums;letter-spacing:-.05em;color:#7FB3F7}
+.board .bu{font-size:clamp(1.125rem,3vw,1.875rem);font-weight:800;color:rgba(255,255,255,.8)}
+.board .bchips{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-top:28px;max-width:760px}
+.board .bchips i{width:34px;height:44px;border-radius:8px;background:#3C7FD8;display:block}
+.board .bchips i.v{background:#4FD1B0}
+.board .bnote{margin-top:34px;font-size:.9375rem;color:rgba(255,255,255,.5);max-width:44ch;line-height:1.8}
+.board .blink{margin-top:18px;font-size:.8125rem;color:rgba(255,255,255,.4)}
+body.is-board header.top,body.is-board nav.tabs,body.is-board main.wrap{display:none}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .btn:hover,.choice:hover,.sig:hover{transform:none}
+}
+@media (max-width:520px){
+  .card{padding:22px 18px}
+  .tally .big{font-size:2.5rem}
+  .prompt{font-size:1.1875rem}
+}
+
+/* ==========================================================================
+   인쇄 — 학교는 여전히 종이로 결재하고 게시한다
+   ========================================================================== */
+#print-area{display:none}
+/* 인쇄할 때는 종이 상자의 «화면용» 크기를 풉니다 —
+   실제 종이는 @page 가 크기를 정하므로 794px 을 못박으면 여백이 어긋납니다. */
+@media print{
+  #print-area .pv-page{width:auto;min-height:0;padding:0;box-shadow:none}
+}
+@media print{
+  @page{size:A4 portrait;margin:14mm 12mm}
+  :root{--leap-ink:#000;--leap-gray:#333;--leap-bg:#fff;--leap-surface:#fff;
+    --leap-border:#999;--leap-hairline:#ccc;--leap-shadow:none}
+  header.top,nav.tabs,main,.leap-toast,.no-print,.pv-back{display:none!important}
+  #print-area{display:block!important}
+  body{font-size:11pt;background:#fff}
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+}
+
+/* ==========================================================================
+   인쇄 판면
+   미리보기와 실제 인쇄가 «같은 규칙»을 써야 서로 어긋나지 않습니다.
+   그래서 판면 규칙은 @media print 밖에 두고, 인쇄될 자리(#print-area)와
+   미리보기(.pv-page)에 같은 클래스를 붙여 한 곳에서 관리합니다.
+   #print-area 는 화면에서 display:none 이라 평소에는 아무 영향이 없습니다.
+   ========================================================================== */
+/* ── 종이 ──────────────────────────────────────────────────────────────
+   종이는 «실제 A4 크기»로 그립니다 — 96dpi 기준 세로 794×1123px.
+   그래야 오른쪽 미리보기에서 본 것과 인쇄한 것이 어긋나지 않습니다
+   (마스터 함정 31번). 보여 줄 때만 상자 폭에 맞춰 줄입니다.
+   여백 12mm ≈ 45px 은 @page 와 같은 값입니다.
+   ────────────────────────────────────────────────────────────────────── */
+.pv-page{width:794px;min-height:1123px;padding:45px 45px 40px;box-sizing:border-box;
+  background:#fff;color:#111;font-size:11.5px;line-height:1.6;
+  box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.pv-page *{box-sizing:border-box}
+
+.p-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
+  border-bottom:2px solid #111;padding-bottom:10px;margin:0 0 18px}
+.p-head h2{margin:0;font-size:20px;font-weight:800;letter-spacing:-.02em;color:#111}
+.p-head .p-sub{margin:4px 0 0;font-size:12px;color:#444}
+.p-head .p-when{font-size:11px;color:#666;white-space:nowrap}
+
+.p-tally{display:flex;gap:18px;margin:0 0 16px;font-size:13px;font-weight:700;color:#111}
+.p-tally b{font-variant-numeric:tabular-nums}
+
+.p-sec{margin:0 0 16px;break-inside:avoid}
+.p-sec h3{margin:0 0 7px;font-size:13px;font-weight:800;color:#111;
+  border-bottom:1px solid #BBB;padding-bottom:3px}
+.p-sec > p{margin:0;font-size:12px;color:#333}
+
+/* 표 — 폭을 못박습니다. 안 그러면 「지금」 같은 짧은 머리가 세로로 쪼개집니다 */
+.p-tbl{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px}
+.p-tbl th,.p-tbl td{border:1px solid #C4CBD3;padding:5px 7px;text-align:left;
+  vertical-align:top;word-break:keep-all}
+.p-tbl thead th{background:#EEF2F7;font-weight:800;font-size:10.5px;white-space:nowrap}
+.p-tbl td.n,.p-tbl th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.p-tbl col.c-what{width:26%} .p-tbl col.c-need{width:11%}
+.p-tbl col.c-have{width:11%} .p-tbl col.c-how{width:22%} .p-tbl col.c-alt{width:30%}
+.p-tbl .q{display:block;font-size:9.5px;color:#666;margin-top:1px;font-weight:600}
+
+.p-src{font-size:10px;color:#555;line-height:1.7;margin:0}
+.p-foot{margin-top:22px;padding-top:8px;border-top:1px solid #DDD;
+  font-size:9.5px;color:#666}
+
+
+/* ==========================================================================
+   AI 초안 도우미 (LEAP Kit 공통 조각)
+   원본은 `apps/kit/leap-ai.css` · 단일 HTML 을 지키려고 붙여 넣은 사본입니다.
+
+   왜 모달인가 — 이 도우미는 **곁다리**입니다. 앱은 이것 없이도 온전히 돌아야 하고,
+   화면 한 자리를 늘 차지하면 「AI 없으면 못 쓰는 앱」처럼 보입니다.
+   ========================================================================== */
+.aim{position:fixed;inset:0;z-index:120;background:rgba(20,32,46,.55);
+  display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow:auto}
+.aim[hidden]{display:none}
+.aim-w{background:var(--leap-surface);border-radius:var(--leap-radius);width:min(760px,100%);
+  box-shadow:0 24px 70px rgba(0,0,0,.34);display:flex;flex-direction:column;max-height:calc(100vh - 48px)}
+.aim-h{display:flex;align-items:center;gap:12px;padding:16px 20px;
+  border-bottom:1px solid var(--leap-border);position:sticky;top:0;background:var(--leap-surface);
+  border-radius:var(--leap-radius) var(--leap-radius) 0 0;z-index:1}
+.aim-h h2{margin:0;font-size:1.0625rem;letter-spacing:-.015em}
+.aim-x{margin-left:auto;min-width:40px;min-height:40px;border-radius:10px;border:1px solid var(--leap-border);
+  background:transparent;color:var(--leap-gray);font-size:1.25rem;line-height:1;cursor:pointer}
+.aim-x:hover{background:var(--leap-hairline);color:var(--leap-ink)}
+.aim-b{padding:20px 22px 24px;overflow:auto}
+.aim-note{border-radius:var(--leap-radius);padding:15px 17px;margin:0 0 18px;background:var(--tint-blue)}
+.aim-note .hd{font-weight:800;color:var(--leap-blue);margin-bottom:6px}
+.aim-note p{margin:0;font-size:.875rem;color:var(--leap-gray);line-height:1.75}
+.aim-note p b{color:var(--leap-ink)}
+.aim-warn{background:var(--tint-amber)}
+.aim-warn .hd{color:var(--leap-amber)}
+.aim-step{border:1px solid var(--leap-border);border-radius:var(--leap-radius);
+  padding:16px 18px;margin-bottom:14px}
+.aim-step h3{margin:0 0 4px;font-size:.9375rem;display:flex;align-items:center;gap:9px;letter-spacing:-.01em}
+.aim-step h3 i{flex:none;min-width:24px;height:24px;border-radius:999px;background:var(--leap-blue);
+  color:var(--leap-on-fill);font-style:normal;font-size:.75rem;font-weight:800;
+  display:inline-flex;align-items:center;justify-content:center}
+.aim-step > p{margin:0 0 13px;font-size:.8125rem;color:var(--leap-gray);line-height:1.7}
+.aim-step > p b{color:var(--leap-ink)}
+.aim-ta{width:100%;min-height:64px;padding:11px 13px;border-radius:var(--leap-radius-sm);
+  border:2px solid var(--leap-border);background:var(--leap-bg);font:inherit;font-size:.9375rem;
+  color:var(--leap-ink);resize:vertical}
+.aim-ta:focus{outline:none;border-color:var(--leap-blue)}
+.aim-pre{width:100%;min-height:200px;padding:13px 15px;border-radius:var(--leap-radius-sm);
+  border:2px solid var(--leap-border);background:var(--leap-bg);font-size:.78rem;line-height:1.62;
+  color:var(--leap-ink);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;resize:vertical;white-space:pre}
+.aim-act{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+@media (max-width:560px){.aim{padding:0}.aim-w{max-height:100vh;border-radius:0}}
+@media print{.aim{display:none!important}}
+</style></style>
+</head>
+<body>
+<!-- 키보드만 쓰는 분은 화면을 열 때마다 머리 단추 넷과 탭을 다 지나야
+     일하는 자리에 닿습니다. 한 번 건너뛰게 합니다. -->
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<header class="top">
+  <svg class="deco" viewBox="0 0 64 64" aria-hidden="true">
+    <path d="M7 52 H25" stroke="#fff" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+    <path d="M39 36 H57" stroke="#fff" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+    <path d="M16 46 Q32 -10 48 30" stroke="#fff" stroke-width="7" stroke-linecap="round" fill="none"/>
+  </svg>
+  <div class="top-in">
+    <div class="brand">
+      <!-- 앱 마크 — 사람 셋이 점선 하나를 두고 갈립니다.
+           선 위는 되고 아래는 안 되는 것. 이 앱이 하는 일 그대로입니다. -->
+      <span class="badge">
+        <svg viewBox="0 0 64 64" width="32" height="32" aria-hidden="true" fill="none"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 34 H56" stroke="#F2A65A" stroke-width="4.5" stroke-dasharray="7 5"/>
+          <circle cx="17" cy="21" r="5" stroke="#7FB3F7" stroke-width="4"/>
+          <circle cx="32" cy="21" r="5" stroke="#7FB3F7" stroke-width="4"/>
+          <circle cx="47" cy="45" r="5" stroke="#97A3B0" stroke-width="4"/>
+        </svg>
+      </span>
+      <div>
+        <h1>몇 명이면 되나</h1>
+        <div class="sub">TEAM LEAP · 경북교육 AI Lab</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <a class="iconbtn iconbtn--home" href="../../../index.html" title="TEAM LEAP 메인 페이지로 나갑니다. 이 앱에 적은 것은 그대로 남습니다." aria-label="TEAM LEAP 메인 페이지로 나가기">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
+             stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 10.6 12 4l8 6.6V20h-5v-5.6H9V20H4z"/>
+        </svg>
+        메인으로
+      </a>
+      <a class="iconbtn" href="./README.html" title="이 앱의 설명서를 엽니다. 이 앱에 적은 것은 그대로 남습니다." aria-label="이 앱의 설명서 열기">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
+             stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 5.5A1.5 1.5 0 015.5 4H10a2.5 2.5 0 012.5 2.5V20a2 2 0 00-2-2H4z"/>
+          <path d="M20 5.5A1.5 1.5 0 0018.5 4H14a2.5 2.5 0 00-2.5 2.5V20a2 2 0 012-2H20z"/>
+        </svg>
+        설명서
+      </a>
+      <button class="iconbtn" id="btn-ai" type="button" title="쓰던 챗봇에 붙여 넣을 프롬프트를 만들어 줍니다">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9z"/>
+          <path d="M18 16.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>
+        </svg>
+        AI 초안
+      </button>
+      <button class="iconbtn" id="btn-theme" type="button">어둡게 보기</button>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="화면">
+  <div class="tabs-in" role="tablist" id="tablist">
+    <button role="tab" id="tab-see"    aria-controls="panel-see"    aria-selected="true">되나 안 되나</button>
+    <button role="tab" id="tab-school" aria-controls="panel-school" aria-selected="false" tabindex="-1">우리 학교</button>
+  </div>
+</nav>
+
+<main class="wrap" id="main" tabindex="-1">
+  <section id="panel-see"    role="tabpanel" aria-labelledby="tab-see"></section>
+  <section id="panel-school" role="tabpanel" aria-labelledby="tab-school" hidden></section>
+
+  <footer class="foot no-print">
+    <div class="foot-card">
+      <h2>자료 관리</h2>
+      <p class="small muted" style="margin:0">
+        적으신 것은 <b>이 기기 안에만</b> 저장됩니다. 서버로 보내지 않습니다.
+        다른 기기로 옮기려면 <b>파일로 내보내</b> 저쪽에서 <b>가져오기</b> 하세요.
+        이 앱이 다루는 것은 <b>사람 수</b>뿐입니다 — 이름을 받는 칸이 없습니다.
+      </p>
+      <div class="foot-actions">
+        <button class="btn btn--ghost" id="btn-export" type="button">파일로 내보내기</button>
+        <button class="btn btn--ghost" id="btn-import" type="button">파일에서 가져오기</button>
+        <button class="btn btn--danger" id="btn-clear" type="button">전체 지우기</button>
+      </div>
+      <p class="copy">© 2026 TEAM LEAP (경북교육 AI Lab · AI 활용 분과)<br>
+        교육 목적에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다.</p>
+    </div>
+  </footer>
+</main>
+
+<div id="print-area"></div>
+<div class="modal" id="modal" hidden></div>
+
+<script>
+/* ==========================================================================
+   LEAP Kit (apps/kit/leap.js 사본 — 단일 HTML 유지를 위해 붙여 넣음)
+   ========================================================================== */
+(function(global){'use strict';
+var LEAP={};
+function clone(v){if(typeof structuredClone==='function')return structuredClone(v);return JSON.parse(JSON.stringify(v));}
+LEAP.clone=clone;
+LEAP.store=function(key,initial){
+  var cache=null;
+  function flush(){try{localStorage.setItem(key,JSON.stringify(cache));return true;}
+    catch(e){LEAP.announce('저장하지 못했습니다. 파일로 내보낸 뒤 정리해 주세요.');return false;}}
+  function read(){if(cache)return cache;
+    try{var raw=localStorage.getItem(key);cache=raw?JSON.parse(raw):clone(initial);}
+    catch(e){cache=clone(initial);}return cache;}
+  return{get:read,set:function(n){cache=n;return flush();},
+    update:function(fn){var d=read();fn(d);return flush();},
+    reset:function(){cache=clone(initial);flush();return cache;}};
+};
+LEAP.uid=function(){if(global.crypto&&crypto.randomUUID)return crypto.randomUUID().slice(0,8);
+  return Math.random().toString(36).slice(2,10);};
+function randInt(n){if(global.crypto&&crypto.getRandomValues){var b=new Uint32Array(1);crypto.getRandomValues(b);return b[0]%n;}
+  return Math.floor(Math.random()*n);}
+LEAP.shuffle=function(arr){var a=arr.slice(),i,j,t;
+  for(i=a.length-1;i>0;i--){j=randInt(i+1);t=a[i];a[i]=a[j];a[j]=t;}return a;};
+LEAP.download=function(filename,obj){
+  var blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json;charset=utf-8'});
+  var url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);},1000);};
+LEAP.pickFile=function(onLoad,onError){
+  var input=document.createElement('input');input.type='file';input.accept='application/json,.json';
+  input.addEventListener('change',function(){var f=input.files&&input.files[0];if(!f)return;
+    var r=new FileReader();
+    r.onload=function(){try{onLoad(JSON.parse(r.result),f.name);}
+      catch(e){(onError||alert)('파일을 읽지 못했습니다. 이 앱에서 내보낸 파일이 맞는지 확인해 주세요.');}};
+    r.readAsText(f,'utf-8');});
+  input.click();};
+LEAP.announce=function(msg){
+  var el=document.getElementById('leap-live');
+  if(!el){el=document.createElement('div');el.id='leap-live';el.setAttribute('role','status');
+    el.setAttribute('aria-live','polite');el.className='leap-toast';document.body.appendChild(el);}
+  el.textContent=msg;el.classList.add('is-on');
+  clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('is-on');},2600);};
+LEAP.todayISO=function(){var d=new Date(),p=function(n){return String(n).padStart(2,'0');};
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());};
+LEAP.fmtDate=function(iso){if(!iso)return '';var p=iso.split('-');return p[0]+'. '+Number(p[1])+'. '+Number(p[2])+'.';};
+LEAP.toggleTheme=function(){var r=document.documentElement,cur=r.getAttribute('data-theme');
+  if(!cur)cur=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  var next=cur==='dark'?'light':'dark';r.setAttribute('data-theme',next);
+  try{localStorage.setItem('leap-theme',next);}catch(e){}return next;};
+LEAP.restoreTheme=function(){try{var t=localStorage.getItem('leap-theme');
+  if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}};
+/* 창 안에 초점 가두기 — `aria-modal="true"` 는 「이 창 밖은 없는 셈 치라」는 약속입니다.
+   Tab 을 막지 않으면 초점이 창 뒤로 넘어가, 화면을 안 보는 분은 자기가 어디 있는지
+   알 수 없게 됩니다. 창마다 손대지 않고 문서에 한 번만 걸어, 그때그때 열린 창을 찾습니다.
+   (position:fixed 는 offsetParent 가 null 이라 getClientRects 로 봅니다) */
+/* 내보낸 파일에 «어느 앱 것인지» 적기 — 아홉 앱이 모두 {v:1,…} 이라
+   받는 쪽이 v 만 보면 남의 앱 파일이 그대로 통과합니다(앱 B 가 실제로 그랬습니다).
+   모양으로만 가리면 두 앱이 닮는 순간 다시 뚫리므로 «이름»을 적어 둡니다.
+   표시가 없는 옛 파일은 막지 않습니다 — 그때는 예전처럼 모양으로 판단합니다. */
+/* 학생이 입력한 글이 그대로 화면에 들어가므로 반드시 거른다.
+   각 앱은 `var esc = LEAP.esc;` 로 별명을 붙여 씁니다 — 부르는 자리가 많아
+   짧은 이름이 필요하기 때문입니다. 별명이라 `LEAP.esc(` 로는 안 잡힙니다. */
+LEAP.esc=function(s){return String(s==null?'':s)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+  .replace(/"/g,'&quot;').replace(/'/g,'&#39;');};
+/* 다른 창이 같은 자료를 고쳤을 때 — LEAP.store 는 처음 한 번 읽고 메모리에
+   붙들고 있습니다. 두 창을 열면 늦게 고친 쪽이 앞의 것을 통째로 덮어씁니다.
+   자동으로 합치지 않습니다 — 어느 것이 맞는지는 사람이 압니다. 알려는 줍니다. */
+LEAP.watchOtherTabs=function(key,onChange){
+  if(!window.addEventListener)return;
+  window.addEventListener('storage',function(e){
+    if(e.key&&e.key!==key)return;   /* key 가 null 이면 저장소 전체가 지워진 것 */
+    if(onChange)onChange();
+    else LEAP.announce('다른 창에서 이 앱의 자료를 고쳤습니다. 새로고침해야 그 내용이 보입니다.');
+  });};
+LEAP.APP_NAMES={'leap-circuit':'순회교사 통합 시간표','leap-classboard':'학급 회의',
+  'leap-storybook':'지역 탐방 디지털 스토리북','leap-multigrade':'복식학급 수업 도우미',
+  'leap-together':'이웃 학교 함께하기','leap-lessonplan':'수업 설계안 만들기',
+  'leap-classdata':'우리 반 데이터 보기','leap-project':'프로젝트 학습 계획서',
+  'leap-required':'법정 의무교육 점검표','leap-howmany':'몇 명이면 되나',
+  'leap-year':'우리 학교 한 해','leap-rooms':'남는 교실'};
+LEAP.stamp=function(appId,data){var o=LEAP.clone(data);o.app=appId;return o;};
+LEAP.otherApp=function(appId,obj){var a=obj&&obj.app;
+  if(!a||a===appId)return null;return LEAP.APP_NAMES[a]||'다른 앱';};
+/* 한 걸음 되돌리기 — 되돌릴 수 없는 일 뒤에 화면 아래로 잠깐 뜹니다.
+   앱마다 그리는 자리가 달라 패널에 끼우지 않고 body 에 띄웁니다.
+   한 걸음만 둡니다 — 여러 걸음을 쌓으면 며칠 전 것을 가리키는 단추가 남습니다. */
+LEAP.offerUndo=function(label,restore,seconds){
+  if(!document.body)return;
+  var el=document.getElementById('leap-undo');
+  if(!el){el=document.createElement('div');el.id='leap-undo';
+    el.className='leap-undobar no-print';el.setAttribute('role','status');
+    el.setAttribute('aria-live','polite');document.body.appendChild(el);}
+  clearTimeout(el._t);el.innerHTML='';
+  var p=document.createElement('p');p.textContent=label;
+  var btn=document.createElement('button');btn.type='button';
+  btn.className='btn btn--quiet btn--sm';btn.textContent='되돌리기';
+  var x=document.createElement('button');x.type='button';x.className='leap-undox';
+  x.setAttribute('aria-label','되돌리기 닫기');x.textContent='✕';
+  function hide(){clearTimeout(el._t);el.classList.remove('is-on');}
+  btn.addEventListener('click',function(){hide();restore();});
+  x.addEventListener('click',hide);
+  el.appendChild(p);el.appendChild(btn);el.appendChild(x);
+  el.classList.add('is-on');
+  el._t=setTimeout(hide,(seconds||20)*1000);};
+/* 오른쪽 종이를 상자 폭에 맞춰 줄입니다. 종이는 «실제 크기»(A4 794/1123px)로
+   그려야 화면과 인쇄가 어긋나지 않습니다 — 마스터 함정 31번. 보여 줄 때만 줄입니다.
+   transform 은 자리를 안 차지하므로 높이를 손으로 잡아 줍니다. */
+LEAP.fitPaper=function(box,fit,paperWidth){
+  if(!box||!fit)return 1;
+  var w=paperWidth||794,room=(box.clientWidth||0)-28;
+  if(room<=0)return 1;
+  var scale=Math.min(1,room/w);
+  fit.style.transform='scale('+scale+')';
+  var inner=fit.firstElementChild||fit;
+  fit.style.height=((inner.offsetHeight||0)*scale)+'px';
+  return scale;};
+LEAP.guardModals=function(){
+  if(!document.addEventListener||!document.querySelectorAll)return;   /* 검사의 흉내 document */
+  var SEL='a[href],button:not([disabled]),input:not([disabled]),'+
+    'select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  function seen(el){return !!(el&&el.getClientRects&&el.getClientRects().length);}
+  function box(){var a=document.querySelectorAll('[role="dialog"][aria-modal="true"]');
+    for(var i=a.length-1;i>=0;i--)if(seen(a[i]))return a[i];return null;}
+  function items(b){var o=[],a=b.querySelectorAll(SEL),i;
+    for(i=0;i<a.length;i++)if(seen(a[i]))o.push(a[i]);return o;}
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Tab')return;
+    var b=box();if(!b)return;
+    var l=items(b);if(!l.length){e.preventDefault();return;}
+    var first=l[0],last=l[l.length-1],now=document.activeElement,inside=b.contains(now);
+    if(e.shiftKey){if(!inside||now===first){e.preventDefault();last.focus();}}
+    else{if(!inside||now===last){e.preventDefault();first.focus();}}
+  },true);
+  document.addEventListener('focusin',function(e){
+    var b=box();if(!b||b.contains(e.target))return;
+    var l=items(b);if(l.length)l[0].focus();
+  });};
+LEAP.themeLabel=function(){var r=document.documentElement,cur=r.getAttribute('data-theme');
+  if(!cur)cur=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  return cur==='dark'?'밝게 보기':'어둡게 보기';};
+/* 「화면 전환」은 무엇이 바뀌는지 말해 주지 않습니다. 지금 누르면 어떻게 되는지를
+   단추 자체가 말하게 둡니다 — 「어둡게 보기」를 누르면 어두워집니다. */
+LEAP.initThemeBtn=function(btn){if(!btn)return;
+  function paint(){var t=LEAP.themeLabel();btn.textContent=t;
+    btn.setAttribute('title','화면을 '+t.replace(' 보기','')+' 바꿉니다');
+    btn.setAttribute('aria-label','화면을 '+t.replace(' 보기','')+' 바꿉니다');}
+  paint();btn.addEventListener('click',function(){LEAP.toggleTheme();paint();});};
+/* 〔2026. 8. 30.〕 새로고침하면 늘 첫 탭으로 돌아갔고, 뒤로 가기는 앱을 떠났습니다.
+   주소 끝에 지금 탭을 적습니다. 새로고침해도 그 자리, 뒤로 가기로 앞 탭.
+
+   ★ location.hash 로 적으면 **브라우저가 그 자리로 화면을 끌어내립니다** —
+   머리(앱 이름·단추)가 화면 밖으로 밀려 사라집니다. 실제로 그렇게 됐습니다.
+   그래서 history.pushState 로 «조용히» 적고, 뒤로 가기는 popstate 로 받습니다. */
+LEAP.initTabs=function(listEl,onChange){
+  var tabs=Array.prototype.slice.call(listEl.querySelectorAll('[role="tab"]'));
+  var ids=tabs.map(function(t){return t.getAttribute('aria-controls');});
+  function select(tab,writeHash){
+    tabs.forEach(function(t){var on=t===tab;
+      t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1;
+      var p=document.getElementById(t.getAttribute('aria-controls'));if(p)p.hidden=!on;});
+    var id=tab.getAttribute('aria-controls');
+    if(writeHash&&window.history&&window.history.pushState&&
+       (!window.location||window.location.hash!=='#'+id)){
+      try{window.history.pushState({leapTab:id},'','#'+id);}catch(e){}}
+    if(onChange)onChange(id);}
+  tabs.forEach(function(tab,i){
+    tab.addEventListener('click',function(){select(tab,true);});
+    tab.addEventListener('keydown',function(e){
+      var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(!d)return;e.preventDefault();
+      var n=tabs[(i+d+tabs.length)%tabs.length];n.focus();select(n,true);});});
+  function fromHash(){if(!window.location)return -1;
+    return ids.indexOf(String(window.location.hash||'').slice(1));}
+  var at=fromHash();
+  select(tabs[at>=0?at:0],false);
+  /* 뒤로 가기·앞으로 가기. hashchange 도 함께 받습니다 — 주소창에 직접 쳐 넣는 길입니다 */
+  if(window.addEventListener){
+    var back=function(){var i=fromHash();if(i>=0)select(tabs[i],false);};
+    window.addEventListener('popstate',back);
+    window.addEventListener('hashchange',back);}
+  return{select:function(t){select(t,true);},tabs:tabs};};
+global.LEAP=LEAP;})(window);
+/* ==========================================================================
+   몇 명이면 되나 — 인원이 정하는 것들
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  var KEY = 'leap-howmany-v1';
+  var APP_ID = 'leap-howmany';   /* 내보낸 파일에 적히는 표시 — 남의 앱 파일을 가려냅니다 */
+  var esc = LEAP.esc;
+
+  /* ==========================================================================
+     기준값 — «어디서 온 수인가»를 하나하나 밝힙니다
+
+     이 앱은 숫자로 판단을 돕습니다. 그래서 **그 숫자가 어디서 왔는지 모르면
+     쓸 수 없습니다.** 출처를 세 갈래로 나눠 적습니다 —
+
+       rule  경기 규칙·정원처럼 **다툼의 여지가 없는 수**
+       gyo   경북 지침에서 오는 수 — **원문 확인이 필요한 것은 그렇다고 적습니다**
+             (대시보드가 학급편성 기준에 붙여 둔 단서와 같은 태도입니다)
+       ours  **학교가 정하는 수.** 기본값은 흔한 값일 뿐이니 고쳐 쓰십시오
+
+     ★ 「안 되면 이렇게」(alt)가 이 앱의 절반입니다. 안 된다고만 말하는 도구는
+     이미 많습니다. 축구가 안 되면 풋살은 됩니다. 그 말을 함께 합니다.
+     ========================================================================== */
+
+  var SRC = {
+    rule: { n: '경기 규칙·정원', d: '종목 규칙이나 차량 정원처럼 다툼의 여지가 없는 수입니다.' },
+    gyo:  { n: '경북 지침', d: '경상북도교육청 기준입니다. 해마다 바뀔 수 있으니 그해 공문으로 확인하세요.' },
+    ours: { n: '학교가 정함', d: '학교마다 다릅니다. 기본값은 흔한 값일 뿐이니 우리 학교 값으로 고쳐 쓰세요.' }
+  };
+
+  /* ★ 누구를 세는가 — 이 앱이 거짓말을 하지 않으려면 반드시 있어야 하는 칸입니다.
+     전교생 24명 학교에서 축구부(11명)를 「됩니다」로 말하면 안 됩니다.
+     **전교생 전부가 축구부에 오지 않기 때문입니다.** 스포츠클럽은 보통
+     고학년에서, 학급 편성은 한 학년에서, 방과후는 전교생에서 모입니다.
+
+     항목마다 «어느 무리에서 모이는가»를 답니다. 무리의 사람 수는 전교생에서
+     **셈해서** 내놓되(학년 수로 나눔), 학교가 다르면 손으로 고칠 수 있게 둡니다 —
+     셈한 값을 사실처럼 못박지 않습니다. */
+  var POOLS = [
+    { k: 'all',  n: '전교생' },
+    { k: 'high', n: '고학년' },
+    { k: 'one',  n: '한 학년' }
+  ];
+  function poolName(k) {
+    for (var i = 0; i < POOLS.length; i++) if (POOLS[i].k === k) return POOLS[i].n;
+    return '전교생';
+  }
+
+  var CATS = [
+    { k: 'sport', n: '스포츠클럽 · 체육' },
+    { k: 'art',   n: '예술 · 동아리' },
+    { k: 'after', n: '방과후 · 돌봄' },
+    { k: 'event', n: '학교 행사' },
+    { k: 'class', n: '학급 편성' }
+  ];
+  function catName(k) {
+    for (var i = 0; i < CATS.length; i++) if (CATS[i].k === k) return CATS[i].n;
+    return '그 밖';
+  }
+
+  /* 기본으로 놓아 두는 것들. 지우고 우리 학교 것으로 바꿔도 됩니다. */
+  var SEED = [
+    { n: '축구부', cat: 'sport', need: 11, src: 'rule', pool: 'high',
+      alt: '풋살이면 5명으로 됩니다. 7명이면 7인제 축구도 있습니다.' },
+    { n: '농구부', cat: 'sport', need: 5, src: 'rule', pool: 'high',
+      alt: '3대3 농구(3x3)면 3명으로 됩니다.' },
+    { n: '배구부', cat: 'sport', need: 6, src: 'rule', pool: 'high',
+      alt: '피구·넷볼처럼 인원을 덜 타는 종목으로 바꿀 수 있습니다.' },
+    { n: '야구부', cat: 'sport', need: 9, src: 'rule', pool: 'high',
+      alt: '티볼이면 인원을 맞춰 팀을 짤 수 있습니다.' },
+    { n: '이어달리기 (한 팀)', cat: 'event', need: 8, src: 'ours', pool: 'one',
+      alt: '한 팀을 4명으로 줄이거나, 학년을 섞어 한 팀을 만듭니다.' },
+    { n: '4부 합창', cat: 'art', need: 16, src: 'ours', pool: 'high',
+      alt: '2부 합창이면 8명으로 됩니다. 돌림노래는 더 적어도 됩니다.' },
+    { n: '동아리 한 개 (최소)', cat: 'art', need: 5, src: 'ours', pool: 'all',
+      alt: '학년을 섞어 전교생 동아리로 여는 학교가 많습니다.' },
+    { n: '방과후 강좌 한 개 (개설)', cat: 'after', need: 10, src: 'ours', pool: 'all',
+      alt: '이웃 학교와 함께 열면 인원이 찹니다 — 「이웃 학교 함께하기」 앱을 보세요.' },
+    { n: '45인승 버스 한 대', cat: 'event', need: 45, src: 'rule', pool: 'all',
+      alt: '25인승으로 바꾸거나, 이웃 학교와 나눠 탑니다.' },
+    { n: '학급 하나 (복식을 면함)', cat: 'class', need: 7, src: 'gyo', pool: 'one',
+      note: '두 학년을 합쳐 6명 이하이면 복식 편성에 닿습니다.',
+      alt: '복식이 되면 「복식학급 수업 도우미」 앱이 시간 배치를 도와줍니다.',
+      check: true }
+  ];
+
+  var DEFAULT = {
+    v: 1,
+    info: { school: '', kind: 'e', area: '읍면' },
+    bands: 6,               /* 이 학교의 학년 수 — 초 6 · 중고 3 */
+    fix: {},                /* 무리별 손으로 고친 수. 없으면 셈한 값을 씁니다 */
+    now: 0,                 /* 올해 «전교생» 수 */
+    ahead: [null, null],    /* 내년 · 내후년. null 이면 «안 적음» */
+    year: 0,                /* 지금 보고 있는 해 (0 올해 · 1 내년 · 2 내후년) */
+    items: null             /* null 이면 SEED 를 씁니다 */
+  };
+
+  var db = LEAP.store(KEY, DEFAULT);
+
+  /* 옛 저장본에 없던 칸을 채웁니다 (마스터 함정 10번) */
+  function fill(d) {
+    if (!d || typeof d !== 'object') d = LEAP.clone(DEFAULT);
+    d.v = 1;
+    if (!d.info || typeof d.info !== 'object') d.info = LEAP.clone(DEFAULT.info);
+    d.info.school = String(d.info.school || '');
+    d.info.kind = d.info.kind || 'e';
+    d.info.area = d.info.area === '동' ? '동' : '읍면';
+    d.bands = num(d.bands, 1, 12) || 6;
+    if (!d.fix || typeof d.fix !== 'object') d.fix = {};
+    var fx = {};
+    POOLS.forEach(function (p) {
+      var v = d.fix[p.k];
+      if (v != null && v !== '') fx[p.k] = num(v, 0, 3000);
+    });
+    d.fix = fx;
+    d.now = num(d.now, 0, 3000);
+    if (!Array.isArray(d.ahead)) d.ahead = [null, null];
+    d.ahead = [d.ahead[0] == null ? null : num(d.ahead[0], 0, 3000),
+               d.ahead[1] == null ? null : num(d.ahead[1], 0, 3000)];
+    d.year = [0, 1, 2].indexOf(+d.year) >= 0 ? +d.year : 0;
+    if (!Array.isArray(d.items)) d.items = LEAP.clone(SEED).map(stampId);
+    d.items = d.items.map(function (x) {
+      return { id: x.id || LEAP.uid(), n: String(x.n || '이름 없음').slice(0, 40),
+        cat: catName(x.cat) === '그 밖' ? 'sport' : x.cat,
+        need: num(x.need, 1, 3000) || 1,
+        src: SRC[x.src] ? x.src : 'ours',
+        pool: poolName(x.pool) === '전교생' && x.pool !== 'all' && x.pool != null && !POOLS.some(function (p) { return p.k === x.pool; }) ? 'all' : (x.pool || 'all'),
+        note: String(x.note || '').slice(0, 200),
+        alt: String(x.alt || '').slice(0, 300),
+        check: !!x.check, off: !!x.off };
+    });
+    return d;
+  }
+  function stampId(x) { x.id = LEAP.uid(); return x; }
+  function num(v, lo, hi) {
+    var n = parseInt(String(v == null ? '' : v).replace(/[^0-9-]/g, ''), 10);
+    if (!isFinite(n)) return 0;
+    return Math.max(lo, Math.min(hi, n));
+  }
+
+  db.set(fill(db.get()));
+
+  function D() { return db.get(); }
+  function save(fn) {
+    var before = JSON.stringify(D());
+    if (db.update(fn)) return true;
+    db.set(JSON.parse(before));
+    LEAP.announce('저장 공간이 가득 찼습니다. 파일로 내보낸 뒤 정리해 주세요.');
+    return false;
+  }
+
+  /* ==========================================================================
+     셈 — 되나 안 되나
+
+     세 갈래로만 가릅니다. 「된다 / 아슬하다 / 안 된다」.
+     ★ **아슬한 자리가 이 앱의 이유**입니다. 「지금은 되지만 두 명만 줄면
+     사라진다」를 미리 말해 주는 것이 「지금 안 된다」보다 쓸모 있습니다.
+     ========================================================================== */
+
+  var EDGE = 2;   /* 기준을 넘겼어도 이만큼 안쪽이면 «아슬하다» */
+
+  /* 그 해의 «전교생» 수.
+     ★ 0 은 «아직 안 적었다»는 뜻으로 봅니다. 0명 학교는 없습니다.
+     0 을 수로 받아들이면 아무것도 안 적은 화면에 「안 됩니다 10」이 뜹니다 —
+     셈한 적이 없는데 셈한 것처럼 보이는 것은 거짓말입니다. */
+  function headOf(d, y) {
+    var v = y === 0 ? d.now : d.ahead[y - 1];
+    return (v == null || v <= 0) ? null : v;
+  }
+
+  /* ★ 그 무리의 사람 수.
+     전교생에서 학년 수로 나눠 셈합니다. 손으로 고쳐 둔 값이 있으면 그것이
+     이깁니다 — 셈한 값은 **출발점이지 사실이 아닙니다.**
+     고학년은 두 학년으로 봅니다(5~6학년). 학교마다 다르면 고쳐 쓰십시오. */
+  function poolOf(d, y, pool) {
+    var all = headOf(d, y);
+    if (all == null) return null;
+    if (pool === 'all') return d.fix.all != null ? d.fix.all : all;
+    var one = Math.round(all / Math.max(1, d.bands));
+    if (pool === 'one') return d.fix.one != null ? d.fix.one : one;
+    if (pool === 'high') return d.fix.high != null ? d.fix.high : one * 2;
+    return all;
+  }
+  /* 손으로 고친 값은 «올해» 기준입니다. 다른 해에는 전교생이 준 만큼 같이 줄여
+     어림합니다 — 그러지 않으면 「내년」을 밀어도 무리가 안 줄어 거짓이 됩니다. */
+  /* 손질하지 않았을 때 셈으로 나오는 값 — 화면에 「셈하면 몇 명」으로 보여 줍니다 */
+  function autoPool(d, pool) {
+    var all = headOf(d, 0);
+    if (all == null) return null;
+    if (pool === 'all') return all;
+    var one = Math.round(all / Math.max(1, d.bands));
+    return pool === 'high' ? one * 2 : one;
+  }
+
+  function poolAt(d, y, pool) {
+    var v = poolOf(d, y, pool);
+    if (v == null) return null;
+    if (y === 0 || d.fix[pool] == null) return v;
+    var a = headOf(d, 0), b = headOf(d, y);
+    if (!a || b == null) return v;
+    return Math.round(v * b / a);
+  }
+  /* 안 적은 해는 «올해 그대로»로 보지 않습니다 — 지어낸 수를 보이지 않기 위해서입니다 */
+  function known(d, y) { return headOf(d, y) != null; }
+
+  function stateOf(item, head) {
+    if (head == null) return 'unknown';
+    if (head < item.need) return 'no';
+    if (head < item.need + EDGE) return 'edge';
+    return 'go';
+  }
+  var STATE_NAME = { go: '됩니다', edge: '아슬합니다', no: '안 됩니다', unknown: '모릅니다' };
+
+  function live(d) { return d.items.filter(function (x) { return !x.off; }); }
+
+  function tally(d, y) {
+    var o = { go: 0, edge: 0, no: 0 };
+    live(d).forEach(function (x) {
+      var s = stateOf(x, poolAt(d, y, x.pool));
+      if (o[s] != null) o[s]++;
+    });
+    return o;
+  }
+
+  /* 이 해에 «새로» 사라지는 것 — 올해는 됐는데 그 해에는 안 되는 것 */
+  function lost(d, y) {
+    if (headOf(d, 0) == null || headOf(d, y) == null) return [];
+    return live(d).filter(function (x) {
+      return stateOf(x, poolAt(d, 0, x.pool)) !== 'no' &&
+             stateOf(x, poolAt(d, y, x.pool)) === 'no';
+    });
+  }
+
+  /* 몇 명이 더 있으면 되나 */
+  function shortBy(item, head) {
+    if (head == null) return null;
+    return Math.max(0, item.need - head);
+  }
+
+  /* ==========================================================================
+     화면
+     ========================================================================== */
+
+  var P = { see: el('panel-see'), school: el('panel-school') };
+  function el(id) { return document.getElementById(id); }
+  function on(n, t, f) { if (n && n.addEventListener) n.addEventListener(t, f); }
+  function each(list, f) { Array.prototype.forEach.call(list || [], f); }
+
+  var YEARN = ['올해', '내년', '내후년'];
+
+  /* ── 미는 자리 ────────────────────────────────────────────────────────
+     이 앱의 심장입니다. 표를 채우는 게 아니라 **밀어 보는** 도구라
+     화면 맨 위에 붙어 따라다닙니다. */
+  function dialHTML(d) {
+    var y = d.year, head = headOf(d, y);
+    var max = Math.max(60, (d.now || 0) + 40);
+
+    var h = '<div class="dial"><div class="dial-in">' +
+      '<div class="dial-h">' +
+      (head == null
+        ? '<span class="n">—</span><span class="u">' + esc(YEARN[y]) + ' 인원을 아직 안 적었습니다</span>'
+        : '<span class="n">' + head + '</span><span class="u">명 · ' + esc(YEARN[y]) + '</span>') +
+      '<span class="w">밀어 보세요 — 아래가 바로 갈립니다</span></div>';
+
+    /* 무리를 함께 보여 줍니다. 전교생만 보이면 「축구부 11명이 된다」가
+       거짓으로 읽힙니다 — 전교생 전부가 축구부에 오지 않기 때문입니다. */
+    if (head != null) {
+      h += '<p class="dial-pools">' + POOLS.map(function (p) {
+        var v = poolAt(d, y, p.k);
+        return '<span>' + esc(p.n) + ' <b>' + (v == null ? '—' : v) + '명</b>' +
+          (d.fix[p.k] != null ? ' <i>손으로 고침</i>' : '') + '</span>';
+      }).join('') + '</p>';
+    }
+
+    if (head != null) {
+      h += '<input type="range" id="dial" min="0" max="' + max + '" step="1" value="' + head + '" ' +
+        'aria-label="' + esc(YEARN[y]) + ' 사람 수">' +
+        '<div class="dial-mark"><span>0</span><span>' + max + '</span></div>';
+    }
+
+    h += '<div class="years">' + [0, 1, 2].map(function (i) {
+      var v = headOf(d, i);
+      return '<button type="button" data-year="' + i + '" aria-pressed="' + (i === y) + '">' +
+        esc(YEARN[i]) + '<span class="d">' + (v == null ? '안 적음' : v + '명') + '</span></button>';
+    }).join('') + '</div>';
+
+    return h + '</div></div>';
+  }
+
+  /* 저장하는 것은 «글»이지 마크업이 아닙니다. 교사가 고치기 창을 열었을 때
+     `<b>3명</b>` 같은 것이 보이면 안 됩니다. 화면에 낼 때만 «숫자+명»을
+     굵게 합니다 — 눈이 먼저 닿아야 하는 곳이 거기이기 때문입니다. */
+  function altHTML(t) {
+    return esc(t).replace(/(\d+\s*명)/g, '<b>$1</b>');
+  }
+
+  /* ── 카드 한 장 ─────────────────────────────────────────────────────── */
+  function cardHTML(x, head) {
+    var st = stateOf(x, head), short = shortBy(x, head);
+    var pct = head == null ? 0 : Math.max(4, Math.min(100, Math.round(head / x.need * 100)));
+
+    var line;
+    var who = poolName(x.pool);
+    if (head == null) line = '<b>' + x.need + '명</b>이 필요합니다. 이 해 인원을 적으면 갈립니다.';
+    else if (st === 'no') line = '<b>' + x.need + '명</b> 필요 · ' + esc(who) + ' <b>' + head + '명</b> — ' +
+      '<b>' + short + '명</b>이 모자랍니다.';
+    else if (st === 'edge') line = '<b>' + x.need + '명</b> 필요 · ' + esc(who) + ' <b>' + head + '명</b> — ' +
+      '<b>' + (head - x.need + 1) + '명</b>만 줄면 안 됩니다.';
+    else line = '<b>' + x.need + '명</b> 필요 · ' + esc(who) + ' <b>' + head + '명</b> — ' +
+      '<b>' + (head - x.need) + '명</b> 여유가 있습니다.';
+
+    return '<div class="card2 card2--' + st + '" data-card="' + esc(x.id) + '">' +
+      '<div class="card2-h"><span class="nm">' + esc(x.n) + '</span>' +
+      '<span class="cat">' + esc(catName(x.cat)) + '</span>' +
+      '<span class="cat">' + esc(poolName(x.pool)) + '에서</span>' +
+      '<span class="st">' + STATE_NAME[st] + '</span></div>' +
+      '<div class="gauge"><i style="width:' + pct + '%"></i></div>' +
+      '<p class="card2-n">' + line + '</p>' +
+      (x.note ? '<p class="card2-n">' + esc(x.note) + '</p>' : '') +
+      /* 「안 되면 이렇게」는 안 될 때와 아슬할 때만 보입니다.
+         잘 되고 있는데 대안을 들이미는 것은 참견입니다. */
+      ((st === 'no' || st === 'edge') && x.alt
+        ? '<div class="card2-alt"><span class="lb">이렇게 하면 됩니다</span>' + altHTML(x.alt) + '</div>' : '') +
+      '<p class="card2-src">기준 ' + x.need + '명 — ' + esc(SRC[x.src].n) +
+      (x.check ? ' <b>· 그해 공문으로 확인하세요</b>' : '') + '</p>' +
+      '<div class="card2-x">' +
+      '<button class="btn btn--ghost btn--sm" type="button" data-edit="' + esc(x.id) + '">고치기</button>' +
+      '<button class="btn btn--ghost btn--sm" type="button" data-off="' + esc(x.id) + '">우리 학교엔 없음</button>' +
+      '</div></div>';
+  }
+
+  /* 오른쪽 칸 — 나올 종이. 왼쪽을 고치면 여기가 바로 따라 바뀝니다.
+     ★ 「종이」가 따로 있는 탭이었을 때는 다 적고 나서야 무엇이 나오는지
+     알았습니다. 이제 적는 동안 내내 보입니다. */
+  function outPane() {
+    return '<div class="wb-pane wb-out">' +
+      '<div class="outbar"><b>나올 종이</b>' +
+      '<span class="pgtag" id="pv-tag">A4 세로</span>' +
+      '<span class="sp">' +
+      '<button class="btn btn--ghost btn--sm" id="btn-ai2" type="button">AI 초안</button>' +
+      '<button class="btn btn--sm" id="btn-print" type="button">인쇄 · PDF</button>' +
+      '</span></div>' +
+      '<div class="pv" id="pv-box"><div class="pv-fit" id="pv-fit">' +
+      '<div class="pv-page" id="pv-page">' + paperHTML() + '</div></div></div>' +
+      '<p class="small muted" style="margin:9px 0 0">' +
+      '왼쪽에서 무엇을 고치든 이 종이가 바로 따라 바뀝니다. ' +
+      '<b>지금 보고 있는 해</b>의 결과가 나옵니다.</p></div>';
+  }
+
+  function renderSee() {
+    var d = D(), head = headOf(d, d.year), t = tally(d, d.year);
+
+    /* ★ 아직 사람 수를 안 적었으면 «미는 자리»를 내놓지 않습니다.
+       밀 것이 없는 슬라이더는 무엇을 하라는 말도 못 하면서 자리만 차지합니다.
+       할 일 하나만 크게 놓습니다. */
+    var h;
+    if (!d.now) {
+      h = '<div class="start">' +
+        '<h2>이 학교에서 무엇이 되고 무엇이 안 되나</h2>' +
+        '<p>축구부 11명, 방과후 최소 10명, 45인승 버스. ' +
+        '학교에서 <b>사람 수가 정하는 것</b>들입니다. ' +
+        '지금 인원으로 무엇이 되는지, 그리고 <b>몇 명 줄면 무엇이 사라지는지</b>를 봅니다.</p>' +
+        '<div class="start-in">' +
+        '<label class="fld" for="q-now">올해 전교생이 몇 명입니까</label>' +
+        '<div class="start-row">' +
+        '<input class="txt txt--n" id="q-now" inputmode="numeric" placeholder="예: 128" ' +
+        'aria-describedby="q-hint">' +
+        '<button class="btn" type="button" id="q-go">보기</button></div>' +
+        '<p class="small muted" id="q-hint" style="margin:9px 0 0">' +
+        '한 번 적으면 바로 갈립니다. 뒤에 얼마든지 고칠 수 있습니다.</p></div>' +
+        '<p class="small muted" style="margin:16px 0 0">' +
+        '더 자세히 적으시려면 <button class="linky" type="button" id="go-school">' +
+        '「우리 학교」</button>에서 학년 수와 무리별 인원까지 손볼 수 있습니다.</p>' +
+        '</div>';
+      P.see.innerHTML = '<div class="wb"><div class="wb-pane">' + h + '</div>' + outPane() + '</div>';
+      on(P.see.querySelector('#go-school'), 'click', function () { goTab('school'); });
+      var q = P.see.querySelector('#q-now');
+      var go = function () {
+        var v = num(q.value, 0, 3000);
+        if (!v) { LEAP.announce('사람 수를 적어 주세요.'); q.focus(); return; }
+        save(function (x) { x.now = v; });
+        renderSee(); renderSchool();
+        LEAP.announce(v + '명으로 셈했습니다.');
+      };
+      on(P.see.querySelector('#q-go'), 'click', go);
+      on(q, 'keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); go(); } });
+      if (q && q.focus) q.focus();
+      bindOut(); fitOut();
+      return;
+    }
+
+    h = dialHTML(d);
+    h += '<div class="tally">' +
+      '<div class="t-go"><b>' + t.go + '</b><span>됩니다</span></div>' +
+      '<div class="t-edge"><b>' + t.edge + '</b><span>아슬합니다</span></div>' +
+      '<div class="t-no"><b>' + t.no + '</b><span>안 됩니다</span></div></div>';
+
+    /* 그 해에 «새로» 사라지는 것을 먼저 말합니다 — 이 앱을 여는 이유입니다 */
+    if (d.year > 0) {
+      var gone = lost(d, d.year);
+      if (gone.length) {
+        h += '<div class="note"><div class="hd">' + esc(YEARN[d.year]) + '에 사라지는 것</div>' +
+          '<p>올해는 되는데 ' + esc(YEARN[d.year]) + '에는 안 되는 것이 <b>' + gone.length + '가지</b>입니다 — ' +
+          gone.map(function (x) { return '<b>' + esc(x.n) + '</b>'; }).join(' · ') + '.</p></div>';
+      } else if (known(d, d.year)) {
+        h += '<div class="note"><div class="hd">' + esc(YEARN[d.year]) + '</div>' +
+          '<p>올해 되던 것은 ' + esc(YEARN[d.year]) + '에도 그대로 됩니다.</p></div>';
+      }
+    }
+
+    CATS.forEach(function (c) {
+      var list = live(d).filter(function (x) { return x.cat === c.k; });
+      if (!list.length) return;
+      /* 안 되는 것을 먼저 올립니다. 잘 되는 것은 볼 일이 적습니다. */
+      var order = { no: 0, edge: 1, go: 2, unknown: 3 };
+      list.sort(function (a, b) {
+        return order[stateOf(a, poolAt(d, d.year, a.pool))] -
+               order[stateOf(b, poolAt(d, d.year, b.pool))];
+      });
+      h += '<div class="grp"><h3>' + esc(c.n) + '<span class="c">' + list.length + '가지</span></h3>' +
+        '<div class="cards">' + list.map(function (x) {
+          return cardHTML(x, poolAt(d, d.year, x.pool));
+        }).join('') + '</div></div>';
+    });
+
+    var offN = d.items.length - live(d).length;
+    h += '<div class="actions">' +
+      '<button class="btn btn--quiet" type="button" id="btn-add">＋ 우리 학교 것 더하기</button>' +
+      (offN ? '<button class="btn btn--ghost" type="button" id="btn-back">치워 둔 것 ' + offN + '가지 되돌리기</button>' : '') +
+      '</div>';
+
+    P.see.innerHTML = '<div class="wb"><div class="wb-pane">' + h + '</div>' + outPane() + '</div>';
+    bindDial();
+    bindCards();
+    bindOut();
+    fitOut();
+  }
+
+  /* 종이를 상자 폭에 맞춰 줄입니다 */
+  function fitOut() {
+    var box = P.see.querySelector('#pv-box'), fit = P.see.querySelector('#pv-fit');
+    if (box && fit) LEAP.fitPaper(box, fit, 794);
+  }
+  function bindOut() {
+    on(P.see.querySelector('#btn-print'), 'click', doPrint);
+    on(P.see.querySelector('#btn-ai2'), 'click', openAI);
+  }
+
+  /* 미는 자리는 「되나 안 되나」 화면 안에만 있습니다.
+     문서 전체를 뒤지면 나중에 같은 표시를 다른 화면에 썼을 때 서로 끌어당깁니다. */
+  function bindDial() {
+    on(P.see.querySelector('#dial'), 'input', function (e) {
+      var v = num(e.target.value, 0, 3000);
+      save(function (x) {
+        if (x.year === 0) x.now = v; else x.ahead[x.year - 1] = v;
+      });
+      renderSee();
+      /* 다시 그린 뒤에도 손가락이 있던 자리에 초점을 되돌려 놓습니다 —
+         밀다가 초점이 날아가면 키보드로는 이어서 밀 수 없습니다. */
+      var n = P.see.querySelector('#dial'); if (n && n.focus) n.focus();
+    });
+    each(P.see.querySelectorAll('[data-year]'), function (b) {
+      on(b, 'click', function () {
+        var y = +b.getAttribute('data-year');
+        /* ★ 안 적은 해에 «올해 수»를 몰래 넣지 않습니다.
+           그러면 적은 적 없는 수가 화면에 나타나고, 그 수로 셈까지 합니다.
+           올해를 적어 두었을 때만 출발점으로 삼고, 그 사실을 화면이 말합니다. */
+        save(function (x) {
+          x.year = y;
+          if (y > 0 && x.ahead[y - 1] == null && x.now > 0) x.ahead[y - 1] = x.now;
+        });
+        renderSee(); renderPaper();
+      });
+    });
+  }
+
+  /* ── 카드 손보기 ────────────────────────────────────────────────────── */
+  function itemOf(id) {
+    var a = D().items;
+    for (var i = 0; i < a.length; i++) if (a[i].id === id) return a[i];
+    return null;
+  }
+
+  function bindCards() {
+    each(P.see.querySelectorAll('[data-edit]'), function (b) {
+      on(b, 'click', function () { openEdit(b.getAttribute('data-edit')); });
+    });
+    each(P.see.querySelectorAll('[data-off]'), function (b) {
+      on(b, 'click', function () {
+        var id = b.getAttribute('data-off'), it = itemOf(id);
+        if (!it) return;
+        var nm = it.n;
+        save(function (d) {
+          d.items.forEach(function (x) { if (x.id === id) x.off = true; });
+        });
+        renderSee(); renderPaper();
+        LEAP.announce('「' + nm + '」을 치웠습니다.');
+        LEAP.offerUndo('「' + nm + '」을 치웠습니다.', function () {
+          save(function (d) { d.items.forEach(function (x) { if (x.id === id) x.off = false; }); });
+          renderSee(); renderPaper(); LEAP.announce('되돌렸습니다.');
+        });
+      });
+    });
+    on(el('btn-add'), 'click', function () { openEdit(null); });
+    on(el('btn-back'), 'click', function () {
+      save(function (d) { d.items.forEach(function (x) { x.off = false; }); });
+      renderSee(); renderPaper(); LEAP.announce('치워 둔 것을 모두 되돌렸습니다.');
+    });
+  }
+
+  function openEdit(id) {
+    var it = id ? itemOf(id) : null;
+    var isNew = !it;
+    if (!it) it = { id: '', n: '', cat: 'sport', need: 5, src: 'ours', pool: 'all', note: '', alt: '' };
+
+    /* 칸을 두 줄로 눕혀 **한 화면에** 들어오게 합니다.
+       세로로 길게 세우면 「안 되면 어떻게」까지 가는 데 스크롤을 세 번 해야 하고,
+       그 칸이 이 앱의 절반인데 맨 아래에 숨습니다. */
+    var body = modal(isNew ? '우리 학교 것 더하기' : '고치기',
+      '<div class="field"><label class="fld" for="ed-n">무엇이 되나 안 되나</label>' +
+      '<input class="txt" id="ed-n" maxlength="40" value="' + esc(it.n) + '" placeholder="예: 우리 학교 밴드부"></div>' +
+      '<div class="ed-row">' +
+      '<div class="field"><label class="fld" for="ed-cat">어디에 넣을까요</label>' +
+      '<select class="txt" id="ed-cat">' + CATS.map(function (c) {
+        return '<option value="' + c.k + '"' + (c.k === it.cat ? ' selected' : '') + '>' + esc(c.n) + '</option>';
+      }).join('') + '</select></div>' +
+      '<div class="field"><label class="fld" for="ed-pool">누가 모이나</label>' +
+      '<select class="txt" id="ed-pool">' + POOLS.map(function (pl) {
+        return '<option value="' + pl.k + '"' + (pl.k === it.pool ? ' selected' : '') + '>' +
+          esc(pl.n) + '에서</option>';
+      }).join('') + '</select></div>' +
+      '<div class="field"><label class="fld" for="ed-need">몇 명이면</label>' +
+      '<input class="txt txt--n" id="ed-need" inputmode="numeric" value="' + it.need + '"></div>' +
+      '</div>' +
+      '<p class="small muted" style="margin:-6px 0 14px">' +
+      '<b>전교생 전부가 오지는 않습니다.</b> 스포츠클럽은 보통 고학년에서, ' +
+      '학급 편성은 한 학년에서 모입니다.</p>' +
+      '<div class="field"><label class="fld" for="ed-src">이 수는 어디서 왔나</label>' +
+      '<select class="txt" id="ed-src">' + Object.keys(SRC).map(function (k) {
+        return '<option value="' + k + '"' + (k === it.src ? ' selected' : '') + '>' + esc(SRC[k].n) + '</option>';
+      }).join('') + '</select>' +
+      '<p class="small muted" style="margin:7px 0 0" id="ed-srcd">' + esc(SRC[it.src].d) + '</p></div>' +
+      /* ★ 이 칸이 이 앱의 절반입니다. 안 된다고만 말하는 도구는 이미 많습니다. */
+      '<div class="field" style="margin-bottom:0"><label class="fld" for="ed-alt">안 되면 어떻게 하면 되나 ' +
+      '<span class="hint">이 앱이 가장 하고 싶은 말입니다</span></label>' +
+      '<textarea class="txt" id="ed-alt" rows="2" maxlength="300" ' +
+      'placeholder="예: 풋살이면 5명으로 됩니다">' + esc(it.alt) + '</textarea></div>' +
+      '<div class="actions">' +
+      '<button class="btn" type="button" id="ed-ok">' + (isNew ? '더하기' : '고치기') + '</button>' +
+      (isNew ? '' : '<button class="btn btn--ghost" type="button" id="ed-del">지우기</button>') +
+      '<button class="btn btn--ghost" type="button" id="ed-no">그만두기</button></div>');
+    if (!body) return;
+
+    var q = function (s) { return body.querySelector(s); };
+    on(q('#ed-src'), 'change', function (e) {
+      var p = q('#ed-srcd'); if (p) p.textContent = SRC[e.target.value] ? SRC[e.target.value].d : '';
+    });
+    on(q('#ed-ok'), 'click', function () {
+      var nm = String(q('#ed-n').value || '').trim();
+      if (!nm) { LEAP.announce('무엇이 되는지 이름을 적어 주세요.'); q('#ed-n').focus(); return; }
+      var next = { id: it.id || LEAP.uid(), n: nm.slice(0, 40), cat: q('#ed-cat').value,
+        need: num(q('#ed-need').value, 1, 3000) || 1, src: q('#ed-src').value,
+        pool: q('#ed-pool').value,
+        note: it.note || '', alt: String(q('#ed-alt').value || '').slice(0, 300),
+        check: !!it.check, off: false };
+      save(function (d) {
+        if (isNew) d.items.push(next);
+        else d.items = d.items.map(function (x) { return x.id === next.id ? next : x; });
+      });
+      closeModal(); renderSee(); renderPaper();
+      LEAP.announce(isNew ? '더했습니다.' : '고쳤습니다.');
+    });
+    on(q('#ed-del'), 'click', function () {
+      var keep = LEAP.clone(D().items);
+      save(function (d) { d.items = d.items.filter(function (x) { return x.id !== it.id; }); });
+      closeModal(); renderSee(); renderPaper();
+      LEAP.announce('지웠습니다.');
+      LEAP.offerUndo('「' + it.n + '」을 지웠습니다.', function () {
+        save(function (d) { d.items = keep; });
+        renderSee(); renderPaper(); LEAP.announce('되돌렸습니다.');
+      });
+    });
+    on(q('#ed-no'), 'click', closeModal);
+  }
+
+  /* ── 우리 학교 ──────────────────────────────────────────────────────── */
+  function renderSchool() {
+    var d = D();
+    var h = '<div class="card"><h2>우리 학교</h2>' +
+      '<p class="sub">이 앱이 묻는 것은 <b>사람 수 하나</b>뿐입니다. 이름도 학년도 받지 않습니다.</p>' +
+      '<div class="field"><label class="fld" for="s-name">학교 이름 <span class="hint">종이에 적힙니다</span></label>' +
+      '<input class="txt" id="s-name" maxlength="30" value="' + esc(d.info.school) + '" placeholder="예: 길안초등학교"></div>' +
+      '<div class="field"><label class="fld" for="s-now">올해 사람 수 ' +
+      '<span class="hint">전교생이어도 되고 한 학년이어도 됩니다</span></label>' +
+      '<input class="txt txt--n" id="s-now" inputmode="numeric" value="' + (d.now || '') + '"></div>' +
+      '<div class="field"><label class="fld" for="s-bands">학년이 몇 개인가 ' +
+      '<span class="hint">초 6 · 중고 3</span></label>' +
+      '<input class="txt txt--n" id="s-bands" inputmode="numeric" value="' + d.bands + '"></div>' +
+      '</div>';
+
+    /* ★ 무리 — 이 앱이 거짓말을 하지 않는 자리입니다 */
+    h += '<div class="card"><h2>무리별 사람 수</h2>' +
+      '<p class="sub"><b>전교생 전부가 축구부에 오지는 않습니다.</b> 그래서 항목마다 ' +
+      '「어느 무리에서 모이는가」를 봅니다. 아래 수는 전교생을 학년 수로 나눠 ' +
+      '<b>셈한 값</b>입니다 — 우리 학교가 다르면 고쳐 주세요.</p>' +
+      '<div class="grid2">' + POOLS.map(function (pl) {
+        var auto = autoPool(d, pl.k), cur = d.fix[pl.k];
+        return '<div class="field"><label class="fld" for="pf-' + pl.k + '">' + esc(pl.n) +
+          ' <span class="hint">' + (cur == null ? '셈한 값 ' + (auto == null ? '—' : auto + '명')
+                                                : '셈하면 ' + (auto == null ? '—' : auto + '명')) + '</span></label>' +
+          '<input class="txt txt--n" id="pf-' + pl.k + '" inputmode="numeric" ' +
+          'value="' + (cur == null ? '' : cur) + '" placeholder="' + (auto == null ? '' : auto) + '"></div>';
+      }).join('') + '</div>' +
+      '<p class="small muted" style="margin:0">비워 두면 <b>셈한 값</b>을 씁니다. ' +
+      '고학년은 두 학년(5~6학년)으로 봅니다.</p></div>';
+
+    h += '<div class="card"><h2>앞으로</h2>' +
+      '<p class="sub">이 앱을 여는 이유입니다. <b>몇 명 줄면 무엇이 사라지는지</b>를 미리 봅니다. ' +
+      '모르면 비워 두세요 — <b>비어 있으면 아무 말도 하지 않습니다.</b></p>' +
+      '<div class="grid2">' +
+      '<div class="field"><label class="fld" for="s-y1">내년</label>' +
+      '<input class="txt txt--n" id="s-y1" inputmode="numeric" value="' +
+      (d.ahead[0] == null ? '' : d.ahead[0]) + '" placeholder="비워 두면 안 셈합니다"></div>' +
+      '<div class="field"><label class="fld" for="s-y2">내후년</label>' +
+      '<input class="txt txt--n" id="s-y2" inputmode="numeric" value="' +
+      (d.ahead[1] == null ? '' : d.ahead[1]) + '" placeholder="비워 두면 안 셈합니다"></div>' +
+      '</div>' +
+      '<p class="small muted" style="margin:0">취학 예정 아동 수는 <b>주민등록</b>으로, 지금 재학생 추이는 ' +
+      '<b>학교알리미</b>로 확인하실 수 있습니다. TEAM LEAP 의 <b>학령인구 대시보드</b>에 시군별 추이가 있습니다.</p>' +
+      '</div>';
+
+    P.school.innerHTML = h;
+    var q = function (s) { return P.school.querySelector(s); };
+    on(q('#s-name'), 'input', function (e) {
+      save(function (x) { x.info.school = String(e.target.value).slice(0, 30); }); renderPaper();
+    });
+    on(q('#s-now'), 'input', function (e) {
+      save(function (x) { x.now = num(e.target.value, 0, 3000); }); renderSee(); renderPaper();
+    });
+    on(q('#s-bands'), 'input', function (e) {
+      save(function (x) { x.bands = num(e.target.value, 1, 12) || 6; });
+      renderSee(); renderSchool(); renderPaper();
+    });
+    POOLS.forEach(function (pl) {
+      on(q('#pf-' + pl.k), 'input', function (e) {
+        var raw = String(e.target.value).trim();
+        save(function (x) {
+          if (raw === '') delete x.fix[pl.k]; else x.fix[pl.k] = num(raw, 0, 3000);
+        });
+        renderSee(); renderPaper();
+      });
+    });
+    [['#s-y1', 0], ['#s-y2', 1]].forEach(function (p) {
+      on(q(p[0]), 'input', function (e) {
+        var raw = String(e.target.value).trim();
+        save(function (x) { x.ahead[p[1]] = raw === '' ? null : num(raw, 0, 3000); });
+        renderSee(); renderPaper();
+      });
+    });
+  }
+
+  /* ── 종이 ────────────────────────────────────────────────────────────
+     학교에 낼 때 쓰는 한 장입니다. 화면의 슬라이더는 종이에 뜻이 없으므로
+     **그 해의 결과만** 찍습니다. */
+  function paperHTML() {
+    var d = D(), y = d.year, head = headOf(d, y), t = tally(d, y);
+    var h = '<div class="p-head"><div><h2>몇 명이면 되나 — ' + esc(YEARN[y]) + '</h2>' +
+      '<p class="p-sub">' + esc(d.info.school || '학교') +
+      (head == null ? '' : ' · ' + head + '명') + '</p></div>' +
+      '<div class="p-when">' + esc(LEAP.fmtDate(LEAP.todayISO())) + '</div></div>';
+
+    if (head == null) {
+      return h + '<div class="p-sec"><h3>아직 셈할 수 없습니다</h3>' +
+        '<p>「우리 학교」에서 <b>' + esc(YEARN[y]) + ' 사람 수</b>를 적으면 ' +
+        '이 자리에 무엇이 되고 무엇이 안 되는지 나옵니다.</p></div>' +
+        '<div class="p-foot">© 2026 TEAM LEAP · 경북교육 AI Lab · AI 활용 분과</div>';
+    }
+
+    h += '<p class="p-tally"><b>됩니다 ' + t.go + '</b> · <b>아슬합니다 ' + t.edge +
+      '</b> · <b>안 됩니다 ' + t.no + '</b></p>';
+
+    if (y > 0) {
+      var gone = lost(d, y);
+      if (gone.length) {
+        h += '<div class="p-sec"><h3>' + esc(YEARN[y]) + '에 사라지는 것</h3><p>' +
+          gone.map(function (x) { return esc(x.n); }).join(' · ') + '</p></div>';
+      }
+    }
+
+    CATS.forEach(function (c) {
+      var list = live(d).filter(function (x) { return x.cat === c.k; });
+      if (!list.length) return;
+      var order = { no: 0, edge: 1, go: 2, unknown: 3 };
+      list.sort(function (a, b) {
+        return order[stateOf(a, poolAt(d, y, a.pool))] - order[stateOf(b, poolAt(d, y, b.pool))];
+      });
+      h += '<div class="p-sec"><h3>' + esc(c.n) + '</h3><table class="p-tbl">' +
+        '<colgroup><col class="c-what"><col class="c-need"><col class="c-have">' +
+        '<col class="c-how"><col class="c-alt"></colgroup>' +
+        '<thead><tr><th>무엇</th><th class="n">기준</th><th class="n">지금</th>' +
+        '<th>어떻게 되나</th><th>안 되면</th></tr></thead><tbody>' +
+        list.map(function (x) {
+          var hv = poolAt(d, y, x.pool), st = stateOf(x, hv);
+          return '<tr><td>' + esc(x.n) + '<br><span class="q">' + esc(poolName(x.pool)) + '에서</span></td>' +
+            '<td class="n">' + x.need + '명</td>' +
+            '<td class="n">' + (hv == null ? '—' : hv + '명') + '</td><td>' + STATE_NAME[st] +
+            (st === 'no' ? ' (' + shortBy(x, hv) + '명 모자람)' : '') + '</td>' +
+            '<td>' + ((st === 'no' || st === 'edge') ? stripTags(x.alt) : '—') + '</td></tr>';
+        }).join('') + '</tbody></table></div>';
+    });
+
+    h += '<div class="p-sec"><h3>이 표의 기준은 어디서 왔나</h3><p class="p-src">' +
+      Object.keys(SRC).map(function (k) { return '<b>' + esc(SRC[k].n) + '</b> — ' + esc(SRC[k].d); }).join('<br>') +
+      '</p></div>';
+
+    return h + '<div class="p-foot">© 2026 TEAM LEAP · 경북교육 AI Lab · AI 활용 분과</div>';
+  }
+  /* 저장한 글은 이미 «글»입니다. 종이에는 그대로 나갑니다. */
+  function stripTags(s) { return esc(String(s || '')) || '—'; }
+
+  /* 종이는 이제 «탭»이 아니라 오른쪽 칸입니다. 이 함수는 그 칸만 다시 그립니다 —
+     왼쪽 전체를 다시 그리면 적던 칸의 초점이 날아갑니다. */
+  function renderPaper() {
+    var host = P.see.querySelector('#pv-page');
+    if (!host) return;
+    host.innerHTML = paperHTML();
+    fitOut();
+  }
+
+  /* PDF 파일 이름 — 마스터 함정 27번.
+     그대로 두면 올해 것과 내년 것이 같은 이름이 됩니다. */
+  function printFileName() {
+    var d = D();
+    return String('몇명이면되나_' + (d.info.school || '학교') + '_' + YEARN[d.year] + '_' + LEAP.todayISO())
+      .replace(/[\\/:*?"<>|]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  function withFileName(name, run) {
+    var was = document.title;
+    document.title = name;
+    var done = false;
+    function back() {
+      if (done) return;
+      done = true;
+      document.title = was;
+      window.removeEventListener('afterprint', back);
+    }
+    window.addEventListener('afterprint', back);
+    setTimeout(back, 20000);
+    run();
+  }
+  function doPrint() {
+    el('print-area').innerHTML = paperHTML();
+    withFileName(printFileName(), function () { window.print(); });
+  }
+
+  /* ── 창 ─────────────────────────────────────────────────────────────── */
+  var lastFocus = null;
+  function modal(title, body) {
+    var m = el('modal');
+    if (!m) return null;
+    lastFocus = document.activeElement;
+    m.innerHTML = '<div class="modal-back" data-close></div>' +
+      '<div class="modal-box" role="dialog" aria-modal="true" aria-label="' + esc(title) + '">' +
+      '<div class="modal-h"><h2>' + esc(title) + '</h2>' +
+      '<button class="modal-x" type="button" data-close aria-label="닫기">✕</button></div>' +
+      '<div class="modal-b" id="modal-body">' + body + '</div></div>';
+    m.hidden = false;
+    /* 창이 열려 있는 동안 뒤쪽 화면이 밀리지 않게 잠급니다 —
+       창 안을 스크롤하다 끝에 닿으면 뒤쪽이 따라 움직여 자리를 잃습니다. */
+    if (document.body && document.body.style) document.body.style.overflow = 'hidden';
+    each(m.querySelectorAll('[data-close]'), function (b) { on(b, 'click', closeModal); });
+    document.addEventListener('keydown', escClose);
+    var f = m.querySelector('.modal-b input,.modal-b select,.modal-b textarea,.modal-b button');
+    if (f && f.focus) f.focus();
+    return m.querySelector('#modal-body');
+  }
+  function closeModal() {
+    var m = el('modal');
+    if (!m) return;
+    m.hidden = true; m.innerHTML = '';
+    if (document.body && document.body.style) document.body.style.overflow = '';
+    document.removeEventListener('keydown', escClose);
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  function escClose(e) { if (e.key === 'Escape') closeModal(); }
+
+  /* ── AI 초안 — 아무것도 보내지 않습니다. 붙여 넣을 글자를 만들 뿐입니다 ── */
+  function buildPrompt() {
+    var d = D(), y = d.year, head = headOf(d, y), t = tally(d, y);
+    var lines = ['당신은 대한민국 학교의 교육과정·학교 운영을 돕는 전문가입니다.',
+      '아래는 한 학교가 «사람 수»로 무엇이 되고 무엇이 안 되는지 셈한 결과입니다.',
+      '학생 이름은 없습니다. 사람 수와 기준 인원뿐입니다.', '',
+      '[학교] ' + (d.info.school || '이름 적지 않음'),
+      '[언제] ' + YEARN[y] + (head == null ? '' : ' · ' + head + '명'),
+      '[셈] 됩니다 ' + t.go + ' · 아슬합니다 ' + t.edge + ' · 안 됩니다 ' + t.no, ''];
+
+    var head0 = headOf(d, 0);
+    if (y > 0 && head0 != null) lines.push('[올해] ' + head0 + '명');
+
+    lines.push('[안 되는 것]');
+    var no = live(d).filter(function (x) { return stateOf(x, head) === 'no'; });
+    if (!no.length) lines.push('- 없습니다');
+    else no.forEach(function (x) {
+      lines.push('- ' + x.n + ' (기준 ' + x.need + '명 · ' + shortBy(x, head) + '명 모자람)');
+    });
+
+    lines.push('', '[아슬한 것 — 조금만 줄면 사라집니다]');
+    var ed = live(d).filter(function (x) { return stateOf(x, head) === 'edge'; });
+    if (!ed.length) lines.push('- 없습니다');
+    else ed.forEach(function (x) { lines.push('- ' + x.n + ' (기준 ' + x.need + '명)'); });
+
+    lines.push('', '[반드시 지킬 것]',
+      '1. 자료에 없는 것을 지어내지 마세요. 특히 이 학교의 사정을 넘겨짚지 마세요.',
+      '2. **「학생을 늘리자」는 답은 하지 마세요.** 학교가 할 수 있는 일이 아닙니다.',
+      '3. 안 되는 것마다 **지금 인원으로 할 수 있는 대안**을 하나씩 주세요.',
+      '   (예: 축구 11명이 안 되면 풋살 5명)',
+      '4. 이웃 학교와 함께 하면 되는 것은 그렇게 적어 주세요.',
+      '5. 최종 판단은 학교가 합니다. 확인할 거리를 함께 적어 주세요.', '',
+      '[이렇게 답해 주세요]',
+      '1) 지금 인원으로도 지킬 수 있는 것',
+      '2) 모양을 바꾸면 되는 것 — 무엇을 어떻게',
+      '3) 이웃 학교와 함께 해야 하는 것',
+      '4) 올해 안에 정해야 할 것 한 가지', '',
+      '한국어로, 표가 아니라 읽기 쉬운 문장으로 써 주세요.');
+    return lines.join('\n');
+  }
+
+  function openAI() {
+    var body = modal('AI 초안 도우미',
+      '<div class="note"><div class="hd">사람 수만 나갑니다</div>' +
+      '<p>API 키가 필요 없습니다. 아래 글을 복사해 쓰던 챗봇에 붙여 넣으세요. ' +
+      '<b>이 앱은 아무것도 보내지 않습니다</b> — 붙여 넣을 글자를 만들어 줄 뿐입니다. ' +
+      '학생 이름은 이 앱이 <b>받지도 않습니다.</b></p></div>' +
+      '<textarea class="promptbox" id="ai-pre" readonly aria-label="AI에게 줄 프롬프트">' +
+      esc(buildPrompt()) + '</textarea>' +
+      '<div class="actions"><button class="btn" type="button" id="ai-copy">복사하기</button>' +
+      '<button class="btn btn--ghost" type="button" id="ai-no">닫기</button></div>');
+    if (!body) return;
+    on(body.querySelector('#ai-copy'), 'click', function () {
+      var ta = body.querySelector('#ai-pre');
+      if (!ta) return;
+      /* 먼저 요즘 방식으로, 안 되면 옛 방식으로. 둘 다 안 되면 «글을 골라 둡니다» —
+         그러면 사람이 ⌘C 한 번으로 가져갈 수 있습니다. */
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(ta.value).then(
+          function () { LEAP.announce('복사했습니다. 쓰던 챗봇에 붙여 넣으세요.'); },
+          function () { fallback(); });
+        return;
+      }
+      fallback();
+      function fallback() {
+        try {
+          ta.removeAttribute('readonly');
+          ta.select(); ta.setSelectionRange(0, ta.value.length);
+          var ok = document.execCommand('copy');
+          ta.setAttribute('readonly', 'readonly');
+          LEAP.announce(ok ? '복사했습니다. 쓰던 챗봇에 붙여 넣으세요.'
+                           : '글을 골라 두었습니다. ⌘C(Ctrl+C)로 복사하세요.');
+        } catch (e) {
+          LEAP.announce('글을 골라 두었습니다. ⌘C(Ctrl+C)로 복사하세요.');
+        }
+      }
+    });
+    on(body.querySelector('#ai-no'), 'click', closeModal);
+  }
+
+  /* ── 자료 관리 ──────────────────────────────────────────────────────── */
+  function doExport() {
+    LEAP.download('몇명이면되나-' + (D().info.school || '학교').replace(/\s/g, '') +
+      '-' + LEAP.todayISO() + '.json', LEAP.stamp(APP_ID, D()));
+    LEAP.announce('파일로 내보냈습니다.');
+  }
+
+  function bindFoot() {
+    on(el('btn-export'), 'click', doExport);
+    on(el('btn-import'), 'click', function () {
+      LEAP.pickFile(function (obj) {
+        var from = LEAP.otherApp(APP_ID, obj);
+        if (from) { LEAP.announce('「' + from + '」에서 내보낸 파일입니다. 이 앱의 파일이 아닙니다.'); return; }
+        if (!obj || obj.v !== 1 || !Array.isArray(obj.items) || !obj.info) {
+          LEAP.announce('이 앱에서 내보낸 파일이 아닙니다.'); return;
+        }
+        var before = JSON.stringify(D());
+        if (!db.set(fill(obj))) { LEAP.announce('저장 공간이 모자랍니다. 가져오지 못했습니다.'); return; }
+        renderAll();
+        LEAP.announce('가져왔습니다.');
+        LEAP.offerUndo('파일에서 가져왔습니다.', function () {
+          db.set(JSON.parse(before)); renderAll(); LEAP.announce('되돌렸습니다.');
+        });
+      });
+    });
+    on(el('btn-clear'), 'click', function () {
+      if (!confirm('적으신 것을 모두 지우고 처음으로 돌아갑니다. 계속할까요?')) return;
+      var before = JSON.stringify(D());
+      db.set(fill(LEAP.clone(DEFAULT)));
+      renderAll();
+      LEAP.announce('전부 지웠습니다.');
+      LEAP.offerUndo('적으신 것을 모두 지웠습니다.', function () {
+        db.set(JSON.parse(before)); renderAll(); LEAP.announce('되돌렸습니다.');
+      });
+    });
+  }
+
+  /* ── 시작 ───────────────────────────────────────────────────────────── */
+  function renderAll() { renderSee(); renderSchool(); }
+
+  var tabs = null;
+  function goTab(name) {
+    if (!tabs) return;
+    tabs.tabs.forEach(function (t) {
+      if (t.getAttribute('aria-controls') === 'panel-' + name) tabs.select(t);
+    });
+  }
+
+  LEAP.restoreTheme();
+  LEAP.guardModals();   /* 창이 열리면 Tab 이 그 안에서만 돕니다 */
+  LEAP.watchOtherTabs('leap-howmany-v1');   /* 두 창을 열었을 때 조용히 덮어쓰지 않게 */
+  LEAP.initThemeBtn(el('btn-theme'));
+  on(el('btn-ai'), 'click', openAI);
+  renderAll();
+  bindFoot();
+  tabs = LEAP.initTabs(el('tablist'), function () { fitOut(); });
+
+  /* 창 폭이 바뀌면 종이를 다시 맞춥니다. 잇달아 오는 소리를 한 번으로 묶습니다. */
+  if (window.addEventListener) {
+    var rt = null;
+    window.addEventListener('resize', function () {
+      if (rt) clearTimeout(rt);
+      rt = setTimeout(fitOut, 120);
+    });
+  }
+
+  /* 검사에서 안을 들여다볼 수 있게 열어 둡니다. 화면에는 아무 영향이 없습니다. */
+  if (typeof __LEAP_TEST__ !== 'undefined') {
+    __LEAP_TEST__.hook = {
+      SEED: SEED, CATS: CATS, SRC: SRC, EDGE: EDGE, DEFAULT: DEFAULT,
+      fill: fill, stateOf: stateOf, headOf: headOf, known: known,
+      POOLS: POOLS, poolOf: poolOf, poolAt: poolAt, autoPool: autoPool, poolName: poolName,
+      tally: tally, lost: lost, shortBy: shortBy, live: live,
+      paperHTML: paperHTML, buildPrompt: buildPrompt, printFileName: printFileName,
+      cardHTML: cardHTML, num: num, db: db
+    };
+  }
+})();
+</script>
+</body>
+</html>

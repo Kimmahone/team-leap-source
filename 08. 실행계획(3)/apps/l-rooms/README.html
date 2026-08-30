@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>남는 교실 (앱 L) — 설명서 · TEAM LEAP</title>
+<meta name="robots" content="noindex">
+<style>
+:root{--ink:#14202E;--gray:#5A6672;--line:#D8DEE6;--hair:#EDF1F5;--bg:#F7F9FB;
+  --surface:#fff;--blue:#1B4FA0;--tint:#EAF1FC;--radius:14px}
+@media (prefers-color-scheme:dark){:root{--ink:#E8EDF3;--gray:#A8B3BF;--line:#33404F;
+  --hair:#232E3B;--bg:#141B24;--surface:#1B242F;--blue:#7FB3F7;--tint:#1E2B3D}}
+:root[data-theme="dark"]{--ink:#E8EDF3;--gray:#A8B3BF;--line:#33404F;--hair:#232E3B;
+  --bg:#141B24;--surface:#1B242F;--blue:#7FB3F7;--tint:#1E2B3D}
+:root[data-theme="light"]{--ink:#14202E;--gray:#5A6672;--line:#D8DEE6;--hair:#EDF1F5;
+  --bg:#F7F9FB;--surface:#fff;--blue:#1B4FA0;--tint:#EAF1FC}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);line-height:1.8;
+  font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,
+    "Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+  font-size:16px;-webkit-text-size-adjust:100%}
+.top{background:var(--blue);color:#fff;padding:14px 0}
+:root[data-theme="dark"] .top,@media (prefers-color-scheme:dark){.top{background:#16233A}}
+.top .in{max-width:860px;margin:0 auto;padding:0 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.top .t{font-weight:800;letter-spacing:-.01em}
+.top .t span{font-weight:600;opacity:.85;font-size:.875rem;margin-left:8px}
+.top a{margin-left:auto;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.5);
+  border-radius:999px;padding:7px 15px;font-size:.8125rem;font-weight:700;min-height:38px;
+  display:inline-flex;align-items:center}
+.top a:hover{background:rgba(255,255,255,.18)}
+main{max-width:860px;margin:0 auto;padding:34px 22px 90px}
+h1{font-size:1.75rem;letter-spacing:-.02em;margin:0 0 8px}
+h2{font-size:1.3125rem;letter-spacing:-.015em;margin:44px 0 12px;padding-bottom:8px;
+  border-bottom:2px solid var(--hair)}
+h3{font-size:1.0625rem;margin:30px 0 8px}
+h4,h5,h6{font-size:.9375rem;margin:22px 0 6px;color:var(--gray)}
+p{margin:0 0 14px}
+a{color:var(--blue)}
+b{font-weight:700}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+ul,ol{margin:0 0 16px;padding-left:24px}
+li{margin:4px 0}
+blockquote{margin:18px 0;padding:14px 18px;background:var(--tint);border-radius:var(--radius);
+  border-left:4px solid var(--blue)}
+blockquote p:last-child{margin:0}
+code{background:var(--hair);border-radius:5px;padding:2px 6px;font-size:.875em;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 18px;overflow-x:auto;margin:0 0 18px}
+pre code{background:none;padding:0;font-size:.8125rem;line-height:1.7}
+.tw{overflow-x:auto;margin:0 0 20px}
+table{border-collapse:collapse;width:100%;font-size:.9375rem;min-width:420px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{background:var(--hair);font-weight:700;white-space:nowrap}
+del{color:var(--gray)}
+.foot{max-width:860px;margin:0 auto;padding:0 22px 60px;color:var(--gray);font-size:.8125rem;line-height:1.8}
+@media print{
+  .top a{display:none}
+  body{background:#fff;color:#000;font-size:10.5pt}
+  .top{background:none;color:#000;border-bottom:2px solid #000;padding:0 0 8px;margin-bottom:14px}
+  main{padding:0;max-width:none}
+  h2{break-after:avoid}
+  pre,table,blockquote{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <div class="t">남는 교실 (앱 L)<span>설명서</span></div>
+  <a href="../index.html">처음으로</a>
+</div></header>
+<main>
+<h1 id="h0">남는 교실 (앱 L)</h1>
+<p>학생이 줄어 남은 교실을 <b>무엇으로 쓸지 함께 짭니다.</b> 방마다 몇 명이 들어가는지 셈하고, 원하는 곳이 여럿일 때 나란히 놓고 봅니다.</p>
+<ul><li>실행: <code>index.html</code>을 브라우저로 열면 됩니다. 설치·로그인·인터넷 모두 필요 없습니다.</li><li>점검: <code>node test.js</code> — <b>65개</b></li></ul>
+<hr>
+<h2 id="h4">저작권</h2>
+<pre><code>© 2026 TEAM LEAP (경북교육 AI Lab · AI 활용 분과)</code></pre>
+<p>교육 목적에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다.</p>
+<hr>
+<h2 id="h8">왜 이 앱인가</h2>
+<p>학생이 줄면 <b>교실이 남습니다.</b> 작은 학교만의 일이 아닙니다 — 600명 학교가 480명이 되면 학급이 넷쯤 줄고, 그만큼 교실이 빕니다.</p>
+<p>그런데 그 방을 무엇으로 쓸지는 <b>교직원 회의에서 말로만 돕니다.</b> 상담실이 필요한 사람, 돌봄교실이 급한 사람, 도서관을 넓히고 싶은 사람이 각자 말하고, 결론은 기안 한 장으로 남습니다. <b>나란히 놓고 본 적이 없습니다.</b></p>
+<hr>
+<h2 id="h12">★ 모르면 모른다고 말합니다</h2>
+<p>이 앱이 가장 조심하는 자리입니다.</p>
+<ul><li><b>넓이를 안 적으면 「몇 명까지」를 셈하지 않습니다.</b> 「좁습니다」가 아니라 <b>「모릅니다」</b>입니다. 모르는 것을 0 으로 두면 「아무도 못 들어간다」가 되어 버립니다</li><li><b>조건을 안 적은 것은 «없는 것»이 아니라 «아직 안 본 것»입니다.</b> 그래서 「모자란다」고만 하고 <b>「안 된다」고 하지 않습니다</b></li><li>「몇 명까지」는 쓰임마다 흔히 쓰는 1인당 넓이로 셈한 <b>어림값</b>입니다</li></ul>
+<p>숫자로 판단을 돕는 도구는 <b>그 숫자가 어디서 왔는지 모르면 쓸 수 없습니다.</b></p>
+<hr>
+<h2 id="h17">방이 가진 것</h2>
+<p>「있다 / 없다」로만 봅니다 — 애매한 것은 사람이 압니다.</p>
+<div class="tw"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>조용함</td><td>복도 끝이거나 옆이 비어 있음</td></tr><tr><td>따로 드나듦</td><td>교실을 지나지 않고 들어갈 수 있음</td></tr><tr><td>물이 나옴</td><td>싱크대나 급수</td></tr><tr><td>화장실이 가까움</td><td>같은 층 · 가까운 거리</td></tr><tr><td>볕이 듦</td><td>남향이거나 창이 큼</td></tr><tr><td>턱이 없음</td><td>휠체어·수레가 들어감</td></tr></tbody></table></div>
+<p>상담실은 <b>조용함 · 따로 드나듦</b>이, 돌봄교실은 <b>물 · 화장실 · 볕</b>이 필요합니다. 학교가 다르면 고쳐 쓸 수 있습니다.</p>
+<hr>
+<h2 id="h22">여럿이 원하는 방</h2>
+<p>한 방에 둘 이상이 손을 들면 <b>맨 앞에 올립니다.</b> 협의회에서 먼저 볼 것이 그것입니다.</p>
+<p><b>누구에게 줄지는 이 앱이 정하지 않습니다.</b> 무엇이 맞고 무엇이 안 맞는지만 말합니다.</p>
+<hr>
+<h2 id="h26">방을 지워도 적어 둔 것이 사라지지 않습니다</h2>
+<p>방을 지우면 그 방에 얹혀 있던 쓰임은 <b>「방 못 정함」으로 남습니다.</b> 함께 지우면 사람이 적어 둔 것이 말없이 사라집니다.</p>
+<hr>
+<h2 id="h29">서버 없이 여럿이 모읍니다</h2>
+<p>각자 쓰고 싶은 것을 적고 <b>파일로 내보내</b> 한 기기에서 <b>합칩니다.</b></p>
+<p><b>같은 방을 두 사람이 저마다 적어도 둘로 늘어나지 않습니다</b> — 방은 이름으로 같은 것을 봅니다. 들어온 쪽의 쓰임은 이쪽 방에 제대로 옮겨 붙습니다.</p>
+<hr>
+<h2 id="h33">다음</h2>
+<ol><li>실제 남는 교실의 <b>넓이를 재어</b> 넣어 보기</li><li>1인당 넓이 기준이 실제 운영과 맞는지 확인</li><li>교직원 협의회에서 종이를 실제로 써 보기</li></ol>
+</main>
+<div class="foot">© 2026 TEAM LEAP · 경북교육 AI Lab · AI 활용 분과</div>
+</body>
+</html>

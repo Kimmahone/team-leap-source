@@ -37,7 +37,9 @@ const must = [
   ['앱 E',        '08. 실행계획(3)/apps/e-together/index.html'],
   ['앱 F',        '08. 실행계획(3)/apps/f-lessonplan/index.html'],
   ['앱 G',        '08. 실행계획(3)/apps/g-classdata/index.html'],
-  ['앱 H',        '08. 실행계획(3)/apps/h-project/index.html'],
+  ['앱 J',        '08. 실행계획(3)/apps/j-howmany/index.html'],
+  ['앱 K',        '08. 실행계획(3)/apps/k-year/index.html'],
+  ['앱 L',        '08. 실행계획(3)/apps/l-rooms/index.html'],
   ['앱 I',        '08. 실행계획(3)/apps/i-required/index.html']
 ];
 const decoded = links.map(l => decodeURIComponent(l.slice(2)));
@@ -71,7 +73,7 @@ check('고정된 머리 아래로 절이 숨지 않는다', /\[id\]\{scroll-marg
 /* ---------- 돌아오는 길 ----------
    앱을 열면 되돌아올 방법이 있어야 합니다. 브라우저 뒤로 가기는 방법이 아닙니다 —
    링크를 새 창으로 열거나 바탕화면 바로가기로 연 사람에게는 뒤로 갈 곳이 없습니다. */
-console.log('\n■ 아홉 곳 모두에서 메인으로 돌아올 수 있는가');
+console.log('\n■ 열한 곳 모두에서 메인으로 돌아올 수 있는가');
 const homes = [
   ['대시보드',    '06. 실행계획(1)/prototype/index.html', '../../index.html'],
   ['앱 카탈로그', '08. 실행계획(3)/apps/index.html',      '../../index.html'],
@@ -82,7 +84,9 @@ const homes = [
   ['앱 E',       '08. 실행계획(3)/apps/e-together/index.html',   '../../../index.html'],
   ['앱 F',       '08. 실행계획(3)/apps/f-lessonplan/index.html', '../../../index.html'],
   ['앱 G',       '08. 실행계획(3)/apps/g-classdata/index.html',  '../../../index.html'],
-  ['앱 H',       '08. 실행계획(3)/apps/h-project/index.html',    '../../../index.html'],
+  ['앱 J',       '08. 실행계획(3)/apps/j-howmany/index.html',    '../../../index.html'],
+  ['앱 K',       '08. 실행계획(3)/apps/k-year/index.html',       '../../../index.html'],
+  ['앱 L',       '08. 실행계획(3)/apps/l-rooms/index.html',      '../../../index.html'],
   ['앱 I',       '08. 실행계획(3)/apps/i-required/index.html',      '../../../index.html']
 ];
 homes.forEach(([name, file, up]) => {
@@ -117,7 +121,9 @@ const aiApps = [
   ['앱 E', '08. 실행계획(3)/apps/e-together/index.html',   'btn-ai'],
   ['앱 F', '08. 실행계획(3)/apps/f-lessonplan/index.html', 'AI 초안 도우미'],
   ['앱 G', '08. 실행계획(3)/apps/g-classdata/index.html',  'AI 초안 도우미'],
-  ['앱 H', '08. 실행계획(3)/apps/h-project/index.html',    'btn-ai'],
+  ['앱 J', '08. 실행계획(3)/apps/j-howmany/index.html',    'btn-ai'],
+  ['앱 K', '08. 실행계획(3)/apps/k-year/index.html',       'btn-ai'],
+  ['앱 L', '08. 실행계획(3)/apps/l-rooms/index.html',      'btn-ai'],
   ['앱 I', '08. 실행계획(3)/apps/i-required/index.html',      'btn-ai']
 ];
 {
@@ -140,23 +146,32 @@ aiApps.forEach(([name, f, needle]) => {
 /* ---------- 활용 가이드 ----------
    README 는 만든 사람의 문서이고, 이것은 쓰는 사람의 문서입니다.
    앱이 늘었는데 가이드가 안 늘면 조용히 낡습니다. 그래서 개수를 맞춰 봅니다. */
-console.log('\n■ 활용 가이드가 아홉 앱을 다 다루는가');
+/* 앱 목록은 «폴더»가 진짜입니다. 손으로 적으면 앱이 늘 때마다 어긋납니다.
+   내린 앱(안내 쪽만 있는 것)은 test.js 가 없으므로 그것으로 가립니다. */
+const APP_DIRS = fs.readdirSync('08. 실행계획(3)/apps')
+  .filter(d => /^[a-z]-/.test(d))
+  .filter(d => fs.existsSync('08. 실행계획(3)/apps/' + d + '/test.js'))
+  .sort();
+
+console.log('\n■ 활용 가이드가 열한 앱을 다 다루는가');
 {
   const gf = path.join(HERE, '08. 실행계획(3)/apps/guide.html');
   check('활용 가이드 파일이 있다', fs.existsSync(gf));
   const g = fs.existsSync(gf) ? fs.readFileSync(gf, 'utf8') : '';
-  const entries = (g.match(/^\s{4}k: '[A-I]'/gm) || []).length;
-  check('앱 아홉 종이 다 들어 있다', entries === 9, '들어 있는 수: ' + entries);
-  ['a-circuit', 'b-classboard', 'c-storybook', 'd-multigrade',
-   'e-together', 'f-lessonplan', 'g-classdata', 'h-project', 'i-required'].forEach(dir => {
+  /* 〔8. 31.〕 범위를 [A-I] 로 못박아 두었더니 앱이 J·K·L 로 늘면서 걸렸습니다.
+     한 글자 대문자면 앱 표시로 봅니다 — 앱이 더 늘어도 따라옵니다. */
+  const entries = (g.match(/^\s{4}k: '[A-Z]'/gm) || []).length;
+  check('가이드가 앱을 다 다룬다', entries === APP_DIRS.length,
+    '앱 ' + APP_DIRS.length + '개 · 가이드 ' + entries + '개');
+  APP_DIRS.forEach(dir => {
     check(dir + ' 로 가는 길이 가이드에 있다', g.includes("dir: '" + dir + "'"));
   });
   check('앱마다 새 쪽에서 인쇄된다', /\.g \+ \.g\{break-before:page/.test(g),
     '필요한 앱의 쪽만 뽑아 돌릴 수 있어야 한다');
   check('「어디서 막히나」가 앱마다 있다',
-    (g.match(/stuck: \[/g) || []).length === 9);
+    (g.match(/stuck: \[/g) || []).length === APP_DIRS.length);
   check('「AI 초안 도우미로 받는 것」이 앱마다 있다',
-    (g.match(/^\s{4}ai: /gm) || []).length === 9);
+    (g.match(/^\s{4}ai: /gm) || []).length === APP_DIRS.length);
   check('가이드에도 메인으로 가는 홈 단추가 있다', g.includes('href="../../../index.html"'));
   check('가이드는 외부를 부르지 않는다',
     !/<(script|link)[^>]+(src|href)\s*=\s*["']https?:/i.test(g));
@@ -336,7 +351,9 @@ check('마지막 한마디가 있다', /class="closing/.test(html));
    연구소 절이 `sec`·`sec-h`·`sec-p` 를 쓰고 있었는데 CSS 에 그 이름이 없었고,
    푸터 브랜드는 `brand` 인데 CSS 는 `foot-brand` 였습니다. 정의가 **0개**라
    두 곳 다 날것으로 떠 있었는데 아무 검사도 그것을 보지 않았습니다.
-   ※ 앱 카드의 한 글자 클래스(a~i)는 자리표라 색이 없습니다 — 빼고 봅니다. */
+   ※ 앱 카드의 한 글자 클래스는 «자리표»라 색이 없습니다 — 빼고 봅니다.
+   〔8. 31.〕 범위를 a~i 로 못박아 두었더니 앱이 J·K·L 로 늘면서 걸렸습니다.
+   한 글자면 자리표로 봅니다 — 앱이 더 늘어도 따라옵니다. */
 const styleSheet = (html.match(/<style>[\s\S]*?<\/style>/g) || []).join('\n');
 const definedClasses = new Set([...styleSheet.matchAll(/\.([A-Za-z][\w-]*)/g)].map(m => m[1]));
 const usedClasses = new Set();
@@ -345,7 +362,7 @@ for (const m of html.matchAll(/class="([^"]+)"/g)) {
 }
 const orphanClasses = [...usedClasses]
   .filter(c => !definedClasses.has(c))
-  .filter(c => !/^[a-i]$/.test(c));
+  .filter(c => !/^[a-z]$/.test(c));
 check('CSS 가 없는 클래스를 쓰지 않는다', orphanClasses.length === 0,
   '정의가 없는 클래스: ' + orphanClasses.join(', '));
 check('숫자 세기는 원래 글자로 되돌린다', /el\.textContent = text;/.test(html));
@@ -436,7 +453,8 @@ console.log('\n■ 앱이 몇 개인지 페이지가 한 가지로 말하는가 
      적은 말이 앱이 아홉이 되도록 남았습니다 — 머리 주석 「앱 5종」,
      본문 「여기 있는 여덟」 두 곳, 판 번호 v0.2.
      세지 않는 숫자는 낡습니다. 그래서 **카드를 실제로 셉니다.** */
-  const NUM = ['', '한', '두', '세', '네', '다섯', '여섯', '일곱', '여덟', '아홉', '열'];
+  const NUM = ['', '한', '두', '세', '네', '다섯', '여섯', '일곱', '여덟', '아홉', '열',
+               '열한', '열두', '열세', '열네'];
   const cards = [...html.matchAll(/href="\.\/08\.%20실행계획\(3\)\/apps\/([a-z]-[a-z]+)\/index\.html"/g)]
     .map(m => m[1]);
   const n = new Set(cards).size;
@@ -485,8 +503,13 @@ console.log('\n■ 앱이 몇 개인지 페이지가 한 가지로 말하는가 
 
   /* 「여덟」이 남아 있던 자리입니다. 지금 개수가 아닌 우리말 수사가
      본문에 있으면 그것은 옛날에 적은 말입니다. */
+  /* ★ 「열한」은 「한」과 「열」을 품고 있습니다. 그냥 찾으면 지금 개수가
+     옛 개수로 잘못 잡힙니다. **지금 쓰는 말을 먼저 지우고** 남은 것만 봅니다. */
+  const cleaned = prose
+    .split('여기 있는 ' + NUM[n]).join('여기 있는 ✓')
+    .split(NUM[n] + ' 앱').join('✓ 앱');
   const wrong = NUM.slice(1).filter(w => w !== NUM[n] &&
-    new RegExp('여기 있는 ' + w + '|' + w + ' 앱').test(prose));
+    new RegExp('여기 있는 ' + w + '|' + w + ' 앱').test(cleaned));
   check('옛 개수를 가리키는 우리말 수사가 본문에 남아 있지 않다', wrong.length === 0,
     '남은 말: ' + wrong.join(', ') + ' (지금은 「' + NUM[n] + '」)');
 

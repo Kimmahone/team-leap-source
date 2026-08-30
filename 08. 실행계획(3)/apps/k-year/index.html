@@ -1,0 +1,1537 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>우리 학교 한 해 — TEAM LEAP</title>
+<meta name="description" content="교직원 각자가 맡은 일을 한 해 달력에 얹어 파일로 합칩니다. 언제 몇 사람이 동시에 바쁜지 색으로 보입니다. TEAM LEAP.">
+<meta name="author" content="TEAM LEAP · 경북교육 AI Lab">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2314202E'/%3E%3Cg transform='translate(32 32) scale(0.92) translate(-32 -33)'%3E%3Cpath d='M7 52 H25' stroke='%2397A3B0' stroke-width='7.5' stroke-linecap='round' fill='none'/%3E%3Cpath d='M39 36 H57' stroke='%23F2A65A' stroke-width='7.5' stroke-linecap='round' fill='none'/%3E%3Cpath d='M16 46 Q32 -10 48 30' stroke='%237FB3F7' stroke-width='8' stroke-linecap='round' fill='none'/%3E%3C/g%3E%3C/svg%3E">
+<!--
+  우리 학교 한 해 — 일이 언제 겹치는지
+  TEAM LEAP · 경북교육 AI Lab · AI 활용 분과
+
+  왜 이 앱인가
+    학령인구가 줄면 학급이 줄고, 학급이 줄면 **교원이 줍니다.** 그러면 한 사람이
+    담임에 업무 두셋을 겹쳐 맡습니다. 이건 작은 학교만의 일이 아닙니다 —
+    600명 학교가 480명이 될 때도 부장 자리가 줄고 일은 그대로 남습니다.
+
+    그런데 **일이 언제 겹치는지는 아무도 모릅니다.** 각자 자기 달력만 보기
+    때문입니다. 11월 둘째 주에 학예회·수업나눔·정보공시·학부모상담이 한꺼번에
+    몰려 있어도, 그것을 한 장에 놓고 본 사람이 없습니다.
+
+    이 앱은 **교직원 각자가 자기 일을 얹고, 파일로 합칩니다.** 서버가 없어도
+    됩니다 — 앱 B 가 회의를 합치는 것과 같은 방식입니다.
+
+  이 앱이 하지 않는 것
+    **일을 대신 옮겨 주지 않습니다.** 겹친 것을 보여 줄 뿐이고, 무엇을 옮길지는
+    사람이 정합니다. 학교마다 사정이 다르고, 옮길 수 없는 일이 있습니다.
+
+  © 2026 TEAM LEAP (경북교육 AI Lab · AI 활용 분과)
+-->
+<style>:root{
+  --leap-ink:#14202E; --leap-blue:#1B4FA0; --leap-amber:#A8560A;
+  --leap-amber-mark:#CE6410; --leap-teal:#0D6E5C; --leap-gray:#5A6672;
+  --leap-bg:#F7F9FC; --leap-surface:#FFFFFF; --leap-border:#D9E0EA;
+  --leap-hairline:#E8EDF3; --leap-on-fill:#FFFFFF;
+  --leap-font:system-ui,-apple-system,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  --leap-1:4px; --leap-2:8px; --leap-3:12px; --leap-4:16px;
+  --leap-5:24px; --leap-6:32px; --leap-7:48px;
+  --leap-radius:14px; --leap-radius-sm:8px;
+  --leap-shadow:0 1px 2px rgba(20,32,46,.05),0 6px 18px rgba(20,32,46,.07);
+  --leap-shadow-lg:0 2px 4px rgba(20,32,46,.06),0 14px 38px rgba(20,32,46,.11);
+
+  /* 앱에서 더 쓰는 색 — 전부 배경용이며, 글자는 늘 --leap-ink 를 얹는다 */
+  --tint-blue:#EAF1FB; --tint-amber:#FCF0E3; --tint-teal:#E4F4F0;
+  --grad-head:linear-gradient(135deg,#14202E 0%,#1B4FA0 78%,#2C6FD1 100%);
+  --grad-bar:linear-gradient(90deg,#1B4FA0,#3C7FD8);
+  --grad-win:linear-gradient(90deg,#CE6410,#E8862B);
+  --solid-teal:#0D6E5C; --solid-amber:#A8560A; --solid-gray:#5A6672;
+  --solid-fg:#FFFFFF;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --leap-ink:#E8EDF3; --leap-blue:#7FB3F7; --leap-amber:#F2A65A;
+    --leap-amber-mark:#F2A65A; --leap-teal:#4FD1B0; --leap-gray:#97A3B0;
+    --leap-bg:#0E1621; --leap-surface:#1A2735; --leap-border:#2C3B4C;
+    --leap-hairline:#22303F; --leap-on-fill:#0E1621;
+    --leap-shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.34);
+    --leap-shadow-lg:0 2px 6px rgba(0,0,0,.45),0 16px 44px rgba(0,0,0,.45);
+    --tint-blue:#16304F; --tint-amber:#3A2A18; --tint-teal:#123830;
+    --grad-head:linear-gradient(135deg,#0A111C 0%,#16345F 78%,#1E4C8C 100%);
+    --grad-bar:linear-gradient(90deg,#3C7FD8,#7FB3F7);
+    --grad-win:linear-gradient(90deg,#C4691B,#F2A65A);
+    --solid-teal:#4FD1B0; --solid-amber:#F2A65A; --solid-gray:#97A3B0;
+    --solid-fg:#0E1621;
+  }
+}
+:root[data-theme="light"]{
+  --leap-ink:#14202E;--leap-blue:#1B4FA0;--leap-amber:#A8560A;--leap-amber-mark:#CE6410;
+  --leap-teal:#0D6E5C;--leap-gray:#5A6672;--leap-bg:#F7F9FC;--leap-surface:#FFFFFF;
+  --leap-border:#D9E0EA;--leap-hairline:#E8EDF3;--leap-on-fill:#FFFFFF;
+  --tint-blue:#EAF1FB;--tint-amber:#FCF0E3;--tint-teal:#E4F4F0;
+  --grad-head:linear-gradient(135deg,#14202E 0%,#1B4FA0 78%,#2C6FD1 100%);
+  --grad-bar:linear-gradient(90deg,#1B4FA0,#3C7FD8);
+  --grad-win:linear-gradient(90deg,#CE6410,#E8862B);
+  --solid-teal:#0D6E5C; --solid-amber:#A8560A; --solid-gray:#5A6672;
+  --solid-fg:#FFFFFF;
+}
+:root[data-theme="dark"]{
+  --leap-ink:#E8EDF3;--leap-blue:#7FB3F7;--leap-amber:#F2A65A;--leap-amber-mark:#F2A65A;
+  --leap-teal:#4FD1B0;--leap-gray:#97A3B0;--leap-bg:#0E1621;--leap-surface:#1A2735;
+  --leap-border:#2C3B4C;--leap-hairline:#22303F;--leap-on-fill:#0E1621;
+  --tint-blue:#16304F;--tint-amber:#3A2A18;--tint-teal:#123830;
+  --grad-head:linear-gradient(135deg,#0A111C 0%,#16345F 78%,#1E4C8C 100%);
+  --grad-bar:linear-gradient(90deg,#3C7FD8,#7FB3F7);
+  --grad-win:linear-gradient(90deg,#C4691B,#F2A65A);
+  --solid-teal:#4FD1B0; --solid-amber:#F2A65A; --solid-gray:#97A3B0;
+  --solid-fg:#0E1621;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--leap-font);font-size:1rem;line-height:1.65;
+  color:var(--leap-ink);background:var(--leap-bg);-webkit-text-size-adjust:100%}
+/* 본문 바로가기 — 평소에는 화면 밖에, 초점이 오면 제자리로 */
+.skip{position:absolute;left:12px;top:-56px;z-index:300;
+  padding:11px 18px;min-height:44px;display:inline-flex;align-items:center;
+  border-radius:var(--leap-radius-sm);background:var(--leap-surface);
+  color:var(--leap-ink);border:2px solid var(--leap-blue);
+  font-weight:700;font-size:.9375rem;text-decoration:none;
+  transition:top .15s}
+.skip:focus{top:12px}
+@media (prefers-reduced-motion:reduce){.skip{transition:none}}
+@media print{.skip{display:none!important}}
+:focus-visible{outline:3px solid var(--leap-blue);outline-offset:3px;border-radius:var(--leap-radius-sm)}
+.leap-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}
+button,input,textarea,select{font:inherit;color:inherit}
+
+.leap-toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(14px);
+  background:var(--leap-ink);color:var(--leap-bg);padding:13px 26px;border-radius:999px;
+  font-size:.9375rem;font-weight:700;box-shadow:var(--leap-shadow-lg);
+  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:90;max-width:88vw;text-align:center}
+.leap-toast.is-on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ==========================================================================
+   머리말 — 브랜드 그라디언트 + 배경에 깔린 도약 궤적
+   ========================================================================== */
+header.top{background:var(--grad-head);color:#fff;position:relative;overflow:hidden}
+header.top .deco{position:absolute;right:-40px;top:-30px;width:280px;height:280px;
+  opacity:.13;pointer-events:none}
+/* ★ 〔2026. 8. 12.〕 아홉 앱의 좌우 여백을 하나로 맞췄습니다.
+   머리·탭·본문이 **같은 폭**(1360px)이라야 세로선이 한 줄로 섭니다.
+   예전에는 앱마다 880~1360px 로 제각각이었고, 한 앱 안에서도 어긋나 있었습니다
+   (d-multigrade 는 머리 1000 · 본문 1360, h-project 는 탭 880 · 본문 1180).
+   폭을 바꿀 때는 **세 줄을 함께** 고치세요. */
+.top-in{max-width:1360px;margin:0 auto;padding:22px 20px 24px;display:flex;
+  align-items:center;gap:14px;flex-wrap:wrap;position:relative}
+.brand{display:flex;align-items:center;gap:13px;min-width:0}
+.brand .badge{flex:none;width:48px;height:48px;border-radius:13px;
+  background:rgba(255,255,255,.13);display:grid;place-items:center;
+  border:1px solid rgba(255,255,255,.2)}
+.brand h1{margin:0;font-size:1.25rem;letter-spacing:-.02em;line-height:1.25}
+.brand .sub{font-size:.75rem;color:rgba(255,255,255,.72);letter-spacing:.03em;margin-top:1px}
+.top-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.iconbtn{min-height:42px;padding:8px 15px;font-size:.8125rem;font-weight:700;
+  border:1px solid rgba(255,255,255,.28);border-radius:999px;
+  background:rgba(255,255,255,.1);color:#fff;cursor:pointer}
+.iconbtn:hover{background:rgba(255,255,255,.2)}
+
+/* 메인 페이지로 돌아가는 길.
+   링크지만 옆의 단추와 같은 모양이라야 눈이 한 줄로 읽습니다.
+   맨 앞에 두는 것은 일부러입니다 — 「나가는 문」은 늘 같은 자리에 있어야 합니다. */
+a.iconbtn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.iconbtn--home{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.44)}
+.iconbtn--home:hover{background:rgba(255,255,255,.32)}
+
+/* 탭 */
+nav.tabs{background:var(--leap-surface);border-bottom:1px solid var(--leap-border);
+  position:sticky;top:0;z-index:20;box-shadow:0 1px 0 var(--leap-border)}
+.tabs-in{max-width:1360px;margin:0 auto;padding:9px 20px;display:flex;gap:6px;overflow-x:auto}
+[role="tab"]{background:none;border:0;padding:10px 18px;min-height:46px;border-radius:999px;
+  font-weight:700;font-size:.9375rem;color:var(--leap-gray);cursor:pointer;white-space:nowrap}
+[role="tab"]:hover{background:var(--leap-hairline)}
+[role="tab"][aria-selected="true"]{color:var(--leap-blue);background:var(--tint-blue)}
+
+main.wrap{max-width:1360px;margin:0 auto;padding:26px 20px 90px}
+
+/* ==========================================================================
+   카드
+   ========================================================================== */
+.card{background:var(--leap-surface);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:28px;box-shadow:var(--leap-shadow);margin-bottom:20px}
+.card > h2{margin:0 0 5px;font-size:1.4375rem;letter-spacing:-.022em}
+.card > h2 + .sub{margin:0 0 24px;color:var(--leap-gray);font-size:.9375rem}
+.muted{color:var(--leap-gray)}
+.small{font-size:.8125rem}
+.prompt{margin:0 0 6px;font-size:1.3125rem;font-weight:800;letter-spacing:-.022em}
+.prompt-sub{margin:0 0 22px;color:var(--leap-gray)}
+
+/* 버튼 */
+.btn{font-weight:700;padding:12px 22px;min-height:46px;border-radius:999px;
+  border:1px solid var(--leap-blue);background:var(--leap-blue);color:var(--leap-on-fill);
+  cursor:pointer;transition:transform .12s,box-shadow .12s,filter .12s}
+.btn:hover{filter:brightness(1.09);box-shadow:0 6px 18px rgba(27,79,160,.28);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn--quiet{background:transparent;color:var(--leap-blue)}
+.btn--quiet:hover{background:var(--tint-blue);box-shadow:none}
+.btn--ghost{background:transparent;color:var(--leap-gray);border-color:var(--leap-border)}
+.btn--ghost:hover{background:var(--leap-hairline);box-shadow:none;filter:none}
+.btn--danger{background:transparent;color:var(--leap-amber);border-color:var(--leap-amber)}
+.btn--danger:hover{background:var(--tint-amber);box-shadow:none;filter:none}
+.btn--amber{background:var(--solid-amber);border-color:var(--solid-amber);color:var(--solid-fg)}
+.btn:disabled{opacity:.4;cursor:not-allowed;filter:none;transform:none;box-shadow:none}
+.btn--big{font-size:1.0625rem;padding:16px 30px;min-height:58px}
+.btn--sm{font-size:.8125rem;padding:8px 16px;min-height:44px}
+.btn .ico{margin-right:8px;vertical-align:-3px}
+.actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:22px;align-items:center}
+
+/* ==========================================================================
+   단계 표시 — 로고의 도약 궤적을 그대로 진행바로 쓴다
+   ========================================================================== */
+.arcwrap{background:var(--tint-blue);border-radius:var(--leap-radius);
+  padding:14px 10px 6px;margin:0 0 24px}
+.arcwrap svg{display:block;width:100%;max-width:430px;height:auto;margin:0 auto}
+/* ==========================================================================
+   이 앱의 화면 — 한 해를 한 장으로
+   --------------------------------------------------------------------------
+   심장은 «달력»입니다. 주(週)를 가로로 늘어놓고, 그 주에 일이 몇 개
+   겹치는지를 «색의 진하기»로 봅니다. 숫자만으로는 몰리는 자리가 안 보입니다.
+   ========================================================================== */
+.ybar{position:sticky;top:0;z-index:40;background:var(--leap-bg);padding:14px 0 12px;
+  margin:0 0 18px;border-bottom:1px solid var(--leap-border)}
+.ybar-in{background:var(--leap-surface);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:15px 17px;box-shadow:var(--leap-shadow)}
+.ybar-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:0 0 12px}
+.ybar-h b{font-size:1.0625rem;letter-spacing:-.015em}
+.ybar-h .w{margin-left:auto;font-size:.8125rem;color:var(--leap-gray)}
+
+/* 한 해 띠 — 3월부터 이듬해 2월까지 마흔여덟 주 */
+.cal{display:grid;grid-template-columns:repeat(12,1fr);gap:5px}
+.cal-m{min-width:0}
+.cal-m > span{display:block;text-align:center;font-size:.6875rem;font-weight:800;
+  color:var(--leap-gray);margin:0 0 4px}
+.cal-w{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
+.cal-w button{aspect-ratio:1;min-height:0;padding:0;border-radius:4px;cursor:pointer;
+  border:1px solid var(--leap-border);background:var(--leap-surface);
+  font:inherit;font-size:.625rem;font-weight:700;color:var(--leap-gray);line-height:1}
+.cal-w button:hover{border-color:var(--leap-blue)}
+.cal-w button[aria-pressed=true]{outline:2px solid var(--leap-blue);outline-offset:1px}
+/* 겹친 정도 — 색만으로 말하지 않습니다. 칸 안에 숫자가 함께 있습니다 */
+.cal-w button.l1{background:#DCE9FA;color:#1B4FA0;border-color:#BFD6F3}
+.cal-w button.l2{background:#9EC5F0;color:#0E2E5E;border-color:#7FB0E4}
+.cal-w button.l3{background:#F5C98A;color:#5A3608;border-color:#E8B368}
+.cal-w button.l4{background:#E88B72;color:#4A1408;border-color:#DC7357}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .cal-w button{background:var(--leap-bg)}}
+:root[data-theme=dark] .cal-w button{background:var(--leap-bg)}
+
+.cal-key{display:flex;gap:14px;flex-wrap:wrap;margin:12px 0 0;font-size:.75rem;
+  color:var(--leap-gray);align-items:center}
+.cal-key i{display:inline-block;width:13px;height:13px;border-radius:3px;
+  border:1px solid var(--leap-border);vertical-align:-2px;margin-right:5px}
+.cal-key .k1{background:#DCE9FA}.cal-key .k2{background:#9EC5F0}
+.cal-key .k3{background:#F5C98A}.cal-key .k4{background:#E88B72}
+
+/* 몰린 주 — 이 앱이 하려는 말 */
+.hot{display:grid;gap:10px;margin:0 0 20px}
+.hot-c{border:1px solid var(--leap-border);border-left:5px solid var(--solid-amber);
+  border-radius:var(--leap-radius);background:var(--tint-amber);padding:14px 16px}
+.hot-c.hot--hard{border-left-color:#B42318}
+.hot-c b{font-size:.9375rem}
+.hot-c ul{margin:8px 0 0;padding-left:19px;font-size:.8125rem;line-height:1.75}
+.hot-c ul b{font-size:inherit}
+.hot-none{border:1px solid var(--leap-border);border-radius:var(--leap-radius);
+  background:var(--leap-surface);padding:15px 17px;font-size:.875rem;color:var(--leap-gray)}
+
+/* 일 한 줄 */
+.jobs{display:grid;gap:8px}
+.job{display:flex;align-items:center;gap:11px;border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);background:var(--leap-surface);padding:12px 15px}
+.job .who{flex:none;font-size:.75rem;font-weight:800;padding:3px 9px;border-radius:999px;
+  background:var(--tint-blue);color:var(--leap-blue);white-space:nowrap}
+.job .nm{font-weight:700;font-size:.9375rem;min-width:0}
+.job .wk{font-size:.8125rem;color:var(--leap-gray);font-variant-numeric:tabular-nums;
+  white-space:nowrap}
+.job .sp{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+@media (max-width:620px){.job{flex-wrap:wrap}.job .sp{margin-left:0;width:100%}}
+
+/* 나 · 우리 */
+.mine{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:0 0 16px}
+.mine .txt{max-width:220px}
+
+/* ── 창 ────────────────────────────────────────────────────────────────
+   화면 위에 «떠 있는» 상자입니다. 위치를 고정하고(position:fixed) 안쪽만
+   스크롤합니다 — 그러지 않으면 창이 길어질 때 화면 전체가 밀려 내려가
+   무엇을 고치고 있었는지 알 수 없게 됩니다.
+   ────────────────────────────────────────────────────────────────────── */
+.modal{position:fixed;inset:0;z-index:120;display:flex;align-items:flex-start;
+  justify-content:center;padding:38px 18px}
+.modal[hidden]{display:none}
+.modal-back{position:absolute;inset:0;background:rgba(10,17,28,.55);backdrop-filter:blur(2px)}
+.modal-box{position:relative;background:var(--leap-surface);border-radius:18px;width:100%;
+  max-width:640px;max-height:calc(100vh - 76px);display:flex;flex-direction:column;
+  box-shadow:var(--leap-shadow-lg);border:1px solid var(--leap-border);animation:pop .16s ease-out}
+.modal-box--wide{max-width:900px}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.modal-box{animation:none}}
+.modal-h{display:flex;align-items:center;gap:12px;padding:19px 22px 13px;
+  border-bottom:1px solid var(--leap-hairline);flex:none}
+.modal-h h2{margin:0;font-size:1.0625rem;letter-spacing:-.02em}
+.modal-x{margin-left:auto;flex:none;width:38px;height:38px;border-radius:50%;border:0;
+  cursor:pointer;background:var(--leap-hairline);color:var(--leap-gray);font-size:1rem;font-weight:700}
+.modal-x:hover{background:var(--leap-border);color:var(--leap-ink)}
+.modal-b{padding:19px 22px 22px;overflow:auto;-webkit-overflow-scrolling:touch;min-height:0}
+/* 창 안의 단추 줄은 바닥에 붙여 둡니다 — 길어져도 늘 손 닿는 자리에 */
+.modal-b .actions{position:sticky;bottom:-22px;margin:18px -22px -22px;padding:16px 22px;
+  background:var(--leap-surface);border-top:1px solid var(--leap-hairline);
+  display:flex;gap:9px;flex-wrap:wrap}
+.promptbox{width:100%;min-height:210px;padding:13px 15px;border-radius:var(--leap-radius-sm);
+  border:2px solid var(--leap-border);background:var(--leap-bg);color:var(--leap-ink);
+  font-size:.78rem;line-height:1.6;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;resize:vertical}
+
+/* 첫 화면 */
+.start{background:var(--leap-surface);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:30px;box-shadow:var(--leap-shadow)}
+.start h2{margin:0 0 10px;font-size:1.25rem;letter-spacing:-.022em}
+.start > p{margin:0 0 22px;color:var(--leap-gray);line-height:1.75;font-size:.9375rem}
+.start > p b{color:var(--leap-ink)}
+.start-in{background:var(--tint-blue);border-radius:var(--leap-radius);padding:18px 20px}
+.start-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.start-row .txt{max-width:220px}
+.linky{border:0;background:none;padding:0;font:inherit;font-weight:700;
+  color:var(--leap-blue);text-decoration:underline;cursor:pointer}
+
+/* 칸 */
+.field{margin:0 0 14px}
+label.fld{display:block;font-weight:700;font-size:.875rem;margin:0 0 8px}
+label.fld .hint{font-weight:600;color:var(--leap-gray);font-size:.8125rem}
+.txt{width:100%;padding:11px 14px;min-height:46px;border-radius:var(--leap-radius-sm);
+  border:2px solid var(--leap-border);background:var(--leap-bg);color:var(--leap-ink);
+  font-family:inherit;font-size:1rem}
+.txt:focus{border-color:var(--leap-blue);outline:none}
+.txt--n{max-width:150px;font-variant-numeric:tabular-nums}
+textarea.txt{min-height:76px;resize:vertical;line-height:1.6}
+.ed-row{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px}
+@media (max-width:620px){.ed-row{grid-template-columns:1fr}}
+.ed-row .field{margin-bottom:14px}
+.ed-row .txt--n{max-width:none}
+
+/* 종이 */
+.p-week{font-variant-numeric:tabular-nums;white-space:nowrap}
+/* 빈 화면 */
+.empty{text-align:center;padding:52px 24px}
+.empty svg{opacity:.34;margin-bottom:16px}
+.empty p{margin:0;color:var(--leap-gray);font-size:1.0625rem;line-height:1.75}
+
+/* 바닥 — 자료 관리 + 저작권 */
+footer.foot{margin-top:44px}
+.foot-card{background:var(--leap-surface);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:24px;box-shadow:var(--leap-shadow)}
+.foot-card h2{margin:0 0 5px;font-size:1.0625rem}
+.foot-actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:18px}
+.colophon{display:flex;gap:16px;align-items:flex-start;margin-top:30px;
+  padding-top:26px;border-top:1px solid var(--leap-border)}
+.colophon svg{flex:none;opacity:.8}
+.colophon .body{font-size:.8125rem;color:var(--leap-gray);line-height:1.75}
+.colophon .name{font-weight:800;color:var(--leap-ink);font-size:.9375rem;letter-spacing:-.01em}
+.colophon .name span{font-weight:600;color:var(--leap-gray);font-size:.8125rem;margin-left:7px}
+.colophon p{margin:5px 0 0}
+.colophon .cc{color:var(--leap-ink);font-weight:600}
+/* ==========================================================================
+   갈림길 〔v0.4〕 — 마스터 함정 37번
+   --------------------------------------------------------------------------
+   되돌릴 수 없는 일을 「예 / 아니오」로 물으면 **잃는 쪽에 「예」를 눌러야** 합니다.
+   길을 갈라 놓고 **잃지 않는 길을 맨 위에** 둡니다. 앱 D 와 같은 이름을 씁니다.
+   ========================================================================== */
+.picks2{display:grid;gap:9px}
+.pick2{text-align:left;border:2px solid var(--leap-border);background:var(--leap-surface);
+  border-radius:var(--leap-radius);padding:14px 16px;cursor:pointer;min-height:64px;width:100%}
+.pick2:hover{border-color:var(--leap-blue);background:var(--tint-blue)}
+.pick2 .n{display:block;font-weight:800;font-size:.9375rem}
+.pick2 .d{display:block;font-size:.8125rem;color:var(--leap-gray);margin-top:3px;line-height:1.6}
+.pick2--go{border-color:var(--leap-teal);background:var(--tint-teal)}
+.pick2--go:hover{border-color:var(--solid-teal)}
+.pick2--off{border-style:dashed}
+.pick2--off:hover{border-style:solid}
+
+/* 되돌리기 〔v0.4〕 — 마스터 함정 39번
+   「지울까요?」는 잘못 누르는 것을 못 막습니다. 누르던 손이 그대로 「예」를 누릅니다.
+   묻지 않고 지우되, **한 걸음은 되돌릴 수 있게** 합니다. */
+.undo{display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  background:var(--tint-amber);border:1px solid var(--leap-amber-mark);
+  border-radius:var(--leap-radius);padding:12px 16px;margin:0 0 16px}
+.undo p{margin:0;font-size:.875rem;font-weight:700}
+.undo .btn{margin-left:auto}
+
+/* 몇 사람이 냈는지 〔v0.4〕 — 누가 냈는지는 여전히 모릅니다.
+   학급 인원을 적어 두면 「6명 중 4명」이 되고, 안 적으면 개수만 나옵니다. */
+.pbar{height:10px;border-radius:6px;background:var(--leap-hairline);margin-top:14px;overflow:hidden}
+.pbar > i{display:block;height:100%;background:var(--grad-bar);border-radius:6px;
+  transition:width .45s cubic-bezier(.22,1,.36,1)}
+.tally .of{font-weight:800;color:var(--leap-gray);font-size:1.0625rem}
+/* 한 걸음 되돌리기 띠 — 화면 아래에 잠깐. 종이에는 찍히지 않습니다. */
+.leap-undobar{position:fixed;left:50%;bottom:22px;transform:translate(-50%,14px);
+  display:none;align-items:center;gap:12px;max-width:min(560px,calc(100vw - 32px));
+  padding:12px 14px 12px 18px;border-radius:999px;
+  background:var(--leap-surface);border:1px solid var(--leap-border);
+  box-shadow:var(--leap-shadow-lg);z-index:200;opacity:0;
+  transition:opacity .18s,transform .18s}
+.leap-undobar.is-on{display:flex;opacity:1;transform:translate(-50%,0)}
+.leap-undobar p{margin:0;font-size:.875rem;font-weight:700;color:var(--leap-ink)}
+.leap-undox{flex:none;width:28px;height:28px;border-radius:999px;border:0;
+  background:transparent;color:var(--leap-gray);font-size:.9rem;cursor:pointer;line-height:1}
+.leap-undox:hover{background:var(--leap-hairline);color:var(--leap-ink)}
+@media print{.leap-undobar{display:none!important}}
+/* ── 일터 — 왼쪽에서 적고 오른쪽에서 봅니다 ─────────────────────────────
+   앱마다 「종이」가 따로 있는 탭이었습니다. 그래서 다 적고 나서야 무엇이
+   나오는지 알았습니다. 이제 열 앱이 같은 뼈대를 씁니다.
+   줄이는 것은 transform 입니다 — zoom 은 사파리에서 인쇄에 새어 나갑니다. */
+.wb{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:20px;align-items:start}
+.wb-pane{min-width:0}
+.wb-out{position:sticky;top:70px}
+@media (max-width:1100px){.wb{grid-template-columns:minmax(0,1fr)}.wb-out{position:static}}
+.outbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 0 11px}
+.outbar > b{font-size:.9375rem}
+.outbar .sp{margin-left:auto;display:flex;gap:7px;flex-wrap:wrap}
+.pgtag{font-size:.75rem;font-weight:800;padding:4px 11px;border-radius:999px;
+  background:var(--tint-teal);color:var(--solid-teal);white-space:nowrap}
+.pgtag.over{background:var(--tint-amber);color:var(--leap-amber)}
+.pv{background:var(--leap-hairline);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:14px;overflow:auto;max-height:calc(100vh - 190px)}
+.pv-fit{transform-origin:top left}
+@media print{.pv,.wb-out{display:none!important}}
+
+@media (prefers-reduced-motion:reduce){.leap-undobar{transition:none}}
+/* ==========================================================================
+   모아 보기 창 〔v0.4〕 — 서버 없이 되는 「실시간」의 한계선
+   --------------------------------------------------------------------------
+   다른 **기기**와는 실시간이 되지 않습니다. 브라우저는 같은 랜 안의 다른 기기를
+   스스로 찾지 못하고, 찾아 주는 일은 서버가 합니다 (마스터 원칙 1·2번).
+   되는 것은 **같은 브라우저의 다른 창**입니다. 그것만으로도 쓸 자리가 있습니다 —
+   교사는 노트북에서 회의를 돌리고, 빔프로젝터에는 이 창을 띄웁니다.
+
+   이 창에는 **개수만** 나갑니다. 내용이 여기 뜨면 무기명이 그 자리에서 무너집니다.
+   ========================================================================== */
+/* 색을 토큰으로 주지 않습니다. `--leap-ink` 는 다크 모드에서 **밝은 색**이 되므로
+   그대로 쓰면 흰 바탕에 흰 글자가 됩니다. 이 창은 빔프로젝터 전용이라
+   테마와 상관없이 늘 어둡습니다 — 교실 불을 끄고 보는 화면입니다. */
+body.is-board{background:#0E1621}
+.board{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:8px;padding:40px 24px;text-align:center;color:#fff}
+.board .bt{font-size:clamp(1.5rem,4vw,2.5rem);font-weight:800;letter-spacing:-.02em;margin:0}
+.board .bs{font-size:clamp(.9375rem,2vw,1.25rem);color:rgba(255,255,255,.66);
+  font-weight:700;margin:0 0 26px}
+.board .bn{font-size:clamp(5rem,22vw,14rem);font-weight:800;line-height:.95;
+  font-variant-numeric:tabular-nums;letter-spacing:-.05em;color:#7FB3F7}
+.board .bu{font-size:clamp(1.125rem,3vw,1.875rem);font-weight:800;color:rgba(255,255,255,.8)}
+.board .bchips{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-top:28px;max-width:760px}
+.board .bchips i{width:34px;height:44px;border-radius:8px;background:#3C7FD8;display:block}
+.board .bchips i.v{background:#4FD1B0}
+.board .bnote{margin-top:34px;font-size:.9375rem;color:rgba(255,255,255,.5);max-width:44ch;line-height:1.8}
+.board .blink{margin-top:18px;font-size:.8125rem;color:rgba(255,255,255,.4)}
+body.is-board header.top,body.is-board nav.tabs,body.is-board main.wrap{display:none}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .btn:hover,.choice:hover,.sig:hover{transform:none}
+}
+@media (max-width:520px){
+  .card{padding:22px 18px}
+  .tally .big{font-size:2.5rem}
+  .prompt{font-size:1.1875rem}
+}
+
+/* ==========================================================================
+   인쇄 — 학교는 여전히 종이로 결재하고 게시한다
+   ========================================================================== */
+#print-area{display:none}
+/* 인쇄할 때는 종이 상자의 «화면용» 크기를 풉니다 —
+   실제 종이는 @page 가 크기를 정하므로 794px 을 못박으면 여백이 어긋납니다. */
+@media print{
+  #print-area .pv-page{width:auto;min-height:0;padding:0;box-shadow:none}
+}
+@media print{
+  @page{size:A4 portrait;margin:14mm 12mm}
+  :root{--leap-ink:#000;--leap-gray:#333;--leap-bg:#fff;--leap-surface:#fff;
+    --leap-border:#999;--leap-hairline:#ccc;--leap-shadow:none}
+  header.top,nav.tabs,main,.leap-toast,.no-print,.pv-back{display:none!important}
+  #print-area{display:block!important}
+  body{font-size:11pt;background:#fff}
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+}
+
+/* ==========================================================================
+   인쇄 판면
+   미리보기와 실제 인쇄가 «같은 규칙»을 써야 서로 어긋나지 않습니다.
+   그래서 판면 규칙은 @media print 밖에 두고, 인쇄될 자리(#print-area)와
+   미리보기(.pv-page)에 같은 클래스를 붙여 한 곳에서 관리합니다.
+   #print-area 는 화면에서 display:none 이라 평소에는 아무 영향이 없습니다.
+   ========================================================================== */
+/* ── 종이 ──────────────────────────────────────────────────────────────
+   종이는 «실제 A4 크기»로 그립니다 — 96dpi 기준 세로 794×1123px.
+   그래야 오른쪽 미리보기에서 본 것과 인쇄한 것이 어긋나지 않습니다
+   (마스터 함정 31번). 보여 줄 때만 상자 폭에 맞춰 줄입니다.
+   여백 12mm ≈ 45px 은 @page 와 같은 값입니다.
+   ────────────────────────────────────────────────────────────────────── */
+.pv-page{width:794px;min-height:1123px;padding:45px 45px 40px;box-sizing:border-box;
+  background:#fff;color:#111;font-size:11.5px;line-height:1.6;
+  box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.pv-page *{box-sizing:border-box}
+
+.p-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
+  border-bottom:2px solid #111;padding-bottom:10px;margin:0 0 18px}
+.p-head h2{margin:0;font-size:20px;font-weight:800;letter-spacing:-.02em;color:#111}
+.p-head .p-sub{margin:4px 0 0;font-size:12px;color:#444}
+.p-head .p-when{font-size:11px;color:#666;white-space:nowrap}
+
+.p-tally{display:flex;gap:18px;margin:0 0 16px;font-size:13px;font-weight:700;color:#111}
+.p-tally b{font-variant-numeric:tabular-nums}
+
+.p-sec{margin:0 0 16px;break-inside:avoid}
+.p-sec h3{margin:0 0 7px;font-size:13px;font-weight:800;color:#111;
+  border-bottom:1px solid #BBB;padding-bottom:3px}
+.p-sec > p{margin:0;font-size:12px;color:#333}
+
+/* 표 — 폭을 못박습니다. 안 그러면 「지금」 같은 짧은 머리가 세로로 쪼개집니다 */
+.p-tbl{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px}
+.p-tbl th,.p-tbl td{border:1px solid #C4CBD3;padding:5px 7px;text-align:left;
+  vertical-align:top;word-break:keep-all}
+.p-tbl thead th{background:#EEF2F7;font-weight:800;font-size:10.5px;white-space:nowrap}
+.p-tbl td.n,.p-tbl th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.p-tbl col.c-what{width:26%} .p-tbl col.c-need{width:11%}
+.p-tbl col.c-have{width:11%} .p-tbl col.c-how{width:22%} .p-tbl col.c-alt{width:30%}
+.p-tbl .q{display:block;font-size:9.5px;color:#666;margin-top:1px;font-weight:600}
+
+.p-src{font-size:10px;color:#555;line-height:1.7;margin:0}
+.p-foot{margin-top:22px;padding-top:8px;border-top:1px solid #DDD;
+  font-size:9.5px;color:#666}
+
+
+/* ==========================================================================
+   AI 초안 도우미 (LEAP Kit 공통 조각)
+   원본은 `apps/kit/leap-ai.css` · 단일 HTML 을 지키려고 붙여 넣은 사본입니다.
+
+   왜 모달인가 — 이 도우미는 **곁다리**입니다. 앱은 이것 없이도 온전히 돌아야 하고,
+   화면 한 자리를 늘 차지하면 「AI 없으면 못 쓰는 앱」처럼 보입니다.
+   ========================================================================== */
+.aim{position:fixed;inset:0;z-index:120;background:rgba(20,32,46,.55);
+  display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow:auto}
+.aim[hidden]{display:none}
+.aim-w{background:var(--leap-surface);border-radius:var(--leap-radius);width:min(760px,100%);
+  box-shadow:0 24px 70px rgba(0,0,0,.34);display:flex;flex-direction:column;max-height:calc(100vh - 48px)}
+.aim-h{display:flex;align-items:center;gap:12px;padding:16px 20px;
+  border-bottom:1px solid var(--leap-border);position:sticky;top:0;background:var(--leap-surface);
+  border-radius:var(--leap-radius) var(--leap-radius) 0 0;z-index:1}
+.aim-h h2{margin:0;font-size:1.0625rem;letter-spacing:-.015em}
+.aim-x{margin-left:auto;min-width:40px;min-height:40px;border-radius:10px;border:1px solid var(--leap-border);
+  background:transparent;color:var(--leap-gray);font-size:1.25rem;line-height:1;cursor:pointer}
+.aim-x:hover{background:var(--leap-hairline);color:var(--leap-ink)}
+.aim-b{padding:20px 22px 24px;overflow:auto}
+.aim-note{border-radius:var(--leap-radius);padding:15px 17px;margin:0 0 18px;background:var(--tint-blue)}
+.aim-note .hd{font-weight:800;color:var(--leap-blue);margin-bottom:6px}
+.aim-note p{margin:0;font-size:.875rem;color:var(--leap-gray);line-height:1.75}
+.aim-note p b{color:var(--leap-ink)}
+.aim-warn{background:var(--tint-amber)}
+.aim-warn .hd{color:var(--leap-amber)}
+.aim-step{border:1px solid var(--leap-border);border-radius:var(--leap-radius);
+  padding:16px 18px;margin-bottom:14px}
+.aim-step h3{margin:0 0 4px;font-size:.9375rem;display:flex;align-items:center;gap:9px;letter-spacing:-.01em}
+.aim-step h3 i{flex:none;min-width:24px;height:24px;border-radius:999px;background:var(--leap-blue);
+  color:var(--leap-on-fill);font-style:normal;font-size:.75rem;font-weight:800;
+  display:inline-flex;align-items:center;justify-content:center}
+.aim-step > p{margin:0 0 13px;font-size:.8125rem;color:var(--leap-gray);line-height:1.7}
+.aim-step > p b{color:var(--leap-ink)}
+.aim-ta{width:100%;min-height:64px;padding:11px 13px;border-radius:var(--leap-radius-sm);
+  border:2px solid var(--leap-border);background:var(--leap-bg);font:inherit;font-size:.9375rem;
+  color:var(--leap-ink);resize:vertical}
+.aim-ta:focus{outline:none;border-color:var(--leap-blue)}
+.aim-pre{width:100%;min-height:200px;padding:13px 15px;border-radius:var(--leap-radius-sm);
+  border:2px solid var(--leap-border);background:var(--leap-bg);font-size:.78rem;line-height:1.62;
+  color:var(--leap-ink);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;resize:vertical;white-space:pre}
+.aim-act{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+@media (max-width:560px){.aim{padding:0}.aim-w{max-height:100vh;border-radius:0}}
+@media print{.aim{display:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<header class="top">
+  <svg class="deco" viewBox="0 0 64 64" aria-hidden="true">
+    <path d="M7 52 H25" stroke="#fff" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+    <path d="M39 36 H57" stroke="#fff" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+    <path d="M16 46 Q32 -10 48 30" stroke="#fff" stroke-width="7" stroke-linecap="round" fill="none"/>
+  </svg>
+  <div class="top-in">
+    <div class="brand">
+      <!-- 앱 마크 — 칸 여럿 가운데 한 칸만 진합니다. 일이 몰린 주(週)입니다. -->
+      <span class="badge">
+        <svg viewBox="0 0 64 64" width="32" height="32" aria-hidden="true" fill="none">
+          <rect x="10" y="16" width="44" height="36" rx="4" stroke="#7FB3F7" stroke-width="4"/>
+          <path d="M10 27 H54" stroke="#7FB3F7" stroke-width="3.5"/>
+          <path d="M22 10 V20 M42 10 V20" stroke="#97A3B0" stroke-width="4" stroke-linecap="round"/>
+          <rect x="30" y="33" width="11" height="12" rx="2" fill="#F2A65A"/>
+        </svg>
+      </span>
+      <div>
+        <h1>우리 학교 한 해</h1>
+        <div class="sub">TEAM LEAP · 경북교육 AI Lab</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <a class="iconbtn iconbtn--home" href="../../../index.html" title="TEAM LEAP 메인 페이지로 나갑니다. 이 앱에 적은 것은 그대로 남습니다." aria-label="TEAM LEAP 메인 페이지로 나가기">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
+             stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 10.6 12 4l8 6.6V20h-5v-5.6H9V20H4z"/>
+        </svg>
+        메인으로
+      </a>
+      <a class="iconbtn" href="./README.html" title="이 앱의 설명서를 엽니다. 이 앱에 적은 것은 그대로 남습니다." aria-label="이 앱의 설명서 열기">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
+             stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 5.5A1.5 1.5 0 015.5 4H10a2.5 2.5 0 012.5 2.5V20a2 2 0 00-2-2H4z"/>
+          <path d="M20 5.5A1.5 1.5 0 0018.5 4H14a2.5 2.5 0 00-2.5 2.5V20a2 2 0 012-2H20z"/>
+        </svg>
+        설명서
+      </a>
+      <button class="iconbtn" id="btn-ai" type="button" title="쓰던 챗봇에 붙여 넣을 프롬프트를 만들어 줍니다">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9z"/>
+          <path d="M18 16.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>
+        </svg>
+        AI 초안
+      </button>
+      <button class="iconbtn" id="btn-theme" type="button">어둡게 보기</button>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="화면">
+  <div class="tabs-in" role="tablist" id="tablist">
+    <button role="tab" id="tab-year" aria-controls="panel-year" aria-selected="true">한 해 보기</button>
+    <button role="tab" id="tab-mine" aria-controls="panel-mine" aria-selected="false" tabindex="-1">내 일 적기</button>
+  </div>
+</nav>
+
+<main class="wrap" id="main" tabindex="-1">
+  <section id="panel-year" role="tabpanel" aria-labelledby="tab-year"></section>
+  <section id="panel-mine" role="tabpanel" aria-labelledby="tab-mine" hidden></section>
+
+  <footer class="foot no-print">
+    <div class="foot-card">
+      <h2>자료 관리</h2>
+      <p class="small muted" style="margin:0">
+        적으신 것은 <b>이 기기 안에만</b> 저장됩니다. 서버로 보내지 않습니다.
+        그래서 <b>다른 사람 기기와 실시간으로 이어지지 않습니다</b> —
+        각자 적은 뒤 <b>파일로 내보내</b> 한 기기에서 <b>합치기</b>를 고르세요.
+      </p>
+      <div class="foot-actions">
+        <button class="btn btn--ghost" id="btn-export" type="button">파일로 내보내기</button>
+        <button class="btn btn--ghost" id="btn-import" type="button">파일에서 가져오기</button>
+        <button class="btn btn--danger" id="btn-clear" type="button">전체 지우기</button>
+      </div>
+      <p class="copy">© 2026 TEAM LEAP (경북교육 AI Lab · AI 활용 분과)<br>
+        교육 목적에 한해 자유롭게 쓰고, 고치고, 나눌 수 있습니다.</p>
+    </div>
+  </footer>
+</main>
+
+<div id="print-area"></div>
+<div class="modal" id="modal" hidden></div>
+
+<script>
+/* ==========================================================================
+   LEAP Kit (apps/kit/leap.js 사본 — 단일 HTML 유지를 위해 붙여 넣음)
+   ========================================================================== */
+(function(global){'use strict';
+var LEAP={};
+function clone(v){if(typeof structuredClone==='function')return structuredClone(v);return JSON.parse(JSON.stringify(v));}
+LEAP.clone=clone;
+LEAP.store=function(key,initial){
+  var cache=null;
+  function flush(){try{localStorage.setItem(key,JSON.stringify(cache));return true;}
+    catch(e){LEAP.announce('저장하지 못했습니다. 파일로 내보낸 뒤 정리해 주세요.');return false;}}
+  function read(){if(cache)return cache;
+    try{var raw=localStorage.getItem(key);cache=raw?JSON.parse(raw):clone(initial);}
+    catch(e){cache=clone(initial);}return cache;}
+  return{get:read,set:function(n){cache=n;return flush();},
+    update:function(fn){var d=read();fn(d);return flush();},
+    reset:function(){cache=clone(initial);flush();return cache;}};
+};
+LEAP.uid=function(){if(global.crypto&&crypto.randomUUID)return crypto.randomUUID().slice(0,8);
+  return Math.random().toString(36).slice(2,10);};
+function randInt(n){if(global.crypto&&crypto.getRandomValues){var b=new Uint32Array(1);crypto.getRandomValues(b);return b[0]%n;}
+  return Math.floor(Math.random()*n);}
+LEAP.shuffle=function(arr){var a=arr.slice(),i,j,t;
+  for(i=a.length-1;i>0;i--){j=randInt(i+1);t=a[i];a[i]=a[j];a[j]=t;}return a;};
+LEAP.download=function(filename,obj){
+  var blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json;charset=utf-8'});
+  var url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);},1000);};
+LEAP.pickFile=function(onLoad,onError){
+  var input=document.createElement('input');input.type='file';input.accept='application/json,.json';
+  input.addEventListener('change',function(){var f=input.files&&input.files[0];if(!f)return;
+    var r=new FileReader();
+    r.onload=function(){try{onLoad(JSON.parse(r.result),f.name);}
+      catch(e){(onError||alert)('파일을 읽지 못했습니다. 이 앱에서 내보낸 파일이 맞는지 확인해 주세요.');}};
+    r.readAsText(f,'utf-8');});
+  input.click();};
+LEAP.announce=function(msg){
+  var el=document.getElementById('leap-live');
+  if(!el){el=document.createElement('div');el.id='leap-live';el.setAttribute('role','status');
+    el.setAttribute('aria-live','polite');el.className='leap-toast';document.body.appendChild(el);}
+  el.textContent=msg;el.classList.add('is-on');
+  clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('is-on');},2600);};
+LEAP.todayISO=function(){var d=new Date(),p=function(n){return String(n).padStart(2,'0');};
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());};
+LEAP.fmtDate=function(iso){if(!iso)return '';var p=iso.split('-');return p[0]+'. '+Number(p[1])+'. '+Number(p[2])+'.';};
+LEAP.toggleTheme=function(){var r=document.documentElement,cur=r.getAttribute('data-theme');
+  if(!cur)cur=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  var next=cur==='dark'?'light':'dark';r.setAttribute('data-theme',next);
+  try{localStorage.setItem('leap-theme',next);}catch(e){}return next;};
+LEAP.restoreTheme=function(){try{var t=localStorage.getItem('leap-theme');
+  if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}};
+/* 창 안에 초점 가두기 — `aria-modal="true"` 는 「이 창 밖은 없는 셈 치라」는 약속입니다.
+   Tab 을 막지 않으면 초점이 창 뒤로 넘어가, 화면을 안 보는 분은 자기가 어디 있는지
+   알 수 없게 됩니다. 창마다 손대지 않고 문서에 한 번만 걸어, 그때그때 열린 창을 찾습니다.
+   (position:fixed 는 offsetParent 가 null 이라 getClientRects 로 봅니다) */
+/* 내보낸 파일에 «어느 앱 것인지» 적기 — 아홉 앱이 모두 {v:1,…} 이라
+   받는 쪽이 v 만 보면 남의 앱 파일이 그대로 통과합니다(앱 B 가 실제로 그랬습니다).
+   모양으로만 가리면 두 앱이 닮는 순간 다시 뚫리므로 «이름»을 적어 둡니다.
+   표시가 없는 옛 파일은 막지 않습니다 — 그때는 예전처럼 모양으로 판단합니다. */
+/* 학생이 입력한 글이 그대로 화면에 들어가므로 반드시 거른다.
+   각 앱은 `var esc = LEAP.esc;` 로 별명을 붙여 씁니다 — 부르는 자리가 많아
+   짧은 이름이 필요하기 때문입니다. 별명이라 `LEAP.esc(` 로는 안 잡힙니다. */
+LEAP.esc=function(s){return String(s==null?'':s)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+  .replace(/"/g,'&quot;').replace(/'/g,'&#39;');};
+/* 다른 창이 같은 자료를 고쳤을 때 — LEAP.store 는 처음 한 번 읽고 메모리에
+   붙들고 있습니다. 두 창을 열면 늦게 고친 쪽이 앞의 것을 통째로 덮어씁니다.
+   자동으로 합치지 않습니다 — 어느 것이 맞는지는 사람이 압니다. 알려는 줍니다. */
+LEAP.watchOtherTabs=function(key,onChange){
+  if(!window.addEventListener)return;
+  window.addEventListener('storage',function(e){
+    if(e.key&&e.key!==key)return;   /* key 가 null 이면 저장소 전체가 지워진 것 */
+    if(onChange)onChange();
+    else LEAP.announce('다른 창에서 이 앱의 자료를 고쳤습니다. 새로고침해야 그 내용이 보입니다.');
+  });};
+LEAP.APP_NAMES={'leap-circuit':'순회교사 통합 시간표','leap-classboard':'학급 회의',
+  'leap-storybook':'지역 탐방 디지털 스토리북','leap-multigrade':'복식학급 수업 도우미',
+  'leap-together':'이웃 학교 함께하기','leap-lessonplan':'수업 설계안 만들기',
+  'leap-classdata':'우리 반 데이터 보기','leap-project':'프로젝트 학습 계획서',
+  'leap-required':'법정 의무교육 점검표','leap-howmany':'몇 명이면 되나',
+  'leap-year':'우리 학교 한 해','leap-rooms':'남는 교실'};
+LEAP.stamp=function(appId,data){var o=LEAP.clone(data);o.app=appId;return o;};
+LEAP.otherApp=function(appId,obj){var a=obj&&obj.app;
+  if(!a||a===appId)return null;return LEAP.APP_NAMES[a]||'다른 앱';};
+/* 한 걸음 되돌리기 — 되돌릴 수 없는 일 뒤에 화면 아래로 잠깐 뜹니다.
+   앱마다 그리는 자리가 달라 패널에 끼우지 않고 body 에 띄웁니다.
+   한 걸음만 둡니다 — 여러 걸음을 쌓으면 며칠 전 것을 가리키는 단추가 남습니다. */
+LEAP.offerUndo=function(label,restore,seconds){
+  if(!document.body)return;
+  var el=document.getElementById('leap-undo');
+  if(!el){el=document.createElement('div');el.id='leap-undo';
+    el.className='leap-undobar no-print';el.setAttribute('role','status');
+    el.setAttribute('aria-live','polite');document.body.appendChild(el);}
+  clearTimeout(el._t);el.innerHTML='';
+  var p=document.createElement('p');p.textContent=label;
+  var btn=document.createElement('button');btn.type='button';
+  btn.className='btn btn--quiet btn--sm';btn.textContent='되돌리기';
+  var x=document.createElement('button');x.type='button';x.className='leap-undox';
+  x.setAttribute('aria-label','되돌리기 닫기');x.textContent='✕';
+  function hide(){clearTimeout(el._t);el.classList.remove('is-on');}
+  btn.addEventListener('click',function(){hide();restore();});
+  x.addEventListener('click',hide);
+  el.appendChild(p);el.appendChild(btn);el.appendChild(x);
+  el.classList.add('is-on');
+  el._t=setTimeout(hide,(seconds||20)*1000);};
+/* 오른쪽 종이를 상자 폭에 맞춰 줄입니다. 종이는 «실제 크기»(A4 794/1123px)로
+   그려야 화면과 인쇄가 어긋나지 않습니다 — 마스터 함정 31번. 보여 줄 때만 줄입니다.
+   transform 은 자리를 안 차지하므로 높이를 손으로 잡아 줍니다. */
+LEAP.fitPaper=function(box,fit,paperWidth){
+  if(!box||!fit)return 1;
+  var w=paperWidth||794,room=(box.clientWidth||0)-28;
+  if(room<=0)return 1;
+  var scale=Math.min(1,room/w);
+  fit.style.transform='scale('+scale+')';
+  var inner=fit.firstElementChild||fit;
+  fit.style.height=((inner.offsetHeight||0)*scale)+'px';
+  return scale;};
+LEAP.guardModals=function(){
+  if(!document.addEventListener||!document.querySelectorAll)return;   /* 검사의 흉내 document */
+  var SEL='a[href],button:not([disabled]),input:not([disabled]),'+
+    'select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  function seen(el){return !!(el&&el.getClientRects&&el.getClientRects().length);}
+  function box(){var a=document.querySelectorAll('[role="dialog"][aria-modal="true"]');
+    for(var i=a.length-1;i>=0;i--)if(seen(a[i]))return a[i];return null;}
+  function items(b){var o=[],a=b.querySelectorAll(SEL),i;
+    for(i=0;i<a.length;i++)if(seen(a[i]))o.push(a[i]);return o;}
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Tab')return;
+    var b=box();if(!b)return;
+    var l=items(b);if(!l.length){e.preventDefault();return;}
+    var first=l[0],last=l[l.length-1],now=document.activeElement,inside=b.contains(now);
+    if(e.shiftKey){if(!inside||now===first){e.preventDefault();last.focus();}}
+    else{if(!inside||now===last){e.preventDefault();first.focus();}}
+  },true);
+  document.addEventListener('focusin',function(e){
+    var b=box();if(!b||b.contains(e.target))return;
+    var l=items(b);if(l.length)l[0].focus();
+  });};
+LEAP.themeLabel=function(){var r=document.documentElement,cur=r.getAttribute('data-theme');
+  if(!cur)cur=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  return cur==='dark'?'밝게 보기':'어둡게 보기';};
+/* 「화면 전환」은 무엇이 바뀌는지 말해 주지 않습니다. 지금 누르면 어떻게 되는지를
+   단추 자체가 말하게 둡니다 — 「어둡게 보기」를 누르면 어두워집니다. */
+LEAP.initThemeBtn=function(btn){if(!btn)return;
+  function paint(){var t=LEAP.themeLabel();btn.textContent=t;
+    btn.setAttribute('title','화면을 '+t.replace(' 보기','')+' 바꿉니다');
+    btn.setAttribute('aria-label','화면을 '+t.replace(' 보기','')+' 바꿉니다');}
+  paint();btn.addEventListener('click',function(){LEAP.toggleTheme();paint();});};
+/* 〔2026. 8. 30.〕 새로고침하면 늘 첫 탭으로 돌아갔고, 뒤로 가기는 앱을 떠났습니다.
+   주소 끝에 지금 탭을 적습니다. 새로고침해도 그 자리, 뒤로 가기로 앞 탭.
+
+   ★ location.hash 로 적으면 **브라우저가 그 자리로 화면을 끌어내립니다** —
+   머리(앱 이름·단추)가 화면 밖으로 밀려 사라집니다. 실제로 그렇게 됐습니다.
+   그래서 history.pushState 로 «조용히» 적고, 뒤로 가기는 popstate 로 받습니다. */
+LEAP.initTabs=function(listEl,onChange){
+  var tabs=Array.prototype.slice.call(listEl.querySelectorAll('[role="tab"]'));
+  var ids=tabs.map(function(t){return t.getAttribute('aria-controls');});
+  function select(tab,writeHash){
+    tabs.forEach(function(t){var on=t===tab;
+      t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1;
+      var p=document.getElementById(t.getAttribute('aria-controls'));if(p)p.hidden=!on;});
+    var id=tab.getAttribute('aria-controls');
+    if(writeHash&&window.history&&window.history.pushState&&
+       (!window.location||window.location.hash!=='#'+id)){
+      try{window.history.pushState({leapTab:id},'','#'+id);}catch(e){}}
+    if(onChange)onChange(id);}
+  tabs.forEach(function(tab,i){
+    tab.addEventListener('click',function(){select(tab,true);});
+    tab.addEventListener('keydown',function(e){
+      var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(!d)return;e.preventDefault();
+      var n=tabs[(i+d+tabs.length)%tabs.length];n.focus();select(n,true);});});
+  function fromHash(){if(!window.location)return -1;
+    return ids.indexOf(String(window.location.hash||'').slice(1));}
+  var at=fromHash();
+  select(tabs[at>=0?at:0],false);
+  /* 뒤로 가기·앞으로 가기. hashchange 도 함께 받습니다 — 주소창에 직접 쳐 넣는 길입니다 */
+  if(window.addEventListener){
+    var back=function(){var i=fromHash();if(i>=0)select(tabs[i],false);};
+    window.addEventListener('popstate',back);
+    window.addEventListener('hashchange',back);}
+  return{select:function(t){select(t,true);},tabs:tabs};};
+global.LEAP=LEAP;})(window);
+
+/* ==========================================================================
+   우리 학교 한 해 — 일이 언제 겹치는지
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  var KEY = 'leap-year-v1';
+  var APP_ID = 'leap-year';   /* 내보낸 파일에 적히는 표시 — 남의 앱 파일을 가려냅니다 */
+  var esc = LEAP.esc;
+
+  /* 학교의 한 해는 **3월에 시작해 이듬해 2월에 끝납니다.** 1월부터 늘어놓으면
+     학년도가 두 동강 나서 「몰리는 자리」가 두 곳으로 흩어집니다. */
+  var MONTHS = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2];
+  var WPM = 4;                       /* 한 달을 넷으로 봅니다 — 「11월 둘째 주」로 부르는 말 그대로 */
+  var WEEKS = MONTHS.length * WPM;   /* 48 */
+
+  function weekNo(mi, w) { return mi * WPM + w; }
+  function weekName(n) {
+    var mi = Math.floor(n / WPM), w = n % WPM;
+    return MONTHS[mi] + '월 ' + ['첫째', '둘째', '셋째', '넷째'][w] + ' 주';
+  }
+
+  /* 일의 무게 — 「이 주에 몇 개」만 세면 큰일과 작은일이 같아집니다.
+     옮길 수 있는지도 함께 봅니다. 못 옮기는 일이 겹치면 그것이 진짜 문제입니다. */
+  var WEIGHT = [
+    { k: 'big',  n: '큰 일',   d: '며칠씩 매달리는 것 — 학예회 · 공개수업 · 정보공시', w: 3 },
+    { k: 'mid',  n: '보통',    d: '하루 이틀 — 협의회 · 점검 · 제출', w: 2 },
+    { k: 'small',n: '작은 일', d: '한두 시간 — 안내 · 확인', w: 1 }
+  ];
+  function weightOf(k) {
+    for (var i = 0; i < WEIGHT.length; i++) if (WEIGHT[i].k === k) return WEIGHT[i];
+    return WEIGHT[1];
+  }
+
+  var DEFAULT = {
+    v: 1,
+    school: '',
+    me: '',        /* 이 기기에서 적는 사람 — 이름이 아니라 «맡은 자리»를 적게 합니다 */
+    jobs: []       /* {id, who, n, wk, wt, fixed, note} */
+  };
+
+  var db = LEAP.store(KEY, DEFAULT);
+
+  function num(v, lo, hi) {
+    var n = parseInt(String(v == null ? '' : v).replace(/[^0-9-]/g, ''), 10);
+    if (!isFinite(n)) return lo;
+    return Math.max(lo, Math.min(hi, n));
+  }
+
+  function fill(d) {
+    if (!d || typeof d !== 'object') d = LEAP.clone(DEFAULT);
+    d.v = 1;
+    d.school = String(d.school || '').slice(0, 40);
+    d.me = String(d.me || '').slice(0, 30);
+    if (!Array.isArray(d.jobs)) d.jobs = [];
+    d.jobs = d.jobs.map(function (x) {
+      return { id: x.id || LEAP.uid(),
+        who: String(x.who || '이름 적지 않음').slice(0, 30),
+        n: String(x.n || '이름 없는 일').slice(0, 60),
+        wk: num(x.wk, 0, WEEKS - 1),
+        wt: weightOf(x.wt).k,
+        fixed: !!x.fixed,
+        note: String(x.note || '').slice(0, 200) };
+    });
+    return d;
+  }
+  db.set(fill(db.get()));
+
+  function D() { return db.get(); }
+  function save(fn) {
+    var before = JSON.stringify(D());
+    if (db.update(fn)) return true;
+    db.set(JSON.parse(before));
+    LEAP.announce('저장 공간이 가득 찼습니다. 파일로 내보낸 뒤 정리해 주세요.');
+    return false;
+  }
+
+  /* ==========================================================================
+     셈 — 어느 주가 몰렸나
+     ========================================================================== */
+
+  function jobsAt(d, wk) {
+    return d.jobs.filter(function (x) { return x.wk === wk; });
+  }
+  /* 그 주의 «무게». 개수가 아니라 무게로 셉니다 —
+     큰 일 하나가 작은 일 셋보다 무겁습니다. */
+  function loadAt(d, wk) {
+    return jobsAt(d, wk).reduce(function (n, x) { return n + weightOf(x.wt).w; }, 0);
+  }
+  /* 몇 사람이 그 주에 걸려 있나 — 같은 사람이 둘을 맡으면 더 무겁습니다 */
+  function peopleAt(d, wk) {
+    var seen = {}, n = 0;
+    jobsAt(d, wk).forEach(function (x) { if (!seen[x.who]) { seen[x.who] = 1; n++; } });
+    return n;
+  }
+  /* 색의 진하기 — 0~4. 색만으로 말하지 않으므로 칸 안에 개수도 함께 적습니다 */
+  function levelAt(d, wk) {
+    var L = loadAt(d, wk);
+    if (!L) return 0;
+    if (L <= 2) return 1;
+    if (L <= 4) return 2;
+    if (L <= 6) return 3;
+    return 4;
+  }
+
+  /* ★ 몰린 주 — 이 앱이 하려는 말.
+     「일이 많은 주」가 아니라 **「옮길 수 없는 일이 겹친 주」**를 먼저 말합니다.
+     옮길 수 있는 일끼리 겹친 것은 사람이 풀 수 있지만, 못 옮기는 일이
+     겹치면 그건 미리 알아야만 견딜 수 있습니다. */
+  function hotWeeks(d) {
+    var out = [];
+    for (var i = 0; i < WEEKS; i++) {
+      var L = loadAt(d, i);
+      if (L < 5) continue;
+      var js = jobsAt(d, i);
+      out.push({ wk: i, load: L, jobs: js, people: peopleAt(d, i),
+        hard: js.filter(function (x) { return x.fixed; }).length >= 2 });
+    }
+    out.sort(function (a, b) {
+      if (a.hard !== b.hard) return a.hard ? -1 : 1;
+      return b.load - a.load;
+    });
+    return out;
+  }
+
+  function people(d) {
+    var seen = {}, out = [];
+    d.jobs.forEach(function (x) { if (!seen[x.who]) { seen[x.who] = 1; out.push(x.who); } });
+    return out;
+  }
+
+  /* ==========================================================================
+     화면
+     ========================================================================== */
+  function el(id) { return document.getElementById(id); }
+  function on(n, t, f) { if (n && n.addEventListener) n.addEventListener(t, f); }
+  function each(list, f) { Array.prototype.forEach.call(list || [], f); }
+
+  var P = { year: el('panel-year'), mine: el('panel-mine') };
+  var pick = -1;   /* 지금 눌러 둔 주. -1 이면 안 고름 */
+
+  /* ── 한 해 띠 ────────────────────────────────────────────────────── */
+  function calHTML(d) {
+    var h = '<div class="ybar"><div class="ybar-in">' +
+      '<div class="ybar-h"><b>' + esc(d.school || '우리 학교') + ' 한 해</b>' +
+      '<span class="w">칸을 누르면 그 주에 무엇이 있는지 보입니다</span></div>' +
+      '<div class="cal">';
+    MONTHS.forEach(function (m, mi) {
+      h += '<div class="cal-m"><span>' + m + '월</span><div class="cal-w">';
+      for (var w = 0; w < WPM; w++) {
+        var n = weekNo(mi, w), lv = levelAt(d, n), cnt = jobsAt(d, n).length;
+        h += '<button type="button" data-wk="' + n + '"' +
+          (lv ? ' class="l' + lv + '"' : '') +
+          (n === pick ? ' aria-pressed="true"' : ' aria-pressed="false"') +
+          ' aria-label="' + esc(weekName(n)) + ' — 일 ' + cnt + '개">' +
+          (cnt || '') + '</button>';
+      }
+      h += '</div></div>';
+    });
+    h += '</div>' +
+      /* 색만으로 말하지 않습니다 — 칸 안에 개수가 함께 있고, 여기 글로도 적습니다 */
+      '<p class="cal-key"><i class="k1"></i>가벼움<i class="k2"></i>보통' +
+      '<i class="k3"></i>몰림<i class="k4"></i>많이 몰림' +
+      '<span>· 칸 안의 수는 <b>그 주의 일 개수</b>입니다</span></p>' +
+      '</div></div>';
+    return h;
+  }
+
+  /* ── 몰린 주 ─────────────────────────────────────────────────────── */
+  function hotHTML(d) {
+    var hot = hotWeeks(d);
+    if (!d.jobs.length) return '';
+    if (!hot.length) {
+      return '<div class="hot-none"><b>몰린 주가 없습니다.</b> ' +
+        '지금 얹은 일들은 한 해에 고르게 퍼져 있습니다. ' +
+        '다른 선생님 것을 <b>합치면</b> 달라질 수 있습니다.</div>';
+    }
+    return '<div class="hot">' + hot.slice(0, 4).map(function (x) {
+      return '<div class="hot-c' + (x.hard ? ' hot--hard' : '') + '">' +
+        '<b>' + esc(weekName(x.wk)) + '</b> — 일 ' + x.jobs.length + '개 · ' +
+        x.people + '사람' +
+        (x.hard ? ' · <b>옮길 수 없는 일이 둘 이상입니다</b>' : '') +
+        '<ul>' + x.jobs.map(function (j) {
+          return '<li>' + esc(j.n) + ' <b>(' + esc(j.who) + ')</b>' +
+            (j.fixed ? ' — 날짜가 정해진 일' : '') + '</li>';
+        }).join('') + '</ul></div>';
+    }).join('') + '</div>';
+  }
+
+  /* ── 고른 주 ─────────────────────────────────────────────────────── */
+  function pickHTML(d) {
+    if (pick < 0) return '';
+    var js = jobsAt(d, pick);
+    return '<div class="card"><h2>' + esc(weekName(pick)) + '</h2>' +
+      (js.length
+        ? '<div class="jobs">' + js.map(jobRow).join('') + '</div>'
+        : '<p class="sub" style="margin:0">이 주에는 얹힌 일이 없습니다.</p>') +
+      '<div class="actions"><button class="btn btn--quiet" type="button" id="add-here">' +
+      '＋ 이 주에 일 얹기</button></div></div>';
+  }
+
+  function jobRow(j) {
+    return '<div class="job">' +
+      '<span class="who">' + esc(j.who) + '</span>' +
+      '<span class="nm">' + esc(j.n) + (j.fixed ? ' 🔒' : '') + '</span>' +
+      '<span class="wk">' + esc(weekName(j.wk)) + ' · ' + esc(weightOf(j.wt).n) + '</span>' +
+      '<span class="sp">' +
+      '<button class="btn btn--ghost btn--sm" type="button" data-edit="' + esc(j.id) + '">고치기</button>' +
+      '</span></div>';
+  }
+
+  /* ── 오른쪽 칸 — 나올 종이 ───────────────────────────────────────── */
+  function outPane() {
+    return '<div class="wb-pane wb-out">' +
+      '<div class="outbar"><b>나올 종이</b><span class="pgtag">A4 세로</span>' +
+      '<span class="sp">' +
+      '<button class="btn btn--ghost btn--sm" id="btn-ai2" type="button">AI 초안</button>' +
+      '<button class="btn btn--sm" id="btn-print" type="button">인쇄 · PDF</button>' +
+      '</span></div>' +
+      '<div class="pv" id="pv-box"><div class="pv-fit" id="pv-fit">' +
+      '<div class="pv-page" id="pv-page">' + paperHTML() + '</div></div></div>' +
+      '<p class="small muted" style="margin:9px 0 0">' +
+      '업무분장 협의회에 그대로 가져가는 한 장입니다. ' +
+      '<b>몰린 주가 먼저 나옵니다.</b></p></div>';
+  }
+  function fitOut() {
+    var box = P.year.querySelector('#pv-box'), fit = P.year.querySelector('#pv-fit');
+    if (box && fit) LEAP.fitPaper(box, fit, 794);
+  }
+
+  function renderYear() {
+    var d = D();
+
+    if (!d.jobs.length) {
+      var h0 = '<div class="start"><h2>일이 언제 겹치는지 한 장으로</h2>' +
+        '<p>학급이 줄면 교원이 줄고, 한 사람이 <b>담임에 업무 두셋</b>을 겹쳐 맡습니다. ' +
+        '그런데 <b>일이 언제 겹치는지는 아무도 모릅니다</b> — 각자 자기 달력만 보기 때문입니다.</p>' +
+        '<div class="start-in">' +
+        '<label class="fld" for="q-me">맡으신 자리를 적어 주세요 <span class="hint">이름이 아니라 «자리»입니다</span></label>' +
+        '<div class="start-row">' +
+        '<input class="txt" id="q-me" maxlength="30" placeholder="예: 3학년 담임 · 정보부">' +
+        '<button class="btn" type="button" id="q-go">시작하기</button></div>' +
+        '<p class="small muted" style="margin:9px 0 0">' +
+        '이름을 받지 않습니다. 합쳤을 때 <b>누구 일인지 알아볼 수 있으면</b> 그것으로 충분합니다.</p>' +
+        '</div></div>';
+      P.year.innerHTML = '<div class="wb"><div class="wb-pane">' + h0 + '</div>' + outPane() + '</div>';
+      var q = P.year.querySelector('#q-me');
+      var go = function () {
+        var v = String(q.value || '').trim();
+        if (!v) { LEAP.announce('맡으신 자리를 적어 주세요.'); q.focus(); return; }
+        save(function (x) { x.me = v.slice(0, 30); });
+        renderMine(); goTab('mine');
+        LEAP.announce('이제 맡은 일을 얹어 주세요.');
+      };
+      on(P.year.querySelector('#q-go'), 'click', go);
+      on(q, 'keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); go(); } });
+      if (q && q.focus) q.focus();
+      bindOut(); fitOut();
+      return;
+    }
+
+    var h = calHTML(d) + hotHTML(d) + pickHTML(d);
+    P.year.innerHTML = '<div class="wb"><div class="wb-pane">' + h + '</div>' + outPane() + '</div>';
+    each(P.year.querySelectorAll('[data-wk]'), function (b) {
+      on(b, 'click', function () {
+        var n = +b.getAttribute('data-wk');
+        pick = (pick === n) ? -1 : n;
+        renderYear();
+      });
+    });
+    each(P.year.querySelectorAll('[data-edit]'), function (b) {
+      on(b, 'click', function () { openEdit(b.getAttribute('data-edit')); });
+    });
+    on(P.year.querySelector('#add-here'), 'click', function () { openEdit(null, pick); });
+    bindOut(); fitOut();
+  }
+  function bindOut() {
+    on(P.year.querySelector('#btn-print'), 'click', doPrint);
+    on(P.year.querySelector('#btn-ai2'), 'click', openAI);
+  }
+
+  /* ── 내 일 적기 ──────────────────────────────────────────────────── */
+  function renderMine() {
+    var d = D(), mine = d.jobs.filter(function (x) { return x.who === d.me; });
+    var h = '<div class="card"><h2>내 일 적기</h2>' +
+      '<p class="sub">이 기기에서는 <b>내 일만</b> 적습니다. 다른 선생님 것은 ' +
+      '<b>파일로 합쳐</b> 들어옵니다.</p>' +
+      '<div class="mine">' +
+      '<label class="fld" for="m-who" style="margin:0">맡은 자리</label>' +
+      '<input class="txt" id="m-who" maxlength="30" value="' + esc(d.me) + '" placeholder="예: 3학년 담임 · 정보부">' +
+      '<label class="fld" for="m-school" style="margin:0 0 0 8px">학교</label>' +
+      '<input class="txt" id="m-school" maxlength="40" value="' + esc(d.school) + '" placeholder="예: 길안초등학교">' +
+      '</div>' +
+      '<div class="actions" style="margin-top:0">' +
+      '<button class="btn" type="button" id="m-add">＋ 일 얹기</button></div></div>';
+
+    h += '<div class="card"><h2>내가 얹은 일 <span class="muted" style="font-weight:600;font-size:.875rem">' +
+      mine.length + '개</span></h2>' +
+      (mine.length
+        ? '<div class="jobs">' + mine.slice().sort(function (a, b) { return a.wk - b.wk; })
+            .map(jobRow).join('') + '</div>'
+        : '<p class="sub" style="margin:0">아직 없습니다. <b>＋ 일 얹기</b>로 시작하세요.</p>');
+    h += '</div>';
+
+    var others = d.jobs.filter(function (x) { return x.who !== d.me; });
+    if (others.length) {
+      h += '<div class="card"><h2>합쳐 들어온 것 <span class="muted" style="font-weight:600;font-size:.875rem">' +
+        others.length + '개 · ' + (people(d).length - 1) + '사람</span></h2>' +
+        '<p class="sub">다른 선생님 파일에서 온 것입니다. 여기서는 <b>보기만</b> 합니다 — ' +
+        '남의 일을 대신 고치지 않습니다.</p>' +
+        '<div class="jobs">' + others.slice().sort(function (a, b) { return a.wk - b.wk; })
+          .map(function (j) {
+            return '<div class="job"><span class="who">' + esc(j.who) + '</span>' +
+              '<span class="nm">' + esc(j.n) + (j.fixed ? ' 🔒' : '') + '</span>' +
+              '<span class="wk">' + esc(weekName(j.wk)) + '</span></div>';
+          }).join('') + '</div></div>';
+    }
+
+    P.mine.innerHTML = h;
+    var q = function (s) { return P.mine.querySelector(s); };
+    on(q('#m-who'), 'input', function (e) {
+      var was = D().me, now = String(e.target.value).slice(0, 30);
+      /* 자리 이름을 고치면 내가 얹은 일도 함께 따라갑니다 —
+         그러지 않으면 옛 이름으로 남아 「남의 일」이 되어 버립니다. */
+      save(function (x) {
+        x.jobs.forEach(function (j) { if (j.who === was) j.who = now; });
+        x.me = now;
+      });
+      renderYear();
+    });
+    on(q('#m-school'), 'input', function (e) {
+      save(function (x) { x.school = String(e.target.value).slice(0, 40); });
+      renderYear();
+    });
+    on(q('#m-add'), 'click', function () { openEdit(null, -1); });
+    each(P.mine.querySelectorAll('[data-edit]'), function (b) {
+      on(b, 'click', function () { openEdit(b.getAttribute('data-edit')); });
+    });
+  }
+
+  /* ── 일 하나 손보기 ──────────────────────────────────────────────── */
+  function jobOf(id) {
+    var a = D().jobs;
+    for (var i = 0; i < a.length; i++) if (a[i].id === id) return a[i];
+    return null;
+  }
+
+  function openEdit(id, atWeek) {
+    var j = id ? jobOf(id) : null;
+    var isNew = !j;
+    if (!j) j = { id: '', who: D().me || '이름 적지 않음', n: '',
+      wk: atWeek != null && atWeek >= 0 ? atWeek : 0, wt: 'mid', fixed: false, note: '' };
+
+    var weekOpts = '';
+    for (var i = 0; i < WEEKS; i++) {
+      weekOpts += '<option value="' + i + '"' + (i === j.wk ? ' selected' : '') + '>' +
+        esc(weekName(i)) + '</option>';
+    }
+
+    var body = modal(isNew ? '일 얹기' : '고치기',
+      '<div class="field"><label class="fld" for="j-n">무슨 일입니까</label>' +
+      '<input class="txt" id="j-n" maxlength="60" value="' + esc(j.n) + '" placeholder="예: 학예회 · 정보공시 · 공개수업"></div>' +
+      '<div class="ed-row">' +
+      '<div class="field"><label class="fld" for="j-wk">언제</label>' +
+      '<select class="txt" id="j-wk">' + weekOpts + '</select></div>' +
+      '<div class="field"><label class="fld" for="j-wt">얼마나 큰 일</label>' +
+      '<select class="txt" id="j-wt">' + WEIGHT.map(function (w) {
+        return '<option value="' + w.k + '"' + (w.k === j.wt ? ' selected' : '') + '>' +
+          esc(w.n) + '</option>';
+      }).join('') + '</select></div>' +
+      '<div class="field"><label class="fld" for="j-who">누구 일</label>' +
+      '<input class="txt" id="j-who" maxlength="30" value="' + esc(j.who) + '"></div>' +
+      '</div>' +
+      '<p class="small muted" style="margin:-6px 0 14px" id="j-wtd">' + esc(weightOf(j.wt).d) + '</p>' +
+      /* ★ 이 칸이 이 앱의 핵심입니다. 「많은 주」가 아니라 «옮길 수 없는 일이
+         겹친 주»가 진짜 문제입니다. */
+      '<div class="field"><label class="fld">' +
+      '<input type="checkbox" id="j-fixed"' + (j.fixed ? ' checked' : '') + '> ' +
+      '날짜를 옮길 수 없는 일입니다 <span class="hint">법정 기한 · 외부 일정</span></label>' +
+      '<p class="small muted" style="margin:6px 0 0">옮길 수 없는 일이 한 주에 둘 이상 겹치면 ' +
+      '<b>먼저 알려 드립니다.</b> 그건 미리 알아야만 견딜 수 있습니다.</p></div>' +
+      '<div class="field" style="margin-bottom:0"><label class="fld" for="j-note">덧붙일 말 <span class="hint">비워도 됩니다</span></label>' +
+      '<input class="txt" id="j-note" maxlength="200" value="' + esc(j.note) + '" placeholder="예: 강당 예약이 먼저 필요"></div>' +
+      '<div class="actions">' +
+      '<button class="btn" type="button" id="j-ok">' + (isNew ? '얹기' : '고치기') + '</button>' +
+      (isNew ? '' : '<button class="btn btn--ghost" type="button" id="j-del">지우기</button>') +
+      '<button class="btn btn--ghost" type="button" id="j-no">그만두기</button></div>');
+    if (!body) return;
+
+    var q = function (s) { return body.querySelector(s); };
+    on(q('#j-wt'), 'change', function (e) {
+      var p = q('#j-wtd'); if (p) p.textContent = weightOf(e.target.value).d;
+    });
+    on(q('#j-ok'), 'click', function () {
+      var nm = String(q('#j-n').value || '').trim();
+      if (!nm) { LEAP.announce('무슨 일인지 적어 주세요.'); q('#j-n').focus(); return; }
+      var next = { id: j.id || LEAP.uid(),
+        who: String(q('#j-who').value || '').trim().slice(0, 30) || '이름 적지 않음',
+        n: nm.slice(0, 60), wk: num(q('#j-wk').value, 0, WEEKS - 1),
+        wt: q('#j-wt').value, fixed: !!q('#j-fixed').checked,
+        note: String(q('#j-note').value || '').slice(0, 200) };
+      save(function (d) {
+        if (isNew) d.jobs.push(next);
+        else d.jobs = d.jobs.map(function (x) { return x.id === next.id ? next : x; });
+      });
+      closeModal(); renderYear(); renderMine();
+      LEAP.announce(isNew ? '얹었습니다.' : '고쳤습니다.');
+    });
+    on(q('#j-del'), 'click', function () {
+      var keep = LEAP.clone(D().jobs), nm = j.n;
+      save(function (d) { d.jobs = d.jobs.filter(function (x) { return x.id !== j.id; }); });
+      closeModal(); renderYear(); renderMine();
+      LEAP.announce('지웠습니다.');
+      LEAP.offerUndo('「' + nm + '」을 지웠습니다.', function () {
+        save(function (d) { d.jobs = keep; });
+        renderYear(); renderMine(); LEAP.announce('되돌렸습니다.');
+      });
+    });
+    on(q('#j-no'), 'click', closeModal);
+  }
+
+  /* ── 종이 ────────────────────────────────────────────────────────── */
+  function paperHTML() {
+    var d = D(), hot = hotWeeks(d);
+    var h = '<div class="p-head"><div><h2>우리 학교 한 해 — 일이 겹치는 자리</h2>' +
+      '<p class="p-sub">' + esc(d.school || '학교') + ' · 일 ' + d.jobs.length + '개 · ' +
+      people(d).length + '사람</p></div>' +
+      '<div class="p-when">' + esc(LEAP.fmtDate(LEAP.todayISO())) + '</div></div>';
+
+    if (!d.jobs.length) {
+      return h + '<div class="p-sec"><h3>아직 얹은 일이 없습니다</h3>' +
+        '<p>「내 일 적기」에서 맡으신 일을 얹으면 이 자리에 나옵니다.</p></div>' +
+        '<div class="p-foot">© 2026 TEAM LEAP · 경북교육 AI Lab · AI 활용 분과</div>';
+    }
+
+    /* ★ 몰린 주가 «맨 앞»입니다. 협의회에서 먼저 볼 것이 그것입니다. */
+    h += '<div class="p-sec"><h3>먼저 볼 것 — 일이 몰린 주</h3>';
+    if (!hot.length) {
+      h += '<p>몰린 주가 없습니다. 지금 얹은 일들은 한 해에 고르게 퍼져 있습니다.</p>';
+    } else {
+      h += '<table class="p-tbl"><colgroup><col style="width:20%"><col style="width:12%">' +
+        '<col style="width:12%"><col style="width:56%"></colgroup>' +
+        '<thead><tr><th>언제</th><th class="n">일</th><th class="n">사람</th><th>무엇이 겹치나</th></tr></thead><tbody>' +
+        hot.map(function (x) {
+          return '<tr><td class="p-week">' + esc(weekName(x.wk)) +
+            (x.hard ? '<span class="q">옮길 수 없는 일 둘 이상</span>' : '') + '</td>' +
+            '<td class="n">' + x.jobs.length + '</td><td class="n">' + x.people + '</td>' +
+            '<td>' + x.jobs.map(function (j) {
+              return esc(j.n) + '(' + esc(j.who) + ')' + (j.fixed ? '🔒' : '');
+            }).join(' · ') + '</td></tr>';
+        }).join('') + '</tbody></table>' +
+        '<p class="p-src" style="margin-top:6px">🔒 는 날짜를 옮길 수 없는 일입니다.</p>';
+    }
+    h += '</div>';
+
+    /* 한 해 전체 */
+    h += '<div class="p-sec"><h3>한 해 전체</h3>' +
+      '<table class="p-tbl"><colgroup><col style="width:18%"><col style="width:22%">' +
+      '<col style="width:44%"><col style="width:16%"></colgroup>' +
+      '<thead><tr><th>언제</th><th>누구</th><th>무슨 일</th><th>크기</th></tr></thead><tbody>' +
+      d.jobs.slice().sort(function (a, b) { return a.wk - b.wk; }).map(function (j) {
+        return '<tr><td class="p-week">' + esc(weekName(j.wk)) + '</td>' +
+          '<td>' + esc(j.who) + '</td>' +
+          '<td>' + esc(j.n) + (j.fixed ? ' 🔒' : '') +
+          (j.note ? '<span class="q">' + esc(j.note) + '</span>' : '') + '</td>' +
+          '<td>' + esc(weightOf(j.wt).n) + '</td></tr>';
+      }).join('') + '</tbody></table></div>';
+
+    h += '<div class="p-sec"><h3>이 표를 어떻게 쓰나</h3><p class="p-src">' +
+      '이 앱은 <b>겹친 것을 보여 줄 뿐이고, 무엇을 옮길지는 사람이 정합니다.</b> ' +
+      '학교마다 사정이 다르고 옮길 수 없는 일이 있습니다. ' +
+      '업무분장 협의회에서 이 표를 함께 놓고 이야기하시라고 만들었습니다.</p></div>';
+
+    return h + '<div class="p-foot">© 2026 TEAM LEAP · 경북교육 AI Lab · AI 활용 분과</div>';
+  }
+
+  function printFileName() {
+    var d = D();
+    return String('우리학교한해_' + (d.school || '학교') + '_' + LEAP.todayISO())
+      .replace(/[\\/:*?"<>|]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  function withFileName(name, run) {
+    var was = document.title;
+    document.title = name;
+    var done = false;
+    function back() {
+      if (done) return;
+      done = true; document.title = was;
+      window.removeEventListener('afterprint', back);
+    }
+    window.addEventListener('afterprint', back);
+    setTimeout(back, 20000);
+    run();
+  }
+  function doPrint() {
+    el('print-area').innerHTML = paperHTML();
+    withFileName(printFileName(), function () { window.print(); });
+  }
+
+  /* ── 창 ─────────────────────────────────────────────────────────── */
+  var lastFocus = null;
+  function modal(title, body) {
+    var m = el('modal');
+    if (!m) return null;
+    lastFocus = document.activeElement;
+    m.innerHTML = '<div class="modal-back" data-close></div>' +
+      '<div class="modal-box" role="dialog" aria-modal="true" aria-label="' + esc(title) + '">' +
+      '<div class="modal-h"><h2>' + esc(title) + '</h2>' +
+      '<button class="modal-x" type="button" data-close aria-label="닫기">✕</button></div>' +
+      '<div class="modal-b" id="modal-body">' + body + '</div></div>';
+    m.hidden = false;
+    if (document.body && document.body.style) document.body.style.overflow = 'hidden';
+    each(m.querySelectorAll('[data-close]'), function (b) { on(b, 'click', closeModal); });
+    document.addEventListener('keydown', escClose);
+    var f = m.querySelector('.modal-b input,.modal-b select,.modal-b textarea,.modal-b button');
+    if (f && f.focus) f.focus();
+    return m.querySelector('#modal-body');
+  }
+  function closeModal() {
+    var m = el('modal');
+    if (!m) return;
+    m.hidden = true; m.innerHTML = '';
+    if (document.body && document.body.style) document.body.style.overflow = '';
+    document.removeEventListener('keydown', escClose);
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  function escClose(e) { if (e.key === 'Escape') closeModal(); }
+
+  /* ── AI 초안 — 아무것도 보내지 않습니다 ─────────────────────────── */
+  function buildPrompt() {
+    var d = D(), hot = hotWeeks(d);
+    var t = ['당신은 대한민국 학교의 업무 운영을 돕는 전문가입니다.',
+      '아래는 한 학교 교직원들이 각자 맡은 일을 한 해 달력에 얹은 것입니다.',
+      '**사람 이름은 없습니다** — 맡은 자리만 있습니다.', '',
+      '[학교] ' + (d.school || '이름 적지 않음'),
+      '[일] ' + d.jobs.length + '개 · ' + people(d).length + '사람', '',
+      '[일이 몰린 주]'];
+    if (!hot.length) t.push('- 없습니다');
+    else hot.forEach(function (x) {
+      t.push('- ' + weekName(x.wk) + ' : 일 ' + x.jobs.length + '개 · ' + x.people + '사람' +
+        (x.hard ? ' (옮길 수 없는 일 둘 이상)' : ''));
+      x.jobs.forEach(function (j) {
+        t.push('    · ' + j.n + ' (' + j.who + ' · ' + weightOf(j.wt).n +
+          (j.fixed ? ' · 날짜 못 옮김' : '') + ')');
+      });
+    });
+    t.push('', '[반드시 지킬 것]',
+      '1. 자료에 없는 것을 지어내지 마세요. 이 학교의 사정을 넘겨짚지 마세요.',
+      '2. **「사람을 더 뽑자」는 답은 하지 마세요.** 학교가 할 수 있는 일이 아닙니다.',
+      '3. 「날짜 못 옮김」이라고 적힌 일은 **옮기라고 하지 마세요.**',
+      '   대신 그 주의 «다른 일»을 어디로 옮길지 말해 주세요.',
+      '4. 옮길 곳을 말할 때는 **그 주가 지금 얼마나 비어 있는지**를 근거로 드세요.',
+      '5. 최종 판단은 학교가 합니다. 협의회에서 물어볼 거리를 함께 적어 주세요.', '',
+      '[이렇게 답해 주세요]',
+      '1) 가장 먼저 풀어야 할 주 하나와 그 이유',
+      '2) 그 주에서 옮길 수 있는 일과, 옮길 곳',
+      '3) 옮길 수 없어 그대로 견뎌야 하는 것 — 그때 무엇을 미리 준비하면 좋은지',
+      '4) 협의회에서 함께 정해야 할 것 한 가지', '',
+      '한국어로, 표가 아니라 읽기 쉬운 문장으로 써 주세요.');
+    return t.join('\n');
+  }
+
+  function openAI() {
+    var body = modal('AI 초안 도우미',
+      '<div class="note"><div class="hd">맡은 자리와 일정만 나갑니다</div>' +
+      '<p>API 키가 필요 없습니다. 아래 글을 복사해 쓰던 챗봇에 붙여 넣으세요. ' +
+      '<b>이 앱은 아무것도 보내지 않습니다.</b> 사람 이름은 이 앱이 <b>받지도 않습니다</b> — ' +
+      '맡은 자리만 적습니다.</p></div>' +
+      '<textarea class="promptbox" id="ai-pre" readonly aria-label="AI에게 줄 프롬프트">' +
+      esc(buildPrompt()) + '</textarea>' +
+      '<div class="actions"><button class="btn" type="button" id="ai-copy">복사하기</button>' +
+      '<button class="btn btn--ghost" type="button" id="ai-no">닫기</button></div>');
+    if (!body) return;
+    on(body.querySelector('#ai-copy'), 'click', function () {
+      var ta = body.querySelector('#ai-pre');
+      if (!ta) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(ta.value).then(
+          function () { LEAP.announce('복사했습니다. 쓰던 챗봇에 붙여 넣으세요.'); },
+          function () { fallback(); });
+        return;
+      }
+      fallback();
+      function fallback() {
+        try {
+          ta.removeAttribute('readonly');
+          ta.select(); ta.setSelectionRange(0, ta.value.length);
+          var ok = document.execCommand('copy');
+          ta.setAttribute('readonly', 'readonly');
+          LEAP.announce(ok ? '복사했습니다.' : '글을 골라 두었습니다. ⌘C(Ctrl+C)로 복사하세요.');
+        } catch (e) { LEAP.announce('글을 골라 두었습니다. ⌘C(Ctrl+C)로 복사하세요.'); }
+      }
+    });
+    on(body.querySelector('#ai-no'), 'click', closeModal);
+  }
+
+  /* ── 자료 관리 ──────────────────────────────────────────────────── */
+  function doExport() {
+    LEAP.download('우리학교한해-' + (D().me || '내일').replace(/\s/g, '') +
+      '-' + LEAP.todayISO() + '.json', LEAP.stamp(APP_ID, D()));
+    LEAP.announce('파일로 내보냈습니다. 한 기기에서 합치세요.');
+  }
+
+  function bindFoot() {
+    on(el('btn-export'), 'click', doExport);
+    on(el('btn-import'), 'click', function () {
+      LEAP.pickFile(function (obj) {
+        var from = LEAP.otherApp(APP_ID, obj);
+        if (from) { LEAP.announce('「' + from + '」에서 내보낸 파일입니다. 이 앱의 파일이 아닙니다.'); return; }
+        if (!obj || obj.v !== 1 || !Array.isArray(obj.jobs)) {
+          LEAP.announce('이 앱에서 내보낸 파일이 아닙니다.'); return;
+        }
+        var incoming = fill(obj), mine = D();
+        var n = (incoming.jobs || []).length;
+        var body = modal('가져온 파일을 어떻게 할까요',
+          '<p class="sub" style="margin:0 0 16px">가져온 파일에 일 <b>' + n + '개</b>가 들어 있습니다' +
+          (incoming.me ? ' (<b>' + esc(incoming.me) + '</b>)' : '') + '.</p>' +
+          '<div class="picks2">' +
+          '<button type="button" class="pick2 pick2--go" id="im-merge">' +
+          '<span class="n">지금 것에 합치기</span>' +
+          '<span class="d">이 기기에 없는 일만 더합니다. <b>지금 것은 하나도 사라지지 않습니다.</b> ' +
+          '여러 선생님 것을 모을 때 이것을 고르세요.</span></button>' +
+          '<button type="button" class="pick2 pick2--off" id="im-over">' +
+          '<span class="n">그냥 바꾸기</span>' +
+          '<span class="d"><b>지금 기기에 적은 것이 모두 사라집니다.</b></span></button>' +
+          '<button type="button" class="pick2 pick2--off" id="im-no">' +
+          '<span class="n">그만두기</span><span class="d">아무것도 바꾸지 않습니다.</span></button>' +
+          '</div>');
+        if (!body) return;
+        var before = JSON.stringify(mine);
+        function done(msg) {
+          closeModal(); renderYear(); renderMine(); LEAP.announce(msg);
+          LEAP.offerUndo(msg, function () {
+            db.set(JSON.parse(before)); renderYear(); renderMine(); LEAP.announce('되돌렸습니다.');
+          });
+        }
+        on(body.querySelector('#im-merge'), 'click', function () {
+          /* 같은 사람이 같은 일을 같은 주에 얹은 것은 한 번만 셉니다 —
+             파일을 두 번 합쳐도 늘어나지 않아야 합니다. */
+          save(function (d) {
+            var have = {};
+            d.jobs.forEach(function (j) { have[j.who + '|' + j.n + '|' + j.wk] = 1; });
+            incoming.jobs.forEach(function (j) {
+              if (!have[j.who + '|' + j.n + '|' + j.wk]) d.jobs.push(j);
+            });
+            if (!d.school && incoming.school) d.school = incoming.school;
+          });
+          done('합쳤습니다.');
+        });
+        on(body.querySelector('#im-over'), 'click', function () {
+          if (!db.set(incoming)) { closeModal(); LEAP.announce('저장 공간이 모자랍니다.'); return; }
+          done('자료를 가져왔습니다.');
+        });
+        on(body.querySelector('#im-no'), 'click', closeModal);
+      });
+    });
+    on(el('btn-clear'), 'click', function () {
+      if (!confirm('얹은 일을 모두 지우고 처음으로 돌아갑니다. 계속할까요?')) return;
+      var before = JSON.stringify(D());
+      db.set(fill(LEAP.clone(DEFAULT)));
+      pick = -1;
+      renderYear(); renderMine();
+      LEAP.announce('전부 지웠습니다.');
+      LEAP.offerUndo('얹은 일을 모두 지웠습니다.', function () {
+        db.set(JSON.parse(before)); renderYear(); renderMine(); LEAP.announce('되돌렸습니다.');
+      });
+    });
+  }
+
+  /* ── 시작 ───────────────────────────────────────────────────────── */
+  var tabs = null;
+  function goTab(name) {
+    if (!tabs) return;
+    tabs.tabs.forEach(function (t) {
+      if (t.getAttribute('aria-controls') === 'panel-' + name) tabs.select(t);
+    });
+  }
+
+  LEAP.restoreTheme();
+  LEAP.guardModals();   /* 창이 열리면 Tab 이 그 안에서만 돕니다 */
+  LEAP.watchOtherTabs('leap-year-v1');   /* 두 창을 열었을 때 조용히 덮어쓰지 않게 */
+  LEAP.initThemeBtn(el('btn-theme'));
+  on(el('btn-ai'), 'click', openAI);
+  renderYear(); renderMine();
+  bindFoot();
+  tabs = LEAP.initTabs(el('tablist'), function () { fitOut(); });
+
+  if (window.addEventListener) {
+    var rt = null;
+    window.addEventListener('resize', function () {
+      if (rt) clearTimeout(rt);
+      rt = setTimeout(fitOut, 120);
+    });
+  }
+
+  if (typeof __LEAP_TEST__ !== 'undefined') {
+    __LEAP_TEST__.hook = {
+      MONTHS: MONTHS, WPM: WPM, WEEKS: WEEKS, WEIGHT: WEIGHT, DEFAULT: DEFAULT,
+      fill: fill, weekName: weekName, weekNo: weekNo, weightOf: weightOf,
+      jobsAt: jobsAt, loadAt: loadAt, peopleAt: peopleAt, levelAt: levelAt,
+      hotWeeks: hotWeeks, people: people,
+      paperHTML: paperHTML, buildPrompt: buildPrompt, printFileName: printFileName,
+      db: db
+    };
+  }
+})();
+</script>
+</body>
+</html>

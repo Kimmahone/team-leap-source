@@ -109,6 +109,25 @@ button,input,textarea,select{font:inherit;color:inherit}
   background:transparent;color:var(--leap-gray);font-size:.9rem;cursor:pointer;line-height:1}
 .leap-undox:hover{background:var(--leap-hairline);color:var(--leap-ink)}
 @media print{.leap-undobar{display:none!important}}
+/* ── 일터 — 왼쪽에서 적고 오른쪽에서 봅니다 ─────────────────────────────
+   앱마다 「종이」가 따로 있는 탭이었습니다. 그래서 다 적고 나서야 무엇이
+   나오는지 알았습니다. 이제 열 앱이 같은 뼈대를 씁니다.
+   줄이는 것은 transform 입니다 — zoom 은 사파리에서 인쇄에 새어 나갑니다. */
+.wb{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:20px;align-items:start}
+.wb-pane{min-width:0}
+.wb-out{position:sticky;top:70px}
+@media (max-width:1100px){.wb{grid-template-columns:minmax(0,1fr)}.wb-out{position:static}}
+.outbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 0 11px}
+.outbar > b{font-size:.9375rem}
+.outbar .sp{margin-left:auto;display:flex;gap:7px;flex-wrap:wrap}
+.pgtag{font-size:.75rem;font-weight:800;padding:4px 11px;border-radius:999px;
+  background:var(--tint-teal);color:var(--solid-teal);white-space:nowrap}
+.pgtag.over{background:var(--tint-amber);color:var(--leap-amber)}
+.pv{background:var(--leap-hairline);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:14px;overflow:auto;max-height:calc(100vh - 190px)}
+.pv-fit{transform-origin:top left}
+@media print{.pv,.wb-out{display:none!important}}
+
 @media (prefers-reduced-motion:reduce){.leap-undobar{transition:none}}
 
 header.top{background:var(--grad-head);color:#fff;position:relative;overflow:hidden}
@@ -221,6 +240,34 @@ textarea.txt{width:100%;min-height:76px;padding:12px 14px;border-radius:var(--le
 .issue.ok b{color:var(--leap-teal)}
 .issue p{margin:3px 0 0;font-size:.8125rem;color:var(--leap-gray)}
 
+/* 접었다 펴는 자리 — 처음 차릴 때 한 번 쓰는 것을 안쪽에 둡니다 */
+.fold{border:1px solid var(--leap-border);border-radius:var(--leap-radius);
+  background:var(--leap-surface);margin:0 0 20px;overflow:hidden}
+.fold > summary{padding:15px 18px;font-weight:700;font-size:.9375rem;cursor:pointer;
+  list-style:none;display:flex;align-items:center;gap:9px;min-height:52px}
+.fold > summary::-webkit-details-marker{display:none}
+.fold > summary::before{content:'▸';color:var(--leap-blue);font-size:.9rem}
+.fold[open] > summary::before{content:'▾'}
+.fold > summary:hover{background:var(--leap-hairline)}
+.fold-b{padding:0 18px 18px;border-top:1px solid var(--leap-hairline)}
+.fold-b > .sheet{box-shadow:none;border:0;padding:16px 0 0;margin:0}
+
+/* 오른쪽 그림 상자 — 화면 높이 안에서만 스크롤합니다 */
+.dashbox{background:var(--leap-hairline);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:14px;overflow:auto;max-height:calc(100vh - 200px)}
+.dashbox > .sheet{margin-bottom:12px}
+.dashbox > .sheet:last-child{margin-bottom:0}
+
+/* 한 벌 더하기 — 자주 쓰는 항목을 묶어 두고 «필요할 때» 꺼냅니다 */
+.bundles{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin:0 0 20px}
+.bundle{text-align:left;border:2px solid var(--leap-border);background:var(--leap-surface);
+  border-radius:var(--leap-radius);padding:13px 15px;cursor:pointer;min-height:64px;
+  font:inherit;color:var(--leap-ink);width:100%}
+.bundle:hover:not([disabled]){border-color:var(--leap-blue);background:var(--tint-blue)}
+.bundle[disabled]{opacity:.55;cursor:default}
+.bundle .n{display:block;font-weight:800;font-size:.875rem}
+.bundle .n i{font-style:normal;font-size:.75rem;font-weight:700;color:var(--solid-teal)}
+.bundle .d{display:block;font-size:.75rem;color:var(--leap-gray);margin-top:3px;line-height:1.6}
 .empty{text-align:center;padding:44px 24px;color:var(--leap-gray);line-height:1.75}
 .note{border-radius:var(--leap-radius);padding:15px 17px;margin:0 0 var(--leap-5);background:var(--tint-blue)}
 .note .hd{display:flex;align-items:center;gap:9px;font-weight:800;color:var(--leap-blue)}
@@ -529,20 +576,24 @@ table.grid.xlprev td.k-guide{background:#FFF6D8;color:#A8560A;font-weight:700}
 
 <nav class="tabs" aria-label="화면">
   <div class="tabs-in" role="tablist" id="tablist">
+    <!-- ★ 〔2026. 8. 30.〕 탭이 다섯이었습니다. 처음 여는 분에게 다섯은
+         「이걸 다 해야 하나」로 읽힙니다. 셋으로 줄였습니다 —
+         「대시보드」는 「입력」의 오른쪽 칸으로, 「템플릿·불러오기」는
+         「우리 반」 안으로 들어갔습니다. 기능은 하나도 안 없앴습니다. -->
     <button role="tab" id="tab-set" aria-controls="panel-set" aria-selected="true">우리 반</button>
-    <button role="tab" id="tab-file" aria-controls="panel-file" aria-selected="false" tabindex="-1">템플릿·불러오기</button>
-    <button role="tab" id="tab-in" aria-controls="panel-in" aria-selected="false" tabindex="-1">입력</button>
-    <button role="tab" id="tab-dash" aria-controls="panel-dash" aria-selected="false" tabindex="-1">대시보드</button>
-    <button role="tab" id="tab-read" aria-controls="panel-read" aria-selected="false" tabindex="-1">읽기</button>
+    <button role="tab" id="tab-in" aria-controls="panel-in" aria-selected="false" tabindex="-1">넣고 보기</button>
+    <button role="tab" id="tab-read" aria-controls="panel-read" aria-selected="false" tabindex="-1">종이로 내기</button>
   </div>
 </nav>
 
 <main class="wrap" id="main" tabindex="-1">
   <section id="panel-set" role="tabpanel" aria-labelledby="tab-set"></section>
-  <section id="panel-file" role="tabpanel" aria-labelledby="tab-file" hidden></section>
   <section id="panel-in" role="tabpanel" aria-labelledby="tab-in" hidden></section>
-  <section id="panel-dash" role="tabpanel" aria-labelledby="tab-dash" hidden></section>
   <section id="panel-read" role="tabpanel" aria-labelledby="tab-read" hidden></section>
+  <!-- 「대시보드」는 이제 탭이 아니라 「넣고 보기」의 오른쪽 칸입니다.
+       그리는 함수는 그대로 쓰므로 담을 자리만 여기 둡니다.
+       「템플릿·불러오기」는 「우리 반」 안의 접는 자리로 옮겨 갔습니다. -->
+  <div id="panel-dash" hidden></div>
 
   <footer class="foot no-print">
     <div class="foot-card">
@@ -660,7 +711,8 @@ LEAP.APP_NAMES={'leap-circuit':'순회교사 통합 시간표','leap-classboard'
   'leap-storybook':'지역 탐방 디지털 스토리북','leap-multigrade':'복식학급 수업 도우미',
   'leap-together':'이웃 학교 함께하기','leap-lessonplan':'수업 설계안 만들기',
   'leap-classdata':'우리 반 데이터 보기','leap-project':'프로젝트 학습 계획서',
-  'leap-required':'법정 의무교육 점검표'};
+  'leap-required':'법정 의무교육 점검표','leap-howmany':'몇 명이면 되나',
+  'leap-year':'우리 학교 한 해','leap-rooms':'남는 교실'};
 LEAP.stamp=function(appId,data){var o=LEAP.clone(data);o.app=appId;return o;};
 LEAP.otherApp=function(appId,obj){var a=obj&&obj.app;
   if(!a||a===appId)return null;return LEAP.APP_NAMES[a]||'다른 앱';};
@@ -685,6 +737,18 @@ LEAP.offerUndo=function(label,restore,seconds){
   el.appendChild(p);el.appendChild(btn);el.appendChild(x);
   el.classList.add('is-on');
   el._t=setTimeout(hide,(seconds||20)*1000);};
+/* 오른쪽 종이를 상자 폭에 맞춰 줄입니다. 종이는 «실제 크기»(A4 794/1123px)로
+   그려야 화면과 인쇄가 어긋나지 않습니다 — 마스터 함정 31번. 보여 줄 때만 줄입니다.
+   transform 은 자리를 안 차지하므로 높이를 손으로 잡아 줍니다. */
+LEAP.fitPaper=function(box,fit,paperWidth){
+  if(!box||!fit)return 1;
+  var w=paperWidth||794,room=(box.clientWidth||0)-28;
+  if(room<=0)return 1;
+  var scale=Math.min(1,room/w);
+  fit.style.transform='scale('+scale+')';
+  var inner=fit.firstElementChild||fit;
+  fit.style.height=((inner.offsetHeight||0)*scale)+'px';
+  return scale;};
 LEAP.guardModals=function(){
   if(!document.addEventListener||!document.querySelectorAll)return;   /* 검사의 흉내 document */
   var SEL='a[href],button:not([disabled]),input:not([disabled]),'+
@@ -717,9 +781,11 @@ LEAP.initThemeBtn=function(btn){if(!btn)return;
     btn.setAttribute('aria-label','화면을 '+t.replace(' 보기','')+' 바꿉니다');}
   paint();btn.addEventListener('click',function(){LEAP.toggleTheme();paint();});};
 /* 〔2026. 8. 30.〕 새로고침하면 늘 첫 탭으로 돌아갔고, 뒤로 가기는 앱을 떠났습니다.
-   주소 끝에 지금 탭을 적습니다(#panel-week). 새로고침해도 그 자리, 뒤로 가기로 앞 탭,
-   그리고 특정 탭을 링크로 줄 수 있습니다. 아는 탭 이름일 때만 움직이므로
-   「본문으로 건너뛰기」가 넣는 #main 에는 반응하지 않습니다. */
+   주소 끝에 지금 탭을 적습니다. 새로고침해도 그 자리, 뒤로 가기로 앞 탭.
+
+   ★ location.hash 로 적으면 **브라우저가 그 자리로 화면을 끌어내립니다** —
+   머리(앱 이름·단추)가 화면 밖으로 밀려 사라집니다. 실제로 그렇게 됐습니다.
+   그래서 history.pushState 로 «조용히» 적고, 뒤로 가기는 popstate 로 받습니다. */
 LEAP.initTabs=function(listEl,onChange){
   var tabs=Array.prototype.slice.call(listEl.querySelectorAll('[role="tab"]'));
   var ids=tabs.map(function(t){return t.getAttribute('aria-controls');});
@@ -728,9 +794,9 @@ LEAP.initTabs=function(listEl,onChange){
       t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1;
       var p=document.getElementById(t.getAttribute('aria-controls'));if(p)p.hidden=!on;});
     var id=tab.getAttribute('aria-controls');
-    /* 사람이 눌렀을 때만 기록에 남깁니다 — 처음 그릴 때까지 남기면 뒤로 가기가 헛돕니다 */
-    if(writeHash&&window.location&&window.location.hash!=='#'+id){
-      try{window.location.hash='#'+id;}catch(e){}}
+    if(writeHash&&window.history&&window.history.pushState&&
+       (!window.location||window.location.hash!=='#'+id)){
+      try{window.history.pushState({leapTab:id},'','#'+id);}catch(e){}}
     if(onChange)onChange(id);}
   tabs.forEach(function(tab,i){
     tab.addEventListener('click',function(){select(tab,true);});
@@ -741,8 +807,11 @@ LEAP.initTabs=function(listEl,onChange){
     return ids.indexOf(String(window.location.hash||'').slice(1));}
   var at=fromHash();
   select(tabs[at>=0?at:0],false);
-  if(window.addEventListener)window.addEventListener('hashchange',function(){
-    var i=fromHash();if(i>=0)select(tabs[i],false);});
+  /* 뒤로 가기·앞으로 가기. hashchange 도 함께 받습니다 — 주소창에 직접 쳐 넣는 길입니다 */
+  if(window.addEventListener){
+    var back=function(){var i=fromHash();if(i>=0)select(tabs[i],false);};
+    window.addEventListener('popstate',back);
+    window.addEventListener('hashchange',back);}
   return{select:function(t){select(t,true);},tabs:tabs};};
 global.LEAP=LEAP;})(window);
 /* ==========================================================================
@@ -886,6 +955,7 @@ global.LEAP=LEAP;})(window);
   /* pick — 「성취 × 정서」 그림에서 선생님이 고른 두 축. 비어 있으면 앱이 고릅니다. */
   var INIT = { v: 4, className: '', size: 20, names: {}, items: [], cells: {}, pick: {} };
   var APP_ID = 'leap-classdata';   /* 내보낸 파일에 적히는 표시 — 남의 앱 파일을 가려냅니다 */
+  var tabsApi = null;
   var db = LEAP.store(KEY, INIT);
 
   /* 예전 판(v1·v2)에 없던 칸은 여기서 채웁니다. 열리지 않는 것이 가장 나쁩니다. */
@@ -1583,15 +1653,40 @@ global.LEAP=LEAP;})(window);
      -------------------------------------------------------------------------- */
   var SAMPLE_NAMES = ['가온', '나래', '다솜', '라온', '미르', '바다'];
 
+  /* ★ 〔2026. 8. 30.〕 처음 열면 **열두 항목이 이미 놓여 있었습니다**
+     (성취 다섯 + 정서 여섯 + 관찰 하나). 스물넷이면 288칸입니다.
+     그리고 실제로는 **한 항목만 넣어도 그림이 나오는데** 그 사실이 화면에
+     안 보였습니다. 「다 채워야 뭔가 나온다」로 읽혔습니다.
+
+     이제 **하나로 시작합니다.** 나머지는 지운 게 아니라 접어 두었습니다 —
+     「한 벌 더하기」로 언제든 꺼냅니다. 쓰시던 분의 자료는 그대로 열립니다. */
   function starterItems() {
-    return [0, 1, 3, 4, 5].map(function (i) {
-      return { n: TPL[i].n, cat: TPL[i].cat, type: TPL[i].type, max: TPL[i].max || 100,
-        subject: TPL[i].subject || '', scope: TPL[i].scope || '', date: '', comp: TPL[i].comp || '' };
-    }).concat(SEL_SET.map(function (i) {
-      return { n: TPL[i].n, cat: 'emo', type: 'num', max: 5, subject: '', scope: '',
-        date: '', comp: TPL[i].comp };
-    })).concat([{ n: '교사 관찰 메모', cat: 'obs', type: 'text', max: 100, subject: '', scope: '', date: '', comp: '' }]);
+    return [{ n: TPL[0].n, cat: TPL[0].cat, type: TPL[0].type, max: TPL[0].max || 100,
+      subject: TPL[0].subject || '', scope: TPL[0].scope || '', date: '', comp: TPL[0].comp || '' }];
   }
+
+  /* 접어 둔 것 — 필요할 때 한 벌로 꺼냅니다 */
+  var BUNDLES = [
+    { k: 'ach', n: '성취·참여 한 벌', d: '단원평가 · 수행평가 · 발표 · 과제 — 다섯 항목',
+      make: function () {
+        return [1, 3, 4, 5].map(function (i) {
+          return { n: TPL[i].n, cat: TPL[i].cat, type: TPL[i].type, max: TPL[i].max || 100,
+            subject: TPL[i].subject || '', scope: TPL[i].scope || '', date: '', comp: TPL[i].comp || '' };
+        });
+      } },
+    { k: 'emo', n: '사회정서 진단 한 벌', d: '한국형 사회정서역량 여섯 — 자기인식·자기조절·관계인식·관계조절·책임인식·책임조절',
+      make: function () {
+        return SEL_SET.map(function (i) {
+          return { n: TPL[i].n, cat: 'emo', type: 'num', max: 5, subject: '', scope: '',
+            date: '', comp: TPL[i].comp };
+        });
+      } },
+    { k: 'obs', n: '교사 관찰 메모', d: '숫자가 설명하지 못하는 자리를 글로',
+      make: function () {
+        return [{ n: '교사 관찰 메모', cat: 'obs', type: 'text', max: 100,
+          subject: '', scope: '', date: '', comp: '' }];
+      } }
+  ];
 
   /* --------------------------------------------------------------------------
      색으로 나눈 곳 — 엑셀에만 붙습니다 (CSV 는 색이 없으니 그대로 둡니다)
@@ -1842,9 +1937,10 @@ global.LEAP=LEAP;})(window);
       label + '</label>' + inner + '</div>';
   }
   function render() {
-    P.set = el('panel-set'); P.file = el('panel-file'); P.in = el('panel-in');
+    P.set = el('panel-set'); P.in = el('panel-in');
     P.dash = el('panel-dash'); P.read = el('panel-read');
-    renderSet(); renderFile(); renderIn(); renderDash(); renderRead();
+    /* renderSet() 이 «접는 자리 안쪽»을 P.file 로 삼고 renderFile() 까지 부릅니다 */
+    renderSet(); renderIn(); renderDash(); renderRead();
   }
   /* 표를 통째로 다시 그리면 적고 있던 칸에서 초점이 튕깁니다.
      그래서 값이 바뀔 때는 「채운 정도」와 다른 화면만 갈아 끼웁니다. */
@@ -1958,7 +2054,15 @@ global.LEAP=LEAP;})(window);
       '<div class="actions" style="margin-top:0"><button class="btn" id="btn-add" type="button">항목 더하기</button></div>' +
       '</div>';
 
-    P.set.innerHTML = h;
+    /* 「템플릿·불러오기」가 탭 하나를 차지하고 있었습니다. 실제로는
+       «우리 반을 처음 차릴 때» 한 번 쓰는 것이라 여기에 이어 둡니다.
+
+       ★ HTML 만 베껴 오면 단추에 손이 안 붙습니다. 접는 자리 «안쪽»을
+       그대로 그 패널로 삼아, 그리는 함수도 손 붙이는 함수도 그대로 씁니다. */
+    P.set.innerHTML = h + '<details class="fold"><summary>엑셀 양식으로 한꺼번에 채우기</summary>' +
+      '<div class="fold-b" id="panel-file"></div></details>';
+    P.file = el('panel-file');
+    renderFile();
     bindSet();
   }
 
@@ -2315,7 +2419,24 @@ global.LEAP=LEAP;})(window);
       '안 본 것과 0점은 다릅니다. 빈칸은 평균에서 빠지고, 히트맵에서는 빗금으로 남습니다.<br>' +
       '<b>↑ ↓ 와 Enter</b> 로 세로로 옮겨 다닐 수 있습니다 — 이 표는 세로로 채우기 때문입니다.</p>';
 
-    P.in.innerHTML = h;
+    /* ★ 「입력」과 「대시보드」가 따로 있는 탭이었습니다. 그래서 다 넣고
+       탭을 옮겨야 그림이 보였고, 한 칸 고칠 때마다 오갔습니다.
+       이제 왼쪽에서 넣으면 오른쪽 그림이 바로 따라 바뀝니다. */
+    P.in.innerHTML = '<div class="wb"><div class="wb-pane">' + h + '</div>' +
+      '<div class="wb-pane wb-out"><div class="outbar"><b>바로 보이는 그림</b>' +
+      '<span class="sp"><button class="btn btn--ghost btn--sm" id="in-read" type="button">종이로 내기 →</button></span>' +
+      '</div><div class="dashbox" id="dashbox"></div>' +
+      '<p class="small muted" style="margin:9px 0 0">' +
+      '왼쪽에 한 칸만 넣어도 이 그림이 그려집니다. <b>다 채우지 않아도 됩니다.</b></p></div></div>';
+    renderDash();
+    var dh = P.in.querySelector('#dashbox');
+    if (dh) dh.innerHTML = P.dash.innerHTML;
+    var rb = P.in.querySelector('#in-read');
+    if (rb) rb.addEventListener('click', function () {
+      each(document.querySelectorAll('[role="tab"]'), function (t) {
+        if (t.getAttribute('aria-controls') === 'panel-read' && tabsApi) tabsApi.select(t);
+      });
+    });
     bindIn();
   }
 
@@ -3447,7 +3568,7 @@ global.LEAP=LEAP;})(window);
   LEAP.initThemeBtn(el('btn-theme'));
   /* 머리의 「AI 초안」 — 여덟 앱이 같은 자리에 둡니다(처음으로 · AI 초안 · 밝게/어둡게) */
   on(el('btn-ai'), 'click', openAI);
-  LEAP.initTabs(el('tablist'));
+  tabsApi = LEAP.initTabs(el('tablist'));
   render();
   bindFoot();
 

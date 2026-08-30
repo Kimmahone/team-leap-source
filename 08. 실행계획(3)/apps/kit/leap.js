@@ -212,6 +212,26 @@
     });
   };
 
+  /* --- 오른쪽 종이를 상자에 맞춰 줄이기 ------------------------------------
+     종이는 «실제 크기»(A4 세로 794px · 가로 1123px, 96dpi)로 그립니다.
+     그래야 화면에서 본 것과 인쇄한 것이 어긋나지 않습니다 — 마스터 함정 31번.
+     보여 줄 때만 상자 폭에 맞춰 줄입니다.
+
+     줄이는 것은 transform 입니다. zoom 은 사파리에서 인쇄에 새어 나갑니다.
+     줄인 뒤에는 높이를 손으로 잡아 줍니다 — transform 은 자리를 안 차지해서
+     그냥 두면 아래 여백이 종이 원래 높이만큼 남습니다. */
+  LEAP.fitPaper = function (box, fit, paperWidth) {
+    if (!box || !fit) return 1;
+    var w = paperWidth || 794;
+    var room = (box.clientWidth || 0) - 28;
+    if (room <= 0) return 1;
+    var scale = Math.min(1, room / w);
+    fit.style.transform = 'scale(' + scale + ')';
+    var inner = fit.firstElementChild || fit;
+    fit.style.height = ((inner.offsetHeight || 0) * scale) + 'px';
+    return scale;
+  };
+
   /* --- 한 걸음 되돌리기 ----------------------------------------------------
      되돌릴 수 없는 일을 물음 하나로 막는 앱이 넷 있었습니다(D·E·F·G).
      「계속할까요?」에 「예」를 누른 뒤에는 길이 없었습니다.
@@ -278,7 +298,10 @@
     'leap-lessonplan': '수업 설계안 만들기',
     'leap-classdata': '우리 반 데이터 보기',
     'leap-project': '프로젝트 학습 계획서',
-    'leap-required': '법정 의무교육 점검표'
+    'leap-required': '법정 의무교육 점검표',
+    'leap-howmany': '몇 명이면 되나',
+    'leap-year': '우리 학교 한 해',
+    'leap-rooms': '남는 교실'
   };
 
   /* 내보낼 자료에 표시를 얹습니다. 원본은 건드리지 않습니다. */
@@ -361,11 +384,15 @@
      role=tablist 를 좌우 화살표로도 움직이게 한다 (키보드만으로 전체 조작). */
   /* 〔2026. 8. 30.〕 **새로고침하면 늘 첫 탭으로 돌아갔습니다.**
      탭이 대여섯인 앱에서 실수로 새로고침 한 번이면 처음부터 다시 찾아 들어가야
-     했습니다. 그리고 **뒤로 가기 단추가 앱을 떠나 버렸습니다** — 탭을 옮긴 것은
-     기록에 남지 않았기 때문입니다.
+     했습니다. 그리고 **뒤로 가기 단추가 앱을 떠나 버렸습니다.**
 
      주소 끝에 지금 탭을 적습니다(`…/index.html#panel-week`). 그러면 셋이 함께 옵니다 —
-     새로고침해도 그 자리, 뒤로 가기로 앞 탭, 그리고 **특정 탭을 링크로 줄 수 있습니다.**
+     새로고침해도 그 자리, 뒤로 가기로 앞 탭, 그리고 특정 탭을 링크로 줄 수 있습니다.
+
+     ★ 처음에는 `location.hash` 에 적었는데, 그러면 **브라우저가 그 자리로 화면을
+     끌어내립니다.** 머리(앱 이름·단추)가 화면 밖으로 밀려 사라졌습니다.
+     그래서 `history.pushState` 로 **조용히** 적습니다 — 주소는 남고 화면은 안 움직입니다.
+     뒤로 가기는 `popstate` 로 받고, 주소창에 직접 쳐 넣는 길은 `hashchange` 로 받습니다.
 
      아는 탭 이름일 때만 움직입니다. 「본문으로 건너뛰기」가 넣는 `#main` 같은
      다른 표시에는 반응하지 않습니다. */
@@ -384,8 +411,9 @@
       var id = tab.getAttribute('aria-controls');
       /* 사람이 눌렀을 때만 기록에 남깁니다 — 처음 그릴 때까지 남기면
          뒤로 가기가 「같은 화면」으로 한 번 헛돕니다. */
-      if (writeHash && global.location && global.location.hash !== '#' + id) {
-        try { global.location.hash = '#' + id; } catch (e) {}
+      if (writeHash && global.history && global.history.pushState &&
+          (!global.location || global.location.hash !== '#' + id)) {
+        try { global.history.pushState({ leapTab: id }, '', '#' + id); } catch (e) {}
       }
       if (onChange) onChange(id);
     }
@@ -410,12 +438,10 @@
     var at = fromHash();
     select(tabs[at >= 0 ? at : 0], false);
 
-    /* 뒤로 가기·앞으로 가기 */
     if (global.addEventListener) {
-      global.addEventListener('hashchange', function () {
-        var i = fromHash();
-        if (i >= 0) select(tabs[i], false);
-      });
+      var back = function () { var i = fromHash(); if (i >= 0) select(tabs[i], false); };
+      global.addEventListener('popstate', back);
+      global.addEventListener('hashchange', back);
     }
 
     return { select: function (t) { select(t, true); }, tabs: tabs };

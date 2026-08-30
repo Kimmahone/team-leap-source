@@ -245,3 +245,42 @@ body {
 .leap-undox:hover{background:var(--leap-hairline);color:var(--leap-ink)}
 @media print{.leap-undobar{display:none!important}}
 @media (prefers-reduced-motion:reduce){.leap-undobar{transition:none}}
+
+/* ==========================================================================
+   일터 — 왼쪽에서 적고 오른쪽에서 봅니다
+   --------------------------------------------------------------------------
+   〔2026. 8. 30.〕 앱마다 「종이」가 **따로 있는 탭**이었습니다. 그래서 다 적고
+   나서야 무엇이 나오는지 알았고, 한 쪽에 안 들어가는 것도 그때 알았습니다.
+   앱 F 만 v0.3 에서 이것을 고쳤고 나머지는 그대로였습니다.
+
+   이제 아홉 앱이 같은 뼈대를 씁니다 —
+     .wb        두 칸 (왼쪽 적는 곳 · 오른쪽 나올 것)
+     .wb-out    오른쪽은 붙어서 따라옵니다. 왼쪽을 스크롤해도 종이가 안 사라집니다
+     .pv        종이를 담는 상자. 종이는 «실제 크기»로 그리고 여기서 줄여 보입니다
+
+   줄이는 것은 transform 입니다 — zoom 은 사파리에서 인쇄에 새어 나갑니다.
+   좁은 화면(1100px 아래)에서는 위아래로 눕습니다. 붙어 다니는 것도 풉니다 —
+   좁은 화면에서 종이가 따라다니면 적을 자리를 덮습니다.
+   ========================================================================== */
+.wb{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);
+  gap:20px;align-items:start}
+.wb-pane{min-width:0}
+.wb-out{position:sticky;top:70px}
+@media (max-width:1100px){
+  .wb{grid-template-columns:minmax(0,1fr)}
+  .wb-out{position:static}
+}
+
+/* 오른쪽 칸 머리 — 무엇이 나올지, 어떻게 낼지 */
+.outbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 0 11px}
+.outbar > b{font-size:.9375rem}
+.outbar .sp{margin-left:auto;display:flex;gap:7px;flex-wrap:wrap}
+.pgtag{font-size:.75rem;font-weight:800;padding:4px 11px;border-radius:999px;
+  background:var(--tint-teal);color:var(--solid-teal);white-space:nowrap}
+.pgtag.over{background:var(--tint-amber);color:var(--leap-amber)}
+
+.pv{background:var(--leap-hairline);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:14px;overflow:auto;
+  max-height:calc(100vh - 190px)}
+.pv-fit{transform-origin:top left}
+@media print{.pv,.wb-out{display:none!important}}

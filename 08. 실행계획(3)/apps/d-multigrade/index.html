@@ -98,6 +98,31 @@ button,input,textarea,select{font:inherit;color:inherit}
   background:transparent;color:var(--leap-gray);font-size:.9rem;cursor:pointer;line-height:1}
 .leap-undox:hover{background:var(--leap-hairline);color:var(--leap-ink)}
 @media print{.leap-undobar{display:none!important}}
+/* 이 앱의 종이는 A4 세로입니다 */
+.pv-page{width:794px;min-height:1123px;padding:45px;box-sizing:border-box;background:#fff;
+  box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.pv-page *{box-sizing:border-box}
+@media print{#print-area .pv-page{width:auto;min-height:0;padding:0;box-shadow:none}}
+
+/* ── 일터 — 왼쪽에서 적고 오른쪽에서 봅니다 ─────────────────────────────
+   앱마다 「종이」가 따로 있는 탭이었습니다. 그래서 다 적고 나서야 무엇이
+   나오는지 알았습니다. 이제 열 앱이 같은 뼈대를 씁니다.
+   줄이는 것은 transform 입니다 — zoom 은 사파리에서 인쇄에 새어 나갑니다. */
+.wb{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:20px;align-items:start}
+.wb-pane{min-width:0}
+.wb-out{position:sticky;top:70px}
+@media (max-width:1100px){.wb{grid-template-columns:minmax(0,1fr)}.wb-out{position:static}}
+.outbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 0 11px}
+.outbar > b{font-size:.9375rem}
+.outbar .sp{margin-left:auto;display:flex;gap:7px;flex-wrap:wrap}
+.pgtag{font-size:.75rem;font-weight:800;padding:4px 11px;border-radius:999px;
+  background:var(--tint-teal);color:var(--solid-teal);white-space:nowrap}
+.pgtag.over{background:var(--tint-amber);color:var(--leap-amber)}
+.pv{background:var(--leap-hairline);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:14px;overflow:auto;max-height:calc(100vh - 190px)}
+.pv-fit{transform-origin:top left}
+@media print{.pv,.wb-out{display:none!important}}
+
 @media (prefers-reduced-motion:reduce){.leap-undobar{transition:none}}
 
 header.top{background:var(--grad-head);color:#fff;position:relative;overflow:hidden}
@@ -854,7 +879,8 @@ LEAP.APP_NAMES={'leap-circuit':'순회교사 통합 시간표','leap-classboard'
   'leap-storybook':'지역 탐방 디지털 스토리북','leap-multigrade':'복식학급 수업 도우미',
   'leap-together':'이웃 학교 함께하기','leap-lessonplan':'수업 설계안 만들기',
   'leap-classdata':'우리 반 데이터 보기','leap-project':'프로젝트 학습 계획서',
-  'leap-required':'법정 의무교육 점검표'};
+  'leap-required':'법정 의무교육 점검표','leap-howmany':'몇 명이면 되나',
+  'leap-year':'우리 학교 한 해','leap-rooms':'남는 교실'};
 LEAP.stamp=function(appId,data){var o=LEAP.clone(data);o.app=appId;return o;};
 LEAP.otherApp=function(appId,obj){var a=obj&&obj.app;
   if(!a||a===appId)return null;return LEAP.APP_NAMES[a]||'다른 앱';};
@@ -879,6 +905,18 @@ LEAP.offerUndo=function(label,restore,seconds){
   el.appendChild(p);el.appendChild(btn);el.appendChild(x);
   el.classList.add('is-on');
   el._t=setTimeout(hide,(seconds||20)*1000);};
+/* 오른쪽 종이를 상자 폭에 맞춰 줄입니다. 종이는 «실제 크기»(A4 794/1123px)로
+   그려야 화면과 인쇄가 어긋나지 않습니다 — 마스터 함정 31번. 보여 줄 때만 줄입니다.
+   transform 은 자리를 안 차지하므로 높이를 손으로 잡아 줍니다. */
+LEAP.fitPaper=function(box,fit,paperWidth){
+  if(!box||!fit)return 1;
+  var w=paperWidth||794,room=(box.clientWidth||0)-28;
+  if(room<=0)return 1;
+  var scale=Math.min(1,room/w);
+  fit.style.transform='scale('+scale+')';
+  var inner=fit.firstElementChild||fit;
+  fit.style.height=((inner.offsetHeight||0)*scale)+'px';
+  return scale;};
 LEAP.guardModals=function(){
   if(!document.addEventListener||!document.querySelectorAll)return;   /* 검사의 흉내 document */
   var SEL='a[href],button:not([disabled]),input:not([disabled]),'+
@@ -911,9 +949,11 @@ LEAP.initThemeBtn=function(btn){if(!btn)return;
     btn.setAttribute('aria-label','화면을 '+t.replace(' 보기','')+' 바꿉니다');}
   paint();btn.addEventListener('click',function(){LEAP.toggleTheme();paint();});};
 /* 〔2026. 8. 30.〕 새로고침하면 늘 첫 탭으로 돌아갔고, 뒤로 가기는 앱을 떠났습니다.
-   주소 끝에 지금 탭을 적습니다(#panel-week). 새로고침해도 그 자리, 뒤로 가기로 앞 탭,
-   그리고 특정 탭을 링크로 줄 수 있습니다. 아는 탭 이름일 때만 움직이므로
-   「본문으로 건너뛰기」가 넣는 #main 에는 반응하지 않습니다. */
+   주소 끝에 지금 탭을 적습니다. 새로고침해도 그 자리, 뒤로 가기로 앞 탭.
+
+   ★ location.hash 로 적으면 **브라우저가 그 자리로 화면을 끌어내립니다** —
+   머리(앱 이름·단추)가 화면 밖으로 밀려 사라집니다. 실제로 그렇게 됐습니다.
+   그래서 history.pushState 로 «조용히» 적고, 뒤로 가기는 popstate 로 받습니다. */
 LEAP.initTabs=function(listEl,onChange){
   var tabs=Array.prototype.slice.call(listEl.querySelectorAll('[role="tab"]'));
   var ids=tabs.map(function(t){return t.getAttribute('aria-controls');});
@@ -922,9 +962,9 @@ LEAP.initTabs=function(listEl,onChange){
       t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1;
       var p=document.getElementById(t.getAttribute('aria-controls'));if(p)p.hidden=!on;});
     var id=tab.getAttribute('aria-controls');
-    /* 사람이 눌렀을 때만 기록에 남깁니다 — 처음 그릴 때까지 남기면 뒤로 가기가 헛돕니다 */
-    if(writeHash&&window.location&&window.location.hash!=='#'+id){
-      try{window.location.hash='#'+id;}catch(e){}}
+    if(writeHash&&window.history&&window.history.pushState&&
+       (!window.location||window.location.hash!=='#'+id)){
+      try{window.history.pushState({leapTab:id},'','#'+id);}catch(e){}}
     if(onChange)onChange(id);}
   tabs.forEach(function(tab,i){
     tab.addEventListener('click',function(){select(tab,true);});
@@ -935,8 +975,11 @@ LEAP.initTabs=function(listEl,onChange){
     return ids.indexOf(String(window.location.hash||'').slice(1));}
   var at=fromHash();
   select(tabs[at>=0?at:0],false);
-  if(window.addEventListener)window.addEventListener('hashchange',function(){
-    var i=fromHash();if(i>=0)select(tabs[i],false);});
+  /* 뒤로 가기·앞으로 가기. hashchange 도 함께 받습니다 — 주소창에 직접 쳐 넣는 길입니다 */
+  if(window.addEventListener){
+    var back=function(){var i=fromHash();if(i>=0)select(tabs[i],false);};
+    window.addEventListener('popstate',back);
+    window.addEventListener('hashchange',back);}
   return{select:function(t){select(t,true);},tabs:tabs};};
 global.LEAP=LEAP;})(window);
 
@@ -1619,6 +1662,26 @@ global.LEAP=LEAP;})(window);
 
   /* ---------- 수업 짜기 ---------- */
 
+  /* 오른쪽 칸 — 나올 지도안 */
+  function outPane(l) {
+    return '<div class="wb-pane wb-out">' +
+      '<div class="outbar"><b>나올 지도안</b>' +
+      '<span class="pgtag">A4 세로</span>' +
+      '<span class="sp">' +
+      '<button class="btn btn--sm" id="d-print" type="button">인쇄 · PDF</button>' +
+      '</span></div>' +
+      '<div class="pv" id="pv-box"><div class="pv-fit" id="pv-fit">' +
+      '<div class="pv-page" id="pv-page">' + printHTML(l) + '</div></div></div>' +
+      '<p class="small muted" style="margin:9px 0 0">' +
+      '왼쪽에서 구간을 옮기거나 활동을 적으면 이 지도안이 바로 따라 바뀝니다.</p></div>';
+  }
+  function fitOut() {
+    var box = pPlan.querySelector('#pv-box'), fit = pPlan.querySelector('#pv-fit');
+    if (box && fit) LEAP.fitPaper(box, fit, 794);
+    var b = pPlan.querySelector('#d-print');
+    if (b) b.addEventListener('click', function () { var l = L(); if (l) doPrint(l, false); });
+  }
+
   function renderPlan() {
     var d = D(), l = d.current;
     if (!l) { pPlan.innerHTML = viewStart(d); return bindStart(); }
@@ -1649,7 +1712,12 @@ global.LEAP=LEAP;})(window);
         '<div class="col"><div class="rail' + (pvFull ? ' is-full' : '') + '">' + viewPreview(d, l) + '</div></div>' +
       '</div>';
     }
-    pPlan.innerHTML = stepNav(d, l) + body + stepFoot(step);
+    /* ★ 지도안이 「인쇄」 뒤에만 있었습니다. 화면은 «시간 배치»이고 종이는
+       «지도안»이라 둘이 아주 다릅니다. 그래서 다 짜고 나서야 결재에 낼 것이
+       어떻게 생겼는지 알았습니다. 이제 오른쪽에 늘 있습니다. */
+    pPlan.innerHTML = '<div class="wb"><div class="wb-pane">' +
+      stepNav(d, l) + body + stepFoot(step) + '</div>' + outPane(l) + '</div>';
+    fitOut();
     bindPlan();
   }
 

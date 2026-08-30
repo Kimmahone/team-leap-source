@@ -53,13 +53,24 @@ const CLAIMS = [
   { dir: 'e-together',   name: '이웃 학교 함께하기' },
   { dir: 'f-lessonplan', name: '수업 설계안 만들기' },
   { dir: 'g-classdata',  name: '우리 반 데이터 보기' },
-  { dir: 'h-project',    name: '프로젝트 학습 계획서' },
-  { dir: 'i-required',   name: '법정 의무교육 점검표' }
+  { dir: 'i-required',   name: '법정 의무교육 점검표' },
+  { dir: 'j-howmany',    name: '몇 명이면 되나' },
+  { dir: 'k-year',       name: '우리 학교 한 해' },
+  { dir: 'l-rooms',      name: '남는 교실' }
+];
+
+/* 〔2026. 8. 30.〕 **내린 앱.** 주소를 그냥 없애면 즐겨찾기로 오신 분이 404 를
+   만나고, 적어 두신 자료를 꺼낼 길도 사라집니다. 그 자리에 안내 쪽을 세우고
+   12월 배포 때 걷습니다. 앱이 아니므로 위 검사는 받지 않습니다. */
+const RETIRED = [
+  { dir: 'i-hours',   name: '교육과정 시수 짜기',   when: '2026. 8. 7.' },
+  { dir: 'h-project', name: '프로젝트 학습 계획서', when: '2026. 8. 30.' }
 ];
 
 console.log('\n[1] 링크가 살아 있다 — 카탈로그가 깨지는 첫 번째 방식');
 const hrefs = [...html.matchAll(/href="\.\/([^"]+)"/g)].map(m => m[1]);
-check('아홉 앱 + 설명서 + 활용 가이드 링크가 모두 있다', hrefs.length === 19, hrefs.join(' '));
+check('앱마다 열기·설명서 링크 + 활용 가이드가 있다',
+  hrefs.length === CLAIMS.length * 2 + 1, hrefs.join(' '));
 check('활용 가이드로 가는 길이 있다', hrefs.includes('guide.html'));
 hrefs.forEach(h => {
   check('파일이 실제로 있다 — ' + h, fs.existsSync(path.join(__dirname, h)));
@@ -259,8 +270,8 @@ const APP_IDS = {
   'a-circuit': 'leap-circuit', 'b-classboard': 'leap-classboard',
   'c-storybook': 'leap-storybook', 'd-multigrade': 'leap-multigrade',
   'e-together': 'leap-together', 'f-lessonplan': 'leap-lessonplan',
-  'g-classdata': 'leap-classdata', 'h-project': 'leap-project',
-  'i-required': 'leap-required'
+  'g-classdata': 'leap-classdata', 'i-required': 'leap-required',
+  'j-howmany': 'leap-howmany', 'k-year': 'leap-year', 'l-rooms': 'leap-rooms'
 };
 CLAIMS.forEach(c => {
   const app = fs.readFileSync(path.join(__dirname, c.dir, 'index.html'), 'utf8');
@@ -278,7 +289,7 @@ CLAIMS.forEach(c => {
 CLAIMS.forEach(c => {
   const app = fs.readFileSync(path.join(__dirname, c.dir, 'index.html'), 'utf8');
   const known = Object.values(APP_IDS).filter(id => app.includes("'" + id + "'"));
-  check(c.dir + ' — 아홉 앱의 이름을 다 알고 있다', known.length === 9,
+  check(c.dir + ' — 다른 앱의 이름을 다 알고 있다', known.length === CLAIMS.length,
     '모르는 표시는 「다른 앱」으로만 말하게 된다 — ' + known.length + '개만 앎');
 });
 
@@ -398,11 +409,58 @@ CLAIMS.forEach(c => {
   /* 앱 H·I 는 걸음 탭을 따로 써서 initTabs 를 «부르지» 않습니다.
      사본에 정의만 남아 있으므로, 있는지가 아니라 **부르는지**를 봅니다. */
   if (!/LEAP\.initTabs\((?!listEl)/.test(app)) return;
-  check(c.dir + ' — 탭이 주소에 남는다', /window\.location\.hash='#'\+id/.test(app),
+  /* 〔8. 30.〕 처음에는 `location.hash` 에 적었는데, 그러면 **브라우저가 그 자리로
+     화면을 끌어내려** 머리(앱 이름·단추)가 화면 밖으로 사라졌습니다. 실제로 그랬습니다.
+     지금은 `history.pushState` 로 조용히 적습니다 — 주소는 남고 화면은 안 움직입니다. */
+  check(c.dir + ' — 탭이 주소에 남는다', /history\.pushState\(\{leapTab:id\}/.test(app),
     '새로고침하면 늘 첫 탭으로 돌아가고, 뒤로 가기는 앱을 떠난다');
-  check(c.dir + ' — 뒤로 가기를 받는다', /'hashchange'/.test(app));
+  check(c.dir + ' — 주소를 적느라 화면을 끌어내리지 않는다',
+    !/location\.hash\s*=\s*['"]?#/.test(app),
+    'location.hash 로 적으면 브라우저가 그 자리로 화면을 밀어 머리가 사라진다');
+  check(c.dir + ' — 뒤로 가기를 받는다', /'popstate'/.test(app) && /'hashchange'/.test(app));
   check(c.dir + ' — 모르는 표시에는 반응하지 않는다', /ids\.indexOf/.test(app),
     '「본문으로 건너뛰기」가 넣는 #main 에 탭이 반응하면 안 된다');
+});
+
+/* ★ 〔2026. 8. 30.〕 「종이」가 따로 있는 탭이던 자리.
+   그래서 다 적고 나서야 무엇이 나오는지 알았고, 한 쪽에 안 들어가는 것도
+   그때 알았습니다. 앱 F 만 v0.3 에서 고쳤고 나머지는 그대로였습니다.
+   이제 **왼쪽에서 적고 오른쪽에서 봅니다.** */
+console.log('\n[3-11] 왼쪽에서 적고 오른쪽에서 보는가');
+
+/* 앱 C 는 책 편집 화면이 곧 책 쪽이라(WYSIWYG) 오른쪽에 또 둘 것이 없습니다.
+   앱 G 는 재구성 중입니다. 둘은 여기서 빼고, 뺀 사실을 적어 둡니다. */
+const NO_SPLIT = { 'c-storybook': '편집 화면이 곧 책 쪽입니다 (WYSIWYG)' };
+CLAIMS.forEach(c => {
+  if (NO_SPLIT[c.dir]) return;
+  const app = fs.readFileSync(path.join(__dirname, c.dir, 'index.html'), 'utf8');
+  const twoCol = /class="wb"/.test(app) || /class="split"/.test(app) || /docgrid/.test(app);
+  check(c.dir + ' — 일하는 화면이 좌·우로 나뉜다', twoCol,
+    '「종이」가 따로 있는 탭이면 다 적고 나서야 무엇이 나오는지 알게 된다');
+  check(c.dir + ' — 오른쪽이 붙어서 따라온다',
+    /\.wb-out\{position:sticky|\.side\{position:sticky|\.docpv\{[^}]*position:sticky/.test(app),
+    '왼쪽을 스크롤하면 종이가 사라져 버린다');
+});
+check('종이를 상자에 맞춰 줄이는 창구가 원본에 있다',
+  fs.readFileSync(path.join(__dirname, 'kit', 'leap.js'), 'utf8').includes('LEAP.fitPaper'));
+
+console.log('\n[3-12] 내린 앱이 제 몫을 하는가');
+RETIRED.forEach(r => {
+  const f = path.join(__dirname, r.dir, 'index.html');
+  check(r.dir + ' — 자리에 안내 쪽이 있다', fs.existsSync(f));
+  if (!fs.existsSync(f)) return;
+  const t = fs.readFileSync(f, 'utf8');
+  check(r.dir + ' — 내렸다고 말한다', t.includes('내렸습니다'));
+  check(r.dir + ' — 언제 내렸는지 적는다', t.includes(r.when));
+  check(r.dir + ' — 왜 내렸는지 적는다', t.includes('왜 내렸나'));
+  check(r.dir + ' — ★ 적어 두신 것을 꺼내 갈 길이 있다',
+    t.includes('파일로 내려받기'),
+    '말없이 없애면 그 브라우저에 남은 자료를 꺼낼 길이 사라진다');
+  check(r.dir + ' — 갈 곳을 알려 준다', /href="\.\.\/[a-z-]+\/index\.html"/.test(t));
+  check(r.dir + ' — 검색에 잡히지 않게 한다', t.includes('name="robots" content="noindex"'));
+  check(r.dir + ' — 카탈로그가 광고하지 않는다',
+    !CLAIMS.some(c => c.dir === r.dir) && !html.includes(r.dir + '/index.html'),
+    '내린 앱을 목록에 두면 「열기」를 눌렀다가 안내 쪽을 만난다');
 });
 
 console.log('\n[4] 카탈로그 자신도 같은 원칙을 지킨다');
@@ -450,13 +508,15 @@ const TAKES_NAME = [
 ];
 const NO_NAME = CLAIMS.filter(c => !TAKES_NAME.some(t => t.dir === c.dir));
 
-check('아홉 앱을 뭉뚱그려 「이름을 받지 않는다」고 말하지 않는다',
-  !html.includes('<b>학생 이름을 받지 않습니다</b>') &&
-  html.includes('여덟 앱은 학생 이름을 받지 않습니다'),
-  '앱 G 가 이름을 받으므로 「아홉 앱 모두」로 읽히면 거짓이 된다');
-
-check('몇 앱이 안 받는지 수가 맞는다', NO_NAME.length === 8,
-  '카탈로그가 「여덟 앱은」이라고 적었다 — 실제로 ' + NO_NAME.length + '개');
+/* 몇 앱인지는 앱이 늘 때마다 바뀝니다. 손으로 적은 수와 실제를 맞춰 봅니다. */
+const NUM = ['한', '두', '세', '네', '다섯', '여섯', '일곱', '여덟', '아홉', '열',
+             '열한', '열두', '열세'];
+check('앱 전체를 뭉뚱그려 「이름을 받지 않는다」고 말하지 않는다',
+  !html.includes('<b>학생 이름을 받지 않습니다</b>'),
+  '앱 G 가 이름을 받으므로 「모든 앱」으로 읽히면 거짓이 된다');
+check('몇 앱이 안 받는지 수가 맞는다',
+  html.includes(NUM[NO_NAME.length - 1] + ' 앱은 학생 이름을 받지 않습니다'),
+  '실제로 ' + NO_NAME.length + '개 — 카탈로그가 적은 수와 맞아야 한다');
 
 TAKES_NAME.forEach(t => {
   check(t.k + ' 가 이름을 받는다는 것을 카탈로그가 밝힌다',
@@ -487,7 +547,7 @@ check('여는 방법이 적힌다', p.includes('index.html'));
 check('공통 원칙이 적힌다', p.includes('학생 이름을 받지 않습니다'));
 /* 학교로 돌리는 종이가 화면과 다른 말을 하면 안 됩니다 — [6-2] 참고 */
 check('종이도 앱 G 를 이름 대어 밝힌다',
-  p.includes('여덟 앱은 학생 이름을 받지 않습니다') && p.includes('앱 G'),
+  /[가-힣]+ 앱은 학생 이름을 받지 않습니다/.test(p) && p.includes('앱 G'),
   '종이는 되돌릴 수 없습니다. 뽑아서 돌린 뒤에는 고칠 수 없습니다');
 check('저작권이 들어간다', p.includes('2026 TEAM LEAP'));
 check('종이에는 링크를 넣지 않는다', !p.includes('href='),
@@ -501,7 +561,7 @@ check('화면의 제목이 하나뿐(h1)', (markupOf(html).match(/<h1[ >]/g) || 
 check('꾸밈 그림은 읽지 않는다',
   (html.match(/aria-hidden="true"/g) || []).length >= 8);
 check('앱마다 문서 조각(article)으로 나눴다',
-  (html.match(/<article class="app/g) || []).length === 9);
+  (html.match(/<article class="app/g) || []).length === CLAIMS.length);
 check('화살표는 글자가 아니라 꾸밈으로 처리',
   /<b aria-hidden="true">→<\/b>/.test(html), '스크린리더가 "오른쪽 화살표"를 읽으면 방해가 된다');
 

@@ -418,8 +418,11 @@ console.log('\n[되돌리기] 지우기 전 상태를 통으로 붙들어 둔다
   check('가져오기·처음부터도 되돌릴 수 있다',
     SRC.includes("markUndo('가져온 시간표를 열었습니다.')") &&
     SRC.includes("markUndo('처음부터 시작합니다.')"));
+  /* 마크업 모양(`innerHTML = undoBar() + html;`)을 세던 자리입니다.
+     주간 시간표가 두 칸이 되면서 그 모양이 바뀌었습니다. 지키려는 것은
+     «세 화면에 되돌리기 줄이 나온다»이지 «어떻게 이어 붙이는가»가 아닙니다. */
   check('되돌리기 줄이 세 화면에 나온다',
-    (SRC.match(/innerHTML = undoBar\(\) \+ html;/g) || []).length === 3);
+    (SRC.match(/undoBar\(\)\s*\+/g) || []).length === 3);
   check('한 걸음만 기억한다', /var undo = null;\s+\/\/ \{ snap:/.test(SRC),
     '여러 걸음을 쌓으면 지운 것이 계속 메모리에 남는다');
   check('다음 일을 하면 앞의 되돌리기가 사라진다',
