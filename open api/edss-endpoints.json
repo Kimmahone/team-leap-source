@@ -40,7 +40,7 @@
   },
   "filter": {
     "year": "",
-    "sido": ""
+    "sido": "ctpvNm"
   },
   "callCap": 900,
   "sido": "47",
@@ -54,9 +54,21 @@
       "role": "기준키 — 학교코드·학교급·시군·설립·운영상태",
       "priority": 1,
       "url": "https://openapi.edmgr.kr/openAPI/service/SA00202400011",
-      "params": {},
-      "fields": null,
-      "serviceId": "SA00202400011"
+      "params": {
+        "ctpvNm": "경상북도"
+      },
+      "fields": {
+        "year": "crtrYr",
+        "code": "opnId",
+        "name": "schlNm",
+        "level": "scclNm",
+        "sido": "ctpvNm",
+        "설립": "fndnSeNm",
+        "본분교": "mschBrncSeNm"
+      },
+      "serviceId": "SA00202400011",
+      "shape": "attr",
+      "yearParam": "crtrYr"
     },
     "classStudent": {
       "name": "학급및학생현황(EDSS제공용)",
@@ -64,9 +76,23 @@
       "role": "학생·학급을 한 번에 — 이것 하나로 되면 아래 둘은 검증용",
       "priority": 1,
       "url": "https://openapi.edmgr.kr/openAPI/service/SA00202400023",
-      "params": {},
-      "fields": null,
-      "serviceId": "SA00202400023"
+      "params": {
+        "ctpvNm": "경상북도"
+      },
+      "fields": {
+        "year": "trgtYr",
+        "code": "opnId",
+        "name": "schlNm",
+        "level": "scclNm",
+        "sido": "ctpvNm",
+        "sgg": "sggNm",
+        "edof": "edofNm",
+        "특수학급학생": "sclsStdntNope",
+        "특수학급수": "sclsCnt"
+      },
+      "serviceId": "SA00202400023",
+      "shape": "sped",
+      "yearParam": "trgtYr"
     },
     "studentStatus": {
       "name": "유초중등학생현황[교육통계][EDSS]",
@@ -74,9 +100,44 @@
       "role": "학교·학년·연도별 학생수 — 코호트 진급법의 재료",
       "priority": 1,
       "url": "https://openapi.edmgr.kr/openAPI/service/SA00202400014",
-      "params": {},
-      "fields": null,
-      "serviceId": "SA00202400014"
+      "params": {
+        "ctpvNm": "경상북도"
+      },
+      "fields": {
+        "year": "crtrYr",
+        "code": "opnId",
+        "name": "schlNm",
+        "level": "scclNm",
+        "sido": "ctpvNm",
+        "total": "kescStdntNope",
+        "초": [
+          "elscCrsGrdr1StdntNope",
+          "elscCrsGrdr2StdntNope",
+          "elscCrsGrdr3StdntNope",
+          "elscCrsGrdr4StdntNope",
+          "elscCrsGrdr5StdntNope",
+          "elscCrsGrdr6StdntNope"
+        ],
+        "중": [
+          "mdscCrsGrdr1StdntNope",
+          "mdscCrsGrdr2StdntNope",
+          "mdscCrsGrdr3StdntNope"
+        ],
+        "고": [
+          "hgscCrsGrdr1StdntNope",
+          "hgscCrsGrdr2StdntNope",
+          "hgscCrsGrdr3StdntNope"
+        ],
+        "복식": {
+          "초": "elscCrsDblsClasStdntNope",
+          "중": "mdscCrsDblsClasStdntNope",
+          "고": "hgscCrsDblsClasStdntNope"
+        },
+        "특수학급": "sclsStdntNope"
+      },
+      "serviceId": "SA00202400014",
+      "shape": "wide",
+      "yearParam": "crtrYr"
     },
     "classStatus": {
       "name": "유초중등학급현황[교육통계][EDSS]",
@@ -84,9 +145,48 @@
       "role": "학교·학년·연도별 학급수",
       "priority": 1,
       "url": "https://openapi.edmgr.kr/openAPI/service/SA00202400013",
-      "params": {},
-      "fields": null,
-      "serviceId": "SA00202400013"
+      "params": {
+        "ctpvNm": "경상북도"
+      },
+      "fields": {
+        "year": "crtrYr",
+        "code": "opnId",
+        "name": "schlNm",
+        "level": "scclNm",
+        "sido": "ctpvNm",
+        "total": "kescClasCnt",
+        "초": [
+          "elscCrsGrdr1FstnClasCnt",
+          "elscCrsGrdr2FstnClasCnt",
+          "elscCrsGrdr3FstnClasCnt",
+          "elscCrsGrdr4FstnClasCnt",
+          "elscCrsGrdr5FstnClasCnt",
+          "elscCrsGrdr6FstnClasCnt"
+        ],
+        "중": [
+          "mdscCrsGrdr1FstnClasCnt",
+          "mdscCrsGrdr2FstnClasCnt",
+          "mdscCrsGrdr3FstnClasCnt"
+        ],
+        "고": [
+          "hgscCrsGrdr1FstnClasCnt",
+          "hgscCrsGrdr2FstnClasCnt",
+          "hgscCrsGrdr3FstnClasCnt"
+        ],
+        "복식": {
+          "초": "elscCrsDblsClasCnt",
+          "중": "mdscCrsDblsClasCnt",
+          "고": "hgscCrsDblsClasCnt"
+        },
+        "과정계": {
+          "초": "elscCrsClasCnt",
+          "중": "mdscCrsClasCnt",
+          "고": "hgscCrsClasCnt"
+        }
+      },
+      "serviceId": "SA00202400013",
+      "shape": "wide",
+      "yearParam": "crtrYr"
     },
     "schoolLocation": {
       "name": "학교별위치정보",
@@ -95,8 +195,17 @@
       "priority": 2,
       "url": "https://openapi.edmgr.kr/openAPI/service/SA00202400041",
       "params": {},
-      "fields": null,
-      "serviceId": "SA00202400041"
+      "fields": {
+        "code": "schlCd",
+        "lat": "lat",
+        "lon": "lot",
+        "주소": "schlAddr",
+        "도로명": "schlRdnmAddr",
+        "우편번호": "zip"
+      },
+      "serviceId": "SA00202400041",
+      "shape": "loc",
+      "yearParam": ""
     },
     "schoolOverview": {
       "name": "유초중등학교개황[교육통계][EDSS]",
@@ -105,8 +214,19 @@
       "priority": 2,
       "url": "https://openapi.edmgr.kr/openAPI/service/SA00202400012",
       "params": {},
-      "fields": null,
-      "serviceId": "SA00202400012"
+      "fields": {
+        "year": "crtrYr",
+        "code": "opnId",
+        "name": "schlNm",
+        "level": "scclNm",
+        "sido": "ctpvNm",
+        "students": "kescSchlStdntNope",
+        "classes": "kescSchlClasCnt",
+        "teachers": "kescSchlSctcNope"
+      },
+      "serviceId": "SA00202400012",
+      "shape": "sum",
+      "yearParam": "crtrYr"
     },
     "eduStatOverview": {
       "name": "학교개황[교육통계]",
@@ -115,8 +235,34 @@
       "priority": 3,
       "url": "https://openapi.edmgr.kr/openAPI/service/SA00202400040",
       "params": {},
-      "fields": null,
-      "serviceId": "SA00202400040"
+      "fields": {
+        "code": "schlKediCd",
+        "neis": "neisSchlCd",
+        "name": "schlNm",
+        "sgg": "stdgSggNm",
+        "sido": "stdgCtpvNm",
+        "시군코드": "sigunKediCd",
+        "변동구분": "flctnSeCd",
+        "변동전후학교": "flctnBfafSchlCd",
+        "신설폐교": "nwcrExsCdscCd",
+        "주소": "schlRdnmAddr"
+      },
+      "serviceId": "SA00202400040",
+      "shape": "kedi",
+      "yearParam": ""
     }
-  }
+  },
+  "_명세서에서_알아낸_것": [
+    "〔2026-08-31 개발명세서 확인〕 짐작이 두 군데 틀렸습니다.",
+    "1) 한 줄이 «한 학교»입니다. 학년은 줄이 아니라 «칸 이름»에 박혀 있습니다.",
+    "   elscCrsGrdr1StdntNope … elscCrsGrdr6StdntNope (초1~6학년 학생수)",
+    "   그래서 학년 요청인자가 없고, 한 줄을 학년 수만큼 펼쳐야 합니다.",
+    "2) 학생·학급 표에 «시군구 칸이 없습니다». 시도명(ctpvNm)까지만 옵니다.",
+    "   시군은 학교명으로 대시보드의 경북 917곳 목록에 이어 붙입니다.",
+    "   (학급및학생현황에는 sggNm 이 있어 교차확인에 씁니다)",
+    "3) 학년별 학급수는 «단식»뿐입니다. 복식학급은 과정별 덩어리로 따로 옵니다.",
+    "   작은 학교일수록 복식이 많으므로 둘을 함께 담습니다.",
+    "4) 쪽 넘기는 인자가 명세서에 없습니다. ctpvNm=경상북도 로 걸러 한 번에 받습니다.",
+    "5) 조사년도 인자 이름이 표마다 다릅니다: crtrYr / trgtYr / exmnYmd(조사일자)."
+  ]
 }

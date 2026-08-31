@@ -6,7 +6,7 @@
 
 import {
   redact, unwrap, guessFields, toLevel, toSgg, num,
-  normalizeRows, aggregate, declineRates, cohortRates,
+  normalizeWide, parseSchoolList, sggLookup, aggregate, declineRates, cohortRates,
   projectCohort, backtest, toBlock, entryRate, GRADES, SGG_BY_NAME,
   AUTH_WAYS, buildRequest, wayName, findWay
 } from '../open api/bake-edss.mjs';
@@ -124,37 +124,109 @@ check('시군이 22곳이다', Object.keys(SGG_BY_NAME).length === 22);
 check('쉼표 든 숫자', num('1,234') === 1234);
 check('빈칸·하이픈은 0', num('') === 0 && num('-') === 0 && num(null) === 0);
 
-/* ── 5. 여러 해치를 지어 전 과정을 굴려 봅니다 ─────────────────────── */
-const F = {
-  year: 'YY', code: 'CD', name: 'NM', level: 'KND_NM', sgg: 'SGG_NM',
-  grade: 'GRADE', students: '학생수', classes: '학급수'
+/* ── 5. 여러 해치를 지어 전 과정을 굴려 봅니다 ───────────────────────
+   명세서대로 **한 줄이 한 학교**입니다. 학년은 칸 이름에 박혀 있습니다. */
+const COL = {
+  stu: { 초: n => 'elscCrsGrdr' + n + 'StdntNope', 중: n => 'mdscCrsGrdr' + n + 'StdntNope', 고: n => 'hgscCrsGrdr' + n + 'StdntNope' },
+  cls: { 초: n => 'elscCrsGrdr' + n + 'FstnClasCnt', 중: n => 'mdscCrsGrdr' + n + 'FstnClasCnt', 고: n => 'hgscCrsGrdr' + n + 'FstnClasCnt' }
 };
-const rows = [];
+const DBL = { stu: { 초: 'elscCrsDblsClasStdntNope' }, cls: { 초: 'elscCrsDblsClasCnt' } };
+const F = (kind) => ({
+  year: 'crtrYr', code: 'opnId', name: 'schlNm', level: 'scclNm', sido: 'ctpvNm',
+  초: [1, 2, 3, 4, 5, 6].map(COL[kind]['초']),
+  중: [1, 2, 3].map(COL[kind]['중']),
+  고: [1, 2, 3].map(COL[kind]['고']),
+  복식: DBL[kind]
+});
+/* 이름 → 시군. 실제로는 대시보드의 917곳에서 옵니다. */
+const SGGOF = (name) => (/안동/.test(name) ? 'andong' : /구미/.test(name) ? 'gumi' : null);
+
+function wideRow(kind, y, town, knd, stu, cls) {
+  const lv = knd === '초등학교' ? '초' : knd === '중학교' ? '중' : '고';
+  const r = { crtrYr: String(y), opnId: town + knd, schlNm: town + knd, scclNm: knd, ctpvNm: '경상북도' };
+  for (let g = 1; g <= GRADES[lv]; g++) r[COL[kind][lv](g)] = String(kind === 'stu' ? stu : cls);
+  return r;
+}
+const rowsStu = [], rowsCls = [];
 /* 안동은 해마다 5% 줄고, 구미는 그대로. 학년당 100명에서 시작합니다. */
 for (let y = 2016; y <= 2026; y++) {
-  for (const [sg, drop] of [['안동시', 0.05], ['구미시', 0]]) {
-    for (const [knd, lv] of [['초등학교', '초'], ['중학교', '중'], ['고등학교', '고']]) {
-      for (let gr = 1; gr <= GRADES[lv]; gr++) {
-        rows.push({
-          YY: String(y), CD: sg + knd, NM: sg + knd, KND_NM: knd, SGG_NM: sg,
-          GRADE: String(gr),
-          학생수: String(Math.round(100 * Math.pow(1 - drop, y - 2016))),
-          학급수: '4'
-        });
-      }
+  for (const [town, drop] of [['안동', 0.05], ['구미', 0]]) {
+    for (const knd of ['초등학교', '중학교', '고등학교']) {
+      const n = Math.round(100 * Math.pow(1 - drop, y - 2016));
+      rowsStu.push(wideRow('stu', y, town, knd, n, 4));
+      rowsCls.push(wideRow('cls', y, town, knd, n, 4));
     }
   }
 }
-const nz = normalizeRows(rows, F);
-check('모든 행이 기록으로 바뀐다', nz.records.length === rows.length);
-check('학교급을 못 읽은 행이 없다', nz.skipped.level === 0);
+const nzS = normalizeWide(rowsStu, F('stu'), SGGOF, 'stu');
+const nzC = normalizeWide(rowsCls, F('cls'), SGGOF, 'cls');
+check('한 줄이 학년 수만큼 펼쳐진다', nzS.records.length === 11 * 2 * (6 + 3 + 3));
+check('학교급을 못 읽은 줄이 없다', nzS.skipped.level === 0);
+check('시군을 못 붙인 줄이 없다', nzS.skipped.sgg === 0);
+check('학생 표는 학생만 채운다', nzS.records.every(r => r.cls === 0));
+check('학급 표는 학급만 채운다', nzC.records.every(r => r.stu === 0));
+check('학년 번호가 1부터 붙는다',
+  nzS.records.filter(r => r.lv === '초' && r.year === 2016 && r.sgg === 'andong')
+    .map(r => r.grade).sort((a, b) => a - b).join(',') === '1,2,3,4,5,6');
 
-const agg = aggregate(nz.records);
+/* 값이 하나도 없는 과정은 줄을 만들지 않습니다. 0 으로 채우면 초등학교가
+   중·고 학생 0명을 가진 것처럼 보이고, 학교 수가 세 배가 됩니다. */
+check('값 없는 과정은 기록을 만들지 않는다',
+  normalizeWide([wideRow('stu', 2026, '안동', '초등학교', 10, 0)], F('stu'), SGGOF, 'stu')
+    .records.every(r => r.lv === '초'));
+/* 초·중 통합운영학교는 한 줄에 두 과정이 다 들어 있습니다. 학교급명 하나로
+   가르면 둘 중 하나를 통째로 잃습니다. */
+const both = Object.assign(wideRow('stu', 2026, '안동', '초등학교', 10, 0),
+  { mdscCrsGrdr1StdntNope: '7', mdscCrsGrdr2StdntNope: '7', mdscCrsGrdr3StdntNope: '7' });
+const nzBoth = normalizeWide([both], F('stu'), SGGOF, 'stu');
+check('통합운영학교는 두 과정이 다 나온다',
+  new Set(nzBoth.records.map(r => r.lv)).size === 2);
+check('학교급명이 「초등학교」여도 중학교 과정을 버리지 않는다',
+  nzBoth.records.filter(r => r.lv === '중').length === 3);
+
+/* 복식학급은 어느 학년인지 알 수 없습니다. 버리지 않고 학년 0 으로 둡니다 —
+   작은 학교일수록 복식이 많아서, 버리면 시골 학교만 줄어 보입니다. */
+const dbl = Object.assign(wideRow('cls', 2026, '안동', '초등학교', 0, 1), { elscCrsDblsClasCnt: '2' });
+const nzDbl = normalizeWide([dbl], F('cls'), SGGOF, 'cls');
+check('복식학급을 버리지 않는다', nzDbl.records.some(r => r.grade === 0 && r.cls === 2));
+check('복식은 학년을 지어내지 않는다', nzDbl.records.filter(r => r.grade === 0)[0].dbls === true);
+
+check('시군을 못 붙이면 이름을 세어 알린다',
+  normalizeWide([wideRow('stu', 2026, '서울', '초등학교', 10, 0)], F('stu'), SGGOF, 'stu')
+    .missing['서울초등학교'] === 1);
+check('시군을 못 붙인 줄은 기록으로 만들지 않는다',
+  normalizeWide([wideRow('stu', 2026, '서울', '초등학교', 10, 0)], F('stu'), SGGOF, 'stu')
+    .records.length === 0);
+check('개방ID 로 이으면 이름이 겹쳐도 갈라진다',
+  normalizeWide([wideRow('stu', 2026, '남산', '초등학교', 10, 0)], F('stu'),
+    (nm, cd) => (cd === '남산초등학교' ? 'yeongju' : null), 'stu').records[0].sgg === 'yeongju');
+
+/* ── 5-1. 대시보드에서 시군을 읽어 온다 ─────────────────────────────── */
+const DASH_HTML = fs.readFileSync(path.join(ROOT, '06. 실행계획(1)/prototype/index.html'), 'utf8');
+const smap = parseSchoolList(DASH_HTML);
+check('대시보드에서 학교 목록을 읽는다', smap && Object.keys(smap).length > 850);
+check('22개 시군이 다 나온다',
+  new Set(Object.values(smap).filter(Boolean)).size === 22);
+const look = sggLookup(smap);
+check('보통 학교는 시군이 붙는다', look('안동중학교') === 'andong');
+check('분교장은 본교와 같은 시군', look('녹전초등학교원천분교장') === 'andong');
+check('띄어쓰기가 달라도 붙는다', look(' 영양초등학교 ') === 'yeongyang');
+/* 남산초등학교는 영주·경산 두 곳에 있습니다. 먼저 만난 쪽으로 정해 버리면
+   스무 곳이 조용히 엉뚱한 시군으로 갑니다. 모르면 모른다고 합니다. */
+check('두 시군에 같은 이름이면 찍지 않는다', look('남산초등학교') === null);
+check('없는 학교는 null', look('없는초등학교') === null);
+check('겹치는 이름이 실제로 있다 (이 검사가 헛돌지 않는지)',
+  Object.values(smap).filter(v => v === null).length >= 5);
+
+const agg = aggregate(nzS.records.concat(nzC.records));
 check('연도 11개', agg.years.length === 11);
 check('연도가 오름차순', agg.years[0] === 2016 && agg.years[10] === 2026);
 check('시군 2곳', Object.keys(agg.byYear[2026]).length === 2);
-check('학교 수를 코드로 센다 (학년별 6행을 6개교로 세지 않는다)', agg.byYear[2026].andong['초'].sch === 1);
+check('학교 수를 개방ID 로 센다 (학년별 6줄을 6개교로 세지 않는다)',
+  agg.byYear[2026].andong['초'].sch === 1);
 check('초등 학생수는 학년 6개의 합', agg.byYear[2016].gumi['초'].stu === 600);
+check('학생과 학급이 같은 칸에 모인다',
+  agg.byYear[2016].gumi['초'].stu === 600 && agg.byYear[2016].gumi['초'].cls === 24);
 check('학년별 표가 학교급마다 선다', agg.grade['초'][2016].length === 6 && agg.grade['중'][2016].length === 3);
 
 const rt = declineRates(agg);
@@ -246,6 +318,37 @@ check('호출 한도를 정해 둔다 (하루 한도를 넘기면 그날은 못 
   Number(cfg.callCap) > 0 && Number(cfg.callCap) <= 10000);
 check('게이트웨이가 POST 라는 것을 적어 두었다', JSON.stringify(cfg).includes('POST'));
 
+/* 개발명세서에 적힌 칸 이름을 그대로 못 박습니다. 한 글자만 틀려도 그 학년이
+   조용히 0 이 되는데, 합계는 그럴듯해 보입니다. */
+const SPEC = {
+  studentStatus: { 초: 'elscCrsGrdr#StdntNope', 중: 'mdscCrsGrdr#StdntNope', 고: 'hgscCrsGrdr#StdntNope' },
+  classStatus:   { 초: 'elscCrsGrdr#FstnClasCnt', 중: 'mdscCrsGrdr#FstnClasCnt', 고: 'hgscCrsGrdr#FstnClasCnt' }
+};
+for (const id of Object.keys(SPEC)) {
+  const f = cfg.apis[id].fields;
+  for (const lv of ['초', '중', '고']) {
+    const want = [];
+    for (let g = 1; g <= GRADES[lv]; g++) want.push(SPEC[id][lv].replace('#', g));
+    check(id + ' ' + lv + ' 학년 칸 이름이 명세서와 같다',
+      JSON.stringify(f[lv]) === JSON.stringify(want),
+      '있는 값: ' + JSON.stringify(f[lv]));
+  }
+  check(id + ' 은 조사년도 인자가 crtrYr 이다', cfg.apis[id].yearParam === 'crtrYr');
+  check(id + ' 은 시도로 걸러 받는다', cfg.apis[id].params.ctpvNm === '경상북도');
+  check(id + ' 은 복식학급도 담는다', !!(f['복식'] && f['복식']['초']));
+  check(id + ' 은 한 줄이 한 학교라고 적어 둔다', cfg.apis[id].shape === 'wide');
+}
+check('학급및학생현황만 조사년도 이름이 다르다 (trgtYr)',
+  cfg.apis.classStudent.yearParam === 'trgtYr');
+check('학급및학생현황은 시군구 칸을 가지고 있다 (개방ID→시군을 여기서 얻는다)',
+  cfg.apis.classStudent.fields.sgg === 'sggNm');
+check('학생·학급 표에는 시군구 칸이 없다 (있다고 적으면 전부 버려진다)',
+  !cfg.apis.studentStatus.fields.sgg && !cfg.apis.classStatus.fields.sgg);
+check('위치정보는 위도·경도 칸 이름을 안다 (경도는 lon 이 아니라 lot)',
+  cfg.apis.schoolLocation.fields.lat === 'lat' && cfg.apis.schoolLocation.fields.lon === 'lot');
+check('쪽 넘기는 인자가 없다고 적어 둔다 (명세서에 없다)',
+  !cfg.paging.page && !cfg.paging.size);
+
 /* 신청안 문서와 Secret 이름이 어긋나면 워크플로가 조용히 키를 못 찾습니다. */
 const plan = fs.readFileSync(path.join(ROOT, '06. 실행계획(1)/EDSS_Open_API_신청안.md'), 'utf8');
 check('문서와 코드의 Secret 이름이 같다',
@@ -271,26 +374,32 @@ check('배포 저장소가 아니라는 것도 말한다', /배포 저장소 tea
 import { execFileSync } from 'node:child_process';
 import os from 'node:os';
 
-const rows22 = [];
+const rows22S = [], rows22C = [];
 const NAMES = Object.keys(SGG_BY_NAME);
+/* 실제 시군 이름을 그대로 씁니다 — 이름으로 시군을 잇는 길이 실제로 도는지
+   함께 보려는 것입니다. */
+const NAME2SGG = {};
+NAMES.forEach(nm => { NAME2SGG[nm] = SGG_BY_NAME[nm]; });
+const look22 = (nm) => {
+  for (const k of NAMES) if (nm.indexOf(k) === 0) return NAME2SGG[k];
+  return null;
+};
 for (let y = 2016; y <= 2026; y++) {
   NAMES.forEach((nm, i) => {
     const drop = 0.02 + (i % 5) * 0.015;          // 시군마다 다른 기울기
-    for (const [knd, lv] of [['초등학교', '초'], ['중학교', '중'], ['고등학교', '고']]) {
+    for (const knd of ['초등학교', '중학교', '고등학교']) {
       for (let sch = 0; sch < 3; sch++) {
-        for (let gr = 1; gr <= GRADES[lv]; gr++) {
-          rows22.push({
-            YY: String(y), CD: nm + knd + sch, NM: nm + knd + sch, KND_NM: knd, SGG_NM: nm + '시',
-            GRADE: String(gr),
-            학생수: String(Math.max(1, Math.round(40 * Math.pow(1 - drop, y - 2016)))),
-            학급수: '2'
-          });
-        }
+        const n = Math.max(1, Math.round(40 * Math.pow(1 - drop, y - 2016)));
+        const rs = wideRow('stu', y, nm, knd, n, 2), rc = wideRow('cls', y, nm, knd, n, 2);
+        rs.opnId = rs.schlNm = rc.opnId = rc.schlNm = nm + knd + sch;
+        rows22S.push(rs); rows22C.push(rc);
       }
     }
   });
 }
-const a22 = aggregate(normalizeRows(rows22, F).records);
+const a22 = aggregate(
+  normalizeWide(rows22S, F('stu'), look22, 'stu').records
+    .concat(normalizeWide(rows22C, F('cls'), look22, 'cls').records));
 check('지어낸 자료가 22개 시군을 다 덮는다', Object.keys(a22.byYear[2026]).length === 22);
 const b22 = {};
 for (const y of Object.keys(a22.grade['초']).map(Number)) b22[y - 6] = a22.grade['초'][y][0] / 0.78;

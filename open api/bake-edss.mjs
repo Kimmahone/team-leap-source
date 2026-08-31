@@ -198,27 +198,104 @@ export function toSgg(v) {
   return null;
 }
 
-/* ══ 5. 행 → 기록 ═══════════════════════════════════════════════════════ */
-export function normalizeRows(rows, fields) {
-  const out = [], skipped = { level: 0, sgg: 0, year: 0 };
+/* ══ 5-2. 한 줄이 «한 학교» 입니다 ═══════════════════════════════════════
+   〔2026. 8. 31. 개발명세서 확인〕 처음에는 한 줄이 «한 학교의 한 학년»인
+   줄 알고 만들었습니다. 아닙니다. **학년이 칸 이름에 박혀 있습니다.**
+
+     elscCrsGrdr1StdntNope … elscCrsGrdr6StdntNope   초 1~6학년 학생수
+     mdscCrsGrdr1StdntNope … 3                        중 1~3학년
+     hgscCrsGrdr1StdntNope … 3                        고 1~3학년
+
+   그래서 학년 요청인자가 없고, 한 줄을 학년 수만큼 **펼쳐야** 합니다.
+
+   학교급도 scclNm 만 믿지 않습니다. **어느 과정 칸에 값이 있는지**로 봅니다 —
+   초·중 통합운영학교는 한 줄에 두 과정이 다 들어 있어서, 학교급명 하나로는
+   둘 중 하나를 통째로 잃습니다.
+
+   학년별 학급수는 «단식»뿐입니다. 복식학급은 과정별 덩어리로 따로 옵니다.
+   작은 학교일수록 복식이 많으므로 버리지 않고 학년 0 으로 담습니다. */
+export function normalizeWide(rows, fields, sggOf, into) {
+  const key = into === 'cls' ? 'cls' : 'stu';
+  const out = [], skipped = { year: 0, sgg: 0, level: 0 }, missing = {};
   for (const r of rows || []) {
     const year = num(r[fields.year]);
     if (year < 1990 || year > 2100) { skipped.year++; continue; }
-    const lv = toLevel(r[fields.level] != null ? r[fields.level] : r[fields.name]);
-    if (!lv) { skipped.level++; continue; }
-    const sgg = toSgg(fields.sgg ? r[fields.sgg] : null);
-    if (!sgg) { skipped.sgg++; continue; }
-    const g = fields.grade ? num(r[fields.grade]) : 0;
-    out.push({
-      year, lv, sgg,
-      code: fields.code ? String(r[fields.code] || '') : '',
-      name: fields.name ? String(r[fields.name] || '') : '',
-      grade: g >= 1 && g <= GRADES[lv] ? g : 0,
-      stu: fields.students ? num(r[fields.students]) : 0,
-      cls: fields.classes ? num(r[fields.classes]) : 0
-    });
+    const name = String(r[fields.name] == null ? '' : r[fields.name]).trim();
+    const code0 = fields.code ? String(r[fields.code] || '') : '';
+    let sgg = fields.sgg ? toSgg(r[fields.sgg]) : null;
+    if (!sgg && sggOf) sgg = sggOf(name, code0);
+    if (!sgg) { skipped.sgg++; if (name) missing[name] = (missing[name] || 0) + 1; continue; }
+    const code = code0;
+    let any = false;
+    for (const lv of ['초', '중', '고']) {
+      const cols = fields[lv];
+      if (!cols || !cols.length) continue;
+      const vals = [];
+      for (let i = 0; i < cols.length; i++) vals.push(num(r[cols[i]]));
+      const dbl = fields['복식'] && fields['복식'][lv] ? num(r[fields['복식'][lv]]) : 0;
+      let sum = 0; for (const v of vals) sum += v;
+      if (!sum && !dbl) continue;              // 그 과정이 없는 학교
+      any = true;
+      for (let g = 0; g < vals.length && g < GRADES[lv]; g++) {
+        const rec = { year: year, lv: lv, sgg: sgg, code: code, name: name, grade: g + 1, stu: 0, cls: 0 };
+        rec[key] = vals[g];
+        out.push(rec);
+      }
+      if (dbl) {
+        /* 복식은 어느 학년인지 알 수 없습니다. 학년 0 으로 둡니다 —
+           합계에는 들어가고 진급률 계산에는 안 들어갑니다. */
+        const rec = { year: year, lv: lv, sgg: sgg, code: code, name: name, grade: 0, stu: 0, cls: 0, dbls: true };
+        rec[key] = dbl;
+        out.push(rec);
+      }
+    }
+    if (!any) skipped.level++;
   }
-  return { records: out, skipped };
+  return { records: out, skipped: skipped, missing: missing };
+}
+
+/* ══ 5-3. 시군은 어디서 오나 ═════════════════════════════════════════════
+   학생·학급 표에는 **시군구 칸이 없습니다.** 시도명(경상북도)까지만 옵니다.
+   그래서 학교 이름으로 대시보드의 경북 917곳 목록에 이어 붙입니다.
+   그 목록은 이미 시군을 알고 있고, 우리가 관리하는 것이라 믿을 수 있습니다.
+
+   붙지 않는 이름은 조용히 버리지 않고 세어서 알립니다 — 그게 통폐합이든
+   이름이 다른 것이든, 몇 곳인지는 사람이 봐야 합니다. */
+export function parseSchoolList(html) {
+  const m = html.match(/ {2}var SCHOOL_RAW = \{\n([\s\S]*?)\n {2}\};/);
+  if (!m) return null;
+  const KNAME = { e: '초등학교', m: '중학교', h: '고등학교' };
+  const map = {};
+  for (const line of m[1].split('\n')) {
+    const lm = line.match(/^\s*(\w+): '(.*)',?$/);
+    if (!lm) continue;
+    for (const rec of lm[2].split(';')) {
+      const f = rec.split('|');
+      if (f.length < 2 || !KNAME[f[1]]) continue;
+      const nm = f[0].replace('*', KNAME[f[1]]);
+      /* 같은 이름이 두 시군에 있으면 **null 로 둡니다.**
+         경북에는 남산초등학교(영주·경산)처럼 겹치는 이름이 10가지 있습니다.
+         먼저 만난 쪽으로 정해 버리면 스무 곳이 조용히 엉뚱한 시군으로 갑니다.
+         모르면 모른다고 하고, 못 붙인 곳으로 세어 알립니다. */
+      if (nm in map && map[nm] !== lm[1]) map[nm] = null;
+      else if (!(nm in map)) map[nm] = lm[1];
+    }
+  }
+  return Object.keys(map).length ? map : null;
+}
+/* 「안동 길안초등학교」·「길안초등학교 」처럼 자잘하게 다릅니다.
+   띄어쓰기를 지우고 견줍니다. 그래도 안 붙으면 null 입니다 — 지어내지 않습니다. */
+export function sggLookup(map) {
+  const flat = {};
+  for (const k of Object.keys(map || {})) if (map[k]) flat[k.replace(/\s/g, '')] = map[k];
+  return function (name) {
+    if (!name) return null;
+    const n = String(name).replace(/\s/g, '');
+    if (flat[n]) return flat[n];
+    /* 분교장은 본교 이름으로 붙습니다 — 같은 시군입니다. */
+    const b = n.replace(/(분교장|분교).*$/, '');
+    return b !== n && flat[b] ? flat[b] : null;
+  };
 }
 
 /* ══ 6. 모으기 ═══════════════════════════════════════════════════════════
@@ -688,66 +765,96 @@ async function main() {
   }
 
   /* --- 본 수집: 연도를 돌면서 페이지를 다 넘깁니다 ---------------------- */
-  const pick = ['classStudent', 'studentStatus', 'classStatus'].filter(id => ready.includes(id));
+  /* 학급및학생현황은 특수교육 쪽 표입니다(특수학급·전공과·통합학급).
+     학년별 학생·학급 시계열은 아래 둘에서만 나옵니다. */
+  const pick = ['studentStatus', 'classStatus'].filter(id => ready.includes(id));
   if (!pick.length) {
     cry('학생·학급 API 가 하나도 준비되지 않았습니다. 시계열을 만들 수 없습니다.');
     process.exit(3);
   }
   if (!way) { cry('인증 방법을 찾지 못해 수집을 시작하지 않습니다.'); process.exit(3); }
 
-  /* 요청변수 이름은 **코드가 아니라 설정 파일**에서 옵니다. 이름이 비어 있으면
-     그 인자는 아예 보내지 않습니다 — 이 게이트웨이는 모르는 것에 까다롭습니다.
-     probe 가 알려 준 이름을 edss-endpoints.json 의 paging·filter 에 적으세요. */
-  const PG = cfg.paging || {}, FL = cfg.filter || {};
-  const bodyFor = (a, y, page) => {
-    const b = Object.assign({}, a.params || {});
-    if (PG.page) b[PG.page] = page;
-    if (PG.size) b[PG.size] = PG.sizeValue || 1000;
-    if (FL.year && y != null) b[FL.year] = y;
-    if (FL.sido) b[FL.sido] = cfg.sido || '47';
-    return b;
+  /* --- 시군을 이어 붙일 목록을 먼저 읽습니다 ---------------------------
+     학생·학급 표에는 시군구 칸이 없습니다. 대시보드가 가진 경북 917곳으로
+     잇습니다. 목록을 못 읽으면 시작하지 않습니다 — 시군 없이 모으면
+     전부 버려지는데, 그게 「0건」으로만 보입니다. */
+  let calls0 = 0;
+  let html = '';
+  try { html = fs.readFileSync(TARGET, 'utf8'); }
+  catch (e) { cry('대시보드를 열지 못했습니다: ' + TARGET); process.exit(3); }
+  const schoolMap = parseSchoolList(html);
+  if (!schoolMap) { cry('대시보드에서 SCHOOL_RAW 를 찾지 못했습니다.'); process.exit(3); }
+  const byName = sggLookup(schoolMap);
+  const ambiguous = Object.keys(schoolMap).filter(function (k) { return !schoolMap[k]; });
+  say('시군을 이어 붙일 학교 이름 ' + Object.keys(schoolMap).length + '가지를 대시보드에서 읽었습니다.' +
+    (ambiguous.length ? '  (두 시군에 같은 이름 ' + ambiguous.length + '가지는 이름으로 못 정합니다)' : ''));
+
+  /* --- 개방ID 로 시군을 잇습니다 -----------------------------------------
+     학급및학생현황에는 opnId 와 sggNm 이 **함께** 들어 있습니다. 이 표를 한 번
+     받아 두면 이름이 겹치는 학교도 정확히 갈라집니다. 못 받으면 이름으로만
+     잇고, 겹치는 이름은 못 붙인 것으로 셉니다 — 찍지 않습니다. */
+  const byCode = {};
+  if (ready.indexOf('classStudent') >= 0) {
+    const c = cfg.apis['classStudent'];
+    const cb = Object.assign({}, c.params || {});
+    if (c.yearParam) cb[c.yearParam] = String(TO);
+    try {
+      const cr = await callOnce(c.url, keyOf(c.secret), cb, way, secrets);
+      calls0++;
+      if (cr.ok) {
+        for (const row of unwrap(cr.json).rows) {
+          const id = String(row[c.fields.code] || ''), sg = toSgg(row[c.fields.sgg]);
+          if (id && sg) byCode[id] = sg;
+        }
+      }
+    } catch (e) { /* 없으면 이름으로만 잇습니다 */ }
+    const n = Object.keys(byCode).length;
+    say(n ? '  개방ID → 시군 ' + n + '곳을 학급및학생현황에서 받았습니다.'
+          : '  ⚠ 개방ID → 시군을 못 받아 학교 이름으로만 잇습니다.');
+  }
+  const sggOf = function (name, code) {
+    if (code && byCode[code]) return byCode[code];
+    return byName(name);
   };
-  const SIZE = (cfg.paging && cfg.paging.sizeValue) || 1000;
-  /* 연도 인자 이름을 모르면 연도로 나눠 부르지 못합니다. 그때는 한 번에
-     받아서 응답의 연도 칸으로 나눕니다 — 없는 인자를 지어내지 않습니다. */
-  const YEARS = FL.year ? [] : [null];
-  if (FL.year) for (let y = FROM; y <= TO; y++) YEARS.push(y);
-  if (!FL.year) say('  ⚠ 연도 인자 이름이 설정에 없습니다 — 나누지 않고 받아 응답의 연도 칸으로 가릅니다.');
 
   const all = [];
-  let calls = 0;
-  const CALL_CAP = Number(cfg.callCap || 900);   // 하루 호출 한도를 넘기지 않습니다
+  let calls = calls0;
+  const CALL_CAP = Number(cfg.callCap || 900);
+  const missAll = {};
   for (const id of pick) {
     const a = cfg.apis[id], key = keyOf(a.secret);
-    for (const y of YEARS) {
-      let page = 1, got = 0, total = null;
-      for (;;) {
-        if (calls >= CALL_CAP) { cry('  ⚠ 호출 한도 ' + CALL_CAP + '번에 닿아 멈춥니다.'); break; }
-        let r;
-        try { r = await callOnce(a.url, key, bodyFor(a, y, page), way, secrets); }
-        catch (e) { cry('  ✗ ' + a.name + (y ? ' ' + y + '년' : '') + ' ' + page + '쪽 — ' + redact(String(e.message), secrets)); break; }
-        calls++;
-        if (!r.ok) { cry('  ✗ ' + a.name + (y ? ' ' + y + '년' : '') + ' ' + page + '쪽 — HTTP ' + r.status + ' ' + r.msg); break; }
-        const u = unwrap(r.json);
-        if (total == null) total = u.total;
-        if (!u.rows.length) break;
-        const f = guessFields(u.rows[0], a.fields).picked;
-        const { records } = normalizeRows(u.rows, f);
-        /* 연도 칸이 없는 API 는 요청한 해로 채웁니다. 요청한 해도 없으면
-           그 행은 버립니다 — 어느 해인지 모르는 값은 시계열에 못 넣습니다. */
-        for (const rec of records) if (!rec.year && y) rec.year = y;
-        all.push(...records.filter(rec => rec.year));
-        got += u.rows.length;
-        if (!PG.page) break;                      // 쪽 넘기는 법을 모르면 한 번만
-        if (got >= total || u.rows.length < SIZE) break;
-        page++;
-        await new Promise(r2 => setTimeout(r2, 150));
-      }
-      say('  ' + a.name + (y ? ' ' + y + '년' : '') + ' — ' + got + '행');
-      await new Promise(r2 => setTimeout(r2, 150));
+    const into = id === 'classStatus' ? 'cls' : 'stu';
+    /* 조사년도 인자 이름이 표마다 다릅니다 — crtrYr · trgtYr · exmnYmd. */
+    const yp = a.yearParam || '';
+    const years = [];
+    if (yp) { for (let y = FROM; y <= TO; y++) years.push(y); } else years.push(null);
+    for (const y of years) {
+      if (calls >= CALL_CAP) { cry('  ⚠ 호출 한도 ' + CALL_CAP + '번에 닿아 멈춥니다.'); break; }
+      const body = Object.assign({}, a.params || {});
+      if (yp && y) body[yp] = String(y);
+      let r;
+      try { r = await callOnce(a.url, key, body, way, secrets); }
+      catch (e) { cry('  ✗ ' + a.name + ' ' + (y || '') + ' — ' + redact(String(e.message), secrets)); continue; }
+      calls++;
+      if (!r.ok) { cry('  ✗ ' + a.name + ' ' + (y || '') + ' — HTTP ' + r.status + ' ' + r.msg); continue; }
+      const u = unwrap(r.json);
+      const nz = normalizeWide(u.rows, a.fields, sggOf, into);
+      all.push.apply(all, nz.records);
+      for (const k of Object.keys(nz.missing)) missAll[k] = true;
+      say('  ' + a.name + ' ' + (y || '') + ' — ' + u.rows.length + '줄 → ' +
+        nz.records.length + '기록' +
+        (nz.skipped.sgg ? '  (시군 못 붙임 ' + nz.skipped.sgg + '줄)' : ''));
+      await new Promise(function (z) { setTimeout(z, 200); });
     }
   }
   say('  호출 ' + calls + '번');
+  const missNames = Object.keys(missAll);
+  if (missNames.length) {
+    /* 경북 밖 학교가 대부분입니다(시도 필터가 먹지 않았을 때). 몇 곳인지는
+       사람이 봐야 합니다 — 조용히 버리면 경북 학교가 빠져도 모릅니다. */
+    say('  시군을 못 붙인 학교 이름 ' + missNames.length + '가지:');
+    say('    ' + missNames.slice(0, 15).join(' · ') + (missNames.length > 15 ? ' …' : ''));
+  }
   if (!all.length) { cry('한 행도 받지 못했습니다. 아무것도 고치지 않았습니다.'); process.exit(4); }
 
   const agg = aggregate(all);
@@ -792,7 +899,6 @@ async function main() {
   fs.writeFileSync(SERIES_FILE, JSON.stringify({ meta, records: all }, null, 0) + '\n', 'utf8');
   say('✓ ' + path.relative(ROOT, SERIES_FILE) + ' 저장 (' + all.length + '행)');
 
-  let html = fs.readFileSync(TARGET, 'utf8');
   const block = toBlock(agg, rates, cohort, back, meta, births);
   const MARK = /  \/\* ↓ `bake-edss\.mjs` 가 심습니다[\s\S]*?var EDSS_BIRTH = .*?;\n/;
   if (MARK.test(html)) html = html.replace(MARK, block);
