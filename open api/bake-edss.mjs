@@ -1138,37 +1138,20 @@ async function main() {
     say(n ? '  개방ID → 시군 ' + n + '곳을 학급및학생현황에서 받았습니다.'
           : '  ⚠ 개방ID → 시군을 못 받아 학교 이름으로만 잇습니다.');
   }
-  /* --- 주소로 시군을 잇습니다 -------------------------------------------
-     학교별위치정보는 학교코드와 «주소»를 줍니다. 주소에는 시군이 들어 있으니,
-     학교코드가 개방ID 와 같은 것이라면 이름이 겹치는 학교(남산초등학교 —
-     영주·경산)까지 정확히 갈라집니다. 이름이 아니라 코드로 잇기 때문입니다.
+  /* --- 학교별위치정보는 쓰지 않습니다 〔2026. 9. 1. 확인〕 ---------------
+     이 API 로 시군을 이어 보려 했습니다. 학교코드와 주소를 주니, 학교코드가
+     개방ID 와 같은 것이면 이름이 겹치는 학교까지 코드로 갈릴 터였습니다.
 
-     같은 것인지는 «맞춰 보고» 압니다 — 짐작하지 않습니다. 겹치는 개수를
-     세어서 보여 주고, 안 맞으면 쓰지 않습니다. */
-  if (ready.indexOf('schoolLocation') >= 0) {
-    const L = cfg.apis['schoolLocation'], lf = L.fields || {};
-    try {
-      const lr = await callOnce(L.url, keyOf(L.secret), bodyOf(L, L.params || {}), way, secrets);
-      calls0++;
-      if (lr.ok) {
-        const rows = unwrap(lr.json).rows;
-        let hit = 0, gb = 0;
-        for (const row of rows) {
-          const cd = String(row[lf.code] || '');
-          const addr = String(row[lf['도로명'] || 'schlRdnmAddr'] || row[lf['주소'] || 'schlAddr'] || '');
-          if (!cd || addr.indexOf('경상북도') < 0) continue;
-          gb++;
-          const sg = toSgg(addr) || (addr.indexOf('군위') >= 0 ? GUNWI : null);
-          if (!sg) continue;
-          /* 이미 아는 것은 덮지 않습니다 — 개방ID 명부가 더 믿을 만합니다. */
-          if (!byCode[cd]) { byCode[cd] = sg; hit++; }
-        }
-        say('  학교별위치정보 ' + rows.length + '행 · 경북 ' + gb + '곳 · 주소로 시군을 새로 붙인 코드 ' + hit + '개');
-      } else {
-        say('  ⚠ 학교별위치정보 — HTTP ' + lr.status + ' ' + lr.msg.slice(0, 60));
-      }
-    } catch (e) { say('  ⚠ 학교별위치정보를 못 받았습니다.'); }
-  }
+     **아니었습니다.** 경북 2,536곳의 코드에 시군을 붙였는데 학생 표의 개방ID
+     와 «한 곳도» 겹치지 않았습니다(못 붙인 학생 329명 → 261명, 줄어든 68명은
+     「(구)울릉중학교」 괄호를 뗀 덕입니다). schlCd 와 opnId 는 다른 코드 체계입니다.
+
+     게다가 이 API 에는 **학교명이 없습니다**(schlCd·zip·주소·위도·경도뿐).
+     그래서 이름으로 이을 수도 없습니다.
+
+     한 번 부르는 데 32,889행을 받습니다. 얻는 것이 없으므로 부르지 않습니다.
+     좌표를 채우려면 그때 다시 붙이면 됩니다 — 지금 좌표가 없는 학교는
+     포항해오름중학교 한 곳뿐입니다. */
 
   /* --- 문 닫은 학교의 시군도 찾습니다 -----------------------------------
      대시보드 목록은 «지금 있는» 917곳뿐입니다. 2016년에 있다가 통폐합된 학교는
