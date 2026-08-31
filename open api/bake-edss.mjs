@@ -235,7 +235,7 @@ export function normalizeWide(rows, fields, sggOf, into, opt) {
   const key = into === 'cls' ? 'cls' : 'stu';
   const sido = (opt && opt.sido) || '';
   const out = [], missing = {};
-  const skipped = { year: 0, sgg: 0, level: 0, sido: 0, type: 0 };
+  const skipped = { year: 0, sgg: 0, sggStu: 0, level: 0, sido: 0, type: 0 };
   const mismatch = [];
   for (const r of rows || []) {
     if (sido && fields.sido) {
@@ -250,7 +250,14 @@ export function normalizeWide(rows, fields, sggOf, into, opt) {
     const code0 = fields.code ? String(r[fields.code] || '') : '';
     let sgg = fields.sgg ? toSgg(r[fields.sgg]) : null;
     if (!sgg && sggOf) sgg = sggOf(name, code0);
-    if (!sgg) { skipped.sgg++; if (name) missing[name] = (missing[name] || 0) + 1; continue; }
+    if (!sgg) {
+      /* 몇 «줄»을 버렸는지만으로는 크기를 알 수 없습니다. 문 닫은 학교는 대개
+         작아서, 줄 수로는 10%라도 학생 수로는 1%일 수 있습니다. 함께 셉니다. */
+      skipped.sgg++;
+      skipped.sggStu += fields.total ? num(r[fields.total]) : 0;
+      if (name) missing[name] = (missing[name] || 0) + 1;
+      continue;
+    }
 
     const own = toLevel(type);          // 이 학교 제 학제 (초·중·고)
     const rows0 = [], push = function (lv, g, v, dbls) {
@@ -1136,7 +1143,8 @@ async function main() {
         (cfg.sidoName || '') + ' ' + (u.rows.length - nz.skipped.sido) + '줄 → ' +
         nz.records.length + '기록' +
         (nz.skipped.type ? '  (특수·각종·유치원 ' + nz.skipped.type + '줄 뺌)' : '') +
-        (nz.skipped.sgg ? '  (시군 못 붙임 ' + nz.skipped.sgg + '줄)' : ''));
+        (nz.skipped.sgg ? '  (시군 못 붙임 ' + nz.skipped.sgg + '줄 · ' +
+          nz.skipped.sggStu.toLocaleString('ko-KR') + '명)' : ''));
       await new Promise(function (z) { setTimeout(z, 200); });
     }
   }

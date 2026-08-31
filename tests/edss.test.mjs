@@ -258,6 +258,9 @@ check('계가 0 이면 트집 잡지 않는다 (자료가 없는 것뿐이다)',
   normalizeWide([Object.assign(wideRow('stu', 2023, '안동', '초등학교', 20, 0), { kescStdntNope: '0' })],
     F('stu'), SGGOF, 'stu').mismatch.length === 0);
 
+check('못 붙인 학교의 학생 수도 센다 (줄 수만으로는 크기를 모른다)',
+  normalizeWide([wideRow('stu', 2026, '서울', '초등학교', 10, 0)], F('stu'), SGGOF, 'stu')
+    .skipped.sggStu === 60);
 check('시군을 못 붙이면 이름을 세어 알린다',
   normalizeWide([wideRow('stu', 2026, '서울', '초등학교', 10, 0)], F('stu'), SGGOF, 'stu')
     .missing['서울초등학교'] === 1);
