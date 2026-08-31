@@ -1,40 +1,68 @@
 {
-  "만든때": "2026-08-31T11:15:50.897Z",
-  "게이트웨이": "POST · 본문에 인자",
-  "apis": {
-    "studentStatus": {
-      "던져본것": [
-        "빈 본문 → 404 · Not Found",
-        "crtrYr=2023 → 404 · Not Found",
-        "crtrYr=2026 → 404 · Not Found",
-        "crtrYr=2025 → 404 · Not Found",
-        "crtrYr=2024 → 404 · Not Found",
-        "crtrYr=2023 + 시도 → 404 · Not Found",
-        "crtrYr=2026 + 시도 → 404 · Not Found",
-        "설정 인자만 → 404 · Not Found"
-      ],
-      "name": "유초중등학생현황[교육통계][EDSS]",
-      "상태코드": 404,
-      "결과": "오류",
-      "메시지": "Not Found",
-      "총건수": 0,
-      "봉투": {
-        "topKeys": [
-          "code",
-          "loc",
-          "message"
-        ]
-      },
-      "칸이름": [],
-      "고른칸": {},
-      "고른까닭": {},
-      "칸모양": {},
-      "응답열쇠": [
-        "code",
-        "loc",
-        "message"
-      ]
-    }
-  },
-  "인증방법": "header:api_key"
+  "만든때": "2026-08-31T11:21:49.400Z",
+  "짝맞추기": {
+    "schoolAttribute": [
+      "schoolAt:404",
+      "classStu:404",
+      "studentS:404",
+      "classSta:404",
+      "schoolLo:404",
+      "schoolOv:404",
+      "eduStatO:404"
+    ],
+    "classStudent": [
+      "schoolAt:404",
+      "classStu:404",
+      "studentS:404",
+      "classSta:404",
+      "schoolLo:404",
+      "schoolOv:404",
+      "eduStatO:404"
+    ],
+    "studentStatus": [
+      "schoolAt:404",
+      "classStu:404",
+      "studentS:404",
+      "classSta:404",
+      "schoolLo:404",
+      "schoolOv:404",
+      "eduStatO:404"
+    ],
+    "classStatus": [
+      "schoolAt:404",
+      "classStu:404",
+      "studentS:404",
+      "classSta:404",
+      "schoolLo:404",
+      "schoolOv:404",
+      "eduStatO:404"
+    ],
+    "schoolLocation": [
+      "schoolAt:404",
+      "classStu:404",
+      "studentS:404",
+      "classSta:404",
+      "schoolLo:404",
+      "schoolOv:404",
+      "eduStatO:404"
+    ],
+    "schoolOverview": [
+      "schoolAt:404",
+      "classStu:404",
+      "studentS:404",
+      "classSta:404",
+      "schoolLo:404",
+      "schoolOv:404",
+      "eduStatO:404"
+    ],
+    "eduStatOverview": [
+      "schoolAt:404",
+      "classStu:404",
+      "studentS:404",
+      "classSta:404",
+      "schoolLo:404",
+      "schoolOv:404",
+      "eduStatO:404"
+    ]
+  }
 }
