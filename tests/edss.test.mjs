@@ -350,6 +350,9 @@ check('가운데 든 시군 이름은 안 붙인다 (앞머리여야 한다)',
   sggFromPrefix('대구경북과학고') === null);
 check('시군 이름만 있으면 안 붙인다 (학교 이름이 아니다)',
   sggFromPrefix('포항') === null);
+check('앞에 붙은 괄호는 떼고 본다', sggFromPrefix('(구)울릉중학교') === 'ulleung');
+check('주소에서도 시군을 읽는다',
+  toSgg('경상북도 안동시 길안면 충효로 2230') === 'andong');
 check('군위는 앞머리로도 안 붙는다 (경북 22곳에 없다)',
   sggFromPrefix('군위초등학교') === null);
 check('띄어쓰기가 달라도 붙는다', look(' 영양초등학교 ') === 'yeongyang');

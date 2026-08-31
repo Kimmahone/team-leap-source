@@ -426,7 +426,8 @@ export function sggLookup(map) {
    이렇게 붙습니다. **짐작입니다.** 그래서 앞의 방법이 다 실패했을 때만 쓰고,
    무엇을 짐작했는지 셈해서 보여 줍니다. 조용히 찍지 않습니다. */
 export function sggFromPrefix(name) {
-  const n = String(name || '').replace(/\s/g, '');
+  /* 「(구)울릉중학교」처럼 앞에 괄호가 붙는 이름이 있습니다. 떼고 봅니다. */
+  const n = String(name || '').replace(/\s/g, '').replace(/^\([^)]*\)/, '');
   for (const nm of Object.keys(SGG_BY_NAME)) {
     /* 앞머리여야 합니다. 「대구경북과학기술…」처럼 가운데 든 것은 안 됩니다. */
     if (n.indexOf(nm) === 0 && n.length > nm.length) return SGG_BY_NAME[nm];
@@ -1137,6 +1138,38 @@ async function main() {
     say(n ? '  개방ID → 시군 ' + n + '곳을 학급및학생현황에서 받았습니다.'
           : '  ⚠ 개방ID → 시군을 못 받아 학교 이름으로만 잇습니다.');
   }
+  /* --- 주소로 시군을 잇습니다 -------------------------------------------
+     학교별위치정보는 학교코드와 «주소»를 줍니다. 주소에는 시군이 들어 있으니,
+     학교코드가 개방ID 와 같은 것이라면 이름이 겹치는 학교(남산초등학교 —
+     영주·경산)까지 정확히 갈라집니다. 이름이 아니라 코드로 잇기 때문입니다.
+
+     같은 것인지는 «맞춰 보고» 압니다 — 짐작하지 않습니다. 겹치는 개수를
+     세어서 보여 주고, 안 맞으면 쓰지 않습니다. */
+  if (ready.indexOf('schoolLocation') >= 0) {
+    const L = cfg.apis['schoolLocation'], lf = L.fields || {};
+    try {
+      const lr = await callOnce(L.url, keyOf(L.secret), bodyOf(L, L.params || {}), way, secrets);
+      calls0++;
+      if (lr.ok) {
+        const rows = unwrap(lr.json).rows;
+        let hit = 0, gb = 0;
+        for (const row of rows) {
+          const cd = String(row[lf.code] || '');
+          const addr = String(row[lf['도로명'] || 'schlRdnmAddr'] || row[lf['주소'] || 'schlAddr'] || '');
+          if (!cd || addr.indexOf('경상북도') < 0) continue;
+          gb++;
+          const sg = toSgg(addr) || (addr.indexOf('군위') >= 0 ? GUNWI : null);
+          if (!sg) continue;
+          /* 이미 아는 것은 덮지 않습니다 — 개방ID 명부가 더 믿을 만합니다. */
+          if (!byCode[cd]) { byCode[cd] = sg; hit++; }
+        }
+        say('  학교별위치정보 ' + rows.length + '행 · 경북 ' + gb + '곳 · 주소로 시군을 새로 붙인 코드 ' + hit + '개');
+      } else {
+        say('  ⚠ 학교별위치정보 — HTTP ' + lr.status + ' ' + lr.msg.slice(0, 60));
+      }
+    } catch (e) { say('  ⚠ 학교별위치정보를 못 받았습니다.'); }
+  }
+
   /* --- 문 닫은 학교의 시군도 찾습니다 -----------------------------------
      대시보드 목록은 «지금 있는» 917곳뿐입니다. 2016년에 있다가 통폐합된 학교는
      거기 없어서 시군을 못 붙이고 통째로 버려집니다. 2016년에 143곳이 그랬습니다.
