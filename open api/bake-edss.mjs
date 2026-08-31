@@ -940,21 +940,30 @@ async function main() {
       /* 어느 칸에 실제로 값이 들어 있는지 셉니다. 「0 아닌 값이 몇 줄에
          있나」만 봅니다 — 값 자체는 담지 않습니다. 이것이 없으면 칸 이름이
          맞는데 값이 늘 0 인 경우를 못 가려냅니다. 0 은 오류처럼 안 보입니다. */
+      /* 어느 칸에 실제로 값이 들어 있는지 학교급마다 셉니다. 「0 아닌 값이
+         몇 줄에 있나」만 봅니다 — 값 자체는 담지 않습니다.
+         학교급마다 쓰는 칸이 다릅니다(초는 단식, 중·고는 주간/야간).
+         한 학교급만 보고 정하면 나머지 둘이 조용히 비어 버립니다. */
       값있는칸: (function () {
-        const f = a.fields || {}, want = String((a.params || {}).scsmTypeNm || '초등학교');
-        const pool = rows.filter(function (r) {
-          return (!f.sido || String(r[f.sido]) === '경북') &&
-                 (!f.level || String(r[f.level] || '').indexOf(want) >= 0);
-        });
-        if (!pool.length) return { 표본: 0 };
-        const c = {};
-        for (const r of pool) for (const k of Object.keys(r)) {
-          const v = r[k];
-          if (typeof v === 'number' ? v !== 0 : (v != null && v !== '' && v !== '0')) c[k] = (c[k] || 0) + 1;
+        const f = a.fields || {}, out = {};
+        for (const want of ['초등학교', '중학교', '고등학교']) {
+          const pool = rows.filter(function (r) {
+            return (!f.sido || String(r[f.sido]) === '경북') &&
+                   (!f.level || String(r[f.level] || '').indexOf(want) >= 0);
+          });
+          if (!pool.length) { out[want] = { 표본: 0 }; continue; }
+          const c = {};
+          for (const r of pool) for (const k of Object.keys(r)) {
+            const v = r[k];
+            if (typeof v === 'number' ? v !== 0 : (v != null && v !== '' && v !== '0')) c[k] = (c[k] || 0) + 1;
+          }
+          /* 학년 칸만 봅니다 — 전부 실으면 보고서가 못 읽을 만큼 길어집니다. */
+          const ks = Object.keys(c).filter(function (k) { return /grdr|Grdr|Dbls|dbls|scls|tour|kesc|fstn|Fstn/.test(k); })
+            .sort(function (x, y) { return c[y] - c[x]; });
+          const one = { 표본: pool.length };
+          for (const k of ks.slice(0, 34)) one[k] = c[k];
+          out[want] = one;
         }
-        const ks = Object.keys(c).sort(function (x, y) { return c[y] - c[x]; });
-        const out = { 표본: pool.length, 학제: want };
-        for (const k of ks.slice(0, 60)) out[k] = c[k];
         return out;
       })(),
       요약: (function () {
