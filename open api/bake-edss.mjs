@@ -196,6 +196,12 @@ export const SGG_BY_CODE = {
   47830: 'goryeong', 47840: 'seongju', 47850: 'chilgok', 47900: 'yecheon',
   47920: 'bonghwa', 47930: 'uljin', 47940: 'ulleung'
 };
+/* 「일부러 뺀 것」의 표시. 군위는 2023. 7. 1. 대구로 넘어가서 지금 경북이
+   아닙니다. 옛 자료에는 남아 있는데, 넣으면 2016년만 경북이 넓어져서
+   «감소가 실제보다 가팔라» 보입니다. 그래서 열 해 내내 뺍니다 — 같은 땅을
+   견주려는 것입니다. 못 찾은 것과는 다르므로 따로 셉니다. */
+export const GUNWI = '__군위_대구로_넘어감__';
+
 export function toSgg(v) {
   if (v == null || v === '') return null;
   const s = String(v).trim();
@@ -235,7 +241,7 @@ export function normalizeWide(rows, fields, sggOf, into, opt) {
   const key = into === 'cls' ? 'cls' : 'stu';
   const sido = (opt && opt.sido) || '';
   const out = [], missing = {};
-  const skipped = { year: 0, sgg: 0, sggStu: 0, level: 0, sido: 0, type: 0 };
+  const skipped = { year: 0, sgg: 0, sggStu: 0, gunwi: 0, gunwiStu: 0, level: 0, sido: 0, type: 0 };
   const mismatch = [];
   for (const r of rows || []) {
     if (sido && fields.sido) {
@@ -250,6 +256,12 @@ export function normalizeWide(rows, fields, sggOf, into, opt) {
     const code0 = fields.code ? String(r[fields.code] || '') : '';
     let sgg = fields.sgg ? toSgg(r[fields.sgg]) : null;
     if (!sgg && sggOf) sgg = sggOf(name, code0);
+    if (sgg === GUNWI) {
+      /* 못 찾은 것이 아니라 일부러 뺀 것입니다. 따로 셉니다. */
+      skipped.gunwi++;
+      skipped.gunwiStu += fields.total ? num(r[fields.total]) : 0;
+      continue;
+    }
     if (!sgg) {
       /* 몇 «줄»을 버렸는지만으로는 크기를 알 수 없습니다. 문 닫은 학교는 대개
          작아서, 줄 수로는 10%라도 학생 수로는 1%일 수 있습니다. 함께 셉니다. */
@@ -1074,8 +1086,14 @@ async function main() {
              다른 API 와 달라서, 짧은 이름으로 걸렀다가 0건을 받았습니다. */
           const sd = String(row[c.fields.sido] || '');
           if (sd.indexOf('경북') < 0 && sd.indexOf('경상북도') < 0) continue;
-          const id = String(row[c.fields.code] || ''), sg = toSgg(row[c.fields.sgg]);
-          if (id && sg) byCode[id] = sg;
+          const raw = String(row[c.fields.sgg] || '');
+          const id = String(row[c.fields.code] || ''), sg = toSgg(raw);
+          if (!id) continue;
+          /* 군위는 2023. 7. 1. 대구로 넘어갔습니다. toSgg 가 null 을 주는데,
+             그것은 «못 찾은 것»이 아니라 «일부러 뺀 것»입니다. 둘을 섞으면
+             「못 붙인 학교 58곳」이 실수처럼 보입니다. 표시를 남깁니다. */
+          if (sg) byCode[id] = sg;
+          else if (raw.indexOf('군위') >= 0) byCode[id] = GUNWI;
         }
       }
     } catch (e) { /* 없으면 이름으로만 잇습니다 */ }
@@ -1101,7 +1119,8 @@ async function main() {
           const sd = String(row[of.sido] || '');
           if (sd.indexOf('경북') < 0 && sd.indexOf('경상북도') < 0) continue;
           const nm = String(row[of.name] || '').replace(/\s/g, '');
-          const sg = toSgg(row[of.sgg]);
+          const raw = String(row[of.sgg] || '');
+          const sg = toSgg(raw) || (raw.indexOf('군위') >= 0 ? GUNWI : null);
           if (!nm || !sg) continue;
           /* 이름이 두 시군에 걸치면 여기서도 찍지 않습니다. */
           if (nm in byOld && byOld[nm] !== sg) byOld[nm] = null;
@@ -1159,6 +1178,8 @@ async function main() {
         (cfg.sidoName || '') + ' ' + (u.rows.length - nz.skipped.sido) + '줄 → ' +
         nz.records.length + '기록' +
         (nz.skipped.type ? '  (특수·각종·유치원 ' + nz.skipped.type + '줄 뺌)' : '') +
+        (nz.skipped.gunwi ? '  (군위 ' + nz.skipped.gunwi + '줄 · ' +
+          nz.skipped.gunwiStu.toLocaleString('ko-KR') + '명 일부러 뺌)' : '') +
         (nz.skipped.sgg ? '  (시군 못 붙임 ' + nz.skipped.sgg + '줄 · ' +
           nz.skipped.sggStu.toLocaleString('ko-KR') + '명)' : ''));
       await new Promise(function (z) { setTimeout(z, 200); });
