@@ -878,6 +878,19 @@ async function main() {
       /* 값은 싣지 않습니다 — 학교 이름 하나까지도 보고서에 남길 까닭이 없습니다.
          모양만 봅니다: 그 칸이 숫자인가 글자인가. */
       칸모양: rows.length ? Object.fromEntries(g.all.map(n => [n, typeof rows[0][n]])) : {},
+      /* 값 자체는 안 싣되 **무엇이 왔는지는 세어서** 싣습니다. 「몇 줄 왔다」만
+         알면 시도 거르기가 먹었는지, 여러 해가 한꺼번에 오는지 알 수 없습니다.
+         학교 이름 같은 것은 넣지 않고 개수만 셉니다. */
+      요약: (function () {
+        const f = a.fields || {}, tally = function (col) {
+          if (!col) return null;
+          const c = {};
+          for (const row of rows) { const v = String(row[col] == null ? '' : row[col]); c[v] = (c[v] || 0) + 1; }
+          const ks = Object.keys(c).sort();
+          return ks.length > 30 ? { 가짓수: ks.length } : Object.fromEntries(ks.map(k => [k, c[k]]));
+        };
+        return { 연도별: tally(f.year), 시도별: tally(f.sido), 학제별: tally(f.level) };
+      })(),
       /* 인자를 하나도 안 보냈을 때 「무엇이 빠졌다」고 알려 주는 API 가
          많습니다. 그 말이 곧 요청변수 목록입니다. */
       응답열쇠: r.json && typeof r.json === 'object' ? Object.keys(r.json).slice(0, 20) : []
