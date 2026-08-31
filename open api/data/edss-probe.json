@@ -1,0 +1,62 @@
+{
+  "만든때": "2026-08-31T05:48:58.153Z",
+  "게이트웨이": "POST · 본문에 인자",
+  "apis": {
+    "schoolAttribute": {
+      "인증시도": [
+        "header:apikey → 401",
+        "header:apiKey → 401",
+        "header:Authorization Bearer → 401",
+        "header:Authorization → 401",
+        "header:X-API-KEY → 401",
+        "header:api-key → 401",
+        "header:serviceKey → 401",
+        "header:authKey → 401",
+        "body:apiKey → 401",
+        "body:serviceKey → 401",
+        "body:authKey → 401",
+        "body:key → 401"
+      ],
+      "name": "학교속성[교육통계][EDSS]",
+      "결과": "인증 실패"
+    },
+    "classStudent": {
+      "인증시도": [
+        "header:apikey → 401",
+        "header:apiKey → 401",
+        "header:Authorization Bearer → 401",
+        "header:Authorization → 401",
+        "header:X-API-KEY → 401",
+        "header:api-key → 401",
+        "header:serviceKey → 401",
+        "header:authKey → 401",
+        "body:apiKey → 401",
+        "body:serviceKey → 401",
+        "body:authKey → 401",
+        "body:key → 401"
+      ],
+      "name": "학급및학생현황(EDSS제공용)",
+      "결과": "인증 실패"
+    },
+    "studentStatus": {
+      "name": "유초중등학생현황[교육통계][EDSS]",
+      "결과": "인증 실패(건너뜀)"
+    },
+    "classStatus": {
+      "name": "유초중등학급현황[교육통계][EDSS]",
+      "결과": "인증 실패(건너뜀)"
+    },
+    "schoolLocation": {
+      "name": "학교별위치정보",
+      "결과": "인증 실패(건너뜀)"
+    },
+    "schoolOverview": {
+      "name": "유초중등학교개황[교육통계][EDSS]",
+      "결과": "인증 실패(건너뜀)"
+    },
+    "eduStatOverview": {
+      "name": "학교개황[교육통계]",
+      "결과": "인증 실패(건너뜀)"
+    }
+  }
+}
