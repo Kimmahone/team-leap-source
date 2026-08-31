@@ -1201,8 +1201,14 @@ async function main() {
     return;
   }
 
-  fs.writeFileSync(SERIES_FILE, JSON.stringify({ meta, records: all }, null, 0) + '\n', 'utf8');
-  say('✓ ' + path.relative(ROOT, SERIES_FILE) + ' 저장 (' + all.length + '행)');
+  /* 학교별 원자료 96,000행을 그대로 두면 9MB 짜리 파일이 갱신 때마다 커밋됩니다.
+     접은 값만 둡니다 — 원자료는 필요할 때 다시 받는 편이 낫습니다.
+     사본은 조용히 낡습니다(`data/README.md`). */
+  fs.writeFileSync(SERIES_FILE, JSON.stringify({
+    meta: meta, 연도: agg.years, 시군별: agg.byYear, 학년별: agg.grade,
+    감소율: rates, 진급률: cohort, 백테스트: back
+  }, null, 0) + '\n', 'utf8');
+  say('✓ ' + path.relative(ROOT, SERIES_FILE) + ' 저장 (' + all.length + '행을 접은 값)');
 
   const block = toBlock(agg, rates, cohort, back, meta, births);
   const MARK = /  \/\* ↓ `bake-edss\.mjs` 가 심습니다[\s\S]*?var EDSS_BIRTH = .*?;\n/;
