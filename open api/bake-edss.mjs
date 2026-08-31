@@ -223,10 +223,24 @@ export function toSgg(v) {
 
    학년별 학급수는 «단식»뿐입니다. 복식학급은 과정별 덩어리로 따로 옵니다.
    작은 학교일수록 복식이 많으므로 버리지 않고 학년 0 으로 담습니다. */
-export function normalizeWide(rows, fields, sggOf, into) {
+/* 이 API 는 «전국»을 줍니다. 시도 요청인자를 보내도 걸러지지 않습니다
+   (2026-08-31 확인: ctpvNm='경북' 을 보내도 17개 시도가 다 옵니다).
+   그래서 받은 뒤에 우리가 거릅니다. 안 거르면 못 붙인 학교 이름이 만 개 넘게
+   쌓여서, 정작 봐야 할 «경북인데 못 붙은 곳»이 그 속에 묻힙니다.
+
+   특수학교·각종학교는 뺍니다. 특수학교 8곳은 `bake-special.mjs` 가 따로 심고
+   있어서, 여기서 초·중·고에 섞으면 두 번 세어집니다. */
+const SKIP_TYPE = /특수학교|각종학교|고등공민|고등기술|유치원/;
+export function normalizeWide(rows, fields, sggOf, into, opt) {
   const key = into === 'cls' ? 'cls' : 'stu';
-  const out = [], skipped = { year: 0, sgg: 0, level: 0 }, missing = {};
+  const sido = (opt && opt.sido) || '';
+  const out = [], skipped = { year: 0, sgg: 0, level: 0, sido: 0, type: 0 }, missing = {};
   for (const r of rows || []) {
+    if (sido && fields.sido) {
+      const v = String(r[fields.sido] == null ? '' : r[fields.sido]);
+      if (v !== sido) { skipped.sido++; continue; }
+    }
+    if (fields.level && SKIP_TYPE.test(String(r[fields.level] || ''))) { skipped.type++; continue; }
     const year = num(r[fields.year]);
     if (year < 1990 || year > 2100) { skipped.year++; continue; }
     const name = String(r[fields.name] == null ? '' : r[fields.name]).trim();
@@ -986,11 +1000,13 @@ async function main() {
       calls++;
       if (!r.ok) { cry('  ✗ ' + a.name + ' ' + (y || '') + ' — HTTP ' + r.status + ' ' + r.msg); continue; }
       const u = unwrap(r.json);
-      const nz = normalizeWide(u.rows, a.fields, sggOf, into);
+      const nz = normalizeWide(u.rows, a.fields, sggOf, into, { sido: cfg.sidoName });
       all.push.apply(all, nz.records);
       for (const k of Object.keys(nz.missing)) missAll[k] = true;
-      say('  ' + a.name + ' ' + (y || '') + ' — ' + u.rows.length + '줄 → ' +
+      say('  ' + a.name + ' ' + (y || '') + ' — 전국 ' + u.rows.length + '줄 · ' +
+        (cfg.sidoName || '') + ' ' + (u.rows.length - nz.skipped.sido) + '줄 → ' +
         nz.records.length + '기록' +
+        (nz.skipped.type ? '  (특수·각종·유치원 ' + nz.skipped.type + '줄 뺌)' : '') +
         (nz.skipped.sgg ? '  (시군 못 붙임 ' + nz.skipped.sgg + '줄)' : ''));
       await new Promise(function (z) { setTimeout(z, 200); });
     }

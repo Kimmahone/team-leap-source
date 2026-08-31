@@ -143,7 +143,7 @@ const SGGOF = (name) => (/안동/.test(name) ? 'andong' : /구미/.test(name) ? 
 
 function wideRow(kind, y, town, knd, stu, cls) {
   const lv = knd === '초등학교' ? '초' : knd === '중학교' ? '중' : '고';
-  const r = { crtrYr: String(y), opnId: town + knd, schlNm: town + knd, scclNm: knd, ctpvNm: '경상북도' };
+  const r = { crtrYr: String(y), opnId: town + knd, schlNm: town + knd, scclNm: knd, ctpvNm: '경북' };   // 실제 API 가 짧은 이름을 줍니다
   for (let g = 1; g <= GRADES[lv]; g++) r[COL[kind][lv](g)] = String(kind === 'stu' ? stu : cls);
   return r;
 }
@@ -200,6 +200,30 @@ check('시군을 못 붙인 줄은 기록으로 만들지 않는다',
 check('개방ID 로 이으면 이름이 겹쳐도 갈라진다',
   normalizeWide([wideRow('stu', 2026, '남산', '초등학교', 10, 0)], F('stu'),
     (nm, cd) => (cd === '남산초등학교' ? 'yeongju' : null), 'stu').records[0].sgg === 'yeongju');
+
+/* 이 API 는 시도 인자를 보내도 전국을 줍니다(2026-08-31 확인). 받은 뒤에 거릅니다.
+   안 거르면 못 붙인 이름이 만 개 넘게 쌓여서 정작 봐야 할 것이 묻힙니다. */
+const 전국 = [wideRow('stu', 2023, '안동', '초등학교', 10, 0),
+             Object.assign(wideRow('stu', 2023, '서울', '초등학교', 10, 0), { ctpvNm: '서울' })];
+const nzSido = normalizeWide(전국, F('stu'), SGGOF, 'stu', { sido: '경북' });
+check('다른 시도는 걸러 낸다', nzSido.skipped.sido === 1);
+check('걸러 낸 줄은 못 붙인 이름으로 세지 않는다',
+  Object.keys(nzSido.missing).length === 0);
+check('시도를 안 주면 다 받는다',
+  normalizeWide(전국, F('stu'), SGGOF, 'stu', {}).skipped.sido === 0);
+
+/* 특수학교 8곳은 bake-special.mjs 가 따로 심습니다. 여기서 초·중·고에 섞으면
+   두 번 세어집니다. 학제유형명으로 뺍니다. */
+for (const t of ['특수학교', '각종학교', '고등공민학교', '고등기술학교', '유치원']) {
+  const row = Object.assign(wideRow('stu', 2023, '안동', '초등학교', 10, 0), { scsmTypeNm: t });
+  check(t + '은 초·중·고에 섞지 않는다',
+    normalizeWide([row], Object.assign(F('stu'), { level: 'scsmTypeNm' }), SGGOF, 'stu', {}).records.length === 0);
+}
+for (const t of ['초등학교', '중학교', '일반고등학교', '자율고등학교', '특성화고등학교', '특수목적고등학교']) {
+  const row = Object.assign(wideRow('stu', 2023, '안동', '초등학교', 10, 0), { scsmTypeNm: t });
+  check(t + '은 받는다',
+    normalizeWide([row], Object.assign(F('stu'), { level: 'scsmTypeNm' }), SGGOF, 'stu', {}).records.length > 0);
+}
 
 /* ── 5-1. 대시보드에서 시군을 읽어 온다 ─────────────────────────────── */
 const DASH_HTML = fs.readFileSync(path.join(ROOT, '06. 실행계획(1)/prototype/index.html'), 'utf8');

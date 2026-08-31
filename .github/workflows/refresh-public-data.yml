@@ -21,6 +21,7 @@ on:
           - schools
           - kinder
           - edss
+          - edss-dry
           - edss-probe
           - edss-crosscheck
       edss_only:
@@ -106,6 +107,11 @@ jobs:
           if [ -n "$EDSS_ONLY" ]; then args+=("--only=$EDSS_ONLY"); fi
           if [ -n "$EDSS_URL" ];  then args+=("--url=$EDSS_URL"); fi
           node "open api/bake-edss.mjs" "${args[@]}"
+
+      # 받아만 보고 대시보드는 안 고칩니다. 어느 해가 있는지 먼저 볼 때.
+      - name: EDSS 받아만 보기
+        if: inputs.dataset == 'edss-dry'
+        run: node "open api/bake-edss.mjs" --dry
 
       - name: EDSS 여러 해치 학생·학급 수집
         if: github.event.schedule == '10 22 4 9 *' || inputs.dataset == 'all' || inputs.dataset == 'edss'
