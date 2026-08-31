@@ -113,8 +113,10 @@ jobs:
         if: inputs.dataset == 'edss-dry'
         run: node "open api/bake-edss.mjs" --dry
 
+      # 9월에만 보면 조사연도가 늦게 열렸을 때 «한 해»를 놓칩니다.
+      # 분기 일정에도 태웁니다 — 한 번에 22번 부르는 정도라 부담이 없습니다.
       - name: EDSS 여러 해치 학생·학급 수집
-        if: github.event.schedule == '10 22 4 9 *' || inputs.dataset == 'all' || inputs.dataset == 'edss'
+        if: github.event.schedule == '10 22 4 9 *' || github.event.schedule == '40 21 1 1,4,7,10 *' || inputs.dataset == 'all' || inputs.dataset == 'edss'
         run: |
           if node -e 'const a=JSON.parse(require("fs").readFileSync("open api/edss-endpoints.json","utf8")).apis;process.exit(Object.values(a).some(x=>x.url)?0:1)'; then
             node "open api/bake-edss.mjs"
@@ -137,3 +139,12 @@ jobs:
             git push
             echo "::notice::검사를 통과한 공공데이터 갱신본을 반영했습니다."
           fi
+
+      # ★ 〔2026. 9. 1.〕 예전에는 여기서 끝났습니다. 커밋은 되는데 «라이브는
+      #   그대로»였습니다. GitHub 는 기본 토큰으로 밀어 넣은 커밋으로 다른
+      #   워크플로를 켜 주지 않기 때문에, 배포를 맡던 update-news.yml 이
+      #   한 번도 걸리지 않았습니다. 여기서 직접 올립니다.
+      - name: 배포 저장소(team-leap)로 자동 푸시
+        env:
+          DEPLOY_PAT: ${{ secrets.DEPLOY_PAT }}
+        run: bash .github/deploy.sh "공공데이터 정기 갱신 반영"

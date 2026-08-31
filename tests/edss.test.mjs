@@ -578,6 +578,36 @@ check('쉼표 든 건수도 읽는다',
 check('msgCd 를 남긴다 (200 이 아니면 사람이 봐야 한다)', pr1.meta.code === '200 (성공)');
 check('0건도 오류가 아니라 0건으로 읽는다',
   unwrap({ resultData: [], msgCd: '200 (성공)', msgCn: '[조회건수 : 0 건]' }).rows.length === 0);
+/* ── 7-4. 새 조사연도가 열리면 저절로 잡히는가 ─────────────────────
+   「to: 2025」를 천장으로 쓰면 2026 이 열려도 부르지 않습니다. 정기 일정이
+   돌아도 자료는 그대로인데, 워크플로는 «성공»으로 끝납니다 — 가장 알아채기
+   어려운 종류입니다. */
+const baker2 = fs.readFileSync(path.join(ROOT, 'open api/bake-edss.mjs'), 'utf8');
+check('수집 범위를 올해까지 늘린다 (to 는 바닥이지 천장이 아니다)',
+  /Math\.max\(Number\(cfg\.to\)[^)]*\)?[^)]*, *new Date\(\)\.getFullYear\(\)\)/.test(baker2),
+  '지금: ' + (baker2.match(/const TO = .*/) || [''])[0]);
+check('설정의 to 가 올해보다 뒤처져 있어도 된다 (코드가 늘려 준다)',
+  Number(cfg.to) >= 2025);
+check('to 가 바닥이라는 것을 설정에 적어 두었다',
+  JSON.stringify(cfg).includes('바닥') || /to[^"]*바닥/.test(JSON.stringify(cfg)));
+
+/* ── 7-5. 새 자료를 받으면 라이브까지 나가는가 ────────────────────
+   GitHub 는 기본 토큰으로 밀어 넣은 커밋으로 다른 워크플로를 켜 주지 않습니다.
+   그래서 정기 갱신이 커밋만 하고 배포를 안 하면 «커밋은 됐는데 라이브는
+   그대로»가 됩니다. 둘 다 배포까지 하는지 봅니다. */
+const wfR = fs.readFileSync(path.join(ROOT, '.github/workflows/refresh-public-data.yml'), 'utf8');
+const wfN = fs.readFileSync(path.join(ROOT, '.github/workflows/update-news.yml'), 'utf8');
+check('정기 갱신이 배포까지 한다', /deploy\.sh/.test(wfR));
+check('뉴스 갱신도 배포까지 한다', /deploy\.sh/.test(wfN));
+check('배포 절차가 한 곳에만 있다 (두 곳에 복사하면 갈라진다)',
+  fs.existsSync(path.join(ROOT, '.github/deploy.sh')) &&
+  !/git clone .*team-leap\.git/.test(wfR) && !/git clone .*team-leap\.git/.test(wfN));
+check('배포는 구운 결과가 있을 때만 한다',
+  /배포\/site/.test(fs.readFileSync(path.join(ROOT, '.github/deploy.sh'), 'utf8')));
+check('EDSS 를 분기 일정에도 태운다 (9월에만 보면 한 해를 놓친다)',
+  /40 21 1 1,4,7,10 \*'[^\n]*inputs\.dataset == 'edss'/.test(wfR) ||
+  wfR.slice(wfR.indexOf('EDSS 여러 해치')).slice(0, 400).includes("40 21 1 1,4,7,10 *"));
+
 check('호출 한도를 정해 둔다 (하루 한도를 넘기면 그날은 못 받는다)',
   Number(cfg.callCap) > 0 && Number(cfg.callCap) <= 10000);
 check('게이트웨이가 POST 라는 것을 적어 두었다', JSON.stringify(cfg).includes('POST'));

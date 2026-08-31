@@ -73,34 +73,4 @@ jobs:
       - name: 배포 저장소(team-leap)로 자동 푸시
         env:
           DEPLOY_PAT: ${{ secrets.DEPLOY_PAT }}
-        run: |
-          if [ -z "$DEPLOY_PAT" ]; then
-            echo "::warning::DEPLOY_PAT 시크릿이 없어 team-leap 배포 푸시를 건너뜁니다."
-            exit 0
-          fi
-
-          DEPLOY_DIR=$(mktemp -d)
-          git clone "https://x-access-token:${DEPLOY_PAT}@github.com/Kimmahone/team-leap.git" "$DEPLOY_DIR"
-
-          # 기존 배포 파일 제거 (.git 보존)
-          find "$DEPLOY_DIR" -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
-
-          # 새로 구운 파일 복사 (숨김 파일 포함)
-          cp -R 배포/site/* "$DEPLOY_DIR"/
-          cp -R 배포/site/.[!.]* "$DEPLOY_DIR"/ 2>/dev/null || true
-
-          # Cloudflare Pages Functions는 정적 출력 폴더가 아니라 배포 저장소 루트에 둡니다.
-          cp -R functions "$DEPLOY_DIR/functions"
-
-          cd "$DEPLOY_DIR"
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-
-          if git diff --cached --quiet; then
-            echo "배포 저장소에 변경 사항이 없습니다."
-          else
-            git commit -m "🚀 사이트 자동 배포 (주간 뉴스 및 업데이트)"
-            git push origin main
-            echo "::notice::team-leap 저장소로 배포가 성공적으로 완료되었습니다!"
-          fi
+        run: bash .github/deploy.sh "사이트 자동 배포 (주간 뉴스 및 업데이트)"

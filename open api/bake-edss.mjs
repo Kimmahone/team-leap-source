@@ -882,7 +882,11 @@ async function main() {
   const PROBE = ARGV.includes('--probe') || CROSS;
   const DRY = ARGV.includes('--dry') || PROBE;
   const FROM = Number(flag('from', cfg.from || 2016));
-  const TO = Number(flag('to', cfg.to || 2026));
+  /* ★ 「to」는 «바닥»이지 천장이 아닙니다. 2025 로 못 박아 두면 2026 조사연도가
+     열려도 부르지 않습니다 — 그러면 정기 일정이 돌아도 자료가 그대로입니다.
+     그래서 «올해»까지는 언제나 물어봅니다. 아직 없는 해는 0건으로 오고,
+     수집기가 「0줄」이라고 적고 넘어갑니다. 한 해에 한 번 헛부르는 값입니다. */
+  const TO = Number(flag('to', Math.max(Number(cfg.to) || 0, new Date().getFullYear())));
   /* 파일을 고치지 않고 한 API 만 확인할 때 씁니다.
      --only=studentStatus --url=https://…  처럼 씁니다. 인증키는 그래도 Secret 에서 읽습니다. */
   const ONLY = flag('only', '');
