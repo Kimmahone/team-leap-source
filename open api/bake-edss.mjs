@@ -263,14 +263,24 @@ export function normalizeWide(rows, fields, sggOf, into, opt) {
 
     /* ① 제 학제는 «일반 학년 칸»에 들어 있습니다.
        보통 학교(초등학교·중학교·고등학교)는 여기에만 값이 있습니다. */
-    if (own && fields.generic && fields.generic.length) {
+    /* 일반 칸은 학교급마다 다릅니다 — 초는 단식학급, 중·고는 주간(+야간).
+       한 학년이 여러 칸에 나뉘어 있으면 배열로 적고 더합니다. */
+    const gen = fields.generic
+      ? (Array.isArray(fields.generic) ? fields.generic : (own ? fields.generic[own] : null))
+      : null;
+    if (own && gen && gen.length) {
       let s0 = 0;
-      for (let g = 0; g < GRADES[own]; g++) {
-        const v = num(r[fields.generic[g]]);
+      for (let g = 0; g < GRADES[own] && g < gen.length; g++) {
+        const cols = Array.isArray(gen[g]) ? gen[g] : [gen[g]];
+        let v = 0;
+        for (const c of cols) v += num(r[c]);
         s0 += v;
         push(own, g + 1, v);
       }
-      const d0 = fields.genericDbls ? num(r[fields.genericDbls]) : 0;
+      const dblsCol = typeof fields.genericDbls === 'string'
+        ? fields.genericDbls
+        : (fields.genericDbls && own ? fields.genericDbls[own] : null);
+      const d0 = dblsCol ? num(r[dblsCol]) : 0;
       if (d0) { push(own, 0, d0, true); s0 += d0; }
       if (s0) { any = true; sum += s0; } else rows0.length = 0;
     }

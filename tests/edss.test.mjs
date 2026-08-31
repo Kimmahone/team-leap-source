@@ -130,6 +130,7 @@ check('빈칸·하이픈은 0', num('') === 0 && num('-') === 0 && num(null) ===
    실제 응답을 세어 보고 알았습니다 — 명세서만 보고는 못 가려냅니다.
    경북 초등학교 504곳 가운데 elscCrsGrdr* 에 값이 있는 곳은 없었습니다. */
 const GEN = { stu: n => 'grdr' + n + 'FstnClasStdntNope', cls: n => 'grdr' + n + 'FstnClasCnt' };
+const GENH = { stu: n => 'grdr' + n + 'WkStdntNope', cls: n => 'grdr' + n + 'WkClasCnt' };
 const GDBL = { stu: 'dblsClasStdntNope', cls: 'dblsClasCnt' };
 const TOT = { stu: 'kescStdntNope', cls: 'kescClasCnt' };
 const COL = {
@@ -140,8 +141,9 @@ const DBL = { stu: { 초: 'elscCrsDblsClasStdntNope' }, cls: { 초: 'elscCrsDbls
 const F = (kind) => ({
   year: 'crtrYr', code: 'opnId', name: 'schlNm', level: 'scsmTypeNm', sido: 'ctpvNm',
   total: TOT[kind],
-  generic: [1, 2, 3, 4, 5, 6].map(GEN[kind]),
-  genericDbls: GDBL[kind],
+  generic: { 초: [1, 2, 3, 4, 5, 6].map(GEN[kind]),
+             중: [1, 2, 3].map(GENH[kind]), 고: [1, 2, 3].map(GENH[kind]) },
+  genericDbls: { 초: GDBL[kind] },
   초: [1, 2, 3, 4, 5, 6].map(COL[kind]['초']),
   중: [1, 2, 3].map(COL[kind]['중']),
   고: [1, 2, 3].map(COL[kind]['고']),
@@ -157,7 +159,8 @@ function wideRow(kind, y, town, knd, stu, cls) {
      학년별 값은 일반 학년 칸이 들고 있습니다. */
   const r = { crtrYr: String(y), opnId: town + knd, schlNm: town + knd,
               scclNm: '해당없음', scsmTypeNm: knd, ctpvNm: '경북' };
-  for (let g = 1; g <= GRADES[lv]; g++) r[GEN[kind](g)] = String(v);
+  const col = lv === '초' ? GEN[kind] : GENH[kind];
+  for (let g = 1; g <= GRADES[lv]; g++) r[col(g)] = String(v);
   r[TOT[kind]] = String(v * GRADES[lv]);
   return r;
 }
@@ -277,11 +280,22 @@ for (const t of ['특수학교', '각종학교', '고등공민학교', '고등�
   check(t + '은 초·중·고에 섞지 않는다',
     normalizeWide([row], Object.assign(F('stu'), { level: 'scsmTypeNm' }), SGGOF, 'stu', {}).records.length === 0);
 }
+/* 그 학교급이 실제로 쓰는 칸에 값을 넣고 지어야 합니다. 초등학교 모양으로
+   지어 놓고 학교급명만 바꾸면, 중·고가 안 읽히는 것이 「걸러진 것」처럼 보입니다. */
 for (const t of ['초등학교', '중학교', '일반고등학교', '자율고등학교', '특성화고등학교', '특수목적고등학교']) {
-  const row = Object.assign(wideRow('stu', 2023, '안동', '초등학교', 10, 0), { scsmTypeNm: t });
-  check(t + '은 받는다',
-    normalizeWide([row], Object.assign(F('stu'), { level: 'scsmTypeNm' }), SGGOF, 'stu', {}).records.length > 0);
+  const row = wideRow('stu', 2023, '안동', t, 10, 0);
+  check(t + '은 받는다', normalizeWide([row], F('stu'), SGGOF, 'stu', {}).records.length > 0);
 }
+check('초등학교는 6학년까지 나온다',
+  normalizeWide([wideRow('stu', 2023, '안동', '초등학교', 10, 0)], F('stu'), SGGOF, 'stu', {})
+    .records.filter(r => r.grade > 0).length === 6);
+check('중학교는 3학년까지만 나온다',
+  normalizeWide([wideRow('stu', 2023, '안동', '중학교', 10, 0)], F('stu'), SGGOF, 'stu', {})
+    .records.filter(r => r.grade > 0).length === 3);
+check('중학교를 초등 칸에서 읽지 않는다 (읽으면 2%만 잡힌다)',
+  normalizeWide([Object.assign(wideRow('stu', 2023, '안동', '중학교', 10, 0),
+    { grdr1FstnClasStdntNope: '999' })], F('stu'), SGGOF, 'stu', {})
+    .records.filter(r => r.grade === 1)[0].stu === 10);
 
 /* ── 5-1. 대시보드에서 시군을 읽어 온다 ─────────────────────────────── */
 const DASH_HTML = fs.readFileSync(path.join(ROOT, '06. 실행계획(1)/prototype/index.html'), 'utf8');
@@ -477,8 +491,14 @@ for (const id of Object.keys(SPEC)) {
   check(id + ' 은 조사년도 인자가 crtrYr 이다', cfg.apis[id].yearParam === 'crtrYr');
   check(id + ' 은 시도로 걸러 받는다', cfg.apis[id].params.ctpvNm === cfg.sidoName);
   check(id + ' 은 복식학급도 담는다', !!(f['복식'] && f['복식']['초']));
-  check(id + ' 은 보통 학교의 일반 학년 칸을 안다',
-    Array.isArray(f.generic) && f.generic.length === 6 && !!f.genericDbls);
+  /* 학교급마다 쓰는 칸이 다릅니다. 하나로 정하면 나머지가 조용히 비어 버립니다. */
+  check(id + ' 은 학교급마다 다른 일반 학년 칸을 안다',
+    f.generic && f.generic['초'] && f.generic['초'].length === 6 &&
+    f.generic['중'] && f.generic['중'].length === 3);
+  check(id + ' 은 초등은 단식학급 칸을 본다', /FstnClas/.test(String(f.generic['초'][0])));
+  check(id + ' 은 중·고는 주간 칸을 본다', /Wk/.test(String(f.generic['중'][0])));
+  check(id + ' 은 야간 학교도 더한다', /Nght/.test(JSON.stringify(f.generic['고'])));
+  check(id + ' 은 복식을 초등에만 붙인다', f.genericDbls && f.genericDbls['초'] && !f.genericDbls['중']);
   check(id + ' 은 특수·순회도 담는다 (빼먹으면 310곳이 계와 어긋난다)',
     Array.isArray(f.extra) && f.extra.length > 0);
   check(id + ' 은 계와 맞춰 볼 칸을 안다', !!f.total);

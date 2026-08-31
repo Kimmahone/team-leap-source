@@ -149,15 +149,47 @@
           "고": "hgscCrsDblsClasStdntNope"
         },
         "특수학급": "sclsStdntNope",
-        "generic": [
-          "grdr1FstnClasStdntNope",
-          "grdr2FstnClasStdntNope",
-          "grdr3FstnClasStdntNope",
-          "grdr4FstnClasStdntNope",
-          "grdr5FstnClasStdntNope",
-          "grdr6FstnClasStdntNope"
-        ],
-        "genericDbls": "dblsClasStdntNope",
+        "generic": {
+          "초": [
+            "grdr1FstnClasStdntNope",
+            "grdr2FstnClasStdntNope",
+            "grdr3FstnClasStdntNope",
+            "grdr4FstnClasStdntNope",
+            "grdr5FstnClasStdntNope",
+            "grdr6FstnClasStdntNope"
+          ],
+          "중": [
+            [
+              "grdr1WkStdntNope",
+              "grdr1NghtStdntNope"
+            ],
+            [
+              "grdr2WkStdntNope",
+              "grdr2NghtStdntNope"
+            ],
+            [
+              "grdr3WkStdntNope",
+              "grdr3NghtStdntNope"
+            ]
+          ],
+          "고": [
+            [
+              "grdr1WkStdntNope",
+              "grdr1NghtStdntNope"
+            ],
+            [
+              "grdr2WkStdntNope",
+              "grdr2NghtStdntNope"
+            ],
+            [
+              "grdr3WkStdntNope",
+              "grdr3NghtStdntNope"
+            ]
+          ]
+        },
+        "genericDbls": {
+          "초": "dblsClasStdntNope"
+        },
         "단식계": "fstnClasStdntNope",
         "extra": [
           "sclsStdntNope",
@@ -212,15 +244,47 @@
           "중": "mdscCrsClasCnt",
           "고": "hgscCrsClasCnt"
         },
-        "generic": [
-          "grdr1FstnClasCnt",
-          "grdr2FstnClasCnt",
-          "grdr3FstnClasCnt",
-          "grdr4FstnClasCnt",
-          "grdr5FstnClasCnt",
-          "grdr6FstnClasCnt"
-        ],
-        "genericDbls": "dblsClasCnt",
+        "generic": {
+          "초": [
+            "grdr1FstnClasCnt",
+            "grdr2FstnClasCnt",
+            "grdr3FstnClasCnt",
+            "grdr4FstnClasCnt",
+            "grdr5FstnClasCnt",
+            "grdr6FstnClasCnt"
+          ],
+          "중": [
+            [
+              "grdr1WkClasCnt",
+              "grdr1NghtClasCnt"
+            ],
+            [
+              "grdr2WkClasCnt",
+              "grdr2NghtClasCnt"
+            ],
+            [
+              "grdr3WkClasCnt",
+              "grdr3NghtClasCnt"
+            ]
+          ],
+          "고": [
+            [
+              "grdr1WkClasCnt",
+              "grdr1NghtClasCnt"
+            ],
+            [
+              "grdr2WkClasCnt",
+              "grdr2NghtClasCnt"
+            ],
+            [
+              "grdr3WkClasCnt",
+              "grdr3NghtClasCnt"
+            ]
+          ]
+        },
+        "genericDbls": {
+          "초": "dblsClasCnt"
+        },
         "단식계": "fstnClasCnt",
         "extra": [
           "spclWkClasCnt",
@@ -319,9 +383,11 @@
     "〔2026-08-31 실제 응답 확인〕 명세서의 칸 이름만 보고 골랐다가 0기록이 나왔습니다.",
     "",
     "보통 학교는 «일반 학년 칸»을 씁니다:",
-    "  grdr1FstnClasStdntNope … grdr6FstnClasStdntNope   N학년단식학급학생수",
-    "  dblsClasStdntNope                                  복식학급학생수",
-    "경북 초등학교 504곳을 세어 보니 이 칸들에만 값이 있었습니다.",
+    "보통 학교는 «일반 학년 칸»을 쓰는데, 학교급마다 «다른 칸»입니다.",
+    "  초등학교  grdr1FstnClasStdntNope … grdr6FstnClasStdntNope   (단식학급)  504곳 중 414~454곳",
+    "  중·고     grdr1WkStdntNope … grdr3WkStdntNope               (주간)     267곳 중 265~266곳",
+    "            + grdr1NghtStdntNope … (야간) — 야간 학교만",
+    "초등학교만 보고 정했다가 중·고에서 2%만 읽었습니다(경산중 15/800).",
     "",
     "elscCrsGrdrN… 는 «과정» 칸입니다 — 초·중 통합운영학교처럼 한 학교가 여러 학제를",
     "가질 때 그 «다른» 과정을 담습니다. 보통 초등학교에는 값이 없습니다.",
