@@ -564,7 +564,16 @@ async function main() {
     else ready.push(id);
   }
   say('EDSS ' + Object.keys(cfg.apis).length + '개 중 부를 수 있는 것 ' + ready.length + '개');
-  if (noKey.length) { say('  · 키 없음 ' + noKey.length + '개'); noKey.forEach(n => say('      ' + n)); }
+  if (noKey.length) {
+    say('  · 키 없음 ' + noKey.length + '개'); noKey.forEach(n => say('      ' + n));
+    /* 〔2026. 8. 31.〕 여기서 한 번 헛돌았습니다. 일곱 개가 **배포 저장소**
+       team-leap 에 들어가 있었습니다. 그 저장소에는 워크플로가 하나도 없어
+       아무도 그 키를 읽지 않습니다. 이름·값은 다 맞았고 방만 틀렸는데,
+       예전 메시지는 「키 없음」이라고만 해서 어디를 봐야 할지 알 수 없었습니다. */
+    say('    → 이 키를 읽는 것은 원본 저장소 Kimmahone/team-leap-source 의');
+    say('       Settings → Secrets and variables → Actions → Secrets 입니다.');
+    say('       배포 저장소 team-leap 이 아닙니다 — 거기에는 워크플로가 없습니다.');
+  }
   if (noUrl.length) {
     say('  · 요청주소 없음 ' + noUrl.length + '개'); noUrl.forEach(n => say('      ' + n));
     say('    → data.go.kr 마이페이지 → 활용신청 현황 → 그 API → 요청주소를');

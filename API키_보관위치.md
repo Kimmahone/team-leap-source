@@ -37,6 +37,8 @@ SGIS_CONSUMER_KEY
 SGIS_CONSUMER_SECRET
 ```
 
+> **어느 저장소인지 틀리기 쉽다.** GitHub Actions Secret은 **원본 저장소 `Kimmahone/team-leap-source`** 에 넣는다. 배포 저장소 `Kimmahone/team-leap`에는 워크플로가 하나도 없어서, 거기 넣은 키는 아무도 읽지 않는다. 2026-08-31에 EDSS 7개가 실제로 그렇게 들어가 한 번 헛돌았다.
+
 EDSS는 브라우저·Cloudflare Pages Function이 직접 조회하지 않는다. 따라서 **EDSS 키를 Cloudflare에 넣지 않는다.** 신청한 7개 API는 2026-08-31 기준 **모두 승인되었고**, 인증키는 GitHub Actions의 Repository Secret에 API별로 하나씩 등록되어 있다. 여러 API의 키를 하나의 Secret 값에 줄바꿈·쉼표 등으로 합쳐 넣으면 안 된다.
 
 ```text

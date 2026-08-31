@@ -241,6 +241,13 @@ check('워크플로가 7개 키를 모두 넘긴다',
   Object.values(cfg.apis).every(a => wf.includes(a.secret)));
 check('워크플로에 인증키가 적혀 있지 않다', !/EDSS_[A-Z_]+_API_KEY\s*:\s*['"]?[0-9a-zA-Z%+/=]{20,}/.test(wf));
 
+/* 키가 배포 저장소에 들어가 있어 한 번 헛돌았습니다. 그쪽에는 워크플로가
+   하나도 없어 아무도 읽지 않습니다. 「키 없음」만 말하면 어디를 봐야 할지
+   알 수 없으므로, 어느 저장소인지까지 말하게 못 박습니다. */
+const baker = fs.readFileSync(path.join(ROOT, 'open api/bake-edss.mjs'), 'utf8');
+check('키가 없을 때 어느 저장소를 봐야 하는지 말한다', baker.includes('team-leap-source'));
+check('배포 저장소가 아니라는 것도 말한다', /배포 저장소 team-leap 이 아닙니다/.test(baker));
+
 /* ── 8. 실적이 들어온 대시보드가 그대로 도는가 ─────────────────────
    여기가 이 파일에서 두 번째로 중요합니다. 수집기가 잘 돌아도 심은 결과가
    화면을 깨뜨리면 아무 소용이 없습니다. 22개 시군치를 지어 넣고 대시보드의

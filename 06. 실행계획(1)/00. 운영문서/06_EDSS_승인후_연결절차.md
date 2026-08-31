@@ -4,9 +4,13 @@
 
 ## 지금 상태
 
-신청한 EDSS API 7개가 **모두 승인**되었고, 인증키는 API별로 나뉘어 `Kimmahone/team-leap-source`의 **GitHub Actions Repository Secret**에 등록되어 있다. 수집·검사·자동 갱신 코드도 붙었다.
+신청한 EDSS API 7개가 **모두 승인**되었고, 요청주소 7개도 `open api/edss-endpoints.json`에 들어갔다. 수집·검사·자동 갱신 코드도 붙었다.
 
-**남은 것은 요청주소 하나다.** 아래 3장을 보라.
+**남은 것은 인증키가 있는 저장소다.**
+
+> 〔2026-08-31〕 키 7개가 **배포 저장소 `Kimmahone/team-leap`** 에 등록되어 있었다. 이름도 값도 맞지만 **그 저장소에는 워크플로가 하나도 없어 아무도 읽지 않는다.** 수집기가 도는 곳은 원본 저장소 `Kimmahone/team-leap-source`다. 같은 이름·같은 값으로 원본 저장소에 다시 등록해야 한다. Secret 값은 다시 읽을 수 없으므로 옮기는 명령은 없다 — 사람이 다시 붙여 넣어야 한다.
+>
+> 같은 이유로 `KOSIS_API_KEY`·`SCHOOLINFO_API_KEY`·`KINDER_API_KEY`도 두 저장소 어디에도 없다. 정기 갱신 워크플로가 그 셋을 계속 건너뛰고 있었다(경고만 남기고 성공으로 끝나므로 눈에 띄지 않았다).
 
 Cloudflare에는 EDSS 키를 넣지 않는다. 브라우저·Pages Function이 EDSS를 호출하지 않으므로, 넣으면 필요한 곳보다 넓게 키를 보관하게 될 뿐이다.
 
