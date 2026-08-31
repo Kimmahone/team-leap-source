@@ -572,7 +572,10 @@ export const AUTH_WAYS = [
      하므로 본문에만 넣습니다. */
   { in: 'body', name: '인증키' }
 ];
-export function wayName(w) { return w.in + ':' + w.name + (w.prefix ? ' ' + w.prefix.trim() : ''); }
+export function wayName(w) {
+  if (Array.isArray(w)) return w.map(wayName).join(' + ');
+  return w.in + ':' + w.name + (w.prefix ? ' ' + w.prefix.trim() : '');
+}
 
 /* 명세서를 보고 「여기다」를 알게 되면 edss-endpoints.json 의 auth 에 한 줄
    적는 것으로 끝나야 합니다. 그래서 목록에 없는 이름도 받습니다.
@@ -581,6 +584,12 @@ export function wayName(w) { return w.in + ':' + w.name + (w.prefix ? ' ' + w.pr
      body:certKey            본문에
      header:Authorization:Bearer   앞에 붙일 말이 있으면 세 번째 칸에 */
 export function parseWay(spec) {
+  /* 여러 자리에 넣어야 하면 배열로 적습니다: ["header:api_key","body:userApiAthkCn"] */
+  if (Array.isArray(spec)) {
+    const out = [];
+    for (const one of spec) { const w = parseWay(one); if (!w) return null; out.push(w); }
+    return out.length ? out : null;
+  }
   const t = String(spec || '').trim();
   if (!t) return null;
   for (const w of AUTH_WAYS) if (wayName(w) === t) return w;
@@ -621,12 +630,21 @@ export function wrapBody(env, serviceId, srh) {
 export function buildRequest(key, params, way) {
   const headers = { 'Content-Type': 'application/json', Accept: 'application/json' };
   const body = Object.assign({}, params || {});
-  /* Basic 은 앞에 붙이기만 하면 안 됩니다 — 「키:」를 base64 로 싸야 합니다. */
-  const val = way.prefix === 'Basic '
-    ? 'Basic ' + Buffer.from(key + ':', 'utf8').toString('base64')
-    : (way.prefix || '') + key;
-  if (way.in === 'header') headers[way.name] = val;
-  else body[way.name] = key;
+  /* 〔2026. 8. 31.〕 이 플랫폼은 **두 군데를 다** 봅니다.
+       header api_key        ← 게이트웨이가 「누구냐」를 봅니다. 없으면 401.
+       body   userApiAthkCn  ← 그 뒤의 앱이 다시 봅니다. 없으면 통과 못 합니다.
+     하나만 넣으면 각각 401 과 404 가 나는데, 겉보기로는 서로 다른 문제처럼
+     보입니다. 그래서 여러 자리를 한꺼번에 받습니다. */
+  const ways = Array.isArray(way) ? way : [way];
+  for (const w of ways) {
+    if (!w) continue;
+    /* Basic 은 앞에 붙이기만 하면 안 됩니다 — 「키:」를 base64 로 싸야 합니다. */
+    const val = w.prefix === 'Basic '
+      ? 'Basic ' + Buffer.from(key + ':', 'utf8').toString('base64')
+      : (w.prefix || '') + key;
+    if (w.in === 'header') headers[w.name] = val;
+    else body[w.name] = key;
+  }
   return { method: 'POST', headers: headers, body: JSON.stringify(body) };
 }
 

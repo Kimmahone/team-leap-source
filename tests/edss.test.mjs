@@ -316,7 +316,20 @@ check('적힌 인증 방법이 있다면 코드가 아는 것이어야 한다',
   !cfg.auth || findWay(cfg.auth) !== null);
 /* 인증키는 헤더가 아니라 «본문»의 userApiAthkCn 입니다. 테스트 예시로 확인했습니다.
    (api_key 헤더도 게이트웨이가 읽기는 하지만, 그것만으로는 404 입니다) */
-check('인증키는 본문의 userApiAthkCn 이다', cfg.auth === 'body:userApiAthkCn');
+/* 이 플랫폼은 «두 군데를 다» 봅니다. 하나만 넣으면 각각 401 과 404 가 나는데,
+   겉보기로는 서로 다른 문제처럼 보여서 엉뚱한 데를 파게 됩니다. */
+check('인증키를 두 군데에 넣는다', Array.isArray(cfg.auth) && cfg.auth.length === 2);
+check('게이트웨이용은 api_key 헤더다', cfg.auth.indexOf('header:api_key') >= 0);
+check('앱용은 본문의 userApiAthkCn 이다', cfg.auth.indexOf('body:userApiAthkCn') >= 0);
+check('두 자리를 한 요청에 다 채운다', (function () {
+  const req = buildRequest(KEY, wrapBody(cfg.envelope, 'SA1', {}), findWay(cfg.auth));
+  return req.headers.api_key === KEY && JSON.parse(req.body).userApiAthkCn === KEY;
+})());
+check('하나만 적어도 예전처럼 돈다', (function () {
+  const req = buildRequest(KEY, {}, findWay('header:api_key'));
+  return req.headers.api_key === KEY && !JSON.parse(req.body).userApiAthkCn;
+})());
+check('여러 자리 이름이 함께 보인다', findWay(cfg.auth) && wayName(findWay(cfg.auth)).indexOf('+') > 0);
 check('본문을 한 겹 싸는 방법을 적어 두었다',
   cfg.envelope && cfg.envelope.id === 'apiId' && cfg.envelope.params === 'srhParam');
 /* 예시의 시도명이 대전·대구·경기입니다. 「경상북도」로 보내면 0건이 오는데,
@@ -336,7 +349,14 @@ const wreq = buildRequest(KEY, wb, findWay(cfg.auth));
 const wsent = JSON.parse(wreq.body);
 check('인증키는 본문 맨 바깥에 붙는다', wsent.userApiAthkCn === KEY);
 check('인증키가 srhParam 안으로 들어가지 않는다', wsent.srhParam.userApiAthkCn === undefined);
-check('헤더에는 키가 없다', !JSON.stringify(wreq.headers).includes(KEY));
+check('키가 주소로 새지 않는다 (로그에 URL 이 실려도 안전하다)',
+  !JSON.stringify(wreq).includes('?') || !/[?&][^"]*KEY/.test(JSON.stringify(wreq)));
+check('키를 넣는 자리는 설정이 정한 두 곳뿐이다', (function () {
+  const req = buildRequest(KEY, wrapBody(cfg.envelope, 'SA1', { crtrYr: '2023' }), findWay(cfg.auth));
+  const hdr = Object.keys(req.headers).filter(k => req.headers[k] === KEY);
+  const bdy = Object.keys(JSON.parse(req.body)).filter(k => JSON.parse(req.body)[k] === KEY);
+  return hdr.length === 1 && bdy.length === 1 && hdr[0] === 'api_key' && bdy[0] === 'userApiAthkCn';
+})());
 check('보내는 본문의 열쇠가 문서와 같다',
   JSON.stringify(Object.keys(wsent).sort()) === JSON.stringify(['apiId', 'srhParam', 'userApiAthkCn']));
 check('설정에 봉투가 없으면 조회조건을 그대로 편다',
