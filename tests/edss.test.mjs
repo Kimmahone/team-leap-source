@@ -230,7 +230,7 @@ check('읽은 합이 API 가 준 계와 같으면 조용하다', nzMix.mismatch.
 /* 계에는 학년별 말고 특수학급·순회학급도 들어 있습니다. 빼먹으면 학교
    310곳쯤에서 학년별 합이 계보다 작아지는데, 그 차이는 한 자리 수라 눈에
    잘 안 띕니다. 학년을 알 수 없으므로 복식과 같이 학년 0 으로 담습니다. */
-const FX = (kind) => Object.assign(F(kind), { extra: ['sclsStdntNope', 'tourClasStdntNope'] });
+const FX = (kind) => Object.assign(F(kind), { extra: { 초: ['sclsStdntNope', 'tourClasStdntNope'] } });
 const sped = Object.assign(wideRow('stu', 2023, '안동', '초등학교', 20, 0),
   { sclsStdntNope: '8', tourClasStdntNope: '3', kescStdntNope: '131' });
 const nzSp = normalizeWide([sped], FX('stu'), SGGOF, 'stu');
@@ -241,6 +241,12 @@ check('특수·순회는 학년을 지어내지 않는다',
   nzSp.records.filter(r => r.grade === 0).every(r => r.dbls === true));
 check('특수·순회를 빼면 합이 계보다 작다',
   /131/.test(normalizeWide([sped], F('stu'), SGGOF, 'stu').mismatch[0] || ''));
+/* 중·고의 주간학생수는 특수·순회를 «이미 품고» 있습니다. 또 더하면 두 번 셉니다 —
+   초등 기준으로 다 더했다가 경산중 815/800 처럼 15명씩 넘쳤습니다. */
+const spedM = Object.assign(wideRow('stu', 2023, '안동', '중학교', 20, 0),
+  { sclsStdntNope: '8', kescStdntNope: '60' });
+check('중·고는 특수·순회를 또 더하지 않는다',
+  normalizeWide([spedM], FX('stu'), SGGOF, 'stu').mismatch.length === 0);
 /* 합계만 보면 틀린 것이 안 보입니다. 학년 칸을 하나 잘못 집어도 화면의
    총계는 그럴듯합니다. 그래서 학교마다 계와 맞춰 봅니다. */
 const bad = Object.assign(wideRow('stu', 2023, '안동', '초등학교', 20, 0), { kescStdntNope: '999' });
@@ -499,8 +505,8 @@ for (const id of Object.keys(SPEC)) {
   check(id + ' 은 중·고는 주간 칸을 본다', /Wk/.test(String(f.generic['중'][0])));
   check(id + ' 은 야간 학교도 더한다', /Nght/.test(JSON.stringify(f.generic['고'])));
   check(id + ' 은 복식을 초등에만 붙인다', f.genericDbls && f.genericDbls['초'] && !f.genericDbls['중']);
-  check(id + ' 은 특수·순회도 담는다 (빼먹으면 310곳이 계와 어긋난다)',
-    Array.isArray(f.extra) && f.extra.length > 0);
+  check(id + ' 은 특수·순회를 초등에만 더한다 (중·고는 이미 품고 있다)',
+    f.extra && f.extra['초'] && f.extra['초'].length > 0 && !f.extra['중']);
   check(id + ' 은 계와 맞춰 볼 칸을 안다', !!f.total);
   check(id + ' 은 한 줄이 한 학교라고 적어 둔다', cfg.apis[id].shape === 'wide');
 }

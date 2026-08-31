@@ -306,12 +306,18 @@ export function normalizeWide(rows, fields, sggOf, into, opt) {
       for (const m of made) push(m[0], m[1], m[2], m[3]);
     }
 
-    /* ③ 계에는 학년별 말고 «특수학급»과 «순회학급»도 들어 있습니다.
+    /* ③ 계에는 학년별 말고 «특수학급»과 «순회학급»도 들어 있습니다 — 다만
+       초등학교만 그렇습니다. 초등의 단식학급학생수는 특수·순회를 «빼고»
+       세지만, 중·고의 주간학생수는 «넣고» 셉니다. 초등 기준으로 다 더했다가
+       경산중 815/800 처럼 15명씩 넘쳤습니다.
        학년을 알 수 없으므로 복식과 같이 학년 0 으로 담습니다. 빼먹으면
        학교 310곳쯤에서 학년별 합이 계보다 작아집니다. */
-    if (own && fields.extra && fields.extra.length) {
+    const ext = fields.extra
+      ? (Array.isArray(fields.extra) ? fields.extra : (own ? fields.extra[own] : null))
+      : null;
+    if (own && ext && ext.length) {
       let s2 = 0;
-      for (const col of fields.extra) s2 += num(r[col]);
+      for (const col of ext) s2 += num(r[col]);
       if (s2) { push(own, 0, s2, true); any = true; sum += s2; }
     }
 
