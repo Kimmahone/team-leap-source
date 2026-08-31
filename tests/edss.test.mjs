@@ -120,17 +120,6 @@ check('유치원은 걸러진다', toLevel('유치원') === null);
 check('포항 남·북구는 한 곳으로 모인다', toSgg('포항시 남구') === 'pohang' && toSgg('포항시 북구') === 'pohang');
 check('시군 코드로도 붙는다', toSgg('47170') === 'andong');
 check('군위는 경북에서 뺀다 (2023년 대구로 갔다)', toSgg('군위군') === null);
-/* 군위를 넣으면 2016년만 경북이 넓어져서 «감소가 실제보다 가팔라» 보입니다.
-   그래서 열 해 내내 뺍니다 — 같은 땅을 견주려는 것입니다.
-   다만 그것은 «못 찾은 것»이 아니라 «일부러 뺀 것»이라, 섞어서 세면
-   「못 붙인 학교 58곳」이 우리 실수처럼 보입니다. */
-const gw = wideRow('stu', 2016, '군위', '초등학교', 30, 0);
-const nzGw = normalizeWide([gw], F('stu'), (nm) => (/군위/.test(nm) ? GUNWI : null), 'stu');
-check('군위는 못 찾은 것이 아니라 일부러 뺀 것으로 센다',
-  nzGw.skipped.gunwi === 1 && nzGw.skipped.sgg === 0);
-check('군위 학생 수도 따로 센다', nzGw.skipped.gunwiStu === 180);
-check('군위를 못 붙인 이름 목록에 넣지 않는다', Object.keys(nzGw.missing).length === 0);
-check('군위 기록은 시군 합계에 들어가지 않는다', nzGw.records.length === 0);
 check('시군이 22곳이다', Object.keys(SGG_BY_NAME).length === 22);
 check('쉼표 든 숫자', num('1,234') === 1234);
 check('빈칸·하이픈은 0', num('') === 0 && num('-') === 0 && num(null) === 0);
@@ -272,6 +261,18 @@ check('계가 0 이면 트집 잡지 않는다 (자료가 없는 것뿐이다)',
 check('못 붙인 학교의 학생 수도 센다 (줄 수만으로는 크기를 모른다)',
   normalizeWide([wideRow('stu', 2026, '서울', '초등학교', 10, 0)], F('stu'), SGGOF, 'stu')
     .skipped.sggStu === 60);
+/* 군위를 넣으면 2016년만 경북이 넓어져서 «감소가 실제보다 가팔라» 보입니다.
+   그래서 열 해 내내 뺍니다 — 같은 땅을 견주려는 것입니다.
+   다만 그것은 «못 찾은 것»이 아니라 «일부러 뺀 것»이라, 섞어서 세면
+   「못 붙인 학교 58곳」이 우리 실수처럼 보입니다. */
+const gw = wideRow('stu', 2016, '군위', '초등학교', 30, 0);
+const nzGw = normalizeWide([gw], F('stu'), (nm) => (/군위/.test(nm) ? GUNWI : null), 'stu');
+check('군위는 못 찾은 것이 아니라 일부러 뺀 것으로 센다',
+  nzGw.skipped.gunwi === 1 && nzGw.skipped.sgg === 0);
+check('군위 학생 수도 따로 센다', nzGw.skipped.gunwiStu === 180);
+check('군위를 못 붙인 이름 목록에 넣지 않는다', Object.keys(nzGw.missing).length === 0);
+check('군위 기록은 시군 합계에 들어가지 않는다', nzGw.records.length === 0);
+
 check('시군을 못 붙이면 이름을 세어 알린다',
   normalizeWide([wideRow('stu', 2026, '서울', '초등학교', 10, 0)], F('stu'), SGGOF, 'stu')
     .missing['서울초등학교'] === 1);
