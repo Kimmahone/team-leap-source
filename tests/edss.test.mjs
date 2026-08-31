@@ -505,8 +505,15 @@ for (const id of Object.keys(SPEC)) {
   check(id + ' 은 중·고는 주간 칸을 본다', /Wk/.test(String(f.generic['중'][0])));
   check(id + ' 은 야간 학교도 더한다', /Nght/.test(JSON.stringify(f.generic['고'])));
   check(id + ' 은 복식을 초등에만 붙인다', f.genericDbls && f.genericDbls['초'] && !f.genericDbls['중']);
-  check(id + ' 은 특수·순회를 초등에만 더한다 (중·고는 이미 품고 있다)',
-    f.extra && f.extra['초'] && f.extra['초'].length > 0 && !f.extra['중']);
+  /* 더하는 자리가 학생과 학급이 다릅니다. 학생은 중·고가 이미 품고 있고,
+     학급은 세 학교급 모두 빠져 있습니다. 한쪽 규칙을 양쪽에 쓰면 한 자리 수씩
+     모자라거나 넘치는데, 총계만 보면 그럴듯해 보입니다. */
+  check(id + ' 은 초등에 특수·순회를 더한다',
+    f.extra && f.extra['초'] && f.extra['초'].length > 0);
+  if (id === 'studentStatus')
+    check('학생수는 중·고에 특수·순회를 또 더하지 않는다', !f.extra['중']);
+  else
+    check('학급수는 중·고에도 특수·순회를 더한다', !!(f.extra['중'] && f.extra['고']));
   check(id + ' 은 계와 맞춰 볼 칸을 안다', !!f.total);
   check(id + ' 은 한 줄이 한 학교라고 적어 둔다', cfg.apis[id].shape === 'wide');
 }
