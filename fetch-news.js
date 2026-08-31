@@ -28,13 +28,30 @@ const fs = require('fs');
 const https = require('https');
 
 const DRY = process.argv.includes('--dry');
+/* 검사에서 부를 수 있게 내보냅니다. 이 파일은 CLI 로도 돌고 require 로도 읽힙니다. */
+
 const WANT = 4;              // 카드에 올릴 수
-const HISTORY_MAX = 60;      // 히스토리에 남길 최대 건수
+
+/* 〔2026. 8. 31.〕 예전에는 «건수»로 잘랐습니다 — HISTORY_MAX = 60.
+   그런데 화면은 「주간(7일) · 월간(30일) · 전체 보기」를 내놓습니다.
+   기사가 하루 5~6건씩 들어오니 60건이면 **열흘치**뿐이고, 「월간」을 눌러도
+   반쪽만 보입니다. 화면이 내놓은 기간을 자료가 못 받쳐 준 것입니다.
+
+   게다가 이 워크플로가 main 에 push 될 때마다 돌았습니다. 하루에 서른 번
+   밀어 넣은 날, 창이 17일치에서 8일치로 줄었습니다. 밀려난 기사는 아무 데도
+   남지 않습니다 — 커밋 기록에서 되살려야 했습니다.
+
+   그래서 «날짜»로 자릅니다. 건수 상한은 파일이 끝없이 커지지 않게 하는
+   안전장치일 뿐, 평소에는 걸리지 않습니다. */
+const HISTORY_DAYS = 120;    // 이 날수 안의 기사는 남깁니다 (주간·월간 필터를 넉넉히 덮습니다)
+const HISTORY_MAX = 500;     // 안전장치. 하루 5~6건이면 120일에 700건쯤이라 여기서 걸립니다
 
 const ID = process.env.NAVER_CLIENT_ID;
 const SECRET = process.env.NAVER_CLIENT_SECRET;
 
-if (!ID || !SECRET) {
+/* 검사에서 이 파일을 읽을 때는 인증키가 없어도 됩니다 — 자르는 규칙만 봅니다.
+   직접 실행할 때만 막습니다. */
+if (require.main === module && (!ID || !SECRET)) {
   console.error('✗ NAVER_CLIENT_ID · NAVER_CLIENT_SECRET 환경변수가 없습니다.');
   console.error('  로컬:    NAVER_CLIENT_ID=... NAVER_CLIENT_SECRET=... node fetch-news.js');
   console.error('  Actions: 저장소 Settings → Secrets and variables → Actions 에 등록');
@@ -210,6 +227,18 @@ async function collect() {
   return { items: [...bag.values()], problems, anyOk };
 }
 
+/* 날짜로 자르고, 건수 상한은 안전장치로만 씁니다.
+   지금(now)을 인자로 받는 것은 검사에서 시간을 고정하기 위해서입니다. */
+function trimHistory(list, now) {
+  const cut = (now == null ? Date.now() : now) - HISTORY_DAYS * 864e5;
+  const kept = list.filter((it) => {
+    const t = new Date(it.pubDate).getTime();
+    /* 날짜를 못 읽는 기사는 버리지 않습니다 — 못 읽는 것과 오래된 것은 다릅니다. */
+    return !Number.isFinite(t) || t >= cut;
+  });
+  return kept.slice(0, HISTORY_MAX);
+}
+
 async function main() {
   console.log('📰 뉴스 모으는 중…');
   const { items, problems, anyOk } = await collect();
@@ -252,18 +281,28 @@ async function main() {
     process.exit(1);
   }
 
-  /* 히스토리 — 이미 있는 것에 «더합니다». 같은 링크는 한 번만.
-     날짜 내림차순으로 정렬해 최근 것이 앞에 오게 하고 HISTORY_MAX 로 자릅니다. */
+  /* 히스토리 — 이미 있는 것에 «더합니다». 같은 링크는 한 번만. */
   const prev = readJson('news-history.json', []);
   const seen = new Set(prev.map((p) => p.link));
   const added = scored.filter((it) => !seen.has(it.link));
-  const history = dedupeStories([...added, ...prev])
-    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
-    .slice(0, HISTORY_MAX);
+  const merged = dedupeStories([...added, ...prev])
+    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+  const history = trimHistory(merged);
 
-  console.log(`히스토리 ${prev.length}건 + 새로 ${added.length}건 → ${history.length}건`);
+  const dropped = merged.length - history.length;
+  console.log(`히스토리 ${prev.length}건 + 새로 ${added.length}건 → ${history.length}건` +
+    (dropped ? `  (${HISTORY_DAYS}일이 지나 ${dropped}건 내림)` : ''));
+  if (history.length) {
+    const oldest = new Date(history[history.length - 1].pubDate);
+    console.log(`   보관 기간: ${oldest.toISOString().slice(0, 10)} ~ 오늘`);
+  }
   console.log(`\n가장 최근 ${WANT}건:`);
   history.slice(0, WANT).forEach((f, i) => console.log(`  ${i + 1}. ${f.title}`));
+
+  /* 밀려난 기사는 아무 데도 남지 않습니다. 줄어드는 것을 눈에 보이게 합니다. */
+  if (history.length < prev.length) {
+    console.error(`  ⚠ 히스토리가 ${prev.length}건에서 ${history.length}건으로 줄었습니다.`);
+  }
 
   if (DRY) { console.log('\n— 확인만 (--dry). 파일을 고치지 않았습니다.'); return; }
 
@@ -272,4 +311,6 @@ async function main() {
   console.log('   ※ 화면에 올리려면 `사이트 굽기.command` 를 돌려야 합니다.');
 }
 
-main();
+module.exports = { trimHistory, HISTORY_DAYS, HISTORY_MAX };
+
+if (require.main === module) main();

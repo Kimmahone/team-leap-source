@@ -37,7 +37,16 @@ jobs:
         with:
           node-version: '24'
 
+      # ★ 〔2026. 8. 31.〕 이 단계에 if 가 없었습니다.
+      #   그래서 main 에 push 될 때마다 뉴스를 새로 받았습니다. 하루에 서른 번
+      #   밀어 넣은 날, 히스토리 창이 17일치에서 8일치로 줄었습니다 —
+      #   새 기사가 들어올 때마다 오래된 기사가 뒤로 밀려 사라졌기 때문입니다.
+      #   밀려난 것은 아무 데도 남지 않아 커밋 기록에서 되살려야 했습니다.
+      #
+      #   push 때 필요한 것은 «배포»이지 «수집»이 아닙니다. 주간 일정과
+      #   손으로 돌릴 때만 받아옵니다. 아래 배포 단계는 그대로 매번 돕니다.
       - name: 뉴스 받아오기
+        if: github.event_name != 'push'
         env:
           NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
           NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
