@@ -273,9 +273,14 @@ check('군위 학생 수도 따로 센다', nzGw.skipped.gunwiStu === 180);
 check('군위를 못 붙인 이름 목록에 넣지 않는다', Object.keys(nzGw.missing).length === 0);
 check('군위 기록은 시군 합계에 들어가지 않는다', nzGw.records.length === 0);
 
-check('시군을 못 붙이면 이름을 세어 알린다',
-  normalizeWide([wideRow('stu', 2026, '서울', '초등학교', 10, 0)], F('stu'), SGGOF, 'stu')
-    .missing['서울초등학교'] === 1);
+/* 이름만 세면 「어느 학교가 몇 명이나」를 모릅니다. 큰 학교 하나가 빠진 것과
+   작은 분교 스물이 빠진 것은 다른 이야기입니다. */
+const nzMiss = normalizeWide([wideRow('stu', 2026, '서울', '초등학교', 10, 0)], F('stu'), SGGOF, 'stu');
+check('못 붙인 학교의 이름을 적는다', !!nzMiss.missing['서울초등학교']);
+check('몇 줄인지 센다', nzMiss.missing['서울초등학교'].줄 === 1);
+check('학생 수도 함께 센다', nzMiss.missing['서울초등학교'].학생 === 60);
+check('어느 해에 빠졌는지도 적는다',
+  nzMiss.missing['서울초등학교'].해.join() === '2026');
 check('시군을 못 붙인 줄은 기록으로 만들지 않는다',
   normalizeWide([wideRow('stu', 2026, '서울', '초등학교', 10, 0)], F('stu'), SGGOF, 'stu')
     .records.length === 0);

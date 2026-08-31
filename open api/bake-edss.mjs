@@ -265,9 +265,16 @@ export function normalizeWide(rows, fields, sggOf, into, opt) {
     if (!sgg) {
       /* 몇 «줄»을 버렸는지만으로는 크기를 알 수 없습니다. 문 닫은 학교는 대개
          작아서, 줄 수로는 10%라도 학생 수로는 1%일 수 있습니다. 함께 셉니다. */
+      const lost = fields.total ? num(r[fields.total]) : 0;
       skipped.sgg++;
-      skipped.sggStu += fields.total ? num(r[fields.total]) : 0;
-      if (name) missing[name] = (missing[name] || 0) + 1;
+      skipped.sggStu += lost;
+      if (name) {
+        /* 이름만 세면 「어느 학교가 몇 명이나」를 알 수 없습니다. 큰 학교
+           하나가 빠진 것과 작은 분교 스물이 빠진 것은 다른 이야기입니다. */
+        const m = missing[name] || (missing[name] = { 줄: 0, 학생: 0, 해: [] });
+        m.줄++; m.학생 += lost;
+        if (m.해.indexOf(year) < 0) m.해.push(year);
+      }
       continue;
     }
 
@@ -1167,7 +1174,12 @@ async function main() {
       const u = unwrap(r.json);
       const nz = normalizeWide(u.rows, a.fields, sggOf, into, { sido: cfg.sidoName });
       all.push.apply(all, nz.records);
-      for (const k of Object.keys(nz.missing)) missAll[k] = true;
+      for (const k of Object.keys(nz.missing)) {
+        const m = missAll[k] || (missAll[k] = { 줄: 0, 학생: 0, 해: [] });
+        m.줄 += nz.missing[k].줄;
+        m.학생 = Math.max(m.학생, nz.missing[k].학생);   // 학생 표에서 온 값만 씁니다
+        for (const y of nz.missing[k].해) if (m.해.indexOf(y) < 0) m.해.push(y);
+      }
       if (nz.mismatch.length) {
         /* 학년별 합 ≠ API 가 준 계. 칸을 잘못 집었거나 우리가 못 읽는 학년이
            있다는 뜻입니다. 몇 곳인지는 반드시 보여 줍니다. */
@@ -1186,12 +1198,18 @@ async function main() {
     }
   }
   say('  호출 ' + calls + '번');
-  const missNames = Object.keys(missAll);
+  const missNames = Object.keys(missAll)
+    .sort(function (a2, b2) { return missAll[b2].학생 - missAll[a2].학생; });
   if (missNames.length) {
-    /* 경북 밖 학교가 대부분입니다(시도 필터가 먹지 않았을 때). 몇 곳인지는
-       사람이 봐야 합니다 — 조용히 버리면 경북 학교가 빠져도 모릅니다. */
-    say('  시군을 못 붙인 학교 이름 ' + missNames.length + '가지:');
-    say('    ' + missNames.slice(0, 15).join(' · ') + (missNames.length > 15 ? ' …' : ''));
+    /* 조용히 버리면 경북 학교가 빠져도 모릅니다. **다 적습니다** — 몇 곳인지가
+       아니라 «어느 학교가 몇 명이나»를 알아야 고칠 수 있습니다. */
+    say('  시군을 못 붙인 학교 ' + missNames.length + '곳 (학생 많은 순):');
+    for (const n2 of missNames) {
+      const m = missAll[n2];
+      const ys = m.해.slice().sort();
+      say('    ' + n2 + '  ' + m.학생 + '명  ' +
+        (ys.length > 1 ? ys[0] + '~' + ys[ys.length - 1] : ys[0]));
+    }
   }
   if (!all.length) { cry('한 행도 받지 못했습니다. 아무것도 고치지 않았습니다.'); process.exit(4); }
 
@@ -1241,6 +1259,9 @@ async function main() {
   /* 학교별 원자료 96,000행을 그대로 두면 9MB 짜리 파일이 갱신 때마다 커밋됩니다.
      접은 값만 둡니다 — 원자료는 필요할 때 다시 받는 편이 낫습니다.
      사본은 조용히 낡습니다(`data/README.md`). */
+  fs.writeFileSync(path.join(DATA_DIR, 'edss-unmatched.json'),
+    JSON.stringify({ 만든때: meta.만든때, 설명: '시군을 못 붙인 학교. 고치는 법은 06_EDSS_승인후_연결절차.md',
+      학교: missAll }, null, 2) + '\n', 'utf8');
   fs.writeFileSync(SERIES_FILE, JSON.stringify({
     meta: meta, 연도: agg.years, 시군별: agg.byYear, 학년별: agg.grade,
     감소율: rates, 진급률: cohort, 백테스트: back
