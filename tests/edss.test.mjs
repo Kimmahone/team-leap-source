@@ -8,7 +8,7 @@ import {
   redact, unwrap, guessFields, toLevel, toSgg, num,
   normalizeWide, parseSchoolList, sggLookup, aggregate, declineRates, cohortRates,
   projectCohort, backtest, toBlock, entryRate, GRADES, SGG_BY_NAME,
-  AUTH_WAYS, buildRequest, wayName, findWay, wrapBody, pickProvinceBirths, GUNWI, mainSchoolName, sggFromPrefix
+  AUTH_WAYS, buildRequest, wayName, findWay, wrapBody, pickProvinceBirths, GUNWI, mainSchoolName, sggFromPrefix, sggCandidates
 } from '../open api/bake-edss.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -328,7 +328,7 @@ const DASH_HTML = fs.readFileSync(path.join(ROOT, '06. 실행계획(1)/prototype
 const smap = parseSchoolList(DASH_HTML);
 check('대시보드에서 학교 목록을 읽는다', smap && Object.keys(smap).length > 850);
 check('22개 시군이 다 나온다',
-  new Set(Object.values(smap).filter(Boolean)).size === 22);
+  new Set(Object.values(smap).flat()).size === 22);
 const look = sggLookup(smap);
 check('보통 학교는 시군이 붙는다', look('안동중학교') === 'andong');
 check('분교장은 본교와 같은 시군', look('녹전초등학교원천분교장') === 'andong');
@@ -360,8 +360,41 @@ check('띄어쓰기가 달라도 붙는다', look(' 영양초등학교 ') === 'y
    스무 곳이 조용히 엉뚱한 시군으로 갑니다. 모르면 모른다고 합니다. */
 check('두 시군에 같은 이름이면 찍지 않는다', look('남산초등학교') === null);
 check('없는 학교는 null', look('없는초등학교') === null);
+const cand = sggCandidates(smap);
 check('겹치는 이름이 실제로 있다 (이 검사가 헛돌지 않는지)',
-  Object.values(smap).filter(v => v === null).length >= 5);
+  Object.values(smap).filter(v => v.length > 1).length >= 5);
+/* 예전에는 겹치면 null 로만 두어 「모른다」로 끝났습니다. 후보를 남겨 두면
+   소거법을 쓸 수 있습니다 — 남산초등학교는 영주·경산 둘뿐입니다. */
+check('겹치는 이름의 후보 시군을 남긴다',
+  (cand('남산초등학교') || []).sort().join() === 'gyeongsan,yeongju');
+check('안 겹치는 이름은 후보가 없다', cand('안동중학교') === null);
+
+/* ── 5-1-3. 소거법 ─────────────────────────────────────────────────
+   그 해 남산초 두 줄 가운데 하나가 개방ID 로 경산에 붙었다면, 남은 한 줄은
+   영주일 수밖에 없습니다. 짐작이 아니라 «남은 것이 하나»여서 정해집니다. */
+const ALT = (nm) => (nm === '남산초등학교' ? ['yeongju', 'gyeongsan'] : null);
+const ns = (town, code) => {
+  const r = wideRow('stu', 2025, '남산', '초등학교', 20, 0);
+  r.schlNm = '남산초등학교'; r.opnId = code; return r;
+};
+/* 한 줄은 개방ID 로 경산에 붙고, 다른 한 줄은 코드가 명부에 없습니다. */
+const byCode2 = (nm, cd) => (cd === 'A' ? 'gyeongsan' : null);
+const nzAlt = normalizeWide([ns('', 'A'), ns('', 'B')], F('stu'), byCode2, 'stu', { alt: ALT });
+check('남은 후보가 하나면 소거법으로 붙인다', nzAlt.skipped.solved === 1);
+check('소거법으로 붙인 줄도 기록이 된다',
+  new Set(nzAlt.records.map(r => r.sgg)).size === 2);
+check('소거법이 통하면 못 붙인 것이 없다', nzAlt.skipped.sgg === 0);
+
+/* 둘 다 코드가 없으면 남은 후보가 둘입니다 — 그대로 모른다고 둡니다. */
+const nzAmb = normalizeWide([ns('', 'B'), ns('', 'C')], F('stu'), () => null, 'stu', { alt: ALT });
+check('남은 후보가 둘이면 찍지 않는다', nzAmb.skipped.solved === 0 && nzAmb.skipped.sgg === 2);
+check('찍지 않은 것은 못 붙인 이름으로 센다', !!nzAmb.missing['남산초등학교']);
+/* 한 줄뿐인데 후보가 둘이어도 찍지 않습니다 — 그 해에 한 곳만 온 것인지
+   우리가 한 줄을 놓친 것인지 알 수 없습니다. */
+const nzOne = normalizeWide([ns('', 'B')], F('stu'), () => null, 'stu', { alt: ALT });
+check('한 줄뿐이고 후보가 둘이면 찍지 않는다', nzOne.skipped.solved === 0);
+check('후보표를 안 주면 예전처럼 돈다',
+  normalizeWide([ns('', 'B')], F('stu'), () => null, 'stu').skipped.sgg === 1);
 
 const agg = aggregate(nzS.records.concat(nzC.records));
 check('연도 11개', agg.years.length === 11);

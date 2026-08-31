@@ -240,9 +240,24 @@ const SKIP_TYPE = /특수학교|각종학교|고등공민|고등기술|유치원
 export function normalizeWide(rows, fields, sggOf, into, opt) {
   const key = into === 'cls' ? 'cls' : 'stu';
   const sido = (opt && opt.sido) || '';
-  const out = [], missing = {};
-  const skipped = { year: 0, sgg: 0, sggStu: 0, gunwi: 0, gunwiStu: 0, level: 0, sido: 0, type: 0 };
-  const mismatch = [];
+  const altOf = (opt && opt.alt) || null;
+  const out = [], missing = {}, mismatch = [];
+  const skipped = { year: 0, sgg: 0, sggStu: 0, gunwi: 0, gunwiStu: 0,
+                    level: 0, sido: 0, type: 0, solved: 0 };
+  const pending = [];   // 겹치는 이름 — 소거법으로 뒤에 봅니다
+  const used = {};      // "이름|해" → 이미 정해진 시군들
+
+  const lose = (name, year, r) => {
+    const lost = fields.total ? num(r[fields.total]) : 0;
+    skipped.sgg++; skipped.sggStu += lost;
+    if (!name) return;
+    /* 이름만 세면 「어느 학교가 몇 명이나」를 알 수 없습니다. 큰 학교
+       하나가 빠진 것과 작은 분교 스물이 빠진 것은 다른 이야기입니다. */
+    const m = missing[name] || (missing[name] = { 줄: 0, 학생: 0, 해: [] });
+    m.줄++; m.학생 += lost;
+    if (m.해.indexOf(year) < 0) m.해.push(year);
+  };
+
   for (const r of rows || []) {
     if (sido && fields.sido) {
       const v = String(r[fields.sido] == null ? '' : r[fields.sido]);
@@ -256,6 +271,7 @@ export function normalizeWide(rows, fields, sggOf, into, opt) {
     const code0 = fields.code ? String(r[fields.code] || '') : '';
     let sgg = fields.sgg ? toSgg(r[fields.sgg]) : null;
     if (!sgg && sggOf) sgg = sggOf(name, code0);
+
     if (sgg === GUNWI) {
       /* 못 찾은 것이 아니라 일부러 뺀 것입니다. 따로 셉니다. */
       skipped.gunwi++;
@@ -263,34 +279,49 @@ export function normalizeWide(rows, fields, sggOf, into, opt) {
       continue;
     }
     if (!sgg) {
-      /* 몇 «줄»을 버렸는지만으로는 크기를 알 수 없습니다. 문 닫은 학교는 대개
-         작아서, 줄 수로는 10%라도 학생 수로는 1%일 수 있습니다. 함께 셉니다. */
-      const lost = fields.total ? num(r[fields.total]) : 0;
-      skipped.sgg++;
-      skipped.sggStu += lost;
-      if (name) {
-        /* 이름만 세면 「어느 학교가 몇 명이나」를 알 수 없습니다. 큰 학교
-           하나가 빠진 것과 작은 분교 스물이 빠진 것은 다른 이야기입니다. */
-        const m = missing[name] || (missing[name] = { 줄: 0, 학생: 0, 해: [] });
-        m.줄++; m.학생 += lost;
-        if (m.해.indexOf(year) < 0) m.해.push(year);
-      }
+      /* 겹치는 이름은 뒤로 미룹니다 — 남은 후보가 하나면 그때 정해집니다. */
+      const cands = altOf ? altOf(name) : null;
+      if (cands && cands.length) { pending.push({ r, name, year, code: code0, type, cands }); continue; }
+      lose(name, year, r);
       continue;
     }
+    emit(r, year, name, code0, sgg, type);
+  }
 
+  /* ── 소거법 ────────────────────────────────────────────────────────
+     남산초등학교는 영주·경산 두 곳에 있습니다. 그 해 EDSS 가 준 남산초 두 줄
+     가운데 하나가 개방ID 로 이미 경산에 붙었다면, 남은 한 줄은 «영주일
+     수밖에» 없습니다. 짐작이 아니라 남은 것이 하나여서 정해지는 것입니다.
+     남은 후보가 둘 이상이거나 미룬 줄이 둘 이상이면 그대로 모른다고 둡니다. */
+  for (const p of pending) {
+    const k = p.name + '|' + p.year;
+    const taken = used[k] || [];
+    const free = p.cands.filter((c) => taken.indexOf(c) < 0);
+    const sameName = pending.filter((q) => q.name === p.name && q.year === p.year);
+    if (free.length === 1 && sameName.length === 1) {
+      skipped.solved++;
+      emit(p.r, p.year, p.name, p.code, free[0], p.type);
+    } else {
+      lose(p.name, p.year, p.r);
+    }
+  }
+
+  return { records: out, skipped, missing, mismatch };
+
+  /* 한 줄을 학년 수만큼 펴는 일. 소거법에서도 같은 코드를 씁니다. */
+  function emit(r, year, name, code, sgg, type) {
+    (used[name + '|' + year] || (used[name + '|' + year] = [])).push(sgg);
     const own = toLevel(type);          // 이 학교 제 학제 (초·중·고)
     const rows0 = [], push = function (lv, g, v, dbls) {
-      const rec = { year: year, lv: lv, sgg: sgg, code: code0, name: name, grade: g, stu: 0, cls: 0 };
+      const rec = { year, lv, sgg, code, name, grade: g, stu: 0, cls: 0 };
       rec[key] = v;
       if (dbls) rec.dbls = true;
       rows0.push(rec);
     };
     let any = false, sum = 0;
 
-    /* ① 제 학제는 «일반 학년 칸»에 들어 있습니다.
-       보통 학교(초등학교·중학교·고등학교)는 여기에만 값이 있습니다. */
-    /* 일반 칸은 학교급마다 다릅니다 — 초는 단식학급, 중·고는 주간(+야간).
-       한 학년이 여러 칸에 나뉘어 있으면 배열로 적고 더합니다. */
+    /* ① 제 학제는 «일반 학년 칸»에 있습니다. 학교급마다 다른 칸입니다 —
+       초등학교는 단식학급, 중·고는 주간(+야간). */
     const gen = fields.generic
       ? (Array.isArray(fields.generic) ? fields.generic : (own ? fields.generic[own] : null))
       : null;
@@ -311,8 +342,8 @@ export function normalizeWide(rows, fields, sggOf, into, opt) {
       if (s0) { any = true; sum += s0; } else rows0.length = 0;
     }
 
-    /* ② 겸하는 과정은 «과정 칸»에 들어 있습니다 — 초·중 통합운영학교 같은 곳.
-       제 학제와 겹치지 않게, 다른 학제만 봅니다. */
+    /* ② 겸하는 과정은 «과정 칸»에 있습니다 — 초·중 통합운영학교 같은 곳.
+       제 학제와 겹치지 않게 다른 학제만 봅니다. */
     for (const lv of ['초', '중', '고']) {
       if (lv === own) continue;
       const cols = fields[lv];
@@ -332,12 +363,9 @@ export function normalizeWide(rows, fields, sggOf, into, opt) {
       for (const m of made) push(m[0], m[1], m[2], m[3]);
     }
 
-    /* ③ 계에는 학년별 말고 «특수학급»과 «순회학급»도 들어 있습니다 — 다만
-       초등학교만 그렇습니다. 초등의 단식학급학생수는 특수·순회를 «빼고»
-       세지만, 중·고의 주간학생수는 «넣고» 셉니다. 초등 기준으로 다 더했다가
-       경산중 815/800 처럼 15명씩 넘쳤습니다.
-       학년을 알 수 없으므로 복식과 같이 학년 0 으로 담습니다. 빼먹으면
-       학교 310곳쯤에서 학년별 합이 계보다 작아집니다. */
+    /* ③ 계에는 «특수학급»과 «순회학급»도 들어 있습니다 — 다만 더하는 자리가
+       학생과 학급이 다릅니다. 초등 학생수는 빼고 세고, 중·고 학생수는 넣고
+       세고, 학급수는 셋 다 빼고 셉니다. 설정이 학교급마다 정합니다. */
     const ext = fields.extra
       ? (Array.isArray(fields.extra) ? fields.extra : (own ? fields.extra[own] : null))
       : null;
@@ -347,18 +375,17 @@ export function normalizeWide(rows, fields, sggOf, into, opt) {
       if (s2) { push(own, 0, s2, true); any = true; sum += s2; }
     }
 
-    if (!any) { skipped.level++; continue; }
+    if (!any) { skipped.level++; return; }
     out.push.apply(out, rows0);
 
-    /* ③ 읽은 것을 더한 값이 API 가 준 계와 같은가.
+    /* ④ 읽은 것을 더한 값이 API 가 준 계와 같은가.
        합계만 보면 틀린 것이 안 보입니다 — 학년 칸을 하나 잘못 집어도
-       화면의 총계는 그럴듯합니다. 다른 학교는 이름을 적어 둡니다. */
+       화면의 총계는 그럴듯합니다. */
     if (fields.total != null) {
       const t = num(r[fields.total]);
       if (t && t !== sum) mismatch.push(name + ' ' + sum + '/' + t);
     }
   }
-  return { records: out, skipped: skipped, missing: missing, mismatch: mismatch };
 }
 
 /* ══ 5-3. 시군은 어디서 오나 ═════════════════════════════════════════════
@@ -384,8 +411,10 @@ export function parseSchoolList(html) {
          경북에는 남산초등학교(영주·경산)처럼 겹치는 이름이 10가지 있습니다.
          먼저 만난 쪽으로 정해 버리면 스무 곳이 조용히 엉뚱한 시군으로 갑니다.
          모르면 모른다고 하고, 못 붙인 곳으로 세어 알립니다. */
-      if (nm in map && map[nm] !== lm[1]) map[nm] = null;
-      else if (!(nm in map)) map[nm] = lm[1];
+      /* 겹치는 이름은 «어느 시군들인지»를 남깁니다. 예전에는 null 로만 두어
+         「모른다」로 끝났는데, 후보를 알고 있으면 소거법을 쓸 수 있습니다. */
+      if (nm in map) { if (map[nm].indexOf(lm[1]) < 0) map[nm].push(lm[1]); }
+      else map[nm] = [lm[1]];
     }
   }
   return Object.keys(map).length ? map : null;
@@ -409,7 +438,11 @@ export function mainSchoolName(n) {
    띄어쓰기를 지우고 견줍니다. 그래도 안 붙으면 null 입니다 — 지어내지 않습니다. */
 export function sggLookup(map) {
   const flat = {};
-  for (const k of Object.keys(map || {})) if (map[k]) flat[k.replace(/\s/g, '')] = map[k];
+  for (const k of Object.keys(map || {})) {
+    const v = map[k];
+    /* 한 시군에만 있는 이름만 바로 씁니다. 둘 이상이면 소거법으로 넘깁니다. */
+    if (Array.isArray(v) ? v.length === 1 : v) flat[k.replace(/\s/g, '')] = Array.isArray(v) ? v[0] : v;
+  }
   return function (name) {
     if (!name) return null;
     const n = String(name).replace(/\s/g, '');
@@ -418,6 +451,19 @@ export function sggLookup(map) {
     const b = mainSchoolName(n);
     if (b && flat[b]) return flat[b];
     return null;
+  };
+}
+
+/* 겹치는 이름의 «후보 시군»을 돌려줍니다. 소거법에 씁니다. */
+export function sggCandidates(map) {
+  const flat = {};
+  for (const k of Object.keys(map || {})) {
+    const v = map[k];
+    if (Array.isArray(v) && v.length > 1) flat[k.replace(/\s/g, '')] = v.slice();
+  }
+  return function (name) {
+    const n = String(name || '').replace(/\s/g, '');
+    return flat[n] || null;
   };
 }
 
@@ -1100,9 +1146,10 @@ async function main() {
   const schoolMap = parseSchoolList(html);
   if (!schoolMap) { cry('대시보드에서 SCHOOL_RAW 를 찾지 못했습니다.'); process.exit(3); }
   const byName = sggLookup(schoolMap);
-  const ambiguous = Object.keys(schoolMap).filter(function (k) { return !schoolMap[k]; });
+  const altOf = sggCandidates(schoolMap);
+  const ambiguous = Object.keys(schoolMap).filter(function (k) { return schoolMap[k].length > 1; });
   say('시군을 이어 붙일 학교 이름 ' + Object.keys(schoolMap).length + '가지를 대시보드에서 읽었습니다.' +
-    (ambiguous.length ? '  (두 시군에 같은 이름 ' + ambiguous.length + '가지는 이름으로 못 정합니다)' : ''));
+    (ambiguous.length ? '  (두 시군에 같은 이름 ' + ambiguous.length + '가지는 소거법으로 갑니다)' : ''));
 
   /* --- 개방ID 로 시군을 잇습니다 -----------------------------------------
      학급및학생현황에는 opnId 와 sggNm 이 **함께** 들어 있습니다. 이 표를 한 번
@@ -1222,7 +1269,8 @@ async function main() {
       calls++;
       if (!r.ok) { cry('  ✗ ' + a.name + ' ' + (y || '') + ' — HTTP ' + r.status + ' ' + r.msg); continue; }
       const u = unwrap(r.json);
-      const nz = normalizeWide(u.rows, a.fields, sggOf, into, { sido: cfg.sidoName });
+      const nz = normalizeWide(u.rows, a.fields, sggOf, into,
+        { sido: cfg.sidoName, alt: altOf });
       all.push.apply(all, nz.records);
       for (const k of Object.keys(nz.missing)) {
         const m = missAll[k] || (missAll[k] = { 줄: 0, 학생: 0, 해: [] });
@@ -1242,6 +1290,7 @@ async function main() {
         (nz.skipped.type ? '  (특수·각종·유치원 ' + nz.skipped.type + '줄 뺌)' : '') +
         (nz.skipped.gunwi ? '  (군위 ' + nz.skipped.gunwi + '줄 · ' +
           nz.skipped.gunwiStu.toLocaleString('ko-KR') + '명 일부러 뺌)' : '') +
+        (nz.skipped.solved ? '  (겹치는 이름 ' + nz.skipped.solved + '줄 소거법으로 붙임)' : '') +
         (nz.skipped.sgg ? '  (시군 못 붙임 ' + nz.skipped.sgg + '줄 · ' +
           nz.skipped.sggStu.toLocaleString('ko-KR') + '명)' : ''));
       await new Promise(function (z) { setTimeout(z, 200); });
