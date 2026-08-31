@@ -7,7 +7,8 @@
 import {
   redact, unwrap, guessFields, toLevel, toSgg, num,
   normalizeRows, aggregate, declineRates, cohortRates,
-  projectCohort, backtest, toBlock, entryRate, GRADES, SGG_BY_NAME
+  projectCohort, backtest, toBlock, entryRate, GRADES, SGG_BY_NAME,
+  AUTH_WAYS, buildRequest, wayName, findWay
 } from '../open api/bake-edss.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -31,6 +32,32 @@ check('키를 모르고 흘러도 serviceKey 뒤는 가린다',
 check('키를 가려도 나머지 글은 남는다', redact('오류: 등록되지 않았습니다', [KEY]).includes('등록되지'));
 check('짧은 값은 가리지 않는다 (본문이 다 지워지면 못 읽는다)',
   redact('결과 0건', ['0건']).includes('0건'));
+
+/* ── 1-2. 요청 만들기 ──────────────────────────────────────────────
+   openapi.edmgr.kr 은 GET 을 405 로 막고, POST 에 물음표 뒤 인자가 붙으면
+   400 을 냅니다. 그래서 **모든 것이 본문**입니다. 이 규칙이 깨지면 한 건도
+   못 받는데, 게이트웨이가 401 만 돌려주므로 까닭이 안 보입니다. */
+const WAY_H = { in: 'header', name: 'apikey' };
+const WAY_B = { in: 'body', name: 'apiKey' };
+const rq = (w, p) => buildRequest(KEY, p || { pageNo: 1 }, w);
+check('언제나 POST 다', rq(WAY_H).method === 'POST' && rq(WAY_B).method === 'POST');
+check('주소에는 아무것도 안 붙인다 (물음표가 붙으면 400)',
+  buildRequest.length === 3);
+check('헤더 방식은 키를 헤더에 넣는다', rq(WAY_H).headers.apikey === KEY);
+check('헤더 방식은 키를 본문에 넣지 않는다', !rq(WAY_H).body.includes(KEY));
+check('본문 방식은 키를 본문에 넣는다', JSON.parse(rq(WAY_B).body).apiKey === KEY);
+check('본문 방식은 키를 헤더에 넣지 않는다',
+  !JSON.stringify(rq(WAY_B).headers).includes(KEY));
+check('Bearer 는 앞에 붙인다',
+  rq({ in: 'header', name: 'Authorization', prefix: 'Bearer ' }).headers.Authorization === 'Bearer ' + KEY);
+check('보낸 인자가 본문에 그대로 실린다', JSON.parse(rq(WAY_H, { yy: 2026 }).body).yy === 2026);
+check('본문은 JSON 이라고 밝힌다', rq(WAY_H).headers['Content-Type'] === 'application/json');
+check('시도해 볼 인증 방법이 여럿이다', AUTH_WAYS.length >= 8);
+check('인증 방법 이름이 겹치지 않는다',
+  new Set(AUTH_WAYS.map(wayName)).size === AUTH_WAYS.length);
+check('이름으로 도로 찾을 수 있다 (설정 파일에 적어 두려면 필요하다)',
+  AUTH_WAYS.every(w => findWay(wayName(w)) === w));
+check('모르는 이름은 null', findWay('header:없는것') === null);
 
 /* ── 2. 봉투를 벗긴다 ──────────────────────────────────────────────── */
 const row = { YY: '2026', SCHUL_CODE: 'A1', SCHUL_NM: '가나초등학교', SGG_NM: '안동시', GRADE: '1', 학생수: '10', 학급수: '1' };
@@ -184,9 +211,24 @@ check('API 마다 Secret 이름이 다르다',
   new Set(Object.values(cfg.apis).map(a => a.secret)).size === 7);
 check('Secret 이름이 EDSS_…_API_KEY 꼴이다',
   Object.values(cfg.apis).every(a => /^EDSS_[A-Z_]+_API_KEY$/.test(a.secret)));
-check('설정 파일에 인증키가 들어 있지 않다',
-  !/[0-9a-zA-Z%+/=]{25,}/.test(JSON.stringify(Object.values(cfg.apis).map(a => a.url))));
+/* 「긴 토막이 있으면 키」로 보면 요청주소의 경로까지 걸립니다. 주소를 먼저
+   걷어낸 다음 남은 값에서 찾습니다 — 지키려는 것은 「주소가 짧다」가 아니라
+   「키가 안 적혀 있다」이기 때문입니다. */
+const cfgText = JSON.stringify(cfg).replace(/https?:\/\/[^"\s]+/g, '');
+check('설정 파일에 인증키가 들어 있지 않다', !/[0-9a-zA-Z%+/=]{25,}/.test(cfgText));
+check('요청주소는 모두 https 다 (키가 평문으로 다니면 안 된다)',
+  Object.values(cfg.apis).every(a => !a.url || /^https:\/\//.test(a.url)));
+check('일곱 개 주소가 다 채워져 있다', Object.values(cfg.apis).every(a => !!a.url));
+check('API 마다 주소가 다르다', new Set(Object.values(cfg.apis).map(a => a.url)).size === 7);
 check('요청주소를 어디서 베끼는지 적어 두었다', JSON.stringify(cfg).includes('data.go.kr'));
+check('요청변수 이름을 적을 자리가 있다',
+  cfg.paging && cfg.filter && 'year' in cfg.filter && 'page' in cfg.paging);
+check('찾은 인증 방법을 적을 자리가 있다', 'auth' in cfg);
+check('적힌 인증 방법이 있다면 코드가 아는 것이어야 한다',
+  !cfg.auth || findWay(cfg.auth) !== null);
+check('호출 한도를 정해 둔다 (하루 한도를 넘기면 그날은 못 받는다)',
+  Number(cfg.callCap) > 0 && Number(cfg.callCap) <= 10000);
+check('게이트웨이가 POST 라는 것을 적어 두었다', JSON.stringify(cfg).includes('POST'));
 
 /* 신청안 문서와 Secret 이름이 어긋나면 워크플로가 조용히 키를 못 찾습니다. */
 const plan = fs.readFileSync(path.join(ROOT, '06. 실행계획(1)/EDSS_Open_API_신청안.md'), 'utf8');

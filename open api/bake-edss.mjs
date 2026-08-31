@@ -451,25 +451,72 @@ function loadDotEnv(file) {
   return out;
 }
 
-async function fetchPage(url, key, params, secrets) {
-  const u = new URL(url);
-  /* 두 이름을 다 붙입니다. 포털은 serviceKey, 몇몇 기관은 apiKey 를 봅니다.
-     모르는 이름은 무시되므로 함께 보내도 탈이 없습니다. */
-  u.searchParams.set('serviceKey', key);
-  u.searchParams.set('apiKey', key);
-  u.searchParams.set('type', 'json');
-  u.searchParams.set('returnType', 'json');
-  u.searchParams.set('dataType', 'JSON');
-  for (const k of Object.keys(params || {})) u.searchParams.set(k, String(params[k]));
-  const res = await fetch(u, { headers: { Accept: 'application/json' } });
+/* ══ 12-1. 이 API 는 POST 입니다 ═══════════════════════════════════════
+   〔2026. 8. 31. 확인〕 openapi.edmgr.kr 은 공공데이터포털과 다릅니다.
+
+     GET                       → 405 Method Not Allowed
+     POST + 물음표 뒤 인자      → 400 "HTTP 'POST' cannot contain query parameters"
+     POST + 인증 없음           → 401 Unauthorized
+
+   그래서 **모든 인자를 본문에 담아 POST** 합니다. 물음표 뒤에는 아무것도
+   붙이지 않습니다 — 붙이면 인증까지 가 보지도 못하고 400 입니다. */
+export const AUTH_WAYS = [
+  { in: 'header', name: 'apikey' },
+  { in: 'header', name: 'apiKey' },
+  { in: 'header', name: 'Authorization', prefix: 'Bearer ' },
+  { in: 'header', name: 'Authorization' },
+  { in: 'header', name: 'X-API-KEY' },
+  { in: 'header', name: 'api-key' },
+  { in: 'header', name: 'serviceKey' },
+  { in: 'header', name: 'authKey' },
+  { in: 'body', name: 'apiKey' },
+  { in: 'body', name: 'serviceKey' },
+  { in: 'body', name: 'authKey' },
+  { in: 'body', name: 'key' }
+];
+export function wayName(w) { return w.in + ':' + w.name + (w.prefix ? ' ' + w.prefix.trim() : ''); }
+export function findWay(name) {
+  for (const w of AUTH_WAYS) if (wayName(w) === name) return w;
+  return null;
+}
+
+/* 요청 한 벌을 만듭니다. 네트워크를 타지 않으므로 검사할 수 있습니다. */
+export function buildRequest(key, params, way) {
+  const headers = { 'Content-Type': 'application/json', Accept: 'application/json' };
+  const body = Object.assign({}, params || {});
+  if (way.in === 'header') headers[way.name] = (way.prefix || '') + key;
+  else body[way.name] = key;
+  return { method: 'POST', headers: headers, body: JSON.stringify(body) };
+}
+
+async function callOnce(url, key, params, way, secrets) {
+  const res = await fetch(url, buildRequest(key, params, way));
   const text = await res.text();
-  if (!res.ok) throw new Error('HTTP ' + res.status + ' — ' + redact(text.slice(0, 200), secrets));
-  try { return JSON.parse(text); }
-  catch (e) {
-    /* XML 이 왔다는 것은 대개 「등록되지 않은 서비스키」입니다. */
-    const m = text.match(/<returnAuthMsg>([^<]*)<|<resultMsg>([^<]*)</);
-    throw new Error('JSON 이 아닙니다 — ' + redact((m ? (m[1] || m[2]) : text.slice(0, 160)), secrets));
+  let json = null;
+  try { json = JSON.parse(text); } catch (e) { /* JSON 이 아니면 아래에서 글로 봅니다 */ }
+  return {
+    ok: res.ok, status: res.status, json: json,
+    msg: redact(json && (json.message || json.resultMsg) ? (json.message || json.resultMsg)
+      : text.slice(0, 200), secrets)
+  };
+}
+
+/* 인증키를 어디에 담아야 하는지 개발명세서를 못 본 채로 붙였습니다.
+   그래서 **한 번만 찾아봅니다** — 되는 것이 나오면 그 자리에서 멈추고,
+   찾은 방법은 edss-endpoints.json 에 적어 두어 다음부터는 한 번에 갑니다.
+   틀린 키든 없는 키든 이 게이트웨이는 똑같이 401 이라, 밖에서는 구별할
+   길이 없습니다. 그래서 「되는 것」만 봅니다. */
+async function discoverAuth(url, key, params, secrets, say) {
+  const tried = [];
+  for (const w of AUTH_WAYS) {
+    let r;
+    try { r = await callOnce(url, key, params, w, secrets); }
+    catch (e) { tried.push(wayName(w) + ' → ' + redact(String(e.message), secrets)); continue; }
+    tried.push(wayName(w) + ' → ' + r.status);
+    if (r.status !== 401 && r.status !== 403) return { way: w, res: r, tried: tried };
+    await new Promise(r2 => setTimeout(r2, 200));
   }
+  return { way: null, res: null, tried: tried };
 }
 
 async function main() {
@@ -528,38 +575,72 @@ async function main() {
     process.exit(2);
   }
 
-  /* --- probe: API 마다 한 번씩만 -------------------------------------- */
-  const report = { 만든때: new Date().toISOString(), 기준연도: TO, apis: {} };
-  const sample = {};
+  /* --- 한 번씩만 불러 봅니다 ------------------------------------------
+     인증 방법을 모르므로 한 API 에서 한 번 찾고, 찾으면 나머지는 그대로
+     씁니다 (같은 게이트웨이입니다). 찾은 방법은 설정 파일에 적어 두어
+     다음 실행부터는 한 번에 갑니다. */
+  const report = { 만든때: new Date().toISOString(), 게이트웨이: 'POST · 본문에 인자', apis: {} };
+  let way = findWay(cfg.auth || '');
+  if (way) say('인증 방법: ' + wayName(way) + ' (설정 파일에 적혀 있습니다)');
+  /* 찾기가 두 번 실패하면 그만둡니다. 같은 게이트웨이인데 두 번 안 되면
+     일곱 번 더 두드려 봐야 401 이 84번 쌓일 뿐입니다. */
+  let searchFails = 0;
+
   for (const id of ready) {
     const a = cfg.apis[id];
     const key = keyOf(a.secret);
-    const params = Object.assign({ pageNo: 1, numOfRows: PROBE ? 5 : 1000 }, a.params || {});
-    let json;
-    try { json = await fetchPage(a.url, key, params, secrets); }
-    catch (e) {
-      cry('  ✗ ' + a.name + ' — ' + e.message);
-      report.apis[id] = { name: a.name, 결과: '실패', 까닭: redact(e.message, secrets) };
+    const params = Object.assign({}, a.params || {});
+    let r = null;
+    if (way) {
+      try { r = await callOnce(a.url, key, params, way, secrets); }
+      catch (e) { r = { ok: false, status: 0, msg: redact(String(e.message), secrets) }; }
+    }
+    /* 적혀 있던 방법이 안 먹으면 다시 찾습니다 — 게이트웨이가 바뀔 수 있습니다. */
+    if ((!r || r.status === 401 || r.status === 403) && searchFails >= 2) {
+      cry('  ✗ ' + a.name + ' — 앞서 두 번 실패해 인증 찾기를 건너뜁니다.');
+      report.apis[id] = { name: a.name, 결과: '인증 실패(건너뜀)' };
       continue;
     }
-    const { rows, total, meta } = unwrap(json);
+    if (!r || r.status === 401 || r.status === 403) {
+      say('  … ' + a.name + ' — 인증 방법을 찾는 중');
+      const d = await discoverAuth(a.url, key, params, secrets, say);
+      report.apis[id] = report.apis[id] || {};
+      report.apis[id].인증시도 = d.tried;
+      if (!d.way) {
+        searchFails++;
+        cry('  ✗ ' + a.name + ' — 어느 방법으로도 인증되지 않았습니다 (전부 401/403)');
+        report.apis[id] = Object.assign(report.apis[id], { name: a.name, 결과: '인증 실패' });
+        continue;
+      }
+      way = d.way; r = d.res;
+      say('  ✓ 인증 방법을 찾았습니다: ' + wayName(way));
+    }
+
+    const { rows, total, meta } = unwrap(r.json);
     const g = rows.length ? guessFields(rows[0], a.fields) : { picked: {}, why: {}, all: [] };
-    sample[id] = { rows, fields: g.picked };
-    report.apis[id] = {
-      name: a.name, 결과: rows.length ? '응답 있음' : '0건',
+    report.apis[id] = Object.assign(report.apis[id] || {}, {
+      name: a.name, 상태코드: r.status,
+      결과: !r.ok ? '오류' : rows.length ? '응답 있음' : '0건',
+      메시지: r.ok ? '' : r.msg,
       총건수: total, 봉투: meta, 칸이름: g.all, 고른칸: g.picked, 고른까닭: g.why,
       /* 값은 싣지 않습니다 — 학교 이름 하나까지도 보고서에 남길 까닭이 없습니다.
          모양만 봅니다: 그 칸이 숫자인가 글자인가. */
-      칸모양: rows.length ? Object.fromEntries(g.all.map(n => [n, typeof rows[0][n]])) : {}
-    };
-    say('  ✓ ' + a.name + ' — ' + rows.length + '행 / 총 ' + total +
-      (rows.length ? '  고른 칸: ' + Object.keys(g.picked).map(k => k + '=' + g.picked[k]).join(' · ') : ''));
-    await new Promise(r => setTimeout(r, 200));
+      칸모양: rows.length ? Object.fromEntries(g.all.map(n => [n, typeof rows[0][n]])) : {},
+      /* 인자를 하나도 안 보냈을 때 「무엇이 빠졌다」고 알려 주는 API 가
+         많습니다. 그 말이 곧 요청변수 목록입니다. */
+      응답열쇠: r.json && typeof r.json === 'object' ? Object.keys(r.json).slice(0, 20) : []
+    });
+    say('  ' + (r.ok ? '✓' : '✗') + ' ' + a.name + ' — HTTP ' + r.status +
+      (rows.length ? ' · ' + rows.length + '행 / 총 ' + total +
+        '  고른 칸: ' + Object.keys(g.picked).map(k => k + '=' + g.picked[k]).join(' · ')
+        : ' · ' + (r.msg || '0건')));
+    await new Promise(r2 => setTimeout(r2, 200));
   }
+  if (way) report.인증방법 = wayName(way);
 
   fs.mkdirSync(DATA_DIR, { recursive: true });
+  fs.writeFileSync(PROBE_FILE, JSON.stringify(report, null, 2) + '\n', 'utf8');
   if (PROBE) {
-    fs.writeFileSync(PROBE_FILE, JSON.stringify(report, null, 2) + '\n', 'utf8');
     say('\n✓ ' + path.relative(ROOT, PROBE_FILE) + ' 에 적었습니다 (인증키·값은 들어 있지 않습니다).');
     say('  이 파일을 보고 필드 짝짓기를 확정한 뒤 --probe 없이 다시 돌리세요.');
     return;
@@ -571,34 +652,61 @@ async function main() {
     cry('학생·학급 API 가 하나도 준비되지 않았습니다. 시계열을 만들 수 없습니다.');
     process.exit(3);
   }
+  if (!way) { cry('인증 방법을 찾지 못해 수집을 시작하지 않습니다.'); process.exit(3); }
+
+  /* 요청변수 이름은 **코드가 아니라 설정 파일**에서 옵니다. 이름이 비어 있으면
+     그 인자는 아예 보내지 않습니다 — 이 게이트웨이는 모르는 것에 까다롭습니다.
+     probe 가 알려 준 이름을 edss-endpoints.json 의 paging·filter 에 적으세요. */
+  const PG = cfg.paging || {}, FL = cfg.filter || {};
+  const bodyFor = (a, y, page) => {
+    const b = Object.assign({}, a.params || {});
+    if (PG.page) b[PG.page] = page;
+    if (PG.size) b[PG.size] = PG.sizeValue || 1000;
+    if (FL.year && y != null) b[FL.year] = y;
+    if (FL.sido) b[FL.sido] = cfg.sido || '47';
+    return b;
+  };
+  const SIZE = (cfg.paging && cfg.paging.sizeValue) || 1000;
+  /* 연도 인자 이름을 모르면 연도로 나눠 부르지 못합니다. 그때는 한 번에
+     받아서 응답의 연도 칸으로 나눕니다 — 없는 인자를 지어내지 않습니다. */
+  const YEARS = FL.year ? [] : [null];
+  if (FL.year) for (let y = FROM; y <= TO; y++) YEARS.push(y);
+  if (!FL.year) say('  ⚠ 연도 인자 이름이 설정에 없습니다 — 나누지 않고 받아 응답의 연도 칸으로 가릅니다.');
+
   const all = [];
+  let calls = 0;
+  const CALL_CAP = Number(cfg.callCap || 900);   // 하루 호출 한도를 넘기지 않습니다
   for (const id of pick) {
     const a = cfg.apis[id], key = keyOf(a.secret);
-    for (let y = FROM; y <= TO; y++) {
+    for (const y of YEARS) {
       let page = 1, got = 0, total = null;
       for (;;) {
-        const params = Object.assign({ pageNo: page, numOfRows: 1000, year: y, svyYy: y, yy: y },
-          a.params || {});
-        let json;
-        try { json = await fetchPage(a.url, key, params, secrets); }
-        catch (e) { cry('  ✗ ' + a.name + ' ' + y + '년 ' + page + '쪽 — ' + e.message); break; }
-        const u = unwrap(json);
+        if (calls >= CALL_CAP) { cry('  ⚠ 호출 한도 ' + CALL_CAP + '번에 닿아 멈춥니다.'); break; }
+        let r;
+        try { r = await callOnce(a.url, key, bodyFor(a, y, page), way, secrets); }
+        catch (e) { cry('  ✗ ' + a.name + (y ? ' ' + y + '년' : '') + ' ' + page + '쪽 — ' + redact(String(e.message), secrets)); break; }
+        calls++;
+        if (!r.ok) { cry('  ✗ ' + a.name + (y ? ' ' + y + '년' : '') + ' ' + page + '쪽 — HTTP ' + r.status + ' ' + r.msg); break; }
+        const u = unwrap(r.json);
         if (total == null) total = u.total;
         if (!u.rows.length) break;
         const f = guessFields(u.rows[0], a.fields).picked;
         const { records } = normalizeRows(u.rows, f);
-        /* 연도 칸이 없는 API 는 요청한 해로 채웁니다 */
-        records.forEach(r => { if (!r.year) r.year = y; });
-        all.push(...records);
+        /* 연도 칸이 없는 API 는 요청한 해로 채웁니다. 요청한 해도 없으면
+           그 행은 버립니다 — 어느 해인지 모르는 값은 시계열에 못 넣습니다. */
+        for (const rec of records) if (!rec.year && y) rec.year = y;
+        all.push(...records.filter(rec => rec.year));
         got += u.rows.length;
-        if (got >= total || u.rows.length < 1000) break;
+        if (!PG.page) break;                      // 쪽 넘기는 법을 모르면 한 번만
+        if (got >= total || u.rows.length < SIZE) break;
         page++;
-        await new Promise(r => setTimeout(r, 150));
+        await new Promise(r2 => setTimeout(r2, 150));
       }
-      say('  ' + a.name + ' ' + y + '년 — ' + got + '행');
-      await new Promise(r => setTimeout(r, 150));
+      say('  ' + a.name + (y ? ' ' + y + '년' : '') + ' — ' + got + '행');
+      await new Promise(r2 => setTimeout(r2, 150));
     }
   }
+  say('  호출 ' + calls + '번');
   if (!all.length) { cry('한 행도 받지 못했습니다. 아무것도 고치지 않았습니다.'); process.exit(4); }
 
   const agg = aggregate(all);
