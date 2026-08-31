@@ -698,11 +698,36 @@ async function main() {
      씁니다 (같은 게이트웨이입니다). 찾은 방법은 설정 파일에 적어 두어
      다음 실행부터는 한 번에 갑니다. */
   const report = { 만든때: new Date().toISOString(), 게이트웨이: 'POST · 본문에 인자', apis: {} };
+  let calls0 = 0;
   let way = findWay(cfg.auth || '');
   if (way) say('인증 방법: ' + wayName(way) + ' (설정 파일에 적혀 있습니다)');
   /* 찾기가 두 번 실패하면 그만둡니다. 같은 게이트웨이인데 두 번 안 되면
      일곱 번 더 두드려 봐야 401 이 84번 쌓일 뿐입니다. */
   let searchFails = 0;
+
+  /* probe 는 한 벌만 던지지 않습니다. 무엇이 모자라 안 되는지 알아야 하는데,
+     한 번 던져 404 를 받으면 「주소가 틀렸나 · 인자가 모자라나 · 그 해 자료가
+     없나」를 구별할 수 없습니다. 사다리처럼 조금씩 늘려 가며 던집니다. */
+  function ladder(a) {
+    const yp = a.yearParam, base = a.params || {}, out = [];
+    const add = (label, body) => out.push({ label: label, body: body });
+    add('빈 본문', {});
+    if (yp) {
+      /* 명세서의 샘플이 2023 입니다. 최신 해가 아직 안 나왔을 수 있습니다. */
+      for (const y of [2023, TO, TO - 1, TO - 2]) add(yp + '=' + y, mk(yp, y));
+      for (const y of [2023, TO]) add(yp + '=' + y + ' + 시도', Object.assign(mk(yp, y), base));
+    }
+    if (Object.keys(base).length) add('설정 인자만', Object.assign({}, base));
+    /* 같은 본문을 두 번 던지지 않습니다 — 남의 서버입니다. */
+    const seen = {}, uniq = [];
+    for (const t of out) {
+      const k = JSON.stringify(t.body);
+      if (seen[k]) continue;
+      seen[k] = 1; uniq.push(t);
+    }
+    return uniq;
+  }
+  function mk(k, v) { const o = {}; o[k] = String(v); return o; }
 
   for (const id of ready) {
     const a = cfg.apis[id];
@@ -734,9 +759,26 @@ async function main() {
       say('  ✓ 인증 방법을 찾았습니다: ' + wayName(way));
     }
 
+    /* 인증은 됐는데 줄이 안 오면, 무엇이 모자란지 사다리로 알아봅니다. */
+    let tries = [];
+    if (PROBE && (!r.ok || !unwrap(r.json).rows.length)) {
+      for (const t of ladder(a)) {
+        if (calls0 >= 40) break;
+        let rr;
+        try { rr = await callOnce(a.url, key, t.body, way, secrets); }
+        catch (e) { tries.push(t.label + ' → ' + redact(String(e.message), secrets).slice(0, 60)); continue; }
+        calls0++;
+        const uu = unwrap(rr.json);
+        tries.push(t.label + ' → ' + rr.status + (rr.ok ? ' · ' + uu.rows.length + '줄/총' + uu.total : ' · ' + rr.msg.slice(0, 60)));
+        if (rr.ok && uu.rows.length) { r = rr; break; }   // 되는 것을 찾으면 멈춥니다
+        await new Promise(function (z) { setTimeout(z, 250); });
+      }
+    }
+
     const { rows, total, meta } = unwrap(r.json);
     const g = rows.length ? guessFields(rows[0], a.fields) : { picked: {}, why: {}, all: [] };
     report.apis[id] = Object.assign(report.apis[id] || {}, {
+      던져본것: tries,
       name: a.name, 상태코드: r.status,
       결과: !r.ok ? '오류' : rows.length ? '응답 있음' : '0건',
       메시지: r.ok ? '' : r.msg,
@@ -778,7 +820,6 @@ async function main() {
      학생·학급 표에는 시군구 칸이 없습니다. 대시보드가 가진 경북 917곳으로
      잇습니다. 목록을 못 읽으면 시작하지 않습니다 — 시군 없이 모으면
      전부 버려지는데, 그게 「0건」으로만 보입니다. */
-  let calls0 = 0;
   let html = '';
   try { html = fs.readFileSync(TARGET, 'utf8'); }
   catch (e) { cry('대시보드를 열지 못했습니다: ' + TARGET); process.exit(3); }
