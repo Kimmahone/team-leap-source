@@ -8,7 +8,7 @@ import {
   redact, unwrap, guessFields, toLevel, toSgg, num,
   normalizeWide, parseSchoolList, sggLookup, aggregate, declineRates, cohortRates,
   projectCohort, backtest, toBlock, entryRate, GRADES, SGG_BY_NAME,
-  AUTH_WAYS, buildRequest, wayName, findWay, wrapBody
+  AUTH_WAYS, buildRequest, wayName, findWay, wrapBody, pickProvinceBirths
 } from '../open api/bake-edss.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -369,6 +369,33 @@ check('아직 학교에 안 온 출생아는 취학률 계산에 끼지 않는�
   near(entryRate(agg.grade, births), entryRate(agg.grade,
     Object.fromEntries(Object.entries(births).filter(([y]) => Number(y) <= 2020))), 1e-9));
 check('출생아가 없으면 재지 않는다 (0 이라고 하지 않는다)', entryRate(agg.grade, null) === null);
+
+/* KOSIS 출생아 표에는 «경상북도 합계»와 «시군 각각»과 «포항 남·북구»가 함께
+   들어 있습니다. 다 더하면 2019년이 14,472 대신 31,645 — 두 배가 넘습니다.
+   그러면 취학률이 0.98 이 아니라 0.45 로 나오고 초1 전망이 절반으로 꺾입니다. */
+const BIRTH_ROWS = [
+  { year: '2019', regionCode: '37', region: '경상북도', value: 14472 },
+  { year: '2019', regionCode: '37010', region: '포항시', value: 2701 },
+  { year: '2019', regionCode: '37011', region: '남구', value: 1221 },
+  { year: '2019', regionCode: '37012', region: '북구', value: 1480 },
+  { year: '2020', regionCode: '37', region: '경상북도', value: 13000 }
+];
+check('시도 합계 한 줄만 고른다', pickProvinceBirths(BIRTH_ROWS, '37')[2019] === 14472);
+check('시군을 더하지 않는다 (더하면 두 배가 넘는다)',
+  pickProvinceBirths(BIRTH_ROWS, '37')[2019] !== 31645);
+check('여러 해를 다 고른다', Object.keys(pickProvinceBirths(BIRTH_ROWS, '37')).length === 2);
+check('없는 코드면 빈 표', Object.keys(pickProvinceBirths(BIRTH_ROWS, '11')).length === 0);
+check('실제 파일에서도 시도 합계가 시군 합보다 작다', (function () {
+  const f = path.join(ROOT, 'open api/data/kosis-summary.json');
+  if (!fs.existsSync(f)) return true;
+  const k = JSON.parse(fs.readFileSync(f, 'utf8'));
+  const prov = pickProvinceBirths(k.births, '37');
+  const yrs = Object.keys(prov);
+  if (!yrs.length) return false;
+  const all = {};
+  for (const b of k.births || []) all[b.year] = (all[b.year] || 0) + Number(b.value || 0);
+  return prov[yrs[0]] < all[yrs[0]];
+})());
 check('말이 안 되는 비율은 버린다', entryRate(agg.grade, { 2010: 1 }) === null);
 
 const co2 = Object.assign({}, co, { entry: entryRate(agg.grade, births) });

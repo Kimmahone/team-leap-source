@@ -487,6 +487,18 @@ export function cohortRates(grade) {
   return out;
 }
 
+/* 출생아 표에서 «시도 합계 한 줄»만 고릅니다. 시군까지 더하면 두 배가 넘습니다. */
+export function pickProvinceBirths(rows, code) {
+  const out = {};
+  for (const b of rows || []) {
+    if (String(b.regionCode) !== String(code)) continue;
+    const y = Number(b.year), v = Number(b.value);
+    if (!y || !Number.isFinite(v)) continue;
+    out[y] = v;
+  }
+  return out;
+}
+
 /* ══ 8-2. 취학률 — 6년 전 출생아가 초1이 되는 비율 ═══════════════════════
    초등학교 1학년만은 진급이 아니라 **새로 들어오는** 학년입니다. 그 수는
    6년 전 출생아에서 나옵니다. 경북은 대구·수도권으로 빠져나가므로 1:1 이
@@ -1168,8 +1180,12 @@ async function main() {
   let births = null;
   try {
     const k = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'kosis-summary.json'), 'utf8'));
-    births = {};
-    for (const b of k.births || []) births[Number(b.year)] = (births[Number(b.year)] || 0) + Number(b.value || 0);
+    /* ★ 이 표에는 «경상북도 합계»와 «시군 각각»과 «포항 남·북구»가 함께 들어
+       있습니다. 다 더하면 2019년이 14,472 대신 31,645 가 되어 두 배가 넘습니다.
+       그러면 취학률이 0.98 이 아니라 0.45 로 나오고, 초1 전망이 절반으로 꺾입니다.
+       시도 코드 37 한 줄만 씁니다. */
+    births = pickProvinceBirths(k.births, '37');
+    if (!Object.keys(births).length) { cry('  ⚠ 경북 출생아를 못 골랐습니다 — 초1 전망은 마지막 해를 그대로 씁니다.'); births = null; }
   } catch (e) { /* 없으면 초1을 그대로 굴립니다 */ }
   cohort.entry = entryRate(agg.grade, births);
   const back = backtest(agg.grade, cohort, births);
