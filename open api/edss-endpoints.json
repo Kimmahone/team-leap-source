@@ -158,7 +158,11 @@
           "grdr6FstnClasStdntNope"
         ],
         "genericDbls": "dblsClasStdntNope",
-        "단식계": "fstnClasStdntNope"
+        "단식계": "fstnClasStdntNope",
+        "extra": [
+          "sclsStdntNope",
+          "tourClasStdntNope"
+        ]
       },
       "serviceId": "SA00202400014",
       "shape": "wide",
@@ -217,7 +221,13 @@
           "grdr6FstnClasCnt"
         ],
         "genericDbls": "dblsClasCnt",
-        "단식계": "fstnClasCnt"
+        "단식계": "fstnClasCnt",
+        "extra": [
+          "spclWkClasCnt",
+          "spclNghtClasCnt",
+          "tourWkClasCnt",
+          "tourNghtClasCnt"
+        ]
       },
       "serviceId": "SA00202400013",
       "shape": "wide",
@@ -318,6 +328,12 @@
     "그래서 학교 제 학제는 일반 칸으로, 겸하는 과정은 과정 칸으로 읽습니다.",
     "",
     "읽은 것을 더한 값이 kescStdntNope(학생수 계)와 같은지 학교마다 확인합니다.",
-    "합계만 보면 틀린 것이 안 보입니다."
+    "합계만 보면 틀린 것이 안 보입니다.",
+    "",
+    "계(kescStdntNope)에는 학년별 단식·복식 말고 «특수학급»과 «순회학급»도 들어 있습니다.",
+    "  학생: sclsStdntNope(특수학급) · tourClasStdntNope(순회학급)",
+    "  학급: spclWkClasCnt·spclNghtClasCnt(특수 주·야) · tourWkClasCnt·tourNghtClasCnt(순회 주·야)",
+    "이것을 빼먹으면 학교 310곳쯤에서 학년별 합이 계보다 작습니다. 학년을 알 수 없으므로",
+    "복식과 같이 학년 0 으로 담습니다 — 합계에는 들어가고 진급률에는 안 들어갑니다."
   ]
 }

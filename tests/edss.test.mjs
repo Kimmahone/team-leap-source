@@ -224,6 +224,20 @@ check('제 학제를 과정 칸에서 또 읽지 않는다 (두 번 세면 안 �
   nzMix.records.filter(r => r.lv === '초').length === 6);
 check('읽은 합이 API 가 준 계와 같으면 조용하다', nzMix.mismatch.length === 0);
 
+/* 계에는 학년별 말고 특수학급·순회학급도 들어 있습니다. 빼먹으면 학교
+   310곳쯤에서 학년별 합이 계보다 작아지는데, 그 차이는 한 자리 수라 눈에
+   잘 안 띕니다. 학년을 알 수 없으므로 복식과 같이 학년 0 으로 담습니다. */
+const FX = (kind) => Object.assign(F(kind), { extra: ['sclsStdntNope', 'tourClasStdntNope'] });
+const sped = Object.assign(wideRow('stu', 2023, '안동', '초등학교', 20, 0),
+  { sclsStdntNope: '8', tourClasStdntNope: '3', kescStdntNope: '131' });
+const nzSp = normalizeWide([sped], FX('stu'), SGGOF, 'stu');
+check('특수·순회 학생을 버리지 않는다',
+  nzSp.records.filter(r => r.grade === 0).reduce((a, r) => a + r.stu, 0) === 11);
+check('특수·순회를 담으면 합이 계와 맞는다', nzSp.mismatch.length === 0);
+check('특수·순회는 학년을 지어내지 않는다',
+  nzSp.records.filter(r => r.grade === 0).every(r => r.dbls === true));
+check('특수·순회를 빼면 합이 계보다 작다',
+  /131/.test(normalizeWide([sped], F('stu'), SGGOF, 'stu').mismatch[0] || ''));
 /* 합계만 보면 틀린 것이 안 보입니다. 학년 칸을 하나 잘못 집어도 화면의
    총계는 그럴듯합니다. 그래서 학교마다 계와 맞춰 봅니다. */
 const bad = Object.assign(wideRow('stu', 2023, '안동', '초등학교', 20, 0), { kescStdntNope: '999' });
@@ -463,6 +477,11 @@ for (const id of Object.keys(SPEC)) {
   check(id + ' 은 조사년도 인자가 crtrYr 이다', cfg.apis[id].yearParam === 'crtrYr');
   check(id + ' 은 시도로 걸러 받는다', cfg.apis[id].params.ctpvNm === cfg.sidoName);
   check(id + ' 은 복식학급도 담는다', !!(f['복식'] && f['복식']['초']));
+  check(id + ' 은 보통 학교의 일반 학년 칸을 안다',
+    Array.isArray(f.generic) && f.generic.length === 6 && !!f.genericDbls);
+  check(id + ' 은 특수·순회도 담는다 (빼먹으면 310곳이 계와 어긋난다)',
+    Array.isArray(f.extra) && f.extra.length > 0);
+  check(id + ' 은 계와 맞춰 볼 칸을 안다', !!f.total);
   check(id + ' 은 한 줄이 한 학교라고 적어 둔다', cfg.apis[id].shape === 'wide');
 }
 check('학급및학생현황만 조사년도 이름이 다르다 (trgtYr)',

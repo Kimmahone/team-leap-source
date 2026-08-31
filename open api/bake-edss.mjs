@@ -296,6 +296,15 @@ export function normalizeWide(rows, fields, sggOf, into, opt) {
       for (const m of made) push(m[0], m[1], m[2], m[3]);
     }
 
+    /* ③ 계에는 학년별 말고 «특수학급»과 «순회학급»도 들어 있습니다.
+       학년을 알 수 없으므로 복식과 같이 학년 0 으로 담습니다. 빼먹으면
+       학교 310곳쯤에서 학년별 합이 계보다 작아집니다. */
+    if (own && fields.extra && fields.extra.length) {
+      let s2 = 0;
+      for (const col of fields.extra) s2 += num(r[col]);
+      if (s2) { push(own, 0, s2, true); any = true; sum += s2; }
+    }
+
     if (!any) { skipped.level++; continue; }
     out.push.apply(out, rows0);
 
