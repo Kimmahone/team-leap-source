@@ -520,8 +520,14 @@ for (const id of Object.keys(SPEC)) {
   check(id + ' 은 계와 맞춰 볼 칸을 안다', !!f.total);
   check(id + ' 은 한 줄이 한 학교라고 적어 둔다', cfg.apis[id].shape === 'wide');
 }
-check('학급및학생현황만 조사년도 이름이 다르다 (trgtYr)',
-  cfg.apis.classStudent.yearParam === 'trgtYr');
+/* 시도 이름 쓰는 법이 API 마다 다릅니다. 짧은 이름으로 보냈다가 0건을 받았습니다.
+   0건은 오류처럼 보이지 않아서 그대로 넘어갈 뻔했습니다. */
+check('학급및학생현황은 조회조건을 비워 여러 해를 한꺼번에 받는다',
+  cfg.apis.classStudent.yearParam === '' &&
+  Object.keys(cfg.apis.classStudent.params).length === 0);
+check('긴 시도 이름도 적어 둔다', cfg.sidoLong === '경상북도');
+check('짧은 이름과 긴 이름이 다르다는 것을 적어 두었다',
+  JSON.stringify(cfg).includes('API 마다 다릅니다'));
 check('학급및학생현황은 시군구 칸을 가지고 있다 (개방ID→시군을 여기서 얻는다)',
   cfg.apis.classStudent.fields.sgg === 'sggNm');
 check('학생·학급 표에는 시군구 칸이 없다 (있다고 적으면 전부 버려진다)',

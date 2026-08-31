@@ -1058,6 +1058,10 @@ async function main() {
       calls0++;
       if (cr.ok) {
         for (const row of unwrap(cr.json).rows) {
+          /* 이 표는 시도 이름을 «길게» 씁니다 — 경북이 아니라 경상북도.
+             다른 API 와 달라서, 짧은 이름으로 걸렀다가 0건을 받았습니다. */
+          const sd = String(row[c.fields.sido] || '');
+          if (sd.indexOf('경북') < 0 && sd.indexOf('경상북도') < 0) continue;
           const id = String(row[c.fields.code] || ''), sg = toSgg(row[c.fields.sgg]);
           if (id && sg) byCode[id] = sg;
         }
