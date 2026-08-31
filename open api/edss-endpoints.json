@@ -60,7 +60,7 @@
   "sido": "47",
   "sidoAlt": "37",
   "from": 2016,
-  "to": 2026,
+  "to": 2025,
   "apis": {
     "schoolAttribute": {
       "name": "학교속성[교육통계][EDSS]",
@@ -115,7 +115,8 @@
       "priority": 1,
       "url": "https://openapi.edmgr.kr/openAPI/service/SA00202400014",
       "params": {
-        "ctpvNm": "경북"
+        "ctpvNm": "경북",
+        "crtrYr": "2023"
       },
       "fields": {
         "year": "crtrYr",

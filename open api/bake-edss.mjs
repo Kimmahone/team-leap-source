@@ -895,6 +895,26 @@ async function main() {
       /* 값 자체는 안 싣되 **무엇이 왔는지는 세어서** 싣습니다. 「몇 줄 왔다」만
          알면 시도 거르기가 먹었는지, 여러 해가 한꺼번에 오는지 알 수 없습니다.
          학교 이름 같은 것은 넣지 않고 개수만 셉니다. */
+      /* 어느 칸에 실제로 값이 들어 있는지 셉니다. 「0 아닌 값이 몇 줄에
+         있나」만 봅니다 — 값 자체는 담지 않습니다. 이것이 없으면 칸 이름이
+         맞는데 값이 늘 0 인 경우를 못 가려냅니다. 0 은 오류처럼 안 보입니다. */
+      값있는칸: (function () {
+        const f = a.fields || {}, want = String((a.params || {}).scsmTypeNm || '초등학교');
+        const pool = rows.filter(function (r) {
+          return (!f.sido || String(r[f.sido]) === '경북') &&
+                 (!f.level || String(r[f.level] || '').indexOf(want) >= 0);
+        });
+        if (!pool.length) return { 표본: 0 };
+        const c = {};
+        for (const r of pool) for (const k of Object.keys(r)) {
+          const v = r[k];
+          if (typeof v === 'number' ? v !== 0 : (v != null && v !== '' && v !== '0')) c[k] = (c[k] || 0) + 1;
+        }
+        const ks = Object.keys(c).sort(function (x, y) { return c[y] - c[x]; });
+        const out = { 표본: pool.length, 학제: want };
+        for (const k of ks.slice(0, 60)) out[k] = c[k];
+        return out;
+      })(),
       요약: (function () {
         const f = a.fields || {}, tally = function (col) {
           if (!col) return null;
