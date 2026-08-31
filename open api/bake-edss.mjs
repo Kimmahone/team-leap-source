@@ -514,7 +514,7 @@ export function toBlock(agg, rates, cohort, back, meta, births) {
 /* ══ 12. 여기부터는 네트워크 ════════════════════════════════════════════ */
 
 const ARGV = process.argv.slice(2);
-const KNOWN = ['--probe', '--dry', '--from', '--to', '--help', '-h', '--sido', '--only', '--url'];
+const KNOWN = ['--probe', '--dry', '--from', '--to', '--help', '-h', '--sido', '--only', '--url', '--crosscheck'];
 const bad = ARGV.filter(a => a.startsWith('--')).filter(f => !KNOWN.includes(f.split('=')[0]));
 const flag = (n, d) => { const h = ARGV.find(a => a.startsWith('--' + n + '=')); return h ? h.split('=')[1] : d; };
 
@@ -636,12 +636,14 @@ async function main() {
     console.log('  --dry    다 받되 대시보드는 고치지 않습니다.');
     console.log('  --only=<이름>  한 API 만. 이름: ' + Object.keys(JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8')).apis).join(' · '));
     console.log('  --url=<주소>   파일을 안 고치고 그 API 의 주소를 한 번만 바꿔 씁니다.');
+    console.log('  --crosscheck   키와 주소의 짝이 맞는지 모든 조합을 맞춰 봅니다.');
     console.log('  요청주소는 open api/edss-endpoints.json 에 적습니다.');
     process.exit(bad.length ? 1 : 0);
   }
 
   const cfg = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
-  const PROBE = ARGV.includes('--probe');
+  const CROSS = ARGV.includes('--crosscheck');
+  const PROBE = ARGV.includes('--probe') || CROSS;
   const DRY = ARGV.includes('--dry') || PROBE;
   const FROM = Number(flag('from', cfg.from || 2016));
   const TO = Number(flag('to', cfg.to || 2026));
@@ -691,6 +693,40 @@ async function main() {
   if (!ready.length) {
     cry('\n부를 수 있는 API 가 하나도 없습니다. 아무것도 고치지 않았습니다.');
     process.exit(2);
+  }
+
+  /* --- 열쇠와 자물쇠가 짝이 맞나 ---------------------------------------
+     인증은 통과하는데 게이트웨이가 404 를 냅니다. 키가 API 마다 다르므로,
+     일곱 개를 일곱 칸에 넣다가 순서가 어긋났을 수 있습니다. 그러면 키는
+     멀쩡하고 짝만 틀린 것인데 밖에서는 똑같이 404 로 보입니다.
+     모든 짝을 한 번씩 맞춰 보고, 404 가 아닌 칸만 표로 보여 줍니다. */
+  if (CROSS) {
+    if (!way) { cry('인증 방법이 설정에 없습니다.'); process.exit(2); }
+    const ids = Object.keys(cfg.apis).filter(function (id) { return cfg.apis[id].url; });
+    const grid = {};
+    say('키 ' + ids.length + '개 × 주소 ' + ids.length + '개를 맞춰 봅니다.\n');
+    for (const kid of ids) {
+      const key = keyOf(cfg.apis[kid].secret);
+      if (!key) { say(cfg.apis[kid].secret + ' — 키 없음, 건너뜁니다.'); continue; }
+      const line = [];
+      for (const uid of ids) {
+        let st = '—';
+        try {
+          const rr = await callOnce(cfg.apis[uid].url, key, {}, way, secrets);
+          const uu = unwrap(rr.json);
+          st = String(rr.status) + (rr.ok && uu.rows.length ? '✓' + uu.rows.length : '');
+        } catch (e) { st = 'x'; }
+        line.push(uid.slice(0, 8) + ':' + st);
+        await new Promise(function (z) { setTimeout(z, 250); });
+      }
+      grid[kid] = line;
+      say(kid.slice(0, 16).padEnd(17) + ' ' + line.join('  '));
+    }
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+    fs.writeFileSync(PROBE_FILE, JSON.stringify({ 만든때: new Date().toISOString(), 짝맞추기: grid }, null, 2) + '\n', 'utf8');
+    say('\n404 가 아닌 칸이 있으면 그 짝이 맞는 것입니다.');
+    say('전부 404 면 키·주소 문제가 아니라 플랫폼 쪽에서 아직 열리지 않은 것입니다.');
+    return;
   }
 
   /* --- 한 번씩만 불러 봅니다 ------------------------------------------
