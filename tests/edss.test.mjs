@@ -8,7 +8,7 @@ import {
   redact, unwrap, guessFields, toLevel, toSgg, num,
   normalizeWide, parseSchoolList, sggLookup, aggregate, declineRates, cohortRates,
   projectCohort, backtest, toBlock, entryRate, GRADES, SGG_BY_NAME,
-  AUTH_WAYS, buildRequest, wayName, findWay, wrapBody, pickProvinceBirths, GUNWI
+  AUTH_WAYS, buildRequest, wayName, findWay, wrapBody, pickProvinceBirths, GUNWI, mainSchoolName, sggFromPrefix
 } from '../open api/bake-edss.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -332,6 +332,26 @@ check('22개 시군이 다 나온다',
 const look = sggLookup(smap);
 check('보통 학교는 시군이 붙는다', look('안동중학교') === 'andong');
 check('분교장은 본교와 같은 시군', look('녹전초등학교원천분교장') === 'andong');
+/* 〔2026. 9. 1.〕 분교 이름이 «본교 이름과 「분교장」 사이»에 있습니다.
+   뒤에서 지우면 분교 이름이 붙은 채로 남아 안 붙습니다.
+   이 버그 하나로 분교장 열댓 곳이 통째로 빠져 있었습니다. */
+check('본교 이름을 첫 학교급 낱말에서 자른다',
+  mainSchoolName('안동중학교인계분교장') === '안동중학교');
+check('뒤에서 지우는 방식이 아니다 (분교 이름이 남으면 안 붙는다)',
+  mainSchoolName('영덕야성초등학교매정분교장') === '영덕야성초등학교');
+check('본교 이름 그대로면 null (자를 것이 없다)',
+  mainSchoolName('안동중학교') === null);
+check('분교장 이름으로도 시군이 붙는다', look('안동중학교인계분교장') === 'andong');
+
+/* 마지막 수단 — 이름 앞머리가 시군이면 그 시군으로 짐작합니다. */
+check('앞머리가 시군이면 짐작한다', sggFromPrefix('포항제철서초등학교') === 'pohang');
+check('울릉 학교도 붙는다', sggFromPrefix('울릉북중학교') === 'ulleung');
+check('가운데 든 시군 이름은 안 붙인다 (앞머리여야 한다)',
+  sggFromPrefix('대구경북과학고') === null);
+check('시군 이름만 있으면 안 붙인다 (학교 이름이 아니다)',
+  sggFromPrefix('포항') === null);
+check('군위는 앞머리로도 안 붙는다 (경북 22곳에 없다)',
+  sggFromPrefix('군위초등학교') === null);
 check('띄어쓰기가 달라도 붙는다', look(' 영양초등학교 ') === 'yeongyang');
 /* 남산초등학교는 영주·경산 두 곳에 있습니다. 먼저 만난 쪽으로 정해 버리면
    스무 곳이 조용히 엉뚱한 시군으로 갑니다. 모르면 모른다고 합니다. */

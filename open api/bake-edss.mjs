@@ -390,6 +390,21 @@ export function parseSchoolList(html) {
   }
   return Object.keys(map).length ? map : null;
 }
+/* 분교장의 «본교 이름»을 뽑습니다.
+
+   〔2026. 9. 1.〕 예전에는 「분교장」 뒤를 지웠습니다. 그런데 분교 이름이
+   **본교 이름과 「분교장」 사이에** 있습니다.
+
+     안동중학교인계분교장  →  (예전) 안동중학교인계   ← 안 붙습니다
+                            (지금) 안동중학교       ← 붙습니다
+
+   그래서 뒤에서 지우지 않고 **첫 학교급 낱말에서 자릅니다.**
+   분교장 열댓 곳이 이것 하나 때문에 통째로 빠져 있었습니다. */
+export function mainSchoolName(n) {
+  const m = String(n || '').match(/^(.*?(?:초등학교|중학교|고등학교))/);
+  return m && m[1] !== n ? m[1] : null;
+}
+
 /* 「안동 길안초등학교」·「길안초등학교 」처럼 자잘하게 다릅니다.
    띄어쓰기를 지우고 견줍니다. 그래도 안 붙으면 null 입니다 — 지어내지 않습니다. */
 export function sggLookup(map) {
@@ -399,10 +414,24 @@ export function sggLookup(map) {
     if (!name) return null;
     const n = String(name).replace(/\s/g, '');
     if (flat[n]) return flat[n];
-    /* 분교장은 본교 이름으로 붙습니다 — 같은 시군입니다. */
-    const b = n.replace(/(분교장|분교).*$/, '');
-    return b !== n && flat[b] ? flat[b] : null;
+    /* 분교장은 본교와 같은 시군입니다. */
+    const b = mainSchoolName(n);
+    if (b && flat[b]) return flat[b];
+    return null;
   };
+}
+
+/* 마지막 수단 — 이름 앞머리가 시군 이름이면 그 시군으로 봅니다.
+   포항제철서초등학교·울릉북중학교처럼 문 닫아 어느 명부에도 없는 학교가
+   이렇게 붙습니다. **짐작입니다.** 그래서 앞의 방법이 다 실패했을 때만 쓰고,
+   무엇을 짐작했는지 셈해서 보여 줍니다. 조용히 찍지 않습니다. */
+export function sggFromPrefix(name) {
+  const n = String(name || '').replace(/\s/g, '');
+  for (const nm of Object.keys(SGG_BY_NAME)) {
+    /* 앞머리여야 합니다. 「대구경북과학기술…」처럼 가운데 든 것은 안 됩니다. */
+    if (n.indexOf(nm) === 0 && n.length > nm.length) return SGG_BY_NAME[nm];
+  }
+  return null;
 }
 
 /* ══ 6. 모으기 ═══════════════════════════════════════════════════════════
@@ -1140,14 +1169,19 @@ async function main() {
           : '  ⚠ 학교개황에서 시군을 못 받았습니다.');
   }
 
+  const guessed = {};
   const sggOf = function (name, code) {
     if (code && byCode[code]) return byCode[code];
     const byN = byName(name);
     if (byN) return byN;
     const flat = String(name || '').replace(/\s/g, '');
     if (byOld[flat]) return byOld[flat];
-    const b = flat.replace(/(분교장|분교).*$/, '');
-    return b !== flat && byOld[b] ? byOld[b] : null;
+    const b = mainSchoolName(flat);
+    if (b && byOld[b]) return byOld[b];
+    /* 여기까지 왔으면 어느 명부에도 없는 학교입니다. 이름 앞머리로 짐작합니다. */
+    const p2 = sggFromPrefix(flat);
+    if (p2) { guessed[flat] = p2; return p2; }
+    return null;
   };
 
   const all = [];
@@ -1198,6 +1232,14 @@ async function main() {
     }
   }
   say('  호출 ' + calls + '번');
+  const gk = Object.keys(guessed);
+  if (gk.length) {
+    /* 짐작한 것은 반드시 보여 줍니다. 맞을 확률이 높다고 조용히 넘기면,
+       틀렸을 때 아무도 모릅니다. */
+    say('  이름 앞머리로 시군을 «짐작한» 학교 ' + gk.length + '곳:');
+    for (const k of gk.slice(0, 20)) say('    ' + k + ' → ' + guessed[k]);
+    if (gk.length > 20) say('    … 그리고 ' + (gk.length - 20) + '곳');
+  }
   const missNames = Object.keys(missAll)
     .sort(function (a2, b2) { return missAll[b2].학생 - missAll[a2].학생; });
   if (missNames.length) {
