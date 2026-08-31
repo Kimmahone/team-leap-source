@@ -234,13 +234,16 @@ const SKIP_TYPE = /특수학교|각종학교|고등공민|고등기술|유치원
 export function normalizeWide(rows, fields, sggOf, into, opt) {
   const key = into === 'cls' ? 'cls' : 'stu';
   const sido = (opt && opt.sido) || '';
-  const out = [], skipped = { year: 0, sgg: 0, level: 0, sido: 0, type: 0 }, missing = {};
+  const out = [], missing = {};
+  const skipped = { year: 0, sgg: 0, level: 0, sido: 0, type: 0 };
+  const mismatch = [];
   for (const r of rows || []) {
     if (sido && fields.sido) {
       const v = String(r[fields.sido] == null ? '' : r[fields.sido]);
       if (v !== sido) { skipped.sido++; continue; }
     }
-    if (fields.level && SKIP_TYPE.test(String(r[fields.level] || ''))) { skipped.type++; continue; }
+    const type = fields.level ? String(r[fields.level] || '') : '';
+    if (SKIP_TYPE.test(type)) { skipped.type++; continue; }
     const year = num(r[fields.year]);
     if (year < 1990 || year > 2100) { skipped.year++; continue; }
     const name = String(r[fields.name] == null ? '' : r[fields.name]).trim();
@@ -248,33 +251,63 @@ export function normalizeWide(rows, fields, sggOf, into, opt) {
     let sgg = fields.sgg ? toSgg(r[fields.sgg]) : null;
     if (!sgg && sggOf) sgg = sggOf(name, code0);
     if (!sgg) { skipped.sgg++; if (name) missing[name] = (missing[name] || 0) + 1; continue; }
-    const code = code0;
-    let any = false;
+
+    const own = toLevel(type);          // 이 학교 제 학제 (초·중·고)
+    const rows0 = [], push = function (lv, g, v, dbls) {
+      const rec = { year: year, lv: lv, sgg: sgg, code: code0, name: name, grade: g, stu: 0, cls: 0 };
+      rec[key] = v;
+      if (dbls) rec.dbls = true;
+      rows0.push(rec);
+    };
+    let any = false, sum = 0;
+
+    /* ① 제 학제는 «일반 학년 칸»에 들어 있습니다.
+       보통 학교(초등학교·중학교·고등학교)는 여기에만 값이 있습니다. */
+    if (own && fields.generic && fields.generic.length) {
+      let s0 = 0;
+      for (let g = 0; g < GRADES[own]; g++) {
+        const v = num(r[fields.generic[g]]);
+        s0 += v;
+        push(own, g + 1, v);
+      }
+      const d0 = fields.genericDbls ? num(r[fields.genericDbls]) : 0;
+      if (d0) { push(own, 0, d0, true); s0 += d0; }
+      if (s0) { any = true; sum += s0; } else rows0.length = 0;
+    }
+
+    /* ② 겸하는 과정은 «과정 칸»에 들어 있습니다 — 초·중 통합운영학교 같은 곳.
+       제 학제와 겹치지 않게, 다른 학제만 봅니다. */
     for (const lv of ['초', '중', '고']) {
+      if (lv === own) continue;
       const cols = fields[lv];
       if (!cols || !cols.length) continue;
-      const vals = [];
-      for (let i = 0; i < cols.length; i++) vals.push(num(r[cols[i]]));
-      const dbl = fields['복식'] && fields['복식'][lv] ? num(r[fields['복식'][lv]]) : 0;
-      let sum = 0; for (const v of vals) sum += v;
-      if (!sum && !dbl) continue;              // 그 과정이 없는 학교
-      any = true;
-      for (let g = 0; g < vals.length && g < GRADES[lv]; g++) {
-        const rec = { year: year, lv: lv, sgg: sgg, code: code, name: name, grade: g + 1, stu: 0, cls: 0 };
-        rec[key] = vals[g];
-        out.push(rec);
+      let s1 = 0;
+      const made = [];
+      for (let g = 0; g < cols.length && g < GRADES[lv]; g++) {
+        const v = num(r[cols[g]]);
+        s1 += v;
+        made.push([lv, g + 1, v, false]);
       }
-      if (dbl) {
-        /* 복식은 어느 학년인지 알 수 없습니다. 학년 0 으로 둡니다 —
-           합계에는 들어가고 진급률 계산에는 안 들어갑니다. */
-        const rec = { year: year, lv: lv, sgg: sgg, code: code, name: name, grade: 0, stu: 0, cls: 0, dbls: true };
-        rec[key] = dbl;
-        out.push(rec);
-      }
+      const d1 = fields['복식'] && fields['복식'][lv] ? num(r[fields['복식'][lv]]) : 0;
+      if (d1) made.push([lv, 0, d1, true]);
+      s1 += d1;
+      if (!s1) continue;
+      any = true; sum += s1;
+      for (const m of made) push(m[0], m[1], m[2], m[3]);
     }
-    if (!any) skipped.level++;
+
+    if (!any) { skipped.level++; continue; }
+    out.push.apply(out, rows0);
+
+    /* ③ 읽은 것을 더한 값이 API 가 준 계와 같은가.
+       합계만 보면 틀린 것이 안 보입니다 — 학년 칸을 하나 잘못 집어도
+       화면의 총계는 그럴듯합니다. 다른 학교는 이름을 적어 둡니다. */
+    if (fields.total != null) {
+      const t = num(r[fields.total]);
+      if (t && t !== sum) mismatch.push(name + ' ' + sum + '/' + t);
+    }
   }
-  return { records: out, skipped: skipped, missing: missing };
+  return { records: out, skipped: skipped, missing: missing, mismatch: mismatch };
 }
 
 /* ══ 5-3. 시군은 어디서 오나 ═════════════════════════════════════════════
@@ -1023,6 +1056,12 @@ async function main() {
       const nz = normalizeWide(u.rows, a.fields, sggOf, into, { sido: cfg.sidoName });
       all.push.apply(all, nz.records);
       for (const k of Object.keys(nz.missing)) missAll[k] = true;
+      if (nz.mismatch.length) {
+        /* 학년별 합 ≠ API 가 준 계. 칸을 잘못 집었거나 우리가 못 읽는 학년이
+           있다는 뜻입니다. 몇 곳인지는 반드시 보여 줍니다. */
+        cry('  ⚠ 학년별 합과 계가 다른 학교 ' + nz.mismatch.length + '곳 — ' +
+          nz.mismatch.slice(0, 3).join(' · '));
+      }
       say('  ' + a.name + ' ' + (y || '') + ' — 전국 ' + u.rows.length + '줄 · ' +
         (cfg.sidoName || '') + ' ' + (u.rows.length - nz.skipped.sido) + '줄 → ' +
         nz.records.length + '기록' +

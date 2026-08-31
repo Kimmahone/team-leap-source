@@ -148,7 +148,17 @@
           "중": "mdscCrsDblsClasStdntNope",
           "고": "hgscCrsDblsClasStdntNope"
         },
-        "특수학급": "sclsStdntNope"
+        "특수학급": "sclsStdntNope",
+        "generic": [
+          "grdr1FstnClasStdntNope",
+          "grdr2FstnClasStdntNope",
+          "grdr3FstnClasStdntNope",
+          "grdr4FstnClasStdntNope",
+          "grdr5FstnClasStdntNope",
+          "grdr6FstnClasStdntNope"
+        ],
+        "genericDbls": "dblsClasStdntNope",
+        "단식계": "fstnClasStdntNope"
       },
       "serviceId": "SA00202400014",
       "shape": "wide",
@@ -197,7 +207,17 @@
           "초": "elscCrsClasCnt",
           "중": "mdscCrsClasCnt",
           "고": "hgscCrsClasCnt"
-        }
+        },
+        "generic": [
+          "grdr1FstnClasCnt",
+          "grdr2FstnClasCnt",
+          "grdr3FstnClasCnt",
+          "grdr4FstnClasCnt",
+          "grdr5FstnClasCnt",
+          "grdr6FstnClasCnt"
+        ],
+        "genericDbls": "dblsClasCnt",
+        "단식계": "fstnClasCnt"
       },
       "serviceId": "SA00202400013",
       "shape": "wide",
@@ -284,5 +304,20 @@
     "id": "apiId",
     "params": "srhParam"
   },
-  "sidoName": "경북"
+  "sidoName": "경북",
+  "_칸_이름의_함정": [
+    "〔2026-08-31 실제 응답 확인〕 명세서의 칸 이름만 보고 골랐다가 0기록이 나왔습니다.",
+    "",
+    "보통 학교는 «일반 학년 칸»을 씁니다:",
+    "  grdr1FstnClasStdntNope … grdr6FstnClasStdntNope   N학년단식학급학생수",
+    "  dblsClasStdntNope                                  복식학급학생수",
+    "경북 초등학교 504곳을 세어 보니 이 칸들에만 값이 있었습니다.",
+    "",
+    "elscCrsGrdrN… 는 «과정» 칸입니다 — 초·중 통합운영학교처럼 한 학교가 여러 학제를",
+    "가질 때 그 «다른» 과정을 담습니다. 보통 초등학교에는 값이 없습니다.",
+    "그래서 학교 제 학제는 일반 칸으로, 겸하는 과정은 과정 칸으로 읽습니다.",
+    "",
+    "읽은 것을 더한 값이 kescStdntNope(학생수 계)와 같은지 학교마다 확인합니다.",
+    "합계만 보면 틀린 것이 안 보입니다."
+  ]
 }

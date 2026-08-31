@@ -126,13 +126,22 @@ check('빈칸·하이픈은 0', num('') === 0 && num('-') === 0 && num(null) ===
 
 /* ── 5. 여러 해치를 지어 전 과정을 굴려 봅니다 ───────────────────────
    명세서대로 **한 줄이 한 학교**입니다. 학년은 칸 이름에 박혀 있습니다. */
+/* 보통 학교는 «일반 학년 칸»을, 겸하는 과정은 «과정 칸»을 씁니다.
+   실제 응답을 세어 보고 알았습니다 — 명세서만 보고는 못 가려냅니다.
+   경북 초등학교 504곳 가운데 elscCrsGrdr* 에 값이 있는 곳은 없었습니다. */
+const GEN = { stu: n => 'grdr' + n + 'FstnClasStdntNope', cls: n => 'grdr' + n + 'FstnClasCnt' };
+const GDBL = { stu: 'dblsClasStdntNope', cls: 'dblsClasCnt' };
+const TOT = { stu: 'kescStdntNope', cls: 'kescClasCnt' };
 const COL = {
   stu: { 초: n => 'elscCrsGrdr' + n + 'StdntNope', 중: n => 'mdscCrsGrdr' + n + 'StdntNope', 고: n => 'hgscCrsGrdr' + n + 'StdntNope' },
   cls: { 초: n => 'elscCrsGrdr' + n + 'FstnClasCnt', 중: n => 'mdscCrsGrdr' + n + 'FstnClasCnt', 고: n => 'hgscCrsGrdr' + n + 'FstnClasCnt' }
 };
 const DBL = { stu: { 초: 'elscCrsDblsClasStdntNope' }, cls: { 초: 'elscCrsDblsClasCnt' } };
 const F = (kind) => ({
-  year: 'crtrYr', code: 'opnId', name: 'schlNm', level: 'scclNm', sido: 'ctpvNm',
+  year: 'crtrYr', code: 'opnId', name: 'schlNm', level: 'scsmTypeNm', sido: 'ctpvNm',
+  total: TOT[kind],
+  generic: [1, 2, 3, 4, 5, 6].map(GEN[kind]),
+  genericDbls: GDBL[kind],
   초: [1, 2, 3, 4, 5, 6].map(COL[kind]['초']),
   중: [1, 2, 3].map(COL[kind]['중']),
   고: [1, 2, 3].map(COL[kind]['고']),
@@ -143,8 +152,13 @@ const SGGOF = (name) => (/안동/.test(name) ? 'andong' : /구미/.test(name) ? 
 
 function wideRow(kind, y, town, knd, stu, cls) {
   const lv = knd === '초등학교' ? '초' : knd === '중학교' ? '중' : '고';
-  const r = { crtrYr: String(y), opnId: town + knd, schlNm: town + knd, scclNm: knd, ctpvNm: '경북' };   // 실제 API 가 짧은 이름을 줍니다
-  for (let g = 1; g <= GRADES[lv]; g++) r[COL[kind][lv](g)] = String(kind === 'stu' ? stu : cls);
+  const v = kind === 'stu' ? stu : cls;
+  /* 실제 응답과 같은 모양: scclNm 은 '해당없음'이고 학교급은 scsmTypeNm 이,
+     학년별 값은 일반 학년 칸이 들고 있습니다. */
+  const r = { crtrYr: String(y), opnId: town + knd, schlNm: town + knd,
+              scclNm: '해당없음', scsmTypeNm: knd, ctpvNm: '경북' };
+  for (let g = 1; g <= GRADES[lv]; g++) r[GEN[kind](g)] = String(v);
+  r[TOT[kind]] = String(v * GRADES[lv]);
   return r;
 }
 const rowsStu = [], rowsCls = [];
@@ -186,10 +200,40 @@ check('학교급명이 「초등학교」여도 중학교 과정을 버리지 �
 
 /* 복식학급은 어느 학년인지 알 수 없습니다. 버리지 않고 학년 0 으로 둡니다 —
    작은 학교일수록 복식이 많아서, 버리면 시골 학교만 줄어 보입니다. */
-const dbl = Object.assign(wideRow('cls', 2026, '안동', '초등학교', 0, 1), { elscCrsDblsClasCnt: '2' });
+const dbl = Object.assign(wideRow('cls', 2026, '안동', '초등학교', 0, 1), { dblsClasCnt: '2', kescClasCnt: '8' });
 const nzDbl = normalizeWide([dbl], F('cls'), SGGOF, 'cls');
 check('복식학급을 버리지 않는다', nzDbl.records.some(r => r.grade === 0 && r.cls === 2));
 check('복식은 학년을 지어내지 않는다', nzDbl.records.filter(r => r.grade === 0)[0].dbls === true);
+
+/* ── 5-1-2. 일반 칸과 과정 칸을 가려 읽는가 ─────────────────────────
+   보통 초등학교는 일반 학년 칸에만 값이 있습니다. 과정 칸을 보면 0기록이 됩니다. */
+const plain = wideRow('stu', 2023, '안동', '초등학교', 20, 0);
+check('보통 학교는 일반 학년 칸에서 읽는다',
+  normalizeWide([plain], F('stu'), SGGOF, 'stu').records
+    .filter(r => r.grade > 0).reduce((a, r) => a + r.stu, 0) === 120);
+/* 초·중 통합운영학교: 제 학제는 일반 칸, 겸하는 중학교 과정은 과정 칸. */
+const mix = Object.assign(wideRow('stu', 2023, '안동', '초등학교', 20, 0), {
+  mdscCrsGrdr1StdntNope: '5', mdscCrsGrdr2StdntNope: '5', mdscCrsGrdr3StdntNope: '5',
+  kescStdntNope: '135'
+});
+const nzMix = normalizeWide([mix], F('stu'), SGGOF, 'stu');
+check('통합운영학교는 초는 일반 칸, 중은 과정 칸에서 읽는다',
+  nzMix.records.filter(r => r.lv === '초' && r.grade > 0).reduce((a, r) => a + r.stu, 0) === 120 &&
+  nzMix.records.filter(r => r.lv === '중' && r.grade > 0).reduce((a, r) => a + r.stu, 0) === 15);
+check('제 학제를 과정 칸에서 또 읽지 않는다 (두 번 세면 안 된다)',
+  nzMix.records.filter(r => r.lv === '초').length === 6);
+check('읽은 합이 API 가 준 계와 같으면 조용하다', nzMix.mismatch.length === 0);
+
+/* 합계만 보면 틀린 것이 안 보입니다. 학년 칸을 하나 잘못 집어도 화면의
+   총계는 그럴듯합니다. 그래서 학교마다 계와 맞춰 봅니다. */
+const bad = Object.assign(wideRow('stu', 2023, '안동', '초등학교', 20, 0), { kescStdntNope: '999' });
+check('읽은 합이 계와 다르면 그 학교를 적는다',
+  normalizeWide([bad], F('stu'), SGGOF, 'stu').mismatch.length === 1);
+check('어느 학교가 얼마나 다른지 함께 적는다',
+  /안동초등학교 120\/999/.test(normalizeWide([bad], F('stu'), SGGOF, 'stu').mismatch[0]));
+check('계가 0 이면 트집 잡지 않는다 (자료가 없는 것뿐이다)',
+  normalizeWide([Object.assign(wideRow('stu', 2023, '안동', '초등학교', 20, 0), { kescStdntNope: '0' })],
+    F('stu'), SGGOF, 'stu').mismatch.length === 0);
 
 check('시군을 못 붙이면 이름을 세어 알린다',
   normalizeWide([wideRow('stu', 2026, '서울', '초등학교', 10, 0)], F('stu'), SGGOF, 'stu')
