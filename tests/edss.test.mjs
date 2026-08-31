@@ -57,7 +57,23 @@ check('인증 방법 이름이 겹치지 않는다',
   new Set(AUTH_WAYS.map(wayName)).size === AUTH_WAYS.length);
 check('이름으로 도로 찾을 수 있다 (설정 파일에 적어 두려면 필요하다)',
   AUTH_WAYS.every(w => findWay(wayName(w)) === w));
-check('모르는 이름은 null', findWay('header:없는것') === null);
+check('한글 헤더는 받지 않는다 (HTTP 헤더는 ASCII 다)', findWay('header:인증키') === null);
+check('본문이면 한글 칸 이름도 받는다', findWay('body:인증키') !== null);
+check('목록에 없는 이름도 설정으로 지정할 수 있다',
+  (findWay('header:X-Cert-Key') || {}).name === 'X-Cert-Key');
+check('앞에 붙일 말도 지정할 수 있다',
+  (findWay('header:Authorization:Bearer') || {}).prefix === 'Bearer ');
+check('꼴이 안 맞으면 null', findWay('엉터리') === null && findWay('') === null);
+check('Basic 은 키:을 base64 로 싼다', (function () {
+  const w = AUTH_WAYS.filter(x => x.prefix === 'Basic ')[0];
+  if (!w) return false;
+  const h = buildRequest(KEY, {}, w).headers.Authorization;
+  return h === 'Basic ' + Buffer.from(KEY + ':', 'utf8').toString('base64');
+})());
+check('Basic 은 키를 그대로 붙이지 않는다', (function () {
+  const w = AUTH_WAYS.filter(x => x.prefix === 'Basic ')[0];
+  return !!w && !buildRequest(KEY, {}, w).headers.Authorization.includes(KEY);
+})());
 
 /* ── 2. 봉투를 벗긴다 ──────────────────────────────────────────────── */
 const row = { YY: '2026', SCHUL_CODE: 'A1', SCHUL_NM: '가나초등학교', SGG_NM: '안동시', GRADE: '1', 학생수: '10', 학급수: '1' };

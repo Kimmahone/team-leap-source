@@ -469,22 +469,54 @@ export const AUTH_WAYS = [
   { in: 'header', name: 'api-key' },
   { in: 'header', name: 'serviceKey' },
   { in: 'header', name: 'authKey' },
+  { in: 'header', name: 'auth-key' },
+  { in: 'header', name: 'certKey' },
+  { in: 'header', name: 'X-Auth-Token' },
+  { in: 'header', name: 'accessToken' },
+  { in: 'header', name: 'X-Authorization' },
+  { in: 'header', name: 'token' },
+  { in: 'header', name: 'Authorization', prefix: 'Basic ' },
   { in: 'body', name: 'apiKey' },
   { in: 'body', name: 'serviceKey' },
   { in: 'body', name: 'authKey' },
-  { in: 'body', name: 'key' }
+  { in: 'body', name: 'key' },
+  { in: 'body', name: 'certKey' },
+  { in: 'body', name: 'token' },
+  /* 국산 플랫폼이라 한글 칸 이름도 있을 수 있습니다. 헤더 이름은 ASCII 여야
+     하므로 본문에만 넣습니다. */
+  { in: 'body', name: '인증키' }
 ];
 export function wayName(w) { return w.in + ':' + w.name + (w.prefix ? ' ' + w.prefix.trim() : ''); }
-export function findWay(name) {
-  for (const w of AUTH_WAYS) if (wayName(w) === name) return w;
-  return null;
+
+/* 명세서를 보고 「여기다」를 알게 되면 edss-endpoints.json 의 auth 에 한 줄
+   적는 것으로 끝나야 합니다. 그래서 목록에 없는 이름도 받습니다.
+
+     header:X-무엇이든        본문 아닌 헤더에
+     body:certKey            본문에
+     header:Authorization:Bearer   앞에 붙일 말이 있으면 세 번째 칸에 */
+export function parseWay(spec) {
+  const t = String(spec || '').trim();
+  if (!t) return null;
+  for (const w of AUTH_WAYS) if (wayName(w) === t) return w;
+  const m = t.match(/^(header|body):([^:\s]+)(?::(.+))?$/);
+  if (!m) return null;
+  const w = { in: m[1], name: m[2] };
+  if (m[3]) w.prefix = m[3].replace(/\s*$/, '') + ' ';
+  /* 헤더 이름은 ASCII 만 됩니다. 한글 헤더를 넣으면 fetch 가 던집니다. */
+  if (w.in === 'header' && !/^[\x21-\x7e]+$/.test(w.name)) return null;
+  return w;
 }
+export const findWay = parseWay;
 
 /* 요청 한 벌을 만듭니다. 네트워크를 타지 않으므로 검사할 수 있습니다. */
 export function buildRequest(key, params, way) {
   const headers = { 'Content-Type': 'application/json', Accept: 'application/json' };
   const body = Object.assign({}, params || {});
-  if (way.in === 'header') headers[way.name] = (way.prefix || '') + key;
+  /* Basic 은 앞에 붙이기만 하면 안 됩니다 — 「키:」를 base64 로 싸야 합니다. */
+  const val = way.prefix === 'Basic '
+    ? 'Basic ' + Buffer.from(key + ':', 'utf8').toString('base64')
+    : (way.prefix || '') + key;
+  if (way.in === 'header') headers[way.name] = val;
   else body[way.name] = key;
   return { method: 'POST', headers: headers, body: JSON.stringify(body) };
 }
