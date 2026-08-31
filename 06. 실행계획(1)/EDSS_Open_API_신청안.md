@@ -37,8 +37,8 @@
 
 수집기(`open api/bake-edss.mjs`)는 **요청주소를 코드에 박지 않습니다.** `open api/edss-endpoints.json`의 `url` 칸에서 읽습니다. 지금 그 칸은 비어 있고, 비어 있으면 수집기는 조용히 넘어가지 않고 「주소가 없다」고 말한 뒤 멈춥니다.
 
-1. [data.go.kr](https://www.data.go.kr) 로그인 → **마이페이지 → 데이터활용 → Open API → 활용신청 현황**
-2. 승인된 API 이름을 눌러 **참고문서** 또는 **상세기능**의 **요청주소(엔드포인트)** 를 복사
+1. 신청한 곳에 로그인 — [data.go.kr](https://www.data.go.kr) **마이페이지 → 데이터활용 → Open API → 활용신청 현황**, 또는 [edss.moe.go.kr](https://edss.moe.go.kr) **신청내역**
+2. 승인된 API 이름을 눌러 **참고문서**·**상세기능**·**개발명세서**의 **요청주소(엔드포인트)** 를 복사
 3. `open api/edss-endpoints.json`의 그 API `url` 칸에 붙여넣기 — `?serviceKey=…` 앞까지만
 4. 커밋 → GitHub Actions에서 **공공데이터 정기 확인 및 갱신**을 `edss-probe`로 실행
 

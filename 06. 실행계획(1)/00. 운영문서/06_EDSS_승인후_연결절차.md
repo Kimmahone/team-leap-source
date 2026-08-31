@@ -43,8 +43,12 @@ Cloudflare에는 EDSS 키를 넣지 않는다. 브라우저·Pages Function이 E
 
 요청주소는 코드에 박혀 있지 않다. `open api/edss-endpoints.json`의 `url` 칸에서 읽는다. 지금 그 칸은 비어 있다.
 
-1. [data.go.kr](https://www.data.go.kr) 로그인 → **마이페이지 → 데이터활용 → Open API → 활용신청 현황**
+1. 신청한 곳에 로그인한다. 둘 중 하나다.
+   - [data.go.kr](https://www.data.go.kr) → **마이페이지 → 데이터활용 → Open API → 활용신청 현황**
+   - [edss.moe.go.kr](https://edss.moe.go.kr) (또는 edmgr.kr) → **신청내역**
 2. 승인된 API를 눌러 **요청주소(엔드포인트)** 복사 — `?serviceKey=…` 앞까지만
+
+   2026-08-31 확인: 이 7개는 data.go.kr **공개 검색으로는 나오지 않는다.** 승인 계정으로 로그인해야 보이는 자리에 있다. 그래서 요청주소만은 사람이 한 번 옮겨 적어야 한다.
 3. `edss-endpoints.json`의 그 API `url`에 붙여넣고 커밋
 4. GitHub Actions → **공공데이터 정기 확인 및 갱신** → Run workflow → `dataset: edss-probe`
 
