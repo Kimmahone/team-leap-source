@@ -18,17 +18,21 @@
     "끝의 ?serviceKey=… 는 빼고, 물음표 앞까지만 붙여 넣습니다."
   ],
   "_게이트웨이": [
-    "openapi.edmgr.kr 은 공공데이터포털과 다릅니다. 2026-08-31 확인:",
-    "  GET                  → 405 Method Not Allowed",
-    "  POST + 물음표 뒤 인자 → 400 'HTTP POST cannot contain query parameters'",
-    "  POST + 인증 없음      → 401 Unauthorized",
-    "그래서 모든 인자를 **본문에 담아 POST** 합니다.",
+    "openapi.edmgr.kr — 2026-08-31 확인. 공공데이터포털과 다릅니다.",
+    "  GET → 405 · POST + 물음표 뒤 인자 → 400 · 인자는 전부 본문",
     "",
-    "인증키는 «api_key» 헤더입니다 — 밑줄이 있습니다. apikey·apiKey 는 안 됩니다.",
-    "찾은 방법: 게이트웨이가 오류 문구를 달리 냅니다.",
-    "  api_key 없음        → 'Unauthorized'",
-    "  api_key 있고 틀림    → 'No authorized user found.'  ← 키를 읽었다는 뜻",
-    "키가 없어도 이 차이로 헤더 이름을 가려낼 수 있습니다."
+    "본문 모양이 특이합니다. 인자를 늘어놓는 것이 아니라 한 겹 싸야 합니다:",
+    "  { \"apiId\": \"SA00202400014\",",
+    "    \"userApiAthkCn\": \"<인증키>\",",
+    "    \"srhParam\": { \"crtrYr\": \"2023\", \"ctpvNm\": \"경북\" } }",
+    "",
+    "· 주소에 서비스ID 가 있는데 «본문에도» apiId 를 적어야 합니다.",
+    "  이것이 없어서 404 가 났습니다 — 주소는 아는데 무엇을 부르는지 모릅니다.",
+    "· 인증키는 헤더가 아니라 본문의 userApiAthkCn 입니다.",
+    "· 시도명은 «짧은 이름»입니다. 예시가 대전·대구·경기 → 경상북도가 아니라 «경북».",
+    "  「경상북도」로 보내면 0건이 오는데, 0건은 오류처럼 보이지 않습니다.",
+    "",
+    "응답: { resultData:[…], msgCd:'200 (성공)', msgCn:'[조회건수 : N 건]' }"
   ],
   "_요청변수를_모를_때": [
     "paging·filter 의 이름이 비어 있으면 그 인자는 아예 보내지 않습니다.",
@@ -36,7 +40,7 @@
     "연도 이름이 비면 연도로 나눠 부르지 못하고 한 번에 받아 응답의 연도 칸으로 가릅니다.",
     "probe 가 알려 준 이름을 여기에 적으세요."
   ],
-  "auth": "header:api_key",
+  "auth": "body:userApiAthkCn",
   "paging": {
     "page": "",
     "size": "",
@@ -59,13 +63,13 @@
       "priority": 1,
       "url": "https://openapi.edmgr.kr/openAPI/service/SA00202400011",
       "params": {
-        "ctpvNm": "경상북도"
+        "ctpvNm": "경북"
       },
       "fields": {
         "year": "crtrYr",
         "code": "opnId",
         "name": "schlNm",
-        "level": "scclNm",
+        "level": "scsmTypeNm",
         "sido": "ctpvNm",
         "설립": "fndnSeNm",
         "본분교": "mschBrncSeNm"
@@ -81,13 +85,13 @@
       "priority": 1,
       "url": "https://openapi.edmgr.kr/openAPI/service/SA00202400023",
       "params": {
-        "ctpvNm": "경상북도"
+        "ctpvNm": "경북"
       },
       "fields": {
         "year": "trgtYr",
         "code": "opnId",
         "name": "schlNm",
-        "level": "scclNm",
+        "level": "scsmTypeNm",
         "sido": "ctpvNm",
         "sgg": "sggNm",
         "edof": "edofNm",
@@ -105,13 +109,13 @@
       "priority": 1,
       "url": "https://openapi.edmgr.kr/openAPI/service/SA00202400014",
       "params": {
-        "ctpvNm": "경상북도"
+        "ctpvNm": "경북"
       },
       "fields": {
         "year": "crtrYr",
         "code": "opnId",
         "name": "schlNm",
-        "level": "scclNm",
+        "level": "scsmTypeNm",
         "sido": "ctpvNm",
         "total": "kescStdntNope",
         "초": [
@@ -150,13 +154,13 @@
       "priority": 1,
       "url": "https://openapi.edmgr.kr/openAPI/service/SA00202400013",
       "params": {
-        "ctpvNm": "경상북도"
+        "ctpvNm": "경북"
       },
       "fields": {
         "year": "crtrYr",
         "code": "opnId",
         "name": "schlNm",
-        "level": "scclNm",
+        "level": "scsmTypeNm",
         "sido": "ctpvNm",
         "total": "kescClasCnt",
         "초": [
@@ -222,7 +226,7 @@
         "year": "crtrYr",
         "code": "opnId",
         "name": "schlNm",
-        "level": "scclNm",
+        "level": "scsmTypeNm",
         "sido": "ctpvNm",
         "students": "kescSchlStdntNope",
         "classes": "kescSchlClasCnt",
@@ -268,5 +272,10 @@
     "   작은 학교일수록 복식이 많으므로 둘을 함께 담습니다.",
     "4) 쪽 넘기는 인자가 명세서에 없습니다. ctpvNm=경상북도 로 걸러 한 번에 받습니다.",
     "5) 조사년도 인자 이름이 표마다 다릅니다: crtrYr / trgtYr / exmnYmd(조사일자)."
-  ]
+  ],
+  "envelope": {
+    "id": "apiId",
+    "params": "srhParam"
+  },
+  "sidoName": "경북"
 }

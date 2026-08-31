@@ -81,6 +81,15 @@ export function unwrap(json) {
       meta: { perPage: Number(json.perPage) || json.data.length, page: Number(json.page) || 1 }
     };
   }
+  /* 교육데이터플랫폼: { resultData:[…], msgCd:"200 (성공)", msgCn:"[조회건수 : 1 건]" } */
+  if (Array.isArray(json.resultData)) {
+    const cnt = String(json.msgCn || '').match(/([0-9,]+)\s*건/);
+    return {
+      rows: json.resultData,
+      total: cnt ? num(cnt[1]) : json.resultData.length,
+      meta: { code: json.msgCd, msg: json.msgCn || '' }
+    };
+  }
   if (Array.isArray(json.list)) {
     return { rows: json.list, total: Number(json.totalCount) || json.list.length, meta: { code: json.resultCode, msg: json.resultMsg || '' } };
   }
@@ -585,6 +594,29 @@ export function parseWay(spec) {
 }
 export const findWay = parseWay;
 
+/* ══ 12-2. 이 플랫폼의 본문 모양 ═════════════════════════════════════════
+   〔2026. 8. 31. 테스트 예시 확인〕 인자를 그냥 늘어놓는 것이 아닙니다.
+
+     {
+       "apiId"         : "SA00202400014",   ← 어느 API 인지 «본문에» 적습니다
+       "userApiAthkCn" : "<인증키>",         ← 키도 헤더가 아니라 본문입니다
+       "srhParam"      : { "crtrYr": "2023", "ctpvNm": "경북" }   ← 조회조건은 한 겹 안
+     }
+
+   주소에 서비스ID 가 있는데 본문에도 apiId 를 적어야 합니다. 이것이 없어서
+   게이트웨이가 404 를 냈습니다 — 「주소는 아는데 무엇을 부르는지 모르겠다」.
+
+   시도명은 «짧은 이름»입니다. 예시가 대전·대구·경기이므로 경상북도가 아니라
+   «경북» 입니다. 「경상북도」로 보내면 0건이 오고, 0건은 오류처럼 안 보입니다. */
+export function wrapBody(env, serviceId, srh) {
+  const e = env || {};
+  const body = {};
+  if (e.id) body[e.id] = serviceId;
+  if (e.params) body[e.params] = srh || {};
+  else Object.assign(body, srh || {});
+  return body;
+}
+
 /* 요청 한 벌을 만듭니다. 네트워크를 타지 않으므로 검사할 수 있습니다. */
 export function buildRequest(key, params, way) {
   const headers = { 'Content-Type': 'application/json', Accept: 'application/json' };
@@ -701,6 +733,9 @@ async function main() {
      다음 실행부터는 한 번에 갑니다. */
   const report = { 만든때: new Date().toISOString(), 게이트웨이: 'POST · 본문에 인자', apis: {} };
   let calls0 = 0;
+  const ENV = cfg.envelope || {};
+  /* 이 API 를 부르는 본문 한 벌. srhParam 을 한 겹 싸고 apiId 를 붙입니다. */
+  const bodyOf = function (a, srh) { return wrapBody(ENV, a.serviceId, srh); };
   let way = findWay(cfg.auth || '');
   if (way) say('인증 방법: ' + wayName(way) + ' (설정 파일에 적혀 있습니다)');
 
@@ -721,7 +756,7 @@ async function main() {
       for (const uid of ids) {
         let st = '—';
         try {
-          const rr = await callOnce(cfg.apis[uid].url, key, {}, way, secrets);
+          const rr = await callOnce(cfg.apis[uid].url, key, bodyOf(cfg.apis[uid], {}), way, secrets);
           const uu = unwrap(rr.json);
           st = String(rr.status) + (rr.ok && uu.rows.length ? '✓' + uu.rows.length : '');
         } catch (e) { st = 'x'; }
@@ -748,13 +783,15 @@ async function main() {
   function ladder(a) {
     const yp = a.yearParam, base = a.params || {}, out = [];
     const add = (label, body) => out.push({ label: label, body: body });
-    add('빈 본문', {});
+    add('빈 조회조건', bodyOf(a, {}));
     if (yp) {
       /* 명세서의 샘플이 2023 입니다. 최신 해가 아직 안 나왔을 수 있습니다. */
-      for (const y of [2023, TO, TO - 1, TO - 2]) add(yp + '=' + y, mk(yp, y));
-      for (const y of [2023, TO]) add(yp + '=' + y + ' + 시도', Object.assign(mk(yp, y), base));
+      for (const y of [2023, TO, TO - 1, TO - 2]) add(yp + '=' + y, bodyOf(a, mk(yp, y)));
+      for (const y of [2023, TO]) add(yp + '=' + y + ' + 시도', bodyOf(a, Object.assign(mk(yp, y), base)));
+      /* 시도명을 짧게 쓰는지 길게 쓰는지 함께 봅니다 — 틀리면 0건입니다. */
+      add(yp + '=2023 + 경상북도', bodyOf(a, Object.assign(mk(yp, 2023), { ctpvNm: '경상북도' })));
     }
-    if (Object.keys(base).length) add('설정 인자만', Object.assign({}, base));
+    if (Object.keys(base).length) add('설정 인자만', bodyOf(a, Object.assign({}, base)));
     /* 같은 본문을 두 번 던지지 않습니다 — 남의 서버입니다. */
     const seen = {}, uniq = [];
     for (const t of out) {
@@ -769,7 +806,7 @@ async function main() {
   for (const id of ready) {
     const a = cfg.apis[id];
     const key = keyOf(a.secret);
-    const params = Object.assign({}, a.params || {});
+    const params = bodyOf(a, Object.assign({}, a.params || {}));
     let r = null;
     if (way) {
       try { r = await callOnce(a.url, key, params, way, secrets); }
@@ -874,8 +911,9 @@ async function main() {
   const byCode = {};
   if (ready.indexOf('classStudent') >= 0) {
     const c = cfg.apis['classStudent'];
-    const cb = Object.assign({}, c.params || {});
-    if (c.yearParam) cb[c.yearParam] = String(TO);
+    const cs = Object.assign({}, c.params || {});
+    if (c.yearParam) cs[c.yearParam] = String(TO);
+    const cb = bodyOf(c, cs);
     try {
       const cr = await callOnce(c.url, keyOf(c.secret), cb, way, secrets);
       calls0++;
@@ -908,8 +946,9 @@ async function main() {
     if (yp) { for (let y = FROM; y <= TO; y++) years.push(y); } else years.push(null);
     for (const y of years) {
       if (calls >= CALL_CAP) { cry('  ⚠ 호출 한도 ' + CALL_CAP + '번에 닿아 멈춥니다.'); break; }
-      const body = Object.assign({}, a.params || {});
-      if (yp && y) body[yp] = String(y);
+      const srh = Object.assign({}, a.params || {});
+      if (yp && y) srh[yp] = String(y);
+      const body = bodyOf(a, srh);
       let r;
       try { r = await callOnce(a.url, key, body, way, secrets); }
       catch (e) { cry('  ✗ ' + a.name + ' ' + (y || '') + ' — ' + redact(String(e.message), secrets)); continue; }

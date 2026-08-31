@@ -8,7 +8,7 @@ import {
   redact, unwrap, guessFields, toLevel, toSgg, num,
   normalizeWide, parseSchoolList, sggLookup, aggregate, declineRates, cohortRates,
   projectCohort, backtest, toBlock, entryRate, GRADES, SGG_BY_NAME,
-  AUTH_WAYS, buildRequest, wayName, findWay
+  AUTH_WAYS, buildRequest, wayName, findWay, wrapBody
 } from '../open api/bake-edss.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -314,11 +314,45 @@ check('요청변수 이름을 적을 자리가 있다',
 check('찾은 인증 방법을 적을 자리가 있다', 'auth' in cfg);
 check('적힌 인증 방법이 있다면 코드가 아는 것이어야 한다',
   !cfg.auth || findWay(cfg.auth) !== null);
-/* 밑줄 하나 때문에 하루를 헤맸습니다. apikey·apiKey 는 안 되고 api_key 만 됩니다.
-   누가 「오타 같다」며 고치지 못하도록 못 박습니다. */
-check('인증 헤더는 밑줄 있는 api_key 다', cfg.auth === 'header:api_key');
-check('찾은 방법을 어떻게 알아냈는지 적어 두었다',
-  JSON.stringify(cfg).includes('No authorized user found'));
+/* 인증키는 헤더가 아니라 «본문»의 userApiAthkCn 입니다. 테스트 예시로 확인했습니다.
+   (api_key 헤더도 게이트웨이가 읽기는 하지만, 그것만으로는 404 입니다) */
+check('인증키는 본문의 userApiAthkCn 이다', cfg.auth === 'body:userApiAthkCn');
+check('본문을 한 겹 싸는 방법을 적어 두었다',
+  cfg.envelope && cfg.envelope.id === 'apiId' && cfg.envelope.params === 'srhParam');
+/* 예시의 시도명이 대전·대구·경기입니다. 「경상북도」로 보내면 0건이 오는데,
+   0건은 오류처럼 보이지 않아서 그대로 배포될 수 있습니다. */
+check('시도명은 짧은 이름 「경북」이다', cfg.sidoName === '경북');
+check('설정의 시도 인자도 짧은 이름이다',
+  cfg.apis.studentStatus.params.ctpvNm === '경북');
+check('학교급은 scclNm 이 아니라 scsmTypeNm 이 들고 있다',
+  cfg.apis.studentStatus.fields.level === 'scsmTypeNm');
+
+/* ── 7-2. 본문을 문서의 예시와 똑같이 만드는가 ─────────────────────── */
+const wb = wrapBody(cfg.envelope, 'SA00202400014', { crtrYr: '2023', ctpvNm: '경북' });
+check('본문에 apiId 를 적는다 (주소에 있어도 또 적어야 한다)', wb.apiId === 'SA00202400014');
+check('조회조건은 srhParam 안에 한 겹 싸인다', wb.srhParam.crtrYr === '2023');
+check('조회조건이 바깥으로 새지 않는다', wb.crtrYr === undefined);
+const wreq = buildRequest(KEY, wb, findWay(cfg.auth));
+const wsent = JSON.parse(wreq.body);
+check('인증키는 본문 맨 바깥에 붙는다', wsent.userApiAthkCn === KEY);
+check('인증키가 srhParam 안으로 들어가지 않는다', wsent.srhParam.userApiAthkCn === undefined);
+check('헤더에는 키가 없다', !JSON.stringify(wreq.headers).includes(KEY));
+check('보내는 본문의 열쇠가 문서와 같다',
+  JSON.stringify(Object.keys(wsent).sort()) === JSON.stringify(['apiId', 'srhParam', 'userApiAthkCn']));
+check('설정에 봉투가 없으면 조회조건을 그대로 편다',
+  wrapBody({}, 'X', { a: 1 }).a === 1);
+check('서비스ID 가 API 마다 주소와 맞는다',
+  Object.values(cfg.apis).every(a => !a.serviceId || a.url.endsWith(a.serviceId)));
+
+/* ── 7-3. 이 플랫폼의 응답 봉투 ────────────────────────────────────── */
+const pr1 = unwrap({ resultData: [{ crtrYr: '2023' }], msgCd: '200 (성공)', msgCn: '[조회건수 : 1 건]' });
+check('resultData 를 줄로 읽는다', pr1.rows.length === 1);
+check('msgCn 의 조회건수를 총건수로 읽는다', pr1.total === 1);
+check('쉼표 든 건수도 읽는다',
+  unwrap({ resultData: [{}], msgCn: '[조회건수 : 12,345 건]' }).total === 12345);
+check('msgCd 를 남긴다 (200 이 아니면 사람이 봐야 한다)', pr1.meta.code === '200 (성공)');
+check('0건도 오류가 아니라 0건으로 읽는다',
+  unwrap({ resultData: [], msgCd: '200 (성공)', msgCn: '[조회건수 : 0 건]' }).rows.length === 0);
 check('호출 한도를 정해 둔다 (하루 한도를 넘기면 그날은 못 받는다)',
   Number(cfg.callCap) > 0 && Number(cfg.callCap) <= 10000);
 check('게이트웨이가 POST 라는 것을 적어 두었다', JSON.stringify(cfg).includes('POST'));
@@ -339,7 +373,7 @@ for (const id of Object.keys(SPEC)) {
       '있는 값: ' + JSON.stringify(f[lv]));
   }
   check(id + ' 은 조사년도 인자가 crtrYr 이다', cfg.apis[id].yearParam === 'crtrYr');
-  check(id + ' 은 시도로 걸러 받는다', cfg.apis[id].params.ctpvNm === '경상북도');
+  check(id + ' 은 시도로 걸러 받는다', cfg.apis[id].params.ctpvNm === cfg.sidoName);
   check(id + ' 은 복식학급도 담는다', !!(f['복식'] && f['복식']['초']));
   check(id + ' 은 한 줄이 한 학교라고 적어 둔다', cfg.apis[id].shape === 'wide');
 }
