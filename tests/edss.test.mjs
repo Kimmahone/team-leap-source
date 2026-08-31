@@ -314,6 +314,11 @@ check('요청변수 이름을 적을 자리가 있다',
 check('찾은 인증 방법을 적을 자리가 있다', 'auth' in cfg);
 check('적힌 인증 방법이 있다면 코드가 아는 것이어야 한다',
   !cfg.auth || findWay(cfg.auth) !== null);
+/* 밑줄 하나 때문에 하루를 헤맸습니다. apikey·apiKey 는 안 되고 api_key 만 됩니다.
+   누가 「오타 같다」며 고치지 못하도록 못 박습니다. */
+check('인증 헤더는 밑줄 있는 api_key 다', cfg.auth === 'header:api_key');
+check('찾은 방법을 어떻게 알아냈는지 적어 두었다',
+  JSON.stringify(cfg).includes('No authorized user found'));
 check('호출 한도를 정해 둔다 (하루 한도를 넘기면 그날은 못 받는다)',
   Number(cfg.callCap) > 0 && Number(cfg.callCap) <= 10000);
 check('게이트웨이가 POST 라는 것을 적어 두었다', JSON.stringify(cfg).includes('POST'));
