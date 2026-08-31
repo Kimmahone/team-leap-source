@@ -1,6 +1,6 @@
 # API 키 보관 위치
 
-갱신: 2026-08-29
+갱신: 2026-08-31
 
 상세한 담당 역할·교체 순서·오류별 조치는 [API 키 갱신 매뉴얼](./06.%20실행계획(1)/00.%20운영문서/02_API키_갱신_매뉴얼.md)을 기준으로 합니다.
 
@@ -19,8 +19,8 @@
 |---|---|---|
 | Gemini | `GEMINI_API_KEY` | Cloudflare의 AI 분석 중계 |
 | 학교알리미 | `SCHOOLINFO_API_KEY` | 학교·학생·교원 자료 갱신 |
-| EDSS 학교속성 | `EDSS_SCHOOL_ATTRIBUTE_API_KEY` | 승인 뒤 학교코드·학교급·시군 기준정보 |
-| EDSS 학생·학급 등 | API별 `EDSS_…_API_KEY` | 신청 API별 학생·학급·개황·위치정보 보완 |
+| EDSS 학교속성 | `EDSS_SCHOOL_ATTRIBUTE_API_KEY` | 학교코드·학교급·시군 기준정보 |
+| EDSS 학생·학급 등 | API별 `EDSS_…_API_KEY` | 학교·학년·연도별 학생·학급 시계열, 개황·위치정보 교차검증 |
 | KOSIS | `KOSIS_API_KEY` | 출생아·연령별 인구·장래인구·이동 자료 |
 | SGIS | `SGIS_CONSUMER_KEY`, `SGIS_CONSUMER_SECRET` | 온라인 지도 인증 |
 | 유치원알리미 | `KINDER_API_KEY` | 유치원 기본현황·교직원 현황 갱신 |
@@ -37,7 +37,7 @@ SGIS_CONSUMER_KEY
 SGIS_CONSUMER_SECRET
 ```
 
-EDSS는 현재 브라우저·Cloudflare Pages Function이 직접 조회하지 않는다. 따라서 **EDSS 키를 Cloudflare에 넣을 필요가 없다.** 신청한 7개 API가 모두 승인·키 발급 대기이므로 지금은 GitHub Secret도 만들지 않는다. 인증키를 받으면 GitHub Actions의 Repository Secret에 API별로 하나씩 추가한다. 여러 API의 키를 하나의 Secret 값에 줄바꿈·쉼표 등으로 합쳐 넣으면 안 된다.
+EDSS는 브라우저·Cloudflare Pages Function이 직접 조회하지 않는다. 따라서 **EDSS 키를 Cloudflare에 넣지 않는다.** 신청한 7개 API는 2026-08-31 기준 **모두 승인되었고**, 인증키는 GitHub Actions의 Repository Secret에 API별로 하나씩 등록되어 있다. 여러 API의 키를 하나의 Secret 값에 줄바꿈·쉼표 등으로 합쳐 넣으면 안 된다.
 
 ```text
 EDSS_SCHOOL_ATTRIBUTE_API_KEY
@@ -49,18 +49,20 @@ EDSS_SCHOOL_OVERVIEW_API_KEY
 EDSS_EDU_STAT_SCHOOL_OVERVIEW_API_KEY
 ```
 
-승인·키 수령 전에는 위 이름으로 Secret을 만들지 않는다. 해당 API가 승인되면 그 API의 이름 하나만 만들어 키 하나를 넣는다.
+일곱 개 모두 등록되어 있다. 키를 교체할 때도 이름은 그대로 두고 값만 바꾼다.
 
 GitHub Actions에는 정기 수집·배포에 필요한 `SCHOOLINFO_API_KEY`, EDSS API별 키, `KOSIS_API_KEY`, `KINDER_API_KEY`, `NAVER_CLIENT_ID`, `NAVER_CLIENT_SECRET`, `DEPLOY_PAT`을 Repository Secret으로 등록한다. 기준 공시연도는 Secret이 아니라 Actions Variable `PUBLIC_DATA_YEAR`로 관리한다.
 
-### EDSS 키 등록 순서
+### EDSS 키를 새로 넣거나 바꿀 때
 
 1. GitHub `Kimmahone/team-leap-source` → **Settings → Secrets and variables → Actions → Secrets**
-2. **New repository secret** 선택
-3. 승인된 API의 이름(예: `EDSS_SCHOOL_ATTRIBUTE_API_KEY`)에 해당 API 키 하나만 입력
+2. 있는 이름이면 **Update**, 없으면 **New repository secret**
+3. 이름(예: `EDSS_SCHOOL_ATTRIBUTE_API_KEY`)에 해당 API 키 **하나만** 입력
 4. **Add secret** 선택
 
-`Variables`에는 넣지 않는다. 현재 EDSS 수집 코드는 승인 문서의 URL·요청변수·응답필드를 확인한 뒤 연결하므로, 키 등록만으로 즉시 데이터가 바뀌지는 않는다.
+`Variables`에는 넣지 않는다.
+
+**키만으로는 데이터가 바뀌지 않는다.** 요청주소가 있어야 한다. EDSS 요청주소는 코드가 아니라 `open api/edss-endpoints.json`의 `url` 칸에서 읽으며, 지금 그 칸은 비어 있다. 채우는 방법은 [EDSS 승인 후 연결 절차](./06.%20실행계획(1)/00.%20운영문서/06_EDSS_승인후_연결절차.md) 3장에 있다.
 
 Cloudflare Pages의 Variables and Secrets에 저장한 값은 빌드와 Pages Function에서 함께 쓸 수 있다.
 다만 새로 등록하거나 바꾼 Secret은 **기존 배포에 소급되지 않으므로** Deployments에서 최신

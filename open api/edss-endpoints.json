@@ -1,0 +1,84 @@
+{
+  "_읽는이에게": [
+    "EDSS 7개 API 의 요청주소를 적어 두는 곳입니다. 코드에는 주소를 박지 않습니다.",
+    "주소가 바뀌거나 API 가 하나 더 승인되어도 이 파일만 고치면 됩니다.",
+    "url 이 빈 칸이면 그 API 는 건너뜁니다 — 조용히 실패하지 않고 「주소가 없다」고 말합니다.",
+    "인증키는 여기 적지 않습니다. GitHub Actions Secret 의 이름만 적습니다.",
+    "fields 가 null 이면 응답에서 이름을 보고 스스로 고릅니다.",
+    "  골라낸 결과가 틀리면 --probe 로 확인한 실제 이름을 여기에 적어 고정하세요."
+  ],
+  "_주소를_어디서_베끼나": [
+    "data.go.kr → 로그인 → 마이페이지 → 데이터활용 → Open API → 활용신청 현황",
+    "→ 승인된 API 이름 클릭 → 「참고문서」 또는 「상세기능」의 요청주소(엔드포인트)",
+    "끝의 ?serviceKey=… 는 빼고, 물음표 앞까지만 붙여 넣습니다."
+  ],
+  "sido": "47",
+  "sidoAlt": "37",
+  "from": 2016,
+  "to": 2026,
+  "apis": {
+    "schoolAttribute": {
+      "name": "학교속성[교육통계][EDSS]",
+      "secret": "EDSS_SCHOOL_ATTRIBUTE_API_KEY",
+      "role": "기준키 — 학교코드·학교급·시군·설립·운영상태",
+      "priority": 1,
+      "url": "",
+      "params": {},
+      "fields": null
+    },
+    "classStudent": {
+      "name": "학급및학생현황(EDSS제공용)",
+      "secret": "EDSS_CLASS_STUDENT_API_KEY",
+      "role": "학생·학급을 한 번에 — 이것 하나로 되면 아래 둘은 검증용",
+      "priority": 1,
+      "url": "",
+      "params": {},
+      "fields": null
+    },
+    "studentStatus": {
+      "name": "유초중등학생현황[교육통계][EDSS]",
+      "secret": "EDSS_STUDENT_STATUS_API_KEY",
+      "role": "학교·학년·연도별 학생수 — 코호트 진급법의 재료",
+      "priority": 1,
+      "url": "",
+      "params": {},
+      "fields": null
+    },
+    "classStatus": {
+      "name": "유초중등학급현황[교육통계][EDSS]",
+      "secret": "EDSS_CLASS_STATUS_API_KEY",
+      "role": "학교·학년·연도별 학급수",
+      "priority": 1,
+      "url": "",
+      "params": {},
+      "fields": null
+    },
+    "schoolLocation": {
+      "name": "학교별위치정보",
+      "secret": "EDSS_SCHOOL_LOCATION_API_KEY",
+      "role": "좌표 미확보 학교 채우기 · 학교알리미 좌표 교차검증",
+      "priority": 2,
+      "url": "",
+      "params": {},
+      "fields": null
+    },
+    "schoolOverview": {
+      "name": "유초중등학교개황[교육통계][EDSS]",
+      "secret": "EDSS_SCHOOL_OVERVIEW_API_KEY",
+      "role": "학교수·학생수·학급수 합계 교차검증",
+      "priority": 2,
+      "url": "",
+      "params": {},
+      "fields": null
+    },
+    "eduStatOverview": {
+      "name": "학교개황[교육통계]",
+      "secret": "EDSS_EDU_STAT_SCHOOL_OVERVIEW_API_KEY",
+      "role": "위 개황과 필드가 다를 때만 보완",
+      "priority": 3,
+      "url": "",
+      "params": {},
+      "fields": null
+    }
+  }
+}

@@ -653,7 +653,7 @@ table.data .hl{color:var(--brand);font-weight:800}
   <div class="glossary-list">
     <details><summary>교원 수</summary><div>학교알리미 공시의 교원 현황을 학교별로 합산한 값입니다. 현재 전체 KPI는 유치원 교원을 제외합니다.<span class="source">출처: 학교알리미 공시</span></div></details>
     <details><summary>인구감소지역</summary><div>인구·재정·지역 여건 등을 종합해 행정안전부가 지정한 지역입니다. 2021년 10월 처음 지정하며 지정 주기는 5년입니다. 경북은 고령·문경·봉화·상주·성주·안동·영덕·영양·영주·영천·울릉·울진·의성·청도·청송 15곳입니다.<span class="source">출처: 행정안전부 인구감소지역 지정 결과(89개)</span></div></details>
-    <details><summary>모의 학생수</summary><div>선택한 연도까지 시군·학교급별 공개 실적에 가정한 감소율을 적용한 비교값입니다. 공식 장래추계나 확정 예측이 아니며, 변화 방향과 계산 조건을 이해하는 참고값입니다.<span class="source">향후 공개된 출생아수와 여러 해의 학년별 실적으로 산출법을 개선</span></div></details>
+    <details><summary>모의 학생수</summary><div id="tip-simstu">선택한 연도까지 시군·학교급별 공개 실적에 가정한 감소율을 적용한 비교값입니다. 공식 장래추계나 확정 예측이 아니며, 변화 방향과 계산 조건을 이해하는 참고값입니다.<span class="source">향후 공개된 출생아수와 여러 해의 학년별 실적으로 산출법을 개선</span></div></details>
     <details><summary>적정규모학교</summary><div>학생 수 기준으로 최소규모 15명 이하, 소규모 100명 이하, 적정규모 참고선을 동 60명 이상·읍면 30명 이상으로 제시하며, 겹치면 적정규모를 우선합니다. 학급당 학생 수의 과밀 여부와는 별개이고, 학교 통폐합을 자동 결정하는 기준도 아닙니다.<span class="source">이 기준선은 참고용입니다. 학교별 판단은 그해 경상북도교육청 적정규모학교 육성 계획을 따릅니다.</span></div></details>
     <details><summary>초등학교</summary><div>초등 보통교육을 실시하는 6년제 학교입니다. 이 화면의 학교·학생·학급 값은 학교알리미 공시 자료를 사용합니다.<span class="source">출처: 초·중등교육법, 학교알리미</span></div></details>
     <details><summary>학생 수</summary><div>해당 학교에 재학 중인 학생을 학교별·학교급별로 합산한 값입니다. 학령인구와는 범위가 다릅니다.<span class="source">출처: 학교알리미 2026 공시</span></div></details>
@@ -878,7 +878,7 @@ table.data .hl{color:var(--brand);font-weight:800}
                 </tr>
                 <tr>
                   <td><b>학생수 미래 비교</b><br>시뮬레이터·현황</td>
-                  <td>학교알리미 2026 공시 실적<br><span class="q">미확보 연도는 비교용 단순 연결값</span></td>
+                  <td>학교알리미 2026 공시 실적<br><span class="q" id="q-series-note">미확보 연도는 비교용 단순 연결값</span></td>
                   <td>2026 공시<br>미래는 모의 비교</td>
                   <td>공식 장래 학생수 추계·학교 개편 판단으로 사용하지 않습니다.</td>
                 </tr>
@@ -1170,7 +1170,7 @@ table.data .hl{color:var(--brand);font-weight:800}
                 <tbody id="pred-tbody"></tbody>
               </table>
             </div>
-            <div class="panel-note">
+            <div class="panel-note" id="pred-basis-note">
               기준자료: 학교알리미 2026 공시 (학교 917곳 실적)<br>모의전망: 시군·학교급별 가정한 감소율 적용<br>* 공식 장래 학생수 추계가 아니며 지역 간 이동을 반영하지 않음
             </div>
           </div>
@@ -1212,8 +1212,8 @@ table.data .hl{color:var(--brand);font-weight:800}
           <br>· <b>학교 수 기준</b>: 학교수·학급수를 기준대로 정하고 → <b>학급당 평균 학생수</b>가 결과로 나옵니다.
           <br>· <b>학급당 학생 수 기준</b>: 학급당 학생수를 정하고 → <b>필요한 학급수·학교수</b>가 결과로 나옵니다.
           <br><b>기준자료(2026)는 실적입니다</b> — 학교알리미 2026 공시를 학교 917곳에서 받아 시군별로 더한 값입니다.
-          <br><b>모의전망(2027~)은 공식 예측이 아닙니다.</b> 시군·학교급마다 <b>연평균 감소율을 가정해</b> 곱한 값이고,
-          그 감소율은 공식 추계가 아니라 <b>이 화면이 정한 가정</b>입니다. 지역 간 이동도 반영하지 않습니다.
+          <span id="spec-proj"><br><b>모의전망(2027~)은 공식 예측이 아닙니다.</b> 시군·학교급마다 <b>연평균 감소율을 가정해</b> 곱한 값이고,
+          그 감소율은 공식 추계가 아니라 <b>이 화면이 정한 가정</b>입니다. 지역 간 이동도 반영하지 않습니다.</span>
           <br>그래서 <b>「몇 명이 될 것이다」로 읽으면 안 됩니다.</b> 기준을 바꿔 가며
           <b>어느 쪽으로 얼마나 움직이는지</b>를 보는 자리입니다.
         </div>
@@ -2548,8 +2548,50 @@ const densColor = d => d==='over' ? 'var(--over)' : d==='fit' ? 'var(--fit)' : '
 // 값의 크기를 바탕색 농도로 표현. 색만으로 전달하지 않으므로 숫자를 함께 적습니다.
 const fillOf = ratio => `color-mix(in srgb, var(--brand) ${(8+ratio*30).toFixed(1)}%, var(--card))`;
 
-// 시군·학교급별 연평균 감소율 (더미). 군 지역이 더 가파르게.
+/* ══ EDSS 여러 해치 실적 ═══════════════════════════════════════════════
+   `open api/bake-edss.mjs` 가 EDSS_* 를 심으면 여기가 켜집니다.
+   **심기 전에는 아래 모든 갈래가 예전 그대로 돕니다** — 실적이 없는데
+   있는 척하는 자리가 하나도 없어야 합니다. 켜지면 세 가지가 바뀝니다.
+
+     · 2016~ 학생수 곡선이 직선 보간에서 실적으로
+     · 시군별 감소율이 지어낸 값에서 실측 CAGR 로
+     · 2027~ 전망이 감소율 곱셈에서 코호트 진급법으로
+
+   그리고 화면의 설명 문구도 함께 바뀝니다. 자료만 바뀌고 설명이 그대로면
+   그 설명이 거짓말이 됩니다. */
+const EDSS = (typeof EDSS_YEARS !== 'undefined' && Array.isArray(EDSS_YEARS) && EDSS_YEARS.length >= 3) ? {
+  years: EDSS_YEARS,
+  total: typeof EDSS_TOTAL !== 'undefined' ? EDSS_TOTAL : {},
+  sgg:   typeof EDSS_SGG   !== 'undefined' ? EDSS_SGG   : {},
+  grade: typeof EDSS_GRADE !== 'undefined' ? EDSS_GRADE : {},
+  rate:  typeof EDSS_RATE  !== 'undefined' ? EDSS_RATE  : {},
+  cohort:   typeof EDSS_COHORT   !== 'undefined' ? EDSS_COHORT   : null,
+  backtest: typeof EDSS_BACKTEST !== 'undefined' ? EDSS_BACKTEST : null,
+  birth:    typeof EDSS_BIRTH    !== 'undefined' ? EDSS_BIRTH    : {},
+  meta:     typeof EDSS_META     !== 'undefined' ? EDSS_META     : {},
+  first: EDSS_YEARS[0], last: EDSS_YEARS[EDSS_YEARS.length - 1]
+} : null;
+
+/* 화면 곳곳에서 되풀이되는 말을 한 곳에서 만듭니다. 여기만 고치면 다 따라옵니다. */
+const RATE_WORD = EDSS ? '실측 감소율' : '가정한 감소율';
+const PROJ_WORD = EDSS ? '코호트 진급법' : '가정한 감소율 곱셈';
+const SERIES_NOTE = EDSS
+  ? EDSS.first + '~' + EDSS.last + ' 교육통계 실적'
+  : '미확보 연도는 비교용 단순 연결값';
+const PROJ_NOTE = EDSS
+  ? '2027~ 전망은 ' + EDSS.first + '~' + EDSS.last + ' 실적에서 잰 학년 진급률로 굴린 값입니다.'
+  : '시군·학교급마다 연평균 감소율을 가정해 곱한 값입니다.';
+
+// 시군·학교급별 연평균 감소율.
+// EDSS 실적이 있으면 그 시군의 실측 CAGR 을, 없으면 예전의 가정값을 씁니다.
 function declineRate(sg, lv){
+  if(EDSS && EDSS.rate[sg.rc] && EDSS.rate[sg.rc][lv] != null){
+    /* 늘어난 곳은 음수로 나옵니다. 0 으로 깎지 않습니다 — 구미·경산은
+       실제로 늘어난 해가 있고, 깎으면 그 사실이 화면에서 사라집니다.
+       다만 통폐합 한 번으로 튄 값이 그대로 20년 곱해지면 0 명이 되므로
+       위아래를 막습니다. */
+    return Math.max(-0.03, Math.min(0.11, EDSS.rate[sg.rc][lv]));
+  }
   const base = sg.type === '군' ? 0.062 : 0.033;
   const adj  = sg.decline ? 0.018 : 0;
   const lvAdj = lv === '초' ? -0.006 : (lv === '고' ? 0.008 : 0);
@@ -2589,13 +2631,63 @@ LEVELS.forEach(lv => {
 /* `bake-kosis.mjs`가 KOSIS의 1세별 자료를 천 명 단위로 심는 자리입니다. */
 const KOSIS_POP = {"2016":{"초":131,"중":69,"고":121},"2017":{"초":133,"중":66,"고":113},"2018":{"초":135,"중":64,"고":106},"2019":{"초":133,"중":65,"고":97},"2020":{"초":131,"중":66,"고":90},"2021":{"초":131,"중":66,"고":88},"2022":{"초":128,"중":65,"고":88},"2023":{"초":121,"중":65,"고":87},"2024":{"초":112,"중":67,"고":88},"2025":{"초":105,"중":66,"고":88},"2026":{"초":100,"중":64,"고":88},"2027":{"초":91,"중":62,"고":88},"2028":{"초":82,"중":60,"고":88},"2029":{"초":75,"중":57,"고":88},"2030":{"초":69,"중":52,"고":86},"2031":{"초":64,"중":47,"고":83},"2032":{"초":61,"중":42,"고":79},"2033":{"초":59,"중":38,"고":74},"2034":{"초":58,"중":35,"고":68},"2035":{"초":58,"중":33,"고":61},"2036":{"초":58,"중":31,"고":55}};
 
-/* 학생수 시계열은 아직 2016/2026/2036 앵커 선형 보간입니다. */
+/* EDSS 실적을 못 받은 동안 학생수 곡선을 잇는 세 점입니다.
+   실적이 들어오면 2016~ 구간은 이 값을 쓰지 않습니다. */
 const ANCHOR = {
   pop: { 2016:{초:128,중:70,고:92}, 2026:{초:100,중:64,고:65}, 2036:{초:58,중:31,고:39} },
   stu: { 2016:{초:130,중:69,고:90}, 2026:{초:101,중:63,고:63}, 2036:{초:57,중:30,고:38} }
 };
+
+/* --- 코호트를 앞으로 굴립니다 -------------------------------------------
+   g학년이 이듬해 g+1학년이 되는 비율을 실적에서 재어 두었습니다(EDSS_COHORT).
+   초1만은 진급이 아니라 새로 들어오는 학년이라, 6년 전 출생아 × 취학률입니다.
+   출생아가 없는 해부터는 마지막 1학년을 그대로 둡니다 — 지어내지 않습니다. */
+const EDSS_FWD = {};
+function edssForward(year){
+  if(!EDSS || !EDSS.cohort || !EDSS.grade || year <= EDSS.last) return null;
+  if(EDSS_FWD[year]) return EDSS_FWD[year];
+  let cur = {};
+  ['초','중','고'].forEach(lv => {
+    const a = EDSS.grade[lv];
+    if(a && a.length && a[a.length-1]) cur[lv] = a[a.length-1].slice();
+  });
+  if(!Object.keys(cur).length) return null;
+  for(let y = EDSS.last + 1; y <= year; y++){
+    const nxt = {};
+    ['초','중','고'].forEach(lv => {
+      if(!cur[lv]) return;
+      const R = EDSS.cohort[lv] || [], n = cur[lv].length, v = new Array(n).fill(0);
+      for(let g = 1; g < n; g++) v[g] = Math.round(cur[lv][g-1] * (R[g-1] != null ? R[g-1] : 1));
+      if(lv === '초'){
+        const b = EDSS.birth[y-6];
+        v[0] = (b && EDSS.cohort.entry) ? Math.round(b * EDSS.cohort.entry) : cur['초'][0];
+      } else {
+        const from = lv === '중' ? '초' : '중';
+        const r = (EDSS.cohort.cross || {})[lv === '중' ? '초중' : '중고'];
+        v[0] = cur[from] ? Math.round(cur[from][cur[from].length-1] * (r != null ? r : 1)) : cur[lv][0];
+      }
+      nxt[lv] = v;
+    });
+    cur = nxt;
+    const sum = a => a ? a.reduce((x,z)=>x+z,0) : 0;
+    EDSS_FWD[y] = { 초:Math.round(sum(cur['초'])/1000), 중:Math.round(sum(cur['중'])/1000), 고:Math.round(sum(cur['고'])/1000) };
+  }
+  return EDSS_FWD[year] || null;
+}
+
 function series(kind, year){
   if(kind==='pop' && KOSIS_POP[year]) return {...KOSIS_POP[year]};
+  if(kind==='stu' && EDSS){
+    const i = EDSS.years.indexOf(Number(year));
+    if(i >= 0) return {
+      초: Math.round((EDSS.total['초']||[])[i]/1000) || 0,
+      중: Math.round((EDSS.total['중']||[])[i]/1000) || 0,
+      고: Math.round((EDSS.total['고']||[])[i]/1000) || 0
+    };
+    const f = edssForward(Number(year));
+    if(f) return {...f};
+    /* 실적보다 이른 해는 앵커로 잇습니다 — 실적 첫 해 앞은 아직 못 받았습니다. */
+  }
   const A = ANCHOR[kind];
   const lerp=(a,b,t)=>Math.round(a+(b-a)*t);
   if(year<=2016) return {...A[2016]};
@@ -3926,7 +4018,7 @@ function renderSim(){
     `2026 실적: 학생 ${fmt(allBase.stu)}명, 학급 ${fmt(allBase.cls)}개, 학교 ${fmt(allBase.sch)}교`,
     `${sim.year} 모의값: 학생 ${fmt(allPredStu)}명, 학급 ${fmt(totalRow?.projection.cls || 0)}개, 학교 ${fmt(totalRow?.projection.sch || 0)}교`,
     `학생수 변화율: -${dropPct}%`,
-    '주의: 모의값은 공식 장래 학생수 추계가 아니며 가정한 감소율을 적용하고 지역 간 이동을 제외함.',
+    '주의: 모의값은 공식 장래 학생수 추계가 아니며 ' + RATE_WORD + '을 적용하고 지역 간 이동을 제외함.',
     '응답 형식: 1) 학생수 변화 2) 해석 주의사항 3) 함께 비교할 질문 4) 더 살펴볼 공개자료 5) 분석 한계'
   ].join('\n');
   document.getElementById('ai-context-preview').textContent =
@@ -3959,7 +4051,7 @@ function renderSim(){
     txt = `<b>학급당 학생 수 기준</b> — ${how} → <b>필요 학급수·학교수</b>가 결과로 산출됩니다.`;
   }
   document.getElementById('assump').innerHTML =
-    `${txt}<br>모의전망: 시군·학교급별 연평균 감소율을 ${yrs}년 적용 (지역 간 유입·유출 미반영)
+    `${txt}<br>모의전망: 시군·학교급별 ${RATE_WORD}을 ${yrs}년 적용 (지역 간 유입·유출 미반영)
      <br>※ 공개자료만 사용하며 학교별 미래 학생수는 제공하지 않습니다.`;
 }
 
@@ -4038,9 +4130,15 @@ function simulatorSheets(){
   const filters = [
     ['항목','현재 설정'],['학교급',LEVEL_CFG[sim.level].full],['모의연도',sim.year],
     ['선택 시군',sim.sigungu.size?[...sim.sigungu].join(', '):'경북 전체 22개 시군'],
-    ['산출 기준',currentBasisDescription()],['모의 한계','공식 장래 학생수 추계가 아니며 가정한 감소율 적용·지역 간 이동 미반영'],
+    ['산출 기준',currentBasisDescription()],['모의 한계','공식 장래 학생수 추계가 아니며 '+RATE_WORD+' 적용·지역 간 이동 미반영'],
+    ['전망 산출법',PROJ_WORD],
     ['학교 실적 출처','https://www.schoolinfo.go.kr'],['인구·장래인구 출처','https://kosis.kr']
-  ];
+  ]
+  /* 되짚어 본 결과가 있으면 함께 내보냅니다. 파일만 받아 본 사람도
+     이 전망을 얼마나 믿을지 스스로 정할 수 있어야 합니다. */
+  .concat(EDSS && EDSS.backtest && EDSS.backtest.오차율 != null
+    ? [['전망 검증(백테스트)', EDSS.backtest.from + '년으로 ' + EDSS.backtest.to + '년을 예측했을 때 실제와 ' + Math.abs(EDSS.backtest.오차율) + '% 차이']]
+    : []);
   return [
     {name:'요약',title:'경북 학생수 모의 비교 요약',note:'현재 화면의 시군·학교급과 산출 기준을 적용한 참고 결과입니다.',rows:[['지표','값'],['2026 학생 수',total?total.base.stu:0],[`${sim.year} 모의 학생 수`,total?total.predStu:0],['학생 수 감소율(%)',total?+(total.drop*100).toFixed(1):0],['모의 학교 수',total?total.projection.sch:0],['모의 학급 수',total?total.projection.cls:0]]},
     {name:'기준자료',title:'2026 기준자료',note:'시군 순서: 포항→경주→김천→안동→구미→영주→영천→상주→문경→경산→의성→청송→영양→영덕→청도→고령→성주→칠곡→예천→봉화→울진→울릉',rows:baseRows},
@@ -4080,8 +4178,8 @@ function statusExportSheets(){
   for(let y=2016;y<=2036;y++){const v=series(dsKind,y);trend.push([y,v.초,v.중,v.고,v.초+v.중+v.고]);}
   return [
     {name:'선택연도비교',title:dsKind==='pop'?'경북 학령인구 비교':'경북 학생 수 비교',note:'단위: 천 명',rows},
-    {name:'연도별추이',title:'2016~2036 연도별 추이',note:dsKind==='pop'?'2016~2025 주민등록인구, 2026~2036 장래인구추계':'학생 수의 미확보 연도는 앵커 선형 보간값',rows:trend},
-    {name:'출처와한계',title:'자료 출처와 해석 주의',rows:[['항목','내용'],['KOSIS','https://kosis.kr'],['학령인구','6~18세 인구, 실제 재학생 수와 다름'],['학생 수 장래값','공식 추계가 아닙니다. 시군·학교급별 연평균 감소율을 가정해 곱한 값입니다']]}
+    {name:'연도별추이',title:'2016~2036 연도별 추이',note:dsKind==='pop'?'2016~2025 주민등록인구, 2026~2036 장래인구추계':'학생 수 — '+SERIES_NOTE,rows:trend},
+    {name:'출처와한계',title:'자료 출처와 해석 주의',rows:[['항목','내용'],['KOSIS','https://kosis.kr'],['학령인구','6~18세 인구, 실제 재학생 수와 다름'],['학생 수 장래값','공식 추계가 아닙니다. '+PROJ_NOTE]]}
   ];
 }
 function newsExportSheets(){
@@ -4427,9 +4525,44 @@ function renderMulti() {
    라이브에서 404 였습니다. 자료를 받으면 유치원과 같은 방식으로 심습니다
    (주소만 있으면 카카오 로컬로 좌표를 채울 수 있습니다). */
 
+/* --- 자료가 바뀌면 설명도 바뀝니다 ---------------------------------------
+   EDSS 실적이 들어오기 전까지 화면은 「가정한 감소율」이라고 말합니다.
+   실적이 들어오면 그 말이 거짓이 되므로 함께 고쳐 적습니다. 이 함수가
+   없으면 숫자만 조용히 좋아지고 설명은 낡은 채로 남습니다. */
+function applyEdssWording(){
+  if(!EDSS) return;
+  const put = (id, html) => { const el = document.getElementById(id); if(el) el.innerHTML = html; };
+  const span = EDSS.first + '~' + EDSS.last;
+
+  put('q-series-note', span + ' 교육통계 실적');
+
+  put('pred-basis-note',
+    '기준자료: 교육통계 ' + span + ' 학교·학년별 실적<br>' +
+    '모의전망: 실적에서 잰 학년 진급률로 굴린 값 (코호트 진급법)<br>' +
+    '* 공식 장래 학생수 추계가 아니며 지역 간 이동을 반영하지 않음');
+
+  let proj = '<br><b>모의전망(' + (EDSS.last + 1) + '~)은 공식 예측이 아닙니다.</b> ' +
+    span + ' 실적에서 <b>학년이 올라갈 때 몇 명이 남는지</b>를 재어(코호트 진급법) 굴린 값입니다. ' +
+    '초등학교 1학년은 6년 전 출생아에 실측 취학률을 곱했습니다. 지역 간 이동은 따로 반영하지 않습니다.';
+  const bt = EDSS.backtest;
+  if(bt && bt.오차율 != null){
+    /* 이 한 줄이 있어야 보는 사람이 전망을 얼마나 믿을지 스스로 정할 수 있습니다. */
+    proj += '<br><b>맞는지 되짚어 보았습니다</b> — 같은 방법으로 ' + bt.from + '년 실적에서 ' +
+      bt.to + '년을 예측하니 실제와 <b>' + Math.abs(bt.오차율) + '%</b> 차이가 났습니다.';
+  }
+  proj += '<br>그래도 <b>「몇 명이 될 것이다」로 읽으면 안 됩니다.</b> 통폐합·학구 조정 한 번이 이 계산을 통째로 바꿉니다.';
+  put('spec-proj', proj);
+
+  put('tip-simstu',
+    '선택한 연도까지 시군·학교급별 실적에 <b>' + span + ' 실적에서 잰 연평균 감소율</b>을 적용한 비교값입니다. ' +
+    '공식 장래추계나 확정 예측이 아니며, 변화 방향과 계산 조건을 이해하는 참고값입니다.' +
+    '<span class="source">출처: ' + (EDSS.meta.출처 || '교육통계(EDSS)') + '</span>');
+}
+
 /* =========================================================
    8. 초기화
    ========================================================= */
+applyEdssWording();
 syncSigChips();
 renderKPI();
 renderTilemap();

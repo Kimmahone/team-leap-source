@@ -601,12 +601,56 @@ check('학령인구 현황은 실제 KOSIS 출처와 학생수 모의값을 구�
   !html.includes('국가데이터처 장래인구추계 (더미 보간값)'));
 check('학령인구·학생수 모드에 맞춰 추이 제목을 바꾼다',
   html.includes('id="trend-title"') && /학령인구 추이/.test(html) && /학생수 추이/.test(html));
-check('홈 화면의 자료 출처 표에 KOSIS 학령인구와 학생수 모의값의 성격이 함께 있다',
+/* 지키려는 것은 「학생수 계열이 무엇인지 적는다」입니다. 문장을 통째로 못 박으면
+   자료가 좋아지는 순간 이 검사가 빨개지고, 그때 고치기 쉬운 쪽은 검사입니다.
+   그래서 **자료 상태와 문구가 맞는지**를 봅니다. */
+check('홈 화면의 자료 출처 표가 학생수 계열의 성격을 자료 상태에 맞게 적는다',
   /KOSIS 주민등록인구현황·장래인구추계/.test(html) && /학령인구는 실제 재학생 수와 다릅니다/.test(html) &&
-  /미확보 연도는 비교용 단순 연결값/.test(html));
+  (q('!!EDSS')
+    ? /교육통계 실적/.test((byId['q-series-note'] || {})._html || '')
+    : /미확보 연도는 비교용 단순 연결값/.test(html)));
 check('분석 서비스 키는 HTML에 없고 같은 출처 중계만 쓴다', html.includes("fetch('/api/ai-analysis'") && !/GEMINI_API_KEY|generativelanguage\.googleapis\.com/.test(html));
 check('720px 모바일 레이아웃이 있다', /@media \(max-width:720px\)[\s\S]*?\.shell\{display:block/.test(html));
 check('가짜 소재지 배정이 없다', !/i\s*%\s*3|임의 배정한 더미/.test(CODE_ONLY));
+
+/* ---------- EDSS 여러 해치 실적 ----------
+   이 화면의 가장 큰 구멍은 「실적이 2026 한 해뿐」이라는 것입니다.
+   `bake-edss.mjs` 가 여러 해치를 심으면 곡선·감소율·전망이 한꺼번에 바뀝니다.
+   **심기 전과 심은 뒤 둘 다** 확인합니다. 심은 뒤만 보면 「아직 안 심었을 때
+   조용히 0 이 되는」 실패를 놓칩니다. */
+console.log('\n■ EDSS 실적 연결');
+check('실적 여부를 한 곳에서만 판단한다',
+  (CODE_ONLY.match(/typeof EDSS_YEARS !== 'undefined'/g) || []).length === 1);
+check('실적이 세 해 미만이면 켜지 않는다 (두 점으로는 진급률이 안 나온다)',
+  /EDSS_YEARS\.length >= 3/.test(CODE_ONLY));
+
+if (q('!!EDSS')) {
+  const first = q('EDSS.first'), last = q('EDSS.last');
+  check('실적 연도는 심은 값을 그대로 쓴다',
+    q(`series('stu',${last}).초`) === Math.round(q("EDSS.total['초'][EDSS.years.length-1]") / 1000));
+  check('실적 첫 해도 앵커가 아니라 실적이다',
+    q(`series('stu',${first}).초`) === Math.round(q("EDSS.total['초'][0]") / 1000));
+  check('실적 다음 해부터는 코호트로 굴린다', q(`edssForward(${last + 1}) !== null`));
+  check('줄어드는 자료인데 전망이 늘지 않는다',
+    q(`series('stu',${last + 5}).초 <= series('stu',${last}).초`));
+  check('감소율이 그 시군의 실측값이다', q(
+    "(function(){var k=Object.keys(EDSS.rate)[0];if(!k)return false;" +
+    "var sg=SIGUNGU.filter(function(s){return s.rc===k})[0];if(!sg)return false;" +
+    "return Math.abs(declineRate(sg,'초')-Math.max(-0.03,Math.min(0.11,EDSS.rate[k]['초'])))<1e-9;})()"));
+  check('설명이 「가정」에서 「실측」으로 바뀐다', q('RATE_WORD') === '실측 감소율');
+  check('출처 표 문구도 함께 바뀐다', /교육통계 실적/.test((byId['q-series-note'] || {})._html || ''));
+} else {
+  check('실적이 없으면 EDSS 는 null 이다', q('EDSS') === null);
+  check('실적이 없으면 앵커로 이어 그린다', q("series('stu',2020).초") > 0);
+  check('실적이 없으면 감소율은 가정값이라고 말한다', q('RATE_WORD') === '가정한 감소율');
+  check('실적이 없으면 설명을 건드리지 않는다', ((byId['q-series-note'] || {})._html || '') === '');
+  check('군 지역이 시 지역보다 가파르다고 가정한다', q(
+    "(function(){var g=SIGUNGU.filter(function(s){return s.type==='군'})[0]," +
+    "si=SIGUNGU.filter(function(s){return s.type==='시'})[0];" +
+    "return !!g&&!!si&&declineRate(g,'초')>declineRate(si,'초');})()"));
+  check('앞으로 갈수록 학생이 준다', q("series('stu',2030).초 < series('stu',2026).초"));
+  check('실적이 없으면 코호트 함수가 조용히 null 을 준다', q('edssForward(2030)') === null);
+}
 
 console.log(`\n${fail ? '✗' : '✓'}  통과 ${pass} · 실패 ${fail}\n`);
 process.exit(fail ? 1 : 0);

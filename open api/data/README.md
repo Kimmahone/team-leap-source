@@ -38,6 +38,11 @@ npx mapshaper "open api/data/시군구경계.shp" -proj wgs84 \
 | 파일 | 무엇 | 출처 |
 |---|---|---|
 | `gyeongbuk-boundary.json` | 예전 판(참고용). **지금 앱이 쓰는 것은 이게 아니라 앱 안에 구워진 블록입니다** | 통계청 SGIS · 공공누리 제1유형 |
+| `kosis-summary.json` | 학령인구 시계열과 시군별 출생아 수 | KOSIS |
+| `edss-probe.json` | EDSS API가 어떤 칸을 주는지 적어 둔 것. **값은 없고 칸 이름과 자료형만** 있습니다 | `bake-edss.mjs --probe` |
+| `edss-series.json` | EDSS 학교·학년·연도별 학생·학급 원자료. 백테스트에 씁니다 | `bake-edss.mjs` |
+
+`edss-probe.json` 에는 인증키도 학교 이름도 학생 수도 들어가지 않습니다. 짐작한 필드 짝짓기가 맞는지 보려고 두는 것이므로, 커밋해도 됩니다.
 
 원본 GeoJSON(17MB)은 두지 않았습니다. **필요할 때 다시 받는 편이 낫습니다** —
 사본은 조용히 낡습니다(마스터 7장 함정 13번). 받는 곳은 `../지도 경계 굽는 법.md` 2장에 있습니다.

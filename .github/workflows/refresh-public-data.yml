@@ -6,6 +6,8 @@ on:
     - cron: '10 21 1 * *'
     # 한국시간 1·4·7·10월 2일 06:40에 학교·유치원 자료를 확인합니다.
     - cron: '40 21 1 1,4,7,10 *'
+    # 교육통계는 해마다 8월말~9월에 새 조사연도가 나옵니다. 한국시간 9월 5일 07:10.
+    - cron: '10 22 4 9 *'
   workflow_dispatch:
     inputs:
       dataset:
@@ -18,6 +20,16 @@ on:
           - kosis
           - schools
           - kinder
+          - edss
+          - edss-probe
+      edss_only:
+        description: 'EDSS 한 개만 확인할 때의 이름 (비우면 전부)'
+        required: false
+        type: string
+      edss_url:
+        description: 'EDSS 요청주소를 파일에 적지 않고 한 번만 시험할 때 (edss_only 와 함께)'
+        required: false
+        type: string
 
 jobs:
   refresh:
@@ -28,6 +40,16 @@ jobs:
       KOSIS_API_KEY: ${{ secrets.KOSIS_API_KEY }}
       SCHOOLINFO_API_KEY: ${{ secrets.SCHOOLINFO_API_KEY }}
       KINDER_API_KEY: ${{ secrets.KINDER_API_KEY }}
+      # EDSS 는 API 마다 키가 다릅니다. 한 Secret 에 여러 키를 합쳐 넣지 않습니다.
+      EDSS_SCHOOL_ATTRIBUTE_API_KEY: ${{ secrets.EDSS_SCHOOL_ATTRIBUTE_API_KEY }}
+      EDSS_CLASS_STUDENT_API_KEY: ${{ secrets.EDSS_CLASS_STUDENT_API_KEY }}
+      EDSS_STUDENT_STATUS_API_KEY: ${{ secrets.EDSS_STUDENT_STATUS_API_KEY }}
+      EDSS_CLASS_STATUS_API_KEY: ${{ secrets.EDSS_CLASS_STATUS_API_KEY }}
+      EDSS_SCHOOL_LOCATION_API_KEY: ${{ secrets.EDSS_SCHOOL_LOCATION_API_KEY }}
+      EDSS_SCHOOL_OVERVIEW_API_KEY: ${{ secrets.EDSS_SCHOOL_OVERVIEW_API_KEY }}
+      EDSS_EDU_STAT_SCHOOL_OVERVIEW_API_KEY: ${{ secrets.EDSS_EDU_STAT_SCHOOL_OVERVIEW_API_KEY }}
+      EDSS_ONLY: ${{ inputs.edss_only }}
+      EDSS_URL: ${{ inputs.edss_url }}
       PUBLIC_DATA_YEAR: ${{ vars.PUBLIC_DATA_YEAR || '2026' }}
       CHOICE: ${{ inputs.dataset || 'scheduled' }}
 
@@ -67,6 +89,25 @@ jobs:
             echo "::warning::KINDER_API_KEY가 없어 유치원알리미 갱신을 건너뜁니다."
           else
             node "open api/bake-kinder.mjs"
+          fi
+
+      # 처음 한 번은 이것부터 돌립니다. 응답 모양만 보고 값은 담지 않습니다.
+      # 만들어진 open api/data/edss-probe.json 에는 인증키도 학교 이름도 없습니다.
+      - name: EDSS 응답 모양 확인
+        if: inputs.dataset == 'edss-probe'
+        run: |
+          args=(--probe)
+          if [ -n "$EDSS_ONLY" ]; then args+=("--only=$EDSS_ONLY"); fi
+          if [ -n "$EDSS_URL" ];  then args+=("--url=$EDSS_URL"); fi
+          node "open api/bake-edss.mjs" "${args[@]}"
+
+      - name: EDSS 여러 해치 학생·학급 수집
+        if: github.event.schedule == '10 22 4 9 *' || inputs.dataset == 'all' || inputs.dataset == 'edss'
+        run: |
+          if node -e 'const a=JSON.parse(require("fs").readFileSync("open api/edss-endpoints.json","utf8")).apis;process.exit(Object.values(a).some(x=>x.url)?0:1)'; then
+            node "open api/bake-edss.mjs"
+          else
+            echo "::warning::edss-endpoints.json 에 요청주소가 하나도 없어 EDSS 수집을 건너뜁니다. 승인된 API 의 요청주소를 url 에 적어 주세요."
           fi
 
       - name: 전체 품질검사와 배포본 생성

@@ -114,5 +114,7 @@ for d in a-circuit c-storybook e-together; do (cd $d && node test.js | tail -1);
 | `bake-demographics.mjs` | 행안부 도로명별 주민등록 인구 API로 읍·면·동 인구를 심는 스크립트 |
 | `bake-kinder.mjs` | 유치원알리미에서 유치원 614곳(원아수·학급수·주소)을 받아 대시보드에 심는 스크립트 |
 | `bake-special.mjs` | 학교알리미 `schulKndCode=05` 로 특수학교 8곳(학생·학급·교원·좌표)을 심는 스크립트 |
+| `bake-edss.mjs` | EDSS 7개 API에서 **여러 해치** 학교·학년별 학생·학급을 받아 대시보드에 심는 스크립트. 이것이 있어야 직선 보간이 실적으로, 지어낸 감소율이 실측으로 바뀝니다 |
+| `edss-endpoints.json` | EDSS 요청주소·Secret 이름을 적어 두는 곳. **코드에는 주소를 박지 않습니다** |
 | `kakao-geocode.mjs` | 주소 → 좌표. 유치원알리미가 좌표를 주지 않아서 씁니다. 받은 것은 `data/geocode-cache.json` 에 쌓습니다 |
 
