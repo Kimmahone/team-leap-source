@@ -1,34 +1,168 @@
 {
-  "만든때": "2026-08-31T05:52:04.526Z",
+  "만든때": "2026-08-31T11:13:13.459Z",
   "게이트웨이": "POST · 본문에 인자",
   "apis": {
     "schoolAttribute": {
-      "인증시도": [
-        "header:apikey → 401",
-        "header:apiKey → 401",
-        "header:Authorization Bearer → 401",
-        "header:Authorization → 401",
-        "header:X-API-KEY → 401",
-        "header:api-key → 401",
-        "header:serviceKey → 401",
-        "header:authKey → 401",
-        "header:auth-key → 401",
-        "header:certKey → 401",
-        "header:X-Auth-Token → 401",
-        "header:accessToken → 401",
-        "header:X-Authorization → 401",
-        "header:token → 401",
-        "header:Authorization Basic → 401",
-        "body:apiKey → 401",
-        "body:serviceKey → 401",
-        "body:authKey → 401",
-        "body:key → 401",
-        "body:certKey → 401",
-        "body:token → 401",
-        "body:인증키 → 401"
-      ],
       "name": "학교속성[교육통계][EDSS]",
-      "결과": "인증 실패"
+      "상태코드": 404,
+      "결과": "오류",
+      "메시지": "Not Found",
+      "총건수": 0,
+      "봉투": {
+        "topKeys": [
+          "code",
+          "loc",
+          "message"
+        ]
+      },
+      "칸이름": [],
+      "고른칸": {},
+      "고른까닭": {},
+      "칸모양": {},
+      "응답열쇠": [
+        "code",
+        "loc",
+        "message"
+      ]
+    },
+    "classStudent": {
+      "name": "학급및학생현황(EDSS제공용)",
+      "상태코드": 404,
+      "결과": "오류",
+      "메시지": "Not Found",
+      "총건수": 0,
+      "봉투": {
+        "topKeys": [
+          "code",
+          "loc",
+          "message"
+        ]
+      },
+      "칸이름": [],
+      "고른칸": {},
+      "고른까닭": {},
+      "칸모양": {},
+      "응답열쇠": [
+        "code",
+        "loc",
+        "message"
+      ]
+    },
+    "studentStatus": {
+      "name": "유초중등학생현황[교육통계][EDSS]",
+      "상태코드": 404,
+      "결과": "오류",
+      "메시지": "Not Found",
+      "총건수": 0,
+      "봉투": {
+        "topKeys": [
+          "code",
+          "loc",
+          "message"
+        ]
+      },
+      "칸이름": [],
+      "고른칸": {},
+      "고른까닭": {},
+      "칸모양": {},
+      "응답열쇠": [
+        "code",
+        "loc",
+        "message"
+      ]
+    },
+    "classStatus": {
+      "name": "유초중등학급현황[교육통계][EDSS]",
+      "상태코드": 404,
+      "결과": "오류",
+      "메시지": "Not Found",
+      "총건수": 0,
+      "봉투": {
+        "topKeys": [
+          "code",
+          "loc",
+          "message"
+        ]
+      },
+      "칸이름": [],
+      "고른칸": {},
+      "고른까닭": {},
+      "칸모양": {},
+      "응답열쇠": [
+        "code",
+        "loc",
+        "message"
+      ]
+    },
+    "schoolLocation": {
+      "name": "학교별위치정보",
+      "상태코드": 404,
+      "결과": "오류",
+      "메시지": "Not Found",
+      "총건수": 0,
+      "봉투": {
+        "topKeys": [
+          "code",
+          "loc",
+          "message"
+        ]
+      },
+      "칸이름": [],
+      "고른칸": {},
+      "고른까닭": {},
+      "칸모양": {},
+      "응답열쇠": [
+        "code",
+        "loc",
+        "message"
+      ]
+    },
+    "schoolOverview": {
+      "name": "유초중등학교개황[교육통계][EDSS]",
+      "상태코드": 404,
+      "결과": "오류",
+      "메시지": "Not Found",
+      "총건수": 0,
+      "봉투": {
+        "topKeys": [
+          "code",
+          "loc",
+          "message"
+        ]
+      },
+      "칸이름": [],
+      "고른칸": {},
+      "고른까닭": {},
+      "칸모양": {},
+      "응답열쇠": [
+        "code",
+        "loc",
+        "message"
+      ]
+    },
+    "eduStatOverview": {
+      "name": "학교개황[교육통계]",
+      "상태코드": 404,
+      "결과": "오류",
+      "메시지": "Not Found",
+      "총건수": 0,
+      "봉투": {
+        "topKeys": [
+          "code",
+          "loc",
+          "message"
+        ]
+      },
+      "칸이름": [],
+      "고른칸": {},
+      "고른까닭": {},
+      "칸모양": {},
+      "응답열쇠": [
+        "code",
+        "loc",
+        "message"
+      ]
     }
-  }
+  },
+  "인증방법": "header:api_key"
 }
