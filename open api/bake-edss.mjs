@@ -1060,9 +1060,45 @@ async function main() {
     say(n ? '  개방ID → 시군 ' + n + '곳을 학급및학생현황에서 받았습니다.'
           : '  ⚠ 개방ID → 시군을 못 받아 학교 이름으로만 잇습니다.');
   }
+  /* --- 문 닫은 학교의 시군도 찾습니다 -----------------------------------
+     대시보드 목록은 «지금 있는» 917곳뿐입니다. 2016년에 있다가 통폐합된 학교는
+     거기 없어서 시군을 못 붙이고 통째로 버려집니다. 2016년에 143곳이 그랬습니다.
+     그러면 **옛 해의 학생 수가 실제보다 적게 잡히고, 감소율이 완만해 보입니다** —
+     학령인구 감소를 다루는 화면에서 가장 나쁜 방향으로 틀립니다.
+
+     학교개황[교육통계]에는 법정동 시군구명이 있고 문 닫은 학교도 들어 있습니다. */
+  const byOld = {};
+  if (ready.indexOf('eduStatOverview') >= 0) {
+    const o = cfg.apis['eduStatOverview'], of = o.fields || {};
+    try {
+      const or = await callOnce(o.url, keyOf(o.secret), bodyOf(o, o.params || {}), way, secrets);
+      calls0++;
+      if (or.ok) {
+        for (const row of unwrap(or.json).rows) {
+          const sd = String(row[of.sido] || '');
+          if (sd.indexOf('경북') < 0 && sd.indexOf('경상북도') < 0) continue;
+          const nm = String(row[of.name] || '').replace(/\s/g, '');
+          const sg = toSgg(row[of.sgg]);
+          if (!nm || !sg) continue;
+          /* 이름이 두 시군에 걸치면 여기서도 찍지 않습니다. */
+          if (nm in byOld && byOld[nm] !== sg) byOld[nm] = null;
+          else if (!(nm in byOld)) byOld[nm] = sg;
+        }
+      }
+    } catch (e) { /* 없으면 지금 있는 학교만으로 잇습니다 */ }
+    const n = Object.keys(byOld).filter(function (k) { return byOld[k]; }).length;
+    say(n ? '  학교개황에서 경북 학교 이름 ' + n + '가지의 시군을 받았습니다 (문 닫은 학교 포함).'
+          : '  ⚠ 학교개황에서 시군을 못 받았습니다.');
+  }
+
   const sggOf = function (name, code) {
     if (code && byCode[code]) return byCode[code];
-    return byName(name);
+    const byN = byName(name);
+    if (byN) return byN;
+    const flat = String(name || '').replace(/\s/g, '');
+    if (byOld[flat]) return byOld[flat];
+    const b = flat.replace(/(분교장|분교).*$/, '');
+    return b !== flat && byOld[b] ? byOld[b] : null;
   };
 
   const all = [];
