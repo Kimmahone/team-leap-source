@@ -1497,7 +1497,7 @@ body.map-maxed{overflow:hidden}
            **다문화는 자료가 없습니다.** 그래서 지어내지 않고 «없다»고 적습니다. -->
     <div class="page-head">
       <h1>다문화 및 특수교육 모니터링</h1>
-      <span class="desc">특수교육 — 학교알리미 2026 공시 실적 · 다문화 — 자료 미확보</span>
+      <span class="desc">특수교육 — 학교알리미 2026 공시 · 다문화 — 교육통계연보 2025. 4. 1.</span>
     </div>
 
     <!-- ★ 무엇을 세고 «무엇이 빠졌는지»를 먼저 적습니다.
@@ -3437,7 +3437,7 @@ function renderKPI(){
    울릉군은 본토에서 동쪽으로 1.5도 떨어져 있어, 같은 축척에 넣으면
    나머지 21개 시군이 왼쪽 구석에 뭉칩니다. 그래서 따로 상자에 넣습니다. */
 /* === 다문화 학생 (구운 자료) === */
-const MULTI_STU = null;   // 자료 미확보
+const MULTI_STU = {"year":2025,"basis":"2025. 4. 1.","src":"교육통계연보(한국교육개발원) 「다문화학생 현황」","region":{"경북":{"초":{"국내출생":5274,"중도입국":212,"외국인가정":1092},"중":{"국내출생":3025,"중도입국":164,"외국인가정":340},"고":{"국내출생":2658,"중도입국":79,"외국인가정":314}}},"file":"multicultural-2025.csv"};
 /* === 다문화 학생 끝 === */
 
 /* === 특수학급 학급 수 (구운 자료) === */
@@ -4886,27 +4886,61 @@ function renderMulti() {
     const TYPES = ['국내출생','중도입국','외국인가정'];
     const LVS = ['초','중','고'];
     const regions = Object.keys(MULTI_STU.region);
-    // 도 단위 자료면 '경북' 한 줄, 시군 자료면 시군마다 한 줄
-    const rows = regions.map(rg => {
-      const byLv = MULTI_STU.region[rg] || {};
-      const sum = t => LVS.reduce((a, L) => a + ((byLv[L] || {})[t] || 0), 0);
-      const tot = TYPES.reduce((a, t) => a + sum(t), 0);
-      return { rg, tot, byType: TYPES.map(sum) };
-    }).sort((a, b) => b.tot - a.tot);
+    /* 도 단위 자료 하나면 «학교급»으로 줄을 나눕니다 — 「경북」 한 줄만 보이면
+       가진 것을 다 보여 주지 못합니다. 시군 자료가 들어오면 시군으로 나눕니다. */
+    const bySchoolLevel = regions.length === 1;
+    let rows;
+    if(bySchoolLevel){
+      const byLv = MULTI_STU.region[regions[0]] || {};
+      rows = LVS.filter(L => byLv[L]).map(L => {
+        const rec = byLv[L] || {};
+        const byType = TYPES.map(t => rec[t] || 0);
+        return { rg: LEVEL_CFG[L] ? LEVEL_CFG[L].full : L, tot: byType.reduce((a,v)=>a+v,0), byType };
+      });
+    }else{
+      rows = regions.map(rg => {
+        const byLv = MULTI_STU.region[rg] || {};
+        const sum = t => LVS.reduce((a, L) => a + ((byLv[L] || {})[t] || 0), 0);
+        const byType = TYPES.map(sum);
+        return { rg, tot: byType.reduce((a,v)=>a+v,0), byType };
+      }).sort((a, b) => b.tot - a.tot);
+    }
     const grand = rows.reduce((a, r) => a + r.tot, 0);
 
     mBox.hidden = false;
     if(mNone) mNone.hidden = true;
+    /* 자료가 들어왔으니 「어디서 받나」는 «더 자세히 보려면»으로 바꿉니다 */
+    const where = document.getElementById('multi-where');
+    if(where) where.innerHTML =
+      '<b style="color:var(--ink-2)">더 자세히 보려면</b>' +
+      '<ul style="margin:5px 0 0;padding-left:16px">' +
+        '<li><b>시군별·학년별</b>은 이 자료에 없습니다 — 경상북도교육청 자료가 있어야 합니다 (자료요청 목록 우선순위 2번)</li>' +
+        '<li>유치원과 각종학교는 담지 않았습니다 — 이 화면은 초·중·고만 셉니다</li>' +
+      '</ul>' +
+      '<div style="margin-top:7px;padding-top:7px;border-top:1px dashed var(--line-2)">' +
+      '이 수치는 <b>손으로 정리해 심은 값</b>입니다. 다문화 학생 수를 주는 공개 API가 없습니다 — ' +
+      '학교알리미 공시 항목에 없고, KOSIS에는 경북 통계가 없으며, EDSS 승인 서비스에도 없습니다.' +
+      '</div>';
     mBox.innerHTML =
       `<div style="font-size:22px;font-weight:800;color:var(--brand);line-height:1.2">${fmt(grand)}<span style="font-size:13px;font-weight:600"> 명</span></div>` +
       `<div style="font-size:11.5px;color:var(--ink-3);margin-bottom:9px">${MULTI_STU.basis} 기준</div>` +
-      '<table class="data"><thead><tr><th>구분</th>' +
+      `<table class="data"><thead><tr><th>${bySchoolLevel ? '학교급' : '시군'}</th>` +
         TYPES.map(t => `<th>${t}</th>`).join('') + '<th>계</th></tr></thead><tbody>' +
       rows.map(r => '<tr>' + `<td><b>${r.rg}</b></td>` +
         r.byType.map(v => `<td>${fmt(v)}</td>`).join('') +
         `<td><b>${fmt(r.tot)}</b></td>` + '</tr>').join('') +
+      (rows.length > 1
+        ? '<tr><td><b>합계</b></td>' +
+          TYPES.map((t, i) => `<td><b>${fmt(rows.reduce((a, r) => a + r.byType[i], 0))}</b></td>`).join('') +
+          `<td><b>${fmt(grand)}</b></td></tr>`
+        : '') +
       '</tbody></table>' +
-      `<div class="spec" style="margin-top:10px">분류는 교육기본통계를 따릅니다.<span class="source">출처: ${MULTI_STU.src}</span></div>`;
+      '<div class="spec" style="margin-top:10px">' +
+        '<b>국내출생</b>·<b>중도입국</b>은 국제결혼가정 자녀이고, <b>외국인가정</b>은 부모가 모두 외국 국적인 경우입니다. ' +
+        '교육기본통계의 분류를 그대로 씁니다.<br>' +
+        `이 화면의 특수교육 수치는 <b>학교알리미 공시</b> 기준이라 조사 시점이 다릅니다 — 두 수를 견주지 않습니다.` +
+        `<span class="source">출처: ${MULTI_STU.src}</span>` +
+      '</div>';
   }
 
   /* 특수학급 «학급 수» — 학교알리미에 없는 값이라 일람표에서 심었습니다.
