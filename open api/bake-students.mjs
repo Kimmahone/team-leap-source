@@ -25,7 +25,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
-import { fetchWithTimeout } from './net.mjs';
+import { fetchWithTimeout, sawAnyResponse } from './net.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 
@@ -170,7 +170,7 @@ for (const sgg of Object.keys(SGG)) {
 }
 
 console.log(calls + '번 물어 ' + rows + '곳을 받았습니다.' + (failed ? '  (실패 ' + failed + '번)' : ''));
-if (!rows) { console.error('한 곳도 받지 못했습니다. 그만둡니다.'); process.exit(3); }
+if (!rows) { console.error('한 곳도 받지 못했습니다. 그만둡니다.'); process.exit(sawAnyResponse() ? 3 : 75); }
 
 /* --- 받은 값이 스스로 맞는지 먼저 봅니다 ---------------------------------
    합계만 맞으면 틀린 것이 안 보입니다 (마스터 함정 12번).

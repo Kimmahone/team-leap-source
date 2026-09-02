@@ -1,0 +1,179 @@
+# 공공데이터를 실제로 받아 굽고 배포하는 «본체»입니다.
+#
+# ★ 〔2026. 9. 2.〕 왜 따로 뺐는지.
+#
+#   국내 공공데이터 서버가 깃허브 러너(미국)의 IP 를 이따금 통째로 막습니다.
+#   같은 러너 안에서는 몇 번을 다시 물어도 소용이 없습니다 — IP 가 그대로라
+#   같은 벽에 막힙니다. 러너를 바꾸는 길은 «job 을 새로 여는 것» 하나뿐입니다.
+#
+#   그래서 본체를 여기 한 곳에 두고, 부르는 쪽(refresh-public-data.yml)에서
+#   필요하면 두 번 부릅니다. 두 번째는 새 러너 · 새 IP 입니다.
+#   복사해 두 벌로 만들면 반드시 갈라지므로 재사용 워크플로로 둡니다.
+
+name: 공공데이터 수집 본체
+
+on:
+  workflow_call:
+    inputs:
+      datasets:
+        description: '받을 자료 이름들. 사이를 빈칸으로 띄웁니다 (kosis schools kinder edss).'
+        required: true
+        type: string
+      round:
+        description: '몇 번째 시도인지. 커밋 글과 로그에만 씁니다.'
+        required: false
+        default: '1차'
+        type: string
+      edss_only:
+        required: false
+        default: ''
+        type: string
+      edss_url:
+        required: false
+        default: ''
+        type: string
+    outputs:
+      blocked:
+        description: '끝내 닿지 못한 자료 이름들. 비어 있으면 다 받았다는 뜻입니다.'
+        value: ${{ jobs.refresh.outputs.blocked }}
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      blocked: ${{ steps.collect.outputs.blocked }}
+    env:
+      KOSIS_API_KEY: ${{ secrets.KOSIS_API_KEY }}
+      SCHOOLINFO_API_KEY: ${{ secrets.SCHOOLINFO_API_KEY }}
+      KINDER_API_KEY: ${{ secrets.KINDER_API_KEY }}
+      # EDSS 는 API 마다 키가 다릅니다. 한 Secret 에 여러 키를 합쳐 넣지 않습니다.
+      EDSS_SCHOOL_ATTRIBUTE_API_KEY: ${{ secrets.EDSS_SCHOOL_ATTRIBUTE_API_KEY }}
+      EDSS_CLASS_STUDENT_API_KEY: ${{ secrets.EDSS_CLASS_STUDENT_API_KEY }}
+      EDSS_STUDENT_STATUS_API_KEY: ${{ secrets.EDSS_STUDENT_STATUS_API_KEY }}
+      EDSS_CLASS_STATUS_API_KEY: ${{ secrets.EDSS_CLASS_STATUS_API_KEY }}
+      EDSS_SCHOOL_LOCATION_API_KEY: ${{ secrets.EDSS_SCHOOL_LOCATION_API_KEY }}
+      EDSS_SCHOOL_OVERVIEW_API_KEY: ${{ secrets.EDSS_SCHOOL_OVERVIEW_API_KEY }}
+      EDSS_EDU_STAT_SCHOOL_OVERVIEW_API_KEY: ${{ secrets.EDSS_EDU_STAT_SCHOOL_OVERVIEW_API_KEY }}
+      EDSS_ONLY: ${{ inputs.edss_only }}
+      EDSS_URL: ${{ inputs.edss_url }}
+      PUBLIC_DATA_YEAR: ${{ vars.PUBLIC_DATA_YEAR || '2026' }}
+
+    steps:
+      - name: 저장소 가져오기
+        uses: actions/checkout@v5
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+
+      - name: 이번에 받을 것
+        run: |
+          echo "::notice::${{ inputs.round }} — 받을 자료: ${{ inputs.datasets }}"
+
+      - name: KOSIS 학령인구·장래인구 확인
+        if: contains(format(' {0} ', inputs.datasets), ' kosis ')
+        run: |
+          if [ -z "$KOSIS_API_KEY" ]; then
+            echo "::warning::KOSIS_API_KEY가 없어 KOSIS 갱신을 건너뜁니다."
+            exit 0
+          fi
+          code=0
+          node "open api/bake-kosis.mjs" || code=$?
+          bash .github/net-guard.sh kosis "$code"
+
+      - name: 학교알리미 학생·학급·좌표 확인
+        if: contains(format(' {0} ', inputs.datasets), ' schools ')
+        run: |
+          if [ -z "$SCHOOLINFO_API_KEY" ]; then
+            echo "::warning::SCHOOLINFO_API_KEY가 없어 학교알리미 갱신을 건너뜁니다."
+            exit 0
+          fi
+          code=0
+          node "open api/bake-students.mjs" "--year=$PUBLIC_DATA_YEAR" || code=$?
+          if [ "$code" = 0 ]; then node "open api/bake-special.mjs" "--year=$PUBLIC_DATA_YEAR" || code=$?; fi
+          if [ "$code" = 0 ]; then node "open api/bake-coords.mjs" || code=$?; fi
+          bash .github/net-guard.sh schools "$code"
+
+      - name: 유치원알리미 기본현황 확인
+        if: contains(format(' {0} ', inputs.datasets), ' kinder ')
+        run: |
+          if [ -z "$KINDER_API_KEY" ]; then
+            echo "::warning::KINDER_API_KEY가 없어 유치원알리미 갱신을 건너뜁니다."
+            exit 0
+          fi
+          code=0
+          node "open api/bake-kinder.mjs" || code=$?
+          bash .github/net-guard.sh kinder "$code"
+
+      # 키와 주소의 짝이 맞는지 모든 조합을 맞춰 봅니다. 인증은 되는데 404 일 때.
+      - name: EDSS 키·주소 짝 맞추기
+        if: contains(format(' {0} ', inputs.datasets), ' edss-crosscheck ')
+        run: node "open api/bake-edss.mjs" --crosscheck
+
+      # 처음 한 번은 이것부터 돌립니다. 응답 모양만 보고 값은 담지 않습니다.
+      # 만들어진 open api/data/edss-probe.json 에는 인증키도 학교 이름도 없습니다.
+      - name: EDSS 응답 모양 확인
+        if: contains(format(' {0} ', inputs.datasets), ' edss-probe ')
+        run: |
+          args=(--probe)
+          if [ -n "$EDSS_ONLY" ]; then args+=("--only=$EDSS_ONLY"); fi
+          if [ -n "$EDSS_URL" ];  then args+=("--url=$EDSS_URL"); fi
+          node "open api/bake-edss.mjs" "${args[@]}"
+
+      # 받아만 보고 대시보드는 안 고칩니다. 어느 해가 있는지 먼저 볼 때.
+      - name: EDSS 받아만 보기
+        if: contains(format(' {0} ', inputs.datasets), ' edss-dry ')
+        run: node "open api/bake-edss.mjs" --dry
+
+      # 9월에만 보면 조사연도가 늦게 열렸을 때 «한 해»를 놓칩니다.
+      # 분기 일정에도 태웁니다 — 한 번에 22번 부르는 정도라 부담이 없습니다.
+      - name: EDSS 여러 해치 학생·학급 수집
+        if: contains(format(' {0} ', inputs.datasets), ' edss ')
+        run: |
+          if ! node -e 'const a=JSON.parse(require("fs").readFileSync("open api/edss-endpoints.json","utf8")).apis;process.exit(Object.values(a).some(x=>x.url)?0:1)'; then
+            echo "::warning::edss-endpoints.json 에 요청주소가 하나도 없어 EDSS 수집을 건너뜁니다. 승인된 API 의 요청주소를 url 에 적어 주세요."
+            exit 0
+          fi
+          code=0
+          node "open api/bake-edss.mjs" || code=$?
+          bash .github/net-guard.sh edss "$code"
+
+      # 여기까지 오면 「닿지 않은 것」은 다 경고로 남았고, 진짜 탈은 이미 멈췄습니다.
+      - name: 닿지 못한 자료 모으기
+        id: collect
+        run: |
+          blocked=$(echo "${BLOCKED:-}" | xargs)      # 앞뒤 빈칸을 답니다
+          echo "blocked=$blocked" >> "$GITHUB_OUTPUT"
+          if [ -n "$blocked" ]; then
+            echo "::warning::${{ inputs.round }} 에서 닿지 못한 자료: $blocked"
+          fi
+
+      - name: 전체 품질검사와 배포본 생성
+        run: bash "./사이트 굽기.command"
+
+      - name: 검증된 데이터만 원본 저장소에 반영
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "06. 실행계획(1)/prototype/index.html" "08. 실행계획(3)/apps" "open api/data"
+          if git diff --cached --quiet; then
+            echo "공식 원자료에 변경이 없어 현재 검증본을 유지합니다."
+          else
+            git commit -m "🤖 공공데이터 정기 갱신 ($PUBLIC_DATA_YEAR)"
+            # 2차가 도는 사이에 1차가 밀어 넣었을 수 있습니다. 받아 얹고 올립니다.
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push
+            echo "::notice::검사를 통과한 공공데이터 갱신본을 반영했습니다."
+          fi
+
+      # ★ 〔2026. 9. 1.〕 예전에는 여기서 끝났습니다. 커밋은 되는데 «라이브는
+      #   그대로»였습니다. GitHub 는 기본 토큰으로 밀어 넣은 커밋으로 다른
+      #   워크플로를 켜 주지 않기 때문에, 배포를 맡던 update-news.yml 이
+      #   한 번도 걸리지 않았습니다. 여기서 직접 올립니다.
+      - name: 배포 저장소(team-leap)로 자동 푸시
+        env:
+          DEPLOY_PAT: ${{ secrets.DEPLOY_PAT }}
+        run: bash .github/deploy.sh "공공데이터 정기 갱신 반영"

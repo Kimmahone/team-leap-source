@@ -11,7 +11,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {fetchRetry} from './net.mjs';
+import {fetchRetry,exitFor} from './net.mjs';
 
 const HERE=path.dirname(fileURLToPath(import.meta.url));
 const ROOT=path.resolve(HERE,'..');
@@ -135,5 +135,5 @@ async function main(){
 }
 
 if(process.argv[1] && path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
-  main().catch(e=>{console.error('✗ '+e.message);process.exit(1);});
+  main().catch(e=>{console.error('✗ '+e.message);process.exit(exitFor(e));});
 }

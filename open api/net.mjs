@@ -22,6 +22,48 @@
    주소가 없으면(404) 백 번 물어도 같은 대답이 옵니다. 그건 사람이 고쳐야
    하는 일이라 곧바로 알립니다 — 조용히 시간만 끌면 오히려 못 알아챕니다. */
 
+/* ★ 〔2026. 9. 2.〕 재시도를 넣고도 또 죽었습니다. 까닭을 보니 이렇습니다.
+
+     05:35 실행 — 네 번 모두 «정확히 10.5초» 만에 실패
+     05:37 실행 — 같은 코드, 같은 키로 1.7초 만에 130행 정상 수신
+
+   10.5초는 연결을 기다리는 기본 제한시간입니다. 거절당한 것이 아니라
+   부르는 소리 자체가 무시된 것입니다 — 방화벽이 그 러너의 IP 를 통째로
+   버렸습니다. 그러니 «같은 러너 안에서는» 백 번을 물어도 소용이 없습니다.
+   IP 가 그대로이기 때문입니다.
+
+   그래서 이것과 「잠깐 탈이 난 것」을 갈라 놓아야 합니다.
+     · 잠깐 탈  → 여기서 다시 물어보면 됩니다.
+     · IP 차단 → 여기서는 답이 없습니다. 새 러너에서 다시 해야 합니다.
+   뒤쪽은 자료가 틀린 것도, 우리가 잘못한 것도 아닙니다. 그래서 「실패」로
+   끝내 메일을 보내는 대신, 종료코드 75 로 「닿지 않았다」고만 알립니다.
+   워크플로가 그 신호를 보고 새 러너에서 한 번 더 돌립니다. */
+export const EX_UNREACHABLE = 75;
+
+/* 이 프로세스에서 서버가 «한 번이라도» 대답했는지. 한 번도 없었다면
+   자료가 없는 게 아니라 길이 막힌 것입니다. */
+let responded = false;
+export const sawAnyResponse = () => responded;
+
+/* 「길이 막혔다」로 볼 코드들. 모두 주고받기 전에 끊긴 경우입니다. */
+const UNREACHABLE_CODES = new Set([
+  'UND_ERR_CONNECT_TIMEOUT', 'ECONNREFUSED', 'ECONNRESET', 'ENOTFOUND',
+  'EAI_AGAIN', 'ETIMEDOUT', 'EHOSTUNREACH', 'ENETUNREACH', 'EPIPE',
+  'TimeoutError', 'ConnectTimeoutError'
+]);
+
+export function isUnreachable(e) {
+  for (let c = e; c; c = c.cause) {
+    if (UNREACHABLE_CODES.has(c.code) || UNREACHABLE_CODES.has(c.name)) return true;
+  }
+  return false;
+}
+
+/* 스크립트 끝에서 부릅니다. 길이 막힌 것이면 75, 진짜 탈이면 1 입니다. */
+export function exitFor(e) {
+  return (isUnreachable(e) || !responded) ? EX_UNREACHABLE : 1;
+}
+
 /* 한 번 요청에 허용하는 시간. 학교알리미·KOSIS 는 느릴 때 20초를 넘깁니다. */
 export const TIMEOUT_MS = 45000;
 
@@ -51,8 +93,10 @@ function why(e) {
 /* 시간 제한만 걸린 fetch 입니다. 이미 제 나름의 재시도를 가진 곳
    (bake-coords · bake-students · bake-special · bake-demographics) 은
    재시도가 겹치지 않도록 이것만 씁니다. */
-export function fetchWithTimeout(url, init = {}, timeoutMs = TIMEOUT_MS) {
-  return fetch(url, { ...init, signal: AbortSignal.timeout(timeoutMs) });
+export async function fetchWithTimeout(url, init = {}, timeoutMs = TIMEOUT_MS) {
+  const res = await fetch(url, { ...init, signal: AbortSignal.timeout(timeoutMs) });
+  responded = true;                 // 대답이 왔습니다 — 길은 뚫려 있습니다
+  return res;
 }
 
 /* 시간 제한 + 재시도. 재시도가 없던 곳은 이것으로 바꿉니다.

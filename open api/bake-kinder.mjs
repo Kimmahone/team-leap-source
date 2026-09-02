@@ -39,7 +39,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { makeGeocoder, inGyeongbuk } from './kakao-geocode.mjs';
-import { fetchRetry } from './net.mjs';
+import { fetchRetry, exitFor } from './net.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const KEYFILE = path.resolve(HERE, '인증키.txt');
@@ -273,4 +273,4 @@ async function main() {
   console.log('  이어서: cd "06. 실행계획(1)/prototype" && node test.js');
 }
 
-main().catch(e => { console.error('✗ ' + e.message); process.exit(1); });
+main().catch(e => { console.error('✗ ' + e.message); process.exit(exitFor(e)); });

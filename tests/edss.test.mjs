@@ -595,7 +595,10 @@ check('to 가 바닥이라는 것을 설정에 적어 두었다',
    GitHub 는 기본 토큰으로 밀어 넣은 커밋으로 다른 워크플로를 켜 주지 않습니다.
    그래서 정기 갱신이 커밋만 하고 배포를 안 하면 «커밋은 됐는데 라이브는
    그대로»가 됩니다. 둘 다 배포까지 하는지 봅니다. */
-const wfR = fs.readFileSync(path.join(ROOT, '.github/workflows/refresh-public-data.yml'), 'utf8');
+/* 정기 갱신은 바깥과 본체 두 파일입니다. 여기서 보는 것은 「갱신 자동화가
+   이 일을 하는가」이므로 둘을 이어 붙여 한 덩이로 봅니다. */
+const wfR = fs.readFileSync(path.join(ROOT, '.github/workflows/refresh-public-data.yml'), 'utf8') +
+  '\n' + fs.readFileSync(path.join(ROOT, '.github/workflows/refresh-core.yml'), 'utf8');
 const wfN = fs.readFileSync(path.join(ROOT, '.github/workflows/update-news.yml'), 'utf8');
 check('정기 갱신이 배포까지 한다', /deploy\.sh/.test(wfR));
 check('뉴스 갱신도 배포까지 한다', /deploy\.sh/.test(wfN));
@@ -604,9 +607,10 @@ check('배포 절차가 한 곳에만 있다 (두 곳에 복사하면 갈라진�
   !/git clone .*team-leap\.git/.test(wfR) && !/git clone .*team-leap\.git/.test(wfN));
 check('배포는 구운 결과가 있을 때만 한다',
   /배포\/site/.test(fs.readFileSync(path.join(ROOT, '.github/deploy.sh'), 'utf8')));
+/* 일정을 자료 이름으로 바꾸는 자리가 이제 바깥 한 곳입니다.
+   분기 일정이 edss 를 부르지 않으면 9월에만 보게 되어 한 해를 놓칩니다. */
 check('EDSS 를 분기 일정에도 태운다 (9월에만 보면 한 해를 놓친다)',
-  /40 21 1 1,4,7,10 \*'[^\n]*inputs\.dataset == 'edss'/.test(wfR) ||
-  wfR.slice(wfR.indexOf('EDSS 여러 해치')).slice(0, 400).includes("40 21 1 1,4,7,10 *"));
+  /'40 21 1 1,4,7,10 \*'\s*&&\s*'[^']*\bedss\b[^']*'/.test(wfR));
 
 check('호출 한도를 정해 둔다 (하루 한도를 넘기면 그날은 못 받는다)',
   Number(cfg.callCap) > 0 && Number(cfg.callCap) <= 10000);
@@ -673,7 +677,7 @@ check('문서와 코드의 Secret 이름이 같다',
   Object.values(cfg.apis).every(a => plan.includes(a.secret)));
 
 /* 워크플로도 같은 이름을 넘겨야 합니다. */
-const wf = fs.readFileSync(path.join(ROOT, '.github/workflows/refresh-public-data.yml'), 'utf8');
+const wf = fs.readFileSync(path.join(ROOT, '.github/workflows/refresh-core.yml'), 'utf8');
 check('워크플로가 7개 키를 모두 넘긴다',
   Object.values(cfg.apis).every(a => wf.includes(a.secret)));
 check('워크플로에 인증키가 적혀 있지 않다', !/EDSS_[A-Z_]+_API_KEY\s*:\s*['"]?[0-9a-zA-Z%+/=]{20,}/.test(wf));

@@ -1,3 +1,17 @@
+# 언제 무엇을 받을지 정하고, 본체(refresh-core.yml)를 부릅니다.
+#
+# ★ 〔2026. 9. 2.〕 왜 두 번 부르는지.
+#
+#   국내 공공데이터 서버가 깃허브 러너의 IP 를 이따금 통째로 막습니다.
+#   부르는 소리 자체를 무시하므로 10초를 기다리다 `fetch failed` 로 끝납니다.
+#   같은 러너 안에서 다시 물어도 IP 가 그대로라 소용이 없습니다.
+#
+#   그래서 1차에서 닿지 못한 것만 골라 2차를 새 job 으로 엽니다. job 이 새로
+#   열리면 러너도 IP 도 바뀌므로 대개 그때는 됩니다. 그래도 안 되면 실패로
+#   끝내지 않고 경고만 남깁니다 — 우리가 고칠 수 있는 일이 아닌데 매달
+#   「Run failed」 메일을 보내 봐야 아무도 보지 않게 될 뿐입니다.
+#   대신 자료는 낡은 채로 남으므로 Actions 화면의 경고로 확인합니다.
+
 name: 공공데이터 정기 확인 및 갱신
 
 on:
@@ -34,117 +48,58 @@ on:
         type: string
 
 jobs:
-  refresh:
-    runs-on: ubuntu-latest
+  # 1차 — 예정대로 받아 봅니다.
+  #
+  # 일정(cron)을 자료 이름으로 바꾸는 자리가 여기 한 곳입니다. 예전에는 이
+  # 판단이 스텝마다 `if: github.event.schedule == ...` 로 흩어져 있어서,
+  # 2차에게 「이것만 다시」라고 이를 방법이 없었습니다.
+  first:
     permissions:
       contents: write
-    env:
-      KOSIS_API_KEY: ${{ secrets.KOSIS_API_KEY }}
-      SCHOOLINFO_API_KEY: ${{ secrets.SCHOOLINFO_API_KEY }}
-      KINDER_API_KEY: ${{ secrets.KINDER_API_KEY }}
-      # EDSS 는 API 마다 키가 다릅니다. 한 Secret 에 여러 키를 합쳐 넣지 않습니다.
-      EDSS_SCHOOL_ATTRIBUTE_API_KEY: ${{ secrets.EDSS_SCHOOL_ATTRIBUTE_API_KEY }}
-      EDSS_CLASS_STUDENT_API_KEY: ${{ secrets.EDSS_CLASS_STUDENT_API_KEY }}
-      EDSS_STUDENT_STATUS_API_KEY: ${{ secrets.EDSS_STUDENT_STATUS_API_KEY }}
-      EDSS_CLASS_STATUS_API_KEY: ${{ secrets.EDSS_CLASS_STATUS_API_KEY }}
-      EDSS_SCHOOL_LOCATION_API_KEY: ${{ secrets.EDSS_SCHOOL_LOCATION_API_KEY }}
-      EDSS_SCHOOL_OVERVIEW_API_KEY: ${{ secrets.EDSS_SCHOOL_OVERVIEW_API_KEY }}
-      EDSS_EDU_STAT_SCHOOL_OVERVIEW_API_KEY: ${{ secrets.EDSS_EDU_STAT_SCHOOL_OVERVIEW_API_KEY }}
-      EDSS_ONLY: ${{ inputs.edss_only }}
-      EDSS_URL: ${{ inputs.edss_url }}
-      PUBLIC_DATA_YEAR: ${{ vars.PUBLIC_DATA_YEAR || '2026' }}
-      CHOICE: ${{ inputs.dataset || 'scheduled' }}
+    uses: ./.github/workflows/refresh-core.yml
+    secrets: inherit
+    with:
+      round: '1차'
+      edss_only: ${{ inputs.edss_only }}
+      edss_url: ${{ inputs.edss_url }}
+      datasets: >-
+        ${{ inputs.dataset == 'all' && 'kosis schools kinder edss'
+         || inputs.dataset != '' && inputs.dataset
+         || github.event.schedule == '10 21 1 * *' && 'kosis'
+         || github.event.schedule == '40 21 1 1,4,7,10 *' && 'schools kinder edss'
+         || github.event.schedule == '10 22 4 9 *' && 'edss'
+         || '' }}
 
+  # 2차 — 1차에서 «닿지 못한 것»만, 새 러너에서.
+  # 1차가 다 받았으면 이 job 은 아예 열리지 않습니다.
+  second:
+    permissions:
+      contents: write
+    needs: first
+    if: needs.first.outputs.blocked != ''
+    uses: ./.github/workflows/refresh-core.yml
+    secrets: inherit
+    with:
+      round: '2차 (새 러너)'
+      datasets: ${{ needs.first.outputs.blocked }}
+      edss_only: ${{ inputs.edss_only }}
+      edss_url: ${{ inputs.edss_url }}
+
+  # 두 번을 하고도 안 됐으면 여기 한 줄로 남깁니다. 실패로는 치지 않습니다.
+  wrapup:
+    needs: [first, second]
+    if: always() && needs.first.outputs.blocked != ''
+    runs-on: ubuntu-latest
     steps:
-      - name: 저장소 가져오기
-        uses: actions/checkout@v5
-
-      - name: Node.js 설정
-        uses: actions/setup-node@v5
-        with:
-          node-version: '24'
-
-      - name: KOSIS 학령인구·장래인구 확인
-        if: github.event.schedule == '10 21 1 * *' || inputs.dataset == 'all' || inputs.dataset == 'kosis'
-        run: |
-          if [ -z "$KOSIS_API_KEY" ]; then
-            echo "::warning::KOSIS_API_KEY가 없어 KOSIS 갱신을 건너뜁니다."
-          else
-            node "open api/bake-kosis.mjs"
-          fi
-
-      - name: 학교알리미 학생·학급·좌표 확인
-        if: github.event.schedule == '40 21 1 1,4,7,10 *' || inputs.dataset == 'all' || inputs.dataset == 'schools'
-        run: |
-          if [ -z "$SCHOOLINFO_API_KEY" ]; then
-            echo "::warning::SCHOOLINFO_API_KEY가 없어 학교알리미 갱신을 건너뜁니다."
-          else
-            node "open api/bake-students.mjs" "--year=$PUBLIC_DATA_YEAR"
-            node "open api/bake-special.mjs" "--year=$PUBLIC_DATA_YEAR"
-            node "open api/bake-coords.mjs"
-          fi
-
-      - name: 유치원알리미 기본현황 확인
-        if: github.event.schedule == '40 21 1 1,4,7,10 *' || inputs.dataset == 'all' || inputs.dataset == 'kinder'
-        run: |
-          if [ -z "$KINDER_API_KEY" ]; then
-            echo "::warning::KINDER_API_KEY가 없어 유치원알리미 갱신을 건너뜁니다."
-          else
-            node "open api/bake-kinder.mjs"
-          fi
-
-      # 처음 한 번은 이것부터 돌립니다. 응답 모양만 보고 값은 담지 않습니다.
-      # 만들어진 open api/data/edss-probe.json 에는 인증키도 학교 이름도 없습니다.
-      # 키와 주소의 짝이 맞는지 모든 조합을 맞춰 봅니다. 인증은 되는데 404 일 때.
-      - name: EDSS 키·주소 짝 맞추기
-        if: inputs.dataset == 'edss-crosscheck'
-        run: node "open api/bake-edss.mjs" --crosscheck
-
-      - name: EDSS 응답 모양 확인
-        if: inputs.dataset == 'edss-probe'
-        run: |
-          args=(--probe)
-          if [ -n "$EDSS_ONLY" ]; then args+=("--only=$EDSS_ONLY"); fi
-          if [ -n "$EDSS_URL" ];  then args+=("--url=$EDSS_URL"); fi
-          node "open api/bake-edss.mjs" "${args[@]}"
-
-      # 받아만 보고 대시보드는 안 고칩니다. 어느 해가 있는지 먼저 볼 때.
-      - name: EDSS 받아만 보기
-        if: inputs.dataset == 'edss-dry'
-        run: node "open api/bake-edss.mjs" --dry
-
-      # 9월에만 보면 조사연도가 늦게 열렸을 때 «한 해»를 놓칩니다.
-      # 분기 일정에도 태웁니다 — 한 번에 22번 부르는 정도라 부담이 없습니다.
-      - name: EDSS 여러 해치 학생·학급 수집
-        if: github.event.schedule == '10 22 4 9 *' || github.event.schedule == '40 21 1 1,4,7,10 *' || inputs.dataset == 'all' || inputs.dataset == 'edss'
-        run: |
-          if node -e 'const a=JSON.parse(require("fs").readFileSync("open api/edss-endpoints.json","utf8")).apis;process.exit(Object.values(a).some(x=>x.url)?0:1)'; then
-            node "open api/bake-edss.mjs"
-          else
-            echo "::warning::edss-endpoints.json 에 요청주소가 하나도 없어 EDSS 수집을 건너뜁니다. 승인된 API 의 요청주소를 url 에 적어 주세요."
-          fi
-
-      - name: 전체 품질검사와 배포본 생성
-        run: bash "./사이트 굽기.command"
-
-      - name: 검증된 데이터만 원본 저장소에 반영
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add "06. 실행계획(1)/prototype/index.html" "08. 실행계획(3)/apps" "open api/data"
-          if git diff --cached --quiet; then
-            echo "공식 원자료에 변경이 없어 현재 검증본을 유지합니다."
-          else
-            git commit -m "🤖 공공데이터 정기 갱신 ($PUBLIC_DATA_YEAR)"
-            git push
-            echo "::notice::검사를 통과한 공공데이터 갱신본을 반영했습니다."
-          fi
-
-      # ★ 〔2026. 9. 1.〕 예전에는 여기서 끝났습니다. 커밋은 되는데 «라이브는
-      #   그대로»였습니다. GitHub 는 기본 토큰으로 밀어 넣은 커밋으로 다른
-      #   워크플로를 켜 주지 않기 때문에, 배포를 맡던 update-news.yml 이
-      #   한 번도 걸리지 않았습니다. 여기서 직접 올립니다.
-      - name: 배포 저장소(team-leap)로 자동 푸시
+      - name: 아직도 닿지 못한 것
+        # 셸 변수 이름과 값은 env 로 건넵니다. 따옴표 사고를 막습니다.
         env:
-          DEPLOY_PAT: ${{ secrets.DEPLOY_PAT }}
-        run: bash .github/deploy.sh "공공데이터 정기 갱신 반영"
+          STILL_BLOCKED: ${{ needs.second.outputs.blocked }}
+          FIRST_BLOCKED: ${{ needs.first.outputs.blocked }}
+        run: |
+          if [ -n "$STILL_BLOCKED" ]; then
+            echo "::warning::두 러너 모두에서 닿지 못했습니다: $STILL_BLOCKED"
+            echo "  자료는 지금 있는 것을 그대로 두었습니다. 잠시 뒤 이 워크플로를 손으로 한 번 더 돌려 보세요."
+          else
+            echo "::notice::1차에서 막혔던 '$FIRST_BLOCKED' 를 2차에서 받았습니다."
+          fi

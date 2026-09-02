@@ -27,7 +27,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
-import { fetchWithTimeout } from './net.mjs';
+import { fetchWithTimeout, sawAnyResponse } from './net.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 
@@ -131,7 +131,7 @@ for (const sgg of Object.keys(SGG)) {
   }
 }
 console.log(calls + '번 물어 ' + rows + '곳의 좌표를 받았습니다.');
-if (!rows) { console.error('좌표를 하나도 받지 못했습니다. 그만둡니다.'); process.exit(3); }
+if (!rows) { console.error('좌표를 하나도 받지 못했습니다. 그만둡니다.'); process.exit(sawAnyResponse() ? 3 : 75); }
 
 /* 앱 안의 목록에 붙인다 — 이름|급|주소[|위도|경도] */
 const KNAME = { e: '초등학교', m: '중학교', h: '고등학교' };

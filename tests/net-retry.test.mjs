@@ -5,7 +5,7 @@
      그래서 여기서는 진짜 서버를 하나 띄워 놓고, 일부러 몇 번 넘어뜨립니다. */
 
 import http from 'node:http';
-import { fetchRetry } from '../open api/net.mjs';
+import { fetchRetry, isUnreachable, exitFor, sawAnyResponse, EX_UNREACHABLE } from '../open api/net.mjs';
 
 let pass = 0, fail = 0;
 const check = (name, ok) => { if (ok) pass++; else { fail++; console.error('✗ ' + name); } };
@@ -93,6 +93,25 @@ function serve(handler) {
   const res = await fetchRetry(s.url, {}, { tries: 2, baseDelay: 10, say: quiet });
   check('끝까지 500 이면 500 을 그대로 돌려준다', res.status === 500);
   await s.close();
+}
+
+/* ⑦ 「길이 막힌 것」과 「진짜 탈」을 갈라야 워크플로가 판단할 수 있습니다.
+      막힌 것이면 75 로 끝내고 새 러너에서 다시 합니다. 이것을 1 로 끝내면
+      고칠 수도 없는 일로 매달 실패 메일이 옵니다. */
+{
+  const blocked = new Error('fetch failed', { cause: { code: 'UND_ERR_CONNECT_TIMEOUT' } });
+  const dns = new Error('fetch failed', { cause: { code: 'ENOTFOUND' } });
+  const real = new Error('KOSIS 오류 30: 인증키가 유효하지 않습니다');
+
+  check('연결 제한시간은 「막힘」으로 본다', isUnreachable(blocked));
+  check('주소를 못 찾는 것도 「막힘」', isUnreachable(dns));
+  check('내용이 틀린 것은 「막힘」이 아니다', !isUnreachable(real));
+  check('막힘은 75 로 끝낸다', exitFor(blocked) === EX_UNREACHABLE && EX_UNREACHABLE === 75);
+
+  /* 앞의 검사들에서 서버가 여러 번 대답했으므로 길은 뚫려 있습니다.
+     그러니 내용 오류는 그냥 실패(1) 여야 합니다. */
+  check('한 번이라도 대답을 받았다', sawAnyResponse());
+  check('길이 뚫려 있으면 내용 오류는 실패(1)', exitFor(real) === 1);
 }
 
 console.log(`✓  통과 ${pass} · 실패 ${fail}`);

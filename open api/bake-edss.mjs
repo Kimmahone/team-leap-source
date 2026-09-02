@@ -29,7 +29,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { fetchRetry } from './net.mjs';
+import { fetchRetry, exitFor, sawAnyResponse } from './net.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '..');
@@ -1323,7 +1323,7 @@ async function main() {
         (ys.length > 1 ? ys[0] + '~' + ys[ys.length - 1] : ys[0]));
     }
   }
-  if (!all.length) { cry('한 행도 받지 못했습니다. 아무것도 고치지 않았습니다.'); process.exit(4); }
+  if (!all.length) { cry('한 행도 받지 못했습니다. 아무것도 고치지 않았습니다.'); process.exit(sawAnyResponse() ? 4 : 75); }
 
   const agg = aggregate(all);
   const rates = declineRates(agg);
@@ -1393,5 +1393,5 @@ async function main() {
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  main().catch(e => { console.error('✗ ' + e.message); process.exit(1); });
+  main().catch(e => { console.error('✗ ' + e.message); process.exit(exitFor(e)); });
 }
