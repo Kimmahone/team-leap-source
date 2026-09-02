@@ -31,6 +31,23 @@ const RETRYABLE_STATUS = new Set([408, 425, 429, 500, 502, 503, 504]);
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+/* `fetch failed` 다섯 글자만 남으면 무엇이 문제인지 알 수가 없습니다.
+   진짜 까닭은 e.cause 안에 코드로 들어 있습니다.
+     ECONNREFUSED     — 문은 찾았는데 안 열어 줍니다
+     ENOTFOUND        — 주소를 못 찾습니다 (DNS)
+     UND_ERR_CONNECT_TIMEOUT — 부르는데 대답조차 없습니다. 10초.
+       ★ 이게 나오면 방화벽이 우리 IP 를 통째로 무시하고 있다는 뜻입니다.
+         깃허브 러너(미국)에서 국내 공공데이터를 부를 때 이따금 이렇습니다.
+         재시도해도 같은 러너·같은 IP 라 소용이 없습니다. */
+function why(e) {
+  const parts = [];
+  for (let c = e; c; c = c.cause) {
+    const tag = c.code || c.name || c.message;
+    if (tag && !parts.includes(tag)) parts.push(tag);
+  }
+  return parts.join(' ← ') || String(e);
+}
+
 /* 시간 제한만 걸린 fetch 입니다. 이미 제 나름의 재시도를 가진 곳
    (bake-coords · bake-students · bake-special · bake-demographics) 은
    재시도가 겹치지 않도록 이것만 씁니다. */
@@ -61,12 +78,12 @@ export async function fetchRetry(url, init = {}, opts = {}) {
       lastErr = e;
       if (i === tries - 1) break;
       /* AbortSignal.timeout 은 TimeoutError 라는 이름으로 옵니다. */
-      const why = e.name === 'TimeoutError' ? `${timeoutMs / 1000}초 안에 대답이 없습니다` : e.message;
-      say(`${why} — ${i + 1}번째, 쉬었다가 다시 물어봅니다`);
+      const said = e.name === 'TimeoutError' ? `${timeoutMs / 1000}초 안에 대답이 없습니다` : why(e);
+      say(`${said} — ${i + 1}번째, 쉬었다가 다시 물어봅니다`);
     }
   }
   /* 몇 번을 물어도 안 됐다면 그때는 진짜 탈입니다. 그대로 알립니다. */
-  throw new Error(`${tries}번 물어봤지만 닿지 않았습니다: ${lastErr && lastErr.message}`, { cause: lastErr });
+  throw new Error(`${tries}번 물어봤지만 닿지 않았습니다: ${lastErr ? why(lastErr) : '까닭을 모릅니다'}`, { cause: lastErr });
 }
 
 /* 받아서 JSON 으로 풀기까지 한 번에. 대부분의 부르는 자리가 이 모양입니다. */
