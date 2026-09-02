@@ -58,7 +58,8 @@ export function bake(){
         const lv  = reg[r.level] || (reg[r.level] = {});
         lv[r.type] = (lv[r.type] || 0) + (Number(r.students) || 0);
       }
-      data = { year, basis: year + '. 4. 1.', src: '교육통계 · 도교육청 정리',
+      data = { year, basis: year + '. 4. 1.',
+               src: '교육통계연보(한국교육개발원) 「다문화학생 현황」',
                region: byRegion, file: path.basename(csv) };
     }
   }
