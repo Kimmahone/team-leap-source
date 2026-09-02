@@ -28,6 +28,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { fetchRetry } from './net.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const KEYFILE = path.resolve(HERE, '인증키.txt');
@@ -75,7 +76,7 @@ export function makeGeocoder(opts = {}) {
 
   async function ask(query) {
     const url = 'https://dapi.kakao.com/v2/local/search/address.json?query=' + encodeURIComponent(query);
-    const res = await fetch(url, { headers: { Authorization: 'KakaoAK ' + key } });
+    const res = await fetchRetry(url, { headers: { Authorization: 'KakaoAK ' + key } });
     if (res.status === 401 || res.status === 403) {
       const body = await res.text();
       throw new Error('카카오 열쇠가 거부됐습니다 (' + res.status + '): ' + body.slice(0, 160) +

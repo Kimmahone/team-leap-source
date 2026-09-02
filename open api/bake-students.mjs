@@ -25,6 +25,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
+import { fetchWithTimeout } from './net.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 
@@ -112,7 +113,7 @@ const ALIAS = {
 
 async function once(url) {
   if (USE_CURL) return JSON.parse(execFileSync('curl', ['-s', '--max-time', '60', url], { encoding: 'utf8' }));
-  const res = await fetch(url);
+  const res = await fetchWithTimeout(url);
   return res.json();
 }
 /* 한 번 실패했다고 그 시군을 통째로 버리지 않습니다. 세 번까지 다시 물어봅니다. */

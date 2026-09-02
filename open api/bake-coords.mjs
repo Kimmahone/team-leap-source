@@ -27,6 +27,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
+import { fetchWithTimeout } from './net.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 
@@ -88,7 +89,7 @@ const KND = { '02': 'e', '03': 'm', '04': 'h', '05': 's' };   // 초 · 중 · �
 
 async function once(url) {
   if (USE_CURL) return JSON.parse(execFileSync('curl', ['-s', '--max-time', '60', url], { encoding: 'utf8' }));
-  const res = await fetch(url);
+  const res = await fetchWithTimeout(url);
   return res.json();
 }
 

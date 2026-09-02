@@ -11,6 +11,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {fetchRetry} from './net.mjs';
 
 const HERE=path.dirname(fileURLToPath(import.meta.url));
 const ROOT=path.resolve(HERE,'..');
@@ -47,7 +48,7 @@ async function query(key,params){
   const url=new URL('https://kosis.kr/openapi/Param/statisticsParameterData.do');
   const all={method:'getList',apiKey:key,format:'json',jsonVD:'Y',charEncoding:'utf-8',...params};
   Object.entries(all).forEach(([k,v])=>url.searchParams.set(k,String(v)));
-  const res=await fetch(url,{headers:{Accept:'application/json'}});
+  const res=await fetchRetry(url,{headers:{Accept:'application/json'}});
   if(!res.ok) throw new Error(`KOSIS HTTP ${res.status}`);
   const data=await res.json();
   if(!Array.isArray(data)) throw new Error(`KOSIS 오류 ${data.err||''}: ${data.errMsg||'알 수 없는 응답'}`);

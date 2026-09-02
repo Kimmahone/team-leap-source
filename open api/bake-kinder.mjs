@@ -39,6 +39,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { makeGeocoder, inGyeongbuk } from './kakao-geocode.mjs';
+import { fetchRetry } from './net.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const KEYFILE = path.resolve(HERE, '인증키.txt');
@@ -113,7 +114,7 @@ const num = v => { const n = parseInt(v, 10); return Number.isFinite(n) ? n : 0;
 
 async function fetchSgg(endpoint, code, sig) {
   const url = `https://e-childschoolinfo.moe.go.kr/api/notice/${endpoint}.do?key=${KEY}&sidoCode=47&sggCode=${code}`;
-  const res = await fetch(url);
+  const res = await fetchRetry(url);
   if (!res.ok) throw new Error(`${sig}(${code}) — HTTP ${res.status}`);
   const data = await res.json();
   return {status:data.status, message:data.message || '', rows:Array.isArray(data.kinderInfo) ? data.kinderInfo : []};

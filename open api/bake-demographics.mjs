@@ -17,6 +17,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
+import { fetchWithTimeout } from './net.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 
@@ -87,7 +88,7 @@ async function fetchOnce(url) {
     const out = execFileSync('curl', ['-s', '-k', '--max-time', '60', url], { encoding: 'utf8' });
     return JSON.parse(out);
   }
-  const res = await fetch(url);
+  const res = await fetchWithTimeout(url);
   return res.json();
 }
 

@@ -39,6 +39,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { makeGeocoder, inGyeongbuk } from './kakao-geocode.mjs';
+import { fetchWithTimeout } from './net.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const KEYFILE = path.resolve(HERE, '인증키.txt');
@@ -111,7 +112,7 @@ async function ask(url) {
   let last;
   for (let i = 0; i < 3; i++) {
     try {
-      const res = await fetch(url);
+      const res = await fetchWithTimeout(url);
       return await res.json();
     } catch (e) { last = e; await new Promise(r => setTimeout(r, 1200)); }
   }

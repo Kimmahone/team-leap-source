@@ -29,6 +29,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { fetchRetry } from './net.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '..');
@@ -835,7 +836,7 @@ export function buildRequest(key, params, way) {
 }
 
 async function callOnce(url, key, params, way, secrets) {
-  const res = await fetch(url, buildRequest(key, params, way));
+  const res = await fetchRetry(url, buildRequest(key, params, way));
   const text = await res.text();
   let json = null;
   try { json = JSON.parse(text); } catch (e) { /* JSON 이 아니면 아래에서 글로 봅니다 */ }
