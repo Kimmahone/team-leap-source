@@ -970,7 +970,7 @@ body.map-maxed{overflow:hidden}
       <!-- 좌측 요약 -->
       <div id="home-side">
         <div class="card" id="home-summary-card">
-          <h2>경북 학령인구 현황</h2>
+          <h2>경북 학령인구 현황<span class="asof" id="asof-homepop"></span></h2>
           <div class="stat-row">
             <div class="stat"><div class="k">초등학교</div><div class="v">100</div><div class="u">천 명</div></div>
             <div class="stat"><div class="k">중학교</div><div class="v">64</div><div class="u">천 명</div></div>
@@ -990,7 +990,7 @@ body.map-maxed{overflow:hidden}
         <div class="card" id="home-news-card">
           <div style="display:flex;align-items:center;justify-content:space-between">
             <h2>주간 AI 뉴스 요약</h2>
-            <span style="font-size:10.5px;background:var(--card-2);padding:2px 6px;border-radius:4px;color:var(--ink-3)">구울 때 갱신</span>
+            <span class="asof" id="asof-homenews"></span>
           </div>
           <!-- ★ 〔2026. 8. 12.〕 여기 있던 것은 **전부 손으로 적은 것**이었습니다 —
                「보도 12건 수집 완료 · 적정규모화 4건 · 통학 지원 3건」이라는 숫자도,
@@ -1010,7 +1010,7 @@ body.map-maxed{overflow:hidden}
              └──────────────────────────────────────────────────────────┘ -->
 
         <div class="card" id="home-kpi-card">
-          <h2>학령인구 지표</h2>
+          <h2>학령인구 지표<span class="asof" id="asof-homekpi"></span></h2>
           <div class="kpi">
             <div class="box"><div class="k">학교당 평균 학생 수</div><div class="v" id="kpi-per-school">–</div></div>
             <div class="box"><div class="k">학급당 평균 학생 수</div><div class="v" id="kpi-per-class">–</div></div>
@@ -1023,7 +1023,7 @@ body.map-maxed{overflow:hidden}
       <!-- 지도 -->
       <div>
         <div class="card" id="home-map-card">
-          <h2>시군별 분포</h2>
+          <h2>시군별 분포<span class="asof" id="asof-homemap"></span></h2>
           <!-- 크게 보기를 «끄는» 길이 Esc 하나뿐이면 아무도 찾지 못합니다.
                도구줄의 「지도 작게」는 다른 단추 사이에 묻힙니다. -->
           <button type="button" class="map-close no-print" id="map-close" hidden>✕ 닫기</button>
@@ -1207,6 +1207,8 @@ body.map-maxed{overflow:hidden}
       <span class="desc">과거 · 현재 · 미래 비교</span>
     </div>
 
+    <details class="src-box" id="src-status" style="margin-bottom:14px"></details>
+
     <div class="card">
       <div class="map-toolbar" style="margin-bottom:16px">
         <button type="button" class="chip" id="ds-pop" aria-pressed="true">경북 학령인구</button>
@@ -1214,7 +1216,7 @@ body.map-maxed{overflow:hidden}
         <span class="map-note" id="ds-note"></span>
       </div>
 
-      <h2 id="chart-title">경북 학령인구(6~18세) 변동현황</h2>
+      <h2 style="display:flex;align-items:center;gap:8px"><span id="chart-title">경북 학령인구(6~18세) 변동현황</span><span class="asof" id="asof-status"></span></h2>
 
       <div class="era-row">
         <div class="era">
@@ -1309,9 +1311,11 @@ body.map-maxed{overflow:hidden}
       <span class="desc">학령인구 감소 관련 보도 및 AI 주간 브리핑</span>
     </div>
 
+    <details class="src-box" id="src-news" style="margin-bottom:14px"></details>
+
     <div class="card">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-        <h2>AI 주간 브리핑 & 뉴스 히스토리</h2>
+        <h2>AI 주간 브리핑 &amp; 뉴스 히스토리<span class="asof" id="asof-news"></span></h2>
       </div>
       
       <!-- ★ 〔2026. 8. 12.〕 이 단추 셋은 **아무 데도 붙어 있지 않았습니다.**
@@ -1327,7 +1331,7 @@ body.map-maxed{overflow:hidden}
           <option value="전체">전체 주제</option><option>통폐합·적정규모</option><option>교육재정</option>
           <option>교원·정원</option><option>통학·돌봄</option><option>지역소멸·인구</option><option>교육혁신·특구</option>
         </select>
-        <span class="map-note" title="새 기사는 기존 분류 기준에 따라 태깅됩니다. 주제 목록은 자동으로 늘어나지 않습니다.">고정 주제 분류</span>
+        <span class="map-note" id="news-asof"></span>
         <span id="news-count" style="margin-left:auto; font-size:12px; color:var(--ink-3);"></span>
       </div>
 
@@ -1359,10 +1363,12 @@ body.map-maxed{overflow:hidden}
       <span class="desc">시군·학교급별 현재와 모의 전망 비교</span>
     </div>
 
+    <details class="src-box" id="src-sim" style="margin-bottom:14px"></details>
+
     <div class="sim-wrap">
       <!-- 조회군 필터 -->
       <div class="card">
-        <h2>기준연도 2026 · 비교 조건</h2>
+        <h2>기준연도 2026 · 비교 조건<span class="asof" id="asof-sim"></span></h2>
         <p style="margin:-4px 0 6px;color:var(--ink-3);font-size:11.5px;line-height:1.55">공개된 시군·학교급 집계만 사용합니다. 선택 조건은 기준자료와 모의자료에 함께 적용됩니다.</p>
 
         <div class="filter-group">
@@ -1596,12 +1602,13 @@ body.map-maxed{overflow:hidden}
     </div>
 
     <div id="closed-body" hidden>
+      <details class="src-box" id="src-closed" style="margin-bottom:14px"></details>
       <div class="kpi" id="closed-kpi"></div>
 
       <div style="display:grid; grid-template-columns:2fr 1fr; gap:20px; margin-top:16px;">
         <div>
           <div class="card">
-            <h2>시군별 폐교 수</h2>
+            <h2>시군별 폐교 수<span class="asof" id="asof-closed1"></span></h2>
             <div id="closed-bars"></div>
             <div class="spec" style="margin-top:14px">
               막대 색은 <b>지금 어떻게 쓰이는지</b>를 나눕니다 —
@@ -1612,14 +1619,14 @@ body.map-maxed{overflow:hidden}
           </div>
 
           <div class="card">
-            <h2>언제 문을 닫았나</h2>
+            <h2>언제 문을 닫았나<span class="asof" id="asof-closed2"></span></h2>
             <div id="closed-years"></div>
           </div>
         </div>
 
         <div style="display:flex; flex-direction:column; gap:20px;">
           <div class="card">
-            <h2 style="font-size:14px; color:var(--ink-3); margin-bottom:12px;">지금 어떻게 쓰이나</h2>
+            <h2 style="font-size:14px; color:var(--ink-3); margin-bottom:12px;">지금 어떻게 쓰이나<span class="asof" id="asof-closed4"></span></h2>
             <div id="closed-use"></div>
           </div>
           <div class="card">
@@ -1635,7 +1642,7 @@ body.map-maxed{overflow:hidden}
       </div>
 
       <div class="card">
-        <h2>폐교 목록</h2>
+        <h2>폐교 목록<span class="asof" id="asof-closed3"></span></h2>
         <div class="map-toolbar" style="margin-bottom:10px">
           <label class="sr-only" for="closed-filter-sig">시군</label>
           <select id="closed-filter-sig" class="select"><option value="">시군 전체</option></select>
@@ -5878,6 +5885,111 @@ function renderClosedList(){
 });
 
 /* =========================================================
+   7-D. 어디서 온 수인가 — 기준일 배지와 자료 표
+   〔2026. 9. 3.〕
+
+   ★ 왜 모든 화면에 다나
+     여기 나오는 수는 «누가 넣은 값»이 아니라 공개자료에서 받아 온 것입니다.
+     그런데 화면만 보면 그것을 알 길이 없었습니다. 기준일도 자료마다 다릅니다 —
+     학교알리미는 공시 시점, 교육통계는 4월 1일, 폐교는 또 다른 시점입니다.
+     그래서 «카드마다 기준일 배지», «화면마다 접어 둔 자료 표» 둘을 답니다.
+
+     나중에 백엔드로 옮길 때도 이 표가 곧 «무엇을 어디서 받아야 하는가»의 목록입니다.
+
+   ★ 값을 코드에 적지 않습니다
+     기준일과 출처는 구운 자료(SPED_PLACE·MULTI_STU·CLOSED·EDSS…)에서 읽습니다.
+     자료를 새로 심으면 화면 표기도 저절로 따라갑니다. 손으로 적으면 조용히 낡습니다.
+   ========================================================= */
+
+const ALLIMI_ASOF = '2026 공시';          // 학교알리미 공시 기준연도
+const ALLIMI_SRC  = '학교알리미 (schoolinfo.go.kr)';
+
+function setAsof(id, text){
+  const el = document.getElementById(id);
+  if(el) el.textContent = text || '';
+}
+
+/* 표 한 장 만들기 — [무엇, 기준일, 출처] 줄들 */
+function srcTable(el, rows, note){
+  if(!el) return;
+  el.innerHTML =
+    '<summary>이 화면의 자료는 어디서 왔나 · 언제 것인가</summary>' +
+    '<table class="src-tbl"><thead><tr><th>무엇</th><th>기준일</th><th>출처</th></tr></thead><tbody>' +
+    rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('') +
+    '</tbody></table>' +
+    (note ? `<p style="margin:10px 0 0;font-size:12px;line-height:1.7;color:var(--ink-2)">${note}</p>` : '');
+}
+
+/* 뉴스는 «가장 최근 기사»가 곧 기준일입니다.
+   ★ 뉴스 코드는 IIFE 안에 있어 NEWS_ALL·readBakedNews 를 밖에서 볼 수 없습니다.
+     그래서 심어 둔 JSON(<script id="news-data">)을 여기서 직접 읽습니다.
+     남의 안쪽을 들여다보지 않으니 그쪽이 바뀌어도 여기가 깨지지 않습니다. */
+function newsAsof(){
+  try{
+    const tag = document.getElementById('news-data');
+    if(!tag) return '';
+    const list = JSON.parse(tag.textContent || '[]');
+    if(!Array.isArray(list) || !list.length) return '';
+    /* 정렬을 믿지 않고 가장 늦은 날짜를 고릅니다 */
+    let best = 0;
+    for(const n of list){
+      const t = new Date(n && n.pubDate).getTime();
+      if(!isNaN(t) && t > best) best = t;
+    }
+    if(!best) return '';
+    const d = new Date(best);
+    return `${d.getFullYear()}. ${d.getMonth() + 1}. ${d.getDate()}.`;
+  }catch(_e){ return ''; }
+}
+
+function renderProvenance(){
+  const nAsof = newsAsof();
+
+  /* ── 종합 대시보드 ── */
+  setAsof('asof-homepop',  ALLIMI_ASOF);
+  setAsof('asof-homekpi',  ALLIMI_ASOF);
+  setAsof('asof-homemap',  ALLIMI_ASOF);
+  setAsof('asof-homenews', nAsof ? nAsof + ' 기준' : '');
+
+  /* ── 학령인구 현황 ── */
+  setAsof('asof-status', 'KOSIS · ' + ALLIMI_ASOF);
+  srcTable(document.getElementById('src-status'), [
+    ['학령인구 (6~18세)', '2016~2025 실적 · 2026~ 장래추계', 'KOSIS 주민등록인구·장래인구추계'],
+    ['재학생 수', ALLIMI_ASOF, ALLIMI_SRC]
+  ], '<b>학령인구와 재학생 수는 범위가 다릅니다.</b> 학령인구는 그 나이대 «주민»이고, 재학생은 경북 학교에 «다니는» 학생입니다.');
+
+  /* ── 시뮬레이터 ── */
+  const edssSpan = (typeof EDSS !== 'undefined' && EDSS && EDSS.first)
+    ? (EDSS.first + '~' + EDSS.last) : '미확보';
+  setAsof('asof-sim', ALLIMI_ASOF);
+  srcTable(document.getElementById('src-sim'), [
+    ['기준 학생·학급·학교 수', ALLIMI_ASOF, ALLIMI_SRC],
+    ['학년별 진급 실적', edssSpan, '교육통계(EDSS)'],
+    ['모의 전망', '—', '위 실적에서 잰 진급률로 굴린 값']
+  ], '<b>모의 전망은 공식 예측이 아닙니다.</b> 지역 간 이동을 반영하지 않으며, 학교 개편 판단의 근거로 쓸 수 없습니다.');
+
+  /* ── 뉴스 클리핑 ── */
+  setAsof('asof-news', nAsof ? nAsof + ' 기준' : '');
+  setAsof('news-asof', nAsof ? `가장 최근 기사 ${nAsof}` : '');
+  srcTable(document.getElementById('src-news'), [
+    ['기사 목록', nAsof ? nAsof + ' 까지' : '수집분', '네이버 뉴스 검색 API (자동 수집)'],
+    ['주제 분류', '—', '기존 6개 주제로 분류 (새 주제가 저절로 늘지 않습니다)'],
+    ['주간 브리핑', nAsof || '—', '수집한 기사를 세어 만든 요약']
+  ], '기사 하나가 여러 주제에 걸칠 수 있어 <b>주제별 합이 건수보다 클 수 있습니다.</b>');
+
+  /* ── 폐교 ── */
+  if(typeof CLOSED !== 'undefined' && CLOSED && CLOSED.total){
+    ['asof-closed1','asof-closed2','asof-closed3','asof-closed4']
+      .forEach(id => setAsof(id, CLOSED.basis));
+    srcTable(document.getElementById('src-closed'), [
+      ['폐교 목록 · 활용현황 · 폐교연도', CLOSED.basis, CLOSED.src],
+      ['시군', CLOSED.basis, '주소에서 읽음 (자료에 시군 열이 없습니다)']
+    ], '이 자료에는 <b>주소만 있고 위경도가 없어</b> 지도는 시군 단위로만 그립니다. ' +
+       '없는 좌표를 시군 중심으로 대신하지 않습니다.');
+  }
+}
+
+/* =========================================================
    8. 초기화
    ========================================================= */
 applyEdssWording();
@@ -5890,6 +6002,7 @@ renderPaxPyramid();
 renderHomeInsight();
 renderMulti();
 renderClosed();
+renderProvenance();
 showView(location.hash.slice(1) || 'home');
 
 /* 종합 대시보드는 «실제 위치 지도»로 시작합니다.
