@@ -837,6 +837,14 @@ body.map-maxed{overflow:hidden}
    · 인쇄(@media print)와 좁은 화면(max-width:720px)도 함께 확인합니다.
    · 파일 전체 포매터는 돌리지 않습니다. 4,600줄이 통째로 충돌합니다.       */
 
+/* 기준일 배지 — 카드 제목 오른쪽에 «언제 것인가»를 한 눈에.
+   이 화면은 2025년 자료와 2026년 자료가 섞여 있어, 어느 카드가 언제 것인지
+   글로 설명하면 길어집니다. 배지 하나면 됩니다. */
+.asof{margin-left:auto;flex:none;font-size:11px;font-weight:600;color:var(--ink-3);
+  background:var(--bg);border:1px solid var(--line-2);border-radius:999px;padding:2px 9px;
+  letter-spacing:-.01em}
+.card h2 .asof{margin-top:1px}
+
 /* 여기부터 씁니다 ↓ */
 
 /* ── 디자인팀 구역 끝 ── */
@@ -1498,76 +1506,60 @@ body.map-maxed{overflow:hidden}
            **다문화는 자료가 없습니다.** 그래서 지어내지 않고 «없다»고 적습니다. -->
     <div class="page-head">
       <h1>다문화 및 특수교육 모니터링</h1>
-      <span class="desc">특수교육 — 학교알리미 2026 공시 · 다문화 — 교육통계연보 2025. 4. 1.</span>
+      <span class="desc">카드마다 <b>기준일</b>이 다릅니다 — 오른쪽 위 표시를 보세요</span>
     </div>
 
-    <!-- ★ 무엇을 세고 «무엇이 빠졌는지»를 먼저 적습니다.
-         특수교육 배치는 셋(특수학교·특수학급·일반학급 완전통합)인데
-         공시 자료로 셀 수 있는 것은 앞의 둘뿐입니다.
-         「특수교육 대상자」라고 적으면 실제보다 적은 수를 그 이름으로 부르게 됩니다. -->
-    <div class="spec" id="sped-scope" style="margin-bottom:14px"></div>
+    <!-- 자료 설명은 «접어» 둡니다. 화면에는 그림과 수를 두고,
+         「무엇을 어디서 언제」는 필요할 때 펴서 봅니다.
+         자세한 사정은 06. 실행계획(1)/다문화_특수교육_화면의_자료설명.md -->
+    <details class="src-box" id="sped-scope" style="margin-bottom:14px"></details>
 
     <div class="kpi" id="sped-kpi"></div>
 
     <div style="display:grid; grid-template-columns:2fr 1fr; gap:20px; margin-top:16px;">
       <div>
         <div class="card">
-          <h2>학교급별 — 어디에 몰려 있는가</h2>
+          <h2>학교급별 — 어디에 몰려 있는가<span class="asof" id="asof-bylevel"></span></h2>
           <div id="sped-bylevel"></div>
         </div>
 
         <!-- 특수학급 «학급 수»는 학교알리미가 주지 않습니다.
              경상북도교육청 「각급학교 일람표」에서 뽑아 심습니다(기준일이 다릅니다). -->
         <div class="card" id="sped-class-card">
-          <h2>특수학급은 몇 학급인가</h2>
+          <h2>특수학급은 몇 학급인가<span class="asof" id="asof-classes"></span></h2>
           <div id="sped-classes"></div>
         </div>
 
         <div class="card">
-          <h2>시군별 특수학교·특수학급 학생</h2>
+          <h2>시군별 특수학교·특수학급 학생<span class="asof" id="asof-sig"></span></h2>
           <div id="sped-bars"></div>
-          <div class="spec" style="margin-top:14px">
-            <b>막대 두 색이 다른 것을 말합니다</b> — 짙은 쪽은 <b>특수학교</b>에 다니는 학생,
-            옅은 쪽은 <b>일반학교 특수학급</b>에 다니는 학생입니다.
-            특수학교는 경북에 8곳뿐이라 그 시군에만 짙은 막대가 섭니다.
+          <div class="legend" style="margin-top:12px">
+            <span><i style="background:var(--brand)"></i>특수학교</span>
+            <span><i style="background:color-mix(in srgb, var(--brand) 35%, var(--card))"></i>특수학급</span>
+            <span style="margin-left:auto;color:var(--ink-3)">완전통합은 시군별로 나눌 수 없어 빠져 있습니다</span>
           </div>
         </div>
       </div>
 
       <div style="display:flex; flex-direction:column; gap:20px;">
         <div class="card">
-          <h2 style="font-size:14px; color:var(--ink-3); margin-bottom:12px;">어디에서 배우는가</h2>
+          <h2 style="font-size:14px; color:var(--ink-3); margin-bottom:12px;">어디에서 배우는가<span class="asof" id="asof-donut"></span></h2>
           <div id="sped-donut" style="display:flex; flex-direction:column; align-items:center;"></div>
         </div>
 
         <div class="card">
-          <h2 style="font-size:14px; color:var(--ink-3); margin-bottom:10px;">특수학교까지 얼마나 먼가</h2>
+          <h2 style="font-size:14px; color:var(--ink-3); margin-bottom:10px;">특수학교까지 얼마나 먼가<span class="asof" id="asof-access"></span></h2>
           <div id="sped-access"></div>
         </div>
 
         <div class="card">
-          <h2 style="font-size:14px; color:var(--ink-3); margin-bottom:10px;">다문화 학생</h2>
+          <h2 style="font-size:14px; color:var(--ink-3); margin-bottom:10px;">다문화 학생<span class="asof" id="asof-multi"></span></h2>
           <!-- 자료를 심으면(bake-multicultural.mjs) 여기가 채워지고 아래 안내는 감춰집니다 -->
           <div id="multi-data" hidden></div>
-          <p id="multi-none" style="margin:0 0 10px; font-size:13px; line-height:1.7; color:var(--ink-2)">
+          <p id="multi-none" style="margin:0; font-size:13px; line-height:1.7; color:var(--ink-2)">
             <b>자료가 없습니다.</b> 학교알리미 공시 항목에 다문화 학생 수가 없어
-            이 화면에서 셈할 수 없습니다.<br>
-            <span style="color:var(--ink-3); font-size:12px;">
-              받기 전까지는 <b>지어내지 않고 비워 둡니다.</b></span>
+            이 화면에서 셈할 수 없습니다.
           </p>
-          <div id="multi-where" style="font-size:12px;line-height:1.75;color:var(--ink-3);border-top:1px solid var(--line-2);padding-top:9px">
-            <b style="color:var(--ink-2)">받을 수 있는 곳</b>
-            <ul style="margin:5px 0 0;padding-left:16px">
-              <li><b>교육통계서비스(KESS)</b> — 시도별 다문화 학생 수. 매년 4월 1일 기준, 8월 말~9월 공표</li>
-              <li><b>경상북도교육청</b> — 시군·학년까지 보려면 필요 (자료요청 목록 우선순위 2번)</li>
-            </ul>
-            <div style="margin-top:7px;padding-top:7px;border-top:1px dashed var(--line-2)">
-              <b style="color:var(--ink-2)">자동으로는 못 받습니다</b> — 학교알리미 공시 항목에 없고,
-              KOSIS에는 경북 도 단위 통계가 없으며(경산·상주 두 시만 자체 등록),
-              EDSS 승인 서비스에도 없습니다. <b>받아서 CSV로 정리하는 자리</b>를 만들어 두었습니다
-              (<code>data/master/multicultural.schema.md</code>).
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -4901,22 +4893,40 @@ function renderMulti() {
     `<div class="box"><div class="k">특수학교가 없는 시군</div><div class="v">${noSchool}<span style="font-size:14px"> / ${SIGUNGU.length}곳</span></div></div>` +
     (far ? `<div class="box"><div class="k">특수학교가 가장 먼 시군</div><div class="v">${far.s}<span style="font-size:14px"> 약 ${Math.round(far.km)}km</span></div></div>` : '');
 
-  /* 무엇을 세고 무엇이 빠졌는지 — 화면 맨 위에 적습니다 */
+  /* ── 이 화면의 자료 ────────────────────────────────────────
+     화면에는 그림과 수만 두고, 「무엇을 어디서 언제」는 접어 둡니다.
+     이 화면은 2025년 자료와 2026년 자료가 섞여 있어 글로 풀면 길어집니다.
+     카드마다 기준일 배지를 달고, 자세한 것은 여기 표 한 장에 모읍니다.
+     더 자세한 사정: 06. 실행계획(1)/다문화_특수교육_화면의_자료설명.md */
+  const asof = (id, txt) => { const el = document.getElementById(id); if(el) el.textContent = txt; };
+  const ALLIMI = '2026 공시';
+  asof('asof-bylevel', ALLIMI);
+  asof('asof-sig',     ALLIMI);
+  asof('asof-donut',   P ? P.basis : ALLIMI);
+  asof('asof-access',  ALLIMI);
+  if(typeof SPED_CLASS !== 'undefined' && SPED_CLASS) asof('asof-classes', SPED_CLASS.basis);
+  if(typeof MULTI_STU !== 'undefined' && MULTI_STU) asof('asof-multi', MULTI_STU.basis);
+
   const scope = document.getElementById('sped-scope');
   if(scope){
-    scope.innerHTML = P
-      ? ('<b>두 자료를 함께 씁니다</b> — 경북 전체의 <b>배치유형별 인원</b>은 국립특수교육원 ' +
-         `「${P.year} 특수교육통계」(${P.basis} 기준)를, ` +
-         '<b>시군별·학교급별</b>은 학교알리미 2026 공시를 씁니다. ' +
-         '특수교육통계는 시도까지만 있어 시군을 나눌 수 없고, 학교알리미는 ' +
-         '<b>일반학급에서 함께 배우는 학생</b>을 세지 못하기 때문입니다.<br>' +
-         `그래서 아래 <b>시군별·학교급별 막대의 합(${fmt(st.total)}명)은 맨 위 총계(${fmt(P.total)}명)보다 적습니다.</b> ` +
-         `차이 ${fmt(P.total - st.total)}명은 대부분 일반학급 완전통합 학생입니다. 두 수를 빼거나 견주지 마세요.` +
-         `<span class="source">출처: ${P.src} · 학교알리미 2026 공시</span>`)
-      : ('<b>이 화면이 세고 있는 것</b> — 특수학교에 다니는 학생과 일반학교 <b>특수학급</b>에 배치된 학생입니다.<br>' +
-         '<b style="color:var(--leap-amber)">빠져 있는 것</b> — 일반학급 완전통합 학생은 공시 항목에 없어 세지 못합니다. ' +
-         '위 수는 실제보다 <b>적습니다.</b>' +
-         '<span class="source">출처: 학교알리미 2026 공시 · 배치유형은 미확보</span>');
+    const rows = [];
+    if(P) rows.push(['특수교육대상자 총계 · 배치유형', P.basis, P.src]);
+    rows.push(['학교급별 · 시군별 특수학급 학생', ALLIMI, '학교알리미 (학교별 합산)']);
+    rows.push(['특수학교 위치와 거리', ALLIMI, '학교알리미 학교기본정보 (좌표)']);
+    if(typeof SPED_CLASS !== 'undefined' && SPED_CLASS)
+      rows.push(['특수학급 학급 수', SPED_CLASS.basis, SPED_CLASS.src]);
+    if(typeof MULTI_STU !== 'undefined' && MULTI_STU)
+      rows.push(['다문화 학생', MULTI_STU.basis, MULTI_STU.src]);
+
+    scope.innerHTML =
+      '<summary>이 화면의 자료는 어디서 왔나 · 언제 것인가</summary>' +
+      '<table class="src-tbl"><thead><tr><th>무엇</th><th>기준일</th><th>출처</th></tr></thead><tbody>' +
+      rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('') +
+      '</tbody></table>' +
+      (P ? '<p style="margin:10px 0 0;font-size:12px;line-height:1.7;color:var(--ink-2)">' +
+           `<b>시군별·학교급별 합(${fmt(st.total)}명)은 총계(${fmt(P.total)}명)보다 적습니다.</b> ` +
+           '일반학급에서 함께 배우는 학생은 시군별로 나눌 수 있는 자료가 없기 때문입니다. ' +
+           '두 수를 빼거나 견주지 마세요.</p>' : '');
   }
 
   /* 학교급별 — 어디에 몰려 있는가 */
@@ -4938,9 +4948,8 @@ function renderMulti() {
         `<td>${fmt(r.withCls)} / ${fmt(r.n)}곳 <span style="color:var(--ink-3)">(${(r.rate * 100).toFixed(0)}%)</span></td>` +
         '</tr>').join('') +
       '</tbody></table>' +
-      '<div class="spec" style="margin-top:12px">여기 셈에는 <b>특수학교 학생이 들어가지 않습니다</b> — ' +
-      '학교급별로 나눌 수 있는 것은 일반학교 특수학급뿐입니다. ' +
-      '특수학교(' + st.schools + '곳 · ' + fmt(st.inSchool) + '명)는 아래 시군별 막대의 짙은 쪽에 있습니다.</div>';
+      '<div class="spec" style="margin-top:12px">특수학급만 셉니다 — 특수학교 ' +
+      fmt(st.inSchool) + '명은 학교급으로 나눌 수 없습니다.</div>';
   }
 
   /* 다문화 학생 — 자료를 심었을 때만 그립니다.
@@ -4975,18 +4984,8 @@ function renderMulti() {
 
     mBox.hidden = false;
     if(mNone) mNone.hidden = true;
-    /* 자료가 들어왔으니 「어디서 받나」는 «더 자세히 보려면»으로 바꿉니다 */
     const where = document.getElementById('multi-where');
-    if(where) where.innerHTML =
-      '<b style="color:var(--ink-2)">더 자세히 보려면</b>' +
-      '<ul style="margin:5px 0 0;padding-left:16px">' +
-        '<li><b>시군별·학년별</b>은 이 자료에 없습니다 — 경상북도교육청 자료가 있어야 합니다 (자료요청 목록 우선순위 2번)</li>' +
-        '<li>유치원과 각종학교는 담지 않았습니다 — 이 화면은 초·중·고만 셉니다</li>' +
-      '</ul>' +
-      '<div style="margin-top:7px;padding-top:7px;border-top:1px dashed var(--line-2)">' +
-      '이 수치는 <b>손으로 정리해 심은 값</b>입니다. 다문화 학생 수를 주는 공개 API가 없습니다 — ' +
-      '학교알리미 공시 항목에 없고, KOSIS에는 경북 통계가 없으며, EDSS 승인 서비스에도 없습니다.' +
-      '</div>';
+    if(where) where.hidden = true;   // 자료가 들어왔으니 「받을 수 있는 곳」 안내는 접습니다
     mBox.innerHTML =
       `<div style="font-size:22px;font-weight:800;color:var(--brand);line-height:1.2">${fmt(grand)}<span style="font-size:13px;font-weight:600"> 명</span></div>` +
       `<div style="font-size:11.5px;color:var(--ink-3);margin-bottom:9px">${MULTI_STU.basis} 기준</div>` +
@@ -5001,12 +5000,8 @@ function renderMulti() {
           `<td><b>${fmt(grand)}</b></td></tr>`
         : '') +
       '</tbody></table>' +
-      '<div class="spec" style="margin-top:10px">' +
-        '<b>국내출생</b>·<b>중도입국</b>은 국제결혼가정 자녀이고, <b>외국인가정</b>은 부모가 모두 외국 국적인 경우입니다. ' +
-        '교육기본통계의 분류를 그대로 씁니다.<br>' +
-        `이 화면의 특수교육 수치는 <b>학교알리미 공시</b> 기준이라 조사 시점이 다릅니다 — 두 수를 견주지 않습니다.` +
-        `<span class="source">출처: ${MULTI_STU.src}</span>` +
-      '</div>';
+      '<div class="spec" style="margin-top:10px">국내출생·중도입국은 국제결혼가정, 외국인가정은 부모가 모두 외국 국적입니다.' +
+        `<span class="source">${MULTI_STU.src}</span></div>`;
   }
 
   /* 특수학급 «학급 수» — 학교알리미에 없는 값이라 일람표에서 심었습니다.
@@ -5048,37 +5043,12 @@ function renderMulti() {
       `<td><b>${fmt(tot.with)} / ${fmt(tot.sch)}곳</b></td></tr>` +
       '</tbody></table>' +
       '<div class="spec" style="margin-top:12px">' +
-        `<b>${SPED_CLASS.basis} 기준</b>입니다. 이 화면의 다른 특수교육 수치는 <b>학교알리미 공시</b> 기준이라 ` +
-        '조사 시점도 방식도 다릅니다. 그래서 두 수를 <b>빼서 늘었다·줄었다고 말하지 않습니다</b> — ' +
-        '그 차이가 실제 변화인지 조사 차이인지 이 자료만으로는 가릴 수 없습니다.<br>' +
-        '<b>참고선</b>은 「장애인 등에 대한 특수교육법 시행령」의 특수학급 설치 기준입니다. ' +
-        '평균이 참고선 아래라도 <b>학교마다는 넘을 수 있습니다</b> — 여기 값은 시군·학교급 합계의 평균입니다.' +
-        `<span class="source">출처: ${SPED_CLASS.src}</span>` +
+        '<b>참고선</b>은 「장애인 등에 대한 특수교육법」 제27조제1항의 학급 설치 기준입니다 ' +
+        '(유치원 4명 · 초·중 6명 · 고 7명을 넘으면 학급을 나눠 설치). ' +
+        '여기 값은 시군·학교급 <b>합계의 평균</b>이라, 평균이 참고선 아래라도 학교마다는 넘을 수 있습니다.' +
       '</div>';
   }else if(clsCard){
     clsCard.hidden = true;   // 자료를 아직 안 심었으면 빈 칸을 보이지 않습니다
-  }
-
-  /* 특수학교까지 얼마나 먼가 */
-  const acc = document.getElementById('sped-access');
-  if(acc){
-    const top = access.slice(0, 6);
-    acc.innerHTML =
-      '<div style="font-size:12.5px;line-height:1.7;color:var(--ink-2);margin-bottom:10px">' +
-        `경북 <b>${SIGUNGU.length}개 시군</b> 가운데 특수학교가 있는 곳은 <b>${SIGUNGU.length - noSchool}곳</b>입니다. ` +
-        '나머지 시군의 학생은 시군 밖으로 다녀야 합니다.</div>' +
-      top.map(a =>
-        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:12.5px">' +
-          `<span style="width:40px;flex:none;color:var(--ink-2)">${a.s}</span>` +
-          '<span style="flex:1;height:12px;border-radius:3px;background:var(--card-2);overflow:hidden">' +
-            `<span style="display:block;height:100%;width:${Math.min(100, a.km / top[0].km * 100).toFixed(1)}%;background:var(--leap-amber-mark)"></span>` +
-          '</span>' +
-          `<b style="width:58px;text-align:right">${Math.round(a.km)}km</b>` +
-        '</div>').join('') +
-      '<div class="spec" style="margin-top:10px">시군 중심에서 <b>가장 가까운 특수학교</b>까지의 <b>직선거리</b>입니다. ' +
-      '길을 따라간 거리도, 통학 시간도 아닙니다. ' +
-      '울릉군은 바다 건너라 직선거리가 실제 이동과 특히 다릅니다.' +
-      '<span class="source">좌표 출처: 학교알리미 학교기본정보</span></div>';
   }
 
   /* 시군별 — 특수학교와 특수학급을 나눠 쌓습니다.
@@ -5106,6 +5076,54 @@ function renderMulti() {
         `<b style="width:44px;text-align:right">${fmt(r.tot)}</b>` +
       '</div>'
     ).join('');
+  }
+
+  /* ── 특수학교까지 얼마나 먼가 ──────────────────────────────
+     ★ 예전 그림이 헷갈렸던 까닭
+       특수학교가 «있는» 시군과 «없는» 시군을 한 막대에 섞어 놓았습니다.
+       있는 시군은 그 학교까지가 0.2~11.2km 라 「가깝다」로 나오고,
+       없는 시군은 34~210km 라 「멀다」로 나오는데, 둘을 같은 자에 놓으면
+       무엇을 말하는 그림인지 알 수 없습니다.
+       이제 «없는 시군만» 재고, 있는 시군은 따로 적습니다. */
+  const acc2 = document.getElementById('sped-access');
+  if(acc2){
+    const have = access.filter(a => a.here);
+    const away = access.filter(a => !a.here).sort((a, b) => b.km - a.km);
+    const max = Math.max(1, ...away.map(a => a.km));
+    /* 특수학교가 있는 시군의 학교 이름 (안동처럼 두 곳인 시군도 있습니다) */
+    const spSchools = SCHOOLS.filter(x => x.lv === '특수');
+    const haveText = have
+      .sort((a, b) => b.s.localeCompare(a.s))
+      .map(a => {
+        const n = spSchools.filter(x => x.s === a.s).length;
+        return a.s + (n > 1 ? `(${n})` : '');
+      }).sort().join(' · ');
+
+    acc2.innerHTML =
+      '<div style="display:flex;gap:8px;margin-bottom:11px">' +
+        `<div style="flex:1;background:var(--brand-pale);border-radius:8px;padding:8px 10px">` +
+          `<div style="font-size:11px;color:var(--ink-2)">특수학교가 <b>있는</b> 시군</div>` +
+          `<div style="font-size:18px;font-weight:800;color:var(--brand);line-height:1.3">${have.length}<span style="font-size:12px">곳 · ${spSchools.length}교</span></div>` +
+        '</div>' +
+        `<div style="flex:1;background:var(--bg);border:1px solid var(--line-2);border-radius:8px;padding:8px 10px">` +
+          `<div style="font-size:11px;color:var(--ink-2)">특수학교가 <b>없는</b> 시군</div>` +
+          `<div style="font-size:18px;font-weight:800;color:var(--leap-amber);line-height:1.3">${away.length}<span style="font-size:12px">곳</span></div>` +
+        '</div>' +
+      '</div>' +
+      `<div style="font-size:11.5px;color:var(--ink-3);margin-bottom:12px">있는 시군 — ${haveText}</div>` +
+      `<div style="font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:7px">없는 시군에서 가장 가까운 특수학교까지</div>` +
+      away.map(a =>
+        '<div style="display:flex;align-items:center;gap:7px;margin-bottom:4px;font-size:12px">' +
+          `<span style="width:32px;flex:none;color:var(--ink-2)">${a.s}</span>` +
+          '<span style="flex:1;height:11px;border-radius:3px;background:var(--card-2);overflow:hidden">' +
+            `<span style="display:block;height:100%;width:${(a.km / max * 100).toFixed(1)}%;background:${a.island ? 'var(--leap-amber-mark)' : 'var(--brand)'}"></span>` +
+          '</span>' +
+          `<b style="width:46px;text-align:right">${Math.round(a.km)}km</b>` +
+          `<span style="width:74px;color:var(--ink-3);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${htmlEsc(a.at)}">${htmlEsc(String(a.at).replace(/학교$/, ''))}</span>` +
+        '</div>').join('') +
+      '<div class="spec" style="margin-top:11px">시군 <b>중심</b>에서 잰 <b>직선거리</b>입니다 — 길을 따라간 거리도, 통학 시간도 아닙니다.' +
+      (away.some(a => a.island) ? '<br>울릉군은 <b>바다 건너</b>라 직선거리와 실제 이동이 특히 다릅니다.' : '') +
+      '</div>';
   }
 
   /* 어디에서 배우는가 — 배치유형 자료가 있으면 «넷»으로 나눕니다.
