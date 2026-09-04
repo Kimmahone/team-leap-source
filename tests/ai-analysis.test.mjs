@@ -15,7 +15,7 @@ globalThis.fetch=async (url,options)=>{
   called=String(url);
   check('키가 공식 x-goog-api-key 헤더로 전달됨', options.headers['x-goog-api-key']==='server-secret');
   const requestBody=JSON.parse(options.body);
-  check('모델·낮은 사고 단계·집계값 전달', requestBody.model==='gemini-3.7-flash' && requestBody.generation_config.thinking_level==='low' && requestBody.input==='집계값');
+  check('모델·낮은 사고 단계·집계값 전달', requestBody.model==='gemini-3.8-flash' && requestBody.generation_config.thinking_level==='low' && requestBody.input==='집계값');
   check('시스템 지침 전달', requestBody.system_instruction.includes('숫자를 만들지 마세요'));
   return new Response(JSON.stringify({steps:[{type:'model_output',content:[{type:'text',text:'근거 기반 분석'}]}]}),{status:200,headers:{'Content-Type':'application/json'}});
 };
@@ -33,8 +33,8 @@ globalThis.fetch=async (_url,options)=>{
 };
 const fallback=await onRequestPost({request:req({prompt:'집계값'}),env:{GEMINI_API_KEY:'server-secret'}});
 const fallbackData=await fallback.json();
-check('3.7 무료 한도에서는 3.6을 한 번 대체 시도',
-  attempted.join(',')==='gemini-3.7-flash,gemini-3.6-flash' && fallback.status===200 && fallbackData.fallback===true);
+check('3.8 무료 한도에서는 3.7을 한 번 대체 시도',
+  attempted.join(',')==='gemini-3.8-flash,gemini-3.7-flash' && fallback.status===200 && fallbackData.fallback===true);
 
 globalThis.fetch=async ()=>new Response(JSON.stringify({error:{status:'RESOURCE_EXHAUSTED'}}),{status:429,headers:{'Content-Type':'application/json'}});
 const limited=await onRequestPost({request:req({prompt:'집계값'}),env:{GEMINI_API_KEY:'server-secret'}});

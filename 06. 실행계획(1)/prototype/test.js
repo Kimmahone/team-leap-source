@@ -262,7 +262,7 @@ check('변화 요약은 보고서 HTML과 별도 인쇄 기능을 제공한다',
 check('변화 요약은 전용 인쇄 때만 나온다',
   /#ai-print-report\{display:none !important\}/.test(html) && /body\.print-ai-only #ai-print-report\{display:block !important/.test(html));
 check('일반 사용자 화면에 서비스 사업자·모델명이 드러나지 않는다',
-  !/>[^<]*(Gemini|Cloudflare|gemini-3\.7)[^<]*</i.test(html.split('<script>')[0]));
+  !/>[^<]*(Gemini|Cloudflare|gemini-3\.\d)[^<]*</i.test(html.split('<script>')[0]));
 check('경북교육청 상징 워터마크 파일과 화면·인쇄 스타일이 있다',
   fs.existsSync(path.join(path.dirname(APP),'symbol1.jpg')) && /body::before[\s\S]*symbol1\.jpg/.test(html) && /@media print[\s\S]*body::before/.test(html));
 check('공개 시뮬레이터 범위를 시군·학교급으로 한정한다',
