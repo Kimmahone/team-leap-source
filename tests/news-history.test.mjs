@@ -76,7 +76,7 @@ check('건수 상한에 눌려 있지 않다 (눌려 있으면 오래된 것이 
   hist.length < news.HISTORY_MAX, '지금 ' + hist.length + ' / 상한 ' + news.HISTORY_MAX);
 check('보관 기간이 지난 기사가 남아 있지 않다',
   news.trimHistory(hist).length === hist.length);
-check('적어도 주간 클리핑은 채운다 (이 화면의 이름이 주간이다)',
+check('적어도 이레치는 채운다 (화면이 「주간」을 내놓습니다)',
   span >= 7, '모은 기간 ' + span.toFixed(0) + '일');
 check('건수도 화면 한 쪽을 채울 만큼 있다', hist.length >= 30, '지금 ' + hist.length + '건');
 
@@ -87,7 +87,18 @@ const wf = fs.readFileSync(path.join(ROOT, '.github/workflows/update-news.yml'),
 const fetchStep = wf.slice(wf.indexOf('- name: 뉴스 받아오기'), wf.indexOf('- name: 변경된 뉴스 커밋'));
 check('뉴스 받아오기 단계에 조건이 있다', /if:\s*github\.event_name/.test(fetchStep));
 check('push 때는 받아오지 않는다', /!=\s*'push'/.test(fetchStep));
-check('주간 일정은 그대로 있다', /schedule:/.test(wf) && /cron:/.test(wf));
+/* 〔2026. 9. 7.〕 주 1회에서 «매일»로 올렸습니다.
+   주 1회는 이미 놓치고 있었습니다 — 검색어마다 최신 30건만 받아오므로
+   일주일에 31건이 넘으면 넘친 것은 다음 회차에 이미 창 밖입니다.
+   보관이 «날짜»(120일) 기준이라 자주 돌려도 창이 줄지 않습니다.
+   그냥 「cron 이 있나」만 보면 주기가 조용히 되돌아가도 모릅니다. */
+const cronLines = (wf.match(/^\s*-\s*cron:.*$/gm) || []).map((l) => l.trim());
+check('일정이 하나만 있다 (여러 개면 어느 것이 도는지 헷갈립니다)',
+  cronLines.length === 1, cronLines.join(' / '));
+check('매일 한 번 돈다 — 한국시간 아침 7시',
+  /cron:\s*'0 22 \* \* \*'/.test(wf), cronLines.join(' / '));
+check('요일·날짜를 좁히지 않았다 (좁히면 놓치는 기사가 생깁니다)',
+  !/cron:\s*'0 22 \* \* [0-6]/.test(wf) && !/cron:\s*'0 22 \*\/\d/.test(wf));
 check('손으로도 돌릴 수 있다', /workflow_dispatch:/.test(wf));
 /* 막으려는 것은 «수집»이지 «배포»가 아닙니다. push 때 배포까지 멈추면
    고친 것이 라이브에 안 나갑니다. 단계 이름으로 자리를 잡습니다 —
