@@ -141,8 +141,21 @@ check('실제 위치 지도를 간편 지도보다 앞에 배치한다',
   html.indexOf('id="map-mode-online"') < html.indexOf('id="map-mode-offline"'));
 q("setMapMode('online')");
 check('SGIS를 못 불러오면 오프라인 지도를 유지한다',
-  q("homeState.mapMode") === 'offline' && byId['home-tilemap'].hidden === false &&
-  /간편 지도를 유지/.test(byId['sgis-status'].textContent || ''));
+  q("homeState.mapMode") === 'offline' && byId['home-tilemap'].hidden === false);
+/* ★ 〔2026. 9. 6.〕 그전에는 여기서 «간편 지도를 유지» 라는 문구만 봤습니다.
+   그런데 로컬 미리보기(python -m http.server)에서는 /api/sgis-map 이 404 라
+   window.sop 이 아예 없고, 그때 「실제 위치 지도」 버튼은 눌러도 아무 일이
+   안 일어나면서 «눌리는 것처럼» 보였습니다. 안내 문구는 누르기 전부터
+   같은 자리에 떠 있어 무엇이 달라졌는지도 알 수 없었습니다 — 고장으로 보입니다.
+   쓸 수 없으면 버튼이 «스스로» 그렇다고 말해야 합니다. */
+check('지도 서비스가 없으면 「실제 위치 지도」 버튼이 잠긴다',
+  byId['map-mode-online'].disabled === true);
+check('버튼이 왜 잠겼는지 그 자리에서 말한다',
+  /배포된 사이트/.test(byId['map-mode-online'].title || ''));
+check('상태 문구도 「여기서는 못 쓴다」로 바뀐다',
+  /배포된 사이트에서만/.test(byId['sgis-status'].textContent || ''));
+check('한 곳에서만 판단한다 (sgisReady)',
+  /function sgisReady/.test(js) && (js.match(/sgisReady\(\)/g)||[]).length >= 3);
 byId['home-level'].options = Array.from({length:6}, () => makeEl('option'));
 q("homeState.sel=SIGUNGU.find(sg=>sg.s==='영주');homeState.level='유';renderDetail()");
 check('시군 상세의 유치원 수는 경북 전체가 아니라 해당 시군 값이다',

@@ -367,6 +367,10 @@ a{color:var(--brand)}
 }
 /* 학교 카드는 «누르면 지도가 그 학교로 갑니다». 버튼이므로 버튼으로 만듭니다 —
    div 에 onclick 만 붙이면 키보드로 못 씁니다. 생김새는 그대로 둡니다. */
+/* 쓸 수 없는 칩 — 눌러도 되는 것처럼 보이지 않게 합니다 */
+.chip:disabled, .chip.chip-off{
+  opacity:.45; cursor:not-allowed; text-decoration:line-through;
+}
 button.marker{
   font:inherit;color:inherit;text-align:left;cursor:pointer;
   display:block;width:100%;
@@ -3449,12 +3453,42 @@ function initSgisMap(){
   }
 }
 
+/* ★ 실제 위치 지도를 쓸 수 있는가 〔2026. 9. 6.〕
+   SGIS 라이브러리는 `<script src="/api/sgis-map">` 로 옵니다. 이 주소는
+   **Cloudflare Pages 함수**라 배포된 사이트에만 있습니다.
+   `열어보기.command`(python -m http.server)나 파일을 그냥 두 번 눌러 열면
+   404 라서 window.sop 이 아예 없습니다.
+
+   그전에는 이때 버튼이 «눌리는 것처럼» 보였습니다. 눌러도 아무 일도
+   안 일어나고, 안내 문구는 누르기 «전»부터 같은 자리에 떠 있어서
+   무엇이 달라졌는지 알 수 없었습니다 — 고장으로 보입니다.
+   쓸 수 없으면 **쓸 수 없다고 버튼이 스스로 말해야 합니다.** */
+function sgisReady(){
+  return !!(window.sop && typeof window.sop.map === 'function');
+}
+
+function markSgisUnavailable(){
+  const btn = document.getElementById('map-mode-online');
+  if(!btn) return;
+  btn.disabled = true;
+  btn.classList.add('chip-off');
+  btn.title = '이 화면에서는 실제 위치 지도를 쓸 수 없습니다 — 배포된 사이트(team-leap.pages.dev)에서 됩니다';
+  const status = document.getElementById('sgis-status');
+  if(status) status.textContent =
+    '간편 지도 사용 중 · 실제 위치 지도는 배포된 사이트에서만 열립니다(로컬 미리보기에는 지도 서비스가 없습니다)';
+}
+
 function setMapMode(mode){
   const online = mode === 'online';
   const status = document.getElementById('sgis-status');
   let fallbackMessage = '';
+  if(online && !sgisReady()){
+    /* 라이브러리 자체가 없습니다 — 다시 눌러도 같습니다. 버튼을 잠급니다. */
+    markSgisUnavailable();
+    return;
+  }
   if(online && !initSgisMap()){
-    fallbackMessage = '실제 위치 지도를 불러오지 못했습니다. 인터넷·배포 환경을 확인해 주세요. 간편 지도를 유지합니다.';
+    fallbackMessage = '실제 위치 지도를 여는 데 실패했습니다. 잠시 뒤 다시 눌러 주세요. 간편 지도를 유지합니다.';
     mode = 'offline';
   }
 
@@ -6261,7 +6295,10 @@ showView(location.hash.slice(1) || 'home');
         setMapMode 가 스스로 간편 지도로 되돌립니다. 그때 이미 그려져 있어야
         빈 화면이 스치지 않습니다.
      ② 화면 진입이 SGIS 응답을 기다리지 않습니다. */
-setMapMode('online');
+/* 처음에는 실제 위치 지도로 엽니다. 지도 서비스가 없는 곳(로컬 미리보기)이면
+   setMapMode 가 버튼을 잠그고 왜인지 적습니다 — 조용히 실패하지 않습니다. */
+setMapMode(sgisReady() ? 'online' : 'offline');
+if(!sgisReady()) markSgisUnavailable();
 </script>
 
 </body>
