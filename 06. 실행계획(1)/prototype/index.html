@@ -372,8 +372,19 @@ a{color:var(--brand)}
   opacity:.45; cursor:not-allowed; text-decoration:line-through;
 }
 button.marker{
-  font:inherit;color:inherit;text-align:left;cursor:pointer;
-  display:block;width:100%;
+  /* ★ `font:inherit` 을 쓰면 안 됩니다 〔2026. 9. 6.〕
+     그 한 줄이 font-size 까지 함께 되돌려 놓습니다. 그런데 button.marker 는
+     .marker 보다 셈이 세서, .marker 의 font-size:12px 를 이겨 버립니다.
+     그래서 카드 글자가 15px 로 커지고 카드가 넓어졌습니다.
+     버튼의 «기본 글꼴»만 걷어내고 크기는 .marker 가 정하게 둡니다. */
+  /* line-height 도 마찬가지입니다 — 버튼의 UA 기본값은 normal 이라
+     그대로 두면 카드 높이가 예전과 미세하게 어긋납니다. */
+  font-family:inherit;font-weight:inherit;line-height:inherit;
+  color:inherit;text-align:left;cursor:pointer;
+  /* ★ width:100% 를 주면 안 됩니다 〔2026. 9. 6.〕
+     담는 곳(.school-grid)이 flex-wrap 이라 한 칸이 100% 를 차지하면
+     카드가 한 줄에 하나씩만 섭니다. 예전 div 카드처럼 내용 너비대로 두고
+     .marker 의 min-width 가 최소 크기를 잡게 둡니다. */
   transition:border-color .12s, box-shadow .12s, transform .12s;
 }
 button.marker:hover{box-shadow:0 2px 10px -4px rgba(0,0,0,.28);transform:translateY(-1px)}

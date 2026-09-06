@@ -154,6 +154,25 @@ check('버튼이 왜 잠겼는지 그 자리에서 말한다',
   /배포된 사이트/.test(byId['map-mode-online'].title || ''));
 check('상태 문구도 「여기서는 못 쓴다」로 바뀐다',
   /배포된 사이트에서만/.test(byId['sgis-status'].textContent || ''));
+/* ★ 〔2026. 9. 6.〕 카드를 div 에서 button 으로 바꾸면서 두 번 미끄러졌습니다.
+   ① width:100% 를 줘서 담는 곳(.school-grid, flex-wrap)에서 한 줄에 하나씩 섰습니다.
+   ② font:inherit 을 써서 .marker 의 font-size:12px 까지 되돌아가 글자가 15px 이 됐습니다
+      (button.marker 가 .marker 보다 셈이 세기 때문입니다).
+   둘 다 «누를 수 있게 만들려다» 생긴 것입니다. 생김새는 그대로여야 합니다. */
+/* 스타일은 <style> 안에 있습니다 — js 가 아니라 html 을 봐야 합니다 */
+/* 주석은 걷어냅니다 — 「font:inherit 을 쓰면 안 됩니다」라고 «적어 둔 글»이
+   규칙으로 오해되면, 설명을 남길수록 검사가 빨개집니다. */
+const cssNoComments = html.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/\s+/g, ' ');
+const btnMarkerCss = (cssNoComments.match(/button\.marker\{[^}]*\}/) || [''])[0];
+check('카드 규칙을 찾을 수 있다', btnMarkerCss.length > 0, btnMarkerCss.slice(0, 60));
+check('카드에 width:100% 를 주지 않는다 (한 줄에 여러 개 서야 한다)',
+  !/width:\s*100%/.test(btnMarkerCss) && !/display:\s*block/.test(btnMarkerCss),
+  '.school-grid 는 flex-wrap 입니다 — 100% 를 주면 한 줄에 하나만 섭니다: ' + btnMarkerCss.slice(0, 90));
+check('카드에 font 단축속성을 쓰지 않는다 (글자 크기가 되돌아간다)',
+  !/(^|[^-])font:\s*inherit/.test(btnMarkerCss) &&
+  /font-family:\s*inherit/.test(btnMarkerCss) && /line-height:\s*inherit/.test(btnMarkerCss),
+  'button.marker 가 .marker 보다 셈이 세서 font-size:12px 를 덮습니다: ' + btnMarkerCss.slice(0, 90));
+
 check('한 곳에서만 판단한다 (sgisReady)',
   /function sgisReady/.test(js) && (js.match(/sgisReady\(\)/g)||[]).length >= 3);
 byId['home-level'].options = Array.from({length:6}, () => makeEl('option'));
