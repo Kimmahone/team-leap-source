@@ -136,6 +136,71 @@ if (!rows) { console.error('좌표를 하나도 받지 못했습니다. 그만�
 /* 앱 안의 목록에 붙인다 — 이름|급|주소[|위도|경도] */
 const KNAME = { e: '초등학교', m: '중학교', h: '고등학교' };
 
+/* ══ 학교알리미가 좌표를 안 준 학교는 주소로 찾습니다 ═══════════════════
+   ★ 왜 필요했나 〔2026. 9. 6.〕
+     학교알리미 apiType=0 은 보통 위경도를 함께 줍니다. 그래서 초·중·고는
+     지오코딩이 필요 없다고 적어 두었습니다. 그런데 **2026년 3월 1일에 문을 연
+     포항해오름중학교**는 주소는 있는데 LTTUD·LGTUD 가 비어서 왔습니다.
+     위 고리의 `if (s.LTTUD == null) continue` 에 걸려 목록에서 빠지고,
+     학교는 좌표 없이 남아 실제 위치 지도에서 사라졌습니다
+     (1,539곳 중 1,538곳만 찍혔습니다). 같은 날 개교한 포항펜타초는
+     좌표가 와서, 「신설교라서」가 아니라 «그 학교만» 비어 있던 것입니다.
+
+   그래서 유치원에 쓰던 카카오 지오코딩을 여기에도 폴백으로 둡니다.
+   **못 찾으면 여전히 비워 둡니다** — 가까운 아무 데나 찍지 않습니다. */
+const SGG_KO = {
+  pohang:'포항시', gyeongju:'경주시', gimcheon:'김천시', andong:'안동시',
+  gumi:'구미시', yeongju:'영주시', yeongcheon:'영천시', sangju:'상주시',
+  mungyeong:'문경시', gyeongsan:'경산시', uiseong:'의성군', cheongsong:'청송군',
+  yeongyang:'영양군', yeongdeok:'영덕군', cheongdo:'청도군', goryeong:'고령군',
+  seongju:'성주군', chilgok:'칠곡군', yecheon:'예천군', bonghwa:'봉화군',
+  uljin:'울진군', ulleung:'울릉군'
+};
+
+{
+  /* 앱 목록에서 «좌표가 없고 이번에도 못 받은» 학교를 모읍니다 */
+  const need = [];
+  const seen = new Set();
+  const probe = fs.readFileSync(APPS[0], 'utf8');
+  const pm = probe.match(/(  var SCHOOL_RAW = \{\n)([\s\S]*?)(\n  \};\n)/);
+  for (const line of (pm ? pm[2].split('\n') : [])) {
+    const lm = line.match(/^(\s*)(\w+): '(.*)'(,?)$/);
+    if (!lm) continue;
+    const rc = lm[2];
+    for (const rec of lm[3].split(';')) {
+      const f = rec.split('|');
+      if (!f[0]) continue;
+      const full = f[0].replace('*', KNAME[f[1]]);
+      const key = rc + '|' + f[1] + '|' + full;
+      if (found.has(key) || (f[3] && f[4]) || seen.has(key)) continue;
+      seen.add(key);
+      need.push({ key, rc, name: full, addr: f[2] || '' });
+    }
+  }
+
+  if (need.length) {
+    console.log('\n좌표를 못 받은 학교 ' + need.length + '곳 — 주소로 찾아봅니다.');
+    let geo = null;
+    try {
+      const mod = await import('./kakao-geocode.mjs');
+      geo = mod.makeGeocoder();
+    } catch (e) {
+      console.error('  카카오 열쇠를 못 읽어 건너뜁니다: ' + String(e.message).slice(0, 80));
+    }
+    if (geo) {
+      for (const n of need) {
+        if (!n.addr) { console.log('  주소도 없음 — ' + n.name); continue; }
+        const q = '경상북도 ' + (SGG_KO[n.rc] || '') + ' ' + n.addr;
+        let c = null;
+        try { c = await geo.lookup(q); } catch (e) { /* 못 찾으면 비워 둡니다 */ }
+        if (c) { found.set(n.key, [c.lat, c.lon]); console.log('  찾음 — ' + n.name); }
+        else   { console.log('  못 찾음 — ' + n.name + ' (' + q + ')'); }
+      }
+      geo.save();
+    }
+  }
+}
+
 let hit = 0, kept = 0, miss = 0;
 const missed = [];
 
