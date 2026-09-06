@@ -141,8 +141,40 @@ check('실제 위치 지도를 간편 지도보다 앞에 배치한다',
   html.indexOf('id="map-mode-online"') < html.indexOf('id="map-mode-offline"'));
 q("setMapMode('online')");
 check('SGIS를 못 불러오면 오프라인 지도를 유지한다',
-  q("homeState.mapMode") === 'offline' && byId['home-tilemap'].hidden === false &&
-  /간편 지도를 유지/.test(byId['sgis-status'].textContent || ''));
+  q("homeState.mapMode") === 'offline' && byId['home-tilemap'].hidden === false);
+/* ★ 〔2026. 9. 6.〕 그전에는 여기서 «간편 지도를 유지» 라는 문구만 봤습니다.
+   그런데 로컬 미리보기(python -m http.server)에서는 /api/sgis-map 이 404 라
+   window.sop 이 아예 없고, 그때 「실제 위치 지도」 버튼은 눌러도 아무 일이
+   안 일어나면서 «눌리는 것처럼» 보였습니다. 안내 문구는 누르기 전부터
+   같은 자리에 떠 있어 무엇이 달라졌는지도 알 수 없었습니다 — 고장으로 보입니다.
+   쓸 수 없으면 버튼이 «스스로» 그렇다고 말해야 합니다. */
+check('지도 서비스가 없으면 「실제 위치 지도」 버튼이 잠긴다',
+  byId['map-mode-online'].disabled === true);
+check('버튼이 왜 잠겼는지 그 자리에서 말한다',
+  /배포된 사이트/.test(byId['map-mode-online'].title || ''));
+check('상태 문구도 「여기서는 못 쓴다」로 바뀐다',
+  /배포된 사이트에서만/.test(byId['sgis-status'].textContent || ''));
+/* ★ 〔2026. 9. 6.〕 카드를 div 에서 button 으로 바꾸면서 두 번 미끄러졌습니다.
+   ① width:100% 를 줘서 담는 곳(.school-grid, flex-wrap)에서 한 줄에 하나씩 섰습니다.
+   ② font:inherit 을 써서 .marker 의 font-size:12px 까지 되돌아가 글자가 15px 이 됐습니다
+      (button.marker 가 .marker 보다 셈이 세기 때문입니다).
+   둘 다 «누를 수 있게 만들려다» 생긴 것입니다. 생김새는 그대로여야 합니다. */
+/* 스타일은 <style> 안에 있습니다 — js 가 아니라 html 을 봐야 합니다 */
+/* 주석은 걷어냅니다 — 「font:inherit 을 쓰면 안 됩니다」라고 «적어 둔 글»이
+   규칙으로 오해되면, 설명을 남길수록 검사가 빨개집니다. */
+const cssNoComments = html.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/\s+/g, ' ');
+const btnMarkerCss = (cssNoComments.match(/button\.marker\{[^}]*\}/) || [''])[0];
+check('카드 규칙을 찾을 수 있다', btnMarkerCss.length > 0, btnMarkerCss.slice(0, 60));
+check('카드에 width:100% 를 주지 않는다 (한 줄에 여러 개 서야 한다)',
+  !/width:\s*100%/.test(btnMarkerCss) && !/display:\s*block/.test(btnMarkerCss),
+  '.school-grid 는 flex-wrap 입니다 — 100% 를 주면 한 줄에 하나만 섭니다: ' + btnMarkerCss.slice(0, 90));
+check('카드에 font 단축속성을 쓰지 않는다 (글자 크기가 되돌아간다)',
+  !/(^|[^-])font:\s*inherit/.test(btnMarkerCss) &&
+  /font-family:\s*inherit/.test(btnMarkerCss) && /line-height:\s*inherit/.test(btnMarkerCss),
+  'button.marker 가 .marker 보다 셈이 세서 font-size:12px 를 덮습니다: ' + btnMarkerCss.slice(0, 90));
+
+check('한 곳에서만 판단한다 (sgisReady)',
+  /function sgisReady/.test(js) && (js.match(/sgisReady\(\)/g)||[]).length >= 3);
 byId['home-level'].options = Array.from({length:6}, () => makeEl('option'));
 q("homeState.sel=SIGUNGU.find(sg=>sg.s==='영주');homeState.level='유';renderDetail()");
 check('시군 상세의 유치원 수는 경북 전체가 아니라 해당 시군 값이다',
@@ -173,8 +205,13 @@ check('학교 917곳 이상이 들어 있다', q('SCHOOLS.length') >= 917, '개�
 const byLv = q('({초:SCHOOLS.filter(s=>s.lv==="초").length,중:SCHOOLS.filter(s=>s.lv==="중").length,고:SCHOOLS.filter(s=>s.lv==="고").length})');
 check('초 474 · 중 260 · 고 183', byLv.초 === 474 && byLv.중 === 260 && byLv.고 === 183, JSON.stringify(byLv));
 check('시군 22곳이 모두 학교를 가진다', q('SIGUNGU.every(sg=>SCHOOLS.some(s=>s.s===sg.s))'));
-check('좌표 없는 학교는 1곳뿐이다', q('SCHOOLS.filter(s=>s.lat==null).length') === 1,
-  '개수: ' + q('SCHOOLS.filter(s=>s.lat==null).length'));
+/* ★ 〔2026. 9. 6.〕 이 문턱이 «1» 이었습니다.
+   포항해오름중학교(2026. 3. 1. 개교)만 학교알리미가 좌표를 안 줘서
+   실제 위치 지도에 1,538곳만 찍혔습니다. 주소는 있었으므로
+   bake-coords 가 카카오로 찾아 채웁니다. 이제 빠진 곳이 없어야 합니다.
+   다시 «1» 로 올려 초록을 만들지 마세요 — 그러면 검사를 끄는 것입니다. */
+check('좌표 없는 학교가 없다', q('SCHOOLS.filter(s=>s.lat==null).length') === 0,
+  '빠진 곳: ' + q('SCHOOLS.filter(s=>s.lat==null).map(s=>s.name).join(", ")'));
 check('좌표가 경북 범위 안에 있다',
   q('SCHOOLS.filter(s=>s.lat!=null&&(s.lat<35.0||s.lat>37.6||s.lon<127.8||s.lon>131.2)).length') === 0);
 check('울릉군 학교는 동해 먼바다에 있다', q('SCHOOLS.filter(s=>s.s==="울릉"&&s.lon>130.5).length') > 0);
@@ -296,7 +333,11 @@ check('같은 학교가 두 번 들어 있지 않다', dupNames.length === 0,
 console.log('\n■ 시군별로 쪼개서 세기 (합계만 맞는 것을 잡기 위해)');
 LEVELS_CHECK();
 function LEVELS_CHECK(){
-  for (const lv of ['초','중','고']) {
+  /* ★ 〔2026. 9. 6.〕 이 고리가 «초·중·고» 셋만 돌았습니다.
+     그래서 유치원과 특수학교는 아무도 세어 보지 않았고,
+     특수학교가 0곳인 15개 시군에 학생 791명이 있는 채로 검사 170개가
+     전부 초록이었습니다. 다섯 학교급을 모두 돕니다. */
+  for (const lv of ['초','중','고','유','특수']) {
     const bad = q(`SIGUNGU.filter(sg=>{
       const list = schoolsOf(sg.s,'${lv}');
       const b = BASE['${lv}'][sg.s];
@@ -309,6 +350,25 @@ function LEVELS_CHECK(){
   }
   const totalSch = q(`['초','중','고'].reduce((a,lv)=>a+SIGUNGU.reduce((b,sg)=>b+BASE[lv][sg.s].sch,0),0)`);
   check('세 학교급 학교수 합계가 917', totalSch === 917, '합계: ' + totalSch);
+
+  /* 학교가 없는데 학생이 있는 칸 — 있으면 화면이 없는 것을 그립니다 */
+  const ghosts = q(`(function(){const o=[];LEVELS.forEach(lv=>SIGUNGU.forEach(sg=>{
+    const b=BASE[lv][sg.s];
+    if(b.sch===0 && (b.stu>0||b.cls>0)) o.push(lv+' '+sg.s+' 학교0곳인데 학생'+b.stu+'명·학급'+b.cls);
+  }));return o})()`);
+  check('학교가 0곳인 칸에는 학생·학급도 0이다',
+    ghosts.length === 0, ghosts.slice(0, 6).join(' / '));
+
+  /* 기준자료 합계 = 학교별 합계. 화면 KPI 와 엑셀이 갈라지지 않게 합니다 */
+  const drift = q(`(function(){
+    let bs=0,bc=0; LEVELS.forEach(lv=>SIGUNGU.forEach(sg=>{bs+=BASE[lv][sg.s].stu;bc+=BASE[lv][sg.s].cls;}));
+    const ss=SCHOOLS.reduce((a,s)=>a+(s.stu||0),0), sc=SCHOOLS.reduce((a,s)=>a+(s.cls||0),0);
+    return {bs,ss,bc,sc};
+  })()`);
+  check('기준자료 학생 합계 = 학교별 학생 합계',
+    drift.bs === drift.ss, '기준 ' + drift.bs + ' vs 학교 ' + drift.ss);
+  check('기준자료 학급 합계 = 학교별 학급 합계',
+    drift.bc === drift.sc, '기준 ' + drift.bc + ' vs 학교 ' + drift.sc);
 }
 
 /* ---------- D2 ---------- */
@@ -618,6 +678,31 @@ check('가짜 소재지 배정이 없다', !/i\s*%\s*3|임의 배정한 더미/.
    `bake-edss.mjs` 가 여러 해치를 심으면 곡선·감소율·전망이 한꺼번에 바뀝니다.
    **심기 전과 심은 뒤 둘 다** 확인합니다. 심은 뒤만 보면 「아직 안 심었을 때
    조용히 0 이 되는」 실패를 놓칩니다. */
+console.log('\n■ 목록에서 학교를 고르면 지도가 간다');
+check('학교 카드가 진짜 button 이다 (키보드로도 눌린다)',
+  /createElement\('button'\)/.test(js) && /el\.type = 'button'/.test(js));
+check('카드를 누르면 goToSchool 을 부른다',
+  /el\.addEventListener\('click', \(\) => goToSchool\(s\)\)/.test(js));
+check('실제 위치 지도와 간편 지도 «양쪽» 길이 있다',
+  /function focusOnSgisMap/.test(js) && /function focusOnDetailMap/.test(js));
+check('간편 지도에서 시군을 아직 안 골랐으면 먼저 펼친다',
+  /selectSigungu\(sg\)/.test(js) && /focusOnDetailMap\(s\), 60/.test(js));
+check('좌표가 없는 학교는 지도로 보내지 않고 그렇다고 말한다',
+  /좌표가 없어 지도에 표시할 수 없습니다/.test(js));
+check('간편 지도 핀이 자기 화면좌표를 가지고 있다',
+  /data-mx=/.test(js) && /detailMapPts\.set/.test(js));
+check('실제 지도 마커를 이름으로 찾을 수 있다',
+  /sgisMarkers\.set\(schoolKey\(s\), marker\)/.test(js) && /sgisMarkers\.clear\(\)/.test(js));
+
+console.log('\n■ 내보내기가 화면과 같은 수를 말한다');
+check('특수교육 요약이 화면과 같은 배치유형 총계를 쓴다',
+  /sum\.push\(\['특수교육대상자',P\.total/.test(js));
+check('다문화 수가 내보내기에 들어간다 (예전에는 「미확보」만 적혔다)',
+  /name:'다문화학생'/.test(js) && !/\['다문화','미확보'/.test(js));
+check('폐교 화면도 자기 자료를 내보낸다',
+  /function closedExportSheets/.test(js) && /name:'폐교목록'/.test(js) &&
+  !/sheets=\[\{name:'안내',title:'폐교 활용 현황'/.test(js));
+
 console.log('\n■ EDSS 실적 연결');
 check('실적 여부를 한 곳에서만 판단한다',
   (CODE_ONLY.match(/typeof EDSS_YEARS !== 'undefined'/g) || []).length === 1);

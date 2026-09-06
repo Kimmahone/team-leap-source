@@ -112,8 +112,12 @@ check('중 260곳', H.SCHOOLS.filter(s => s.k === 'm').length === 260);
 check('고 183곳', H.SCHOOLS.filter(s => s.k === 'h').length === 183);
 check('분교장이 빠지지 않았다', H.SCHOOLS.filter(s => /분교장$/.test(s.n)).length === 18,
   '작은 학교를 위한 앱이 분교장을 빠뜨리면 앞뒤가 맞지 않는다');
-check('좌표 없는 학교는 딱 한 곳', H.SCHOOLS.filter(s => s.lat == null).length === 1,
-  '억지로 채우지 않은 곳 — 포항해오름중학교');
+/* 〔2026. 9. 6.〕 문턱이 «1» 이었습니다 — 포항해오름중학교(2026. 3. 1. 개교)만
+   학교알리미가 좌표를 안 줘서 비어 있었습니다. 주소는 있었으므로
+   bake-coords 가 카카오로 찾아 채웁니다. 이제 빠진 곳이 없습니다.
+   다시 «1» 로 올려 초록을 만들지 마세요 — 검사를 끄는 것입니다. */
+check('좌표 없는 학교가 없다', H.SCHOOLS.filter(s => s.lat == null).length === 0,
+  '빠진 곳: ' + H.SCHOOLS.filter(s => s.lat == null).map(s => s.n).join(', '));
 check('경북 밖으로 튄 좌표가 없다',
   H.SCHOOLS.every(s => s.lat == null || (s.lat > 35.3 && s.lat < 37.6 && s.lon > 127.8 && s.lon < 131.1)));
 check('시군이 22개', H.REGIONS.length === 22);
@@ -161,7 +165,17 @@ check('같은 시군(안동초)보다 가까운 다른 시군 학교가 있다',
   otherGun ? otherGun.s.n + ' ' + otherGun.km + 'km vs 안동초등학교 ' + (andongCity && andongCity.km) + 'km' : '');
 
 console.log('\n[4] 좌표를 모르는 학교는 순위에 섞지 않는다 — 규칙 ①');
-const HAEORUM = H.SCHOOLS.filter(s => s.lat == null)[0];
+/* ★ 〔2026. 9. 6.〕 예전에는 «실제로 좌표가 빠진 학교»(포항해오름중학교)를
+   집어다 썼습니다. 그 학교의 좌표를 채우자 이 자리가 undefined 가 되어
+   검사가 통째로 터졌습니다. 규칙은 그대로 지켜야 하는데, 규칙을 지키는지
+   보는 일이 «자료에 구멍이 남아 있는지»에 매여 있었던 것입니다.
+   그래서 구멍을 여기서 «직접 만들어» 봅니다. 자료가 온전해도 규칙은 계속 지킵니다. */
+const ME_NAME = (S('포항제철초등학교') || S('포항초등학교')).n;
+/* 같은 시군의 이웃 하나를 골라 좌표를 지웁니다 — 멀리 있는 학교를 고르면
+   범위 밖이라 「거리 모름」 자리에도 안 들어와 무엇을 보는지 흐려집니다. */
+const HAEORUM = H.SCHOOLS.filter(s => s.rc === 'pohang' && s.n !== ME_NAME && s.lat != null)[0];
+const savedLat = HAEORUM.lat, savedLon = HAEORUM.lon;
+HAEORUM.lat = null; HAEORUM.lon = null;
 H.setMe(S('포항제철초등학교') || S('포항초등학교'), 20);
 H.data().kind = ''; H.data().radius = 90; H.save();
 const nb2 = H.neighbors();
@@ -171,6 +185,7 @@ check('대신 「거리 모름」 자리에 있다',
   nb2.unknown.some(s => s.n === HAEORUM.n),
   '0km 로 두면 목록 맨 위에 올라와 가장 가까운 학교처럼 보인다');
 check('거리 목록의 거리는 모두 숫자다', nb2.list.every(x => typeof x.km === 'number' && isFinite(x.km)));
+HAEORUM.lat = savedLat; HAEORUM.lon = savedLon;   // 되돌려 놓습니다
 
 console.log('\n[5] 범위와 학교급 거르기');
 H.setMe(GIRAN, 12);

@@ -38,8 +38,14 @@ export function validateBackendFoundation() {
   }
 
   for (const service of SERVICES) {
-    if (!service.env?.length && !service.pendingApproval) errors.push(`환경변수 이름 없음: ${service.id}`);
-    for (const name of service.env || []) {
+    /* 〔2026. 9. 6.〕 예전에는 env 가 비면 «승인 대기»일 때만 봐줬습니다.
+       EDSS 승인이 나면서 그 예외가 사라졌는데, EDSS 는 일곱 API 가운데
+       어느 것이 오느냐에 따라 열쇠 이름이 달라 optionalEnv 에만 적혀 있습니다.
+       그래서 「어느 쪽에든 이름이 하나는 있어야 한다」로 넓힙니다 —
+       이름을 아예 안 적는 것만 막으면 됩니다. */
+    const names = [...(service.env || []), ...(service.optionalEnv || [])];
+    if (!names.length && !service.pendingApproval) errors.push(`환경변수 이름 없음: ${service.id}`);
+    for (const name of names) {
       if (!/^[A-Z][A-Z0-9_]+$/.test(name)) errors.push(`환경변수 이름 형식 오류: ${name}`);
     }
   }

@@ -2,7 +2,7 @@
  * 공개 대시보드와 향후 데이터 백엔드가 함께 쓰는 데이터 목록입니다.
  * 인증키 값은 절대 적지 않고 Cloudflare 런타임 환경변수 이름만 적습니다.
  */
-export const CATALOG_VERSION = '2026-08-29.1';
+export const CATALOG_VERSION = '2026-09-06.1';
 
 export const DATASETS = [
   {
@@ -42,8 +42,14 @@ export const DATASETS = [
     script: null, artifact: null
   },
   {
-    id: 'D8', name: '다문화·특수교육 공개 지표', provider: '학교알리미·교육통계',
-    referenceDate: '특수교육 2026 공시·다문화 미확보', refresh: '연 1회 공개 통계 확인', status: 'partial',
+    /* 〔2026. 9. 6.〕 「다문화 미확보」로 남아 있었습니다. 9월 3일에
+       교육통계연보(2025. 4. 1.) 13,158명을 심어 화면에 표까지 나가고 있는데
+       이 목록만 예전 말을 하고 있었습니다. 밖에서 이 API 로 우리 상태를
+       판단하면 틀린 답을 얻습니다. 도 단위까지만이라 status 는 partial 그대로입니다 —
+       시군·학년별이 오면 full 로 올립니다. */
+    id: 'D8', name: '다문화·특수교육 공개 지표', provider: '국립특수교육원·교육통계연보·학교알리미',
+    referenceDate: '특수교육 배치유형 2026. 4. 1. · 다문화 2025. 4. 1. · 특수학급 2026 공시',
+    refresh: '연 1회 공개 통계 확인', status: 'partial',
     script: null, artifact: null
   },
   {
@@ -55,6 +61,12 @@ export const DATASETS = [
     id: 'D10', name: '유치원 기본현황·원아·학급', provider: '유치원알리미',
     referenceDate: '2023-2차~2026-1차 기관별 최신 공시', refresh: '분기 1회 새 공시 확인·공시 차수 변경 시 반영', status: 'active',
     script: 'open api/bake-kinder.mjs', artifact: '06. 실행계획(1)/prototype/index.html'
+  },
+  {
+    /* 〔2026. 9. 6.〕 9월 3일에 폐교 750곳을 심었는데 이 목록에는 항목이 없었습니다. */
+    id: 'D11', name: '폐교 재산·활용 현황', provider: '지방교육재정알리미',
+    referenceDate: '2026년 기준 750곳', refresh: '연 1회 공개 자료 확인', status: 'partial',
+    script: 'open api/bake-closed-schools.mjs', artifact: '06. 실행계획(1)/prototype/index.html'
   }
 ];
 
@@ -67,8 +79,11 @@ export const SERVICES = [
   { id: 'schoolinfo', name: '학교알리미 갱신', env: ['SCHOOLINFO_API_KEY'], runtime: false },
   {
     id: 'edss', name: 'EDSS 학교 기준·학생·학급 보완 API',
-    // 2026-08-29 현재 신청한 7개 API 모두 승인·키 발급 대기 상태입니다.
-    // 따라서 배포 환경에 아직 필수 키를 요구하지 않습니다.
+    // 〔2026. 9. 6.〕 신청한 7개 API 가 **모두 승인**되었습니다.
+    // 8월 31일부터 실제로 굽고 있고(EDSS_META.만든때 = 2026-09-05),
+    // 화면도 「가정한 감소율」에서 「실측 감소율」로 넘어갔습니다.
+    // 그런데 이 목록만 계속 「승인 대기」라고 말하고 있었습니다.
+    // 열쇠는 GitHub Actions 시크릿에 있습니다 — 배포 환경에는 필요 없습니다.
     env: [],
     optionalEnv: [
       'EDSS_SCHOOL_ATTRIBUTE_API_KEY',
@@ -79,8 +94,7 @@ export const SERVICES = [
       'EDSS_SCHOOL_OVERVIEW_API_KEY',
       'EDSS_EDU_STAT_SCHOOL_OVERVIEW_API_KEY'
     ],
-    runtime: false,
-    pendingApproval: true
+    runtime: false
   },
   { id: 'kosis', name: 'KOSIS 갱신', env: ['KOSIS_API_KEY'], runtime: false },
   { id: 'kinder', name: '유치원알리미 갱신', env: ['KINDER_API_KEY'], runtime: false }

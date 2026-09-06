@@ -48,7 +48,13 @@ check('수집 스크립트가 GitHub Actions 환경변수를 읽는다',
   /process\.env\.SCHOOLINFO_API_KEY/.test(read('open api/bake-special.mjs'))&&
   /process\.env\.KINDER_API_KEY/.test(read('open api/bake-kinder.mjs')));
 
-check('EDSS 승인 대기와 API별 비밀변수 목록이 분리되어 있다',SERVICES.some(s=>s.id==='edss'&&s.pendingApproval&&s.env.length===0&&s.optionalEnv.includes('EDSS_SCHOOL_ATTRIBUTE_API_KEY')&&s.optionalEnv.includes('EDSS_STUDENT_STATUS_API_KEY')));
+/* 〔2026. 9. 6.〕 일곱 API 가 모두 승인되었습니다. 그래서 「승인 대기」가 아닙니다.
+   열쇠는 GitHub Actions 시크릿에 있으므로 배포 환경(env)은 비어 있는 것이 맞고,
+   어느 API 가 오느냐에 따라 이름이 달라 optionalEnv 에 일곱을 적어 둡니다. */
+check('EDSS 는 승인 완료이고 API별 비밀변수 목록이 남아 있다',SERVICES.some(s=>s.id==='edss'&&!s.pendingApproval&&s.env.length===0&&s.optionalEnv.includes('EDSS_SCHOOL_ATTRIBUTE_API_KEY')&&s.optionalEnv.includes('EDSS_STUDENT_STATUS_API_KEY')));
+check('수집용 열쇠는 배포 환경이 아니라 Actions 소관이라고 적는다',
+  /github_actions_secrets/.test(read('functions/api/data-status.js'))&&
+  /managed_in_actions/.test(read('functions/api/data-status.js')));
 check('내부 정책·사업 자료를 핵심 데이터에서 제외한다',DATASETS.some(d=>d.id==='D6'&&d.status==='out_of_scope'));
 check('이전 내부자료 요청 문서가 발송 금지로 표시된다',
   /발송하지 않음/.test(read('06. 실행계획(1)/경북교육청_내부자료_요청목록.md'))&&

@@ -516,11 +516,33 @@ export function aggregate(records) {
    여러 해치가 들어오면 그 자리에 이 값이 들어갑니다.
    CAGR = (끝/처음)^(1/해수) - 1. 늘어난 곳은 음수가 나오고, 그대로 씁니다
    (구미·경산은 실제로 늘어난 해가 있습니다 — 0 으로 깎으면 거짓이 됩니다). */
+/* ★ 산출 구간은 «최근 5개 연도» 입니다 〔2026. 9. 6.〕
+     처음에는 받은 해 전부(2016~2025)로 쟀습니다. 그런데 열 해짜리 창은
+     그 사이에 일어난 «한 번뿐인 사건»을 «계속되는 추세»로 바꿔 놓습니다.
+
+       예천 초등학교  1,437 → 1,326 → **1,870**(2019 도청신도시 입주)
+                     → 2,310(2023 정점) → 2,217 → 2,067
+
+     열 해로 재면 +4.12%/년 «증가»가 나옵니다. 신도시 입주 한 번이
+     스무 해 곱해지는 것입니다. 정작 최근 세 해는 내리 줄고 있습니다.
+     그래서 화면이 「예천 초등학생이 2030년까지 12.6% 는다」고 말했습니다.
+
+     예천만의 문제가 아니었습니다. **22개 시군 전부** 최근 5년 감소가
+     열 해 평균보다 가파릅니다 (포항 -1.11%/년 → -3.38%/년,
+     구미 -1.11% → -3.25%, 칠곡 -2.95% → -5.63%). 감소가 «빨라지고»
+     있는데 열 해 평균은 그것을 눌러 평평하게 만듭니다.
+     학령인구 감소에 대응하려고 만든 화면이 감소를 **작게** 말하고 있었습니다.
+
+     그래서 최근 5개 연도로 좁힙니다. 다섯 점이 안 되면 있는 만큼 씁니다. */
+const RATE_WINDOW = 5;
+
 export function declineRates(agg) {
   const out = {};
   const ys = agg.years;
   if (ys.length < 2) return out;
-  const first = ys[0], last = ys[ys.length - 1], span = last - first;
+  const startIdx = Math.max(0, ys.length - RATE_WINDOW);
+  const first = ys[startIdx], last = ys[ys.length - 1], span = last - first;
+  if (span < 1) return out;
   for (const sgg of Object.keys(agg.byYear[last] || {})) {
     for (const lv of Object.keys(agg.byYear[last][sgg])) {
       const a = agg.byYear[first] && agg.byYear[first][sgg] && agg.byYear[first][sgg][lv];
