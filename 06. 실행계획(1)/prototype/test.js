@@ -678,6 +678,34 @@ check('가짜 소재지 배정이 없다', !/i\s*%\s*3|임의 배정한 더미/.
    `bake-edss.mjs` 가 여러 해치를 심으면 곡선·감소율·전망이 한꺼번에 바뀝니다.
    **심기 전과 심은 뒤 둘 다** 확인합니다. 심은 뒤만 보면 「아직 안 심었을 때
    조용히 0 이 되는」 실패를 놓칩니다. */
+console.log('\n■ 뉴스가 조용히 낡지 않는다');
+/* ★ 〔2026. 9. 7.〕 9월 6일 예약 실행이 통째로 빠졌는데 화면은 조용했습니다.
+   카드에 「8. 31. 기준」이라고 적히긴 했지만, 이상하다는 것을 알려면
+   오늘 날짜를 알고 뺄셈을 해야 합니다. 사람이 눈으로 발견해야 했습니다.
+   일정은 정각을 피해 옮겼지만, GitHub 일정은 «약속»이 아니라 «자격»이라
+   또 빠질 수 있습니다. 그러니 뺄셈은 화면이 대신합니다.
+
+   ※ 이 갈래는 뉴스 IIFE 안에 있어 밖에서 부를 수 없습니다. 그래서 «있는지»를
+     봅니다. 실제로 그려지는지는 브라우저에서 따로 확인했습니다. */
+const staleFn = (js.match(/function newsStaleNote\(\)[\s\S]*?\n  \}/) || [''])[0];
+const daysFn  = (js.match(/function newsStaleDays\(\)[\s\S]*?\n  \}/) || [''])[0];
+check('며칠째 새 기사가 없는지 세는 갈래가 있다', daysFn.length > 0);
+check('배열 순서를 믿지 않고 «가장 새 기사»를 찾는다 (정렬이 흐트러져도 맞게)',
+  /Math\.max/.test(daysFn) && /isNaN/.test(daysFn));
+check('기사가 없으면 날수를 지어내지 않는다 (null)',
+  /return null/.test(daysFn) && !/return 0/.test(daysFn));
+check('이틀까지는 조용하다 (기사가 없는 날도 있다)', /d < 3/.test(staleFn));
+check('사흘째부터 며칠인지 적는다', /일째/.test(staleFn) && /새 기사가 들어오지 않았습니다/.test(staleFn));
+check('닷새째부터는 확인해 달라고 말한다', /d >= 5/.test(staleFn) && /확인해 주세요/.test(staleFn));
+check('어디를 볼지도 알려 준다', /GitHub Actions/.test(staleFn));
+check('색만으로 말하지 않는다 — 날수를 글자로 함께 적는다',
+  /news-stale-hard/.test(staleFn) && /<b>/.test(staleFn));
+check('홈 카드와 뉴스 화면 «양쪽»에 붙는다 (한쪽만이면 그 화면만 본 사람은 못 본다)',
+  /newsStaleNote\(\) \+/.test(js) && /news-stale-slot/.test(js) &&
+  /id="news-stale-slot"/.test(html));
+check('알림 자리가 스크린리더에도 전해진다',
+  /id="news-stale-slot" aria-live="polite"/.test(html));
+
 console.log('\n■ 목록에서 학교를 고르면 지도가 간다');
 check('학교 카드가 진짜 button 이다 (키보드로도 눌린다)',
   /createElement\('button'\)/.test(js) && /el\.type = 'button'/.test(js));

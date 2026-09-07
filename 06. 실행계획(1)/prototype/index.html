@@ -367,6 +367,17 @@ a{color:var(--brand)}
 }
 /* 학교 카드는 «누르면 지도가 그 학교로 갑니다». 버튼이므로 버튼으로 만듭니다 —
    div 에 onclick 만 붙이면 키보드로 못 씁니다. 생김새는 그대로 둡니다. */
+/* 며칠째 새 기사가 없는지 — 조용히 낡는 것을 막는 표시입니다.
+   사흘째는 «알림»(옅게), 닷새째부터는 «경고»(테두리를 세게)로 둡니다.
+   색만으로 말하지 않고 날수를 글자로 함께 적습니다. */
+.news-stale{
+  margin:8px 0 2px;padding:7px 10px;border-radius:6px;font-size:12.5px;line-height:1.55;
+  background:var(--card-2);border:1px solid var(--line);color:var(--ink-2);
+}
+.news-stale b{color:var(--ink)}
+.news-stale-hard{background:var(--over-bg);border-color:var(--over);color:var(--ink)}
+.news-stale-hard b{color:var(--over)}
+
 /* 쓸 수 없는 칩 — 눌러도 되는 것처럼 보이지 않게 합니다 */
 .chip:disabled, .chip.chip-off{
   opacity:.45; cursor:not-allowed; text-decoration:line-through;
@@ -1375,6 +1386,8 @@ body.map-maxed{overflow:hidden}
            `사이트 굽기.command` 가 news-history.json 을 읽어 아래 [] 를 갈아 끼웁니다. -->
       <script id="news-data" type="application/json">[]</script>
 
+      <div id="news-stale-slot" aria-live="polite"></div>
+
       <div class="news-grid" id="news-container" aria-live="polite">
         <div style="padding:40px; text-align:center; color:var(--ink-3); grid-column:1/-1;">뉴스를 불러오는 중입니다...</div>
       </div>
@@ -1795,6 +1808,11 @@ body.map-maxed{overflow:hidden}
       return;
     }
 
+    /* 목록 위에도 같은 알림을 답니다 — 사람이 뉴스를 보러 오는 곳은 여기입니다.
+       홈 카드에만 있으면 이 화면만 열어 본 사람은 못 봅니다. */
+    const staleBox = document.getElementById('news-stale-slot');
+    if (staleBox) staleBox.innerHTML = newsStaleNote();
+
     const items = filteredNewsItems();
 
     /* 쪽 수를 셈하고, 필터가 바뀌어 쪽이 사라졌으면 첫 쪽으로 되돌립니다 */
@@ -1928,6 +1946,41 @@ body.map-maxed{overflow:hidden}
   ];
   const GYEONGBUK = /경북|경상북도|포항|경주|김천|안동|구미|영주|영천|문경|경산|의성|청송|영덕|성주|칠곡|예천|봉화|울진|울릉|고령군|영양군|상주시|청도군/;
 
+  /* ★ 며칠째 새 기사가 없는지 — 화면이 «스스로» 말하게 합니다 〔2026. 9. 7.〕
+
+     9월 6일 22:00(UTC) 예약 실행이 «통째로 빠졌습니다». 지연도 실패도 아니고
+     실행 자체가 안 만들어졌습니다 — 기록도 오류도 알림도 없었습니다.
+     GitHub 은 부하가 높으면 예약을 버리고, 그 대표적 시각이 매시 정각입니다.
+
+     그런데 그동안 화면은 «조용했습니다». 카드에 「2026. 8. 31. 기준」이라고
+     적히긴 했지만, 그것이 이상하다는 것을 알려면 오늘 날짜를 알고 뺄셈을
+     해야 합니다. 결국 사람이 눈으로 발견해야 했습니다.
+
+     일정은 옮겼지만(07:00 → 07:37) GitHub 일정은 «약속»이 아니라 «자격»이라
+     언제든 또 빠질 수 있습니다. 그래서 뺄셈을 화면이 대신합니다.
+     이 프로젝트가 되풀이해 겪은 「아무도 보지 않게 되는 실패」를 막는 자리입니다.
+
+     ※ 배열 순서를 믿지 않고 «가장 큰 날짜»를 직접 찾습니다 —
+        정렬이 흐트러져도 셈이 틀리지 않게. */
+  function newsStaleDays() {
+    if (!NEWS_ALL || !NEWS_ALL.length) return null;
+    const ts = NEWS_ALL.map(n => new Date(n.pubDate).getTime()).filter(t => !isNaN(t));
+    if (!ts.length) return null;
+    return Math.floor((Date.now() - Math.max(...ts)) / 86400000);
+  }
+
+  /* 이틀까지는 조용히 둡니다 — 기사가 없는 날도 있습니다.
+     사흘째부터 적고, 닷새째부터는 «확인해 달라»고 말합니다. */
+  function newsStaleNote() {
+    const d = newsStaleDays();
+    if (d == null || d < 3) return '';
+    const hard = d >= 5;
+    return '<div class="news-stale' + (hard ? ' news-stale-hard' : '') + '">' +
+      '<b>' + d + '일째</b> 새 기사가 들어오지 않았습니다' +
+      (hard ? ' — 수집이 멈췄는지 확인해 주세요 (GitHub Actions → 주간 뉴스 받아오기)' : '') +
+      '</div>';
+  }
+
   function renderNewsBrief() {
     const box = document.getElementById('news-brief');
     if (!box) return;
@@ -1984,6 +2037,7 @@ body.map-maxed{overflow:hidden}
 
     box.innerHTML =
       `<div class="hd" id="news-brief-date">${esc(stamp)} 기준 · ${week.length ? '최근 7일' : '전체'} ${base.length}건${esc(trend)}</div>` +
+      newsStaleNote() +
       (top
         ? `<div style="font-size:13.5px;line-height:1.6">이번 자락의 가장 굵은 줄기는 <b>${esc(top.name)}</b>입니다 — ` +
           `${base.length}건 가운데 <b>${top.n}건</b>. 경북 이야기는 <b>${local}건</b>입니다.</div>`
