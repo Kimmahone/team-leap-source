@@ -95,10 +95,18 @@ check('push 때는 받아오지 않는다', /!=\s*'push'/.test(fetchStep));
 const cronLines = (wf.match(/^\s*-\s*cron:.*$/gm) || []).map((l) => l.trim());
 check('일정이 하나만 있다 (여러 개면 어느 것이 도는지 헷갈립니다)',
   cronLines.length === 1, cronLines.join(' / '));
-check('매일 한 번 돈다 — 한국시간 아침 7시',
-  /cron:\s*'0 22 \* \* \*'/.test(wf), cronLines.join(' / '));
+check('매일 한 번 돈다',
+  /cron:\s*'\d+ 22 \* \* \*'/.test(wf), cronLines.join(' / '));
 check('요일·날짜를 좁히지 않았다 (좁히면 놓치는 기사가 생깁니다)',
-  !/cron:\s*'0 22 \* \* [0-6]/.test(wf) && !/cron:\s*'0 22 \*\/\d/.test(wf));
+  !/cron:\s*'\d+ 22 \* \* [0-6]/.test(wf) && !/cron:\s*'\d+ 22 \*\/\d/.test(wf));
+/* ★ 〔2026. 9. 7.〕 정각(0분)에 두지 않습니다.
+   9월 6일 22:00(UTC) 회차가 «통째로 사라졌습니다» — 지연도 실패도 아니고
+   실행 자체가 안 만들어졌습니다. GitHub 은 부하가 높으면 예약을 버리고,
+   그 대표적 시각이 매시 정각입니다. 이 저장소는 성공한 회차도 매번
+   16분·17분·130분 늦게 돌았습니다.
+   보기 좋으라고 0 으로 되돌리면 같은 일이 또 생깁니다. */
+check('정각을 피한다 (정각은 GitHub 이 예약을 가장 잘 버리는 시각이다)',
+  !/cron:\s*'0 \d+ /.test(wf), cronLines.join(' / '));
 check('손으로도 돌릴 수 있다', /workflow_dispatch:/.test(wf));
 /* 막으려는 것은 «수집»이지 «배포»가 아닙니다. push 때 배포까지 멈추면
    고친 것이 라이브에 안 나갑니다. 단계 이름으로 자리를 잡습니다 —
