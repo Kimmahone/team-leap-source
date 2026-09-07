@@ -722,6 +722,42 @@ check('간편 지도 핀이 자기 화면좌표를 가지고 있다',
 check('실제 지도 마커를 이름으로 찾을 수 있다',
   /sgisMarkers\.set\(schoolKey\(s\), marker\)/.test(js) && /sgisMarkers\.clear\(\)/.test(js));
 
+console.log('\n■ 목록이 전부를 보여 줄 수 있다');
+/* ★ 〔2026. 9. 7.〕 120 이 «천장»이었습니다 — 화면에 474곳이 있어도 120곳만
+   나오고 나머지는 볼 길이 아예 없었습니다. 「어떤 기준으로 고른 120곳인지
+   모르겠다」는 말을 들었습니다. 이제는 «처음에 접어 두는 수»일 뿐입니다.
+   1,539곳을 다 그려도 67ms 라 막을 까닭이 없습니다. */
+check('처음에 접어 두는 수가 있다 (천장이 아니라)',
+  /ONLINE_SCHOOL_LIST_LIMIT = \d+/.test(js) && /let onlineListExpanded/.test(js));
+check('펼치면 자른 목록이 아니라 «전부»를 그린다',
+  /onlineListExpanded\) \? visible\.slice\(0, ONLINE_SCHOOL_LIST_LIMIT\) : visible/.test(js));
+check('더 보기 단추가 있다', /id="home-online-more"/.test(html));
+check('몇 곳이 더 있는지 수를 적는다', /나머지 \$\{fmt\(visible\.length - ONLINE_SCHOOL_LIST_LIMIT\)\}곳 더 보기/.test(js));
+check('다시 접을 수 있다', /처음 \$\{ONLINE_SCHOOL_LIST_LIMIT\}곳만 보기/.test(js));
+check('«무슨 차례로» 고른 것인지 적는다 (기준을 모르겠다는 말을 들었다)',
+  /학생 수 많은 차례/.test(js));
+check('펼침 상태를 스크린리더에도 알린다', /aria-expanded/.test(js));
+
+console.log('\n■ 학교를 본 뒤 «보던 자리»로 돌아온다');
+/* ★ 〔2026. 9. 7.〕 나오는 길이 「← 경북 전체로」뿐이었습니다. 그것은 «처음»으로
+   가는 것이지 «보던 자리»로 가는 것이 아닙니다. 구미를 살펴보다 학교 하나를
+   들여다본 사람은 다시 구미까지 손으로 찾아 들어가야 했습니다.
+   브라우저 뒤로 가기는 이 앱을 통째로 떠납니다 — 더 나쁩니다. */
+check('되돌아갈 자리를 한 칸 기억한다', /let mapReturn/.test(js) && /function captureMapView/.test(js));
+check('떠나기 «직전»에 기억한다', /rememberMapView\(\);\s*\/\/ ← 떠나기/.test(js));
+check('되돌리는 갈래가 있다', /function restoreMapView/.test(js));
+check('단추가 있다', /id="home-map-back"/.test(html) && /home-map-back'\)\.addEventListener\('click', restoreMapView\)/.test(js));
+check('실제 위치 지도는 중심과 배율을 함께 되돌린다',
+  /sgisMap\.setView\(v\.center, v\.zoom\)/.test(js));
+check('간편 지도는 «시군»까지 되돌린다 (다른 시군 학교를 봤을 수 있다)',
+  /if\(v\.sel && homeState\.sel !== v\.sel\)\{ selectSigungu\(v\.sel\)/.test(js));
+check('「경북 전체로」 를 누르면 돌아갈 자리는 뜻을 잃는다',
+  /clearMapReturn\(\);\s*\/\/ «처음»으로/.test(js));
+check('지도 종류가 바뀌면 좌표계가 달라 버린다',
+  /if\(homeState\.mapMode !== mode\) clearMapReturn\(\)/.test(js));
+check('조건 밖 학교로 보내면 지도에 «없는» 채로 두지 않는다',
+  /if\(!sgisMarkers\.has\(schoolKey\(s\)\)\)\{[\s\S]*?homeState\.sel = null/.test(js));
+
 console.log('\n■ 내보내기가 화면과 같은 수를 말한다');
 check('특수교육 요약이 화면과 같은 배치유형 총계를 쓴다',
   /sum\.push\(\['특수교육대상자',P\.total/.test(js));

@@ -367,6 +367,10 @@ a{color:var(--brand)}
 }
 /* 학교 카드는 «누르면 지도가 그 학교로 갑니다». 버튼이므로 버튼으로 만듭니다 —
    div 에 onclick 만 붙이면 키보드로 못 씁니다. 생김새는 그대로 둡니다. */
+/* 「나머지 N곳 더 보기」 — 목록 아래 가운데 */
+.list-more{display:flex;justify-content:center;margin-top:9px}
+.list-more .chip{font-size:12.5px}
+
 /* 며칠째 새 기사가 없는지 — 조용히 낡는 것을 막는 표시입니다.
    사흘째는 «알림»(옅게), 닷새째부터는 «경고»(테두리를 세게)로 둡니다.
    색만으로 말하지 않고 날수를 글자로 함께 적습니다. */
@@ -1089,6 +1093,8 @@ body.map-maxed{overflow:hidden}
             <button type="button" class="chip" id="home-metric-stu" aria-pressed="false">학생 수</button>
             <button type="button" class="chip" id="map-mode-online" aria-pressed="true" title="SGIS를 이용해 실제 학교 위치를 표시하는 지도">실제 위치 지도</button>
             <button type="button" class="chip" id="map-mode-offline" aria-pressed="false" title="인터넷 연결이 없어도 사용할 수 있는 경계 지도">간편 지도</button>
+            <button type="button" class="chip" id="home-map-back" hidden
+                    title="학교를 고르기 «전»에 보던 자리로 되돌아갑니다">↩ 이전 위치로</button>
             <button type="button" class="chip" id="home-reset" hidden>← 경북 전체로</button>
             <button type="button" class="chip" id="home-side-toggle" title="왼쪽 요약을 접어 지도를 넓힙니다">요약 접기</button>
             <button type="button" class="chip" id="map-expand" aria-pressed="false" title="지도를 화면 가득 키웁니다 (닫기: Esc)">지도 크게 보기</button>
@@ -1117,6 +1123,9 @@ body.map-maxed{overflow:hidden}
               <span id="home-online-count">지도를 움직이거나 확대하면 목록도 바뀝니다</span>
             </div>
             <div id="home-online-schools" class="school-grid"></div>
+            <div class="list-more">
+              <button type="button" class="chip" id="home-online-more" hidden></button>
+            </div>
           </section>
 
           <!-- 시군 상세: 학교 마커 -->
@@ -3353,7 +3362,17 @@ function onlineSchools(){
   );
 }
 
+/* 목록을 처음에 몇 곳까지 보여 줄까.
+   ★ 〔2026. 9. 7.〕 예전에는 이 수가 «천장»이었습니다 — 화면에 474곳이 있어도
+     120곳만 나오고 나머지는 «볼 길이 아예 없었습니다». 「어떤 기준으로 고른
+     120곳인지 모르겠다」는 말을 들었습니다. 학생 수 순이라고 적어 두긴 했지만
+     한 줄로 흘려 적어 눈에 들어오지 않았습니다.
+     이제는 «처음에 접어 두는 수»일 뿐입니다. 단추 하나로 전부 폅니다.
+     1,539곳을 다 그려도 67ms 라 성능 때문에 막을 까닭이 없습니다 —
+     막았던 진짜 까닭은 스크롤이 스무 화면쯤 길어지는 것이었고,
+     그것은 «접어 두면» 될 일이지 «못 보게 할» 일이 아닙니다. */
 const ONLINE_SCHOOL_LIST_LIMIT = 120;
+let onlineListExpanded = false;
 
 /* 실제 위치 지도 아래 목록은 경북 전체 학교가 아니라 현재 화면 안에 있는 학교만 보여 줍니다.
    지도를 확대하거나 옮길 때 목록도 같이 좁아져야 마커와 목록이 서로 맞습니다. */
@@ -3418,12 +3437,30 @@ function renderOnlineSchoolList(){
   }
 
   const visible = visibleOnlineSchools().sort((a,b) => (b.stu || 0) - (a.stu || 0) || a.name.localeCompare(b.name, 'ko'));
-  const shown = visible.slice(0, ONLINE_SCHOOL_LIST_LIMIT);
+  const over = visible.length > ONLINE_SCHOOL_LIST_LIMIT;
+  const shown = (over && !onlineListExpanded) ? visible.slice(0, ONLINE_SCHOOL_LIST_LIMIT) : visible;
   wrap.hidden = false;
-  count.textContent = visible.length > ONLINE_SCHOOL_LIST_LIMIT
-    ? `현재 화면 ${fmt(visible.length)}곳 · 학생 수 순 ${ONLINE_SCHOOL_LIST_LIMIT}곳 표시 · 확대하면 더 좁아집니다`
-    : `현재 화면 ${fmt(visible.length)}곳 · 지도를 움직이거나 확대하면 목록도 바뀝니다`;
+
+  /* «몇 곳 가운데 몇 곳을, 무슨 차례로» 를 한 문장으로 적습니다.
+     「120곳 표시」만 적으면 어떻게 고른 120곳인지 알 수 없습니다. */
+  count.textContent = !over
+    ? `현재 화면 ${fmt(visible.length)}곳 모두 표시 · 지도를 움직이거나 확대하면 목록도 바뀝니다`
+    : onlineListExpanded
+      ? `현재 화면 ${fmt(visible.length)}곳 모두 표시 · 학생 수 많은 차례`
+      : `현재 화면 ${fmt(visible.length)}곳 가운데 학생 수 많은 차례로 ${ONLINE_SCHOOL_LIST_LIMIT}곳 · 아래에서 모두 볼 수 있습니다`;
+
   renderSchoolCards(box, shown, '현재 지도 화면과 조건에 해당하는 학교가 없습니다.', 'level');
+
+  const more = document.getElementById('home-online-more');
+  if(more){
+    more.hidden = !over;
+    if(over){
+      more.textContent = onlineListExpanded
+        ? `처음 ${ONLINE_SCHOOL_LIST_LIMIT}곳만 보기`
+        : `나머지 ${fmt(visible.length - ONLINE_SCHOOL_LIST_LIMIT)}곳 더 보기 (모두 ${fmt(visible.length)}곳)`;
+      more.setAttribute('aria-expanded', String(onlineListExpanded));
+    }
+  }
 }
 
 function compactMapValue(value){
@@ -3562,6 +3599,8 @@ function setMapMode(mode){
     mode = 'offline';
   }
 
+  /* 지도 종류가 바뀌면 저장해 둔 자리는 좌표계가 달라 쓸 수 없습니다 */
+  if(homeState.mapMode !== mode) clearMapReturn();
   homeState.mapMode = mode;
   const isOnline = mode === 'online';
   document.getElementById('map-mode-offline').setAttribute('aria-pressed', !isOnline);
@@ -3842,6 +3881,9 @@ function renderTilemap(){
 }
 
 function selectSigungu(sg){
+  /* 학교로 갈 때는 goToSchool 이 먼저 기억해 두고 부릅니다(그때는 mapReturn 이
+     이미 채워져 있어 덮지 않습니다). 사람이 타일을 눌러 옮긴 때만 지웁니다. */
+  if(!mapReturn) showMapBack(false);
   homeState.sel = sg;
   document.getElementById('home-tilemap').hidden = true;
   document.getElementById('home-detail').hidden = false;
@@ -3872,6 +3914,73 @@ const sgisMarkers  = new Map();   // 학교이름|급 → 실제 지도 마커
 
 function schoolKey(s){ return s.name + '|' + s.lv; }
 
+/* ══ 학교로 간 «뒤», 보던 자리로 돌아오는 길 〔2026. 9. 7.〕 ═══════════════
+   목록에서 학교를 누르면 지도가 그 학교로 확대해 들어갑니다. 그런데 나오는
+   길이 「← 경북 전체로」뿐이었습니다. 그것은 «처음»으로 가는 것이지
+   «보던 자리»로 가는 것이 아닙니다. 구미를 살펴보다 학교 하나를 들여다본
+   사람은, 다시 구미까지 손으로 찾아 들어가야 했습니다.
+   브라우저 뒤로 가기는 이 앱을 통째로 떠납니다 — 더 나쁩니다.
+
+   그래서 «떠나기 직전의 자리»를 한 칸 기억해 둡니다.
+   여러 칸 쌓지 않습니다. 사람이 원하는 것은 「방금 그 자리」 하나입니다. */
+let mapReturn = null;
+
+function captureMapView(){
+  if(homeState.mapMode === 'online'){
+    if(!sgisMap || typeof sgisMap.getCenter !== 'function') return null;
+    try{
+      const c = sgisMap.getCenter();
+      /* getCenter 는 UTM-K {x,y} 를 줍니다. 그대로 setView 에 돌려주면
+         같은 자리로 돌아갑니다(재어 확인했습니다). */
+      return { mode:'online', center:{ x:c.x, y:c.y }, zoom:sgisMap.getZoom() };
+    }catch(_e){ return null; }
+  }
+  return {
+    mode:'offline',
+    sel: homeState.sel,
+    zoom: detailMapState.zoom, cx: detailMapState.cx, cy: detailMapState.cy
+  };
+}
+
+function showMapBack(on){
+  const b = document.getElementById('home-map-back');
+  if(b) b.hidden = !on;
+}
+
+/* 새 자리로 떠나기 «직전»에 부릅니다 */
+function rememberMapView(){
+  const v = captureMapView();
+  if(v){ mapReturn = v; showMapBack(true); }
+}
+
+/* 「이전 위치로」 를 눌렀을 때 */
+function restoreMapView(){
+  const v = mapReturn;
+  if(!v) return;
+  mapReturn = null;
+  showMapBack(false);
+  if(v.mode === 'online'){
+    if(!sgisMap) return;
+    try{ sgisMap.setView(v.center, v.zoom); }catch(_e){}
+    renderOnlineSchoolList();
+    return;
+  }
+  /* 간편 지도 — 시군이 바뀌었으면 먼저 그 시군으로 되돌린 뒤 자리를 맞춥니다 */
+  const back = () => {
+    detailMapState.zoom = v.zoom; detailMapState.cx = v.cx; detailMapState.cy = v.cy;
+    updateDetailMapViewBox();
+    const inv = 1 / detailMapState.zoom;
+    document.querySelectorAll('.sch-pin-inner').forEach(el => el.setAttribute('transform', `scale(${inv})`));
+    document.querySelectorAll('.sch-pin-grp.pin-found').forEach(el => el.classList.remove('pin-found'));
+  };
+  if(v.sel && homeState.sel !== v.sel){ selectSigungu(v.sel); setTimeout(back, 60); }
+  else back();
+}
+
+/* 돌아갈 자리가 뜻을 잃는 때 — 사람이 스스로 «처음»이나 «다른 시군»으로 옮긴 때입니다.
+   그때까지 단추를 남겨 두면 엉뚱한 곳으로 튕깁니다. */
+function clearMapReturn(){ mapReturn = null; showMapBack(false); }
+
 /* 간편 지도(SVG)를 그 학교 자리로 옮기고 잠깐 표시합니다 */
 function focusOnDetailMap(s){
   const pt = detailMapPts.get(s.name);
@@ -3897,6 +4006,18 @@ function focusOnDetailMap(s){
 /* 실제 위치 지도(SGIS)를 그 학교 자리로 옮기고 말풍선을 엽니다 */
 function focusOnSgisMap(s){
   if(!sgisMap || !window.sop || s.lat == null || s.lon == null) return false;
+  /* ★ 찾아간 학교가 «지도에 없는» 일이 없게 합니다 〔2026. 9. 7.〕
+     마커는 지금 걸린 조건(시군·학교급)에 든 학교만 그립니다. 그 조건 밖의
+     학교로 보내면 지도만 그 자리로 가고 정작 그 학교는 안 보입니다 —
+     목록도 「0곳」이 되어 잘못 간 것처럼 보입니다.
+     지금 화면에서 누를 수 있는 것은 조건 안의 학교뿐이라 사람이 이 길로
+     들어오지는 않습니다. 다만 나중에 「경북 전체에서 검색」 같은 것이
+     붙으면 바로 드러납니다. 부르는 쪽을 믿지 말고 여기서 막습니다. */
+  if(!sgisMarkers.has(schoolKey(s))){
+    homeState.sel = null;
+    document.getElementById('home-reset').hidden = false;
+    renderSgisMarkers();
+  }
   try{
     const p = new window.sop.LatLng(+s.lat, +s.lon);
     sgisMap.setView(window.sop.utmk(p.x, p.y), SGIS_FOCUS_ZOOM);
@@ -3921,6 +4042,7 @@ function goToSchool(s){
     if(st) st.textContent = `${s.name}은(는) 좌표가 없어 지도에 표시할 수 없습니다.`;
     return;
   }
+  rememberMapView();          // ← 떠나기 «직전»의 자리를 한 칸 기억합니다
   if(homeState.mapMode === 'online' && sgisMap){ focusOnSgisMap(s); return; }
   if(focusOnDetailMap(s)) return;
   /* 상세 지도가 아직 없는 상태 — 그 학교가 있는 시군을 펼치고 다시 시도합니다 */
@@ -4282,7 +4404,19 @@ function setMetric(m){
   document.getElementById('home-metric-stu').setAttribute('aria-pressed', m==='stu');
   if(homeState.mapMode === 'online') renderSgisMarkers(); else renderTilemap();
 }
+document.getElementById('home-map-back').addEventListener('click', restoreMapView);
+document.getElementById('home-online-more').addEventListener('click', () => {
+  onlineListExpanded = !onlineListExpanded;
+  renderOnlineSchoolList();
+  /* 접을 때는 목록 머리로 되돌려 줍니다 — 안 그러면 사라진 카드 자리에 남습니다 */
+  if(!onlineListExpanded){
+    const w = document.getElementById('home-online-schools-wrap');
+    if(w && w.scrollIntoView) w.scrollIntoView({ block:'start' });
+  }
+});
+
 document.getElementById('home-reset').addEventListener('click', () => {
+  clearMapReturn();          // «처음»으로 가면 돌아갈 자리는 뜻을 잃습니다
   homeState.sel = null;
   tilemapShouldEnter = true;
   document.getElementById('home-tilemap').hidden = homeState.mapMode === 'online';
