@@ -738,6 +738,36 @@ check('«무슨 차례로» 고른 것인지 적는다 (기준을 모르겠다�
   /학생 수 많은 차례/.test(js));
 check('펼침 상태를 스크린리더에도 알린다', /aria-expanded/.test(js));
 
+console.log('\n■ 지도 측정 단추 — 이름을 밝히고, 잰 것이 보이게 한다');
+/* ★ 〔2026. 9. 7.〕 지도 오른쪽 아래 세 단추는 «우리가 만든 것이 아닙니다».
+   sop.map() 에 옵션을 안 주면 measureControl 이 기본으로 켜져 딸려 옵니다.
+   셋 다 title 이 없어 「자 밑에는 뭔지 모르겠다」는 말을 들었습니다.
+   그리고 잰 선(그림층 z-index 4)이 학교 마커(마커층 6)에 파묻혀
+   「재기는 되는데 표시가 안 된다」로 보였습니다. */
+const measureFn = (js.match(/function tidySgisMeasureControls\(\)[\s\S]*?\n\}/) || [''])[0];
+check('측정 단추를 손보는 갈래가 있다', measureFn.length > 0);
+check('거리 재기에 이름표를 단다',
+  /dist\.title = '거리 재기/.test(measureFn) && /aria-label', '거리 재기'/.test(measureFn));
+check('지우기에도 이름표를 단다',
+  /clear\.title = '잰 거리를 지웁니다'/.test(measureFn));
+check('면적 재기는 감춘다 (학령인구 대시보드에서 잴 일이 없다)',
+  /area\.classList\.add\('measure-hidden'\)/.test(measureFn) &&
+  /\.online-map \.measure-hidden\{display:none/.test(html));
+check('감추되 «지우지»는 않는다 (라이브러리가 자기 목록에서 찾다가 넘어진다)',
+  !/area\.remove\(\)/.test(measureFn) && !/removeChild\(area\)/.test(measureFn));
+check('재는 동안 학교 마커가 물러난다',
+  /\.online-map\.measuring \.marker-cluster/.test(html) && /opacity:\.18/.test(html));
+check('물러날 때 클릭도 비켜 준다 (안 그러면 점이 안 찍히고 말풍선이 뜬다)',
+  /\.online-map\.measuring[\s\S]{0,160}pointer-events:none/.test(html));
+check('«잰 것이 남아 있는 동안»에도 물러나 있는다 (마치면 결과를 읽어야 한다)',
+  /잰것남음 = !!map\.querySelector\('\.sop-caption/.test(measureFn));
+check('마커를 지우지 않고 흐리게만 둔다 (어디에 학교가 있는지는 보여야 한다)',
+  !/display:none[^}]*marker-cluster/.test(html));
+check('「✕」가 마지막 숫자를 덮지 않게 비킨다',
+  /\.sop-distance-delete\{margin-left:\d+px !important/.test(html));
+check('자리잡기용 transform 은 건드리지 않는다 (덮어쓰면 엉뚱한 곳으로 간다)',
+  !/sop-distance-delete\{[^}]*transform/.test(html));
+
 console.log('\n■ 학교를 본 뒤 «보던 자리»로 돌아온다');
 /* ★ 〔2026. 9. 7.〕 나오는 길이 「← 경북 전체로」뿐이었습니다. 그것은 «처음»으로
    가는 것이지 «보던 자리»로 가는 것이 아닙니다. 구미를 살펴보다 학교 하나를
