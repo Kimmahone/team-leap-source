@@ -122,6 +122,22 @@ body{
   font-weight:500;
   line-height:1.55;
   -webkit-text-size-adjust:100%;
+
+  /* 한글 줄바꿈.
+     기본값(word-break:normal)에서 브라우저는 한글을 «음절» 단위로 끊습니다.
+     그래서 «비교 조건»이 «비교 조 / 건»으로 갈라졌습니다.
+     keep-all 은 공백(어절) 자리에서만 끊게 합니다.
+     다만 한 어절이 줄보다 길면 keep-all 만으로는 칸을 넘치므로,
+     그때만 break-word 로 예외를 둡니다. */
+  word-break:keep-all;
+  overflow-wrap:break-word;
+}
+
+/* 마지막 줄에 낱말 하나만 덩그러니 남는 것을 줄입니다.
+   («…시군 단위로만 / 그립니다.» 같은 모양)
+   지원하지 않는 브라우저는 그냥 무시하므로 안전합니다. */
+h1,h2,h3,h4,p,li,dd,dt,td,th,caption,figcaption,summary,label,button,.hint,.note,.sub{
+  text-wrap:pretty;
 }
 body::before{
   content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
@@ -230,7 +246,9 @@ a{color:var(--brand)}
 
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--leap-shadow)}
 .card + .card{margin-top:14px}
-.card h2{font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+/* 제목이 길면 오른쪽 배지(.asof)가 제목을 짓눌러 더 좁은 칸에서 끊기게 만듭니다.
+   wrap 을 허용해 배지가 아랫줄로 내려가도록 합니다. */
+.card h2{font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .card h2::before{content:"";width:3px;height:14px;background:var(--brand);border-radius:2px}
 .card h3{font-size:13px;color:var(--ink-2);margin-bottom:8px}
 
