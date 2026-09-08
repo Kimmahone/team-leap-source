@@ -122,6 +122,22 @@ body{
   font-weight:500;
   line-height:1.55;
   -webkit-text-size-adjust:100%;
+
+  /* 한글 줄바꿈.
+     기본값(word-break:normal)에서 브라우저는 한글을 «음절» 단위로 끊습니다.
+     그래서 «비교 조건»이 «비교 조 / 건»으로 갈라졌습니다.
+     keep-all 은 공백(어절) 자리에서만 끊게 합니다.
+     다만 한 어절이 줄보다 길면 keep-all 만으로는 칸을 넘치므로,
+     그때만 break-word 로 예외를 둡니다. */
+  word-break:keep-all;
+  overflow-wrap:break-word;
+}
+
+/* 마지막 줄에 낱말 하나만 덩그러니 남는 것을 줄입니다.
+   («…시군 단위로만 / 그립니다.» 같은 모양)
+   지원하지 않는 브라우저는 그냥 무시하므로 안전합니다. */
+h1,h2,h3,h4,p,li,dd,dt,td,th,caption,figcaption,summary,label,button,.hint,.note,.sub{
+  text-wrap:pretty;
 }
 body::before{
   content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
@@ -230,7 +246,9 @@ a{color:var(--brand)}
 
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--leap-shadow)}
 .card + .card{margin-top:14px}
-.card h2{font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+/* 제목이 길면 오른쪽 배지(.asof)가 제목을 짓눌러 더 좁은 칸에서 끊기게 만듭니다.
+   wrap 을 허용해 배지가 아랫줄로 내려가도록 합니다. */
+.card h2{font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .card h2::before{content:"";width:3px;height:14px;background:var(--brand);border-radius:2px}
 .card h3{font-size:13px;color:var(--ink-2);margin-bottom:8px}
 
@@ -1727,9 +1745,13 @@ body.map-maxed{overflow:hidden}
           <div class="card">
             <h2 style="font-size:14px; color:var(--ink-3); margin-bottom:10px;">지도에 핀을 찍으려면</h2>
             <p style="margin:0; font-size:12.5px; line-height:1.75; color:var(--ink-2)">
-              이 자료에는 <b>주소만 있고 위경도가 없습니다.</b> 그래서 지도는 시군 단위로만 그립니다.<br>
-              <span style="color:var(--ink-3)">학교마다 핀을 찍으려면 주소를 좌표로 바꾸면 됩니다
-              (유치원에 쓴 것과 같은 방법). 없는 좌표를 시군 중심으로 대신하지는 않습니다 —
+              이 자료에는 <b>주소만 있고 위경도가 없습니다.</b>
+              그래서 <b>이 탭에는 아직 학교별 지도가 없습니다</b> — 시군별 분포는 위의 막대로 봅니다.<br>
+              <span style="color:var(--ink-3)">주소를 좌표로 바꾸는 길은 열려 있습니다
+              (유치원 614곳에 쓴 것과 같은 방법). 실제로 재어 보니 활용 대상 255곳 가운데
+              <b>249곳(98%)</b>에서 좌표를 찾았고, 비어 있는 <b>미활용 70곳은 모두</b> 찾았습니다.
+              못 찾은 6곳은 «외 6필지»처럼 번지에 군더더기가 붙었거나 없어진 리 지번입니다.
+              없는 좌표를 시군 중심으로 대신하지는 않습니다 —
               그러면 «그 자리에 있는 것»처럼 보입니다.</span>
             </p>
           </div>
@@ -1742,7 +1764,7 @@ body.map-maxed{overflow:hidden}
           <label class="sr-only" for="closed-filter-sig">시군</label>
           <select id="closed-filter-sig" class="select"><option value="">시군 전체</option></select>
           <label class="sr-only" for="closed-filter-use">활용현황</label>
-          <select id="closed-filter-use" class="select" style="margin-left:8px"><option value="">활용현황 전체</option></select>
+          <select id="closed-filter-use" class="select" style="margin-left:8px"><option value="__policy" selected>매각 제외 · 활용 대상</option><option value="">활용현황 전체</option></select>
           <input type="text" id="closed-search" class="select" placeholder="학교 이름 검색..."
                  style="margin-left:8px; padding:4px 8px; border:1px solid var(--line); border-radius:4px; font-size:13px; width:150px;">
           <span class="map-note" id="closed-count"></span>
@@ -6437,7 +6459,7 @@ function renderClosed(){
       if(rows.some(r => r.s === sg.s)) selSig.add(new Option(sg.name, sg.s));
     });
   }
-  if(selUse && selUse.options && selUse.options.length <= 1){
+  if(selUse && selUse.options && selUse.options.length <= 2){
     CLOSED_USE_ORDER.forEach(u => { if(CLOSED.byUse[u]) selUse.add(new Option(u, u)); });
   }
   renderClosedList();
@@ -6450,14 +6472,20 @@ function renderClosedList(){
   const sg = g('closed-filter-sig'), use = g('closed-filter-use'), kw = g('closed-search').trim();
   let rows = closedRows();
   if(sg)  rows = rows.filter(r => r.s === sg);
-  if(use) rows = rows.filter(r => r.use === use);
+  // 매각한 폐교는 교육청 재산이 아니라 활용 정책의 대상이 아닙니다(750곳 중 495곳).
+  // 목록이 «최근 문 닫은 순»으로 잘리다 보니, 기본 화면에서 정작 오래 비어 있는
+  // 폐교가 밀려나 있었습니다. 그래서 기본값을 매각을 뺀 255곳으로 둡니다.
+  if(use === '__policy') rows = rows.filter(r => r.use !== '매각');
+  else if(use)           rows = rows.filter(r => r.use === use);
   if(kw)  rows = rows.filter(r => r.name && r.name.indexOf(kw) >= 0);
   rows.sort((a,b) => (Number(b.year)||0) - (Number(a.year)||0));
 
   const cnt = document.getElementById('closed-count');
-  if(cnt) cnt.textContent = `${fmt(rows.length)}곳 · 최근 문 닫은 순`;
+  if(cnt) cnt.textContent = `${fmt(rows.length)}곳${use === '__policy' ? ' (매각 제외)' : ''} · 최근 문 닫은 순`;
 
-  const show = rows.slice(0, 120);
+  // 255곳(매각 제외 전부)까지는 자르지 않습니다. 750개를 다 그려도 21ms 밖에
+  // 안 걸리므로 성능이 아니라 «화면이 너무 길어지는 것»만 막으면 됩니다.
+  const show = rows.slice(0, 300);
   box.innerHTML = show.length
     ? '<div class="school-grid">' + show.map(r =>
         `<div class="marker" style="border-left:4px solid ${CLOSED_USE_COLOR[r.use] || 'var(--ink-3)'}">` +
@@ -6466,7 +6494,7 @@ function renderClosedList(){
           `<span class="tag" style="font-size:11px">${htmlEsc(r.use)}</span>` +
         '</div>').join('') + '</div>' +
       (rows.length > show.length
-        ? `<div class="spec" style="margin-top:10px">${fmt(rows.length)}곳 가운데 ${show.length}곳만 보입니다. 시군이나 활용현황으로 좁혀 보세요.</div>`
+        ? `<div class="spec" style="margin-top:10px">${fmt(rows.length)}곳 가운데 ${show.length}곳만 보입니다(최근 문 닫은 순). 시군이나 활용현황으로 좁혀 보세요.</div>`
         : '')
     : '<p style="font-size:13px;color:var(--ink-3);margin:8px 0">조건에 맞는 폐교가 없습니다.</p>';
 }
