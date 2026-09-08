@@ -1770,6 +1770,7 @@ body.map-maxed{overflow:hidden}
           <span class="map-note" id="closed-count"></span>
         </div>
         <div id="closed-list"></div>
+        <button type="button" class="chip no-print" id="closed-more" style="margin-top:10px" hidden aria-expanded="false"></button>
       </div>
     </div>
   </section>
@@ -6343,6 +6344,48 @@ const CLOSED_USE_COLOR = {
 };
 const CLOSED_USE_ORDER = ['자체활용','대부','미활용','매각'];
 
+/* 폐교 둘레에 아이가 몇 명 남아 있나.
+
+   폐교를 지도에 찍기 전에 먼저 답해야 할 질문은 «어디 있나»가 아니라
+   «그 둘레에 아이가 있나» 입니다. 아이가 많이 남은 자리의 빈 학교와
+   아이가 거의 없는 자리의 빈 학교는 쓸 길이 전혀 다릅니다.
+
+   좌표가 없는 폐교(750곳 중 52곳)는 셈하지 않고 «모름»으로 둡니다. */
+const CLOSED_NEAR_KM = 5;
+const closedNearCache = new Map();
+
+function nearbyOf(lat, lon){
+  if(lat == null || lon == null) return null;
+  const key = lat + ',' + lon;
+  if(closedNearCache.has(key)) return closedNearCache.get(key);
+
+  /* 위도 1도는 약 111km, 경도 1도는 위도에 따라 줄어듭니다.
+     경북(북위 36도)에서 굳이 삼각함수를 다 돌릴 것 없이 평면으로 재도
+     5km 안에서는 오차가 몇 m 수준입니다. */
+  const kmPerLat = 111.0;
+  const kmPerLon = 111.0 * Math.cos(lat * Math.PI / 180);
+  let n = 0, stu = 0, min = Infinity;
+  for(const sc of SCHOOLS){
+    if(sc.lat == null || sc.lon == null) continue;
+    const dy = (sc.lat - lat) * kmPerLat;
+    const dx = (sc.lon - lon) * kmPerLon;
+    const d2 = dx*dx + dy*dy;
+    if(d2 < min) min = d2;
+    if(d2 <= CLOSED_NEAR_KM * CLOSED_NEAR_KM){ n++; stu += Number(sc.stu) || 0; }
+  }
+  /* 250곳 가운데 47곳(19%)은 5km 안에 학교가 하나도 없습니다.
+     그 줄이 «0곳 · 0명»으로만 끝나면 아무 말도 하지 않는 셈이라,
+     가장 가까운 학교까지의 거리를 같이 답니다. 그 값은 늘 있습니다. */
+  const out = { n, stu, min: Number.isFinite(min) ? Math.sqrt(min) : null };
+  closedNearCache.set(key, out);
+  return out;
+}
+
+/* 목록을 처음에 몇 곳까지 펴 둘까 — 학교 목록과 같은 방식입니다.
+   «천장»이 아니라 «접어 두는 수»입니다. 단추 하나로 전부 폅니다. */
+const CLOSED_LIST_LIMIT = 120;
+let closedListExpanded = false;
+
 function closedRows(){
   if(typeof CLOSED === 'undefined' || !CLOSED || !CLOSED.list) return [];
   return CLOSED.list.map(t => {
@@ -6491,24 +6534,54 @@ function renderClosedList(){
 
   // 255곳(매각 제외 전부)까지는 자르지 않습니다. 750개를 다 그려도 21ms 밖에
   // 안 걸리므로 성능이 아니라 «화면이 너무 길어지는 것»만 막으면 됩니다.
-  const show = rows.slice(0, 300);
+  const over = rows.length > CLOSED_LIST_LIMIT;
+  const show = (over && !closedListExpanded) ? rows.slice(0, CLOSED_LIST_LIMIT) : rows;
+
   box.innerHTML = show.length
-    ? '<div class="school-grid">' + show.map(r =>
-        `<div class="marker" style="border-left:4px solid ${CLOSED_USE_COLOR[r.use] || 'var(--ink-3)'}">` +
+    ? '<div class="school-grid">' + show.map(r => {
+        const near = nearbyOf(r.lat, r.lon);
+        const nearLine = !near
+          ? `<span style="font-size:11px;color:var(--ink-3)" title="주소를 좌표로 바꾸지 못했습니다">둘레 정보 없음 <span style="opacity:.7">(좌표 미확보)</span></span>`
+          : near.n > 0
+            ? `<span style="font-size:11px;color:var(--ink-3)">반경 ${CLOSED_NEAR_KM}km 안 학교 <b>${fmt(near.n)}</b>곳 · 학생 <b>${fmt(near.stu)}</b>명</span>`
+            : `<span style="font-size:11px;color:var(--ink-3)">반경 ${CLOSED_NEAR_KM}km 안 학교 <b>없음</b>${near.min != null ? ` · 가장 가까운 학교 <b>${near.min.toFixed(1)}km</b>` : ''}</span>`;
+        return `<div class="marker" style="border-left:4px solid ${CLOSED_USE_COLOR[r.use] || 'var(--ink-3)'}">` +
           `<b>${htmlEsc(r.name)}</b><br>` +
           `<span style="font-size:11.5px;color:var(--ink-2)">${htmlEsc(r.s)} · ${htmlEsc(r.year)}년 · ${htmlEsc(r.lv)}</span> ` +
-          `<span class="tag" style="font-size:11px">${htmlEsc(r.use)}</span>` +
-        '</div>').join('') + '</div>' +
-      (rows.length > show.length
-        ? `<div class="spec" style="margin-top:10px">${fmt(rows.length)}곳 가운데 ${show.length}곳만 보입니다(최근 문 닫은 순). 시군이나 활용현황으로 좁혀 보세요.</div>`
-        : '')
+          `<span class="tag" style="font-size:11px">${htmlEsc(r.use)}</span><br>` +
+          nearLine +
+        '</div>';
+      }).join('') + '</div>'
     : '<p style="font-size:13px;color:var(--ink-3);margin:8px 0">조건에 맞는 폐교가 없습니다.</p>';
+
+  const more = document.getElementById('closed-more');
+  if(more){
+    more.hidden = !over;
+    if(over){
+      more.textContent = closedListExpanded
+        ? `처음 ${CLOSED_LIST_LIMIT}곳만 보기`
+        : `나머지 ${fmt(rows.length - CLOSED_LIST_LIMIT)}곳 더 보기 (모두 ${fmt(rows.length)}곳)`;
+      more.setAttribute('aria-expanded', String(closedListExpanded));
+    }
+  }
 }
 
 ['closed-filter-sig','closed-filter-use','closed-search'].forEach(id => {
   const el = document.getElementById(id);
-  if(el && el.addEventListener) el.addEventListener(id === 'closed-search' ? 'input' : 'change', renderClosedList);
+  if(el && el.addEventListener) el.addEventListener(id === 'closed-search' ? 'input' : 'change', () => {
+    closedListExpanded = false;   // 조건이 바뀌면 다시 접습니다 — 펴 둔 채 좁히면 어디를 보는지 잃습니다
+    renderClosedList();
+  });
 });
+
+(function(){
+  const more = document.getElementById('closed-more');
+  if(more && more.addEventListener) more.addEventListener('click', () => {
+    closedListExpanded = !closedListExpanded;
+    renderClosedList();
+    if(!closedListExpanded) document.getElementById('closed-list')?.scrollIntoView({behavior:'smooth', block:'nearest'});
+  });
+})();
 
 /* =========================================================
    7-D. 어디서 온 수인가 — 기준일 배지와 자료 표
