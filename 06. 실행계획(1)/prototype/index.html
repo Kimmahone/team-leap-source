@@ -1760,7 +1760,7 @@ body.map-maxed{overflow:hidden}
           <label class="sr-only" for="closed-filter-sig">시군</label>
           <select id="closed-filter-sig" class="select"><option value="">시군 전체</option></select>
           <label class="sr-only" for="closed-filter-use">활용현황</label>
-          <select id="closed-filter-use" class="select" style="margin-left:8px"><option value="">활용현황 전체</option></select>
+          <select id="closed-filter-use" class="select" style="margin-left:8px"><option value="__policy" selected>매각 제외 · 활용 대상</option><option value="">활용현황 전체</option></select>
           <input type="text" id="closed-search" class="select" placeholder="학교 이름 검색..."
                  style="margin-left:8px; padding:4px 8px; border:1px solid var(--line); border-radius:4px; font-size:13px; width:150px;">
           <span class="map-note" id="closed-count"></span>
@@ -6455,7 +6455,7 @@ function renderClosed(){
       if(rows.some(r => r.s === sg.s)) selSig.add(new Option(sg.name, sg.s));
     });
   }
-  if(selUse && selUse.options && selUse.options.length <= 1){
+  if(selUse && selUse.options && selUse.options.length <= 2){
     CLOSED_USE_ORDER.forEach(u => { if(CLOSED.byUse[u]) selUse.add(new Option(u, u)); });
   }
   renderClosedList();
@@ -6468,14 +6468,20 @@ function renderClosedList(){
   const sg = g('closed-filter-sig'), use = g('closed-filter-use'), kw = g('closed-search').trim();
   let rows = closedRows();
   if(sg)  rows = rows.filter(r => r.s === sg);
-  if(use) rows = rows.filter(r => r.use === use);
+  // 매각한 폐교는 교육청 재산이 아니라 활용 정책의 대상이 아닙니다(750곳 중 495곳).
+  // 목록이 «최근 문 닫은 순»으로 잘리다 보니, 기본 화면에서 정작 오래 비어 있는
+  // 폐교가 밀려나 있었습니다. 그래서 기본값을 매각을 뺀 255곳으로 둡니다.
+  if(use === '__policy') rows = rows.filter(r => r.use !== '매각');
+  else if(use)           rows = rows.filter(r => r.use === use);
   if(kw)  rows = rows.filter(r => r.name && r.name.indexOf(kw) >= 0);
   rows.sort((a,b) => (Number(b.year)||0) - (Number(a.year)||0));
 
   const cnt = document.getElementById('closed-count');
-  if(cnt) cnt.textContent = `${fmt(rows.length)}곳 · 최근 문 닫은 순`;
+  if(cnt) cnt.textContent = `${fmt(rows.length)}곳${use === '__policy' ? ' (매각 제외)' : ''} · 최근 문 닫은 순`;
 
-  const show = rows.slice(0, 120);
+  // 255곳(매각 제외 전부)까지는 자르지 않습니다. 750개를 다 그려도 21ms 밖에
+  // 안 걸리므로 성능이 아니라 «화면이 너무 길어지는 것»만 막으면 됩니다.
+  const show = rows.slice(0, 300);
   box.innerHTML = show.length
     ? '<div class="school-grid">' + show.map(r =>
         `<div class="marker" style="border-left:4px solid ${CLOSED_USE_COLOR[r.use] || 'var(--ink-3)'}">` +
@@ -6484,7 +6490,7 @@ function renderClosedList(){
           `<span class="tag" style="font-size:11px">${htmlEsc(r.use)}</span>` +
         '</div>').join('') + '</div>' +
       (rows.length > show.length
-        ? `<div class="spec" style="margin-top:10px">${fmt(rows.length)}곳 가운데 ${show.length}곳만 보입니다. 시군이나 활용현황으로 좁혀 보세요.</div>`
+        ? `<div class="spec" style="margin-top:10px">${fmt(rows.length)}곳 가운데 ${show.length}곳만 보입니다(최근 문 닫은 순). 시군이나 활용현황으로 좁혀 보세요.</div>`
         : '')
     : '<p style="font-size:13px;color:var(--ink-3);margin:8px 0">조건에 맞는 폐교가 없습니다.</p>';
 }
