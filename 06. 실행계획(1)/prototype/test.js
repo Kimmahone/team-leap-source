@@ -773,11 +773,62 @@ check('학교가 없는 시군 딱지는 옅게 둔다', html.includes('.sgis-sg
 check('시군 층과 학교 층을 따로 둔다 (한 층에 섞으면 두 번 세게 된다)',
   /let sgisSggLayer/.test(js) && /function clearSgisSggLayer/.test(js));
 check('배율이 «달라졌을 때만» 다시 그린다 (확대할 때마다 1,539곳을 다시 찍지 않는다)',
-  /if\(tier !== sgisTier\)/.test(js));
+  /if\(tier !== sgisTier \|\| label !== sgisLabelMode\)/.test(js));
+/* ★ 〔2026. 9. 9.〕 「확대·축소가 딱딱 끊긴다」는 말을 들었습니다.
+   원인은 둘이었습니다 — ① 연도 슬라이더가 `input` 마다 마커 1,539개를
+   다시 얹고 있었고, ② 배율 애니메이션이 «도는 중»에 레이어를 갈아 끼웠습니다. */
+check('한 프레임에 한 번만 그린다 (슬라이더를 끄는 동안 1,539곳을 수십 번 다시 찍지 않는다)',
+  /function queueMapRedraw/.test(js) && /mapRedrawPending/.test(js) &&
+  /if\(tier === 'sgg' \|\| schoolYearApplies\(\) \|\| wasSchoolYear\) queueMapRedraw\(\)/.test(js));
+check('값은 즉시 바뀌고 «그리는 일»만 미룬다', /renderHomeSummary\(\);\n\s*\/\* 지도도 이 해를 따릅니다/.test(js));
+check('배율 애니메이션이 끝난 뒤에 다시 그린다 (도는 중에 갈아 끼우면 툭 끊긴다)',
+  /requestAnimationFrame\(renderSgisMarkers\)/.test(js));
+check('갈아 끼울 때 스며들게 한다', /@keyframes mk-in/.test(html));
+check('움직임을 줄여 달라고 한 사람에게는 끈다',
+  /prefers-reduced-motion:reduce\)\{\s*\.sgis-sgg-bubble \.bub/.test(html.replace(/\s+/g,' ').replace(/prefers-reduced-motion:reduce\)\{ /g,'prefers-reduced-motion:reduce){')) ||
+  /\.sgis-school-icon\{animation:none\}/.test(html.replace(/\s+/g,'')));
 check('시군 단계에서는 범례도 시군 단계의 것으로 바꾼다 (틀린 안내는 없느니만 못하다)',
   /function renderSgisTierNote/.test(js) && /딱지 하나 = 시군 하나/.test(js));
 check('딱지를 누르면 그 시군 안으로 들어간다', /function enterSgg/.test(js) && /marker\.on\('click'/.test(js));
 check('들어갔으면 나올 길도 함께 켠다', /reset\.hidden = false/.test(js));
+
+console.log('\n■ 많이 확대하면 «누르지 않아도» 학교가 제 이름을 말한다');
+/* ★ 〔2026. 9. 9.〕 「동그라미를 눌러야만 어느 학교인지 알 수 있다」는 말을
+   들었습니다. 네이버 부동산이 집 딱지에 값을 적어 두는 자리입니다.
+   다만 멀리서부터 이름을 다 적으면 글자가 겹쳐 아무것도 안 읽히므로
+   배율이 충분할 때만 딱지로 바뀝니다. */
+check('이름을 보이는 배율 문턱이 한 곳에 있다', /const MAP_LABEL_MIN_ZOOM = \d+/.test(js));
+check('문턱 아래에서는 동그라미 그대로다', q('mapLabelForZoom(MAP_LABEL_MIN_ZOOM-1)') === false);
+check('문턱을 넘으면 이름 딱지로 바뀐다', q('mapLabelForZoom(MAP_LABEL_MIN_ZOOM)') === true);
+check('딱지에 이름과 학생 수를 «함께» 적는다',
+  /sgis-school-label sgis-lv-/.test(js) && /<b class="nm">/.test(js) && /<b class="vl">/.test(js));
+check('학교급을 점 색으로도 말하되 글자를 함께 둔다 (원칙 4)',
+  /class="lvdot"/.test(js) && /sgis-lv-\$\{s\.lv\}/.test(js));
+check('값이 없는 해는 지어내지 않고 그렇다고 적는다', /자료 없음/.test(js) && /no-value/.test(js));
+/* 급 이름을 떼어 딱지를 짧게 하되, 떼면 무엇인지 알 수 없는 이름은 그대로 둡니다. */
+check('딱지 이름에서 급 이름을 뗀다', q("shortSchoolName({name:'포항제철중학교',lv:'중'})") === '포항제철');
+check('떼면 알 수 없는 이름은 그대로 둔다', q("shortSchoolName({name:'중학교',lv:'중'})") === '중학교');
+
+console.log('\n■ 학교를 누르면 왼쪽 칸이 그 학교를 펼친다');
+/* 지도 말풍선은 좁아서 학년별까지 담지 못합니다. 넓은 자리가 왼쪽 칸입니다. */
+check('학교 상세 자리가 있다', /id="home-school-card"/.test(html));
+check('비어 있으면 아예 숨긴다 (빈 상자는 「고장」으로 읽힌다)',
+  /id="home-school-card" hidden/.test(html) && /box\.hidden = true/.test(js));
+q("selectedSchoolKey=null; renderSchoolCard();");
+check('처음에는 숨어 있다', byId['home-school-card'].hidden === true);
+q("(function(){var s=SCHOOLS.filter(function(x){return x.grades&&x.grades.length})[0];selectSchool(s);})()");
+check('학교를 고르면 펼쳐진다', byId['home-school-card'].hidden === false);
+check('학교 이름을 적는다', /class="sch-name"/.test(byId['home-school-card']._html || ''));
+check('닫는 길이 있다', /id="home-school-close"/.test(byId['home-school-card']._html || ''));
+q("homeState.year=2026; renderSchoolCard();");
+check('2026 에서는 학년별 막대를 편다', /class="sch-grades"/.test(byId['home-school-card']._html || ''));
+q("homeState.year=2032; renderSchoolCard();");
+check('다른 해에는 학년별을 접고 «왜»를 적는다 (2026 학년별이 그 해 것으로 읽힌다)',
+  !/class="sch-grades"/.test(byId['home-school-card']._html || '') &&
+  /2026년 공시<\/b>에만 있습니다/.test(byId['home-school-card']._html || ''));
+check('학급 수도 2026 만 있다고 말한다', /2026년만 있음/.test(byId['home-school-card']._html || ''));
+q("clearSchool(); homeState.year=2026;");
+check('닫으면 다시 숨는다', byId['home-school-card'].hidden === true);
 
 console.log('\n■ 왼쪽 칸이 «고른 지역 × 고른 연도»를 말한다');
 /* ★ 〔2026. 9. 9.〕 이 카드의 큰 숫자 여섯 개는 «손으로 적힌 것»이었습니다 —
@@ -815,11 +866,38 @@ if(q('EDSS')){
 }
 check('2027~ 는 전망이라고 «이름을 붙인다»',
   q("regionStudents(null,'초',2030).kind") === '전망');
-check('전망은 시뮬레이터와 «같은 셈»이다 (두 화면이 다른 수를 말하면 안 된다)', q(
-  "(function(){var y=2030,yrs=y-2026;" +
-  "var mine=regionStudents('포항','초',y).v;" +
-  "var sim=Math.round(BASE['초']['포항'].stu*Math.pow(1-BASE['초']['포항'].rate,yrs));" +
-  "return mine===sim;})()"));
+/* ★ 〔2026. 9. 9.〕 여기서 «같은 값을 두 화면이 다르게 말하는 것»을 찾았습니다.
+   2036년 경북 학생 수가 현황 탭 130,000명 · 왼쪽 칸 196,936명 — 51.5% 차이.
+   현황 탭은 코호트 진급법(백테스트 2.3%), 왼쪽 칸은 감소율 곱셈이었습니다.
+
+   코호트는 «실제 출생아»를 먹고 굴러갑니다. 경북 출생아가 2019년 14,472명에서
+   2025년 10,417명으로 떨어졌고 그 아이들이 6년 뒤 초1 이 됩니다. 감소율 곱셈은
+   지난 5년 «학생 수» 기울기만 보므로 아직 학교에 오지 않은 감소를 모릅니다.
+
+   그래서 코호트로 맞추고, 그 총량을 시군의 몫대로 나눕니다. 아래 셋이
+   한꺼번에 맞아야 합니다. 하나라도 어긋나면 화면이 서로 다른 말을 합니다. */
+/* 견줄 때 «비율»이 아니라 «반올림 한계»로 봅니다. 현황 탭은 학교급마다
+   천 명 단위로 반올림하므로 학교급 하나에 최대 500명, 셋이면 1,500명까지
+   벌어질 수 있습니다. 비율로 재면 자료가 작을 때(검사용 합성값) 같은
+   반올림이 큰 비율로 잡혀 엉뚱하게 빨개집니다. */
+check('① 도 전체가 «현황 탭»과 같은 수를 말한다 (천 명 반올림 한계 안)', q(
+  "(function(){for(var i=0,ys=[2027,2030,2036];i<ys.length;i++){var y=ys[i];" +
+  "var home=['초','중','고'].reduce(function(a,lv){var r=regionStudents(null,lv,y);return a+(r.v||0)},0);" +
+  "var v=series('stu',y), tab=(v.초+v.중+v.고)*1000;" +
+  "if(Math.abs(home-tab) > 1500) return false;}return true;})()"));
+check('② 시군을 다 더하면 도 전체가 된다 (반올림 차이 안)', q(
+  "(function(){var y=2036;" +
+  "var whole=['초','중','고'].reduce(function(a,lv){return a+(regionStudents(null,lv,y).v||0)},0);" +
+  "var parts=SIGUNGU.reduce(function(a,g){return a+['초','중','고'].reduce(function(b,lv){" +
+  "return b+(regionStudents(g.s,lv,y).v||0)},0)},0);" +
+  "return Math.abs(whole-parts) <= 60;})()"));
+check('③ 시군 사이 차이는 그 시군의 실측 감소율을 따른다 (몫이 서로 다르다)', q(
+  "(function(){var a=forwardShare('울릉','초',2036),b=forwardShare('포항','초',2036);" +
+  "return a>0 && b>0 && a!==b;})()"));
+check('출생아가 셈에 들어간다 (아직 학교에 오지 않은 감소를 본다)',
+  /EDSS\.birth\[y-6\]/.test(js) && /EDSS_FWD_RAW/.test(js));
+check('천 명으로 반올림하기 전 값을 쓴다 (명 단위 칸에 91,000 처럼 뭉개지지 않게)',
+  /EDSS_FWD_RAW\[y\] = \{ 초:sum/.test(js));
 check('실적보다 이른 해는 «비운다» (지어내지 않는다)',
   q("regionStudents(null,'초',2015).v") === null);
 check('유치원·특수학교는 해마다의 실적이 없다고 말한다',

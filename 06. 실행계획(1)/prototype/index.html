@@ -290,6 +290,28 @@ a{color:var(--brand)}
 .spark .gl{stroke:var(--line-2,var(--line));stroke-width:1}
 .spark text{font-size:9px;fill:var(--ink-3)}
 .spark-cap{font-size:11px;color:var(--ink-3);margin-top:4px;line-height:1.45}
+/* ══ 학교 상세 (왼쪽 칸) 〔2026. 9. 9.〕 ═════════════════════════════════ */
+.sch-head{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px}
+.sch-name{display:block;font-size:15px;font-weight:800;line-height:1.3}
+.sch-sub{display:block;font-size:11.5px;color:var(--ink-3);margin-top:2px}
+.sch-close{margin-left:auto;flex:none;width:28px;height:28px;border-radius:7px;
+  border:1px solid var(--line);background:var(--card);color:var(--ink-2);cursor:pointer;font-size:13px;line-height:1}
+.sch-close:hover{border-color:var(--brand);color:var(--brand)}
+.sch-close:focus-visible{outline:3px solid var(--leap-blue);outline-offset:1px}
+.sch-stat{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.sch-stat .b{background:var(--card-2);border:1px solid var(--line);border-radius:8px;padding:7px 8px;text-align:center}
+.sch-stat .k{font-size:10.5px;color:var(--ink-3)}
+.sch-stat .v{font-size:16px;font-weight:800;color:var(--brand);line-height:1.2;margin:1px 0}
+.sch-stat .u{font-size:9.5px;color:var(--ink-3);line-height:1.25}
+.sch-grades{margin-top:11px;display:flex;flex-direction:column;gap:4px}
+.sch-grades .g{display:flex;align-items:center;gap:6px;font-size:11px}
+.sch-grades .gk{width:38px;flex:none;color:var(--ink-3)}
+.sch-grades .gb{flex:1;height:7px;border-radius:4px;background:var(--card-2);overflow:hidden}
+.sch-grades .gb>span{display:block;height:100%;background:var(--brand)}
+.sch-grades .gv{width:34px;text-align:right}
+.sch-grades .gc{width:30px;text-align:right;color:var(--ink-3)}
+.sch-note{margin-top:10px;font-size:11px;color:var(--ink-3);line-height:1.5}
+.sch-addr{margin-top:8px;font-size:11px;color:var(--ink-3)}
 .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px}
 .stat{background:var(--brand-pale);border-radius:8px;padding:9px 10px;text-align:center}
 .stat .k{font-size:11px;color:var(--ink-2)}
@@ -407,6 +429,50 @@ a{color:var(--brand)}
 /* 학교가 한 곳도 없는 시군 — 값이 0 인 것과 «자료가 없는» 것은 다릅니다.
    0 곳이면 딱지를 옅게 두어 「비어 있다」가 그 자체로 읽히게 합니다. */
 .sgis-sgg-bubble.is-empty .bub{opacity:.55}
+
+/* ══ 학교 딱지 〔2026. 9. 9.〕 ═══════════════════════════════════════════
+   많이 확대했을 때는 «누르지 않아도» 학교 이름과 학생 수가 보여야 합니다.
+   동그라미만 있으면 하나하나 눌러 봐야 어느 학교인지 알 수 있습니다.
+
+   다만 멀리서부터 이름을 다 적으면 글자가 서로 겹쳐 아무것도 안 읽힙니다.
+   그래서 배율이 충분할 때만 딱지로 바뀌고, 그 전에는 동그라미 그대로입니다. */
+.sgis-school-label{width:auto !important;height:auto !important;margin:0 !important;background:none !important;border:0 !important}
+.sgis-school-label .bub{
+  position:absolute;left:0;bottom:9px;transform:translateX(-50%);
+  display:flex;align-items:center;gap:5px;white-space:nowrap;
+  padding:3px 8px 3px 5px;border-radius:7px;
+  background:var(--card);border:1px solid var(--line);
+  box-shadow:0 2px 8px rgba(20,32,46,.24);
+  font-size:11px;line-height:1.25;color:var(--ink);cursor:pointer;
+}
+/* 학교급을 «점 색»으로 함께 말합니다 — 색만으로 말하지 않도록 글자도 있습니다(원칙 4). */
+.sgis-school-label .lvdot{width:8px;height:8px;border-radius:50%;background:var(--pin,var(--brand));flex:none}
+.sgis-school-label .nm{font-weight:700}
+.sgis-school-label .vl{font-weight:800;color:var(--brand)}
+.sgis-school-label .bub::after{
+  content:'';position:absolute;left:50%;bottom:-5px;transform:translateX(-50%);
+  border-left:5px solid transparent;border-right:5px solid transparent;
+  border-top:5px solid var(--line);
+}
+.sgis-school-label.is-on .bub{background:var(--ink);border-color:var(--ink);color:#fff}
+.sgis-school-label.is-on .bub::after{border-top-color:var(--ink)}
+.sgis-school-label.is-on .vl{color:#fff}
+.sgis-school-label .bub:hover{border-color:var(--brand)}
+/* 값이 없는 해 — 지어내지 않고 그렇다고 적습니다. */
+.sgis-school-label.no-value .vl{color:var(--ink-3);font-weight:600}
+/* ══ 갈아 끼울 때 «툭» 나타나지 않게 〔2026. 9. 9.〕 ═════════════════════
+   배율이 문턱을 넘으면 동그라미가 딱지로 바뀝니다. 그때 새 표시가 그대로
+   나타나면 한 번 «툭» 끊긴 것처럼 보입니다. 아주 짧게 스며들게 합니다.
+   ※ 움직임을 줄여 달라고 한 사람에게는 끕니다 (원칙 7·접근성). */
+.sgis-sgg-bubble .bub,.sgis-school-label .bub{animation:mk-in .16s ease-out both}
+.sgis-school-icon{animation:mk-in .16s ease-out both}
+@keyframes mk-in{from{opacity:0;transform:translateX(-50%) translateY(3px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+/* 동그라미는 가운데 맞추기를 margin 으로 하므로 translateX 를 쓰지 않습니다. */
+.sgis-school-icon{animation-name:mk-in-plain}
+@keyframes mk-in-plain{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){
+  .sgis-sgg-bubble .bub,.sgis-school-label .bub,.sgis-school-icon{animation:none}
+}
 .rg{cursor:pointer}
 .rg .dot{fill:var(--brand);opacity:.62;stroke:var(--card);stroke-width:1.2}
 /* 이름은 원 위에 얹힙니다. 바탕색 테두리를 둘러 원 위에서도 읽히게 합니다.
@@ -1235,6 +1301,12 @@ body.map-maxed{overflow:hidden}
                aria-labelledby="home-spark-title"><title id="home-spark-title">연도별 학생 수 추이</title></svg>
           <div class="spark-cap" id="home-spark-cap"></div>
         </div>
+
+        <!-- ★ 학교 하나를 고르면 여기가 펼쳐집니다 〔2026. 9. 9.〕
+             지도 말풍선은 좁아서 학년별까지 담지 못합니다. 넓은 자리가 여기입니다.
+             네이버 부동산이 단지를 누르면 왼쪽에 상세가 나오는 것과 같은 자리입니다.
+             비어 있을 때는 아예 숨깁니다 — 빈 상자는 「고장」으로 읽힙니다. -->
+        <div class="card" id="home-school-card" hidden></div>
 
         <!-- ★ 〔2026. 9. 9.〕 여기 있던 「주간 AI 뉴스 요약」을 뺐습니다.
 
@@ -3229,6 +3301,7 @@ const ANCHOR = {
    초1만은 진급이 아니라 새로 들어오는 학년이라, 6년 전 출생아 × 취학률입니다.
    출생아가 없는 해부터는 마지막 1학년을 그대로 둡니다 — 지어내지 않습니다. */
 const EDSS_FWD = {};
+const EDSS_FWD_RAW = {};
 function edssForward(year){
   if(!EDSS || !EDSS.cohort || !EDSS.grade || year <= EDSS.last) return null;
   if(EDSS_FWD[year]) return EDSS_FWD[year];
@@ -3257,6 +3330,11 @@ function edssForward(year){
     cur = nxt;
     const sum = a => a ? a.reduce((x,z)=>x+z,0) : 0;
     EDSS_FWD[y] = { 초:Math.round(sum(cur['초'])/1000), 중:Math.round(sum(cur['중'])/1000), 고:Math.round(sum(cur['고'])/1000) };
+    /* 천 명 단위로 반올림하기 «전» 값도 남깁니다 〔2026. 9. 9.〕
+       현황 탭은 천 명으로 그리지만, 종합 대시보드의 왼쪽 칸은 명 단위로
+       적습니다. 반올림한 값을 되돌려 쓰면 91,000 처럼 자릿수가 뭉갭니다.
+       **같은 모델에서 나온 같은 수**여야 하므로 여기서 함께 담아 둡니다. */
+    EDSS_FWD_RAW[y] = { 초:sum(cur['초']), 중:sum(cur['중']), 고:sum(cur['고']) };
   }
   return EDSS_FWD[year] || null;
 }
@@ -3655,6 +3733,30 @@ function currentMapTier(){
   return mapTierForZoom(z, !!homeState.sel);
 }
 
+/* ══ 학교 이름을 «누르지 않고» 보이는 배율 〔2026. 9. 9.〕 ═══════════════
+   네이버 부동산이 집 모양 딱지에 값을 적어 두는 자리입니다.
+   멀리서부터 이름을 다 적으면 글자가 서로 겹쳐 아무것도 안 읽힙니다 —
+   딱지 하나가 대략 110px 이라, 학교가 촘촘한 시내에서는 배율이 충분해야
+   서로 비켜섭니다. 그 문턱을 여기 한 곳에 둡니다. */
+const MAP_LABEL_MIN_ZOOM = 8;
+function mapLabelForZoom(zoom){ return (Number(zoom) || 0) >= MAP_LABEL_MIN_ZOOM; }
+function currentMapLabelMode(){
+  const z = (sgisMap && typeof sgisMap.getZoom === 'function') ? sgisMap.getZoom() : 3;
+  return mapLabelForZoom(z);
+}
+
+/* 딱지에는 짧은 이름을 적습니다. 「포항제철중학교」의 «중학교»는 점 색과
+   학교급 범례가 이미 말하고 있어, 되풀이하면 딱지만 길어집니다.
+   다만 이름이 급 이름 하나뿐이면(「중앙중학교」의 「중앙」) 잘라 두면
+   무엇인지 알 수 없으므로 그때는 그대로 둡니다. */
+function shortSchoolName(s){
+  const cut = String(s.name || '').replace(/(초등학교|중학교|고등학교|유치원|학교)$/, '');
+  return cut.length >= 2 ? cut : s.name;
+}
+
+/* 왼쪽 칸이 지금 어느 학교를 펼쳐 보이고 있는가. 없으면 지역 요약입니다. */
+let selectedSchoolKey = null;
+
 /* 시군 딱지에 적을 값. 지도에 찍는 것과 «같은 자료»에서 셉니다 —
    BASE 를 다시 더하면 두 화면이 어긋날 수 있습니다. 학교 목록을 그대로 셉니다.
    `onlineSchools()` 는 학교급·검색어를 이미 걸러 주므로 그 결과만 모읍니다. */
@@ -3713,6 +3815,24 @@ function sggBubbleRows(){
 let sgisSggLayer = null;
 /* 지금 무엇을 세고 있는지. 배율이 바뀔 때 «달라졌을 때만» 다시 그리기 위한 기억입니다. */
 let sgisTier = 'sgg';
+/* 이름 딱지를 보이고 있는가. 배율이 문턱을 넘나들 때만 다시 그리기 위한 기억입니다. */
+let sgisLabelMode = false;
+
+/* ══ 한 프레임에 한 번만 그립니다 〔2026. 9. 9.〕 ═══════════════════════════
+   연도 슬라이더는 끄는 동안 `input` 이 초당 수십 번 옵니다. 그때마다
+   마커 1,539개를 지우고 다시 얹으면 손가락을 따라오지 못하고 «뚝뚝» 끊깁니다.
+
+   그린 것을 화면에 내보내는 일은 어차피 한 프레임에 한 번뿐이므로,
+   그 사이에 들어온 요청은 마지막 것만 남기면 됩니다.
+   ※ 값 자체는 슬라이더가 움직이는 즉시 바뀝니다 — 미루는 것은 «그리는 일»뿐입니다. */
+let mapRedrawPending = 0;
+function queueMapRedraw(){
+  if(mapRedrawPending) return;
+  mapRedrawPending = requestAnimationFrame(function(){
+    mapRedrawPending = 0;
+    renderSgisMarkers();
+  });
+}
 
 function clearSgisSggLayer(){
   if(sgisSggLayer && sgisMap && sgisMap.removeLayer) sgisMap.removeLayer(sgisSggLayer);
@@ -3894,6 +4014,7 @@ function renderSgisMarkers(){
     /* ★ 학교 낱개도 고른 해를 따릅니다 〔2026. 9. 9.〕
        한 번만 셈해 두고 씁니다 — 마커마다 다시 셈하면 1,539번 돕니다. */
     const byYear = schoolYearApplies();
+    const labelMode = currentMapLabelMode();
     const stuAt = s => byYear ? schoolStudentsAt(s, homeState.year).v : s.stu;
     const shown = new Map();
     list.forEach(s => shown.set(s, stuAt(s)));
@@ -3904,13 +4025,27 @@ function renderSgisMarkers(){
       const ratio = (Number(sv) || 0) / maxStudents;
       const studentSizeClass = !studentMetric ? ''
         : (ratio >= .45 ? 'school-lg' : ratio >= .15 ? 'school-md' : '');
-      const icon = typeof window.sop.divIcon === 'function'
-        ? window.sop.divIcon({
-            className:`sgis-school-icon sgis-lv-${s.lv} ${studentMetric ? 'sgis-student-value' : ''} ${studentSizeClass}`,
-            html:`<span aria-hidden="true">${htmlEsc(studentMetric ? (sv == null ? '–' : compactMapValue(sv)) : s.lv)}</span>`,
-            iconSize:[studentMetric ? 30 : 26,studentMetric ? 30 : 26]
-          })
-        : null;
+      /* ★ 많이 확대하면 «누르지 않아도» 이름과 학생 수가 보입니다 〔2026. 9. 9.〕
+         멀리서부터 이름을 다 적으면 글자가 겹쳐 아무것도 안 읽히므로
+         배율이 충분할 때만 딱지로 바뀝니다. */
+      const icon = typeof window.sop.divIcon !== 'function' ? null
+        : (labelMode
+            ? window.sop.divIcon({
+                className:`sgis-school-label sgis-lv-${s.lv}` +
+                  (sv == null ? ' no-value' : '') +
+                  (selectedSchoolKey === schoolKey(s) ? ' is-on' : ''),
+                html:'<span class="bub">' +
+                  '<i class="lvdot" aria-hidden="true"></i>' +
+                  `<b class="nm">${htmlEsc(shortSchoolName(s))}</b>` +
+                  `<b class="vl">${sv == null ? '자료 없음' : fmt(sv) + '명'}</b>` +
+                  '</span>',
+                iconSize:[0,0]
+              })
+            : window.sop.divIcon({
+                className:`sgis-school-icon sgis-lv-${s.lv} ${studentMetric ? 'sgis-student-value' : ''} ${studentSizeClass}`,
+                html:`<span aria-hidden="true">${htmlEsc(studentMetric ? (sv == null ? '–' : compactMapValue(sv)) : s.lv)}</span>`,
+                iconSize:[studentMetric ? 30 : 26,studentMetric ? 30 : 26]
+              }));
       const markerOptions = {studentCount:Number(sv) || 0, schoolCount:1};
       if(icon) markerOptions.icon = icon;
       const marker = window.sop.marker([p.x, p.y], markerOptions);
@@ -3929,6 +4064,9 @@ function renderSgisMarkers(){
         `${htmlEsc(lv)} · ${line}<br>` +
         `<span style="font-size:11px">${htmlEsc(s.addr || s.s || '')}</span>`
       );
+      /* ★ 누르면 왼쪽 칸이 그 학교를 펼칩니다 〔2026. 9. 9.〕
+         말풍선은 좁아서 학년별까지 담지 못합니다. 넓은 자리가 왼쪽 칸입니다. */
+      if(typeof marker.on === 'function') marker.on('click', function(){ selectSchool(s); });
       sgisMarkers.set(schoolKey(s), marker);
       sgisLayer.addLayer(marker);
     });
@@ -4036,12 +4174,19 @@ function initSgisMap(){
          바뀔 때만 다시 그립니다. 배율이 움직일 때마다 1,539곳을 다시 찍으면
          확대·축소가 눈에 띄게 끊깁니다. */
       sgisMap.on('zoomend', function(){
-        const tier = currentMapTier();
-        if(tier !== sgisTier){ sgisTier = tier; renderSgisMarkers(); return; }
+        const tier = currentMapTier(), label = currentMapLabelMode();
+        if(tier !== sgisTier || label !== sgisLabelMode){
+          sgisTier = tier; sgisLabelMode = label;
+          /* 확대·축소 «애니메이션이 끝난 뒤»에 다시 그립니다. 그리는 동안
+             레이어를 갈아 끼우면 움직이던 화면이 한 번 «툭» 끊깁니다. */
+          requestAnimationFrame(renderSgisMarkers);
+          return;
+        }
         renderOnlineSchoolList();
       });
     }
     sgisTier = currentMapTier();
+    sgisLabelMode = currentMapLabelMode();
     renderSgisMarkers();
     /* 컨트롤은 지도가 만들어질 때 함께 붙습니다. 한 틱 뒤에 손봅니다. */
     setTimeout(tidySgisMeasureControls, 0);
@@ -4191,6 +4336,61 @@ function baseStudents(sggKey, lv){
   return SIGUNGU.reduce((a, sg) => a + BASE[lv][sg.s].stu, 0);
 }
 
+/* ══ 앞날 — 어느 셈을 쓰는가 〔2026. 9. 9.〕 ═══════════════════════════════
+   ★ 이 자리에서 **같은 값을 두 화면이 다르게 말하고 있었습니다.**
+
+     2036년 경북 학생 수
+       「경북 학령인구 현황」 탭   130,000명   ← 코호트 진급법
+       왼쪽 칸(처음 만들 때)      196,936명   ← 감소율 곱셈
+                                  차이 51.5%
+
+   왜 이렇게 벌어지나 — 코호트는 **실제 출생아 수**를 먹고 굴러갑니다.
+   경북 출생아는 2019년 14,472명에서 2025년 10,417명으로 떨어졌고, 그 아이들이
+   6년 뒤 초1 이 됩니다. 감소율 곱셈은 지난 5년 «학생 수» 기울기만 보므로
+   아직 학교에 오지 않은 이 감소를 모릅니다.
+
+   그래서 **코호트 쪽을 씁니다.** 백테스트 오차 2.3% 로 되짚어 본 모델이고,
+   현황 탭이 이미 그 수를 화면에 내고 있습니다.
+
+   시군은 어떻게 하나 — 시군별로는 코호트를 굴릴 수 없습니다. 시군별 학년
+   시계열도, 시군별 출생아도 인라인에 없습니다. 그래서 **도 전체를 코호트로
+   내고, 그 총량을 시군의 «몫»대로 나눕니다.** 몫은 각 시군의 실측 감소율이
+   만드는 상대 크기입니다.
+
+   이렇게 하면 셋이 한꺼번에 맞습니다 —
+     · 도 전체가 현황 탭과 같은 수를 말합니다
+     · 시군을 다 더하면 도 전체가 됩니다
+     · 시군 사이의 차이는 그 시군의 실측 감소율을 그대로 따릅니다
+
+   ⚠ 「학생수 시뮬레이터」는 아직 감소율 곱셈을 씁니다. 같은 51% 차이가
+     그 화면에도 있습니다. 그것은 이미 발표에 쓰인 수라 함께 바꿀지는
+     팀이 정해야 합니다 — 여기서 조용히 바꾸지 않았습니다. */
+function forwardShare(sggKey, lv, year){
+  const yrs = year - HOME_BASE_YEAR;
+  const w = sg => (BASE[lv][sg.s] ? BASE[lv][sg.s].stu * Math.pow(1 - BASE[lv][sg.s].rate, yrs) : 0);
+  const all = SIGUNGU.reduce((a, sg) => a + w(sg), 0);
+  if(!all) return 0;
+  const sg = SIGUNGU.find(x => x.s === sggKey);
+  return sg ? w(sg) / all : 0;
+}
+
+function forwardStudents(sggKey, lv, year){
+  year = Number(year);
+  /* 도 전체 — 현황 탭과 «같은 함수»에서 나온 수입니다. */
+  let province = null;
+  if(typeof edssForward === 'function' && edssForward(year) && EDSS_FWD_RAW[year]){
+    province = EDSS_FWD_RAW[year][lv];
+  }
+  if(province == null){
+    /* 코호트를 못 굴리는 경우(실적 미심음)에는 예전 셈으로 내려앉습니다. */
+    const yrs = year - HOME_BASE_YEAR;
+    province = SIGUNGU.reduce((a, sg) =>
+      a + (BASE[lv][sg.s] ? BASE[lv][sg.s].stu * Math.pow(1 - BASE[lv][sg.s].rate, yrs) : 0), 0);
+  }
+  if(!sggKey) return Math.round(province);
+  return Math.round(province * forwardShare(sggKey, lv, year));
+}
+
 function regionStudents(sggKey, lv, year){
   year = Number(year);
   if(HOME_SERIES_LEVELS.indexOf(lv) < 0) return { v:null, kind:'없음' };
@@ -4209,16 +4409,7 @@ function regionStudents(sggKey, lv, year){
     }
   }
 
-  if(year > HOME_BASE_YEAR){
-    const yrs = year - HOME_BASE_YEAR;
-    if(sggKey){
-      if(!BASE[lv][sggKey]) return { v:null, kind:'없음' };
-      return { v: Math.round(BASE[lv][sggKey].stu * Math.pow(1 - BASE[lv][sggKey].rate, yrs)), kind:'전망' };
-    }
-    const sum = SIGUNGU.reduce((a, sg) =>
-      a + BASE[lv][sg.s].stu * Math.pow(1 - BASE[lv][sg.s].rate, yrs), 0);
-    return { v: Math.round(sum), kind:'전망' };
-  }
+  if(year > HOME_BASE_YEAR) return { v: forwardStudents(sggKey, lv, year), kind:'전망' };
   /* 실적보다 이른 해입니다. 지어내지 않고 비웁니다. */
   return { v:null, kind:'없음' };
 }
@@ -4381,7 +4572,9 @@ function renderHomeSummary(){
   if(note){
     const src = kind === '실적' ? 'EDSS 교육통계 실적'
               : kind === '공시' ? '학교알리미 2026 공시'
-              : kind === '전망' ? '2026 공시에서 시군별 ' + RATE_WORD + '로 굴린 값 · 「몇 명이 될 것이다」로 읽으면 안 됩니다'
+              : kind === '전망' ? PROJ_WORD + '으로 굴린 값' +
+                  (homeState.sel ? ' · 도 전체 전망을 이 시군의 실측 감소율 몫대로 나눈 값' : '') +
+                  ' · 「몇 명이 될 것이다」로 읽으면 안 됩니다'
               : '이 해의 자료가 없습니다';
     note.textContent = homeState.year + '년 · ' + src;
   }
@@ -4390,9 +4583,84 @@ function renderHomeSummary(){
   renderHomeSpark(sggKey, homeState.year);
 }
 
+/* ══ 학교 하나를 왼쪽 칸에 펼칩니다 〔2026. 9. 9.〕 ═══════════════════════
+   지도 말풍선은 좁아서 학년별까지 담지 못합니다. 넓은 자리가 왼쪽 칸입니다.
+
+   여기서도 규칙은 같습니다 — **어느 해의 수인지 반드시 적습니다.**
+   학년별은 2026 공시에만 있으므로, 다른 해를 보고 있으면 그렇다고 말하고
+   학년 막대를 접습니다. 2026 학년별을 2032 옆에 두면 그 해 것으로 읽힙니다. */
+function findSchoolByKey(key){
+  return SCHOOLS.find(s => schoolKey(s) === key) || null;
+}
+
+function renderSchoolCard(){
+  const box = document.getElementById('home-school-card');
+  if(!box) return;
+  const sc = selectedSchoolKey ? findSchoolByKey(selectedSchoolKey) : null;
+  if(!sc){ box.hidden = true; box.innerHTML = ''; return; }
+  box.hidden = false;
+
+  const at = schoolStudentsAt(sc, homeState.year);
+  const lvFull = (LEVEL_CFG[sc.lv] && LEVEL_CFG[sc.lv].full) || sc.lv;
+  const isBase = Number(homeState.year) === HOME_BASE_YEAR;
+
+  /* 학년 막대 — 2026 공시에만 있습니다. */
+  let grades = '';
+  if(isBase && sc.grades && sc.grades.length){
+    const mx = Math.max(1, ...sc.grades);
+    grades = '<div class="sch-grades">' + sc.grades.map((v, i) =>
+      '<div class="g">' +
+        `<span class="gk">${i + 1}학년</span>` +
+        `<span class="gb"><span style="width:${Math.round(v / mx * 100)}%"></span></span>` +
+        `<b class="gv">${fmt(v)}</b>` +
+        `<span class="gc">${sc.gcls && sc.gcls[i] != null ? sc.gcls[i] + '반' : ''}</span>` +
+      '</div>').join('') + '</div>';
+  }
+
+  const perCls = (sc.cls > 0 && sc.stu != null) ? (sc.stu / sc.cls).toFixed(1) : null;
+
+  box.innerHTML =
+    '<div class="sch-head">' +
+      `<div><b class="sch-name">${htmlEsc(sc.name)}</b>` +
+      `<span class="sch-sub">${htmlEsc(lvFull)} · ${htmlEsc(sc.s)}</span></div>` +
+      '<button type="button" class="sch-close" id="home-school-close" aria-label="학교 상세 닫기">✕</button>' +
+    '</div>' +
+    '<div class="sch-stat">' +
+      '<div class="b"><div class="k">학생 수</div><div class="v">' +
+        (at.v == null ? '–' : fmt(at.v)) + '</div>' +
+        `<div class="u">${homeState.year}년 ${htmlEsc(at.v == null ? '자료 없음' : at.kind)}</div></div>` +
+      '<div class="b"><div class="k">학급 수</div><div class="v">' +
+        (isBase && sc.cls != null ? fmt(sc.cls) : '–') + '</div>' +
+        `<div class="u">${isBase ? '2026년 공시' : '2026년만 있음'}</div></div>` +
+      '<div class="b"><div class="k">학급당</div><div class="v">' +
+        (isBase && perCls ? perCls : '–') + '</div>' +
+        `<div class="u">${isBase ? '명' : '2026년만 있음'}</div></div>` +
+    '</div>' +
+    (grades || (sc.grades && sc.grades.length
+      ? `<div class="sch-note">학년별 인원은 <b>2026년 공시</b>에만 있습니다. 지금은 ${homeState.year}년을 보고 있어 접어 두었습니다.</div>`
+      : '')) +
+    (sc.addr ? `<div class="sch-addr">${htmlEsc(sc.addr)}</div>` : '') +
+    (sc.teach ? `<div class="sch-addr">교원 ${fmt(sc.teach)}명 · 2026년 공시</div>` : '');
+
+  const close = document.getElementById('home-school-close');
+  if(close && close.addEventListener) close.addEventListener('click', clearSchool);
+}
+
+function selectSchool(sc){
+  selectedSchoolKey = sc ? schoolKey(sc) : null;
+  renderSchoolCard();
+  /* 고른 딱지를 지도에서도 뒤집어 보여 줍니다. */
+  if(homeState.mapMode === 'online' && currentMapLabelMode()) renderSgisMarkers();
+}
+function clearSchool(){
+  selectedSchoolKey = null;
+  renderSchoolCard();
+  if(homeState.mapMode === 'online' && currentMapLabelMode()) renderSgisMarkers();
+}
+
 /* 왼쪽 칸은 «고른 것»이 바뀔 때마다 통째로 다시 그립니다.
    지표만 고치고 요약을 놓치는 일이 없도록 한 자리로 모읍니다. */
-function renderHomePanel(){ renderKPI(); renderHomeSummary(); }
+function renderHomePanel(){ renderKPI(); renderHomeSummary(); renderSchoolCard(); }
 
 /* --- 오프라인 지도 그리기 --------------------------------------------------
    SGIS 온라인 지도를 기본 선택지로 추가했지만, 인터넷이나 SGIS가 작동하지 않을 때는
@@ -5166,7 +5434,7 @@ let wasSchoolYear = false;   /* 2026 으로 «돌아올» 때도 한 번은 다�
        〔2026. 9. 9.〕 학교별 실적을 심은 뒤로는 학교 낱개 층도 바뀝니다. */
     if(homeState.mapMode === 'online'){
       const tier = currentMapTier();
-      if(tier === 'sgg' || schoolYearApplies() || wasSchoolYear) renderSgisMarkers();
+      if(tier === 'sgg' || schoolYearApplies() || wasSchoolYear) queueMapRedraw();
     }
     wasSchoolYear = schoolYearApplies();
   });
