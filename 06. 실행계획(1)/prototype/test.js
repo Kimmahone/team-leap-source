@@ -833,8 +833,14 @@ check('브이월드 타일은 WMTS 차례를 따른다 ({z}/{y}/{x})',
 check('배경을 일반·위성·하이브리드로 갈아 끼운다',
   /const VWORLD_BASES/.test(js) && /'Satellite'/.test(js) && /'Hybrid'/.test(js));
 check('키가 없으면 배경 고르기를 내놓지 않고 SGIS 배경으로 돈다',
-  /if\(!vworldKey\)\{ wrap\.hidden = true; return; \}/.test(js) &&
-  /const merc = vworldKey \? mercCrs\(\) : null;/.test(js));
+  /if\(!vworldKey\)\{ wrap\.hidden = true; return; \}/.test(js));
+/* ★ 〔2026. 9. 10.〕 브이월드 바탕은 «꺼 두었습니다». 운영에서 지도가 통째로
+   비었습니다 — 타일도 CSP 도 정상인데 아무것도 그려지지 않았습니다.
+   깨진 채로 두고 파지 않습니다. 지도는 브이월드 위에서 새로 세웁니다. */
+check('깨진 갈래를 꺼 두었다', /const VWORLD_BASE_ON = false;/.test(js));
+check('꺼 두면 예전 SGIS 배경으로 돈다',
+  /const merc = \(VWORLD_BASE_ON && vworldKey\) \? mercCrs\(\) : null;/.test(js));
+check('왜 껐는지 코드에 적어 두었다', /운영에서 지도가 통째로 비었습니다/.test(html));
 check('키를 «지도를 만들기 전»에 받는다 (좌표계는 만들 때 정해진다)',
   /function setMapModeAsync/.test(js) && /loadVworldKey\(\)\.then\(function\(\)\{ setMapMode\(mode\); \}\)/.test(js));
 check('타일을 못 받아도 학교 위치는 그대로라고 말한다',

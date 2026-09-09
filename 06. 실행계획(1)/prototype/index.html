@@ -4548,7 +4548,15 @@ function initSgisMap(){
   try{
     /* ★ 브이월드 키가 있으면 «웹 메르카토르» 지도로 세우고 브이월드를 깝니다.
        없으면 예전처럼 SGIS 배경(UTM-K)으로 돕니다. 배율 문턱도 함께 바뀝니다. */
-    const merc = vworldKey ? mercCrs() : null;
+    /* ★ 〔2026. 9. 10.〕 브이월드 바탕을 «꺼 둡니다» — 운영에서 지도가 통째로 비었습니다.
+       타일도 정상이고(운영 키로 200 · JPEG 확인) CSP 도 열려 있는데 화면에 아무것도
+       그려지지 않았습니다. 원인은 `sop.CRS.Proj` 로 세운 웹 메르카토르 좌표계 쪽으로
+       보이지만, **깨진 채로 두고 파는 것은 안 됩니다.**
+
+       그래서 SGIS 배경으로 되돌리고, 지도는 브이월드 위에서 새로 세웁니다
+       (`지도_재설계_2026-09.md`). 그때까지 이 갈래는 꺼 둡니다. */
+    const VWORLD_BASE_ON = false;
+    const merc = (VWORLD_BASE_ON && vworldKey) ? mercCrs() : null;
     if(merc){
       ZOOM = ZOOM_MERC;
       sgisMap = window.sop.map('home-online-map', {
