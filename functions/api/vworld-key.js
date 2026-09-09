@@ -30,6 +30,23 @@ const headers = {
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body), { status, headers });
 
+/* ★ 브이월드에 «등록한 도메인»을 돌려줍니다 〔2026. 9. 10.〕
+
+   브이월드는 도메인을 **정확히** 맞춰 봅니다. 하위 도메인을 덮어 주지 않습니다.
+   그런데 Cloudflare 미리보기는 배포마다 주소가 달라집니다.
+
+       7efd08f6.team-leap-source.pages.dev   ← 실제로 열리는 주소
+       team-leap-source.pages.dev            ← 브이월드에 등록한 주소
+
+   앞의 것을 그대로 보내면 INCORRECT_KEY 입니다. 실제로 재어 확인했습니다 —
+   뒤의 것으로 보내면 그림이 옵니다. 그래서 `*.pages.dev` 이면 **뒤 세 마디**만
+   씁니다. 우리 도메인을 쓰게 되면 그때는 그대로 보냅니다. */
+export function registeredDomain(hostname) {
+  const h = String(hostname || '').toLowerCase();
+  const m = h.match(/([^.]+\.pages\.dev)$/);
+  return m ? m[1] : h;
+}
+
 export async function onRequestGet(context) {
   /* 남의 화면이 우리 키로 지도를 그리지 못하게, 같은 출처에서 온 것만 답합니다.
      (도메인 제한이 이미 막고 있지만, 두 겹으로 둡니다.) */
@@ -45,7 +62,7 @@ export async function onRequestGet(context) {
       말: 'VWORLD_API_KEY 가 이 배포에 없습니다. Cloudflare Pages 변수에 넣고 다시 배포해 주세요.'
     });
   }
-  return json({ ok: true, key, domain: here });
+  return json({ ok: true, key, domain: registeredDomain(new URL(context.request.url).hostname) });
 }
 
 export async function onRequest(context) {

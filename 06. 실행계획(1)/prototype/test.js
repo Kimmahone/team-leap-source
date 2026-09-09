@@ -131,6 +131,7 @@ check('시뮬레이터 예측 표가 채워진다', (byId['pred-tbody']._html ||
    함정 12번: 합계만 맞으면 틀린 것이 안 보입니다. 쪼개서 셉니다. */
 console.log('\n■ 공공데이터 917교');
 const q = expr => vm.runInContext(expr, sandbox);
+const ROOT2 = path.resolve(__dirname, '..', '..');
 check('SGIS 온라인 지도와 오프라인 대체 지도를 함께 제공한다',
   html.includes('id="map-mode-online"') && html.includes('id="map-mode-offline"') &&
   html.includes('src="/api/sgis-map"') && /function setMapMode/.test(html));
@@ -752,9 +753,9 @@ console.log('\n■ 지도가 배율에 따라 «세는 단위»를 바꾼다');
    접는 코드와 낱개로 찍는 코드가 서로 다른 자료를 보면 두 화면이 어긋나고,
    그것은 합계만 보아서는 드러나지 않습니다 — 함정 12번과 같은 자리입니다. */
 check('멀리서 보면 시군으로 접는다', q('mapTierForZoom(3,false)') === 'sgg');
-check('문턱까지는 접힌 채다', q('mapTierForZoom(MAP_TIER_SGG_MAX_ZOOM,false)') === 'sgg');
+check('문턱까지는 접힌 채다', q('mapTierForZoom(ZOOM.sggMax,false)') === 'sgg');
 check('문턱을 넘으면 학교를 낱개로 찍는다',
-  q('mapTierForZoom(MAP_TIER_SGG_MAX_ZOOM+1,false)') === 'school');
+  q('mapTierForZoom(ZOOM.sggMax+1,false)') === 'school');
 check('시군을 골랐으면 배율과 무관하게 학교를 찍는다 (고른 것이 사라지면 안 된다)',
   q('mapTierForZoom(3,true)') === 'school');
 
@@ -812,39 +813,37 @@ check('시군 단계에서는 범례도 시군 단계의 것으로 바꾼다 (�
 check('딱지를 누르면 그 시군 안으로 들어간다', /function enterSgg/.test(js) && /marker\.on\('click'/.test(js));
 check('들어갔으면 나올 길도 함께 켠다', /reset\.hidden = false/.test(js));
 
-console.log('\n■ 위성 지도 (브이월드)');
-/* ★ 〔2026. 9. 10.〕 실제 위치 지도의 «바탕»만 바꿉니다. 다른 지도로 갈아타는
-   것이 아니므로 학교 딱지·폐교·거리 재기가 그대로 살아 있습니다.
+console.log('\n■ 브이월드를 «바탕»으로 삼는다');
+/* ★ 〔2026. 9. 10.〕 sop 를 뜯어보고 두 가지를 확인해 길이 열렸습니다.
 
-   WMS 를 쓰는 까닭 — SGIS 지도는 UTM-K 위에서 돌고 `sop.LatLng` 이 위경도를
-   받는 즉시 그 좌표계로 투영합니다. 브이월드 위성 «타일»은 웹 메르카토르라
-   그대로 얹으면 어긋납니다. WMS 는 서버가 우리 좌표계로 잘라 보내 줍니다. */
-check('위성 단추가 있고 처음에는 숨어 있다 (키가 있을 때만 나타난다)',
-  /id="map-sat"/.test(html) && /id="map-sat"[^>]*hidden/.test(html));
-check('WMS 로 얹는다 (타일이 아니라)', /tileLayer\.wms\('https:\/\/api\.vworld\.kr\/req\/wms'/.test(js));
-check('브이월드가 받는 판만 보낸다 (1.3.0)', /version: '1\.3\.0'/.test(js));
-check('우리 좌표계 이름표를 붙여 보낸다', /code:'EPSG:5179'/.test(js) && /function vworldCrs/.test(js));
-check('바탕이지 덮개가 아니다 (학교 딱지 아래)', /zIndex: 1/.test(js));
-/* ★ 〔2026. 9. 10.〕 **브이월드 WMS 에는 위성영상 레이어가 없습니다.**
-   GetCapabilities 로 세어 보니 355개가 전부 주제도였고 영상은 0개.
-   위성은 WMTS 로만 나오는데 그쪽은 EPSG:3857 하나뿐이라 UTM-K 지도에
-   그대로 얹히지 않습니다. 그래서 이 길은 막혔고, **못 하는 것을 되는 척
-   하지 않습니다** — 단추를 내놓지 않습니다. */
-check('얹을 영상이 없으면 단추를 내놓지 않는다 (눌러도 안 되는 단추는 고장으로 읽힌다)',
-  /const VWORLD_SAT_READY = false;/.test(js) &&
-  /btn\.hidden = !\(VWORLD_SAT_READY && vworldKey\)/.test(js));
-check('왜 막혔는지 코드에 적어 둔다 (다음 사람이 다시 시도하지 않게)',
-  /WMS 에는 위성영상 레이어가 없습니다/.test(html) && /WMTS 로만/.test(html));
-/* 우리 잘못도 하나 있었습니다 — domain 에 https:// 를 붙여 보내 INCORRECT_KEY 였습니다. */
-check('브이월드에는 «호스트명만» 보낸다 (https:// 를 붙이면 INCORRECT_KEY)',
-  /domain: location\.hostname/.test(js) && !/domain: location\.origin/.test(js));
-check('그림이 안 오면 조용히 흰 화면으로 두지 않는다',
-  /'tileerror'/.test(js) && /위성영상을 받지 못해 기본 지도로 되돌렸습니다/.test(js));
-check('간편 지도로 가면 위성을 끈다 (얹을 자리가 없다)',
-  /if\(satOn\) setSat\(false\);/.test(js));
-check('키를 중계하지 않고 «받아» 옵니다 — 브이월드는 도메인 제한 방식',
-  /'\/api\/vworld-key'/.test(js));
-check('CSP 가 브이월드 «그림»만 허락한다 (fetch 는 열지 않는다)', q('1') === 1);
+   ① `r.Map` 은 `statisticTileLayer:false` 를 주면 SGIS 배경을 붙이지 않고
+      **좌표계도 UTM-K 로 덮어쓰지 않습니다** (붙일 때만 mergeOptions 합니다).
+   ② `r.Projection.Proj.project(t)` 는 `proj4(UTMK → 대상).forward([t.x,t.y])` 이고
+      `sop.LatLng` 이 이미 UTM-K x/y 를 들고 있습니다. 그래서 **마커·거리·경계
+      코드를 한 줄도 고치지 않고** 좌표계만 갈아 낄 수 있습니다.
+
+   앞서 WMS 로 위성을 얹으려던 시도는 접었습니다 — 브이월드 WMS 에는 위성영상
+   레이어가 «없습니다»(355개가 전부 주제도). 위성은 WMTS 에만 있고 그쪽은
+   웹 메르카토르뿐이라, 지도 자체를 그 좌표계로 세웁니다. */
+check('웹 메르카토르 좌표계를 만들 수 있다', /function mercCrs/.test(js) && /EPSG:3857/.test(js));
+check('SGIS 배경을 끄고 세운다 (켜 두면 좌표계를 UTM-K 로 덮어씁니다)',
+  /statisticTileLayer: false/.test(js));
+check('브이월드 타일은 WMTS 차례를 따른다 ({z}/{y}/{x})',
+  /wmts\/1\.0\.0\/' \+ vworldKey \+ '\/' \+ vworldBase \+ '\/\{z\}\/\{y\}\/\{x\}\.jpeg/.test(js));
+check('배경을 일반·위성·하이브리드로 갈아 끼운다',
+  /const VWORLD_BASES/.test(js) && /'Satellite'/.test(js) && /'Hybrid'/.test(js));
+check('키가 없으면 배경 고르기를 내놓지 않고 SGIS 배경으로 돈다',
+  /if\(!vworldKey\)\{ wrap\.hidden = true; return; \}/.test(js) &&
+  /const merc = vworldKey \? mercCrs\(\) : null;/.test(js));
+check('키를 «지도를 만들기 전»에 받는다 (좌표계는 만들 때 정해진다)',
+  /function setMapModeAsync/.test(js) && /loadVworldKey\(\)\.then\(function\(\)\{ setMapMode\(mode\); \}\)/.test(js));
+check('타일을 못 받아도 학교 위치는 그대로라고 말한다',
+  /배경지도를 받지 못했습니다 — 학교 위치는 그대로입니다/.test(js));
+check('못 받은 자리에 깨진 그림을 깔지 않는다', /errorTileUrl:/.test(js));
+/* ★ 브이월드는 도메인을 «정확히» 맞춰 봅니다. 미리보기는 배포마다 주소가
+   달라지므로 등록한 뒷마디만 보내야 합니다 — 실제로 재어 확인했습니다. */
+check('등록한 도메인만 보낸다 (해시 서브도메인을 그대로 보내면 INCORRECT_KEY)',
+  /function registeredDomain/.test(fs.readFileSync(path.join(ROOT2, 'functions/api/vworld-key.js'), 'utf8')));
 
 console.log('\n■ 다크 모드에서 «흰 바탕에 흰 글자»가 없다');
 /* ★ 〔2026. 9. 9.〕 「다크로 바꾸면 글자색이 안 따라오는 것이 많다」는 말을
@@ -944,9 +943,11 @@ console.log('\n■ 많이 확대하면 «누르지 않아도» 학교가 제 이
    들었습니다. 네이버 부동산이 집 딱지에 값을 적어 두는 자리입니다.
    다만 멀리서부터 이름을 다 적으면 글자가 겹쳐 아무것도 안 읽히므로
    배율이 충분할 때만 딱지로 바뀝니다. */
-check('이름을 보이는 배율 문턱이 한 곳에 있다', /const MAP_LABEL_MIN_ZOOM = \d+/.test(js));
-check('문턱 아래에서는 동그라미 그대로다', q('mapLabelForZoom(MAP_LABEL_MIN_ZOOM-1)') === false);
-check('문턱을 넘으면 이름 딱지로 바뀐다', q('mapLabelForZoom(MAP_LABEL_MIN_ZOOM)') === true);
+/* ★ 〔2026. 9. 10.〕 문턱을 «좌표계마다» 따로 둡니다. SGIS 는 배율 0~13,
+   웹 메르카토르는 6~19 라 같은 숫자를 쓰면 「경북 전체」가 동네 하나로 보입니다. */
+check('배율 문턱이 좌표계를 따라간다', /const ZOOM_SGIS\s*=/.test(js) && /const ZOOM_MERC\s*=/.test(js) && /let ZOOM = ZOOM_SGIS/.test(js));
+check('문턱 아래에서는 동그라미 그대로다', q('mapLabelForZoom(ZOOM.label-1)') === false);
+check('문턱을 넘으면 이름 딱지로 바뀐다', q('mapLabelForZoom(ZOOM.label)') === true);
 check('딱지에 이름과 학생 수를 «함께» 적는다',
   /sgis-school-label sgis-lv-/.test(js) && /<b class="nm">/.test(js) && /<b class="vl">/.test(js));
 check('학교급을 점 색으로도 말하되 글자를 함께 둔다 (원칙 4)',

@@ -487,6 +487,7 @@ a{color:var(--brand)}
 .sgis-school-label .bub:hover{border-color:var(--brand)}
 /* 값이 없는 해 — 지어내지 않고 그렇다고 적습니다. */
 .sgis-school-label.no-value .vl{color:var(--ink-3);font-weight:600}
+.base-chips{display:inline-flex;align-items:center;gap:4px}
 /* ══ 갈아 끼울 때 «툭» 나타나지 않게 〔2026. 9. 9.〕 ═════════════════════
    배율이 문턱을 넘으면 동그라미가 딱지로 바뀝니다. 그때 새 표시가 그대로
    나타나면 한 번 «툭» 끊긴 것처럼 보입니다. 아주 짧게 스며들게 합니다.
@@ -1414,11 +1415,10 @@ body.map-maxed.home-wide #home-side{display:none}
             <button type="button" class="chip" id="home-metric-stu" aria-pressed="false">학생 수</button>
             <button type="button" class="chip" id="map-mode-online" aria-pressed="true" title="SGIS를 이용해 실제 학교 위치를 표시하는 지도">실제 위치 지도</button>
             <button type="button" class="chip" id="map-mode-offline" aria-pressed="false" title="인터넷 연결이 없어도 사용할 수 있는 경계 지도">간편 지도</button>
-            <!-- ★ 위성 지도 〔2026. 9. 10.〕 실제 위치 지도 «위에» 브이월드 영상을 얹습니다.
-                 다른 지도로 갈아타는 것이 아니라 바탕만 바뀌므로, 학교 딱지·폐교·거리 재기가
-                 그대로 살아 있습니다. 키가 없으면 단추가 스스로 잠깁니다. -->
-            <button type="button" class="chip" id="map-sat" aria-pressed="false" hidden
-                    title="실제 위치 지도 바탕을 브이월드 위성영상으로 바꿉니다">위성 지도</button>
+            <!-- ★ 배경 고르기 〔2026. 9. 10.〕 브이월드 배경을 일반·위성·하이브리드로
+                 갈아 끼웁니다. 학교 딱지·폐교·거리 재기는 그대로입니다.
+                 키가 없으면 이 묶음이 나오지 않고 SGIS 배경으로 돕니다. -->
+            <span id="map-base" class="base-chips" hidden></span>
             <button type="button" class="chip" id="map-closed" aria-pressed="false" hidden
                     title="문 닫은 학교를 지금 학교 위에 겹쳐 봅니다 (매각한 곳은 뺍니다)">폐교 겹쳐 보기</button>
             <button type="button" class="chip" id="home-map-back" hidden
@@ -3889,13 +3889,13 @@ function compactMapValue(value){
    「그 안을 보겠다」는 뜻이고, 그때 다시 접으면 고른 것이 사라져 보입니다.
 
    ※ 이 문턱은 SGIS 배율입니다. 처음 화면이 3(경북 전체), 학교로 날아갈 때가
-     7 입니다(SGIS_FOCUS_ZOOM). 그 사이에 문턱을 두었습니다. */
-const MAP_TIER_SGG_MAX_ZOOM = 5;
+     7 입니다(ZOOM.focus). 그 사이에 문턱을 두었습니다. */
+/* 아래 둘은 ZOOM 을 따릅니다 — 좌표계가 바뀌면 함께 바뀝니다. */
 
 /* 순수 함수로 둡니다 — 지도 없이도 검사가 부를 수 있어야 합니다. */
 function mapTierForZoom(zoom, hasSelection){
   if(hasSelection) return 'school';
-  return (Number(zoom) || 0) <= MAP_TIER_SGG_MAX_ZOOM ? 'sgg' : 'school';
+  return (Number(zoom) || 0) <= ZOOM.sggMax ? 'sgg' : 'school';
 }
 
 function currentMapTier(){
@@ -3908,8 +3908,7 @@ function currentMapTier(){
    멀리서부터 이름을 다 적으면 글자가 서로 겹쳐 아무것도 안 읽힙니다 —
    딱지 하나가 대략 110px 이라, 학교가 촘촘한 시내에서는 배율이 충분해야
    서로 비켜섭니다. 그 문턱을 여기 한 곳에 둡니다. */
-const MAP_LABEL_MIN_ZOOM = 8;
-function mapLabelForZoom(zoom){ return (Number(zoom) || 0) >= MAP_LABEL_MIN_ZOOM; }
+function mapLabelForZoom(zoom){ return (Number(zoom) || 0) >= ZOOM.label; }
 function currentMapLabelMode(){
   const z = (sgisMap && typeof sgisMap.getZoom === 'function') ? sgisMap.getZoom() : 3;
   return mapLabelForZoom(z);
@@ -4100,7 +4099,7 @@ function enterSgg(sggKey){
   if(sgisMap && window.sop && sg.lat != null && sg.lon != null){
     try{
       const p = new window.sop.LatLng(+sg.lat, +sg.lon);
-      sgisMap.setView(window.sop.utmk(p.x, p.y), MAP_TIER_SGG_MAX_ZOOM + 1);
+      sgisMap.setView(window.sop.utmk(p.x, p.y), ZOOM.sggMax + 1);
     }catch(_e){}
   }
   /* 목록은 renderSgisMarkers 가 끝에서 함께 그립니다 — 여기서 또 부르면 두 번 그립니다. */
@@ -4226,7 +4225,43 @@ function renderSgisTierNote2(list, byYear){
      502·520 입니다. 브이월드 응답이 비표준이라 Workers 가 중계를 거부합니다.
      브라우저는 문제없이 받습니다. 브이월드 키는 도메인 제한 방식이라
      주소에 드러나는 것이 정상 사용법입니다. `/api/vworld-key` 주석 참고. */
-let vworldKey = null, vworldTried = false, satOn = false, satLayer = null;
+let vworldKey = null, vworldDomain = null, vworldTried = false, satLayer = null;
+let vworldBase = 'Base';       /* Base(일반) · Satellite(위성) · Hybrid(위성+지명) */
+
+/* ══ 브이월드를 «바탕»으로 삼습니다 〔2026. 9. 10.〕 ══════════════════════
+   ★ 왜 이제 되는가 — sop 를 뜯어보고 두 가지를 확인했습니다.
+
+     ① `r.Map` 은 `statisticTileLayer:false` 를 주면 SGIS 배경을 붙이지 않고
+        **좌표계도 UTM-K 로 덮어쓰지 않습니다.** (붙일 때만 mergeOptions 합니다)
+     ② `r.Projection.Proj.project(t)` 는 `proj4(UTMK → 대상).forward([t.x,t.y])`
+        입니다. `sop.LatLng` 이 이미 UTM-K x/y 를 들고 있으므로,
+        **마커·거리·경계 코드를 한 줄도 고치지 않고** 좌표계만 갈아 낄 수 있습니다.
+
+   그래서 지도를 웹 메르카토르로 세우고 브이월드 타일을 깝니다.
+   학교 위치는 그대로 정확합니다 — 좌표는 우리 것이고 변환만 바뀝니다.
+
+   브이월드 키가 없으면 예전처럼 SGIS 배경으로 돕니다. 둘 다 안 되면
+   간편 지도(오프라인 SVG)가 받습니다. 세 겹입니다. */
+const MERC_DEF = '+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 ' +
+                 '+x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +no_defs';
+const MERC_ORIGIN = [-20037508.342789244, 20037508.342789244];
+const MERC_RES = [];
+for(let z = 0; z <= 19; z++) MERC_RES.push(156543.03392804097 / Math.pow(2, z));
+
+function mercCrs(){
+  if(!window.sop || !window.sop.CRS || typeof window.sop.CRS.Proj !== 'function') return null;
+  try{
+    return new window.sop.CRS.Proj('EPSG:3857', MERC_DEF, {
+      origin: MERC_ORIGIN, resolutions: MERC_RES
+    });
+  }catch(_e){ return null; }
+}
+
+/* 배율 문턱은 좌표계마다 다릅니다. SGIS 는 0~13, 웹 메르카토르는 6~19 입니다.
+   같은 숫자를 쓰면 «경북 전체»가 동네 하나로 보입니다. */
+const ZOOM_SGIS  = { home:3,  sggMax:5,  label:8,  focus:7  };
+const ZOOM_MERC  = { home:8,  sggMax:9,  label:12, focus:14 };
+let ZOOM = ZOOM_SGIS;
 
 /* sop.CRS.UTMK 에는 `code` 가 없습니다. WMS 는 그 값을 그대로 CRS 인자로
    보내므로, 같은 좌표계에 이름표만 붙여 씁니다. project 는 «이미 UTM-K 인 점»을
@@ -4259,65 +4294,41 @@ function removeSatLayer(){
   satLayer = null;
 }
 
-/* ★ 〔2026. 9. 10.〕 **브이월드 WMS 에는 위성영상 레이어가 없습니다.**
-   GetCapabilities 를 받아 세어 보니 레이어 355개가 전부 `lt_*` 주제도
-   (용도지역·재해위험지구·산림입지도…)였고, 영상은 하나도 없었습니다.
-   위성은 **WMTS 로만** 나오고 그쪽은 EPSG:3857 하나뿐입니다
-   (WMTSCapabilities 에 3857 외에 아무 좌표계도 없습니다).
+/* ★ 배경 갈아 끼우기 — 일반 / 위성 / 하이브리드 〔2026. 9. 10.〕
+   브이월드 WMTS 는 세 가지를 같은 주소 틀로 줍니다. 타일 한 겹만 바꾸면 됩니다.
 
-   그래서 이 자리에서 위성을 얹는 길은 막혔습니다. 못 하는 것을 «되는 척»
-   하지 않고 단추를 내려 둡니다. 어느 길로 갈지는 아래 두 가지 중에서
-   정해야 합니다 — `지도_전면개편_실행계획_2026-09.md` 참고.
+   ※ WMS 로 위성을 얹으려던 앞선 시도는 접었습니다 — 브이월드 WMS 에는
+     위성영상 레이어가 «없습니다»(레이어 355개가 전부 주제도). 위성은 WMTS 에만
+     있고 그쪽은 웹 메르카토르뿐이라, 지도 자체를 그 좌표계로 세웠습니다. */
+const VWORLD_BASES = [
+  ['Base',      '일반'],
+  ['Satellite', '위성'],
+  ['Hybrid',    '위성+지명']
+];
 
-     · WMS 로 «주제도»를 얹는다 (EPSG:5179 로 잘 됩니다. 다만 위성은 아닙니다)
-     · 웹 메르카토르 지도를 따로 하나 세워 WMTS 위성을 얹는다 (구조가 커집니다)
-
-   키를 받아 오는 자리(`/api/vworld-key`)와 물어보는 자리(`/api/vworld-probe`)는
-   그대로 둡니다 — 어느 길로 가든 그대로 씁니다. */
-const VWORLD_SAT_READY = false;
-
-function applySatLayer(){
-  if(!VWORLD_SAT_READY) return;
-  if(!sgisMap || !window.sop || !window.sop.tileLayer || !window.sop.tileLayer.wms) return;
-  removeSatLayer();
-  if(!satOn || !vworldKey) return;
-  const crs = vworldCrs();
-  if(!crs) return;
-  try{
-    satLayer = window.sop.tileLayer.wms('https://api.vworld.kr/req/wms', {
-      crs: crs,
-      layers: 'Satellite',
-      format: 'image/jpeg',
-      version: '1.3.0',          /* 브이월드는 1.3.0 만 받습니다 */
-      transparent: false,
-      key: vworldKey,
-      domain: location.hostname,   /* ★ 브이월드는 «호스트명만» 받습니다. https:// 를 붙이면 INCORRECT_KEY */
-      /* 학교 딱지보다 «아래»에 깔립니다. 바탕이지 덮개가 아닙니다. */
-      zIndex: 1,
-      opacity: 1
-    });
-    /* 그림이 안 오면 조용히 흰 화면이 됩니다 — 그때는 스스로 말하고 되돌립니다. */
-    if(typeof satLayer.on === 'function'){
-      let bad = 0;
-      satLayer.on('tileerror', function(){
-        if(++bad < 4) return;
-        setSat(false);
-        const st = document.getElementById('sgis-status');
-        if(st) st.textContent = '위성영상을 받지 못해 기본 지도로 되돌렸습니다 (브이월드 응답 없음).';
-      });
-    }
-    sgisMap.addLayer(satLayer);
-  }catch(_e){ satLayer = null; }
+function setVworldBase(name){
+  if(!vworldKey) return;
+  vworldBase = name;
+  addVworldBase();
+  const wrap = document.getElementById('map-base');
+  if(wrap) Array.prototype.forEach.call(wrap.querySelectorAll('button'), function(b){
+    b.setAttribute('aria-pressed', String(b.dataset.base === name));
+  });
 }
 
-function setSat(on){
-  satOn = !!on && !!vworldKey;
-  const btn = document.getElementById('map-sat');
-  if(btn){
-    btn.setAttribute('aria-pressed', satOn ? 'true' : 'false');
-    btn.textContent = satOn ? '기본 지도' : '위성 지도';
-  }
-  applySatLayer();
+function buildBaseChips(){
+  const wrap = document.getElementById('map-base');
+  if(!wrap) return;
+  if(!vworldKey){ wrap.hidden = true; return; }
+  wrap.hidden = false;
+  wrap.innerHTML = '<span class="map-note" style="margin-right:2px">배경</span>' +
+    VWORLD_BASES.map(function(b){
+      return '<button type="button" class="chip" data-base="' + b[0] + '"' +
+        ' aria-pressed="' + (b[0] === vworldBase) + '">' + b[1] + '</button>';
+    }).join('');
+  Array.prototype.forEach.call(wrap.querySelectorAll('button'), function(b){
+    b.addEventListener('click', function(){ setVworldBase(b.dataset.base); });
+  });
 }
 
 function renderSgisMarkers(){
@@ -4441,7 +4452,7 @@ function renderSgisMarkers(){
 }
 
 /* 목록에서 학교를 골랐을 때의 확대 배율. 처음 화면은 3(경북 전체)입니다. */
-const SGIS_FOCUS_ZOOM = 7;
+/* 목록에서 학교를 골랐을 때의 배율 — ZOOM 을 따릅니다. */
 
 /* ══ SGIS 가 딸려 보내는 측정 단추 손보기 〔2026. 9. 7.〕 ══════════════════
    지도 오른쪽 아래 세 단추는 «우리가 만든 것이 아닙니다». `sop.map()` 에
@@ -4505,13 +4516,53 @@ function tidySgisMeasureControls(){
   sync();
 }
 
+/* 브이월드 타일 한 겹. WMTS 는 `{z}/{y}/{x}` 차례입니다. */
+function vworldTileUrl(){
+  return 'https://api.vworld.kr/req/wmts/1.0.0/' + vworldKey + '/' + vworldBase + '/{z}/{y}/{x}.jpeg';
+}
+
+function addVworldBase(){
+  if(!sgisMap || !vworldKey || !window.sop || !window.sop.tileLayer) return false;
+  try{
+    if(satLayer && sgisMap.removeLayer) sgisMap.removeLayer(satLayer);
+    satLayer = window.sop.tileLayer(vworldTileUrl(), {
+      minZoom: 6, maxZoom: 19, zIndex: 1,
+      /* 못 받은 자리는 비워 둡니다. 깨진 그림 표시가 바둑판처럼 깔리면
+         지도가 고장 난 것처럼 보입니다. */
+      errorTileUrl: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
+    });
+    let bad = 0;
+    if(typeof satLayer.on === 'function') satLayer.on('tileerror', function(){
+      if(++bad !== 6) return;
+      const st = document.getElementById('sgis-status');
+      if(st) st.textContent = '배경지도를 받지 못했습니다 — 학교 위치는 그대로입니다 (브이월드 응답 없음).';
+    });
+    sgisMap.addLayer(satLayer);
+    return true;
+  }catch(_e){ return false; }
+}
+
 function initSgisMap(){
   if(sgisMap) return true;
   if(!window.sop || typeof window.sop.map !== 'function') return false;
   try{
-    sgisMap = window.sop.map('home-online-map');
+    /* ★ 브이월드 키가 있으면 «웹 메르카토르» 지도로 세우고 브이월드를 깝니다.
+       없으면 예전처럼 SGIS 배경(UTM-K)으로 돕니다. 배율 문턱도 함께 바뀝니다. */
+    const merc = vworldKey ? mercCrs() : null;
+    if(merc){
+      ZOOM = ZOOM_MERC;
+      sgisMap = window.sop.map('home-online-map', {
+        statisticTileLayer: false,   /* SGIS 배경을 붙이지 않습니다 (좌표계도 안 덮어씁니다) */
+        crs: merc, minZoom: 6, maxZoom: 19
+      });
+    }else{
+      ZOOM = ZOOM_SGIS;
+      sgisMap = window.sop.map('home-online-map');
+    }
     const center = new window.sop.LatLng(36.35, 128.85);
-    sgisMap.setView(window.sop.utmk(center.x, center.y), 3);
+    sgisMap.setView(window.sop.utmk(center.x, center.y), ZOOM.home);
+    if(merc) addVworldBase();
+    buildBaseChips();
     if(typeof sgisMap.on === 'function'){
       sgisMap.on('moveend', renderOnlineSchoolList);
       /* ★ 배율이 바뀌면 «세는 단위»가 바뀔 수 있습니다 〔2026. 9. 9.〕
@@ -4532,7 +4583,7 @@ function initSgisMap(){
     sgisTier = currentMapTier();
     sgisLabelMode = currentMapLabelMode();
     /* 위성 지도 — 키가 있으면 단추가 나타나고, 없으면 «없다»고 말하며 잠깁니다. */
-    loadVworldKey().then(function(){ if(satOn) applySatLayer(); });
+    /* 키는 지도를 만들기 «전»에 이미 받아 두었습니다 (아래 시작 자리). */
     renderSgisMarkers();
     /* 컨트롤은 지도가 만들어질 때 함께 붙습니다. 한 틱 뒤에 손봅니다. */
     setTimeout(tidySgisMeasureControls, 0);
@@ -4566,6 +4617,17 @@ function markSgisUnavailable(){
   const status = document.getElementById('sgis-status');
   if(status) status.textContent =
     '간편 지도 사용 중 · 실제 위치 지도는 배포된 사이트에서만 열립니다(로컬 미리보기에는 지도 서비스가 없습니다)';
+}
+
+/* ★ 브이월드 키를 먼저 받아 두고 지도를 엽니다 〔2026. 9. 10.〕
+   좌표계와 배경은 지도를 «만들 때» 정해집니다. 만든 뒤에는 못 바꿉니다.
+   그래서 키를 기다렸다가 여는 길을 따로 둡니다. 이미 받아 두었으면
+   기다리지 않고 바로 엽니다. */
+function setMapModeAsync(mode){
+  if(mode !== 'online' || vworldTried || sgisMap) { setMapMode(mode); return; }
+  const status = document.getElementById('sgis-status');
+  if(status) status.textContent = '배경지도를 준비하는 중입니다…';
+  loadVworldKey().then(function(){ setMapMode(mode); });
 }
 
 function setMapMode(mode){
@@ -4610,10 +4672,9 @@ function setMapMode(mode){
       renderOnlineSchoolList();
     }, 0);
   }else{
-    /* 위성영상은 실제 위치 지도의 바탕입니다. 간편 지도에는 얹을 자리가 없습니다. */
-    if(satOn) setSat(false);
-    const satBtn = document.getElementById('map-sat');
-    if(satBtn) satBtn.hidden = true;
+    /* 배경 고르기는 실제 위치 지도의 것입니다. 간편 지도에는 얹을 자리가 없습니다. */
+    const baseWrap = document.getElementById('map-base');
+    if(baseWrap) baseWrap.hidden = true;
     status.textContent = fallbackMessage || '간편 지도 사용 중 · 인터넷 연결 없이도 작동합니다';
     if(homeState.sel) renderDetail(); else renderTilemap();
   }
@@ -5498,7 +5559,7 @@ function focusOnSgisMap(s){
   }
   try{
     const p = new window.sop.LatLng(+s.lat, +s.lon);
-    sgisMap.setView(window.sop.utmk(p.x, p.y), SGIS_FOCUS_ZOOM);
+    sgisMap.setView(window.sop.utmk(p.x, p.y), ZOOM.focus);
     const marker = sgisMarkers.get(schoolKey(s));
     /* 묶여 있던 표시는 확대해야 풀립니다. 지도가 자리를 잡은 뒤에 엽니다. */
     if(marker) setTimeout(() => {
@@ -5924,7 +5985,7 @@ function moveToSearchResult(){
   try{
     const p = new window.sop.LatLng(+best.lat, +best.lon);
     sgisMap.setView(window.sop.utmk(p.x, p.y),
-      Math.max(sgisMap.getZoom() || 3, MAP_LABEL_MIN_ZOOM));
+      Math.max(sgisMap.getZoom() || ZOOM.home, ZOOM.label));
   }catch(_e){}
 }
 
@@ -5936,15 +5997,10 @@ document.getElementById('home-search').addEventListener('input', () => {
   }
   else if(homeState.sel) renderDetail();
 });
-(function(){
-  const b = document.getElementById('map-sat');
-  if(b && b.addEventListener) b.addEventListener('click', function(){ setSat(!satOn); });
-})();
-
 document.getElementById('home-metric-sch').addEventListener('click', () => setMetric('sch'));
 document.getElementById('home-metric-stu').addEventListener('click', () => setMetric('stu'));
 document.getElementById('map-mode-offline').addEventListener('click', () => setMapMode('offline'));
-document.getElementById('map-mode-online').addEventListener('click', () => setMapMode('online'));
+document.getElementById('map-mode-online').addEventListener('click', () => setMapModeAsync('online'));
 function setMetric(m){
   homeState.metric = m;
   document.getElementById('home-metric-sch').setAttribute('aria-pressed', m==='sch');
@@ -8205,7 +8261,7 @@ showView(location.hash.slice(1) || 'home');
      ② 화면 진입이 SGIS 응답을 기다리지 않습니다. */
 /* 처음에는 실제 위치 지도로 엽니다. 지도 서비스가 없는 곳(로컬 미리보기)이면
    setMapMode 가 버튼을 잠그고 왜인지 적습니다 — 조용히 실패하지 않습니다. */
-setMapMode(sgisReady() ? 'online' : 'offline');
+setMapModeAsync(sgisReady() ? 'online' : 'offline');
 if(!sgisReady()) markSgisUnavailable();
 </script>
 
