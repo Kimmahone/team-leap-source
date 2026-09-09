@@ -854,10 +854,12 @@ check('본교에서 300m 넘게 떨어진 병설유치원이 없다', q(
   "var p=main[k.s+'|'+m[1]];if(!p)return;if(d(k.lat,k.lon,p.lat,p.lon)>0.3)bad++;});return bad;})()") === 0);
 /* 포항양덕초 병설유치원은 지금 운영하지 않는데 자료에 원아 5명이 남아 있습니다.
    2023년 공시가 마지막이기 때문입니다. 화면이 그 사실을 말해야 합니다. */
-check('낡은 공시를 화면이 스스로 말한다', /function staleTermNote/.test(js) && /년 공시<\/b>가 마지막입니다/.test(js));
-check('2026 공시면 아무 말도 덧붙이지 않는다', q("staleTermNote({term:'20261'})") === '');
-check('2023 공시면 「확인해 달라」고 말한다',
-  /2023년 공시/.test(q("staleTermNote({term:'20232'})")) &&
+check('낡은 공시를 화면이 스스로 말한다', /function staleTermNote/.test(js) && /가 마지막입니다/.test(js));
+check('판정은 이미 있는 staleTerm 을 쓴다 (같은 규칙을 둘로 만들지 않는다)',
+  /const st = staleTerm\(sc\);/.test(js));
+check('가장 최근 공시면 아무 말도 덧붙이지 않는다', q("staleTermNote({term:'20261'})") === '');
+check('낡은 공시면 «몇 년 몇 차»인지와 「확인해 달라」를 말한다',
+  /2023년 2차 공시/.test(q("staleTermNote({term:'20232'})")) &&
   /확인해 주세요/.test(q("staleTermNote({term:'20232'})")));
 
 console.log('\n■ 검색은 «경북 전체»에서 찾고, 찾으면 그리로 간다');
@@ -925,6 +927,28 @@ check('학교 이름을 적는다', /class="sch-name"/.test(byId['home-school-ca
 check('닫는 길이 있다', /id="home-school-close"/.test(byId['home-school-card']._html || ''));
 q("homeState.year=2026; renderSchoolCard();");
 check('2026 에서는 학년별 막대를 편다', /class="sch-grades"/.test(byId['home-school-card']._html || ''));
+
+/* ★ 〔2026. 9. 9.〕 「학교알리미처럼 더 많은 정보가 나왔으면」 —
+   다만 «학령인구 감소에 어울리는 것»만 넣습니다. 급식·전화번호는 이 화면이
+   답할 질문이 아닙니다. 넣은 것은 전부 지금 가진 자료로 셈해집니다. */
+check('규모·밀도 판정을 «이미 있는 잣대»로 붙인다 (목록 카드와 같은 함수)',
+  /const size = schoolSizeOf\(sc\);/.test(js) && /densityOf\(sc\.lv, perCls, area\)/.test(js));
+check('판정 배지가 실제로 나온다', /class="sch-tags"/.test(byId['home-school-card']._html || ''));
+check('읍·면인지 동인지 적는다 (규모 잣대가 다르다)',
+  /지역<\/span>/.test(byId['home-school-card']._html || ''));
+check('교원 수와 교원 1인당 학생 수를 적는다',
+  /교원 수/.test(byId['home-school-card']._html || '') &&
+  /교원 1인당/.test(byId['home-school-card']._html || ''));
+check('특수학급 학생 수를 적는다', /특수학급/.test(byId['home-school-card']._html || ''));
+check('한 학급뿐인 학년을 눈에 띄게 적는다 (더 줄일 여지가 없는 자리)',
+  /class="one"/.test(js) && /1학급<\/b>/.test(js));
+check('어린 학년이 적다는 것을 한 줄로 말한다 (앞으로 더 준다는 신호)',
+  /1학년이 /.test(js) && /어린 학년이 적으면 앞으로 더 줄어듭니다/.test(js));
+check('가장 가까운 같은 학교급 학교와 거리를 적는다', /function nearestSameLevel/.test(js));
+check('그 거리가 «직선거리»임을 밝힌다 (통학 거리가 아니다)',
+  /직선거리라 통학 거리와 다릅니다/.test(js));
+check('학교별 추이는 실적을 심은 뒤에만 그린다',
+  /function schoolSparkSvg/.test(js) && /if\(!schoolHistoryReady\(\) \|\| !sc\.hist\) return '';/.test(js));
 q("homeState.year=2032; renderSchoolCard();");
 check('다른 해에는 학년별을 접고 «왜»를 적는다 (2026 학년별이 그 해 것으로 읽힌다)',
   !/class="sch-grades"/.test(byId['home-school-card']._html || '') &&
