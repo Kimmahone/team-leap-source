@@ -1414,6 +1414,11 @@ body.map-maxed.home-wide #home-side{display:none}
             <button type="button" class="chip" id="home-metric-stu" aria-pressed="false">학생 수</button>
             <button type="button" class="chip" id="map-mode-online" aria-pressed="true" title="SGIS를 이용해 실제 학교 위치를 표시하는 지도">실제 위치 지도</button>
             <button type="button" class="chip" id="map-mode-offline" aria-pressed="false" title="인터넷 연결이 없어도 사용할 수 있는 경계 지도">간편 지도</button>
+            <!-- ★ 위성 지도 〔2026. 9. 10.〕 실제 위치 지도 «위에» 브이월드 영상을 얹습니다.
+                 다른 지도로 갈아타는 것이 아니라 바탕만 바뀌므로, 학교 딱지·폐교·거리 재기가
+                 그대로 살아 있습니다. 키가 없으면 단추가 스스로 잠깁니다. -->
+            <button type="button" class="chip" id="map-sat" aria-pressed="false" hidden
+                    title="실제 위치 지도 바탕을 브이월드 위성영상으로 바꿉니다">위성 지도</button>
             <button type="button" class="chip" id="map-closed" aria-pressed="false" hidden
                     title="문 닫은 학교를 지금 학교 위에 겹쳐 봅니다 (매각한 곳은 뺍니다)">폐교 겹쳐 보기</button>
             <button type="button" class="chip" id="home-map-back" hidden
@@ -4181,6 +4186,100 @@ function renderSgisTierNote2(list, byYear){
     `실제 위치 지도 · ${yw} · ${studentMetric ? '학생 수 합계·크기 기준' : '학교 수 기준'} · 좌표 확보 학교 ${fmt(list.length)}곳 (SGIS)`;
 }
 
+/* ══ 위성 지도 (브이월드) 〔2026. 9. 10.〕 ═══════════════════════════════
+   실제 위치 지도의 «바탕»만 브이월드 영상으로 바꿉니다. 다른 지도로 갈아타는
+   것이 아니므로 학교 딱지·폐교·거리 재기가 그대로 살아 있습니다.
+
+   ★ 왜 WMS 인가 — SGIS 지도는 UTM-K 위에서 돕니다. `sop.LatLng` 이 위경도를
+     받는 즉시 UTM-K 로 투영하므로 마커·거리·경계가 전부 그 좌표계에 묶여
+     있습니다. 브이월드 위성 «타일»은 웹 메르카토르라 그대로 얹으면 어긋납니다.
+     WMS 는 **서버가 우리 좌표계로 잘라 보내 주므로** 그대로 얹힙니다.
+     키 없이 물어보아 EPSG:5179 를 받아들이는 것까지 확인했습니다.
+
+   ★ 왜 중계하지 않고 키를 받아 오나 — Cloudflare 함수가 브이월드를 부르면
+     502·520 입니다. 브이월드 응답이 비표준이라 Workers 가 중계를 거부합니다.
+     브라우저는 문제없이 받습니다. 브이월드 키는 도메인 제한 방식이라
+     주소에 드러나는 것이 정상 사용법입니다. `/api/vworld-key` 주석 참고. */
+let vworldKey = null, vworldTried = false, satOn = false, satLayer = null;
+
+/* sop.CRS.UTMK 에는 `code` 가 없습니다. WMS 는 그 값을 그대로 CRS 인자로
+   보내므로, 같은 좌표계에 이름표만 붙여 씁니다. project 는 «이미 UTM-K 인 점»을
+   그대로 돌려주면 됩니다 — 타일 경계가 이미 그 좌표계로 나옵니다. */
+function vworldCrs(){
+  const base = (window.sop && window.sop.CRS && window.sop.CRS.UTMK) || null;
+  if(!base) return null;
+  const crs = Object.assign({}, base, { code:'EPSG:5179' });
+  crs.project = function(p){ return p; };
+  return crs;
+}
+
+async function loadVworldKey(){
+  if(vworldTried) return vworldKey;
+  vworldTried = true;
+  try{
+    const r = await fetch('/api/vworld-key', { headers:{ 'Accept':'application/json' } });
+    const j = await r.json();
+    vworldKey = (j && j.ok && j.key) ? j.key : null;
+  }catch(_e){ vworldKey = null; }
+  const btn = document.getElementById('map-sat');
+  if(btn){
+    if(vworldKey) btn.hidden = false;
+    else {
+      btn.hidden = false; btn.disabled = true; btn.classList.add('chip-off');
+      btn.title = '브이월드 키가 이 배포에 없어 위성 지도를 쓸 수 없습니다';
+    }
+  }
+  return vworldKey;
+}
+
+function removeSatLayer(){
+  if(satLayer && sgisMap && sgisMap.removeLayer){ try{ sgisMap.removeLayer(satLayer); }catch(_e){} }
+  satLayer = null;
+}
+
+function applySatLayer(){
+  if(!sgisMap || !window.sop || !window.sop.tileLayer || !window.sop.tileLayer.wms) return;
+  removeSatLayer();
+  if(!satOn || !vworldKey) return;
+  const crs = vworldCrs();
+  if(!crs) return;
+  try{
+    satLayer = window.sop.tileLayer.wms('https://api.vworld.kr/req/wms', {
+      crs: crs,
+      layers: 'Satellite',
+      format: 'image/jpeg',
+      version: '1.3.0',          /* 브이월드는 1.3.0 만 받습니다 */
+      transparent: false,
+      key: vworldKey,
+      domain: location.origin,
+      /* 학교 딱지보다 «아래»에 깔립니다. 바탕이지 덮개가 아닙니다. */
+      zIndex: 1,
+      opacity: 1
+    });
+    /* 그림이 안 오면 조용히 흰 화면이 됩니다 — 그때는 스스로 말하고 되돌립니다. */
+    if(typeof satLayer.on === 'function'){
+      let bad = 0;
+      satLayer.on('tileerror', function(){
+        if(++bad < 4) return;
+        setSat(false);
+        const st = document.getElementById('sgis-status');
+        if(st) st.textContent = '위성영상을 받지 못해 기본 지도로 되돌렸습니다 (브이월드 응답 없음).';
+      });
+    }
+    sgisMap.addLayer(satLayer);
+  }catch(_e){ satLayer = null; }
+}
+
+function setSat(on){
+  satOn = !!on && !!vworldKey;
+  const btn = document.getElementById('map-sat');
+  if(btn){
+    btn.setAttribute('aria-pressed', satOn ? 'true' : 'false');
+    btn.textContent = satOn ? '기본 지도' : '위성 지도';
+  }
+  applySatLayer();
+}
+
 function renderSgisMarkers(){
   if(!sgisMap || !window.sop) return;
   /* ★ 멀리서 볼 때는 시군으로 접습니다 〔2026. 9. 9.〕
@@ -4392,6 +4491,8 @@ function initSgisMap(){
     }
     sgisTier = currentMapTier();
     sgisLabelMode = currentMapLabelMode();
+    /* 위성 지도 — 키가 있으면 단추가 나타나고, 없으면 «없다»고 말하며 잠깁니다. */
+    loadVworldKey().then(function(){ if(satOn) applySatLayer(); });
     renderSgisMarkers();
     /* 컨트롤은 지도가 만들어질 때 함께 붙습니다. 한 틱 뒤에 손봅니다. */
     setTimeout(tidySgisMeasureControls, 0);
@@ -4469,6 +4570,10 @@ function setMapMode(mode){
       renderOnlineSchoolList();
     }, 0);
   }else{
+    /* 위성영상은 실제 위치 지도의 바탕입니다. 간편 지도에는 얹을 자리가 없습니다. */
+    if(satOn) setSat(false);
+    const satBtn = document.getElementById('map-sat');
+    if(satBtn) satBtn.hidden = true;
     status.textContent = fallbackMessage || '간편 지도 사용 중 · 인터넷 연결 없이도 작동합니다';
     if(homeState.sel) renderDetail(); else renderTilemap();
   }
@@ -5791,6 +5896,11 @@ document.getElementById('home-search').addEventListener('input', () => {
   }
   else if(homeState.sel) renderDetail();
 });
+(function(){
+  const b = document.getElementById('map-sat');
+  if(b && b.addEventListener) b.addEventListener('click', function(){ setSat(!satOn); });
+})();
+
 document.getElementById('home-metric-sch').addEventListener('click', () => setMetric('sch'));
 document.getElementById('home-metric-stu').addEventListener('click', () => setMetric('stu'));
 document.getElementById('map-mode-offline').addEventListener('click', () => setMapMode('offline'));

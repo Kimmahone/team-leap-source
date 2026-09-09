@@ -441,8 +441,16 @@ check('외부 CDN·웹폰트를 부르지 않는다', externalHits.length === 0,
 
 const CODE_ONLY = html.replace(/\/\*[\s\S]*?\*\//g, '').replace(/<!--[\s\S]*?-->/g, '');
 const fetchTargets = [...CODE_ONLY.matchAll(/\bfetch\s*\(\s*(['"])([^'"]+)\1/g)].map(m=>m[2]);
-check('fetch는 같은 출처 AI 분석·상태 중계만 호출한다',
-  fetchTargets.length===2 && fetchTargets.includes('/api/ai-analysis') && fetchTargets.includes('/api/data-status'), fetchTargets.join(', '));
+/* 지키는 것은 «개수»가 아니라 규칙입니다 — 부르는 곳이 전부 같은 출처이고,
+   그 목록을 우리가 «이름으로 알고 있어야» 합니다. 모르는 주소가 하나라도
+   끼면 빨개집니다. 〔2026. 9. 10. 위성 지도 키를 받는 자리가 늘었습니다〕 */
+const FETCH_OK = ['/api/ai-analysis', '/api/data-status', '/api/vworld-key'];
+check('fetch 는 같은 출처의 «아는 주소»만 부른다',
+  fetchTargets.length > 0 &&
+  fetchTargets.every(t => t.startsWith('/') && FETCH_OK.includes(t)),
+  fetchTargets.join(', '));
+check('그 목록에 밖으로 나가는 주소가 없다',
+  FETCH_OK.every(t => !/^https?:/i.test(t)));
 const senders = [
   [/XMLHttpRequest/,           'XMLHttpRequest'],
   [/navigator\.sendBeacon/,    'sendBeacon'],
@@ -803,6 +811,29 @@ check('시군 단계에서는 범례도 시군 단계의 것으로 바꾼다 (�
   /function renderSgisTierNote/.test(js) && /딱지 하나 = 시군 하나/.test(js));
 check('딱지를 누르면 그 시군 안으로 들어간다', /function enterSgg/.test(js) && /marker\.on\('click'/.test(js));
 check('들어갔으면 나올 길도 함께 켠다', /reset\.hidden = false/.test(js));
+
+console.log('\n■ 위성 지도 (브이월드)');
+/* ★ 〔2026. 9. 10.〕 실제 위치 지도의 «바탕»만 바꿉니다. 다른 지도로 갈아타는
+   것이 아니므로 학교 딱지·폐교·거리 재기가 그대로 살아 있습니다.
+
+   WMS 를 쓰는 까닭 — SGIS 지도는 UTM-K 위에서 돌고 `sop.LatLng` 이 위경도를
+   받는 즉시 그 좌표계로 투영합니다. 브이월드 위성 «타일»은 웹 메르카토르라
+   그대로 얹으면 어긋납니다. WMS 는 서버가 우리 좌표계로 잘라 보내 줍니다. */
+check('위성 단추가 있고 처음에는 숨어 있다 (키가 있을 때만 나타난다)',
+  /id="map-sat"/.test(html) && /id="map-sat"[^>]*hidden/.test(html));
+check('WMS 로 얹는다 (타일이 아니라)', /tileLayer\.wms\('https:\/\/api\.vworld\.kr\/req\/wms'/.test(js));
+check('브이월드가 받는 판만 보낸다 (1.3.0)', /version: '1\.3\.0'/.test(js));
+check('우리 좌표계 이름표를 붙여 보낸다', /code:'EPSG:5179'/.test(js) && /function vworldCrs/.test(js));
+check('바탕이지 덮개가 아니다 (학교 딱지 아래)', /zIndex: 1/.test(js));
+check('키가 없으면 단추가 스스로 잠기고 «왜»를 적는다',
+  /브이월드 키가 이 배포에 없어/.test(js) && /btn\.disabled = true/.test(js));
+check('그림이 안 오면 조용히 흰 화면으로 두지 않는다',
+  /'tileerror'/.test(js) && /위성영상을 받지 못해 기본 지도로 되돌렸습니다/.test(js));
+check('간편 지도로 가면 위성을 끈다 (얹을 자리가 없다)',
+  /if\(satOn\) setSat\(false\);/.test(js));
+check('키를 중계하지 않고 «받아» 옵니다 — 브이월드는 도메인 제한 방식',
+  /'\/api\/vworld-key'/.test(js));
+check('CSP 가 브이월드 «그림»만 허락한다 (fetch 는 열지 않는다)', q('1') === 1);
 
 console.log('\n■ 다크 모드에서 «흰 바탕에 흰 글자»가 없다');
 /* ★ 〔2026. 9. 9.〕 「다크로 바꾸면 글자색이 안 따라오는 것이 많다」는 말을
