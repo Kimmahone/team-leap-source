@@ -862,8 +862,18 @@ body.map-maxed{overflow:hidden}
 #home-map-card.map-max #home-insight{display:none}
 /* 실제 위치 지도(SGIS)도 남는 높이를 다 씁니다.
    height 를 그대로 두면 세로 배치 안에서 눌려 0 이 되어 «지도가 사라집니다». */
-#home-map-card.map-max #home-online-map{flex:1 1 auto;min-height:220px;height:auto}
-#home-map-card.map-max .online-school-list{flex:0 0 auto;max-height:26vh;overflow:auto;margin-top:8px}
+/* 지도와 목록의 키 비를 2.3 : 1 로 못 박습니다.
+   예전에는 목록만 26vh 로 묶고 지도가 «나머지»를 먹었습니다. 그러면 비가
+   창 높이에 따라 흔들립니다 — 창 800px 에서 2.06, 1300px 에서 2.36 이었습니다.
+   flex-basis 를 0 으로 두고 남는 자리를 2.3 대 1 로 나누면 창 크기와 상관없이
+   같은 비가 됩니다. min-height 는 창이 아주 낮을 때 어느 한쪽이 사라지지 않게
+   받쳐 주는 바닥일 뿐입니다. */
+#home-map-card.map-max #home-online-map{flex:2.3 1 0;min-height:220px;height:auto}
+/* 위아래 안쪽 여백을 걷습니다. 이 여백(12px×2)과 테두리는 flex 가 자리를
+   나누기 «전에» 목록 몫으로 먼저 빠져나가, 비를 2.3 에서 2.14 로 끌어내렸습니다
+   (border-box 라도 안쪽 여백만큼은 줄어들 수 없기 때문입니다).
+   걷어 내면 창 700~1300px 어디서나 2.28~2.29 로 붙습니다. */
+#home-map-card.map-max .online-school-list{flex:1 1 0;min-height:120px;max-height:none;overflow:auto;margin-top:8px;padding-top:0;padding-bottom:0}
 #home-map-card.map-max .legend{flex:none}
 
 /* ── ④ 지도 위의 조작 단추 ──────────────────────────────── */
@@ -3423,6 +3433,12 @@ function showView(name){
   target.hidden = false;
   activeView = name;
   window.scrollTo(0,0);
+  /* ★ 숨어 있던 화면이 드러나면 그 안의 지도는 «키가 0 이던 때»에 잰 값을
+     그대로 쓰고 있습니다. 다른 화면으로 먼저 들어온 뒤 종합 대시보드를 누르면
+     지도가 만들어질 때 이 화면이 숨겨져 있어서, 타일이 한 장(256×256)만
+     그려졌습니다. 새로고침해야 나았던 까닭이 이것입니다.
+     드러난 뒤에 다시 재라고 말해 줍니다. */
+  if(name === 'home' && typeof notifyMapLayoutChanged === 'function') notifyMapLayoutChanged();
 }
 navBtns.forEach(b => b.addEventListener('click', () => { location.hash = b.dataset.view; }));
 window.addEventListener('hashchange', () => showView(location.hash.slice(1) || 'home'));
@@ -6145,6 +6161,28 @@ function notifyMapLayoutChanged(){
      쓰되, 그 신호가 오지 않는 형편(움직임 줄이기 등)까지 생각해 시계로도 겁니다. */
   if(typeof setTimeout === 'function'){ setTimeout(sync, 300); setTimeout(sync, 650); }
 }
+
+/* ★ 부르는 것을 잊어도 스스로 알아채게 합니다.
+   위의 notifyMapLayoutChanged 는 «크기가 달라지는 자리를 우리가 다 안다»는
+   전제로 돌아갑니다. 그 전제가 깨지면(새 화면·새 단추가 생기면) 또 조용히
+   어긋납니다 — 실제로 화면 전환에서 그렇게 어긋나 있었습니다.
+   칸의 크기를 직접 지켜보면 부르는 자리를 늘리지 않아도 됩니다. */
+(function watchOnlineMapSize(){
+  if(typeof ResizeObserver !== 'function') return;   // 못 쓰는 판에서는 위의 방식으로 갑니다
+  const el = document.getElementById('home-online-map');
+  if(!el) return;
+  let lastW = 0, lastH = 0;
+  const ro = new ResizeObserver(entries => {
+    const r = entries[0] && entries[0].contentRect;
+    if(!r || r.width < 1 || r.height < 1) return;    // 숨겨진 동안은 셈하지 않습니다
+    /* 다시 재면 칸 크기가 또 미세하게 달라져 되돌이가 됩니다.
+       1px 미만 차이는 무시합니다. */
+    if(Math.abs(r.width - lastW) < 1 && Math.abs(r.height - lastH) < 1) return;
+    lastW = r.width; lastH = r.height;
+    syncOnlineMapSize();
+  });
+  try{ ro.observe(el); }catch(_e){}
+})();
 
 /* 「처음 자리로(↺)」가 돌아갈 곳. 크게 볼 때는 꽉 채운 자리입니다. */
 function refreshMapHome(){
