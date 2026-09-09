@@ -829,7 +829,7 @@ check('웹 메르카토르 좌표계를 만들 수 있다', /function mercCrs/.t
 check('SGIS 배경을 끄고 세운다 (켜 두면 좌표계를 UTM-K 로 덮어씁니다)',
   /statisticTileLayer: false/.test(js));
 check('브이월드 타일은 WMTS 차례를 따른다 ({z}/{y}/{x})',
-  /wmts\/1\.0\.0\/' \+ vworldKey \+ '\/' \+ vworldBase \+ '\/\{z\}\/\{y\}\/\{x\}\.jpeg/.test(js));
+  js.indexOf('/{z}/{y}/{x}.') >= 0 && js.indexOf('req/wmts/1.0.0/') >= 0);
 check('배경을 일반·위성·하이브리드로 갈아 끼운다',
   /const VWORLD_BASES/.test(js) && /'Satellite'/.test(js) && /'Hybrid'/.test(js));
 check('키가 없으면 배경 고르기를 내놓지 않고 SGIS 배경으로 돈다',
@@ -837,10 +837,15 @@ check('키가 없으면 배경 고르기를 내놓지 않고 SGIS 배경으로 �
 /* ★ 〔2026. 9. 10.〕 브이월드 바탕은 «꺼 두었습니다». 운영에서 지도가 통째로
    비었습니다 — 타일도 CSP 도 정상인데 아무것도 그려지지 않았습니다.
    깨진 채로 두고 파지 않습니다. 지도는 브이월드 위에서 새로 세웁니다. */
-check('깨진 갈래를 꺼 두었다', /const VWORLD_BASE_ON = false;/.test(js));
-check('꺼 두면 예전 SGIS 배경으로 돈다',
+/* ★ 지도가 비었던 «진짜 까닭» — 레이어마다 확장자가 다릅니다.
+   전부 .jpeg 로 박아 두었는데 기본값이 Base 였고, Base 를 jpeg 로 부르면
+   그림이 아니라 오류 XML 이 옵니다. 그림이 아니니 아무것도 안 그려지고
+   오류도 나지 않습니다 — 가장 찾기 어려운 종류입니다. */
+check('레이어마다 확장자를 가른다', /const VWORLD_EXT = \{ Base:'png'/.test(js) && /Satellite:'jpeg'/.test(js));
+check('주소가 그 확장자를 따른다', /VWORLD_EXT\[vworldBase\]/.test(js) && /\+ ext;/.test(js));
+check('키가 있으면 브이월드 바탕을 쓴다',
   /const merc = \(VWORLD_BASE_ON && vworldKey\) \? mercCrs\(\) : null;/.test(js));
-check('왜 껐는지 코드에 적어 두었다', /운영에서 지도가 통째로 비었습니다/.test(html));
+check('어두운 화면용 배경도 고를 수 있다', /'midnight'/.test(js));
 check('키를 «지도를 만들기 전»에 받는다 (좌표계는 만들 때 정해진다)',
   /function setMapModeAsync/.test(js) && /loadVworldKey\(\)\.then\(function\(\)\{ setMapMode\(mode\); \}\)/.test(js));
 check('타일을 못 받아도 학교 위치는 그대로라고 말한다',

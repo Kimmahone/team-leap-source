@@ -4303,7 +4303,8 @@ function removeSatLayer(){
 const VWORLD_BASES = [
   ['Base',      '일반'],
   ['Satellite', '위성'],
-  ['Hybrid',    '위성+지명']
+  ['Hybrid',    '위성+지명'],
+  ['midnight',  '어둡게']      /* 다크 화면에서 눈이 편합니다 */
 ];
 
 function setVworldBase(name){
@@ -4516,9 +4517,19 @@ function tidySgisMeasureControls(){
   sync();
 }
 
-/* 브이월드 타일 한 겹. WMTS 는 `{z}/{y}/{x}` 차례입니다. */
+/* ★ 브이월드 타일 — 레이어마다 «확장자가 다릅니다» 〔2026. 9. 10.〕
+   여기서 지도가 통째로 비었습니다. 전부 `.jpeg` 로 박아 두었는데 기본값이
+   `Base` 였고, Base 를 jpeg 로 부르면 그림이 아니라 **오류 XML** 이 옵니다.
+   그림이 아니니 아무것도 그려지지 않고, 오류도 나지 않습니다.
+
+       Base · Hybrid · midnight → .png
+       Satellite                → .jpeg
+
+   실제로 하나씩 불러 확인한 값입니다. `gray` 는 이 키로 나오지 않아 뺐습니다. */
+const VWORLD_EXT = { Base:'png', Hybrid:'png', midnight:'png', Satellite:'jpeg' };
 function vworldTileUrl(){
-  return 'https://api.vworld.kr/req/wmts/1.0.0/' + vworldKey + '/' + vworldBase + '/{z}/{y}/{x}.jpeg';
+  const ext = VWORLD_EXT[vworldBase] || 'png';
+  return 'https://api.vworld.kr/req/wmts/1.0.0/' + vworldKey + '/' + vworldBase + '/{z}/{y}/{x}.' + ext;
 }
 
 function addVworldBase(){
@@ -4555,7 +4566,7 @@ function initSgisMap(){
 
        그래서 SGIS 배경으로 되돌리고, 지도는 브이월드 위에서 새로 세웁니다
        (`지도_재설계_2026-09.md`). 그때까지 이 갈래는 꺼 둡니다. */
-    const VWORLD_BASE_ON = false;
+    const VWORLD_BASE_ON = true;
     const merc = (VWORLD_BASE_ON && vworldKey) ? mercCrs() : null;
     if(merc){
       ZOOM = ZOOM_MERC;
