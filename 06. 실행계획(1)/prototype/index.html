@@ -4534,6 +4534,7 @@ function vworldTileUrl(){
 
 function addVworldBase(){
   if(!sgisMap || !vworldKey || !window.sop || !window.sop.tileLayer) return false;
+  /* 층이 실제로 붙었는지까지 돌려줍니다 — 「불렀다」와 「됐다」는 다릅니다. */
   try{
     if(satLayer && sgisMap.removeLayer) sgisMap.removeLayer(satLayer);
     satLayer = window.sop.tileLayer(vworldTileUrl(), {
@@ -4580,8 +4581,22 @@ function initSgisMap(){
     }
     const center = new window.sop.LatLng(36.35, 128.85);
     sgisMap.setView(window.sop.utmk(center.x, center.y), ZOOM.home);
-    if(merc) addVworldBase();
+    const baseOk = merc ? addVworldBase() : false;
     buildBaseChips();
+    /* ★ 배경이 안 뜰 때 «무엇이 안 됐는지»를 화면이 말하게 합니다 〔2026. 9. 10.〕
+       두 번 고쳤는데 두 번 다 빈 화면이었습니다. 브라우저 안에서 무슨 일이
+       벌어지는지 볼 방법이 없어 추측만 하게 됩니다. 상태를 적어 두면
+       다음 확인이 추측이 아니라 «읽는 일»이 됩니다. */
+    window.__mapDiag = {
+      키: !!vworldKey, 좌표계: !!merc, 타일층: !!baseOk,
+      배율: (sgisMap.getZoom && sgisMap.getZoom()),
+      주소본: vworldKey ? vworldTileUrl().replace(vworldKey, '<키>') : null
+    };
+    if(merc && !baseOk){
+      const st = document.getElementById('sgis-status');
+      if(st) st.textContent = '배경지도 층을 붙이지 못했습니다 (키 ' +
+        (vworldKey ? '있음' : '없음') + ' · 좌표계 만듦 · 타일층 실패).';
+    }
     if(typeof sgisMap.on === 'function'){
       sgisMap.on('moveend', renderOnlineSchoolList);
       /* ★ 배율이 바뀌면 «세는 단위»가 바뀔 수 있습니다 〔2026. 9. 9.〕
