@@ -45,6 +45,28 @@ fi
 #     앱 목록을 손으로 적지 않는 것은 함정 35번 때문입니다. 앱 H·I 가 생겼는데
 #     목록에는 없어서, 두 앱은 **한 번도 검사되지 않은 채** 배포되고 있었습니다.
 #     test.js 가 있는 폴더를 그때그때 찾습니다.
+# ★ 〔2026. 9. 10.〕 실패한 «까닭»을 감추지 않습니다.
+#
+#   Cloudflare 빌드가 main 에서 죽었는데 로그에 남은 것은 이 한 줄뿐이었습니다.
+#       ✗ 06. 실행계획(1)/prototype
+#   어느 검사가 왜 빨간지는 `out` 에 담겨 있었는데 그대로 버리고 있었습니다.
+#   같은 커밋이 세 시간 전에는 통과했으므로 코드가 아니라 «환경»이 다른 것인데,
+#   무엇이 다른지 알 길이 없었습니다.
+#
+#   이 프로젝트가 되풀이해 겪은 「아무도 보지 않게 되는 실패」와 같은 자리입니다.
+#   이제 실패하면 무엇이 FAIL 인지와 어디서 돌았는지를 함께 적습니다.
+show_failure() {
+  local where="$1" out="$2"
+  echo "  ✗ $where"
+  echo "    ── 무엇이 빨간가 ──────────────────────────────"
+  printf '%s\n' "$out" | grep -E 'FAIL|Error|error|✗' | head -12 | sed 's/^/    /'
+  echo "    ── 마지막 줄 ──────────────────────────────────"
+  printf '%s\n' "$out" | tail -6 | sed 's/^/    /'
+  echo "    ── 어디서 돌았나 ──────────────────────────────"
+  echo "    node $(node --version 2>/dev/null) · $(uname -s) · TZ=${TZ:-미설정}"
+  echo "    ───────────────────────────────────────────────"
+}
+
 run_all_tests() {
   local fail=0 total=0 n out
   local targets=("." "$SRC_APPS" "$SRC_DASH")
@@ -57,7 +79,7 @@ run_all_tests() {
       n=$(printf '%s' "$out" | grep -oE '([0-9]+)개 통과|통과 ([0-9]+)' | grep -oE '[0-9]+' | tail -1)
       total=$(( total + ${n:-0} ))
     else
-      echo "  ✗ $d"; fail=1
+      show_failure "$d" "$out"; fail=1
     fi
   done
   # EPUB 은 파일을 실제로 구워 보는 별도 검사입니다
@@ -66,7 +88,7 @@ run_all_tests() {
       n=$(printf '%s' "$out" | grep -oE '([0-9]+)개 통과|통과 ([0-9]+)' | grep -oE '[0-9]+' | tail -1)
       total=$(( total + ${n:-0} ))
     else
-      echo "  ✗ c-storybook EPUB"; fail=1
+      show_failure "c-storybook EPUB" "$out"; fail=1
     fi
   fi
   # Cloudflare Pages Functions와 데이터 굽기 도구는 정적 HTML 밖에서 별도로 검사합니다.
@@ -77,7 +99,7 @@ run_all_tests() {
       n=$(printf '%s' "$out" | grep -oE '([0-9]+)개 통과|통과 ([0-9]+)' | grep -oE '[0-9]+' | tail -1)
       total=$(( total + ${n:-0} ))
     else
-      echo "  ✗ $test_file"; fail=1
+      show_failure "$test_file" "$out"; fail=1
     fi
   done
   TESTS_TOTAL=$total

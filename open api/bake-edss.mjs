@@ -536,6 +536,90 @@ export function aggregate(records) {
      그래서 최근 5개 연도로 좁힙니다. 다섯 점이 안 되면 있는 만큼 씁니다. */
 const RATE_WINDOW = 5;
 
+/* ══ 6-b. 학교별 여러 해치 ═══════════════════════════════════════════════
+   〔2026. 9. 9.〕 **이 자료는 여태 받아 놓고 버리고 있었습니다.**
+
+   EDSS 의 유초중등학생현황·학급현황은 학교(opnId) × 학년 × 연도로 옵니다.
+   위 `aggregate()` 가 그것을 시군 × 학교급 × 연도로 접고, 학교 단위는
+   어디에도 남지 않았습니다. 그때는 화면에 넣을 데가 없었으니 맞는 판단이었고,
+   이제 지도의 «연도 슬라이더»가 그 자리입니다.
+
+   ★ 왜 새로 신청할 API 가 없나 — 이미 받고 있기 때문입니다. 접기 전에
+     한 벌 떠 두기만 하면 됩니다.
+
+   키를 `시군|급|이름` 으로 잡는 까닭 — 대시보드가 이미 그 모양으로 잇고
+   있습니다(STUDENT_RAW). 같은 키를 쓰면 화면 쪽에 새 이음 규칙이 생기지
+   않습니다. **이음 규칙이 둘이 되면 언젠가 서로 어긋납니다.**
+
+   학년은 여기서 더합니다. 학교별 «학년까지» 실으면 파일이 서너 배가 되고,
+   지도가 필요한 것은 그 학교의 그 해 학생 수입니다. 학년별이 필요해지면
+   그때 따로 파일로 냅니다(계획 문서 2-3). */
+const KIND_LETTER = { 초: 'e', 중: 'm', 고: 'h' };
+
+/* 이름을 견주기 좋은 꼴로. 공백을 떼고 「(구)」 같은 앞 괄호를 뗍니다 —
+   sggFromPrefix 가 쓰는 것과 같은 규칙입니다. */
+export function flatSchoolName(name) {
+  return String(name || '').replace(/\s/g, '').replace(/^\([^)]*\)/, '');
+}
+
+/* records → { '시군|급자|정규화이름': { s:[해마다], c:[해마다] } }
+   `years` 순서대로 자리를 채웁니다. 그 해 자료가 없으면 null 로 둡니다 —
+   0 으로 채우면 「그 해에 학생이 없었다」가 되어 버립니다. */
+export function schoolSeries(records, years) {
+  const out = {};
+  const idx = {};
+  years.forEach((y, i) => { idx[y] = i; });
+  for (const r of records || []) {
+    const i = idx[r.year];
+    if (i == null) continue;
+    const letter = KIND_LETTER[r.lv];
+    if (!letter || !r.sgg || r.sgg === GUNWI) continue;
+    const key = r.sgg + '|' + letter + '|' + flatSchoolName(r.name);
+    const cell = (out[key] ||= { s: new Array(years.length).fill(null), c: new Array(years.length).fill(null) });
+    cell.s[i] = (cell.s[i] || 0) + (Number(r.stu) || 0);
+    cell.c[i] = (cell.c[i] || 0) + (Number(r.cls) || 0);
+  }
+  return out;
+}
+
+/* SCHOOL_RAW 를 훑어 심을 덩어리를 만듭니다.
+   bake-students.mjs 와 «같은 방식»입니다 — 목록의 차례와 이름을 그대로 따르므로
+   화면은 STUDENT_RAW 와 같은 키로 잇습니다.
+
+   붙지 않은 학교는 조용히 버리지 않고 세어서 돌려줍니다. 이 프로젝트가
+   되풀이해 겪은 것이 「0 인데 오류처럼 보이지 않는」 자리입니다. */
+export function toSchoolBlock(html, series, years) {
+  const m = String(html || '').match(/ {2}var SCHOOL_RAW = \{\n([\s\S]*?)\n {2}\};/);
+  if (!m) return null;
+  const KNAME = { e: '초등학교', m: '중학교', h: '고등학교' };
+  const lines = [];
+  let hit = 0, miss = 0;
+  const missed = [];
+  for (const line of m[1].split('\n')) {
+    const lm = line.match(/^(\s*)(\w+): '(.*)'(,?)$/);
+    if (!lm) continue;
+    const pad = lm[1], rc = lm[2], blob = lm[3];
+    const recs = [];
+    for (const rec of blob.split(';')) {
+      const f = rec.split('|');
+      if (f.length < 2 || !KNAME[f[1]]) continue;      // 유치원·특수는 EDSS 밖입니다
+      const full = f[0].replace('*', KNAME[f[1]]);
+      const cell = series[rc + '|' + f[1] + '|' + flatSchoolName(full)];
+      if (!cell) { miss++; missed.push(full); continue; }
+      hit++;
+      /* null 은 빈 칸으로 적습니다. 「,,」 가 곧 「그 해는 모른다」입니다. */
+      const pack = a => a.map(v => (v == null ? '' : v)).join(',');
+      recs.push([f[0], f[1], pack(cell.s), pack(cell.c)].join('|'));
+    }
+    lines.push(pad + rc + ": '" + recs.join(';') + "'");
+  }
+  return {
+    block: '  var EDSS_SCHOOL_YEARS = ' + JSON.stringify(years) + ';\n' +
+           '  var EDSS_SCHOOL = {\n' + lines.join(',\n') + '\n  };\n',
+    hit, miss, missed
+  };
+}
+
 export function declineRates(agg) {
   const out = {};
   const ys = agg.years;
@@ -1410,8 +1494,45 @@ async function main() {
     if (at < 0) { cry('심을 자리를 찾지 못했습니다 (STUDENT_RAW).'); process.exit(5); }
     html = html.slice(0, at) + block + '\n' + html.slice(at);
   }
+
+  /* ── 학교별 여러 해치 〔2026. 9. 9.〕 ─────────────────────────────────
+     지도의 연도 슬라이더가 학교 단계까지 내려가려면 이것이 있어야 합니다.
+     여태 받아 놓고 접어서 버리던 자료입니다. */
+  const sSeries = schoolSeries(all, agg.years);
+  const sBlock = toSchoolBlock(html, sSeries, agg.years);
+  if (!sBlock) {
+    cry('학교별 시계열을 심을 자리를 찾지 못했습니다 (SCHOOL_RAW).');
+    process.exit(5);
+  }
+  /* ★ 붙은 비율이 낮으면 «멈춥니다». 절반만 붙어도 화면은 조용히 그려지고,
+     사람은 「어떤 학교는 슬라이더가 안 먹네」로만 느낍니다 — 원인을 찾을 수
+     없는 종류의 고장입니다. 이 프로젝트가 되풀이해 겪은 「0 인데 오류처럼
+     보이지 않는」 자리와 같습니다. */
+  const total = sBlock.hit + sBlock.miss;
+  const rate = total ? sBlock.hit / total : 0;
+  say('학교별 시계열 — 붙인 학교 ' + sBlock.hit + '곳 · 못 붙인 학교 ' + sBlock.miss + '곳' +
+      ' (' + (rate * 100).toFixed(1) + '%)');
+  if (sBlock.miss) {
+    say('  못 붙인 곳 (이름이 다르거나 그 해에 자료가 없습니다):');
+    say('    ' + sBlock.missed.slice(0, 20).join('\n    '));
+    if (sBlock.missed.length > 20) say('    … 그리고 ' + (sBlock.missed.length - 20) + '곳');
+  }
+  if (total && rate < 0.9) {
+    cry('학교별 시계열이 ' + (rate * 100).toFixed(1) + '% 만 붙었습니다. 심지 않고 멈춥니다.');
+    process.exit(6);
+  }
+
+  const SMARK = /  var EDSS_SCHOOL_YEARS = .*?;\n  var EDSS_SCHOOL = \{\n[\s\S]*?\n  \};\n/;
+  if (SMARK.test(html)) html = html.replace(SMARK, sBlock.block);
+  else {
+    const at = html.indexOf('  var STUDENT_RAW = {');
+    if (at < 0) { cry('심을 자리를 찾지 못했습니다 (STUDENT_RAW).'); process.exit(5); }
+    html = html.slice(0, at) + sBlock.block + '\n' + html.slice(at);
+  }
+
   fs.writeFileSync(TARGET, html, 'utf8');
-  say('✓ ' + path.relative(ROOT, TARGET) + ' 에 ' + meta.연도 + ' 실적 시계열 반영');
+  say('✓ ' + path.relative(ROOT, TARGET) + ' 에 ' + meta.연도 + ' 실적 시계열 반영' +
+      ' (학교별 ' + sBlock.hit + '곳 포함)');
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
