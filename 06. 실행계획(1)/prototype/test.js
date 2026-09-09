@@ -777,13 +777,25 @@ check('배율이 «달라졌을 때만» 다시 그린다 (확대할 때마다 1
 /* ★ 〔2026. 9. 9.〕 「확대·축소가 딱딱 끊긴다」는 말을 들었습니다.
    원인은 둘이었습니다 — ① 연도 슬라이더가 `input` 마다 마커 1,539개를
    다시 얹고 있었고, ② 배율 애니메이션이 «도는 중»에 레이어를 갈아 끼웠습니다. */
-check('한 프레임에 한 번만 그린다 (슬라이더를 끄는 동안 1,539곳을 수십 번 다시 찍지 않는다)',
-  /function queueMapRedraw/.test(js) && /mapRedrawPending/.test(js) &&
-  /if\(tier === 'sgg' \|\| schoolYearApplies\(\) \|\| wasSchoolYear\) queueMapRedraw\(\)/.test(js));
-check('값은 즉시 바뀌고 «그리는 일»만 미룬다', /renderHomeSummary\(\);\n\s*\/\* 지도도 이 해를 따릅니다/.test(js));
+check('한 프레임에 한 번만 그린다 (슬라이더를 끄는 동안 수십 번 다시 찍지 않는다)',
+  /function queueIconUpdate/.test(js) && /iconUpdatePending/.test(js) &&
+  /if\(tier === 'sgg' \|\| schoolYearApplies\(\) \|\| wasSchoolYear\) queueIconUpdate\(\)/.test(js));
+/* ★ 여기가 「뚝뚝 끊긴다」의 진짜 원인이었습니다 — 연도만 바뀌었는데
+   마커 1,539개를 통째로 지우고 다시 얹었습니다. 지우는 순간 화면에서
+   사라졌다가 다시 나타나므로 끊겨 보입니다. */
+check('연도만 바뀌면 «다시 만들지 않고» 아이콘만 갈아 끼운다',
+  /function updateSchoolIcons/.test(js) && /marker\.setIcon\(icon\)/.test(js));
+check('그리는 쪽과 갈아 끼우는 쪽이 «같은 아이콘 공장»을 쓴다 (둘로 나뉘면 서로 달라진다)',
+  /function schoolIcon\(s, sv, o\)/.test(js) &&
+  (js.match(/schoolIcon\(s, sv, \{labelMode/g) || []).length >= 2);
+check('학교를 고르고 풀 때도 다시 만들지 않는다',
+  !/currentMapLabelMode\(\)\) renderSgisMarkers\(\)/.test(js));
 check('배율 애니메이션이 끝난 뒤에 다시 그린다 (도는 중에 갈아 끼우면 툭 끊긴다)',
   /requestAnimationFrame\(renderSgisMarkers\)/.test(js));
-check('갈아 끼울 때 스며들게 한다', /@keyframes mk-in/.test(html));
+/* 다시 그릴 때마다 1,539개가 한꺼번에 페이드인 하면 그것이 곧 깜빡임입니다.
+   시군 딱지(22개)만 남기고 학교 표시에서는 뺐습니다. */
+check('학교 표시에는 들어오는 애니메이션을 두지 않는다',
+  /@keyframes mk-in/.test(html) && !/\.sgis-school-label \.bub\{animation:mk-in/.test(html));
 check('움직임을 줄여 달라고 한 사람에게는 끈다',
   /prefers-reduced-motion:reduce\)\{\s*\.sgis-sgg-bubble \.bub/.test(html.replace(/\s+/g,' ').replace(/prefers-reduced-motion:reduce\)\{ /g,'prefers-reduced-motion:reduce){')) ||
   /\.sgis-school-icon\{animation:none\}/.test(html.replace(/\s+/g,'')));
@@ -791,6 +803,97 @@ check('시군 단계에서는 범례도 시군 단계의 것으로 바꾼다 (�
   /function renderSgisTierNote/.test(js) && /딱지 하나 = 시군 하나/.test(js));
 check('딱지를 누르면 그 시군 안으로 들어간다', /function enterSgg/.test(js) && /marker\.on\('click'/.test(js));
 check('들어갔으면 나올 길도 함께 켠다', /reset\.hidden = false/.test(js));
+
+console.log('\n■ 다크 모드에서 «흰 바탕에 흰 글자»가 없다');
+/* ★ 〔2026. 9. 9.〕 「다크로 바꾸면 글자색이 안 따라오는 것이 많다」는 말을
+   들었습니다. 찾아보니 원인이 둘이었습니다.
+
+   ① 채운 바탕 위 글자를 `#fff` 로 박아 둔 곳 — 다크에서는 그 «바탕»이
+      밝아지므로 흰 글자가 흰 바탕에 놓입니다.
+   ② `--card-2` 와 `--ink-1` 이 **정의된 적이 없었습니다.** 정의 없는 var() 는
+      오류가 아니라 «아무것도 아닌 값»이라 조용히 투명·기본색이 됩니다.
+      화면이 깨지지 않아 아무도 몰랐습니다. */
+check('--card-2 가 정의되어 있다 (16곳에서 쓰고 있었다)', /--card-2:var\(--leap-hairline\)/.test(html));
+check('정의되지 않은 토큰을 더 쓰지 않는다 (--ink-1)', !/var\(--ink-1\)/.test(html));
+check('채운 딱지의 글자는 테마를 따라간다 (#fff 를 박지 않는다)',
+  !/\.sgis-sgg-bubble\.is-on \.bub\{[^}]*#fff/.test(html) &&
+  !/\.sgis-school-label\.is-on \.bub\{[^}]*#fff/.test(html) &&
+  /\.sgis-sgg-bubble\.is-on \.bub\{[^}]*var\(--leap-on-fill\)/.test(html));
+check('로고 글자가 다크에서 검정으로 박히지 않는다',
+  !/\.brand \.nm\{[^}]*color:#14202e/.test(html) && /\.brand \.nm\{[^}]*color:var\(--ink\)/.test(html));
+check('지도 담는 상자 바탕도 테마를 따라간다', !/\.online-map\{[^}]*background:#eaf0f6/.test(html));
+check('간편 지도 확대 단추도 테마를 따라간다',
+  !/\.detail-map-controls button\{[^}]*background:#ffffff/.test(html));
+/* 남아 있는 #fff 는 «채도 높은 브랜드색 위»라 두 테마에서 모두 읽힙니다.
+   지키는 것은 개수가 아니라 규칙입니다 — «테마를 따라 밝아지는 바탕» 위에
+   흰 글자를 두지 않는다. */
+check('테마를 따라 밝아지는 바탕 위에 흰 글자를 두지 않는다',
+  !/\{[^}]*background:var\(--ink\)[^}]*color:#fff/.test(html) &&
+  !/\{[^}]*color:#fff[^}]*background:var\(--ink\)/.test(html) &&
+  !/\{[^}]*background:var\(--card[^}]*color:#fff/.test(html));
+
+console.log('\n■ 병설유치원은 본교 자리에 있다');
+/* ★ 「송곡초 병설유치원 위치가 이상하다」는 말을 들었습니다. 재어 보니
+   본교에서 8.6km 떨어져 있었습니다. 유치원 좌표는 주소를 카카오로 옮긴
+   값이라 틀릴 수 있고, 초·중·고 좌표는 학교알리미가 직접 줍니다.
+   병설유치원은 본교 건물 안에 있으므로 본교 좌표가 언제나 더 정확합니다. */
+check('본교 좌표로 잇는 코드가 있다', /coordFrom = '본교'/.test(js));
+check('이름만이 아니라 «시군까지» 맞춰 잇는다 (남산초는 영주에도 경산에도 있다)',
+  /byMain\[k\.s \+ '\|' \+ m\[1\]\]/.test(js));
+check('본교를 못 찾으면 그대로 둔다 (아무 데나 옮기지 않는다)', /if\(!main\) return;/.test(js));
+check('병설유치원이 실제로 본교 자리로 옮겨졌다', q(
+  "(function(){var k=SCHOOLS.filter(function(x){return x.name==='포항송곡초등학교병설유치원'})[0];" +
+  "var m=SCHOOLS.filter(function(x){return x.lv==='초'&&x.name==='포항송곡초등학교'&&x.s===k.s})[0];" +
+  "return !!k && !!m && k.lat===m.lat && k.lon===m.lon && k.coordFrom==='본교';})()"));
+check('본교에서 300m 넘게 떨어진 병설유치원이 없다', q(
+  "(function(){var main={};SCHOOLS.forEach(function(s){if(s.lv==='초'&&s.lat!=null)main[s.s+'|'+s.name]=s;});" +
+  "function d(a,b,c,e){var t=function(x){return x*Math.PI/180};var A=Math.sin(t(c-a)/2),B=Math.sin(t(e-b)/2);" +
+  "var h=A*A+Math.cos(t(a))*Math.cos(t(c))*B*B;return 2*6371*Math.asin(Math.sqrt(h));}" +
+  "var bad=0;SCHOOLS.forEach(function(k){if(k.lv!=='유')return;" +
+  "var m=String(k.name).match(/^(.*초등학교)병설유치원$/);if(!m)return;" +
+  "var p=main[k.s+'|'+m[1]];if(!p)return;if(d(k.lat,k.lon,p.lat,p.lon)>0.3)bad++;});return bad;})()") === 0);
+/* 포항양덕초 병설유치원은 지금 운영하지 않는데 자료에 원아 5명이 남아 있습니다.
+   2023년 공시가 마지막이기 때문입니다. 화면이 그 사실을 말해야 합니다. */
+check('낡은 공시를 화면이 스스로 말한다', /function staleTermNote/.test(js) && /년 공시<\/b>가 마지막입니다/.test(js));
+check('2026 공시면 아무 말도 덧붙이지 않는다', q("staleTermNote({term:'20261'})") === '');
+check('2023 공시면 「확인해 달라」고 말한다',
+  /2023년 공시/.test(q("staleTermNote({term:'20232'})")) &&
+  /확인해 주세요/.test(q("staleTermNote({term:'20232'})")));
+
+console.log('\n■ 검색은 «경북 전체»에서 찾고, 찾으면 그리로 간다');
+/* ★ 「보이는 지도에서만 검색된다」는 말을 들었습니다. 시군을 고른 채로
+   다른 시군 학교를 치면 아무것도 안 나오고 왜 안 나오는지도 몰랐습니다. */
+check('글자를 치는 동안에는 시군 가두기를 푼다',
+  /\(keyword \|\| !homeState\.sel \|\| s\.s === homeState\.sel\.s\)/.test(js));
+check('찾은 것이 화면 밖이면 지도가 그리로 간다', /function moveToSearchResult/.test(js));
+check('이미 화면 안에 있으면 옮기지 않는다 (보고 있는 것을 뺏지 않는다)',
+  /if\(visible\.length\) return;/.test(js));
+check('글자를 치는 동안 매번 날아가지 않는다', /searchMoveTimer/.test(js));
+
+console.log('\n■ 크게 볼 때도 왼쪽 칸을 볼 수 있다');
+/* 크게 보는 까닭은 지도를 자세히 보려는 것이지 값을 안 보려는 것이 아닙니다.
+   예전에는 크게 보면 학교를 눌러도 상세가 나올 자리가 없었습니다. */
+check('크게 볼 때 왼쪽 칸을 지도 위에 띄운다', /body\.map-maxed #home-side\{/.test(html));
+check('띄운 만큼 지도를 밀어 둔다 (겹쳐 가리면 못 보는 자리가 생긴다)',
+  /body\.map-maxed\.has-side #home-map-card\.map-max\{padding-left/.test(html));
+check('요약을 접어 두었으면 띄우지 않는다', /body\.map-maxed\.home-wide #home-side\{display:none\}/.test(html));
+check('좁은 화면에서는 예전처럼 감춘다', /max-width:900px[\s\S]{0,200}body\.map-maxed #home-side\{display:none\}/.test(html));
+
+console.log('\n■ 이름이 보이는 배율에서는 묶지 않는다');
+/* ★ 「네이버 부동산처럼 해 달라고 했는데 동그라미가 아직도 많다」 —
+   그 동그라미는 학교가 아니라 «묶음»이었습니다. 이름을 적기 시작하는
+   배율에서 묶으면 이름이 사라지고 숫자만 남아, 확대한 뜻이 없어집니다. */
+check('이름 배율에서는 묶음을 쓰지 않는다',
+  /const labelMode = currentMapLabelMode\(\);\s*\n\s*sgisLayer = \(!labelMode && window\.sop\.markerClusterGroup\)/.test(js));
+check('그 아래 배율에서는 여전히 묶는다', /window\.sop\.markerClusterGroup\(clusterOptions\)/.test(js));
+
+console.log('\n■ 지표가 «어느 지역»의 것인지 말한다');
+check('지표 제목에 지역 이름이 들어간다', /id="home-kpi-region"/.test(html));
+q("homeState.sel=null; renderHomePanel();");
+check('고른 것이 없으면 경북 전체라고 적는다', byId['home-kpi-region'].textContent === '경북 전체');
+q("homeState.sel=SIGUNGU.filter(function(g){return g.s==='안동'})[0]; renderHomePanel();");
+check('시군을 고르면 그 시군 이름을 적는다', /안동/.test(byId['home-kpi-region'].textContent || ''));
+q("homeState.sel=null; renderHomePanel();");
 
 console.log('\n■ 많이 확대하면 «누르지 않아도» 학교가 제 이름을 말한다');
 /* ★ 〔2026. 9. 9.〕 「동그라미를 눌러야만 어느 학교인지 알 수 있다」는 말을
