@@ -428,6 +428,22 @@ a{color:var(--brand)}
    가로채 학교 말풍선이 뜨고 점은 안 찍힙니다.
    ※ 마커를 «지우지» 않고 흐리게만 둡니다. 어디에 학교가 있는지는 여전히
      보여야 거리를 재는 뜻이 있습니다. */
+/* ★ 잰 선이 «아예 그려지지 않던» 진짜 까닭 〔2026. 9. 9.〕
+   앞의 마커 z-index 이야기와 별개로, 선을 담는 SVG 가 0×0 이었습니다.
+   SGIS 는 선을 <svg width="1402" height="622"> 에 그리는데, 우리 CSS 에
+
+     .mapbox svg{display:block;width:100%;height:auto}
+
+   가 걸려 그 속성을 덮었습니다. 이 규칙은 «간편 지도»(경계 SVG)가 칸을
+   가득 채우게 하려고 둔 것인데, 실제 위치 지도(#home-online-map)도 같은
+   .mapbox 클래스라 함께 걸렸습니다. SGIS 의 SVG 는 position:absolute 라
+   width:100% 가 0 으로 풀리고, height:auto 도 0 이 됩니다.
+   그릇이 0 이면 그 안의 선은 잘려 보이지 않습니다 —
+   선은 멀쩡히 그려져 있었습니다(측정값 path 600×90, 파란 4px).
+   SGIS 가 만든 SVG 는 제 속성대로 두게 되돌립니다.
+   확인: 배포본에 얹어 svg 0×0 → 1402×622, 선 보임. */
+#home-online-map .sop-pane svg{width:auto;height:auto;max-width:none}
+
 .online-map.measuring .marker-cluster,
 .online-map.measuring .sgis-school-icon{
   opacity:.18 !important;
