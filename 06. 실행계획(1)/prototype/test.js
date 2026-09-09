@@ -722,6 +722,50 @@ check('간편 지도 핀이 자기 화면좌표를 가지고 있다',
 check('실제 지도 마커를 이름으로 찾을 수 있다',
   /sgisMarkers\.set\(schoolKey\(s\), marker\)/.test(js) && /sgisMarkers\.clear\(\)/.test(js));
 
+console.log('\n■ 지도가 배율에 따라 «세는 단위»를 바꾼다');
+/* ★ 〔2026. 9. 9.〕 예전에는 어느 배율에서나 학교를 낱개로 찍었습니다.
+   경북 전체 화면에서 그 지도가 말해 주는 것은 「여기 몇 곳이 뭉쳐 있다」뿐이고,
+   **어느 시군인지**는 알 수 없었습니다. 이제 멀리서 보면 시군 22곳으로 접습니다.
+
+   여기서 지키는 것은 «접어도 셈이 달라지지 않는가» 입니다.
+   접는 코드와 낱개로 찍는 코드가 서로 다른 자료를 보면 두 화면이 어긋나고,
+   그것은 합계만 보아서는 드러나지 않습니다 — 함정 12번과 같은 자리입니다. */
+check('멀리서 보면 시군으로 접는다', q('mapTierForZoom(3,false)') === 'sgg');
+check('문턱까지는 접힌 채다', q('mapTierForZoom(MAP_TIER_SGG_MAX_ZOOM,false)') === 'sgg');
+check('문턱을 넘으면 학교를 낱개로 찍는다',
+  q('mapTierForZoom(MAP_TIER_SGG_MAX_ZOOM+1,false)') === 'school');
+check('시군을 골랐으면 배율과 무관하게 학교를 찍는다 (고른 것이 사라지면 안 된다)',
+  q('mapTierForZoom(3,true)') === 'school');
+
+const tierSaved = q('homeState.level') + '|' + q('homeState.metric');
+q("homeState.level='전체'; homeState.sel=null; homeState.metric='sch';");
+check('시군 22곳이 빠짐없이 나온다', q('sggBubbleRows().length') === 22);
+check('접은 학교 수 합계가 낱개로 찍는 수와 같다',
+  q('sggBubbleRows().reduce(function(a,r){return a+r.sch},0)') === q('onlineSchools().length'));
+check('접은 학생 수 합계도 낱개 합계와 같다',
+  q('sggBubbleRows().reduce(function(a,r){return a+r.stu},0)') ===
+  q('onlineSchools().reduce(function(a,s){return a+(Number(s.stu)||0)},0)'));
+q("homeState.level='특수';");
+check('그 학교급이 «한 곳도 없는» 시군도 줄이 남는다 (0 과 「모름」은 다르다)',
+  q('sggBubbleRows().length') === 22 &&
+  q('sggBubbleRows().filter(function(r){return r.sch===0}).length') > 0);
+check('학교가 없는 시군은 학생도 0 이다 (유령 791명을 다시 만들지 않는다)',
+  q('sggBubbleRows().filter(function(r){return r.sch===0&&r.stu>0}).length') === 0);
+q("homeState.level='" + tierSaved.split('|')[0] + "'; homeState.metric='" + tierSaved.split('|')[1] + "';");
+
+check('딱지에 시군 이름과 값을 «함께» 적는다 (원 안에는 이름이 안 들어간다)',
+  /'sgis-sgg-bubble'/.test(js) && /<b class="nm">/.test(js) && /<b class="vl">/.test(js));
+check('고른 시군 딱지는 뒤집어 표시한다', html.includes('.sgis-sgg-bubble.is-on'));
+check('학교가 없는 시군 딱지는 옅게 둔다', html.includes('.sgis-sgg-bubble.is-empty'));
+check('시군 층과 학교 층을 따로 둔다 (한 층에 섞으면 두 번 세게 된다)',
+  /let sgisSggLayer/.test(js) && /function clearSgisSggLayer/.test(js));
+check('배율이 «달라졌을 때만» 다시 그린다 (확대할 때마다 1,539곳을 다시 찍지 않는다)',
+  /if\(tier !== sgisTier\)/.test(js));
+check('시군 단계에서는 범례도 시군 단계의 것으로 바꾼다 (틀린 안내는 없느니만 못하다)',
+  /function renderSgisTierNote/.test(js) && /딱지 하나 = 시군 하나/.test(js));
+check('딱지를 누르면 그 시군 안으로 들어간다', /function enterSgg/.test(js) && /marker\.on\('click'/.test(js));
+check('들어갔으면 나올 길도 함께 켠다', /reset\.hidden = false/.test(js));
+
 console.log('\n■ 목록이 전부를 보여 줄 수 있다');
 /* ★ 〔2026. 9. 7.〕 120 이 «천장»이었습니다 — 화면에 474곳이 있어도 120곳만
    나오고 나머지는 볼 길이 아예 없었습니다. 「어떤 기준으로 고른 120곳인지

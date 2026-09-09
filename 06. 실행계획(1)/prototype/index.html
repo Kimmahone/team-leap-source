@@ -338,6 +338,42 @@ a{color:var(--brand)}
 .sgis-lv-유{--pin:var(--lv-유-mark)}.sgis-lv-초{--pin:var(--lv-초-mark)}
 .sgis-lv-중{--pin:var(--lv-중-mark)}.sgis-lv-고{--pin:var(--lv-고-mark)}
 .sgis-lv-특수{--pin:var(--lv-특수-mark)}
+/* ══ 시군 집계 말풍선 〔2026. 9. 9.〕 ═══════════════════════════════════
+   멀리서 볼 때는 학교 1,539곳을 낱개로 찍지 않고 시군 22곳으로 «접습니다».
+   낱개 점을 다 찍으면 경북 전체 화면에서는 점이 서로 붙어 아무것도 읽히지
+   않습니다 — 묶음 원으로 묶어도 「몇 곳이 묶였나」만 보이지 «어느 시군인가»는
+   보이지 않았습니다. 시군 이름과 값을 함께 적어야 지도가 말을 합니다.
+
+   모양이 원이 아니라 «네모 딱지»인 까닭: 원 안에는 이름이 안 들어갑니다.
+   그리고 아래쪽 꼬리가 그 시군의 «자리»를 정확히 가리켜야 합니다. */
+.sgis-sgg-bubble{
+  width:auto !important;height:auto !important;
+  margin:0 !important;background:none !important;border:0 !important;
+}
+.sgis-sgg-bubble .bub{
+  position:absolute;left:0;bottom:7px;transform:translateX(-50%);
+  display:block;white-space:nowrap;padding:5px 9px 4px;border-radius:8px;
+  background:var(--card);border:1px solid var(--line);
+  box-shadow:0 2px 9px rgba(20,32,46,.28);
+  font-size:11px;line-height:1.32;text-align:center;color:var(--ink);
+}
+/* 꼬리 — 딱지가 «어디를 가리키는지»를 말합니다. */
+.sgis-sgg-bubble .bub::after{
+  content:'';position:absolute;left:50%;bottom:-5px;transform:translateX(-50%);
+  border-left:5px solid transparent;border-right:5px solid transparent;
+  border-top:5px solid var(--line);
+}
+.sgis-sgg-bubble .nm{display:block;font-weight:700;font-size:11.5px}
+.sgis-sgg-bubble .vl{display:block;font-weight:800;color:var(--brand)}
+.sgis-sgg-bubble .sub{display:block;font-size:10px;color:var(--ink-3)}
+/* 고른 시군은 뒤집습니다 — 네이버 부동산에서 「용흥동」이 검게 되는 그 자리입니다. */
+.sgis-sgg-bubble.is-on .bub{background:var(--ink);border-color:var(--ink);color:#fff}
+.sgis-sgg-bubble.is-on .bub::after{border-top-color:var(--ink)}
+.sgis-sgg-bubble.is-on .vl{color:#fff}
+.sgis-sgg-bubble.is-on .sub{color:rgba(255,255,255,.78)}
+/* 학교가 한 곳도 없는 시군 — 값이 0 인 것과 «자료가 없는» 것은 다릅니다.
+   0 곳이면 딱지를 옅게 두어 「비어 있다」가 그 자체로 읽히게 합니다. */
+.sgis-sgg-bubble.is-empty .bub{opacity:.55}
 .rg{cursor:pointer}
 .rg .dot{fill:var(--brand);opacity:.62;stroke:var(--card);stroke-width:1.2}
 /* 이름은 원 위에 얹힙니다. 바탕색 테두리를 둘러 원 위에서도 읽히게 합니다.
@@ -3596,6 +3632,142 @@ function compactMapValue(value){
   return String(Math.round(n));
 }
 
+/* ══ 줌 단계 ═══════════════════════════════════════════════════════════════
+   〔2026. 9. 9.〕 예전에는 어느 배율에서나 학교를 낱개로 찍고, 가까운 것끼리
+   묶기만 했습니다. 경북 전체를 볼 때 그 화면이 말해 주는 것은 「여기 학교가
+   몇 곳 뭉쳐 있다」뿐이었습니다 — **어느 시군인지, 그 시군이 줄고 있는지**는
+   지도를 아무리 봐도 알 수 없었습니다.
+
+   이제 배율에 따라 «세는 단위»가 바뀝니다.
+
+     배율 ≤ 5   시군 22곳으로 접어서 이름과 값을 적습니다
+     배율 > 5   학교를 낱개로 찍습니다 (예전 그대로)
+
+   시군을 이미 골랐다면 배율과 무관하게 학교를 찍습니다. 골랐다는 것은
+   「그 안을 보겠다」는 뜻이고, 그때 다시 접으면 고른 것이 사라져 보입니다.
+
+   ※ 이 문턱은 SGIS 배율입니다. 처음 화면이 3(경북 전체), 학교로 날아갈 때가
+     7 입니다(SGIS_FOCUS_ZOOM). 그 사이에 문턱을 두었습니다. */
+const MAP_TIER_SGG_MAX_ZOOM = 5;
+
+/* 순수 함수로 둡니다 — 지도 없이도 검사가 부를 수 있어야 합니다. */
+function mapTierForZoom(zoom, hasSelection){
+  if(hasSelection) return 'school';
+  return (Number(zoom) || 0) <= MAP_TIER_SGG_MAX_ZOOM ? 'sgg' : 'school';
+}
+
+function currentMapTier(){
+  const z = (sgisMap && typeof sgisMap.getZoom === 'function') ? sgisMap.getZoom() : 3;
+  return mapTierForZoom(z, !!homeState.sel);
+}
+
+/* 시군 딱지에 적을 값. 지도에 찍는 것과 «같은 자료»에서 셉니다 —
+   BASE 를 다시 더하면 두 화면이 어긋날 수 있습니다. 학교 목록을 그대로 셉니다.
+   `onlineSchools()` 는 학교급·검색어를 이미 걸러 주므로 그 결과만 모읍니다. */
+function sggBubbleRows(){
+  const bySgg = {};
+  onlineSchools().forEach(s => {
+    const cell = (bySgg[s.s] || (bySgg[s.s] = { sch:0, stu:0, cls:0 }));
+    cell.sch += 1;
+    cell.stu += Number(s.stu) || 0;
+    cell.cls += Number(s.cls) || 0;
+  });
+  const studentMetric = homeState.metric === 'stu';
+  return SIGUNGU.map(sg => {
+    const c = bySgg[sg.s] || { sch:0, stu:0, cls:0 };
+    return {
+      s: sg.s, name: sg.name, lat: sg.lat, lon: sg.lon,
+      sch: c.sch, stu: c.stu, cls: c.cls,
+      value: studentMetric ? c.stu : c.sch,
+      unit:  studentMetric ? '명' : '곳'
+    };
+  });
+}
+
+/* 시군 딱지를 얹습니다. 학교 낱개 층과 «다른 층»에 둡니다 —
+   한 층에 섞으면 배율이 바뀔 때 무엇을 지워야 하는지 알 수 없게 됩니다. */
+let sgisSggLayer = null;
+/* 지금 무엇을 세고 있는지. 배율이 바뀔 때 «달라졌을 때만» 다시 그리기 위한 기억입니다. */
+let sgisTier = 'sgg';
+
+function clearSgisSggLayer(){
+  if(sgisSggLayer && sgisMap && sgisMap.removeLayer) sgisMap.removeLayer(sgisSggLayer);
+  sgisSggLayer = null;
+}
+
+function renderSgisSggBubbles(){
+  if(!sgisMap || !window.sop) return;
+  clearSgisSggLayer();
+  const rows = sggBubbleRows();
+  sgisSggLayer = window.sop.layerGroup();
+  const studentMetric = homeState.metric === 'stu';
+  rows.forEach(r => {
+    if(r.lat == null || r.lon == null) return;
+    const p = new window.sop.LatLng(+r.lat, +r.lon);
+    const html =
+      '<span class="bub">' +
+        '<b class="nm">' + htmlEsc(r.name) + '</b>' +
+        '<b class="vl">' + htmlEsc(compactMapValue(r.value)) + htmlEsc(r.unit) + '</b>' +
+        '<span class="sub">' +
+          (studentMetric ? '학교 ' + fmt(r.sch) + '곳' : '학생 ' + compactMapValue(r.stu) + '명') +
+        '</span>' +
+      '</span>';
+    const icon = typeof window.sop.divIcon === 'function'
+      ? window.sop.divIcon({
+          className: 'sgis-sgg-bubble' + (r.sch === 0 ? ' is-empty' : ''),
+          html: html, iconSize: [0, 0]
+        })
+      : null;
+    const opts = { sggKey: r.s };
+    if(icon) opts.icon = icon;
+    const marker = window.sop.marker([p.x, p.y], opts);
+    /* 딱지를 누르면 그 시군 안으로 들어갑니다 — 네이버 부동산에서
+       동 딱지를 누르면 그 동만 보이는 것과 같은 동작입니다. */
+    if(typeof marker.on === 'function') marker.on('click', function(){ enterSgg(r.s); });
+    sgisSggLayer.addLayer(marker);
+  });
+  sgisMap.addLayer(sgisSggLayer);
+}
+
+/* 시군 단계일 때의 상태줄과 범례.
+   범례를 갈아 끼우지 않으면 학교 낱개 지도의 설명(「동그라미 = 학교 위치」)이
+   그대로 남습니다. 틀린 안내는 없느니만 못합니다 — 학교 층에서 이미 겪은 자리입니다. */
+function renderSgisTierNote(){
+  const studentMetric = homeState.metric === 'stu';
+  const rows = sggBubbleRows();
+  const sch = rows.reduce((a, r) => a + r.sch, 0);
+  const stu = rows.reduce((a, r) => a + r.stu, 0);
+  const withAny = rows.filter(r => r.sch > 0).length;
+  const status = document.getElementById('sgis-status');
+  if(status) status.textContent =
+    `실제 위치 지도 · 시군 단위로 접어서 봅니다 · 학교 ${fmt(sch)}곳 · 학생 ${fmt(stu)}명 (시군 ${withAny}곳)`;
+  const legend = document.getElementById('home-legend');
+  if(legend) legend.innerHTML =
+    `<span>딱지 하나 = 시군 하나 · 큰 숫자는 ${studentMetric ? '학생 수' : '학교 수'}</span>` +
+    `<span>딱지를 누르면 그 시군 안으로 들어갑니다</span>` +
+    `<span style="color:var(--ink-3)">옅은 딱지 = 지금 조건에 맞는 학교가 없는 시군</span>` +
+    `<span style="margin-left:auto;color:var(--ink-3)">확대하면 학교 하나하나가 나옵니다</span>`;
+}
+
+/* 시군 딱지를 눌러 그 안으로 들어갑니다.
+   「← 경북 전체로」 단추가 되돌리는 길이므로 함께 켭니다 — 들어갈 길만 있고
+   나올 길이 없으면 사람은 새로고침을 누릅니다. */
+function enterSgg(sggKey){
+  const sg = SIGUNGU.find(x => x.s === sggKey);
+  if(!sg) return;
+  homeState.sel = sg;
+  const reset = document.getElementById('home-reset');
+  if(reset) reset.hidden = false;
+  if(sgisMap && window.sop && sg.lat != null && sg.lon != null){
+    try{
+      const p = new window.sop.LatLng(+sg.lat, +sg.lon);
+      sgisMap.setView(window.sop.utmk(p.x, p.y), MAP_TIER_SGG_MAX_ZOOM + 1);
+    }catch(_e){}
+  }
+  /* 목록은 renderSgisMarkers 가 끝에서 함께 그립니다 — 여기서 또 부르면 두 번 그립니다. */
+  renderSgisMarkers();
+}
+
 /* 폐교를 지금 학교 위에 겹쳐 그립니다.
 
    매각한 곳은 뺍니다 — 교육청 재산이 아니라 활용 정책의 대상이 아니고,
@@ -3639,6 +3811,25 @@ function renderSgisClosed(){
 
 function renderSgisMarkers(){
   if(!sgisMap || !window.sop) return;
+  /* ★ 멀리서 볼 때는 시군으로 접습니다 〔2026. 9. 9.〕
+     학교 층을 «먼저 지우고» 시군 층을 얹습니다. 순서를 바꾸면 한 순간
+     두 층이 함께 떠서 같은 자리를 두 번 세는 것처럼 보입니다. */
+  if(currentMapTier() === 'sgg'){
+    try{
+      if(sgisLayer && sgisMap.removeLayer) sgisMap.removeLayer(sgisLayer);
+      sgisLayer = null;
+      sgisMarkers.clear();
+      renderSgisSggBubbles();
+      renderSgisClosed();
+      renderSgisTierNote();
+      renderOnlineSchoolList();
+    }catch(_e){
+      const st = document.getElementById('sgis-status');
+      if(st) st.textContent = '실제 위치를 표시하지 못했습니다. 간편 지도를 이용해 주세요.';
+    }
+    return;
+  }
+  clearSgisSggLayer();
   try{
     if(sgisLayer && sgisMap.removeLayer) sgisMap.removeLayer(sgisLayer);
     const studentMetric = homeState.metric === 'stu';
@@ -3783,8 +3974,16 @@ function initSgisMap(){
     sgisMap.setView(window.sop.utmk(center.x, center.y), 3);
     if(typeof sgisMap.on === 'function'){
       sgisMap.on('moveend', renderOnlineSchoolList);
-      sgisMap.on('zoomend', renderOnlineSchoolList);
+      /* ★ 배율이 바뀌면 «세는 단위»가 바뀔 수 있습니다 〔2026. 9. 9.〕
+         바뀔 때만 다시 그립니다. 배율이 움직일 때마다 1,539곳을 다시 찍으면
+         확대·축소가 눈에 띄게 끊깁니다. */
+      sgisMap.on('zoomend', function(){
+        const tier = currentMapTier();
+        if(tier !== sgisTier){ sgisTier = tier; renderSgisMarkers(); return; }
+        renderOnlineSchoolList();
+      });
     }
+    sgisTier = currentMapTier();
     renderSgisMarkers();
     /* 컨트롤은 지도가 만들어질 때 함께 붙습니다. 한 틱 뒤에 손봅니다. */
     setTimeout(tidySgisMeasureControls, 0);
