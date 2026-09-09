@@ -935,7 +935,7 @@ check('규모·밀도 판정을 «이미 있는 잣대»로 붙인다 (목록 �
   /const size = schoolSizeOf\(sc\);/.test(js) && /densityOf\(sc\.lv, perCls, area\)/.test(js));
 check('판정 배지가 실제로 나온다', /class="sch-tags"/.test(byId['home-school-card']._html || ''));
 check('읍·면인지 동인지 적는다 (규모 잣대가 다르다)',
-  /지역<\/span>/.test(byId['home-school-card']._html || ''));
+  /(읍·면|동) 지역/.test(byId['home-school-card']._html || ''));
 check('교원 수와 교원 1인당 학생 수를 적는다',
   /교원 수/.test(byId['home-school-card']._html || '') &&
   /교원 1인당/.test(byId['home-school-card']._html || ''));
@@ -947,6 +947,19 @@ check('어린 학년이 적다는 것을 한 줄로 말한다 (앞으로 더 준
 check('가장 가까운 같은 학교급 학교와 거리를 적는다', /function nearestSameLevel/.test(js));
 check('그 거리가 «직선거리»임을 밝힌다 (통학 거리가 아니다)',
   /직선거리라 통학 거리와 다릅니다/.test(js));
+/* ★ 〔2026. 9. 10.〕 개교년도도 «받아 놓고 버리던» 값이었습니다.
+   bake-coords 가 같은 응답(apiType=0)에서 좌표만 꺼내 쓰고 FOND_YMD 는
+   흘려보냈습니다. 새로 신청할 API 가 없었습니다. */
+check('개교년도를 심는 자리가 있다', /var SCHOOL_FOUNDED = \{/.test(html));
+check('학교 레코드가 개교년도를 든다', q("SCHOOLS.filter(function(s){return s.founded}).length") > 800,
+  '실제: ' + q("SCHOOLS.filter(function(s){return s.founded}).length"));
+check('개교년도가 그럴듯한 범위 안이다', q(
+  "SCHOOLS.filter(function(s){return s.founded && (s.founded<1890 || s.founded>2026)}).length") === 0);
+check('상세에 개교년도와 «몇 년째»를 적는다', /년 개교<\/b>/.test(js) && /년째/.test(js));
+check('개교년도가 없으면 그 줄을 아예 그리지 않는다 (0년 개교라고 적지 않는다)',
+  /sc\.founded\s*\n?\s*\?/.test(js) || /\(sc\.founded/.test(js));
+check('설립구분(공립·사립)도 함께 적는다', /sc\.fondKind/.test(js));
+
 check('학교별 추이는 실적을 심은 뒤에만 그린다',
   /function schoolSparkSvg/.test(js) && /if\(!schoolHistoryReady\(\) \|\| !sc\.hist\) return '';/.test(js));
 q("homeState.year=2032; renderSchoolCard();");
