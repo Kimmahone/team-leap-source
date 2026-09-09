@@ -67,6 +67,17 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font);overflow:hidd
 .stat .k{font-size:10.5px;color:var(--ink-3)}
 .stat .v{font-family:var(--mono);font-size:16px;font-weight:600;color:var(--brand);
   font-variant-numeric:tabular-nums;line-height:1.3}
+/* 화면 안 학교 목록 — 지도와 «같은 것»을 봅니다 */
+.list{max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:8px}
+.list .r{background:var(--panel);border:0;width:100%;text-align:left;font:inherit;
+  padding:7px 10px;display:grid;grid-template-columns:8px 1fr auto;gap:8px;align-items:center;cursor:pointer}
+.list .r:hover{background:var(--sunk)}
+.list .r:focus-visible{outline:2px solid var(--brand);outline-offset:-2px}
+.list .r i{width:8px;height:8px;border-radius:50%}
+.list .r b{font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.list .r span{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.list .empty{background:var(--panel);padding:12px;font-size:12px;color:var(--ink-3)}
 .legend{display:flex;flex-wrap:wrap;gap:5px 12px;font-size:11.5px;color:var(--ink-2)}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:-1px}
 .note{font-size:11.5px;color:var(--ink-3);line-height:1.6}
@@ -135,6 +146,11 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font);overflow:hidd
     </div>
 
     <div class="card">
+      <h2 id="listTitle">화면 안 학교</h2>
+      <div id="list" class="list">지도를 움직이면 이 자리에 채워집니다.</div>
+    </div>
+
+    <div class="card">
       <h2>범례</h2>
       <div class="legend" id="legend"></div>
       <p class="note" style="margin:9px 0 0">멀리서는 시군으로 접히고,
@@ -160,12 +176,21 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font);overflow:hidd
 /* ── 브이월드 타일 ────────────────────────────────────────────────────────
    ★ 레이어마다 확장자가 다릅니다. 이것을 몰라 화면이 통째로 비었던 적이 있습니다.
      Base·Hybrid·midnight → png · Satellite → jpeg  (하나씩 불러 확인한 값) */
+/* ★ 하이브리드는 «단독 배경이 아니라 덮개»입니다 〔2026. 9. 10.〕
+   타일을 받아 재어 보니 Base 는 39.9KB 인데 Hybrid 는 9.6KB 뿐입니다 —
+   길과 지명만 들어 있는 투명 그림입니다. 그것만 깔면 일반 지도보다 못한
+   허전한 화면이 됩니다. **위성 위에 얹어야** 「위성+지명」이 됩니다. */
 var BASES = [
-  { id:'Base',      name:'일반',      ext:'png'  },
-  { id:'Satellite', name:'위성',      ext:'jpeg' },
-  { id:'Hybrid',    name:'위성+지명', ext:'png'  },
-  { id:'midnight',  name:'야간',      ext:'png'  }
+  { id:'Base',      name:'일반',      ext:'png',  base:'Base' },
+  { id:'Satellite', name:'위성',      ext:'jpeg', base:'Satellite' },
+  { id:'Hybrid',    name:'위성+지명', ext:'jpeg', base:'Satellite', over:'Hybrid', overExt:'png' },
+  { id:'midnight',  name:'야간',      ext:'png',  base:'midnight' }
 ];
+
+/* ★ 고도 — 브이월드에는 없습니다. 하나씩 불러 확인했습니다(hillshade·terrain·dem 모두 500).
+   AWS Terrain Tiles(Terrarium)는 키 없이 열려 있고 우리 타일 번호로 바로 옵니다.
+   산과 골짜기가 드러나야 통학 거리를 눈으로 가늠할 수 있습니다. */
+var DEM_URL = 'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png';
 var LV = ['초','중','고','유','특수'];
 var LV_FULL = { '초':'초등학교','중':'중학교','고':'고등학교','유':'유치원','특수':'특수학교' };
 
@@ -183,11 +208,19 @@ function compact(n){
   if(n >= 1000) return (n/1000).toFixed(1).replace(/\.0$/,'') + '천';
   return String(n);
 }
-function tileUrl(b){
-  return 'https://api.vworld.kr/req/wmts/1.0.0/' + state.key + '/' + b.id + '/{z}/{y}/{x}.' + b.ext;
+function vwUrl(layer, ext){
+  return 'https://api.vworld.kr/req/wmts/1.0.0/' + state.key + '/' + layer + '/{z}/{y}/{x}.' + ext;
 }
+function baseOf(id){ return BASES.filter(function(x){ return x.id === id; })[0] || BASES[0]; }
 
 /* ── 자료 ─────────────────────────────────────────────────────────────── */
+function schoolHtml(s){
+  return '<b>' + s.n + '</b><br>' + LV_FULL[s.lv] + ' · ' + s.s +
+    '<br>학생 ' + fmt(s.st) + '명 · 학급 ' + fmt(s.cl) + '개' +
+    (s.cl > 0 ? ' · 학급당 ' + (s.st/s.cl).toFixed(1) + '명' : '') +
+    (s.fd ? '<br>' + s.fd + '년 개교 (' + (new Date().getFullYear() - s.fd) + '년째)' : '');
+}
+
 function shown(){
   return state.schools.filter(function(s){
     return state.level === '전체' || s.lv === state.level;
@@ -213,7 +246,11 @@ function clearMarkers(){
 
 /* 배율에 따라 세는 단위가 바뀝니다 — 멀리서는 시군, 가까이서는 학교.
    MapLibre 는 배율이 소수라 문턱을 소수로 둡니다. */
-function tierFor(z){ return z < 9.2 ? 'sgg' : (z < 11.8 ? 'pin' : 'label'); }
+/* ★ 문턱 〔2026. 9. 10.〕 처음엔 이름이 서는 자리를 11.8 로 두었는데
+   「확대해도 이름으로 안 바뀐다」는 말을 들었습니다. 사람이 학교 하나를 보려고
+   확대하는 배율은 대개 11 안팎입니다. 10.6 으로 낮추고, 지금 배율을 상태줄에
+   함께 적어 어디쯤인지 보이게 했습니다. */
+function tierFor(z){ return z < 9.2 ? 'sgg' : (z < 10.6 ? 'pin' : 'label'); }
 
 function draw(){
   if(!map) return;
@@ -261,26 +298,56 @@ function draw(){
       el.className = 'pin';
       el.style.background = lvColor(s.lv);
     }
-    el.addEventListener('click', function(){
-      if(popup) popup.remove();
-      popup = new maplibregl.Popup({ offset:14 })
-        .setLngLat([s.lo, s.la])
-        .setHTML('<b>' + s.n + '</b><br>' + LV_FULL[s.lv] + ' · ' + s.s +
-          '<br>학생 ' + fmt(s.st) + '명 · 학급 ' + fmt(s.cl) + '개' +
-          (s.fd ? '<br>' + s.fd + '년 개교' : ''))
-        .addTo(map);
-    });
-    markers.push(new maplibregl.Marker({ element:el }).setLngLat([s.lo, s.la]).addTo(map));
+    /* ★ 클릭을 손으로 달지 않고 MapLibre 가 잇게 합니다 〔2026. 9. 10.〕
+       「눌러지지 않는다」는 말을 들었습니다. 마커는 움직일 때마다 다시 만들어지는데,
+       그때 손으로 단 리스너가 함께 사라집니다. setPopup 은 마커가 스스로 맡습니다. */
+    var mk = new maplibregl.Marker({ element:el })
+      .setLngLat([s.lo, s.la])
+      .setPopup(new maplibregl.Popup({ offset:14 }).setHTML(schoolHtml(s)))
+      .addTo(map);
+    mk._school = s;
+    markers.push(mk);
   });
+  renderList(vis, list.length);
   say((tier === 'label' ? '학교 이름까지 봅니다' : '학교 위치를 봅니다') +
-      ' · 화면 안 ' + fmt(vis.length) + '곳' + (vis.length < list.length ? ' (전체 ' + fmt(list.length) + '곳)' : ''));
+      ' · 화면 안 ' + fmt(vis.length) + '곳' + (vis.length < list.length ? ' (전체 ' + fmt(list.length) + '곳)' : '') +
+      ' · 배율 ' + z.toFixed(1) + (tier === 'label' ? '' : ' (' + (10.6 - z).toFixed(1) + '만 더 확대하면 이름이 섭니다)'));
+}
+
+/* 화면 안 학교를 목록으로. 누르면 그 학교로 날아가 말풍선을 엽니다 —
+   목록과 지도가 «같은 것»을 보게 하는 자리입니다. */
+function renderList(vis, total){
+  var box = document.getElementById('list');
+  var t = document.getElementById('listTitle');
+  if(t) t.textContent = '화면 안 학교 ' + fmt(vis.length) + '곳';
+  if(!box) return;
+  if(!vis.length){ box.innerHTML = '<div class="empty">이 화면에는 학교가 없습니다.</div>'; return; }
+  var rows = vis.slice().sort(function(a,b){ return (b.st||0)-(a.st||0); }).slice(0, 120);
+  box.innerHTML = rows.map(function(s, i){
+    return '<button type="button" class="r" data-i="' + i + '">' +
+      '<i style="background:' + lvColor(s.lv) + '"></i>' +
+      '<b>' + s.n + '</b><span>' + fmt(s.st) + '</span></button>';
+  }).join('');
+  Array.prototype.forEach.call(box.querySelectorAll('.r'), function(btn){
+    btn.addEventListener('click', function(){
+      var s = rows[+btn.dataset.i];
+      map.flyTo({ center:[s.lo, s.la], zoom:Math.max(map.getZoom(), 13), duration:900 });
+      if(popup) popup.remove();
+      popup = new maplibregl.Popup({ offset:14 }).setLngLat([s.lo, s.la])
+        .setHTML(schoolHtml(s)).addTo(map);
+    });
+  });
 }
 
 /* ── 배경 갈아 끼우기 ─────────────────────────────────────────────────── */
 function setBase(id){
   state.base = id;
-  var b = BASES.filter(function(x){ return x.id === id; })[0];
-  if(map && map.getSource('vworld')) map.getSource('vworld').setTiles([tileUrl(b)]);
+  var b = baseOf(id);
+  if(map && map.getSource('vworld')) map.getSource('vworld').setTiles([vwUrl(b.base, b.ext)]);
+  if(map && map.getSource('vworld-over')){
+    map.getSource('vworld-over').setTiles([vwUrl(b.over || 'Hybrid', b.overExt || 'png')]);
+    map.setLayoutProperty('vworld-over', 'visibility', b.over ? 'visible' : 'none');
+  }
   Array.prototype.forEach.call(document.querySelectorAll('#bases .chip'), function(c){
     c.setAttribute('aria-pressed', String(c.dataset.base === id));
   });
@@ -338,28 +405,40 @@ async function start(){
   state.schools = sr;
   renderStats();
 
-  var b = BASES[0];
+  var b = baseOf(state.base);
   map = new maplibregl.Map({
     container: 'map',
     style: {
       version: 8,
       sources: {
-        vworld: {
-          type: 'raster', tiles: [tileUrl(b)], tileSize: 256,
-          minzoom: 6, maxzoom: 19,
-          attribution: '배경지도 · <a href="https://www.vworld.kr" target="_blank" rel="noopener">브이월드</a> 국토교통부'
-        }
+        vworld:       { type:'raster', tiles:[vwUrl(b.base, b.ext)], tileSize:256, minzoom:6, maxzoom:19,
+                        attribution:'배경지도 · <a href="https://www.vworld.kr" target="_blank" rel="noopener">브이월드</a> 국토교통부' },
+        'vworld-over':{ type:'raster', tiles:[vwUrl('Hybrid','png')], tileSize:256, minzoom:6, maxzoom:19 },
+        /* 고도 — AWS Terrain Tiles(Terrarium). 브이월드에는 고도 타일이 없습니다. */
+        dem:          { type:'raster-dem', tiles:[DEM_URL], tileSize:256, minzoom:0, maxzoom:14,
+                        encoding:'terrarium',
+                        attribution:'고도 · <a href="https://registry.opendata.aws/terrain-tiles/" target="_blank" rel="noopener">AWS Terrain Tiles</a>' }
       },
-      layers: [{ id:'vworld', type:'raster', source:'vworld' }]
+      layers: [
+        { id:'vworld',      type:'raster', source:'vworld' },
+        { id:'vworld-over', type:'raster', source:'vworld-over',
+          layout:{ visibility: b.over ? 'visible' : 'none' } },
+        /* 음영 — 3D 로 기울이지 않아도 산줄기가 드러납니다 */
+        { id:'hills', type:'hillshade', source:'dem',
+          paint:{ 'hillshade-exaggeration':0.45, 'hillshade-shadow-color':'#2b3a46' },
+          layout:{ visibility:'none' } }
+      ]
     },
     center: GB.center, zoom: GB.zoom, minZoom: 6, maxZoom: 18,
-    pitch: 0, bearing: 0, attributionControl: true
+    pitch: 0, bearing: 0, attributionControl: true,
+    maxPitch: 75
   });
   map.addControl(new maplibregl.NavigationControl({ visualizePitch:true }), 'top-right');
   map.addControl(new maplibregl.ScaleControl({ maxWidth:120, unit:'metric' }), 'bottom-right');
 
   map.on('load', function(){ draw(); });
   map.on('moveend', draw);
+  map.on('zoomend', draw);
   map.on('error', function(e){
     /* 타일이 안 오면 조용히 흰 화면이 됩니다 — 그렇다고 말합니다. */
     say('배경지도를 받지 못했습니다 — 학교 위치는 그대로입니다. (' +
@@ -367,12 +446,21 @@ async function start(){
   });
 
   document.getElementById('v2d').addEventListener('click', function(){
+    try{ map.setTerrain(null); map.setLayoutProperty('hills','visibility','none'); }catch(e){}
     map.easeTo({ pitch:0, bearing:0, duration:700 });
     document.getElementById('v2d').setAttribute('aria-pressed','true');
     document.getElementById('v3d').setAttribute('aria-pressed','false');
   });
   document.getElementById('v3d').addEventListener('click', function(){
-    map.easeTo({ pitch:58, bearing:-18, duration:900 });
+    /* ★ 기울이기만 하는 것이 아니라 «땅을 솟게» 합니다. 고도 자료가 있어야
+       산과 골짜기가 드러나고, 그래야 통학 거리를 눈으로 가늠할 수 있습니다. */
+    try{
+      map.setTerrain({ source:'dem', exaggeration:1.5 });
+      map.setLayoutProperty('hills','visibility','visible');
+    }catch(e){
+      say('고도 자료를 받지 못해 기울여 보기만 합니다.');
+    }
+    map.easeTo({ pitch:62, bearing:-20, duration:1100 });
     document.getElementById('v2d').setAttribute('aria-pressed','false');
     document.getElementById('v3d').setAttribute('aria-pressed','true');
   });

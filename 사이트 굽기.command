@@ -403,7 +403,7 @@ cat > "$OUT/_headers" <<'EOF'
   Permissions-Policy: geolocation=(), camera=(), microphone=(), interest-cohort=()
   Cache-Control: public, max-age=0, must-revalidate
 /dashboard/*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://sgisapi.mods.go.kr; img-src 'self' data: blob: https://sgisapi.mods.go.kr https://api.vworld.kr; font-src 'self'; worker-src 'self' blob:; child-src 'self' blob:; connect-src 'self' https://sgisapi.mods.go.kr https://api.vworld.kr; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://sgisapi.mods.go.kr; img-src 'self' data: blob: https://sgisapi.mods.go.kr https://api.vworld.kr https://s3.amazonaws.com; font-src 'self'; worker-src 'self' blob:; child-src 'self' blob:; connect-src 'self' https://sgisapi.mods.go.kr https://api.vworld.kr https://s3.amazonaws.com; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
 /apps/*
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
 /
