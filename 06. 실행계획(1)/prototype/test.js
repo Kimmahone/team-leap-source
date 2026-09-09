@@ -1249,5 +1249,35 @@ if (q('!!EDSS')) {
   check('실적이 없으면 코호트 함수가 조용히 null 을 준다', q('edssForward(2030)') === null);
 }
 
+console.log('\n■ 세 화면이 «한 가지 셈»으로 앞날을 말한다');
+/* ★ 〔2026. 9. 10.〕 「학생수 시뮬레이터」가 감소율 곱셈을 쓰고 있어
+   2036년 경북 학생 수를 196,935명이라고 말했습니다. 같은 해를 「경북 학령인구
+   현황」 탭은 130,000명이라고 말했습니다 — **51.5% 차이**.
+
+   코호트는 실제 출생아를 먹고 굴러갑니다(2019년 14,472명 → 2025년 10,417명).
+   감소율 곱셈은 지난 5년 학생 수 기울기만 보므로 아직 학교에 오지 않은
+   감소를 모릅니다. 백테스트 2.3% 로 되짚어 본 코호트 쪽에 맞췄습니다. */
+check('시뮬레이터가 감소율 곱셈을 더 쓰지 않는다',
+  !/b\.stu\s*\*\s*Math\.pow\(1-BASE\[lv\]\[sg\.s\]\.rate/.test(js));
+check('시뮬레이터도 종합 대시보드와 «같은 함수»를 쓴다',
+  /function simForward/.test(js) && /return forwardStudents\(sggKey, lv, year\)/.test(js));
+check('시뮬레이터와 현황 탭이 같은 수를 말한다 (천 명 반올림 한계 안)', q(
+  "(function(){var ys=[2030,2036];for(var i=0;i<ys.length;i++){var y=ys[i];" +
+  "var s=0;SIGUNGU.forEach(function(g){['초','중','고'].forEach(function(lv){s+=simForward(g.s,lv,y)})});" +
+  "var v=series('stu',y),tab=(v.초+v.중+v.고)*1000;" +
+  "if(Math.abs(Math.round(s)-tab) > 1500) return false;}return true;})()"));
+check('기준연도 이하는 굴리지 않고 그해 값을 그대로 쓴다',
+  q("simForward('포항','초',2026)") === q("BASE['초']['포항'].stu"));
+
+console.log('\n■ 추이선이 실적과 전망을 가른다');
+/* 2016~2025 는 일어난 일이고 2027~2036 은 아직 안 일어난 일인데 한 선이었습니다.
+   「현재」 세로 점선 하나뿐이라 2036년 값이 실적처럼 보였습니다. */
+check('실적과 전망을 두 선으로 나눠 그린다',
+  /const realPts = points\.filter/.test(js) && /const projPts = points\.filter/.test(js));
+check('전망은 점선이다 (색만으로 가르지 않는다)', /stroke-dasharray="6 4"/.test(js));
+check('2026 을 겹쳐 선이 끊기지 않게 한다', /p\.yr >= BASE_Y/.test(js));
+check('무엇이 실적이고 무엇이 전망인지 «글자로도» 적는다',
+  /전망 \(아직 일어나지 않은 일\)/.test(js) && /실적</.test(js));
+
 console.log(`\n${fail ? '✗' : '✓'}  통과 ${pass} · 실패 ${fail}\n`);
 process.exit(fail ? 1 : 0);

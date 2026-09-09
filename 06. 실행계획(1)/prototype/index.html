@@ -5953,10 +5953,19 @@ function renderTrendLineChart() {
     return {x, y, v, yr: years[i]};
   });
   
-  let d = `M ${points[0].x} ${points[0].y}`;
-  for(let i=1; i<points.length; i++) {
-    d += ` L ${points[i].x} ${points[i].y}`;
-  }
+  /* ★ 〔2026. 9. 10.〕 실적과 추계를 «한 선»으로 그리고 있었습니다.
+     2016~2025 는 실제로 일어난 일이고 2027~2036 은 아직 안 일어난 일인데
+     굵기도 색도 같았습니다. 「현재」 세로 점선 하나만 있어서, 2036년 값이
+     실적처럼 보였습니다.
+
+     데이터를 그릴 때 추계 구간은 점선이나 옅은 색으로 가르는 것이 원칙입니다.
+     9/9 회의에서 디자인팀에 요청한 것도 같은 것이고, 종합 대시보드의 작은
+     추이선은 이미 그렇게 그리고 있습니다 — 두 화면의 규칙을 맞춥니다. */
+  const BASE_Y = 2026;
+  const seg = arr => arr.map((p,i) => (i ? 'L' : 'M') + ' ' + p.x + ' ' + p.y).join(' ');
+  const realPts = points.filter(p => p.yr <= BASE_Y);
+  const projPts = points.filter(p => p.yr >= BASE_Y);   /* 2026 을 겹쳐 선이 이어지게 */
+  const d = seg(points);          /* 채우기(면)는 전체를 씁니다 */
   
   let h = '';
   h += `<defs>
@@ -5969,7 +5978,11 @@ function renderTrendLineChart() {
   
   const fillPath = d + ` L ${points[points.length-1].x} ${height - padding.bottom} L ${points[0].x} ${height - padding.bottom} Z`;
   h += `<path d="${fillPath}" fill="url(#trendGrad)"/>`;
-  h += `<path d="${d}" fill="none" stroke="var(--leap-blue)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
+  /* 실적 = 굵은 실선 · 전망 = 점선에 옅게. 색만으로 가르지 않고 «모양»으로도 가릅니다. */
+  if(realPts.length > 1)
+    h += `<path d="${seg(realPts)}" fill="none" stroke="var(--leap-blue)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
+  if(projPts.length > 1)
+    h += `<path d="${seg(projPts)}" fill="none" stroke="var(--leap-blue)" stroke-width="2.5" stroke-dasharray="6 4" opacity="0.75" stroke-linecap="round" stroke-linejoin="round"/>`;
   
   points.forEach((p, i) => {
     // Current year marker
@@ -5986,6 +5999,13 @@ function renderTrendLineChart() {
     }
   });
   
+  /* 모양만으로는 못 읽는 사람이 있습니다. 글자로도 적습니다 (원칙 4). */
+  const lgY = padding.top - 26;
+  h += `<line x1="${padding.left}" y1="${lgY}" x2="${padding.left+18}" y2="${lgY}" stroke="var(--leap-blue)" stroke-width="3" stroke-linecap="round"/>`;
+  h += `<text x="${padding.left+24}" y="${lgY+4}" font-size="10.5" fill="var(--ink-2)">${dsKind==='pop' ? '2016~2025 실적' : '2016~2026 실적'}</text>`;
+  h += `<line x1="${padding.left+104}" y1="${lgY}" x2="${padding.left+122}" y2="${lgY}" stroke="var(--leap-blue)" stroke-width="2.5" stroke-dasharray="6 4" opacity="0.75" stroke-linecap="round"/>`;
+  h += `<text x="${padding.left+128}" y="${lgY+4}" font-size="10.5" fill="var(--ink-2)">${BASE_Y+1}~ 전망 (아직 일어나지 않은 일)</text>`;
+
   svg.innerHTML = h;
 }
 yrPast.addEventListener('change', renderStatus);
@@ -6107,6 +6127,13 @@ function project(base, predStu, drop){
   return {cls, sch, mode};
 }
 
+/* 모의연도가 기준연도 이하이면 굴릴 것이 없습니다 — 그해 값을 그대로 씁니다.
+   `forwardStudents` 는 2027 이후만 답하도록 되어 있습니다. */
+function simForward(sggKey, lv, year){
+  if(Number(year) <= HOME_BASE_YEAR) return (BASE[lv][sggKey] || {stu:0}).stu;
+  return forwardStudents(sggKey, lv, year);
+}
+
 let aiContext = '';
 let simExportRows = [];
 function renderSim(){
@@ -6118,8 +6145,20 @@ function renderSim(){
   const allBase = list.reduce((a,sg)=>{
     const b=aggregate(sg,lv); a.stu+=b.stu; a.cls+=b.cls; a.sch+=b.sch; return a;
   },{stu:0,cls:0,sch:0});
-  let allPredStu=0;
-  list.forEach(sg=>{ const b=aggregate(sg,lv); allPredStu += b.stu*Math.pow(1-BASE[lv][sg.s].rate, yrs); });
+  /* ★ 〔2026. 9. 10.〕 여기가 **같은 값을 두 화면이 다르게 말하던** 자리입니다.
+     2036년 경북 학생 수가 「경북 학령인구 현황」 탭에서는 130,000명인데
+     이 화면에서는 196,935명이었습니다 — **51.5% 차이**.
+
+     이 화면은 감소율 곱셈(`stu × (1-rate)^해수`)을 썼고, 현황 탭은 코호트
+     진급법을 씁니다. 코호트는 **실제 출생아**를 먹고 굴러갑니다. 경북 출생아가
+     2019년 14,472명에서 2025년 10,417명으로 떨어졌고 그 아이들이 6년 뒤 초1 이
+     됩니다. 감소율 곱셈은 지난 5년 «학생 수» 기울기만 보므로 아직 학교에 오지
+     않은 감소를 모릅니다.
+
+     백테스트 2.3% 로 되짚어 본 코호트 쪽에 맞춥니다. 종합 대시보드 왼쪽 칸이
+     쓰는 `forwardStudents()` 와 **같은 함수**입니다 — 세 화면이 한 셈을 씁니다. */
+  let allPredStu = 0;
+  list.forEach(sg => { allPredStu += simForward(sg.s, lv, sim.year); });
   allPredStu = Math.round(allPredStu);
 
   const rowsBase=[], rowsPred=[];
@@ -6142,7 +6181,7 @@ function renderSim(){
   list.forEach(sg => {
     const b = aggregate(sg, lv);
     if(b.sch===0) return;
-    const p = Math.round(b.stu * Math.pow(1-BASE[lv][sg.s].rate, yrs));
+    const p = simForward(sg.s, lv, sim.year);
     push(sg.s, b, p, false);
   });
 
