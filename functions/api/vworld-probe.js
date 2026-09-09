@@ -26,9 +26,36 @@ const headers = {
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body, null, 2), { status, headers });
 
-/* 경상북도 한가운데를 UTM-K 로 잘라 달라고 합니다. 작게(64×64) 물어봅니다 —
-   되는지만 보면 되므로 남의 서버에 큰 그림을 시키지 않습니다. */
-const BBOX_5179 = '1050000,1750000,1200000,1900000';
+/* ★ 〔2026. 9. 10.〕 처음 물어볼 때 두 가지를 틀렸습니다.
+     · VERSION=1.1.1 로 물었는데 브이월드는 **1.3.0 만** 받습니다
+       (「유효한 파라미터 값의 범위 : [1.3.0]」)
+     · 1.3.0 에서는 인자 이름이 SRS 가 아니라 **CRS** 입니다
+
+   키 없이 물어보아 확인했습니다 — 1.3.0 · CRS=EPSG:5179 로 물으면
+   좌표계 검사를 통과하고 「key 가 없다」까지 갑니다. 즉 **브이월드는
+   우리 지도의 좌표계로 그려 줄 수 있습니다.**
+
+   남은 것은 BBOX 의 «축 차례»입니다. WMS 1.3.0 은 좌표계가 선언한 차례를
+   따르는데, EPSG:5179 는 X 를 북쪽으로 잡는 정의가 섞여 있어 둘 다 물어보고
+   **그림이 오는 쪽**을 씁니다. 짐작하지 않고 서버에 물어봅니다. */
+const GB = { minx: 1050000, miny: 1750000, maxx: 1200000, maxy: 1900000 };
+
+function tryList(origin) {
+  return [
+    { 이름: 'WMS 1.3.0 · EPSG:5179 · 위성 · BBOX(동,북)',
+      crs: 'EPSG:5179', layers: 'Satellite',
+      bbox: `${GB.minx},${GB.miny},${GB.maxx},${GB.maxy}` },
+    { 이름: 'WMS 1.3.0 · EPSG:5179 · 위성 · BBOX(북,동)',
+      crs: 'EPSG:5179', layers: 'Satellite',
+      bbox: `${GB.miny},${GB.minx},${GB.maxy},${GB.maxx}` },
+    { 이름: 'WMS 1.3.0 · EPSG:5179 · 배경 · BBOX(북,동)',
+      crs: 'EPSG:5179', layers: 'Base',
+      bbox: `${GB.miny},${GB.minx},${GB.maxy},${GB.maxx}` },
+    { 이름: 'WMS 1.3.0 · EPSG:3857 · 위성 (견줌용)',
+      crs: 'EPSG:3857', layers: 'Satellite',
+      bbox: '13800000,4200000,14400000,4600000' }
+  ];
+}
 
 export async function onRequestGet(context) {
   const key = String(context?.env?.VWORLD_API_KEY || '').trim();
@@ -41,53 +68,45 @@ export async function onRequestGet(context) {
     });
   }
 
-  const tries = [
-    { 이름: 'WMS · EPSG:5179 · 위성', srs: 'EPSG:5179', layers: 'Satellite' },
-    { 이름: 'WMS · EPSG:5179 · 배경',  srs: 'EPSG:5179', layers: 'Base' },
-    { 이름: 'WMS · EPSG:3857 · 위성', srs: 'EPSG:3857', layers: 'Satellite',
-      bbox: '13800000,4200000,14400000,4600000' }
-  ];
-
+  const origin = new URL(context.request.url).origin;
   const out = [];
-  for (const t of tries) {
+  for (const t of tryList(origin)) {
     const u = new URL('https://api.vworld.kr/req/wms');
     u.searchParams.set('SERVICE', 'WMS');
     u.searchParams.set('REQUEST', 'GetMap');
-    u.searchParams.set('VERSION', '1.1.1');
+    u.searchParams.set('VERSION', '1.3.0');
     u.searchParams.set('LAYERS', t.layers);
     u.searchParams.set('STYLES', '');
     u.searchParams.set('FORMAT', 'image/jpeg');
-    u.searchParams.set('SRS', t.srs);
-    u.searchParams.set('BBOX', t.bbox || BBOX_5179);
+    u.searchParams.set('CRS', t.crs);
+    u.searchParams.set('BBOX', t.bbox);
     u.searchParams.set('WIDTH', '64');
     u.searchParams.set('HEIGHT', '64');
-    u.searchParams.set('KEY', key);
-    u.searchParams.set('DOMAIN', new URL(context.request.url).origin);
+    u.searchParams.set('key', key);
+    u.searchParams.set('domain', origin);
 
-    let r, body = '';
+    let body = '';
     try {
-      r = await fetch(u.toString(), { signal: AbortSignal.timeout(10000) });
+      const r = await fetch(u.toString(), { signal: AbortSignal.timeout(12000) });
       const ct = r.headers.get('content-type') || '';
-      /* 그림이 오면 된 것입니다. 글이 오면 «왜 안 되는지»가 그 안에 있습니다. */
-      if (!ct.startsWith('image/')) body = (await r.text()).slice(0, 300);
+      if (!ct.startsWith('image/')) body = (await r.text()).slice(0, 260);
       out.push({
-        무엇: t.이름,
-        상태: r.status,
-        형식: ct,
+        무엇: t.이름, 상태: r.status, 형식: ct,
         됨: r.ok && ct.startsWith('image/'),
-        답: body || undefined
+        답: body ? body.replace(/\s+/g, ' ').trim() : undefined
       });
     } catch (e) {
-      out.push({ 무엇: t.이름, 됨: false, 오류: String(e && e.message || e).slice(0, 120) });
+      out.push({ 무엇: t.이름, 됨: false, 오류: String((e && e.message) || e).slice(0, 140) });
     }
   }
 
-  const good = out.find(x => x.됨 && /5179/.test(x.무엇));
+  const good = out.find(x => x.됨 && x.무엇.indexOf('5179') >= 0);
   return json({
     ok: !!good,
     결론: good
-      ? '브이월드가 EPSG:5179 로 그려 줍니다 — 지금 지도에 그대로 얹을 수 있습니다.'
-      : '브이월드가 EPSG:5179 로는 답하지 않았습니다. 아래 답을 보고 다음 길을 정합니다.',
+      ? '브이월드가 EPSG:5179 로 그려 줍니다 — 지금 지도에 그대로 얹을 수 있습니다. 쓸 축 차례: ' + good.무엇
+      : '아직 그림이 오지 않았습니다. 아래 «답»에 까닭이 적혀 있습니다.',
+    도메인: origin,
     시도: out
   });
 }
