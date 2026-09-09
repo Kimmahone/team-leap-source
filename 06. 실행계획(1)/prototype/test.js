@@ -26,7 +26,7 @@ function makeEl(tag) {
     tagName: (tag || 'div').toUpperCase(), _html: '', hidden: false, value: '',
     textContent: '', title: '', type: '', disabled: false, checked: false,
     className: '', tabIndex: 0, children: [], dataset: {}, options: [],
-    classList: { add(){}, remove(){}, contains(){ return false; } },
+    classList: { add(){}, remove(){}, toggle(){}, contains(){ return false; } },
     style: { setProperty(k, v) { this[k] = v; } },
     set innerHTML(v) { this._html = v; },
     get innerHTML() { return this._html; },
@@ -292,7 +292,7 @@ check('본문을 덮던 고정 인쇄 꼬리말을 제거했다',
 check('긴 카드 전체를 한 쪽에 강제하지 않아 페이지 잘림을 막는다',
   !/\.card\{[^}]*break-inside:avoid/.test(html) && /thead\{display:table-header-group\}/.test(html));
 check('종합 대시보드 인쇄는 요약·지도·기준을 의미 단위로 쪽 나눔한다',
-  ['home-summary-card','home-news-card','home-kpi-card','home-map-card'].every(id=>html.includes(`id="${id}"`)) &&
+  ['home-summary-card','home-kpi-card','home-map-card'].every(id=>html.includes(`id="${id}"`)) &&
   /#home-map-card\{break-before:page/.test(html) && /#home-map-card \.criteria-guide\{break-before:page/.test(html));
 check('변화 요약은 보고서 HTML과 별도 인쇄 기능을 제공한다',
   html.includes('id="ai-print"') && /function policyMarkdown/.test(html) && /function renderPolicyReport/.test(html) && html.includes('id="ai-print-report"'));
@@ -488,22 +488,32 @@ check('기간을 바꾸면 첫 쪽으로 돌아간다', /newsPage = 1;\s*\/\/ �
 check('쪽 넘기기 단추가 44px 이상이다', /\.news-pager button\{[^}]*min-height:44px/.test(html));
 check('인쇄에서 쪽 넘기기를 감춘다', /@media print\{\.news-pager\{display:none\}\}/.test(html));
 
-/* ---------- 주간 AI 뉴스 요약 (종합 대시보드) ---------- */
-console.log('\n■ 주간 AI 뉴스 요약');
-/* 〔2026. 8. 12.〕 여기 있던 것은 **전부 손으로 적은 것**이었습니다 —
-   「보도 12건 수집 완료 · 적정규모화 4건 · 통학 지원 3건」이라는 숫자도,
-   기사 세 건도, 네이버 링크도. 그러면서 「주간 자동 집계」라고 적혀 있었습니다. */
+/* ---------- 종합 대시보드에서 뉴스를 뺐다 ---------- */
+console.log('\n■ 종합 대시보드에서 뉴스를 뺐다');
+/* ★ 〔2026. 9. 9.〕 왼쪽 칸이 «연도 슬라이더에 붙는 자리»가 되면서 뉴스 요약을
+   뺐습니다. 왼쪽 칸의 나머지는 전부 「고른 지역 × 고른 연도」를 말하는데
+   뉴스에는 그 축이 없습니다 — 2018년에 슬라이더를 두어도 「2018년의 주간
+   뉴스」는 존재하지 않습니다. 옆에 있으면 연동될 것으로 기대하게 되고,
+   연동되지 않으면 고장으로 읽힙니다.
+
+   이 검사들은 지우지 않고 «뜻을 뒤집었습니다» — 「있는가」에서 「없는가」로.
+   그래야 누가 다시 홈에 뉴스를 붙일 때 그것이 «결정을 되돌리는 일»임이 드러납니다. */
+check('홈에 뉴스 카드가 없다', !html.includes('id="home-news-card"') && !html.includes('id="news-brief"'));
+check('죽은 코드를 남기지 않았다 (renderNewsBrief)', !/function renderNewsBrief/.test(html));
+check('그 함수만 쓰던 상수도 함께 걷어냈다 (GYEONGBUK)', !/GYEONGBUK\s*=/.test(html));
+check('기준일 배선도 걷어냈다', !/setAsof\('asof-homenews'/.test(html));
+check('인쇄 규칙에도 죽은 선택자가 없다', !/#home-news-card/.test(html));
+/* 뺀 것은 «홈 카드»뿐입니다. 뉴스 자체는 그대로 있어야 합니다. */
+check('뉴스는 「주간 뉴스 클리핑」 화면에 그대로 있다',
+  html.includes('id="view-news"') && html.includes('id="news-container"') && /NEWS_TOPICS/.test(html));
+check('주제로 나누는 일도 그대로다', (html.match(/^\s*\['[^']+',\s*\/.*\/\],?$/gm) || []).length >= 5);
+check('주제가 겹칠 수 있다고 여전히 알린다', html.includes('주제별 합이 건수보다 클 수 있습니다'));
+/* 〔2026. 8. 12.〕 여기 있던 것은 **전부 손으로 적은 것**이었습니다.
+   카드는 없앴지만 「손으로 적지 않는다」는 규칙은 남깁니다. */
 check('손으로 적은 건수가 없다',
   !/보도 <b>\d+건<\/b> 수집 완료|수집 완료\./.test(html));
 check('손으로 적은 기사 링크가 없다',
   !/n\.news\.naver\.com\/mnews\/article/.test(html));
-check('요약을 뉴스 클리핑과 같은 자료에서 셈한다',
-  /function renderNewsBrief/.test(html) && /NEWS_ALL/.test(html) && /NEWS_TOPICS/.test(html));
-check('주제별로 나눈다', (html.match(/^\s*\['[^']+',\s*\/.*\/\],?$/gm) || []).length >= 5
-  || /NEWS_TOPICS = \[[\s\S]{80,}\]/.test(html));
-check('경북 몫을 따로 센다', /GYEONGBUK\s*=/.test(html) && html.includes('경북 이야기는'));
-check('주제가 겹칠 수 있다고 알린다', html.includes('주제별 합이 건수보다 클 수 있습니다'));
-check('요약 글자도 이스케이프한다', /esc\(top\.name\)/.test(html) && /esc\(n\.title\)/.test(html));
 
 /* ---------- 유치원·특수학교 ---------- */
 console.log('\n■ 유치원 · 특수학교');
@@ -700,9 +710,12 @@ check('닷새째부터는 확인해 달라고 말한다', /d >= 5/.test(staleFn)
 check('어디를 볼지도 알려 준다', /GitHub Actions/.test(staleFn));
 check('색만으로 말하지 않는다 — 날수를 글자로 함께 적는다',
   /news-stale-hard/.test(staleFn) && /<b>/.test(staleFn));
-check('홈 카드와 뉴스 화면 «양쪽»에 붙는다 (한쪽만이면 그 화면만 본 사람은 못 본다)',
-  /newsStaleNote\(\) \+/.test(js) && /news-stale-slot/.test(js) &&
-  /id="news-stale-slot"/.test(html));
+/* 〔2026. 9. 9.〕 예전에는 «홈 카드와 뉴스 화면 양쪽»에 붙었습니다.
+   홈 카드를 뺐으므로 이제 붙는 자리는 뉴스 화면 하나입니다.
+   그 하나가 «비어 있지 않은지»를 지킵니다 — 붙을 데가 없어지면
+   낡은 것을 아무도 모르게 되고, 그것이 9/6 에 실제로 일어난 일입니다. */
+check('낡음 알림이 뉴스 화면에 붙어 있다',
+  /news-stale-slot/.test(js) && /id="news-stale-slot"/.test(html));
 check('알림 자리가 스크린리더에도 전해진다',
   /id="news-stale-slot" aria-live="polite"/.test(html));
 
@@ -765,6 +778,87 @@ check('시군 단계에서는 범례도 시군 단계의 것으로 바꾼다 (�
   /function renderSgisTierNote/.test(js) && /딱지 하나 = 시군 하나/.test(js));
 check('딱지를 누르면 그 시군 안으로 들어간다', /function enterSgg/.test(js) && /marker\.on\('click'/.test(js));
 check('들어갔으면 나올 길도 함께 켠다', /reset\.hidden = false/.test(js));
+
+console.log('\n■ 왼쪽 칸이 «고른 지역 × 고른 연도»를 말한다');
+/* ★ 〔2026. 9. 9.〕 이 카드의 큰 숫자 여섯 개는 «손으로 적힌 것»이었습니다 —
+   「100 · 64 · 65」와 「101 · 63 · 63」, 그리고 「2026년」까지. 갱신하는 코드가
+   한 줄도 없었습니다. 자료가 바뀌어도 그 자리는 그대로였고, 그것을 알아차릴
+   방법도 없었습니다. 이 검사들이 그 자리를 다시 굳게 만들지 않기 위한 것입니다. */
+/* 앞선 검사들이 학교급·시군을 이리저리 바꿔 놓았습니다.
+   여기서 보는 것은 «그리면 채워지는가»이므로 상태를 먼저 맞추고 한 번 그립니다. */
+const ySaved = q('homeState.year') + '|' + q('homeState.level');
+q("homeState.sel=null; homeState.level='전체'; homeState.year=2026; renderHomePanel();");
+check('손으로 적은 숫자를 화면에 두지 않는다',
+  !/<div class="v">1\d\d<\/div>/.test(html) && !/<div class="v">6\d<\/div>/.test(html));
+check('큰 숫자가 셈해져 채워진다',
+  /^[\d,]+$/.test(String((byId['home-stu-초'] || {}).textContent || '')) &&
+  /^[\d,]+$/.test(String((byId['home-stu-고'] || {}).textContent || '')));
+check('지금 보고 있는 지역 이름을 적는다',
+  String((byId['home-region-name'] || {}).textContent || '').length > 0);
+check('연도 슬라이더가 있다', /id="home-year"/.test(html) && /type="range"/.test(html));
+check('슬라이더 손잡이가 44px 규칙을 지킨다 (원칙 7번)',
+  /::-webkit-slider-thumb\{[^}]*width:22px/.test(html.replace(/\s+/g,'')) ||
+  /height:24px/.test(html.replace(/\s+/g,'')));
+
+/* 한 해의 값이 «어디서 왔는가» — 세 갈래를 각각 지킵니다. */
+check('2026 은 지도·목록과 «같은 자료»(공시)를 쓴다',
+  q("regionStudents(null,'초',2026).kind") === '공시' &&
+  q("regionStudents(null,'초',2026).v") === q("SIGUNGU.reduce(function(a,g){return a+BASE['초'][g.s].stu},0)"));
+if(q('EDSS')){
+  check('2016~2025 는 EDSS 실적을 그대로 쓴다',
+    q("regionStudents(null,'초',2020).kind") === '실적' &&
+    q("regionStudents(null,'초',2020).v") === q("EDSS.total['초'][EDSS.years.indexOf(2020)]"));
+  check('시군도 그 시군의 실적을 쓴다', q(
+    "(function(){var g=SIGUNGU[0],i=EDSS.years.indexOf(2020);" +
+    "var c=(EDSS.sgg[g.rc]||{})['초']; if(!c) return true;" +
+    "return regionStudents(g.s,'초',2020).v === c.s[i];})()"));
+}
+check('2027~ 는 전망이라고 «이름을 붙인다»',
+  q("regionStudents(null,'초',2030).kind") === '전망');
+check('전망은 시뮬레이터와 «같은 셈»이다 (두 화면이 다른 수를 말하면 안 된다)', q(
+  "(function(){var y=2030,yrs=y-2026;" +
+  "var mine=regionStudents('포항','초',y).v;" +
+  "var sim=Math.round(BASE['초']['포항'].stu*Math.pow(1-BASE['초']['포항'].rate,yrs));" +
+  "return mine===sim;})()"));
+check('실적보다 이른 해는 «비운다» (지어내지 않는다)',
+  q("regionStudents(null,'초',2015).v") === null);
+check('유치원·특수학교는 해마다의 실적이 없다고 말한다',
+  q("regionStudents(null,'유',2020).v") === null && q("regionStudents(null,'특수',2020).v") === null);
+q("homeState.level='유'; renderHomeSummary();");
+check('그때는 슬라이더를 잠그고 «왜»를 적는다',
+  byId['home-year'].disabled === true &&
+  /2026년 공시 한 해/.test(String((byId['home-summary-note'] || {}).textContent || '')));
+q("homeState.level='전체'; homeState.year=2030; renderHomeSummary();");
+check('전망 연도에서는 「몇 명이 될 것이다」로 읽지 말라고 적는다',
+  /읽으면 안 됩니다/.test(String((byId['home-summary-note'] || {}).textContent || '')));
+check('추이 그림에서 실적은 실선, 전망은 «점선»이다 (한 선이면 이미 일어난 일처럼 보인다)',
+  /class="ln proj"/.test(js) && /\.spark \.ln\.proj\{stroke-dasharray/.test(html));
+check('얼마나 줄어드는지 한 줄로 적는다 (그림만으로는 안 읽힌다)',
+  /줄어듭니다|늘어납니다/.test(js) && /id="home-spark-cap"/.test(html));
+
+/* 지도 딱지가 연도를 따를 때와 안 따를 때 */
+q("homeState.metric='stu'; homeState.year=2026;");
+check('2026 에서는 딱지도 공시 자료를 쓴다 (목록과 어긋나지 않게)',
+  q('sggBubbleYearApplies()') === false);
+q("homeState.year=2032;");
+check('다른 해에서는 딱지가 그 해를 따른다', q('sggBubbleYearApplies()') === true);
+check('줄어드는 자료이므로 2032 딱지가 2026 보다 작다', q(
+  "(function(){var a=sggBubbleRows().reduce(function(s,r){return s+r.stu},0);" +
+  "homeState.year=2026; var b=sggBubbleRows().reduce(function(s,r){return s+r.stu},0);" +
+  "homeState.year=2032; return a<b;})()"));
+q("homeState.metric='sch';");
+check('학교 수를 볼 때는 연도를 따르지 않는다 (해마다의 실적이 없다)',
+  q('sggBubbleYearApplies()') === false);
+
+/* ★ 지도 상태줄은 «어느 해»인지 반드시 말해야 합니다.
+   그리고 이 검사는 renderSgisTierNote 를 «실제로 실행»합니다 —
+   지도 없이도 도는 함수라, 여기서 돌려 보면 이름을 잘못 쓴 것이 드러납니다.
+   (실제로 뉴스 스코프 전용 esc() 를 부르고 있던 것을 이 방식으로 잡았습니다.) */
+q("homeState.metric='stu'; homeState.year=2032; renderSgisTierNote();");
+check('시군 단계 상태줄이 «어느 해»인지 말한다',
+  /2032년/.test(String((byId['sgis-status'] || {}).textContent || '')));
+check('범례에도 기준 해를 적는다', /2032년/.test((byId['home-legend'] || {})._html || ''));
+q("homeState.year=" + ySaved.split('|')[0] + "; homeState.level='" + ySaved.split('|')[1] + "'; homeState.metric='sch'; renderHomePanel();");
 
 console.log('\n■ 목록이 전부를 보여 줄 수 있다');
 /* ★ 〔2026. 9. 7.〕 120 이 «천장»이었습니다 — 화면에 474곳이 있어도 120곳만

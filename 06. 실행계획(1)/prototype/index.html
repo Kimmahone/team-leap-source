@@ -257,6 +257,39 @@ a{color:var(--brand)}
 @media (max-width:1080px){.grid.home{grid-template-columns:1fr}}
 
 /* ---------- 요약 타일 ---------- */
+/* ══ 연도 슬라이더 〔2026. 9. 9.〕 ═══════════════════════════════════════
+   왼쪽 칸의 축입니다. 지도 딱지도 이 해를 따릅니다.
+   손잡이는 44px 규칙(원칙 7번)을 지켜야 하므로 트랙보다 크게 잡습니다. */
+.year-slider{margin:2px 0 12px}
+.year-head{display:flex;align-items:baseline;gap:7px;margin-bottom:3px}
+.year-head label{font-size:11.5px;color:var(--ink-3)}
+.year-head b{font-size:17px;font-weight:800;color:var(--brand);line-height:1}
+.year-kind{margin-left:auto;font-size:10.5px;padding:2px 6px;border-radius:999px;
+  border:1px solid var(--line);color:var(--ink-2);background:var(--card-2)}
+.year-kind.is-proj{border-color:var(--leap-amber,var(--line));color:var(--ink-2)}
+.year-slider input[type=range]{width:100%;height:24px;margin:0;background:transparent;
+  -webkit-appearance:none;appearance:none;cursor:pointer}
+.year-slider input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:var(--card-2);border:1px solid var(--line)}
+.year-slider input[type=range]::-moz-range-track{height:5px;border-radius:3px;background:var(--card-2);border:1px solid var(--line)}
+.year-slider input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+  width:22px;height:22px;margin-top:-9px;border-radius:50%;background:var(--brand);
+  border:3px solid var(--card);box-shadow:0 1px 5px rgba(20,32,46,.4)}
+.year-slider input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;
+  background:var(--brand);border:3px solid var(--card);box-shadow:0 1px 5px rgba(20,32,46,.4)}
+.year-slider input[type=range]:focus-visible{outline:3px solid var(--leap-blue);outline-offset:3px}
+.year-slider input[type=range]:disabled{opacity:.45;cursor:not-allowed}
+.year-ends{display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-3);margin-top:1px}
+/* 추이 그림. 실적은 실선, 전망은 점선입니다 — 한 선으로 그리면
+   아직 일어나지 않은 일이 이미 일어난 일처럼 보입니다. */
+.spark{width:100%;height:74px;margin-top:12px;display:block;overflow:visible}
+.spark .ln{fill:none;stroke:var(--brand);stroke-width:2;stroke-linejoin:round}
+.spark .ln.proj{stroke-dasharray:4 3;opacity:.75}
+.spark .ar{fill:var(--brand);opacity:.10}
+.spark .now{stroke:var(--ink-3);stroke-width:1;stroke-dasharray:3 3}
+.spark .dot{fill:var(--brand);stroke:var(--card);stroke-width:2}
+.spark .gl{stroke:var(--line-2,var(--line));stroke-width:1}
+.spark text{font-size:9px;fill:var(--ink-3)}
+.spark-cap{font-size:11px;color:var(--ink-3);margin-top:4px;line-height:1.45}
 .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px}
 .stat{background:var(--brand-pale);border-radius:8px;padding:9px 10px;text-align:center}
 .stat .k{font-size:11px;color:var(--ink-2)}
@@ -791,13 +824,16 @@ table.data .hl{color:var(--brand);font-weight:800}
   .news-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .criteria-guide{break-inside:avoid}.criteria-guide-grid{grid-template-columns:1fr 1fr}
   /* 종합 대시보드는 의미 단위로 장을 나눠 지도·학교목록이 따로 떨어지지 않게 합니다. */
-  #home-summary-card,#home-news-card,#home-kpi-card{break-inside:avoid;page-break-inside:avoid;margin-bottom:4mm}
-  #home-summary-card,#home-news-card,#home-kpi-card{padding:3mm 4mm}
+  #home-summary-card,#home-kpi-card{break-inside:avoid;page-break-inside:avoid;margin-bottom:4mm}
+  #home-summary-card,#home-kpi-card{padding:3mm 4mm}
   #home-summary-card .stat{padding:2mm 3mm}
   #home-summary-card .stat-row{margin-bottom:1mm}
-  #home-summary-card h3{margin-top:3mm !important}
   #home-summary-card .unit-note{margin-top:0}
-  #home-news-card .brief{padding:2.5mm 3mm}
+  /* 종이에서 슬라이더는 뜻이 없습니다 — 끌 수 없으니까요. 다만 «어느 해»인지는
+     남아야 합니다. 손잡이와 눈금만 감추고 연도 글자는 그대로 둡니다. */
+  .year-slider input[type=range],.year-ends{display:none !important}
+  .year-head{margin-bottom:0}
+  .spark{height:56px}
   #home-kpi-card .box{padding:2mm 3mm}
   #home-map-card{break-before:page;page-break-before:always;border:0;padding:0;margin:0}
   #home-map-card>.map-toolbar{break-after:avoid;page-break-after:avoid}
@@ -1163,40 +1199,56 @@ body.map-maxed{overflow:hidden}
     <div class="grid home">
       <!-- 좌측 요약 -->
       <div id="home-side">
+        <!-- ★ 〔2026. 9. 9.〕 이 카드는 **전부 손으로 적힌 숫자**였습니다 —
+             「100 · 64 · 65」와 「101 · 63 · 63」, 그리고 「2026년」까지.
+             갱신하는 코드가 **한 줄도 없었습니다.** 자료가 바뀌어도 이 칸은
+             그대로였고, 그것을 알아차릴 방법도 없었습니다.
+
+             이제 고른 지역과 고른 연도를 따라 스스로 셉니다.
+             연도 슬라이더가 이 카드의 축입니다 — 지도와 같은 해를 봅니다. -->
         <div class="card" id="home-summary-card">
-          <h2>경북 학령인구 현황<span class="asof" id="asof-homepop"></span></h2>
-          <div class="stat-row">
-            <div class="stat"><div class="k">초등학교</div><div class="v">100</div><div class="u">천 명</div></div>
-            <div class="stat"><div class="k">중학교</div><div class="v">64</div><div class="u">천 명</div></div>
-            <div class="stat"><div class="k">고등학교</div><div class="v">65</div><div class="u">천 명</div></div>
-          </div>
-          <div class="unit-note">2026년 · 단위 천 명</div>
+          <h2><span id="home-region-name">경북 전체</span> 학생 수<span class="asof" id="asof-homepop"></span></h2>
 
-          <h3 style="margin-top:16px">경북 학생수 현황</h3>
-          <div class="stat-row">
-            <div class="stat"><div class="k">초등학생</div><div class="v">101</div><div class="u">천 명</div></div>
-            <div class="stat"><div class="k">중학생</div><div class="v">63</div><div class="u">천 명</div></div>
-            <div class="stat"><div class="k">고등학생</div><div class="v">63</div><div class="u">천 명</div></div>
+          <!-- 연도 슬라이더. 왼쪽 칸의 «축»이고 지도 딱지도 이 해를 따릅니다. -->
+          <div class="year-slider" id="home-year-box">
+            <div class="year-head">
+              <label for="home-year">연도</label>
+              <b id="home-year-label">2026</b>
+              <span class="year-kind" id="home-year-kind"></span>
+            </div>
+            <input type="range" id="home-year" min="2016" max="2036" step="1" value="2026"
+                   aria-describedby="home-year-kind">
+            <div class="year-ends"><span>2016</span><span id="home-year-mid">2026 현재</span><span>2036</span></div>
           </div>
-          <div class="unit-note">2026년 · 단위 천 명</div>
+
+          <div class="stat-row">
+            <div class="stat"><div class="k">초등학생</div><div class="v" id="home-stu-초">–</div><div class="u">명</div></div>
+            <div class="stat"><div class="k">중학생</div><div class="v" id="home-stu-중">–</div><div class="u">명</div></div>
+            <div class="stat"><div class="k">고등학생</div><div class="v" id="home-stu-고">–</div><div class="u">명</div></div>
+          </div>
+          <div class="unit-note" id="home-summary-note"></div>
+
+          <!-- 추이 — 슬라이더를 끌면 눈금이 함께 움직입니다.
+               실적 구간은 실선, 전망 구간은 «점선»입니다. 한 선으로 그리면
+               2036년이 이미 일어난 일처럼 보입니다. -->
+          <svg id="home-spark" class="spark" viewBox="0 0 300 74" role="img"
+               aria-labelledby="home-spark-title"><title id="home-spark-title">연도별 학생 수 추이</title></svg>
+          <div class="spark-cap" id="home-spark-cap"></div>
         </div>
 
-        <div class="card" id="home-news-card">
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <h2>주간 AI 뉴스 요약</h2>
-            <span class="asof" id="asof-homenews"></span>
-          </div>
-          <!-- ★ 〔2026. 8. 12.〕 여기 있던 것은 **전부 손으로 적은 것**이었습니다 —
-               「보도 12건 수집 완료 · 적정규모화 4건 · 통학 지원 3건」이라는 숫자도,
-               기사 세 건도, 링크도. 「주간 자동 집계」라고 적혀 있었지만
-               아무것도 집계하지 않았습니다.
+        <!-- ★ 〔2026. 9. 9.〕 여기 있던 「주간 AI 뉴스 요약」을 뺐습니다.
 
-               이제 **주간 뉴스 클리핑과 같은 자료**(news-data)에서 셈해 그립니다.
-               숫자를 손으로 적지 않습니다 — 손으로 적은 숫자는 반드시 낡습니다. -->
-          <div class="brief" id="news-brief">
-            <div class="hd" id="news-brief-date">뉴스를 불러오는 중…</div>
-          </div>
-        </div>
+             까닭은 이 칸이 **연도 슬라이더에 붙는 자리**가 되었기 때문입니다.
+             왼쪽 칸의 모든 것이 「고른 지역 × 고른 연도」를 말하는데
+             뉴스만 그 축이 없습니다 — 슬라이더를 2018년에 두어도
+             「2018년의 주간 뉴스」라는 것은 존재하지 않습니다.
+             옆에 있으면 사람은 당연히 연동될 것으로 기대하고,
+             연동되지 않으면 **고장으로 읽습니다.**
+
+             뉴스는 그대로 있습니다. 왼쪽 메뉴 「주간 뉴스 클리핑」이 그 자리이고,
+             거기서 기간·주제로 거르고 인쇄·Excel 까지 됩니다.
+             `renderNewsBrief()` 와 `asof-homenews` 도 함께 걷어냈습니다 —
+             쓰이지 않는 코드는 조용히 낡아 다음 사람을 속입니다. -->
 
         <!-- ┌── 기능팀 자리 (왼쪽 칸) ────────────────────────────────┐
              │ 요약·지표처럼 «좁고 세로로 긴» 꼭지는 여기에 둡니다.      │
@@ -2082,17 +2134,6 @@ body.map-maxed{overflow:hidden}
     });
   }
 
-  /* ── 종합 대시보드의 「주간 AI 뉴스 요약」 ─────────────────────────
-     예전에는 여기 숫자와 기사 셋이 **손으로 적혀** 있었습니다.
-     이제 뉴스 클리핑과 **같은 자료**에서 셈합니다 — 두 화면이 어긋날 수 없습니다.
-
-     무엇을 셈하나 — 「몇 건 왔다」만으로는 인사이트가 없습니다.
-       ① 이번 주 몇 건인가 (지난주와 견주어 늘었나 줄었나)
-       ② **무엇에 대한 이야기인가** — 주제별로 나눕니다
-       ③ 그중 **경북 이야기는 몇 건인가**
-       ④ 가장 굵은 줄기 하나를 문장으로 말합니다
-     주제는 기사 하나가 여럿에 걸릴 수 있습니다(통폐합이면서 재정 이야기).
-     그래서 합계가 건수보다 클 수 있고, 그 사실을 화면에 적습니다. */
   /* 📌 〔2026. 9. 7.〕 주제는 «바뀔 수 있습니다». 지금 6개는 그대로 두기로 했습니다.
      늘릴 때는 fetch-news.js 의 QUERIES(검색어)도 «함께» 늘려야 합니다 —
      안 가져온 것은 나눌 수 없어 그 칸이 늘 비어 있습니다.
@@ -2106,7 +2147,6 @@ body.map-maxed{overflow:hidden}
     ['지역소멸·인구',  /지역소멸|인구감소|소멸위험|저출생|저출산|학령인구/],
     ['교육혁신·특구',  /교육발전특구|교육혁신|미래교육|늘봄/]
   ];
-  const GYEONGBUK = /경북|경상북도|포항|경주|김천|안동|구미|영주|영천|문경|경산|의성|청송|영덕|성주|칠곡|예천|봉화|울진|울릉|고령군|영양군|상주시|청도군/;
 
   /* ★ 며칠째 새 기사가 없는지 — 화면이 «스스로» 말하게 합니다 〔2026. 9. 7.〕
 
@@ -2143,79 +2183,11 @@ body.map-maxed{overflow:hidden}
       '</div>';
   }
 
-  function renderNewsBrief() {
-    const box = document.getElementById('news-brief');
-    if (!box) return;
-    if (NEWS_ALL === null) NEWS_ALL = readBakedNews();
-
-    if (NEWS_ALL.length === 0) {
-      box.innerHTML = '<div class="hd">아직 실은 기사가 없습니다</div>' +
-        '<span style="font-size:12.5px;color:var(--ink-3)">' +
-        '<code>news-history.json</code> 을 채운 뒤 사이트를 다시 구우면 올라옵니다.</span>';
-      return;
-    }
-
-    const now = Date.now(), DAY = 24 * 60 * 60 * 1000;
-    const age = n => (now - new Date(n.pubDate).getTime()) / DAY;
-    const week = NEWS_ALL.filter(n => age(n) <= 7);
-    const prevWeek = NEWS_ALL.filter(n => age(n) > 7 && age(n) <= 14);
-    const base = week.length ? week : NEWS_ALL;   /* 이번 주가 비면 전체로 말합니다 */
-
-    const counts = NEWS_TOPICS.map(([name, re]) => ({
-      name, n: base.filter(x => re.test(x.title + ' ' + x.description)).length
-    })).filter(t => t.n > 0).sort((a, b) => b.n - a.n);
-
-    const local = base.filter(x => GYEONGBUK.test(x.title + ' ' + x.description)).length;
-    const top = counts[0];
-    const newest = NEWS_ALL[0] ? new Date(NEWS_ALL[0].pubDate) : null;
-    const stamp = newest && !isNaN(newest.getTime())
-      ? `${newest.getFullYear()}. ${newest.getMonth() + 1}. ${newest.getDate()}.`
-      : '';
-
-    /* 늘었나 줄었나 — 지난주가 있을 때만 말합니다 */
-    let trend = '';
-    if (week.length && prevWeek.length) {
-      const diff = week.length - prevWeek.length;
-      trend = diff === 0 ? ' (지난주와 같음)'
-            : ` (지난주보다 ${Math.abs(diff)}건 ${diff > 0 ? '늘었습니다' : '줄었습니다'})`;
-    }
-
-    const bars = counts.slice(0, 4).map(t => {
-      const pct = Math.round(t.n / base.length * 100);
-      return '<div style="display:flex;align-items:center;gap:8px;margin-top:5px;font-size:12.5px">' +
-        `<span style="width:104px;flex:none;color:var(--ink-2)">${esc(t.name)}</span>` +
-        `<span style="flex:1;height:7px;border-radius:4px;background:var(--card-2);overflow:hidden">` +
-          `<span style="display:block;height:100%;width:${pct}%;background:var(--brand)"></span></span>` +
-        `<b style="width:26px;text-align:right">${t.n}</b></div>`;
-    }).join('');
-
-    const picks = base.slice(0, 3).map(n => {
-      const link = safeUrl(n.link);
-      return '<li style="margin-bottom:7px">' +
-        `<b>${esc(n.title)}</b>` +
-        (link ? ` <a href="${esc(link)}" target="_blank" rel="noopener noreferrer" style="font-size:11.5px">원문 ↗</a>` : '') +
-        '</li>';
-    }).join('');
-
-    box.innerHTML =
-      `<div class="hd" id="news-brief-date">${esc(stamp)} 기준 · ${week.length ? '최근 7일' : '전체'} ${base.length}건${esc(trend)}</div>` +
-      newsStaleNote() +
-      (top
-        ? `<div style="font-size:13.5px;line-height:1.6">이번 자락의 가장 굵은 줄기는 <b>${esc(top.name)}</b>입니다 — ` +
-          `${base.length}건 가운데 <b>${top.n}건</b>. 경북 이야기는 <b>${local}건</b>입니다.</div>`
-        : '')
-      + bars
-      + `<ul style="margin:10px 0 0;padding-left:17px;color:var(--ink);line-height:1.45;font-size:13px">${picks}</ul>`
-      + '<div style="margin-top:9px;font-size:11px;color:var(--ink-3)">' +
-        '기사 하나가 여러 주제에 걸칠 수 있어 주제별 합이 건수보다 클 수 있습니다. ' +
-        '전체는 왼쪽 <b>주간 뉴스 클리핑</b>에서 봅니다.</div>';
-  }
-
   window.dashboardNewsExport = function () {
     return {days:newsDays, topic:newsTopic, items:filteredNewsItems()};
   };
 
-  function startNews() { wireNewsFilter(); renderNews(); renderNewsBrief(); }
+  function startNews() { wireNewsFilter(); renderNews(); }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', startNews);
@@ -3498,7 +3470,9 @@ window.addEventListener('hashchange', () => showView(location.hash.slice(1) || '
 /* =========================================================
    3. 홈 — 지도 (실좌표)
    ========================================================= */
-const homeState = { level:'전체', metric:'sch', sel:null, colorBy:'level', mapMode:'offline', showClosed:false };
+const homeState = { level:'전체', metric:'sch', sel:null, colorBy:'level', mapMode:'offline', showClosed:false,
+  /* 연도 슬라이더가 보고 있는 해. 지도 딱지와 왼쪽 칸이 같은 해를 봅니다. */
+  year: 2026 };
 
 /* 온라인 지도는 SGIS가 정상 로드됐을 때만 켭니다.
    인증키는 HTML에 넣지 않고 `/api/sgis-map` Pages Function이 서버에서 사용합니다. */
@@ -3664,6 +3638,23 @@ function currentMapTier(){
 /* 시군 딱지에 적을 값. 지도에 찍는 것과 «같은 자료»에서 셉니다 —
    BASE 를 다시 더하면 두 화면이 어긋날 수 있습니다. 학교 목록을 그대로 셉니다.
    `onlineSchools()` 는 학교급·검색어를 이미 걸러 주므로 그 결과만 모읍니다. */
+/* 딱지가 «다른 해»를 보여 줄 수 있는가 〔2026. 9. 9.〕
+
+   ★ 세 가지가 모두 맞을 때만입니다.
+     ① 학생 수를 보고 있을 것 — 학교 수는 해마다의 실적이 없습니다
+     ② 2026 이 아닐 것 — 2026 은 지도·목록과 «같은 자료»(학교알리미 공시)를 씁니다
+     ③ 유치원·특수학교가 아닐 것 — 그 둘은 2026 한 해뿐입니다
+
+   ②가 중요합니다. 2026 에서도 굳이 연도 계산을 태우면 지도의 큰 숫자가
+   그 아래 학교 목록의 합과 «미세하게» 어긋날 수 있습니다. 어긋난 것을
+   알아차리는 사람은 두 곳을 더해 본 사람뿐이고, 그런 어긋남이 이 프로젝트가
+   되풀이해 겪은 종류입니다. 같은 해에는 같은 자료를 씁니다. */
+function sggBubbleYearApplies(){
+  return homeState.metric === 'stu' &&
+         Number(homeState.year) !== HOME_BASE_YEAR &&
+         homeYearApplies();
+}
+
 function sggBubbleRows(){
   const bySgg = {};
   onlineSchools().forEach(s => {
@@ -3673,12 +3664,25 @@ function sggBubbleRows(){
     cell.cls += Number(s.cls) || 0;
   });
   const studentMetric = homeState.metric === 'stu';
+  const byYear = sggBubbleYearApplies();
+  /* '전체'는 초·중·고를 더합니다 — 해마다의 실적이 있는 학교급만입니다.
+     그래서 이때는 유치원·특수학교가 빠지고, 화면이 그렇다고 적습니다. */
+  const levels = homeState.level === '전체'
+    ? HOME_SERIES_LEVELS
+    : [homeState.level];
   return SIGUNGU.map(sg => {
     const c = bySgg[sg.s] || { sch:0, stu:0, cls:0 };
+    let stu = c.stu;
+    if(byYear){
+      stu = levels.reduce((a, lv) => {
+        const r = regionStudents(sg.s, lv, homeState.year);
+        return a + (r.v == null ? 0 : r.v);
+      }, 0);
+    }
     return {
       s: sg.s, name: sg.name, lat: sg.lat, lon: sg.lon,
-      sch: c.sch, stu: c.stu, cls: c.cls,
-      value: studentMetric ? c.stu : c.sch,
+      sch: c.sch, stu: stu, cls: c.cls,
+      value: studentMetric ? stu : c.sch,
       unit:  studentMetric ? '명' : '곳'
     };
   });
@@ -3738,12 +3742,25 @@ function renderSgisTierNote(){
   const sch = rows.reduce((a, r) => a + r.sch, 0);
   const stu = rows.reduce((a, r) => a + r.stu, 0);
   const withAny = rows.filter(r => r.sch > 0).length;
+  const byYear = sggBubbleYearApplies();
+  /* ★ 어느 «해»를 보고 있는지 반드시 적습니다. 슬라이더를 끌어 2032년에
+     둔 것을 잊고 그 수를 지금 수로 읽는 일이 생깁니다 — 화면이 스스로
+     말하지 않으면 사람이 기억해야 하고, 사람은 기억하지 않습니다. */
+  const yearWord = byYear
+    ? `${homeState.year}년 ` + (Number(homeState.year) > HOME_BASE_YEAR ? '전망' : '실적')
+    : `${HOME_BASE_YEAR}년 공시`;
   const status = document.getElementById('sgis-status');
   if(status) status.textContent =
-    `실제 위치 지도 · 시군 단위로 접어서 봅니다 · 학교 ${fmt(sch)}곳 · 학생 ${fmt(stu)}명 (시군 ${withAny}곳)`;
+    `실제 위치 지도 · 시군 단위로 접어서 봅니다 · ${yearWord} · ` +
+    (byYear ? `학생 ${fmt(stu)}명` : `학교 ${fmt(sch)}곳 · 학생 ${fmt(stu)}명`) +
+    ` (시군 ${withAny}곳)`;
   const legend = document.getElementById('home-legend');
   if(legend) legend.innerHTML =
     `<span>딱지 하나 = 시군 하나 · 큰 숫자는 ${studentMetric ? '학생 수' : '학교 수'}</span>` +
+    `<span><b>${htmlEsc(yearWord)}</b> 기준</span>` +
+    (byYear && homeState.level === '전체'
+      ? `<span style="color:var(--ink-3)">해마다의 실적이 있는 초·중·고만 셉니다 (유치원·특수학교 제외)</span>`
+      : '') +
     `<span>딱지를 누르면 그 시군 안으로 들어갑니다</span>` +
     `<span style="color:var(--ink-3)">옅은 딱지 = 지금 조건에 맞는 학교가 없는 시군</span>` +
     `<span style="margin-left:auto;color:var(--ink-3)">확대하면 학교 하나하나가 나옵니다</span>`;
@@ -3766,6 +3783,7 @@ function enterSgg(sggKey){
   }
   /* 목록은 renderSgisMarkers 가 끝에서 함께 그립니다 — 여기서 또 부르면 두 번 그립니다. */
   renderSgisMarkers();
+  renderHomePanel();   /* 왼쪽 칸도 고른 시군을 따라갑니다 */
 }
 
 /* 폐교를 지금 학교 위에 겹쳐 그립니다.
@@ -4066,9 +4084,22 @@ function setMapMode(mode){
   }
 }
 
+/* ══ 왼쪽 칸이 «고른 것»을 따라갑니다 〔2026. 9. 9.〕 ═══════════════════════
+   예전에는 지도에서 시군을 골라도 왼쪽 칸은 언제나 경북 전체였습니다.
+   지도와 요약이 다른 것을 말하고 있어서, 포항을 눌러 놓고 왼쪽의 큰 숫자를
+   포항 것으로 읽는 일이 생깁니다.
+
+   고른 시군이 있으면 그 시군만, 없으면 22곳 전부를 셉니다. */
+function homeRegionList(){
+  return homeState.sel ? SIGUNGU.filter(sg => sg.s === homeState.sel.s) : SIGUNGU;
+}
+function homeRegionName(){
+  return homeState.sel ? (homeState.sel.name || homeState.sel.s) : '경북 전체';
+}
+
 function homeTotals(){
   let stu=0, cls=0, sch=0, teach=0;
-  SIGUNGU.forEach(sg => { 
+  homeRegionList().forEach(sg => {
     if (homeState.level === '전체') {
       LEVELS.forEach(lv => {
         const b = BASE[lv][sg.s]; stu+=b.stu; cls+=b.cls; sch+=b.sch;
@@ -4089,6 +4120,200 @@ function renderKPI(){
   document.getElementById('kpi-teacher-scope').textContent = homeState.level==='전체' ? '(유치원 제외)' : '';
   document.getElementById('source-kinder-count').textContent = fmt(KINDERGARTENS.length);
 }
+
+/* ══ 연도 축 ═══════════════════════════════════════════════════════════════
+   〔2026. 9. 9.〕 왼쪽 칸의 큰 숫자 여섯 개는 **손으로 적힌 것**이었습니다.
+   갱신하는 코드가 한 줄도 없어서, 자료가 바뀌어도 그 자리는 그대로였습니다.
+
+   이제 해마다 셉니다. 한 해의 값이 어디서 왔는지는 세 갈래입니다.
+
+     2016~2025   EDSS 교육통계 **실적**
+     2026        학교알리미 2026 **공시** (지도·목록과 같은 자료)
+     2027~2036   2026 공시에서 시군별 실측 감소율로 굴린 **전망**
+
+   ★ 전망은 «학생수 시뮬레이터와 같은 셈»을 씁니다 — Math.pow(1-rate, 해수).
+     두 화면이 다른 셈을 쓰면 같은 해에 다른 수가 나오고, 그것을 알아차리는
+     사람은 두 화면을 나란히 놓고 본 사람뿐입니다.
+
+   ★ 실적보다 이른 해는 **비웁니다.** 앵커로 이어 그리면 그 선이 실적처럼
+     보입니다. 없는 것은 없다고 합니다. */
+const HOME_YEAR_MIN = 2016, HOME_YEAR_MAX = 2036, HOME_BASE_YEAR = 2026;
+/* 해마다의 실적이 있는 학교급. 유치원·특수학교는 2026 한 해뿐이라 넣지 않습니다. */
+const HOME_SERIES_LEVELS = ['초','중','고'];
+
+function sggRc(sggKey){
+  const sg = SIGUNGU.find(x => x.s === sggKey);
+  return sg ? sg.rc : null;
+}
+/* 2026 공시 기준 학생 수. sggKey 가 없으면 경북 전체입니다. */
+function baseStudents(sggKey, lv){
+  if(sggKey) return (BASE[lv][sggKey] || {stu:0}).stu;
+  return SIGUNGU.reduce((a, sg) => a + BASE[lv][sg.s].stu, 0);
+}
+
+function regionStudents(sggKey, lv, year){
+  year = Number(year);
+  if(HOME_SERIES_LEVELS.indexOf(lv) < 0) return { v:null, kind:'없음' };
+  if(year === HOME_BASE_YEAR) return { v: baseStudents(sggKey, lv), kind:'공시' };
+
+  if(EDSS){
+    const i = EDSS.years.indexOf(year);
+    if(i >= 0){
+      if(sggKey){
+        const cell = (EDSS.sgg[sggRc(sggKey)] || {})[lv];
+        if(cell && cell.s && cell.s[i] != null) return { v: cell.s[i], kind:'실적' };
+      }else{
+        const t = (EDSS.total[lv] || [])[i];
+        if(t != null) return { v: t, kind:'실적' };
+      }
+    }
+  }
+
+  if(year > HOME_BASE_YEAR){
+    const yrs = year - HOME_BASE_YEAR;
+    if(sggKey){
+      if(!BASE[lv][sggKey]) return { v:null, kind:'없음' };
+      return { v: Math.round(BASE[lv][sggKey].stu * Math.pow(1 - BASE[lv][sggKey].rate, yrs)), kind:'전망' };
+    }
+    const sum = SIGUNGU.reduce((a, sg) =>
+      a + BASE[lv][sg.s].stu * Math.pow(1 - BASE[lv][sg.s].rate, yrs), 0);
+    return { v: Math.round(sum), kind:'전망' };
+  }
+  /* 실적보다 이른 해입니다. 지어내지 않고 비웁니다. */
+  return { v:null, kind:'없음' };
+}
+
+/* 초·중·고를 더한 한 해 값. 추이 그림이 씁니다. */
+function regionTotalStudents(sggKey, year){
+  let sum = 0, kind = null, any = false;
+  HOME_SERIES_LEVELS.forEach(lv => {
+    const r = regionStudents(sggKey, lv, year);
+    if(r.v == null) return;
+    sum += r.v; any = true; kind = kind || r.kind;
+  });
+  return any ? { v: sum, kind } : { v: null, kind:'없음' };
+}
+
+/* 연도 슬라이더를 쓸 수 있는가. 유치원·특수학교는 해마다의 실적이 없습니다. */
+function homeYearApplies(){
+  return HOME_SERIES_LEVELS.indexOf(homeState.level) >= 0 || homeState.level === '전체';
+}
+
+/* ── 추이 그림 ───────────────────────────────────────────────────────────
+   실적 구간은 실선, 전망 구간은 점선입니다. 9/9 회의에서 디자인팀에 요청한
+   것과 같은 규칙입니다 — 한 선으로 그리면 2036년이 이미 일어난 일처럼 보입니다. */
+function renderHomeSpark(sggKey, year){
+  const svg = document.getElementById('home-spark');
+  const cap = document.getElementById('home-spark-cap');
+  if(!svg) return;
+  const W = 300, H = 74, PL = 4, PR = 4, PT = 8, PB = 14;
+  const pts = [];
+  for(let y = HOME_YEAR_MIN; y <= HOME_YEAR_MAX; y++){
+    const r = regionTotalStudents(sggKey, y);
+    pts.push({ y, v: r.v, kind: r.kind });
+  }
+  const have = pts.filter(p => p.v != null);
+  if(!have.length){
+    svg.innerHTML = '<title id="home-spark-title">연도별 학생 수 추이</title>';
+    if(cap) cap.textContent = '이 학교급은 해마다의 실적이 없어 추이를 그리지 않습니다.';
+    return;
+  }
+  const max = Math.max(...have.map(p => p.v)), min = Math.min(...have.map(p => p.v));
+  const span = Math.max(1, max - min);
+  const X = y => PL + (y - HOME_YEAR_MIN) / (HOME_YEAR_MAX - HOME_YEAR_MIN) * (W - PL - PR);
+  const Y = v => PT + (1 - (v - min) / span) * (H - PT - PB);
+
+  /* 실적(2026 공시 포함)과 전망을 «따로» 그립니다. 이어지게 2026을 양쪽에 넣습니다. */
+  const real = have.filter(p => p.y <= HOME_BASE_YEAR);
+  const proj = have.filter(p => p.y >= HOME_BASE_YEAR);
+  const path = arr => arr.map((p, i) => (i ? 'L' : 'M') + X(p.y).toFixed(1) + ' ' + Y(p.v).toFixed(1)).join(' ');
+  const cur = pts.find(p => p.y === Number(year));
+
+  let s = '<title id="home-spark-title">연도별 학생 수 추이</title>';
+  s += `<line class="gl" x1="${PL}" y1="${(H-PB).toFixed(1)}" x2="${W-PR}" y2="${(H-PB).toFixed(1)}"/>`;
+  if(real.length > 1){
+    s += `<path class="ar" d="${path(real)} L ${X(real[real.length-1].y).toFixed(1)} ${H-PB} L ${X(real[0].y).toFixed(1)} ${H-PB} Z"/>`;
+    s += `<path class="ln" d="${path(real)}"/>`;
+  }
+  if(proj.length > 1) s += `<path class="ln proj" d="${path(proj)}"/>`;
+  if(cur && cur.v != null){
+    s += `<line class="now" x1="${X(cur.y).toFixed(1)}" y1="${PT}" x2="${X(cur.y).toFixed(1)}" y2="${(H-PB).toFixed(1)}"/>`;
+    s += `<circle class="dot" cx="${X(cur.y).toFixed(1)}" cy="${Y(cur.v).toFixed(1)}" r="3.6"/>`;
+  }
+  s += `<text x="${PL}" y="${H-3}">${HOME_YEAR_MIN}</text>`;
+  s += `<text x="${W-PR}" y="${H-3}" text-anchor="end">${HOME_YEAR_MAX}</text>`;
+  svg.innerHTML = s;
+
+  /* 그림만으로는 얼마나 줄었는지 읽히지 않습니다. 한 줄로 적습니다 —
+     9/9 회의에서 「막대가 반대로 말한다」고 지적된 것과 같은 처방입니다. */
+  if(cap){
+    const first = have[0], last = have[have.length - 1];
+    const drop = first.v > 0 ? (1 - last.v / first.v) * 100 : 0;
+    cap.innerHTML = `${first.y}년 ${fmt(first.v)}명에서 ${last.y}년 ${fmt(last.v)}명으로 ` +
+      `<b>${Math.abs(drop).toFixed(1)}% ${drop >= 0 ? '줄어듭니다' : '늘어납니다'}</b>. ` +
+      `점선 구간(${HOME_BASE_YEAR + 1}~)은 전망입니다.`;
+  }
+}
+
+/* ── 왼쪽 칸 전체 ─────────────────────────────────────────────────────── */
+function renderHomeSummary(){
+  const nameBox = document.getElementById('home-region-name');
+  if(nameBox) nameBox.textContent = homeRegionName();
+
+  const slider = document.getElementById('home-year');
+  const kindBox = document.getElementById('home-year-kind');
+  const applies = homeYearApplies();
+  if(slider){
+    slider.disabled = !applies;
+    slider.value = String(homeState.year);
+  }
+  const yl = document.getElementById('home-year-label');
+  if(yl) yl.textContent = String(homeState.year);
+
+  const sggKey = homeState.sel ? homeState.sel.s : null;
+
+  if(!applies){
+    HOME_SERIES_LEVELS.forEach(lv => {
+      const el = document.getElementById('home-stu-' + lv);
+      if(el) el.textContent = '–';
+    });
+    if(kindBox) kindBox.textContent = '연도 없음';
+    const note = document.getElementById('home-summary-note');
+    if(note) note.textContent =
+      (homeState.level === '유' ? '유치원' : '특수학교') +
+      '은 해마다의 실적이 없어 2026년 공시 한 해만 있습니다. 아래 지표와 지도는 그 해를 보여 줍니다.';
+    renderHomeSpark(sggKey, homeState.year);
+    return;
+  }
+
+  let kind = '';
+  HOME_SERIES_LEVELS.forEach(lv => {
+    const r = regionStudents(sggKey, lv, homeState.year);
+    const el = document.getElementById('home-stu-' + lv);
+    if(el) el.textContent = r.v == null ? '–' : fmt(r.v);
+    if(r.v != null) kind = kind || r.kind;
+  });
+
+  if(kindBox){
+    kindBox.textContent = kind || '자료 없음';
+    kindBox.classList.toggle('is-proj', kind === '전망');
+  }
+  const note = document.getElementById('home-summary-note');
+  if(note){
+    const src = kind === '실적' ? 'EDSS 교육통계 실적'
+              : kind === '공시' ? '학교알리미 2026 공시'
+              : kind === '전망' ? '2026 공시에서 시군별 ' + RATE_WORD + '로 굴린 값 · 「몇 명이 될 것이다」로 읽으면 안 됩니다'
+              : '이 해의 자료가 없습니다';
+    note.textContent = homeState.year + '년 · ' + src;
+  }
+  const mid = document.getElementById('home-year-mid');
+  if(mid) mid.textContent = HOME_BASE_YEAR + ' 현재';
+  renderHomeSpark(sggKey, homeState.year);
+}
+
+/* 왼쪽 칸은 «고른 것»이 바뀔 때마다 통째로 다시 그립니다.
+   지표만 고치고 요약을 놓치는 일이 없도록 한 자리로 모읍니다. */
+function renderHomePanel(){ renderKPI(); renderHomeSummary(); }
 
 /* --- 오프라인 지도 그리기 --------------------------------------------------
    SGIS 온라인 지도를 기본 선택지로 추가했지만, 인터넷이나 SGIS가 작동하지 않을 때는
@@ -4327,6 +4552,7 @@ function selectSigungu(sg){
   document.getElementById('home-detail').hidden = false;
   document.getElementById('home-reset').hidden = false;
   renderDetail();
+  renderHomePanel();   /* 왼쪽 칸도 고른 시군을 따라갑니다 */
 }
 /* 학교급을 **모양**으로 나눕니다 — ● 초 · ▲ 중 · ■ 고.
    색만으로 정보를 전달하지 않기 위해서입니다 (원칙 4번).
@@ -4836,10 +5062,31 @@ function renderDetail(){
 
 document.getElementById('home-level').addEventListener('change', e => {
   homeState.level = e.target.value;
-  renderKPI();
+  renderHomePanel();
   if(homeState.mapMode === 'online') renderSgisMarkers();
   else if(homeState.sel) renderDetail(); else renderTilemap();
 });
+/* ── 연도 슬라이더 〔2026. 9. 9.〕 ───────────────────────────────────────
+   왼쪽 칸과 지도 딱지가 «같은 해»를 봅니다. 둘이 다른 해를 보면
+   지도의 큰 숫자를 왼쪽 칸의 해로 읽게 됩니다.
+
+   `input` 으로 답니다 — 끄는 동안 따라 움직여야 「추이가 보인다」가 됩니다.
+   `change` 만 달면 손을 뗀 뒤에야 바뀌어 슬라이더처럼 느껴지지 않습니다. */
+(function(){
+  const slider = document.getElementById('home-year');
+  if(!slider || !slider.addEventListener) return;
+  slider.addEventListener('input', e => {
+    const y = Math.max(HOME_YEAR_MIN, Math.min(HOME_YEAR_MAX, Number(e.target.value) || HOME_BASE_YEAR));
+    if(y === homeState.year) return;
+    homeState.year = y;
+    renderHomeSummary();
+    /* 지도 딱지의 값도 이 해를 따릅니다. 학교 낱개 층은 2026 한 해뿐이라
+       그 단계에서는 다시 그리지 않습니다 — 바뀌지 않는 것을 다시 그리면
+       확대해 놓고 슬라이더를 끄는 동안 화면이 헛되이 깜빡입니다. */
+    if(homeState.mapMode === 'online' && currentMapTier() === 'sgg') renderSgisMarkers();
+  });
+})();
+
 document.getElementById('home-search').addEventListener('input', () => {
   if(homeState.mapMode === 'online') renderSgisMarkers();
   else if(homeState.sel) renderDetail();
@@ -4868,6 +5115,7 @@ document.getElementById('home-online-more').addEventListener('click', () => {
 document.getElementById('home-reset').addEventListener('click', () => {
   clearMapReturn();          // «처음»으로 가면 돌아갈 자리는 뜻을 잃습니다
   homeState.sel = null;
+  renderHomePanel();         /* 왼쪽 칸도 경북 전체로 되돌립니다 */
   tilemapShouldEnter = true;
   document.getElementById('home-tilemap').hidden = homeState.mapMode === 'online';
   document.getElementById('home-detail').hidden = true;
@@ -7001,7 +7249,6 @@ function renderProvenance(){
   setAsof('asof-homepop',  ALLIMI_ASOF);
   setAsof('asof-homekpi',  ALLIMI_ASOF);
   setAsof('asof-homemap',  ALLIMI_ASOF);
-  setAsof('asof-homenews', nAsof ? nAsof + ' 기준' : '');
 
   /* ── 학령인구 현황 ── */
   setAsof('asof-status', 'KOSIS · ' + ALLIMI_ASOF);
@@ -7046,7 +7293,7 @@ function renderProvenance(){
    ========================================================= */
 applyEdssWording();
 syncSigChips();
-renderKPI();
+renderHomePanel();
 renderTilemap();
 renderStatus();
 renderSim();
