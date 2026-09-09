@@ -3020,12 +3020,30 @@ const SCHOOLS = [...KINDERGARTENS, ...SPECIAL_SCHOOLS];
     }
   }
 
+  /* 학교별 «여러 해치» — `open api/bake-edss.mjs` 가 심습니다 〔2026. 9. 9.〕
+     적는 방식: 이름|급|해마다학생(,)|해마다학급(,)   빈 칸 = 그 해 자료 없음.
+     ★ 심기 전에는 이 갈래가 통째로 비어 있고, 화면은 예전 그대로 돕니다. */
+  const histBy = {};
+  if(typeof EDSS_SCHOOL !== 'undefined'){
+    for(const rc in EDSS_SCHOOL){
+      if(!Object.prototype.hasOwnProperty.call(EDSS_SCHOOL, rc)) continue;
+      for(const rec of EDSS_SCHOOL[rc].split(';')){
+        if(!rec) continue;
+        const f = rec.split('|');
+        /* 빈 칸은 null 로 되살립니다 — 0 과 «모름»을 가릅니다. */
+        const un = t => (t||'').split(',').map(v => v === '' ? null : Number(v));
+        histBy[rc+'|'+f[1]+'|'+f[0]] = { s: un(f[2]), c: un(f[3]) };
+      }
+    }
+  }
+
   for(const rc in SCHOOL_RAW){
     if(!Object.prototype.hasOwnProperty.call(SCHOOL_RAW, rc)) continue;
     const sg = SIG_BY_CODE[rc];
     for(const rec of SCHOOL_RAW[rc].split(';')){
       const f = rec.split('|');
       const d = stuBy[rc+'|'+f[1]+'|'+f[0]];
+      const h = histBy[rc+'|'+f[1]+'|'+f[0]];
       const sc = {
         name: f[0].replace('*', SCHOOL_FULL[f[1]]),
         lv:   SCHOOL_KIND[f[1]],
@@ -3033,7 +3051,9 @@ const SCHOOLS = [...KINDERGARTENS, ...SPECIAL_SCHOOLS];
         addr: f[2] || '',
         lat:  f[3] ? +f[3] : null,
         lon:  f[4] ? +f[4] : null,
-        grades: null, gcls: null, stu: null, cls: null, sped: 0, teach: 0, est: true
+        grades: null, gcls: null, stu: null, cls: null, sped: 0, teach: 0, est: true,
+        /* 해마다의 실적. 없으면 null 이고, 그때 연도 슬라이더는 학교 단계에서 멈춥니다. */
+        hist: h || null
       };
       if(d && d.g.length){
         sc.grades = d.g; sc.gcls = d.gc;
@@ -3871,25 +3891,42 @@ function renderSgisMarkers(){
 
     const list = onlineSchools();
     sgisMarkers.clear();
-    const maxStudents = Math.max(1, ...list.map(s => Number(s.stu) || 0));
+    /* ★ 학교 낱개도 고른 해를 따릅니다 〔2026. 9. 9.〕
+       한 번만 셈해 두고 씁니다 — 마커마다 다시 셈하면 1,539번 돕니다. */
+    const byYear = schoolYearApplies();
+    const stuAt = s => byYear ? schoolStudentsAt(s, homeState.year).v : s.stu;
+    const shown = new Map();
+    list.forEach(s => shown.set(s, stuAt(s)));
+    const maxStudents = Math.max(1, ...list.map(s => Number(shown.get(s)) || 0));
     list.forEach(s => {
       const p = new window.sop.LatLng(+s.lat, +s.lon);
+      const sv = shown.get(s);
+      const ratio = (Number(sv) || 0) / maxStudents;
       const studentSizeClass = !studentMetric ? ''
-        : (s.stu/maxStudents >= .45 ? 'school-lg' : s.stu/maxStudents >= .15 ? 'school-md' : '');
+        : (ratio >= .45 ? 'school-lg' : ratio >= .15 ? 'school-md' : '');
       const icon = typeof window.sop.divIcon === 'function'
         ? window.sop.divIcon({
             className:`sgis-school-icon sgis-lv-${s.lv} ${studentMetric ? 'sgis-student-value' : ''} ${studentSizeClass}`,
-            html:`<span aria-hidden="true">${htmlEsc(studentMetric ? compactMapValue(s.stu) : s.lv)}</span>`,
+            html:`<span aria-hidden="true">${htmlEsc(studentMetric ? (sv == null ? '–' : compactMapValue(sv)) : s.lv)}</span>`,
             iconSize:[studentMetric ? 30 : 26,studentMetric ? 30 : 26]
           })
         : null;
-      const markerOptions = {studentCount:Number(s.stu) || 0, schoolCount:1};
+      const markerOptions = {studentCount:Number(sv) || 0, schoolCount:1};
       if(icon) markerOptions.icon = icon;
       const marker = window.sop.marker([p.x, p.y], markerOptions);
       const lv = LEVEL_CFG[s.lv]?.full || s.lv;
+      /* 말풍선은 «어느 해»의 수인지 밝힙니다. 2026 이면 학급까지 함께 적고,
+         다른 해면 학급은 적지 않습니다 — 학급 시계열은 심지만 아직 화면이
+         쓰지 않으므로, 2026 학급을 다른 해 옆에 두면 그 해 학급으로 읽힙니다. */
+      const at = byYear ? schoolStudentsAt(s, homeState.year) : { v: s.stu, kind: '공시' };
+      const line = at.v == null
+        ? `${homeState.year}년 자료가 없습니다`
+        : (byYear
+            ? `${homeState.year}년 ${htmlEsc(at.kind)} · 학생 ${fmt(at.v)}명`
+            : `학생 ${fmt(s.stu || 0)}명 · 학급 ${fmt(s.cls || 0)}개`);
       marker.bindInfoWindow(
         `<strong>${htmlEsc(s.name)}</strong><br>` +
-        `${htmlEsc(lv)} · 학생 ${fmt(s.stu || 0)}명 · 학급 ${fmt(s.cls || 0)}개<br>` +
+        `${htmlEsc(lv)} · ${line}<br>` +
         `<span style="font-size:11px">${htmlEsc(s.addr || s.s || '')}</span>`
       );
       sgisMarkers.set(schoolKey(s), marker);
@@ -3897,8 +3934,11 @@ function renderSgisMarkers(){
     });
     sgisMap.addLayer(sgisLayer);
     renderSgisClosed();
+    const yw = byYear
+      ? `${homeState.year}년 ` + (Number(homeState.year) > HOME_BASE_YEAR ? '전망' : '실적')
+      : `${HOME_BASE_YEAR}년 공시`;
     document.getElementById('sgis-status').textContent =
-      `실제 위치 지도 · ${studentMetric ? '학생 수 합계·크기 기준' : '학교 수 기준'} · 좌표 확보 학교 ${fmt(list.length)}곳 (SGIS)`;
+      `실제 위치 지도 · ${yw} · ${studentMetric ? '학생 수 합계·크기 기준' : '학교 수 기준'} · 좌표 확보 학교 ${fmt(list.length)}곳 (SGIS)`;
     /* 범례도 «지금 보고 있는 지도»의 것으로 바꿉니다.
        간편 지도 범례(원 넓이·울릉 별도 상자)를 그대로 두면 실제 지도에서는
        맞지 않는 설명이 남습니다 — 틀린 안내는 없느니만 못합니다. */
@@ -4197,6 +4237,45 @@ function regionTotalStudents(sggKey, year){
 /* 연도 슬라이더를 쓸 수 있는가. 유치원·특수학교는 해마다의 실적이 없습니다. */
 function homeYearApplies(){
   return HOME_SERIES_LEVELS.indexOf(homeState.level) >= 0 || homeState.level === '전체';
+}
+
+/* ══ 학교 한 곳의 그 해 학생 수 〔2026. 9. 9.〕 ═══════════════════════════
+   `EDSS_SCHOOL` 이 심겨 있을 때만 실적으로 답합니다. 심기 전에는 2026 만
+   답하고 나머지는 null 입니다 — 없는 것을 지어내지 않습니다.
+
+   전망은 시군 감소율을 씁니다. 학교마다 제 감소율을 재면 통폐합 한 번에
+   튄 값이 그대로 20년 곱해져 0 명이 되는 학교가 생깁니다. 그 시군의
+   감소율을 쓰는 것이 «덜 틀리는» 쪽입니다. 화면이 그렇다고 적습니다. */
+const EDSS_SCHOOL_YS = typeof EDSS_SCHOOL_YEARS !== 'undefined' ? EDSS_SCHOOL_YEARS : null;
+function schoolHistoryReady(){ return !!(EDSS_SCHOOL_YS && EDSS_SCHOOL_YS.length >= 3); }
+
+function schoolStudentsAt(sc, year){
+  year = Number(year);
+  if(!sc) return { v:null, kind:'없음' };
+  if(year === HOME_BASE_YEAR) return { v: sc.stu, kind:'공시' };
+  if(schoolHistoryReady() && sc.hist){
+    const i = EDSS_SCHOOL_YS.indexOf(year);
+    if(i >= 0){
+      const v = sc.hist.s[i];
+      if(v != null) return { v, kind:'실적' };
+      /* 그 해에 이 학교 자료가 없습니다. 아직 없던 학교이거나 문을 닫은 뒤입니다. */
+      return { v:null, kind:'없음' };
+    }
+  }
+  if(year > HOME_BASE_YEAR && sc.stu != null){
+    const b = BASE[sc.lv] && BASE[sc.lv][sc.s];
+    if(!b) return { v:null, kind:'없음' };
+    return { v: Math.round(sc.stu * Math.pow(1 - b.rate, year - HOME_BASE_YEAR)), kind:'전망' };
+  }
+  return { v:null, kind:'없음' };
+}
+
+/* 학교 낱개 층이 연도를 따를 수 있는가 — 실적이 심겨 있고 2026 이 아닐 때만.
+   2026 에서는 시군 딱지와 같은 까닭으로 공시 자료를 그대로 씁니다. */
+function schoolYearApplies(){
+  return Number(homeState.year) !== HOME_BASE_YEAR &&
+         homeYearApplies() &&
+         (schoolHistoryReady() || Number(homeState.year) > HOME_BASE_YEAR);
 }
 
 /* ── 추이 그림 ───────────────────────────────────────────────────────────
@@ -5072,6 +5151,7 @@ document.getElementById('home-level').addEventListener('change', e => {
 
    `input` 으로 답니다 — 끄는 동안 따라 움직여야 「추이가 보인다」가 됩니다.
    `change` 만 달면 손을 뗀 뒤에야 바뀌어 슬라이더처럼 느껴지지 않습니다. */
+let wasSchoolYear = false;   /* 2026 으로 «돌아올» 때도 한 번은 다시 그려야 합니다 */
 (function(){
   const slider = document.getElementById('home-year');
   if(!slider || !slider.addEventListener) return;
@@ -5080,10 +5160,15 @@ document.getElementById('home-level').addEventListener('change', e => {
     if(y === homeState.year) return;
     homeState.year = y;
     renderHomeSummary();
-    /* 지도 딱지의 값도 이 해를 따릅니다. 학교 낱개 층은 2026 한 해뿐이라
-       그 단계에서는 다시 그리지 않습니다 — 바뀌지 않는 것을 다시 그리면
-       확대해 놓고 슬라이더를 끄는 동안 화면이 헛되이 깜빡입니다. */
-    if(homeState.mapMode === 'online' && currentMapTier() === 'sgg') renderSgisMarkers();
+    /* 지도도 이 해를 따릅니다. 다만 «바뀌지 않는 단계»에서는 다시 그리지
+       않습니다 — 바뀌지 않는 것을 다시 그리면 슬라이더를 끄는 동안
+       화면이 헛되이 깜빡입니다.
+       〔2026. 9. 9.〕 학교별 실적을 심은 뒤로는 학교 낱개 층도 바뀝니다. */
+    if(homeState.mapMode === 'online'){
+      const tier = currentMapTier();
+      if(tier === 'sgg' || schoolYearApplies() || wasSchoolYear) renderSgisMarkers();
+    }
+    wasSchoolYear = schoolYearApplies();
   });
 })();
 

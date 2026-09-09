@@ -8,7 +8,8 @@ import {
   redact, unwrap, guessFields, toLevel, toSgg, num,
   normalizeWide, parseSchoolList, sggLookup, aggregate, declineRates, cohortRates,
   projectCohort, backtest, toBlock, entryRate, GRADES, SGG_BY_NAME,
-  AUTH_WAYS, buildRequest, wayName, findWay, wrapBody, pickProvinceBirths, GUNWI, mainSchoolName, sggFromPrefix, sggCandidates
+  AUTH_WAYS, buildRequest, wayName, findWay, wrapBody, pickProvinceBirths, GUNWI, mainSchoolName, sggFromPrefix, sggCandidates,
+  schoolSeries, toSchoolBlock, flatSchoolName
 } from '../open api/bake-edss.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -770,6 +771,56 @@ check('설명 문구도 자료를 따라간다', dash.includes('function applyEd
 check('설명 갱신을 초기화에서 부른다', /applyEdssWording\(\);\nsyncSigChips/.test(dash));
 check('백테스트 오차율을 화면에 적는다', dash.includes('맞는지 되짚어 보았습니다'));
 check('전망 산출법을 내보내는 표에도 적는다', dash.includes("['전망 산출법',PROJ_WORD]"));
+
+/* ── 학교별 여러 해치 〔2026. 9. 9.〕 ─────────────────────────────────────
+   여태 «받아 놓고 접어서 버리던» 자료입니다. 지도의 연도 슬라이더가 학교
+   단계까지 내려가려면 이것이 있어야 합니다.
+
+   여기서 지키는 것은 셋입니다.
+     ① 학년을 더해도 학교 합계가 맞는가
+     ② 그 해 «자료가 없는 것»과 «0 명인 것»을 가르는가
+     ③ 못 붙인 학교를 조용히 버리지 않고 세는가 */
+const SY = [2016, 2017, 2018];
+const REC = (year, name, sgg, lv, grade, stu, cls) => ({ year, name, sgg, lv, grade, stu, cls });
+const recs = [
+  /* 한 학교의 한 해가 «학년 수만큼» 나뉘어 들어옵니다 — 더해야 학교 값입니다. */
+  REC(2016, '기성초등학교', 'uljin', '초', 1, 10, 1),
+  REC(2016, '기성초등학교', 'uljin', '초', 2, 12, 1),
+  REC(2017, '기성초등학교', 'uljin', '초', 1, 9, 1),
+  /* 2018 은 아예 안 옵니다 — 빈 칸이어야 합니다. */
+  REC(2016, '울진중학교', 'uljin', '중', 1, 30, 2),
+  /* 군위는 일부러 뺍니다 (2023.7.1. 대구 편입) */
+  REC(2016, '군위초등학교', GUNWI, '초', 1, 5, 1)
+];
+const ser = schoolSeries(recs, SY);
+check('학년을 더해 학교 한 해 값을 만든다', ser['uljin|e|기성초등학교'].s[0] === 22);
+check('학급도 함께 더한다', ser['uljin|e|기성초등학교'].c[0] === 2);
+check('해마다 제자리에 넣는다', ser['uljin|e|기성초등학교'].s[1] === 9);
+check('자료가 없는 해는 «비운다» (0 으로 채우지 않는다)',
+  ser['uljin|e|기성초등학교'].s[2] === null);
+check('학교급 글자를 대시보드 목록과 같은 자로 쓴다', !!ser['uljin|m|울진중학교']);
+check('군위는 넣지 않는다', Object.keys(ser).every(k => k.indexOf(GUNWI) < 0));
+
+const FAKE_HTML = "  var SCHOOL_RAW = {\n" +
+  "    uljin: '기성*|e|기성면 척산2길 24-5|36.7979|129.4493;울진*|m|울진읍 연호로 39|36.9952|129.4051;없는*|e|어딘가|1|2',\n" +
+  "    ulleung: '울릉*|e|어딘가|1|2'\n" +
+  "  };\n";
+const sb = toSchoolBlock(FAKE_HTML, ser, SY);
+check('SCHOOL_RAW 를 찾아 덩어리를 만든다', !!sb);
+check('붙은 학교를 센다', sb.hit === 2, '실제 ' + (sb && sb.hit));
+check('못 붙인 학교도 «세어서» 알린다', sb.miss === 2 && sb.missed.indexOf('없는초등학교') >= 0);
+check('심는 이름과 급자를 목록 그대로 쓴다 (이음 규칙을 둘로 만들지 않는다)',
+  /기성\*\|e\|/.test(sb.block));
+check('빈 해는 빈 칸으로 적는다 (「,,」 가 곧 「모른다」)', /22,9,\|/.test(sb.block));
+check('연도 배열을 함께 심는다', sb.block.indexOf('var EDSS_SCHOOL_YEARS = [2016,2017,2018]') >= 0);
+check('유치원·특수는 EDSS 밖이라 건너뛴다', sb.block.indexOf('|k|') < 0);
+check('이름 견주기는 공백과 앞 괄호를 뗀다',
+  flatSchoolName(' (구)울릉 중학교 ') === '울릉중학교');
+
+/* 붙은 비율이 낮으면 «멈춰야» 합니다. 절반만 붙어도 화면은 조용히 그려지고,
+   사람은 「어떤 학교는 슬라이더가 안 먹네」로만 느낍니다. */
+check('굽는 쪽에 «덜 붙으면 멈춘다» 관문이 있다',
+  /rate < 0\.9/.test(fs.readFileSync(path.join(ROOT, 'open api/bake-edss.mjs'), 'utf8')));
 
 console.log(`✓  통과 ${pass} · 실패 ${fail}`);
 process.exit(fail ? 1 : 0);

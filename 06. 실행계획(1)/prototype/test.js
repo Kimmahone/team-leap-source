@@ -860,6 +860,68 @@ check('시군 단계 상태줄이 «어느 해»인지 말한다',
 check('범례에도 기준 해를 적는다', /2032년/.test((byId['home-legend'] || {})._html || ''));
 q("homeState.year=" + ySaved.split('|')[0] + "; homeState.level='" + ySaved.split('|')[1] + "'; homeState.metric='sch'; renderHomePanel();");
 
+console.log('\n■ 학교 한 곳도 «그 해»를 말할 수 있다');
+/* ★ 〔2026. 9. 9.〕 EDSS 는 학교×학년×연도로 주는데, 굽는 과정에서 시군으로
+   접히고 학교 단위는 어디에도 남지 않았습니다. 새로 신청할 API 가 없고
+   접기 전에 한 벌 떠 두기만 하면 되는 자료였습니다.
+
+   여기서 지키는 것은 «심기 전에도 화면이 예전 그대로 도는가» 입니다.
+   EDSS 때 세운 규칙과 같습니다 — 자료가 없는데 있는 척하는 갈래가
+   하나도 없어야 합니다. */
+check('학교별 실적을 읽는 관문이 있다',
+  /typeof EDSS_SCHOOL !== 'undefined'/.test(js) && /function schoolHistoryReady/.test(js));
+check('관문이 3년 미만이면 켜지지 않는다', /EDSS_SCHOOL_YS\.length >= 3/.test(js));
+check('빈 칸을 0 이 아니라 null 로 되살린다 (0 과 「모름」은 다르다)',
+  /v === '' \? null : Number\(v\)/.test(js));
+check('굽는 쪽과 «같은 키»로 잇는다 (이음 규칙을 둘로 만들지 않는다)',
+  /histBy\[rc\+'\|'\+f\[1\]\+'\|'\+f\[0\]\]/.test(js) && /stuBy\[rc\+'\|'\+f\[1\]\+'\|'\+f\[0\]\]/.test(js));
+check('학교마다 제 감소율을 재지 않고 시군 감소율을 쓴다 (통폐합 한 번에 0 명이 되지 않게)',
+  /BASE\[sc\.lv\]\s*&&\s*BASE\[sc\.lv\]\[sc\.s\]/.test(js) && /1 - b\.rate/.test(js));
+
+q("homeState.year=2026;");
+check('2026 은 학교도 공시 자료를 그대로 쓴다', q(
+  "(function(){var s=SCHOOLS.filter(function(x){return x.stu!=null})[0];" +
+  "var r=schoolStudentsAt(s,2026); return r.kind==='공시' && r.v===s.stu;})()"));
+check('2030 은 전망이라고 이름을 붙이고 2026 보다 작다', q(
+  "(function(){var s=SCHOOLS.filter(function(x){return x.stu>50&&BASE[x.lv]&&BASE[x.lv][x.s]&&BASE[x.lv][x.s].rate>0})[0];" +
+  "if(!s) return true; var r=schoolStudentsAt(s,2030);" +
+  "return r.kind==='전망' && r.v < s.stu;})()"));
+
+if(q('typeof EDSS_SCHOOL')==='undefined'){
+  /* 아직 굽기 전입니다. 이 갈래가 «조용히» 도는 것이 중요합니다. */
+  check('심기 전에는 학교 실적 관문이 꺼져 있다', q('schoolHistoryReady()') === false);
+  check('심기 전에는 지난 해를 묻지 않는다 (지어내지 않는다)',
+    q("schoolStudentsAt(SCHOOLS[0],2020).v") === null);
+  /* 유치원·특수학교는 SCHOOL_RAW 밖의 «다른 배열»이라 이 자리가 없습니다.
+     EDSS 유초중등 두 표가 초·중·고 중심이라 애초에 실적도 오지 않습니다.
+     그래서 자리를 억지로 만들지 않고, 없어도 조용히 도는 것을 지킵니다. */
+  check('초·중·고에는 hist 자리가 있다 (null 로)',
+    q("SCHOOLS.filter(function(s){return ['초','중','고'].indexOf(s.lv)>=0}).every(function(s){return 'hist' in s})") === true);
+  check('유치원·특수학교는 그 자리가 없어도 조용히 돈다',
+    q("(function(){var s=SCHOOLS.filter(function(x){return x.lv==='유'})[0];" +
+      "return !s || schoolStudentsAt(s,2020).v===null;})()") === true);
+  check('심기 전 2026 은 예전 그대로다', q(
+    "(function(){var s=SCHOOLS.filter(function(x){return x.stu!=null})[0];" +
+    "return schoolStudentsAt(s,2026).v===s.stu;})()"));
+}else{
+  check('심은 뒤에는 학교 실적 관문이 켜진다', q('schoolHistoryReady()') === true);
+  check('심은 해는 실적을 그대로 쓴다', q(
+    "(function(){var s=SCHOOLS.filter(function(x){return x.hist&&x.hist.s.some(function(v){return v!=null})})[0];" +
+    "if(!s) return false; var i=EDSS_SCHOOL_YS.findIndex(function(y,k){return s.hist.s[k]!=null});" +
+    "var r=schoolStudentsAt(s,EDSS_SCHOOL_YS[i]); return r.kind==='실적' && r.v===s.hist.s[i];})()"));
+  check('그 해 자료가 없는 학교는 «비운다» (아직 없던 학교이거나 문 닫은 뒤)', q(
+    "(function(){var s=SCHOOLS.filter(function(x){return x.hist&&x.hist.s.some(function(v){return v==null})})[0];" +
+    "if(!s) return true; var i=s.hist.s.indexOf(null);" +
+    "return schoolStudentsAt(s,EDSS_SCHOOL_YS[i]).v===null;})()"));
+}
+
+check('말풍선이 «어느 해»의 수인지 밝힌다', /년 \$\{htmlEsc\(at\.kind\)\} · 학생/.test(js));
+check('다른 해에는 학급을 함께 적지 않는다 (2026 학급이 그 해 학급으로 읽힌다)',
+  /학급 시계열은 심지만 아직 화면이/.test(js));
+check('학교 단계 상태줄도 기준 해를 적는다', /const yw = byYear/.test(js));
+check('2026 으로 «돌아올» 때도 한 번은 다시 그린다', /wasSchoolYear/.test(js));
+q("homeState.year=2026; renderHomePanel();");
+
 console.log('\n■ 목록이 전부를 보여 줄 수 있다');
 /* ★ 〔2026. 9. 7.〕 120 이 «천장»이었습니다 — 화면에 474곳이 있어도 120곳만
    나오고 나머지는 볼 길이 아예 없었습니다. 「어떤 기준으로 고른 120곳인지
