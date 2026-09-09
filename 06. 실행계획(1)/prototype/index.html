@@ -4222,13 +4222,9 @@ async function loadVworldKey(){
     vworldKey = (j && j.ok && j.key) ? j.key : null;
   }catch(_e){ vworldKey = null; }
   const btn = document.getElementById('map-sat');
-  if(btn){
-    if(vworldKey) btn.hidden = false;
-    else {
-      btn.hidden = false; btn.disabled = true; btn.classList.add('chip-off');
-      btn.title = '브이월드 키가 이 배포에 없어 위성 지도를 쓸 수 없습니다';
-    }
-  }
+  /* 얹을 영상이 없으면 단추를 내놓지 않습니다. 눌러도 안 되는 단추는
+     「고장」으로 읽힙니다 — 없는 편이 낫습니다. */
+  if(btn) btn.hidden = !(VWORLD_SAT_READY && vworldKey);
   return vworldKey;
 }
 
@@ -4237,7 +4233,25 @@ function removeSatLayer(){
   satLayer = null;
 }
 
+/* ★ 〔2026. 9. 10.〕 **브이월드 WMS 에는 위성영상 레이어가 없습니다.**
+   GetCapabilities 를 받아 세어 보니 레이어 355개가 전부 `lt_*` 주제도
+   (용도지역·재해위험지구·산림입지도…)였고, 영상은 하나도 없었습니다.
+   위성은 **WMTS 로만** 나오고 그쪽은 EPSG:3857 하나뿐입니다
+   (WMTSCapabilities 에 3857 외에 아무 좌표계도 없습니다).
+
+   그래서 이 자리에서 위성을 얹는 길은 막혔습니다. 못 하는 것을 «되는 척»
+   하지 않고 단추를 내려 둡니다. 어느 길로 갈지는 아래 두 가지 중에서
+   정해야 합니다 — `지도_전면개편_실행계획_2026-09.md` 참고.
+
+     · WMS 로 «주제도»를 얹는다 (EPSG:5179 로 잘 됩니다. 다만 위성은 아닙니다)
+     · 웹 메르카토르 지도를 따로 하나 세워 WMTS 위성을 얹는다 (구조가 커집니다)
+
+   키를 받아 오는 자리(`/api/vworld-key`)와 물어보는 자리(`/api/vworld-probe`)는
+   그대로 둡니다 — 어느 길로 가든 그대로 씁니다. */
+const VWORLD_SAT_READY = false;
+
 function applySatLayer(){
+  if(!VWORLD_SAT_READY) return;
   if(!sgisMap || !window.sop || !window.sop.tileLayer || !window.sop.tileLayer.wms) return;
   removeSatLayer();
   if(!satOn || !vworldKey) return;
@@ -4251,7 +4265,7 @@ function applySatLayer(){
       version: '1.3.0',          /* 브이월드는 1.3.0 만 받습니다 */
       transparent: false,
       key: vworldKey,
-      domain: location.origin,
+      domain: location.hostname,   /* ★ 브이월드는 «호스트명만» 받습니다. https:// 를 붙이면 INCORRECT_KEY */
       /* 학교 딱지보다 «아래»에 깔립니다. 바탕이지 덮개가 아닙니다. */
       zIndex: 1,
       opacity: 1

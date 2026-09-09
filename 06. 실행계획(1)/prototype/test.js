@@ -825,8 +825,19 @@ check('WMS 로 얹는다 (타일이 아니라)', /tileLayer\.wms\('https:\/\/api
 check('브이월드가 받는 판만 보낸다 (1.3.0)', /version: '1\.3\.0'/.test(js));
 check('우리 좌표계 이름표를 붙여 보낸다', /code:'EPSG:5179'/.test(js) && /function vworldCrs/.test(js));
 check('바탕이지 덮개가 아니다 (학교 딱지 아래)', /zIndex: 1/.test(js));
-check('키가 없으면 단추가 스스로 잠기고 «왜»를 적는다',
-  /브이월드 키가 이 배포에 없어/.test(js) && /btn\.disabled = true/.test(js));
+/* ★ 〔2026. 9. 10.〕 **브이월드 WMS 에는 위성영상 레이어가 없습니다.**
+   GetCapabilities 로 세어 보니 355개가 전부 주제도였고 영상은 0개.
+   위성은 WMTS 로만 나오는데 그쪽은 EPSG:3857 하나뿐이라 UTM-K 지도에
+   그대로 얹히지 않습니다. 그래서 이 길은 막혔고, **못 하는 것을 되는 척
+   하지 않습니다** — 단추를 내놓지 않습니다. */
+check('얹을 영상이 없으면 단추를 내놓지 않는다 (눌러도 안 되는 단추는 고장으로 읽힌다)',
+  /const VWORLD_SAT_READY = false;/.test(js) &&
+  /btn\.hidden = !\(VWORLD_SAT_READY && vworldKey\)/.test(js));
+check('왜 막혔는지 코드에 적어 둔다 (다음 사람이 다시 시도하지 않게)',
+  /WMS 에는 위성영상 레이어가 없습니다/.test(html) && /WMTS 로만/.test(html));
+/* 우리 잘못도 하나 있었습니다 — domain 에 https:// 를 붙여 보내 INCORRECT_KEY 였습니다. */
+check('브이월드에는 «호스트명만» 보낸다 (https:// 를 붙이면 INCORRECT_KEY)',
+  /domain: location\.hostname/.test(js) && !/domain: location\.origin/.test(js));
 check('그림이 안 오면 조용히 흰 화면으로 두지 않는다',
   /'tileerror'/.test(js) && /위성영상을 받지 못해 기본 지도로 되돌렸습니다/.test(js));
 check('간편 지도로 가면 위성을 끈다 (얹을 자리가 없다)',
