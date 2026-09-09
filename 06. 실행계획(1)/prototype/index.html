@@ -524,6 +524,18 @@ button.marker:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 .seg-high{background:var(--seg-고)}
 .seg-mid{background:var(--seg-중)}
 .seg-elem{background:var(--seg-초)}
+/* 폐교 활용현황 4색.
+   예전에는 자체활용·대부를 같은 teal 의 진하기 차이로만 갈랐고 매각은 회색이었습니다.
+   눈으로는 그럴듯했지만 재어 보니 «매각 ↔ 자체활용»이 정상 시야에서 ΔE 8.6 이었습니다
+   (하한 15). 적록색약에서는 3.2 로 사실상 같은 색이었습니다.
+   이제 넷을 서로 다른 색상으로 가릅니다 — 찬 색 둘(쓰이고 있음) · 따뜻한 색(비어 있음) ·
+   중립(교육청을 떠남). 매각은 정책 대상이 아니므로 일부러 물러나 있게 둡니다.
+   검증(scripts/validate_palette.js): 밝을 때 정상 시야 최저 ΔE 18.6 · 색약 10.0,
+   어두울 때 15.8 / 11.3. 대비가 낮은 «매각»은 범례·막대 끝 숫자·짚어보기로 받칩니다. */
+:root{--use-own:#0E8A70;--use-lease:#1B4FA0;--use-idle:#CE6410;--use-sold:#9AA6B4}
+@media (prefers-color-scheme: dark){:root{--use-own:#4FD1B0;--use-lease:#7FB3F7;--use-idle:#F2A65A;--use-sold:#6E7C8D}}
+:root[data-theme="light"]{--use-own:#0E8A70;--use-lease:#1B4FA0;--use-idle:#CE6410;--use-sold:#9AA6B4}
+:root[data-theme="dark"]{--use-own:#4FD1B0;--use-lease:#7FB3F7;--use-idle:#F2A65A;--use-sold:#6E7C8D}
 :root{--seg-초:#D3EDE6;--seg-중:#D6E4F7;--seg-고:#F7DFC4}
 @media (prefers-color-scheme: dark){:root{--seg-초:#16453B;--seg-중:#1B3556;--seg-고:#4A3216}}
 :root[data-theme="light"]{--seg-초:#D3EDE6;--seg-중:#D6E4F7;--seg-고:#F7DFC4}
@@ -6337,10 +6349,10 @@ function bindTilemapGestures(){
    ========================================================= */
 
 const CLOSED_USE_COLOR = {
-  '자체활용':'var(--leap-teal)',
-  '대부'    :'color-mix(in srgb, var(--leap-teal) 45%, var(--card))',
-  '매각'    :'var(--ink-3)',
-  '미활용'  :'var(--leap-amber-mark)'
+  '자체활용':'var(--use-own)',
+  '대부'    :'var(--use-lease)',
+  '매각'    :'var(--use-sold)',
+  '미활용'  :'var(--use-idle)'
 };
 const CLOSED_USE_ORDER = ['자체활용','대부','미활용','매각'];
 
@@ -6451,8 +6463,16 @@ function renderClosed(){
         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:12.5px">' +
           `<span style="width:40px;flex:none;color:var(--ink-2)">${r.s}</span>` +
           '<span style="flex:1;height:14px;border-radius:3px;background:var(--card-2);overflow:hidden;display:flex">' +
-            CLOSED_USE_ORDER.map(u =>
-              `<span title="${u} ${r.byUse[u]}곳" style="height:100%;width:${r.byUse[u]/max*100}%;background:${CLOSED_USE_COLOR[u]}"></span>`).join('') +
+            /* 칸 사이에 표면색 틈을 둡니다. 색이 아무리 갈려도 맞붙어 있으면
+               경계가 흐려집니다. 폭이 0인 칸은 아예 그리지 않습니다 —
+               그리면 폭 없는 자리에 경계선만 남습니다. */
+            CLOSED_USE_ORDER.map((u, i) => {
+              const v = r.byUse[u] || 0;
+              if(!v) return '';
+              const last = !CLOSED_USE_ORDER.slice(i + 1).some(x => r.byUse[x]);
+              return `<span title="${u} ${v}곳" style="height:100%;width:${v/max*100}%;` +
+                     `background:${CLOSED_USE_COLOR[u]}${last ? '' : ';box-shadow:1.5px 0 0 var(--card)'}"></span>`;
+            }).join('') +
           '</span>' +
           `<b style="width:34px;text-align:right">${r.tot}</b>` +
         '</div>').join('');
