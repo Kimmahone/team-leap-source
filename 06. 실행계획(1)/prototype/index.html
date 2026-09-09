@@ -321,6 +321,20 @@ a{color:var(--brand)}
   margin-left:calc(var(--school-size,30px) / -2) !important;margin-top:calc(var(--school-size,30px) / -2) !important;
   font-size:9px;letter-spacing:-.04em;background:var(--leap-teal) !important}
 .sgis-school-icon.school-md{--school-size:36px}.sgis-school-icon.school-lg{--school-size:42px}
+/* 폐교는 «속이 빈 고리»입니다. 현재 학교는 꽉 찬 원이라 한눈에 갈립니다 —
+   비어 있는 모양이 «지금은 학교가 아니다»를 그대로 말합니다.
+   색은 활용현황을 따릅니다(막대·목록과 같은 색). */
+.sgis-closed-icon{
+  width:15px !important;height:15px !important;
+  margin-left:-7.5px !important;margin-top:-7.5px !important;
+  border-radius:50%;background:var(--card) !important;
+  border:3px solid var(--pin,var(--use-sold));
+  box-shadow:0 1px 4px rgba(20,32,46,.35);
+}
+.sgis-closed-미활용{--pin:var(--use-idle)}
+.sgis-closed-자체활용{--pin:var(--use-own)}
+.sgis-closed-대부{--pin:var(--use-lease)}
+.sgis-closed-매각{--pin:var(--use-sold)}
 .sgis-lv-유{--pin:var(--lv-유-mark)}.sgis-lv-초{--pin:var(--lv-초-mark)}
 .sgis-lv-중{--pin:var(--lv-중-mark)}.sgis-lv-고{--pin:var(--lv-고-mark)}
 .sgis-lv-특수{--pin:var(--lv-특수-mark)}
@@ -1163,6 +1177,8 @@ body.map-maxed{overflow:hidden}
             <button type="button" class="chip" id="home-metric-stu" aria-pressed="false">학생 수</button>
             <button type="button" class="chip" id="map-mode-online" aria-pressed="true" title="SGIS를 이용해 실제 학교 위치를 표시하는 지도">실제 위치 지도</button>
             <button type="button" class="chip" id="map-mode-offline" aria-pressed="false" title="인터넷 연결이 없어도 사용할 수 있는 경계 지도">간편 지도</button>
+            <button type="button" class="chip" id="map-closed" aria-pressed="false" hidden
+                    title="문 닫은 학교를 지금 학교 위에 겹쳐 봅니다 (매각한 곳은 뺍니다)">폐교 겹쳐 보기</button>
             <button type="button" class="chip" id="home-map-back" hidden
                     title="학교를 고르기 «전»에 보던 자리로 되돌아갑니다">↩ 이전 위치로</button>
             <button type="button" class="chip" id="home-reset" hidden>← 경북 전체로</button>
@@ -3414,12 +3430,15 @@ window.addEventListener('hashchange', () => showView(location.hash.slice(1) || '
 /* =========================================================
    3. 홈 — 지도 (실좌표)
    ========================================================= */
-const homeState = { level:'전체', metric:'sch', sel:null, colorBy:'level', mapMode:'offline' };
+const homeState = { level:'전체', metric:'sch', sel:null, colorBy:'level', mapMode:'offline', showClosed:false };
 
 /* 온라인 지도는 SGIS가 정상 로드됐을 때만 켭니다.
    인증키는 HTML에 넣지 않고 `/api/sgis-map` Pages Function이 서버에서 사용합니다. */
 let sgisMap = null;
 let sgisLayer = null;
+/* 폐교는 «따로» 얹습니다. 현재 학교와 같은 묶음에 넣으면 묶음 숫자가
+   «지금 학교 수»인지 «폐교까지 더한 수»인지 알 수 없게 됩니다. */
+let sgisClosedLayer = null;
 
 function htmlEsc(v){
   return String(v == null ? '' : v)
@@ -3545,6 +3564,47 @@ function compactMapValue(value){
   return String(Math.round(n));
 }
 
+/* 폐교를 지금 학교 위에 겹쳐 그립니다.
+
+   매각한 곳은 뺍니다 — 교육청 재산이 아니라 활용 정책의 대상이 아니고,
+   495곳을 얹으면 화면이 폐교로 뒤덮여 정작 볼 것을 가립니다.
+   묶지(cluster) 않습니다. 250곳이라 묶을 만큼 많지도 않고,
+   묶어 버리면 «이 자리에 빈 학교가 있다»는 낱개 사실이 숫자로 뭉개집니다. */
+function closedMapRows(){
+  return closedRows().filter(r => r.use !== '매각' && r.lat != null && r.lon != null);
+}
+
+function renderSgisClosed(){
+  if(!sgisMap || !window.sop) return;
+  try{
+    if(sgisClosedLayer && sgisMap.removeLayer) sgisMap.removeLayer(sgisClosedLayer);
+    sgisClosedLayer = null;
+    if(!homeState.showClosed) return;
+
+    sgisClosedLayer = window.sop.layerGroup();
+    closedMapRows().forEach(r => {
+      const p = new window.sop.LatLng(+r.lat, +r.lon);
+      const icon = typeof window.sop.divIcon === 'function'
+        ? window.sop.divIcon({ className:`sgis-closed-icon sgis-closed-${r.use}`, html:'', iconSize:[15,15] })
+        : null;
+      const opts = {}; if(icon) opts.icon = icon;
+      const m = window.sop.marker([p.x, p.y], opts);
+      const near = nearbyOf(r.lat, r.lon);
+      const nearTxt = !near ? ''
+        : near.n > 0
+          ? `반경 ${CLOSED_NEAR_KM}km 안 학교 ${fmt(near.n)}곳 · 학생 ${fmt(near.stu)}명`
+          : `반경 ${CLOSED_NEAR_KM}km 안 학교 없음${near.min != null ? ` · 가장 가까운 학교 ${near.min.toFixed(1)}km` : ''}`;
+      m.bindInfoWindow(
+        `<strong>${htmlEsc(r.name)}</strong> <span style="font-size:11px">(폐교)</span><br>` +
+        `${htmlEsc(r.s)} · ${htmlEsc(r.year)}년에 문 닫음 · ${htmlEsc(r.lv)} · ${htmlEsc(r.use)}<br>` +
+        `<span style="font-size:11px">${htmlEsc(nearTxt)}</span>`
+      );
+      sgisClosedLayer.addLayer(m);
+    });
+    sgisMap.addLayer(sgisClosedLayer);
+  }catch(_e){ /* 폐교를 못 그려도 학교 지도는 살아 있어야 합니다 */ }
+}
+
 function renderSgisMarkers(){
   if(!sgisMap || !window.sop) return;
   try{
@@ -3595,6 +3655,7 @@ function renderSgisMarkers(){
       sgisLayer.addLayer(marker);
     });
     sgisMap.addLayer(sgisLayer);
+    renderSgisClosed();
     document.getElementById('sgis-status').textContent =
       `실제 위치 지도 · ${studentMetric ? '학생 수 합계·크기 기준' : '학교 수 기준'} · 좌표 확보 학교 ${fmt(list.length)}곳 (SGIS)`;
     /* 범례도 «지금 보고 있는 지도»의 것으로 바꿉니다.
@@ -3606,6 +3667,9 @@ function renderSgisMarkers(){
       (studentMetric
         ? `<span style="color:var(--ink-3)">낱개 표시의 크기도 학생 수를 따릅니다</span>`
         : LEVELS.map(l => `<span><b style="color:${lvColor(l)}">●</b> ${LEVEL_CFG[l].full}</span>`).join('')) +
+      (homeState.showClosed
+        ? `<span><b style="color:var(--use-idle)">◎</b> 폐교 (고리 = 문 닫은 학교 · 색은 활용현황 · 매각 제외 ${fmt(closedMapRows().length)}곳)</span>`
+        : '') +
       `<span style="margin-left:auto;color:var(--ink-3)">확대하면 묶음이 풀립니다</span>`;
     renderOnlineSchoolList();
   }catch(_e){
@@ -3754,6 +3818,10 @@ function setMapMode(mode){
   document.getElementById('map-help').textContent = isOnline
     ? '마커를 선택하면 학교 정보가 표시됩니다'
     : '타일을 선택하면 시군 상세로 전환됩니다';
+  /* 폐교는 실제 좌표로 찍는 것이라 «실제 위치 지도»에서만 뜻이 있습니다.
+     간편 지도(경계 타일)에서는 얹을 자리가 없으므로 단추를 감춥니다. */
+  const closedBtn = document.getElementById('map-closed');
+  if(closedBtn) closedBtn.hidden = !isOnline;
 
   if(isOnline){
     renderSgisMarkers();
@@ -4522,6 +4590,18 @@ function renderDetail(){
     + (HAS_D2 ? `<span style="color:var(--fit)">${D2_YEAR} 공시 실적</span>` : '')
     + gap;
 }
+
+(function(){
+  const btn = document.getElementById('map-closed');
+  if(!btn || !btn.addEventListener) return;
+  btn.addEventListener('click', () => {
+    homeState.showClosed = !homeState.showClosed;
+    btn.setAttribute('aria-pressed', String(homeState.showClosed));
+    /* 마커만 다시 얹으면 됩니다 — 학교 쪽은 건드리지 않습니다.
+       다만 범례는 학교 그리기가 쓰므로 함께 다시 그립니다. */
+    if(homeState.mapMode === 'online') renderSgisMarkers();
+  });
+})();
 
 document.getElementById('home-level').addEventListener('change', e => {
   homeState.level = e.target.value;
