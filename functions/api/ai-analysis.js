@@ -1,10 +1,8 @@
-/* 운영 모델은 3.8 Flash를 우선하되, 무료 사용량이 닫히면 3.7 Flash로 한 번만 대체 시도합니다.
-   둘 모델이 다 닫히면 더 반복하지 않아 사용자의 한도를 더 쓰지 않습니다. */
-// 맨 앞은 별칭입니다. 새 Flash 모델이 나오면 Google 이 이 별칭을 갈아 끼우므로
-// 코드를 고치지 않아도 최신 모델을 씁니다. 별칭이 실패하면 아래 고정 모델로 내려갑니다.
+/* 최신 Flash 별칭을 먼저 쓰고, 별칭이 아직 배포 환경에서 열리지 않았거나
+   응답이 불완전하면 현재 고정형과 직전 고정형으로 내려갑니다. */
 const MODELS = ['gemini-flash-latest','gemini-3.8-flash','gemini-3.7-flash'];
 const MAX_PROMPT = 12000;
-const SYSTEM_PROMPT = '당신은 경상북도 학령인구 공개 데이터를 일반 사용자가 쉽게 이해하도록 돕는 해설자입니다. 제공된 집계값만 사용하고 숫자를 만들지 마세요. 기준연도 실적과 공식 장래추계가 아닌 모의 비교값을 명확히 구분하세요. 학생수 변화, 해석 주의사항, 함께 비교할 질문, 더 살펴볼 공개자료, 분석 한계를 한국어 제목과 글머리표로 간결하게 제시하세요. 정책·사업 실적을 추정하거나 개인자료를 요구하지 마세요.';
+const SYSTEM_PROMPT = '당신은 경상북도 학령인구 공개 데이터를 일반 사용자가 쉽게 이해하도록 돕는 해설자입니다. 제공된 집계값만 사용하고 숫자를 만들지 마세요. 기준연도 실적과 공식 장래추계가 아닌 모의 비교값을 명확히 구분하세요. 반드시 다음 5개 제목을 순서대로 쓰세요: 학생수 변화, 해석할 때 주의할 점, 함께 비교할 질문, 더 살펴볼 공개자료, 분석 한계. 각 제목에는 서로 다른 내용의 글머리표를 2개 이상 쓰고, 첫 항목에는 입력받은 실제 숫자 비교를 포함하세요. 전체 분량은 한국어 700~1,200자로 작성하세요. 정책·사업 실적을 추정하거나 개인자료를 요구하지 마세요.';
 
 const headers = {
   'Content-Type': 'application/json; charset=utf-8',
@@ -26,6 +24,14 @@ function outputText(data){
     .join('')).trim();
 }
 
+function outputQuality(text){
+  const value=String(text||'').trim();
+  const topics=['학생수 변화','주의','비교할 질문','공개자료','분석 한계'];
+  const topicHits=topics.filter(topic=>value.includes(topic)).length;
+  const bullets=(value.match(/(?:^|\n)\s*(?:[-*]|\d+[.)])\s+/g)||[]).length;
+  return {ok:value.length>=520&&topicHits>=4&&bullets>=7,length:value.length,topicHits,bullets};
+}
+
 async function requestAnalysis(model, apiKey, prompt){
   let upstream;
   try{
@@ -33,13 +39,13 @@ async function requestAnalysis(model, apiKey, prompt){
       method:'POST',
       headers:{'Content-Type':'application/json','x-goog-api-key':apiKey},
       // 첫 모델이 응답하지 않을 때 화면이 오래 멈춘 것처럼 보이지 않도록 제한한다.
-      // 두 모델을 모두 시도해도 Pages 요청 제한 안에서 끝나도록 12초로 둔다.
+      // 다음 모델로 내려갈 수 있도록 각 요청은 12초 안에 끝냅니다.
       signal:AbortSignal.timeout(12000),
       body:JSON.stringify({
         model,
         system_instruction:SYSTEM_PROMPT,
         input:prompt,
-        generation_config:{thinking_level:'low',max_output_tokens:1200}
+        generation_config:{thinking_level:'low',max_output_tokens:2200}
       })
     });
   }catch(error){
@@ -63,25 +69,39 @@ export async function onRequestPost(context){
   if(!prompt || prompt.length>MAX_PROMPT) return json({error:`분석 자료는 1~${MAX_PROMPT}자여야 합니다.`},400);
 
   let last={};
+  let bestBrief=null;
+  const tried=[];
   for(let index=0;index<MODELS.length;index++){
     const model=MODELS[index];
+    tried.push(model);
     const result=await requestAnalysis(model,context.env.GEMINI_API_KEY,prompt);
     if(result.networkError){
-      // 시간 초과·일시적 연결 오류에는 다른 안정 모델을 한 번 시도한다.
+      // 시간 초과·일시적 연결 오류에는 다음 안정 모델을 순서대로 시도합니다.
       if(index<MODELS.length-1) continue;
+      if(bestBrief){ delete bestBrief.length; return json(bestBrief); }
       return json({error:result.networkError?.name==='TimeoutError'?'분석 응답 시간이 초과되었습니다. 잠시 후 다시 시도하세요.':'분석 서비스에 연결하지 못했습니다.'},result.networkError?.name==='TimeoutError'?504:502);
     }
     const {upstream,data}=result;
     const text=upstream.ok ? outputText(data) : '';
-    if(text) return json({text,model,fallback:index>0});
+    if(text){
+      const quality=outputQuality(text);
+      const resolvedModel=data?.modelVersion || data?.model_version || data?.model || model;
+      const answer={text,model:resolvedModel,requestedModel:model,fallback:index>0,quality:quality.ok?'complete':'brief',modelsTried:[...tried]};
+      if(quality.ok) return json(answer);
+      if(!bestBrief || quality.length>bestBrief.length) bestBrief={...answer,length:quality.length};
+      if(index<MODELS.length-1) continue;
+      delete bestBrief.length;
+      return json(bestBrief);
+    }
     const reason=String(data?.error?.status || (upstream.status===429 ? 'RESOURCE_EXHAUSTED' : `G${upstream.status}`));
     last={upstreamStatus:upstream.status,reason};
-    /* 3.7의 무료 한도일 때만 3.6으로 대체하고, 나머지 오류는 즉시 보고합니다. */
-    if(upstream.status===429 && index<MODELS.length-1) continue;
+    /* 별칭 미지원, 일시 장애, 무료 한도에는 다음 고정 모델을 순서대로 시도합니다. */
+    if([400,404,429,500,502,503,504].includes(upstream.status) && index<MODELS.length-1) continue;
+    if(bestBrief){ delete bestBrief.length; return json(bestBrief); }
     if(upstream.status===429){
-      return json({error:'분석 서비스의 무료 사용량 한도에 도달했습니다. 잠시 후 다시 시도하세요.',upstreamStatus:upstream.status,reason,modelsTried:MODELS},429);
+      return json({error:'분석 서비스의 무료 사용량 한도에 도달했습니다. 잠시 후 다시 시도하세요.',upstreamStatus:upstream.status,reason,modelsTried:tried},429);
     }
-    return json({error:`분석 서비스가 요청을 처리하지 못했습니다. 운영 코드: G${upstream.status}`,upstreamStatus:upstream.status,reason,modelsTried:MODELS.slice(0,index+1)},502);
+    return json({error:`분석 서비스가 요청을 처리하지 못했습니다. 운영 코드: G${upstream.status}`,upstreamStatus:upstream.status,reason,modelsTried:tried},502);
   }
   return json({error:'분석 서비스의 응답을 받지 못했습니다.',...last},502);
 }

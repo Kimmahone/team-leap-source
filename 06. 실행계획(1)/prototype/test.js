@@ -17,6 +17,8 @@ const js = html.match(/<script>([\s\S]*?)<\/script>/)[1];
    여기에 있습니다. 지도는 이 규칙에 막히면 조용히 빈 화면이 됩니다. */
 const BAKE = path.join(__dirname, '..', '..', '사이트 굽기.command');
 const bake = fs.existsSync(BAKE) ? fs.readFileSync(BAKE, 'utf8') : '';
+const AI_API = path.join(__dirname, '..', '..', 'functions', 'api', 'ai-analysis.js');
+const aiApi = fs.existsSync(AI_API) ? fs.readFileSync(AI_API, 'utf8') : '';
 
 let pass = 0, fail = 0;
 const check = (n, c, extra) => {
@@ -63,7 +65,7 @@ radio('basis-mode', 'sch', true); radio('basis-mode', 'cls', false);
 radio('sch-basis', 'fixed', true); radio('sch-basis', 'rate', false); radio('sch-basis', 'custom', false);
 radio('cls-basis', 'base', true); radio('cls-basis', 'pm', false); radio('cls-basis', 'grade', false);
 
-const NUM = { 'sch-rate': '10', 'cls-n': '20', 'cls-d': '2', 'cls-g': '20', 'cls-c': '2' };
+const NUM = { 'sch-rate': '10', 'cls-n': '20', 'cls-d': '0', 'cls-g': '20', 'cls-c': '1' };
 
 const sandbox = {
   console,
@@ -335,8 +337,20 @@ check('종합 대시보드 인쇄는 요약·지도·기준을 의미 단위로 
   /#home-map-card\{break-before:page/.test(html) && /#home-map-card \.criteria-guide\{break-before:page/.test(html));
 check('변화 요약은 보고서 HTML과 별도 인쇄 기능을 제공한다',
   html.includes('id="ai-print"') && /function policyMarkdown/.test(html) && /function renderPolicyReport/.test(html) && html.includes('id="ai-print-report"'));
+check('인사이트 인쇄물에도 핵심 지표와 지역 비교 시각화가 들어간다',
+  /function policyReportHtml[\s\S]*aiInsightBoardHtml\(text,source,\{\.\.\.meta,hideBadge:true\}\)/.test(js) &&
+  /report-brand[\s\S]*symbol1\.jpg/.test(html) && /report-cover[\s\S]*linear-gradient/.test(html));
 check('변화 요약은 전용 인쇄 때만 나온다',
   /#ai-print-report\{display:none !important\}/.test(html) && /body\.print-ai-only #ai-print-report\{display:block !important/.test(html));
+check('AI가 응답한 실제 모델과 기본 요약 여부를 화면과 인쇄물에 표시한다',
+  /function friendlyModelName/.test(js) && /ai-analysis-badge/.test(html) && /report-model-line/.test(html) &&
+  /data\.model\|\|data\.requestedModel/.test(js));
+check('짧은 AI 응답은 다음 모델을 시도하고 끝까지 짧으면 기본 해석을 보강한다',
+  /function outputQuality/.test(aiApi) && /quality\.ok/.test(aiApi) && /data\.quality==='brief'/.test(js) &&
+  /화면 집계값으로 보강한 비교 안내/.test(js));
+check('인사이트가 준비되지 않은 인쇄 버튼은 취소선 대신 다음 행동을 안내한다',
+  /\.ai-action-row \.chip:disabled\{[^}]*text-decoration:none/.test(html) &&
+  /AI 해설 또는 기본 요약이 준비되면 인쇄할 수 있습니다/.test(html));
 check('일반 사용자 화면에 서비스 사업자·모델명이 드러나지 않는다',
   !/>[^<]*(Gemini|Cloudflare|gemini-3\.\d)[^<]*</i.test(html.split('<script>')[0]));
 check('경북교육청 상징 워터마크 파일과 화면·인쇄 스타일이 있다',
@@ -1624,6 +1638,23 @@ check('세부 설정은 자세히 고치기에 접어 둔다',
 check('세 시나리오 카드의 결과 수치는 조회 조건에 따라 다시 계산한다',
   /id="scenario-fixed-live"/.test(html) && /id="scenario-class20-live"/.test(html) &&
   /id="scenario-grade1-live"/.test(html) && /function renderScenarioPreviews/.test(js));
+check('세 시나리오 카드의 질문 문구도 상세 설정 숫자에 맞춰 바뀐다',
+  ['scenario-fixed-title','scenario-class20-title','scenario-grade1-title'].every(id=>html.includes(`id="${id}"`)) &&
+  /scenario-class20-title[^\n]*classSize/.test(js) && /scenario-grade1-title[^\n]*gradesPerSchool/.test(js));
+const class20Before=byId['scenario-class20-live'].textContent;
+q("document.getElementById('cls-n').value=24;document.getElementById('cls-d').value=1;renderSim()");
+check('학급당 인원을 바꾸면 카드 질문과 계산 결과가 함께 바뀐다',
+  /24명 ± 1명/.test(byId['scenario-class20-title'].textContent) && byId['scenario-class20-live'].textContent!==class20Before,
+  `${byId['scenario-class20-title'].textContent} · ${byId['scenario-class20-live'].textContent}`);
+q("document.getElementById('cls-g').value=18;document.getElementById('cls-c').value=2;renderSim()");
+check('학년당 학급 기준을 바꾸면 세 번째 카드 질문도 바로 바뀐다',
+  /18명·학년당 2학급/.test(byId['scenario-grade1-title'].textContent),byId['scenario-grade1-title'].textContent);
+q("document.getElementById('cls-n').value=20;document.getElementById('cls-d').value=0;document.getElementById('cls-g').value=20;document.getElementById('cls-c').value=1;renderSim()");
+check('시나리오 카드 내용은 위에서 시작하고 결과 줄은 카드 아래에 맞춘다',
+  /\.sim-scenario\{[^}]*display:flex[^}]*flex-direction:column[^}]*justify-content:flex-start/.test(html) &&
+  /\.sim-scenario \.scenario-live\{[^}]*margin-top:auto/.test(html));
+check('상세 Excel 저장 단추는 모의연도 표 위에서 바로 찾을 수 있다',
+  html.indexOf('id="sim-export-xls"') < html.indexOf('class="sim-tables"') && /class="sim-table-tools no-print"/.test(html));
 check('모의연도는 변화 요약 제목에서 선택하고 상세표는 같은 연도를 표시한다',
   html.indexOf('id="pred-year"') < html.indexOf('id="sim-panel-detail"') &&
   /id="pred-year-label"/.test(html) && /sim-change-title[^\n]*textContent=`2026년과/.test(js));

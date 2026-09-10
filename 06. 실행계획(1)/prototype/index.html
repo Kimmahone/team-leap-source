@@ -891,8 +891,8 @@ table.data .hl{color:var(--brand);font-weight:800}
 @media (max-width:1080px){.sim-wrap{grid-template-columns:1fr}}
 /* ══ 학생수 시뮬레이터 ═══════════════════════════════════════════════
    복잡한 산출 기준보다 사람이 실제로 묻는 질문을 먼저 보여 줍니다. */
-.sim-side-card{position:sticky;top:14px}.sim-workspace{min-width:0}.sim-panel[hidden]{display:none!important}.sim-question{border:1px solid var(--line);border-radius:11px;padding:16px;background:var(--card);margin-bottom:14px}.sim-question-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:13px}.sim-question-head h2{font-size:16px;margin:0 0 4px}.sim-question-head p{font-size:11.5px;line-height:1.55;color:var(--ink-3);margin:0}.sim-question-head .asof{flex:none}.sim-scenario-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.sim-scenario{position:relative;min-height:154px;padding:14px;text-align:left;border:1px solid var(--line);border-radius:10px;background:var(--card-2);color:var(--ink);font:inherit;cursor:pointer;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease}.sim-scenario:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--brand) 45%,var(--line));box-shadow:0 7px 18px rgba(15,40,75,.09)}.sim-scenario[aria-pressed="true"]{border:2px solid var(--brand);padding:13px;background:color-mix(in srgb,var(--brand) 7%,var(--card));box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 10%,transparent)}.sim-scenario .scenario-tag{display:inline-flex;align-items:center;min-height:22px;padding:0 7px;border-radius:99px;background:var(--card);color:var(--brand);font-size:10px;font-weight:800;margin-bottom:9px}.sim-scenario[aria-pressed="true"] .scenario-tag{background:var(--brand);color:var(--leap-on-fill)}.sim-scenario b{display:block;font-size:14px;line-height:1.4;margin-bottom:6px}.sim-scenario small{display:block;color:var(--ink-3);font-size:11px;line-height:1.5}.sim-scenario .scenario-arrow{display:block;color:var(--ink-2);font-size:10.5px;font-weight:700;margin-top:9px}.sim-scenario .scenario-live{display:block;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);color:var(--brand);font-size:11px;font-weight:800;line-height:1.45;font-variant-numeric:tabular-nums}.sim-advanced{border:1px solid var(--line);border-radius:9px;background:var(--card);margin:11px 0 0}.sim-advanced>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:42px;padding:0 12px;cursor:pointer;font-size:12px;font-weight:800;color:var(--ink-2);list-style:none}.sim-advanced>summary::-webkit-details-marker{display:none}.sim-advanced>summary::after{content:"＋";color:var(--brand);font-size:16px}.sim-advanced[open]>summary{border-bottom:1px solid var(--line)}.sim-advanced[open]>summary::after{content:"−"}.sim-advanced-summary{font-weight:500;color:var(--ink-3);margin-left:auto}.sim-advanced-body{padding:12px 14px 4px}.sim-advanced .basis-quick{margin-top:0}
-.sim-view-nav{display:grid;gap:7px;margin-top:4px}.sim-view-nav .lb{margin-bottom:2px}.sim-view-btn{width:100%;min-height:58px;display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:9px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink);font:inherit;text-align:left;cursor:pointer}.sim-view-btn:hover{border-color:var(--brand);background:var(--brand-pale)}.sim-view-btn[aria-selected="true"]{border-color:var(--brand);background:var(--brand-pale);box-shadow:inset 3px 0 0 var(--brand)}.sim-view-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:8px;background:var(--card-2);color:var(--brand);font-size:15px;font-weight:900}.sim-view-copy b,.sim-view-copy small{display:block}.sim-view-copy b{font-size:12px}.sim-view-copy small{margin-top:2px;font-size:10px;color:var(--ink-3);line-height:1.35}.sim-view-arrow{color:var(--brand);font-weight:900}.sim-change{border:1px solid var(--line);border-radius:11px;padding:16px;background:var(--card);margin-bottom:14px}.sim-change-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.sim-change-head h2{font-size:16px;margin:0 0 4px}.sim-change-context{font-size:11.5px;color:var(--ink-3);line-height:1.5}.sim-change-tools{display:grid;justify-items:end;gap:8px}.sim-year-control{display:flex;align-items:center;gap:7px;padding:5px 7px 5px 10px;border:1px solid var(--line);border-radius:9px;background:var(--card-2);font-size:11px;font-weight:800;color:var(--ink-2)}.sim-year-control .select{min-height:34px;padding:4px 30px 4px 9px;font-size:14px;font-weight:900;color:var(--brand)}.sim-change-legend{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;font-size:10.5px;color:var(--ink-3)}.sim-change-legend span{display:inline-flex;align-items:center;gap:5px}.sim-change-legend i{width:9px;height:9px;border-radius:3px;background:var(--brand)}.sim-change-legend .result i{background:var(--over)}.sim-change-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.sim-change-kpi{border:1px solid var(--line);border-top:3px solid var(--ink-3);border-radius:9px;padding:13px;background:var(--card-2)}.sim-change-kpi.is-input{border-top-color:var(--brand)}.sim-change-kpi.is-output{border-top-color:var(--over)}.sim-change-kpi.is-forecast{border-top-color:var(--leap-teal)}.sim-change-kpi .k{display:flex;align-items:center;justify-content:space-between;gap:7px;font-size:11px;color:var(--ink-3)}.sim-change-kpi .role{padding:2px 6px;border-radius:99px;background:var(--card);font-size:9.5px;font-weight:800}.sim-change-kpi.is-input .role{color:var(--brand)}.sim-change-kpi.is-output .role{color:var(--over)}.sim-change-kpi.is-forecast .role{color:var(--leap-teal)}.sim-change-kpi strong{display:block;font-size:25px;line-height:1.2;margin:8px 0 5px;font-variant-numeric:tabular-nums}.sim-change-kpi.is-output strong{color:var(--over)}.sim-change-kpi small{display:block;color:var(--ink-3);font-size:10.5px;line-height:1.45}.sim-change-insight{margin-top:11px;padding:10px 12px;border-radius:8px;background:var(--card-2);border-left:4px solid var(--brand);font-size:11.5px;line-height:1.6;color:var(--ink-2)}.sim-table-heading{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:2px 0 9px}.sim-table-heading h2{font-size:16px;margin:0}.sim-table-heading span{font-size:10.5px;color:var(--ink-3)}
+.sim-side-card{position:sticky;top:14px}.sim-workspace{min-width:0}.sim-panel[hidden]{display:none!important}.sim-question{border:1px solid var(--line);border-radius:11px;padding:16px;background:var(--card);margin-bottom:14px}.sim-question-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:13px}.sim-question-head h2{font-size:16px;margin:0 0 4px}.sim-question-head p{font-size:11.5px;line-height:1.55;color:var(--ink-3);margin:0}.sim-question-head .asof{flex:none}.sim-scenario-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.sim-scenario{position:relative;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;min-height:154px;padding:14px;text-align:left;vertical-align:top;border:1px solid var(--line);border-radius:10px;background:var(--card-2);color:var(--ink);font:inherit;cursor:pointer;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease}.sim-scenario:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--brand) 45%,var(--line));box-shadow:0 7px 18px rgba(15,40,75,.09)}.sim-scenario[aria-pressed="true"]{border:2px solid var(--brand);padding:13px;background:color-mix(in srgb,var(--brand) 7%,var(--card));box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 10%,transparent)}.sim-scenario .scenario-tag{display:inline-flex;align-items:center;align-self:flex-start;min-height:22px;padding:0 7px;border-radius:99px;background:var(--card);color:var(--brand);font-size:10px;font-weight:800;margin-bottom:9px}.sim-scenario[aria-pressed="true"] .scenario-tag{background:var(--brand);color:var(--leap-on-fill)}.sim-scenario b{display:block;font-size:14px;line-height:1.4;margin-bottom:6px}.sim-scenario small{display:block;color:var(--ink-3);font-size:11px;line-height:1.5}.sim-scenario .scenario-arrow{display:block;color:var(--ink-2);font-size:10.5px;font-weight:700;margin-top:9px}.sim-scenario .scenario-live{display:block;margin-top:auto;padding-top:8px;border-top:1px solid var(--line);color:var(--brand);font-size:11px;font-weight:800;line-height:1.45;font-variant-numeric:tabular-nums}.sim-advanced{border:1px solid var(--line);border-radius:9px;background:var(--card);margin:11px 0 0}.sim-advanced>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:42px;padding:0 12px;cursor:pointer;font-size:12px;font-weight:800;color:var(--ink-2);list-style:none}.sim-advanced>summary::-webkit-details-marker{display:none}.sim-advanced>summary::after{content:"＋";color:var(--brand);font-size:16px}.sim-advanced[open]>summary{border-bottom:1px solid var(--line)}.sim-advanced[open]>summary::after{content:"−"}.sim-advanced-summary{font-weight:500;color:var(--ink-3);margin-left:auto}.sim-advanced-body{padding:12px 14px 4px}.sim-advanced .basis-quick{margin-top:0}
+.sim-view-nav{display:grid;gap:7px;margin-top:4px}.sim-view-nav .lb{margin-bottom:2px}.sim-view-btn{width:100%;min-height:58px;display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:9px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink);font:inherit;text-align:left;cursor:pointer}.sim-view-btn:hover{border-color:var(--brand);background:var(--brand-pale)}.sim-view-btn[aria-selected="true"]{border-color:var(--brand);background:var(--brand-pale);box-shadow:inset 3px 0 0 var(--brand)}.sim-view-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:8px;background:var(--card-2);color:var(--brand);font-size:15px;font-weight:900}.sim-view-copy b,.sim-view-copy small{display:block}.sim-view-copy b{font-size:12px}.sim-view-copy small{margin-top:2px;font-size:10px;color:var(--ink-3);line-height:1.35}.sim-view-arrow{color:var(--brand);font-weight:900}.sim-change{border:1px solid var(--line);border-radius:11px;padding:16px;background:var(--card);margin-bottom:14px}.sim-change-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.sim-change-head h2{font-size:16px;margin:0 0 4px}.sim-change-context{font-size:11.5px;color:var(--ink-3);line-height:1.5}.sim-change-tools{display:grid;justify-items:end;gap:8px}.sim-year-control{display:flex;align-items:center;gap:7px;padding:5px 7px 5px 10px;border:1px solid var(--line);border-radius:9px;background:var(--card-2);font-size:11px;font-weight:800;color:var(--ink-2)}.sim-year-control .select{min-height:34px;padding:4px 30px 4px 9px;font-size:14px;font-weight:900;color:var(--brand)}.sim-change-legend{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;font-size:10.5px;color:var(--ink-3)}.sim-change-legend span{display:inline-flex;align-items:center;gap:5px}.sim-change-legend i{width:9px;height:9px;border-radius:3px;background:var(--brand)}.sim-change-legend .result i{background:var(--over)}.sim-change-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.sim-change-kpi{border:1px solid var(--line);border-top:3px solid var(--ink-3);border-radius:9px;padding:13px;background:var(--card-2)}.sim-change-kpi.is-input{border-top-color:var(--brand)}.sim-change-kpi.is-output{border-top-color:var(--over)}.sim-change-kpi.is-forecast{border-top-color:var(--leap-teal)}.sim-change-kpi .k{display:flex;align-items:center;justify-content:space-between;gap:7px;font-size:11px;color:var(--ink-3)}.sim-change-kpi .role{padding:2px 6px;border-radius:99px;background:var(--card);font-size:9.5px;font-weight:800}.sim-change-kpi.is-input .role{color:var(--brand)}.sim-change-kpi.is-output .role{color:var(--over)}.sim-change-kpi.is-forecast .role{color:var(--leap-teal)}.sim-change-kpi strong{display:block;font-size:25px;line-height:1.2;margin:8px 0 5px;font-variant-numeric:tabular-nums}.sim-change-kpi.is-output strong{color:var(--over)}.sim-change-kpi small{display:block;color:var(--ink-3);font-size:10.5px;line-height:1.45}.sim-change-insight{margin-top:11px;padding:10px 12px;border-radius:8px;background:var(--card-2);border-left:4px solid var(--brand);font-size:11.5px;line-height:1.6;color:var(--ink-2)}.sim-table-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 9px}.sim-table-heading h2{font-size:16px;margin:0}.sim-table-heading span{font-size:10.5px;color:var(--ink-3)}.sim-table-tools{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}.sim-table-tools .chip{min-height:36px;background:var(--card)}
 @media(max-width:1080px){.sim-side-card{position:static}.sim-view-nav{grid-template-columns:repeat(3,minmax(0,1fr))}.sim-view-nav .lb{grid-column:1/-1}.sim-view-btn{grid-template-columns:28px 1fr}.sim-view-icon{width:28px;height:28px}.sim-view-arrow{display:none}}
 @media(max-width:980px){.sim-scenario-grid{grid-template-columns:1fr}.sim-scenario{min-height:0}.sim-change-grid{grid-template-columns:1fr}.sim-change-head{display:block}.sim-change-tools{justify-items:start;margin-top:10px}.sim-change-legend{justify-content:flex-start}}
 @media(max-width:620px){.sim-view-nav{grid-template-columns:1fr}.sim-view-btn{min-height:50px}}
@@ -956,6 +956,8 @@ table.data .hl{color:var(--brand);font-weight:800}
 .ai-connection.ok::before{background:var(--fit)}.ai-connection.warn::before{background:var(--under)}
 .ai-action-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.ai-action-row .chip{min-height:40px}.ai-insight-board{display:grid;gap:13px}.ai-insight-hero{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px;border-radius:10px;background:linear-gradient(135deg,var(--brand),color-mix(in srgb,var(--brand) 64%,var(--leap-teal)));color:var(--leap-on-fill)}.ai-insight-hero b{display:block;font-size:16px;line-height:1.45}.ai-insight-hero small{display:block;margin-top:4px;opacity:.82;font-size:10.5px}.ai-insight-hero strong{font-size:28px;white-space:nowrap;font-variant-numeric:tabular-nums}.ai-insight-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.ai-insight-kpi{padding:11px;border:1px solid var(--line);border-radius:9px;background:var(--card-2)}.ai-insight-kpi span{display:block;font-size:10.5px;color:var(--ink-3)}.ai-insight-kpi b{display:block;margin:5px 0 2px;font-size:18px;color:var(--ink)}.ai-insight-kpi small{font-size:10px;color:var(--ink-3)}.ai-region-bars{padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--card)}.ai-region-bars h3{font-size:12.5px;margin:0 0 9px}.ai-region-row{display:grid;grid-template-columns:58px 1fr 48px;align-items:center;gap:8px;margin-top:7px;font-size:10.5px}.ai-region-row i{display:block;height:8px;border-radius:99px;background:var(--line-2);overflow:hidden}.ai-region-row i::after{content:"";display:block;width:var(--w);height:100%;border-radius:inherit;background:var(--over)}.ai-region-row b{text-align:right;color:var(--over);font-variant-numeric:tabular-nums}.ai-narrative{border-top:1px solid var(--line);padding-top:2px}.ai-narrative h3{margin-top:16px}.ai-empty-note{padding:11px 12px;border-radius:8px;background:var(--brand-pale);color:var(--ink-2);font-size:11.5px;line-height:1.6}.sim-panel-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.sim-panel-heading h2{font-size:17px;margin:0 0 4px}.sim-panel-heading p{font-size:11.5px;color:var(--ink-3);margin:0}
 .result-actions{display:flex;justify-content:flex-end;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.ai-action-row .chip:disabled{opacity:.58;text-decoration:none}.ai-print-help{width:100%;font-size:10.5px;line-height:1.45;color:var(--ink-3)}.ai-analysis-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:10px}.ai-analysis-badge{display:inline-flex;align-items:center;min-height:25px;padding:0 9px;border-radius:99px;background:var(--brand-pale);color:var(--brand);font-size:10.5px;font-weight:800}.ai-analysis-badge.is-rule{background:color-mix(in srgb,var(--under) 12%,var(--card));color:var(--under)}.ai-analysis-note{font-size:10.5px;color:var(--ink-3)}
+.policy-report{max-width:900px;margin:0 auto}.policy-report .report-cover{position:relative;overflow:hidden;border:0;border-radius:12px;padding:17px 19px;margin-bottom:14px;background:linear-gradient(135deg,#164f9d,#2370b8 68%,#148477);color:#fff}.policy-report .report-cover::after{content:"";position:absolute;width:155px;height:155px;border:26px solid rgba(255,255,255,.10);border-radius:50%;right:-45px;top:-70px}.policy-report .report-brand{display:flex;align-items:center;gap:9px;position:relative;z-index:1}.policy-report .report-brand img{width:34px;height:34px;object-fit:contain;border-radius:8px;background:#fff;padding:4px}.policy-report .report-brand-copy{display:grid;gap:1px}.policy-report .report-brand-copy b{font-size:11px;letter-spacing:.04em}.policy-report .report-brand-copy small{font-size:9.5px;opacity:.78}.policy-report .report-type{margin-left:auto;padding:4px 8px;border:1px solid rgba(255,255,255,.45);border-radius:99px;font-size:9.5px;font-weight:800}.policy-report .report-cover h2{position:relative;z-index:1;margin:13px 0 4px;color:#fff;font-size:23px}.policy-report .report-cover .report-subtitle{position:relative;z-index:1;font-size:11px;opacity:.88}.policy-report .report-meta{position:relative;z-index:1;margin-top:10px;color:rgba(255,255,255,.86)}.policy-report .report-meta span{padding:3px 7px;border-radius:99px;background:rgba(255,255,255,.12)}.policy-report .report-model-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 12px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card-2);font-size:10.5px;color:var(--ink-2)}.policy-report .report-model-line b{color:var(--brand)}.policy-report .ai-insight-board{gap:10px}.policy-report .ai-insight-hero{padding:12px}.policy-report .ai-insight-kpis{gap:7px}.policy-report .ai-insight-kpi{padding:9px}.policy-report .ai-region-bars{padding:10px}.policy-report .ai-narrative{columns:2;column-gap:20px}.policy-report .ai-narrative h3{break-after:avoid;break-inside:avoid}.policy-report .ai-narrative p,.policy-report .ai-narrative li{font-size:10.5px;line-height:1.55}.policy-report .ai-narrative ul,.policy-report .ai-narrative ol{break-inside:avoid}.policy-report .report-note{margin-top:14px}
 @media (max-width:720px){
   .dummy-banner{padding:8px 12px}.shell{display:block;min-height:0}
   .sidebar{width:auto;min-height:0;display:block;border-right:0;border-bottom:1px solid var(--line)}
@@ -1478,7 +1480,7 @@ table.data .hl{color:var(--brand);font-weight:800}
   #home-map-card .criteria-guide{break-before:page;page-break-before:always;margin-top:0}
   #home-map-card .src-box{margin-top:4mm}
   #home-map-card .legend{break-inside:avoid;page-break-inside:avoid}
-  .ai-output{padding:0;border:0}.policy-report h3{color:#000;border-left-color:#000}
+  .ai-output{padding:0;border:0}.policy-report h3{color:#164f9d;border-left-color:#164f9d}
   .dummy-banner{border:2px solid #000;color:#000;background:#fff;margin-bottom:6mm}
   .dummy-banner .tag{border:1px solid #000;background:#fff;color:#000}
   .legend i{border:1px solid #000}
@@ -1488,7 +1490,19 @@ table.data .hl{color:var(--brand);font-weight:800}
   #ai-print-report{display:none !important}
   body.print-ai-only .shell{display:none !important}
   body.print-ai-only #ai-print-report{display:block !important;position:relative;z-index:1}
+  /* ★ 두 갈래를 함께 살립니다 〔2026. 9. 11.〕
+     시뮬레이터 쪽에서 AI 인쇄의 «색»을 따로 잡아 주었고(아래 토큰 한 줄),
+     이쪽에서는 워터마크를 ::before 에서 ::after 로 «위로» 옮겼습니다.
+     같은 줄이라 부딪혔을 뿐, 서로 다른 것을 고친 것입니다.
+     색은 그대로 두고 워터마크만 ::after 로 적습니다 — ::before 는 이 파일
+     위쪽에서 이미 display:none 이라 그대로 두면 워터마크가 사라집니다. */
+  body.print-ai-only{--brand:#164f9d;--brand-pale:#edf4fd;--over:#b9322a;--leap-teal:#087968;--ink:#101c2b;--ink-2:#3d4a5b;--ink-3:#657184;--line:#bfcddd;--line-2:#d9e2ec;--card:#fff;--card-2:#f4f7fb;--leap-on-fill:#fff}
   body.print-ai-only::after{background-size:62mm auto;opacity:.06}
+  body.print-ai-only .policy-report{max-width:none;width:100%;font-size:9pt}
+  body.print-ai-only .policy-report .report-cover{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body.print-ai-only .policy-report .ai-insight-hero{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body.print-ai-only .policy-report .ai-region-row i::after{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body.print-ai-only .policy-report .report-cover,body.print-ai-only .policy-report .ai-insight-hero,body.print-ai-only .policy-report .ai-insight-kpis,body.print-ai-only .policy-report .ai-region-bars{break-inside:avoid;page-break-inside:avoid}
 }
 .print-only{display:none}
 
@@ -2690,20 +2704,20 @@ body.map-maxed.home-wide #home-side{display:none}
           <div class="sim-scenario-grid" role="group" aria-label="학생 수 모의 시나리오">
             <button type="button" class="sim-scenario" data-sim-scenario="fixed" aria-pressed="true">
               <span class="scenario-tag">현재 체계 유지</span>
-              <b>학교·학급 규모를 유지하면</b>
-              <small>2026년 학교 수와 학급 수를 그대로 둡니다.</small>
+              <b id="scenario-fixed-title">학교·학급 규모를 유지하면</b>
+              <small id="scenario-fixed-desc">2026년 학교 수와 학급 수를 그대로 둡니다.</small>
               <span class="scenario-live" id="scenario-fixed-live">계산하는 중입니다.</span>
             </button>
             <button type="button" class="sim-scenario" data-sim-scenario="class20" aria-pressed="false">
               <span class="scenario-tag">학급 규모 유지</span>
-              <b>학급당 20명을 지키면</b>
-              <small>한 학급의 학생 수를 20명으로 두고 필요한 규모를 계산합니다.</small>
+              <b id="scenario-class20-title">학급당 20명을 지키면</b>
+              <small id="scenario-class20-desc">한 학급의 학생 수를 20명으로 두고 필요한 규모를 계산합니다.</small>
               <span class="scenario-live" id="scenario-class20-live">계산하는 중입니다.</span>
             </button>
             <button type="button" class="sim-scenario" data-sim-scenario="grade1" aria-pressed="false">
               <span class="scenario-tag">학년 단위 검토</span>
-              <b>학년당 1학급 기준이면</b>
-              <small>학급당 20명, 학교별 학년당 최대 1학급으로 비교합니다.</small>
+              <b id="scenario-grade1-title">학년당 1학급 기준이면</b>
+              <small id="scenario-grade1-desc">학급당 20명, 학교별 학년당 최대 1학급으로 비교합니다.</small>
               <span class="scenario-live" id="scenario-grade1-live">계산하는 중입니다.</span>
             </button>
           </div>
@@ -2727,10 +2741,10 @@ body.map-maxed.home-wide #home-side{display:none}
                 <label><input type="radio" name="cls-basis" value="base" checked> 기준연도 학급당 학생 수 기준</label>
                 <label><input type="radio" name="cls-basis" value="pm"> 학급당 학생 수
                   <input type="number" id="cls-n" value="20" min="5" max="40" aria-label="학급당 학생 수"> 명 ±
-                  <input type="number" id="cls-d" value="2" min="0" max="10" aria-label="허용 편차"> 명 기준</label>
+                  <input type="number" id="cls-d" value="0" min="0" max="10" aria-label="허용 편차"> 명 기준</label>
                 <label><input type="radio" name="cls-basis" value="grade"> 학급당
                   <input type="number" id="cls-g" value="20" min="5" max="40" aria-label="학급당 학생 수 상한"> 명,
-                  학년당 <input type="number" id="cls-c" value="2" min="1" max="10" aria-label="학년당 학급 수 상한"> 학급 기준</label>
+                  학년당 <input type="number" id="cls-c" value="1" min="1" max="10" aria-label="학년당 학급 수 상한"> 학급 기준</label>
               </fieldset>
               <div class="assump" id="assump"></div>
             </div>
@@ -2756,7 +2770,7 @@ body.map-maxed.home-wide #home-side{display:none}
 
         <section class="sim-panel" id="sim-panel-detail" data-sim-panel="detail" role="tabpanel" hidden>
         <div class="sim-panel-heading"><div><h2>상세 수치</h2><p>기준연도와 선택한 비교 연도의 시군별 값을 나란히 검산할 수 있습니다.</p></div><span class="asof">2단계 · 표</span></div>
-        <div class="sim-table-heading"><h2>시군별 기준·모의 비교</h2><span>표는 옮겨 적기와 검산을 위해 그대로 제공합니다.</span></div>
+        <div class="sim-table-heading"><h2>시군별 기준·모의 비교</h2><div class="sim-table-tools no-print"><span>현재 조건의 기준·모의 비교표</span><button type="button" class="chip" id="sim-export-xls">Excel(.xls)로 저장</button></div></div>
         <div class="sim-tables">
           <div class="panel">
             <div class="ph"><span class="t">기준자료</span><span class="y">2026</span></div>
@@ -2787,11 +2801,6 @@ body.map-maxed.home-wide #home-side{display:none}
           </div>
         </div>
 
-        <div class="result-actions no-print">
-          <span style="font-size:11.5px;color:var(--ink-3)">현재 조건의 기준·모의 비교표</span>
-          <button type="button" class="chip" id="sim-export-xls">Excel(.xls)로 저장</button>
-        </div>
-
         <div class="spec">
           <b>계산 방식</b> — 파랑은 <b>입력한 기준</b>, 빨강은 <b>산출 결과</b>입니다.
           <br>· <b>학교 수 기준</b>: 학교수·학급수를 기준대로 정하고 → <b>학급당 평균 학생수</b>가 결과로 나옵니다.
@@ -2818,8 +2827,9 @@ body.map-maxed.home-wide #home-side{display:none}
           <div class="ai-action-row">
             <button type="button" class="chip" id="ai-check">분석 설정 확인</button>
             <button type="button" class="chip" id="ai-analyze">AI 해설 만들기</button>
-            <button type="button" class="chip" id="ai-print" disabled>인사이트 인쇄</button>
+            <button type="button" class="chip" id="ai-print" aria-describedby="ai-print-help" disabled>인사이트 인쇄</button>
             <span id="ai-status" role="status" aria-live="polite" style="color:var(--ink-3);font-size:12px"></span>
+            <span class="ai-print-help" id="ai-print-help">AI 해설 또는 기본 요약이 준비되면 인쇄할 수 있습니다.</span>
           </div>
           <div id="ai-output" class="ai-output" aria-live="polite">현재 조건의 인사이트를 준비하는 중입니다.</div>
           <p style="margin:9px 0 0;color:var(--ink-3);font-size:11.5px;line-height:1.55">개별 학생·교직원 정보는 보내지 않고 화면에 표시된 집계값만 전송합니다. 무료 사용량이 끝나거나 연결이 실패하면 같은 집계값의 기본 요약으로 전환합니다.</p>
@@ -8269,8 +8279,8 @@ document.querySelectorAll('input[name="basis-mode"],input[name="sch-basis"],inpu
 
 const SIM_SCENARIOS = {
   fixed:{label:'학교·학급 규모 유지',mode:'sch',basis:'fixed'},
-  class20:{label:'학급당 20명',mode:'cls',basis:'pm',values:{'cls-n':20,'cls-d':0}},
-  grade1:{label:'학년당 1학급',mode:'cls',basis:'grade',values:{'cls-g':20,'cls-c':1}}
+  class20:{label:'학급당 학생 수 기준',mode:'cls',basis:'pm'},
+  grade1:{label:'학년당 학급 수 기준',mode:'cls',basis:'grade'}
 };
 function setSimRadio(name,value){
   document.querySelectorAll(`input[name="${name}"]`).forEach(el=>{el.checked=el.value===value;});
@@ -8291,8 +8301,8 @@ function currentSimScenario(){
   if(mode==='sch'&&document.querySelector('input[name="sch-basis"]:checked').value==='fixed') return 'fixed';
   if(mode==='cls'){
     const basis=document.querySelector('input[name="cls-basis"]:checked').value;
-    if(basis==='pm'&&numOf('cls-n')===20&&numOf('cls-d')===0) return 'class20';
-    if(basis==='grade'&&numOf('cls-g')===20&&numOf('cls-c')===1) return 'grade1';
+    if(basis==='pm') return 'class20';
+    if(basis==='grade') return 'grade1';
   }
   return '';
 }
@@ -8304,7 +8314,10 @@ function syncSimScenarioCards(){
     btn.className='sim-scenario'+(selected?' is-selected':'');
   });
   const label=document.getElementById('sim-advanced-summary');
-  if(label) label.textContent=current?SIM_SCENARIOS[current].label:'사용자 설정';
+  if(label){
+    const title=current?document.getElementById(`scenario-${current}-title`):null;
+    label.textContent=title?.textContent||'사용자 설정';
+  }
 }
 function simDeltaText(value,unit){
   const rounded=Math.round(value);
@@ -8388,9 +8401,19 @@ function project(base, predStu, drop){
 function renderScenarioPreviews(base,predStu){
   const drop=base.stu>0?1-predStu/base.stu:0;
   const fixed=calculateProjection(base,predStu,drop,'sch','fixed');
-  const class20=calculateProjection(base,predStu,drop,'cls','pm',{n:20,d:0});
-  const grade1=calculateProjection(base,predStu,drop,'cls','grade',{g:20,c:1});
+  const classSize=numOf('cls-n');
+  const classRange=numOf('cls-d');
+  const gradeSize=numOf('cls-g');
+  const gradesPerSchool=numOf('cls-c');
+  const class20=calculateProjection(base,predStu,drop,'cls','pm',{n:classSize,d:classRange});
+  const grade1=calculateProjection(base,predStu,drop,'cls','grade',{g:gradeSize,c:gradesPerSchool});
   const fixedPer=fixed.cls>0?predStu/fixed.cls:0;
+  document.getElementById('scenario-fixed-title').textContent=`학교 ${fmt(base.sch)}교·학급 ${fmt(base.cls)}개를 유지하면`;
+  document.getElementById('scenario-fixed-desc').textContent=`2026년의 학교·학급 규모를 그대로 두고 ${sim.year}년 학생 수를 비교합니다.`;
+  document.getElementById('scenario-class20-title').textContent=`학급당 ${classSize}명${classRange?` ± ${classRange}명`:''}을 지키면`;
+  document.getElementById('scenario-class20-desc').textContent=`학급당 상한 ${classSize+classRange}명으로 필요한 학급·학교 수를 계산합니다.`;
+  document.getElementById('scenario-grade1-title').textContent=`학급당 ${gradeSize}명·학년당 ${gradesPerSchool}학급이면`;
+  document.getElementById('scenario-grade1-desc').textContent=`학교별 학년당 최대 ${gradesPerSchool}학급을 적용해 필요한 규모를 비교합니다.`;
   document.getElementById('scenario-fixed-live').textContent=`${sim.year}년 → 학급당 평균 ${fixedPer.toFixed(1)}명`;
   document.getElementById('scenario-class20-live').textContent=`${fmt(predStu)}명 → ${fmt(class20.cls)}학급 · ${fmt(class20.sch)}교`;
   document.getElementById('scenario-grade1-live').textContent=`${fmt(predStu)}명 → ${fmt(grade1.cls)}학급 · ${fmt(grade1.sch)}교`;
@@ -8459,8 +8482,8 @@ function renderSim(){
   const regionLabel = list.length===SIGUNGU.length ? '경북 전체' : (list.length ? list.map(s=>s.name).join(', ') : '선택된 지역 없음');
   const totalRow = simExportRows[0];
   const dropPct = allBase.stu>0 ? (100*(1-allPredStu/allBase.stu)).toFixed(1) : '0.0';
-  syncSimScenarioCards();
   renderScenarioPreviews(allBase,allPredStu);
+  syncSimScenarioCards();
   renderSimChange(allBase,totalRow,allPredStu,regionLabel);
   const predYearLabel=document.getElementById('pred-year-label');
   if(predYearLabel) predYearLabel.textContent=sim.year;
@@ -8830,7 +8853,7 @@ function finishPrintMode(){
 function runPrint(mode){
   const pageStyle=document.getElementById('print-page-mode');
   pageStyle.textContent=mode==='ai'
-    ? '@media print{@page{size:A4 portrait;margin:16mm 17mm 18mm}}'
+    ? '@media print{@page{size:A4 portrait;margin:12mm 14mm 14mm}}'
     : '@media print{@page{size:A4 landscape;margin:12mm 11mm 15mm}}';
   document.body.classList.toggle('print-ai-only',mode==='ai');
   window.addEventListener('afterprint',finishPrintMode,{once:true});
@@ -8893,7 +8916,22 @@ function policyMarkdown(value){
   });
   close();return html;
 }
-function aiInsightBoardHtml(text='',source=''){
+function friendlyModelName(model){
+  const raw=String(model||'').replace(/^models\//,'');
+  if(!raw) return '사용 모델 확인 불가';
+  if(raw==='gemini-flash-latest') return 'Gemini Flash 최신 모델(자동 선택)';
+  const m=raw.match(/^gemini-(\d+(?:\.\d+)?)-flash/i);
+  return m?`Gemini ${m[1]} Flash`:raw;
+}
+function aiAnalysisMetaHtml(source,meta={}){
+  if(!source||meta.hideBadge) return '';
+  const rule=source==='rule';
+  const label=rule?'기본 규칙 요약':friendlyModelName(meta.model);
+  const quality=meta.quality==='brief'?'응답이 짧아 기본 해석을 함께 보강했습니다.':
+    rule?'AI 연결에 실패해 화면 집계값을 규칙으로 정리했습니다.':'최신 Flash부터 순서대로 시도해 응답한 모델입니다.';
+  return `<div class="ai-analysis-meta"><span class="ai-analysis-badge${rule?' is-rule':''}">${htmlEsc(label)}</span><span class="ai-analysis-note">${htmlEsc(quality)}</span></div>`;
+}
+function aiInsightBoardHtml(text='',source='',meta={}){
   const total=simExportRows.find(row=>row.isTotal) || simExportRows[0];
   if(!total) return '<div class="ai-empty-note">현재 조건의 집계값을 준비하는 중입니다.</div>';
   const studentDelta=total.predStu-total.base.stu;
@@ -8909,6 +8947,7 @@ function aiInsightBoardHtml(text='',source=''){
   const narrative=text?`<div class="ai-narrative">${policyMarkdown(text)}</div>`:
     '<div class="ai-empty-note"><b>AI 해설 만들기</b>를 누르면 이 변화가 뜻하는 바, 해석할 때의 주의점, 다음에 비교할 질문을 현재 조건에 맞춰 덧붙입니다.</div>';
   return `<div class="ai-insight-board">
+    ${aiAnalysisMetaHtml(source,meta)}
     <div class="ai-insight-hero"><div><b>${htmlEsc(LEVEL_CFG[sim.level].full)} 학생 수 변화 신호</b><small>2026년 실적과 ${sim.year}년 모의값 비교 · 공식 장래추계 아님</small></div><strong>${studentPct>0?'+':''}${studentPct.toFixed(1)}%</strong></div>
     <div class="ai-insight-kpis">
       <div class="ai-insight-kpi"><span>학생 수 변화</span><b>${simDeltaText(studentDelta,'명')}</b><small>${fmt(total.base.stu)}명 → ${fmt(total.predStu)}명</small></div>
@@ -8920,26 +8959,35 @@ function aiInsightBoardHtml(text='',source=''){
     ${source?`<div class="ai-empty-note">${source==='ai'?'AI 해설은':'기본 요약은'} 화면의 집계값만 읽었습니다. 정책 판단 전에는 출생아 수, 전입·전출, 학교별 학년 자료를 함께 확인하세요.</div>`:''}
   </div>`;
 }
-function policyReportHtml(text){
+function policyReportHtml(text,source='ai',meta={}){
+  const region=document.getElementById('sim-filter-summary')?.textContent||'현재 선택 조건';
   return `<article class="policy-report">
     <header class="report-cover">
-      <div class="report-label">공개 데이터 해석 참고자료</div>
-      <h2>학령인구 변화 읽기</h2>
-      <div class="report-meta"><span>${htmlEsc(printStamp())}</span><span>현재 화면의 시군·학교급 집계 기준</span><span>공식 장래 학생수 추계가 아닌 모의 비교</span></div>
+      <div class="report-brand"><img src="symbol1.jpg" alt=""><span class="report-brand-copy"><b>경상북도교육청</b><small>학생수 시뮬레이터</small></span><span class="report-type">공개 데이터 해석 참고자료</span></div>
+      <h2>${htmlEsc(LEVEL_CFG[sim.level].full)} 학령인구 변화 인사이트</h2>
+      <div class="report-subtitle">기준연도 실적과 ${sim.year}년 모의값을 함께 읽는 비교 보고서</div>
+      <div class="report-meta"><span>${htmlEsc(printStamp())}</span><span>${htmlEsc(region)}</span><span>공식 장래추계 아님</span></div>
     </header>
-    <div class="report-body">${policyMarkdown(text)}</div>
+    <div class="report-model-line"><b>${htmlEsc(source==='rule'?'기본 규칙 요약':friendlyModelName(meta.model))}</b><span>${htmlEsc(source==='rule'?'AI 응답 대신 화면 집계값으로 작성':'분석 완료 시 실제 사용 모델을 기록')}</span></div>
+    <div class="report-body">${aiInsightBoardHtml(text,source,{...meta,hideBadge:true})}</div>
     <p class="report-note">개별 학생·교직원 정보는 포함하지 않았습니다. 모의값은 공개된 집계자료에 가정을 적용한 참고값이며 공식 장래 학생수 추계가 아닙니다.</p>
   </article>`;
 }
-function renderPolicyReport(text,source='ai'){
-  const html=policyReportHtml(text);
-  document.getElementById('ai-output').innerHTML=aiInsightBoardHtml(text,source);
+function renderPolicyReport(text,source='ai',meta={}){
+  const html=policyReportHtml(text,source,meta);
+  document.getElementById('ai-output').innerHTML=aiInsightBoardHtml(text,source,meta);
   document.getElementById('ai-print-report').innerHTML=html;
-  document.getElementById('ai-print').disabled=false;
+  const print=document.getElementById('ai-print');
+  print.disabled=false;
+  print.textContent=source==='rule'?'기본 요약 인쇄':'인사이트 인쇄';
+  print.title=source==='rule'?'AI 연결 실패 시 만든 기본 요약을 인쇄합니다.':'시각화와 AI 해설을 함께 인쇄합니다.';
 }
 function renderAiSnapshot(){
   document.getElementById('ai-output').innerHTML=aiInsightBoardHtml();
-  document.getElementById('ai-print').disabled=true;
+  const print=document.getElementById('ai-print');
+  print.disabled=true;
+  print.textContent='인사이트 인쇄';
+  print.title='AI 해설 또는 기본 요약을 먼저 만들어 주세요.';
   document.getElementById('ai-status').textContent='';
 }
 async function readJsonResponse(response){
@@ -8973,7 +9021,7 @@ document.getElementById('ai-check').addEventListener('click', async () => {
     if(!res.ok || !gemini) throw new Error('AI 서비스 상태를 읽지 못했습니다.');
     connection.className='ai-connection '+(gemini.configured?'ok':'warn');
     connection.textContent=gemini.configured
-      ? '분석 키가 서버에 등록되어 있습니다. 실제 응답과 무료 사용량은 분석 실행 시 확인됩니다.'
+      ? '분석 키가 서버에 등록되어 있습니다. 최신 Flash부터 순서대로 시도하며 실제 사용 모델은 분석 완료 후 표시됩니다.'
       : '분석 서비스를 사용할 수 없습니다. 관리자에게 문의해 주세요.';
     status.textContent=gemini.configured?'설정 확인 완료':'설정 필요';
   }catch(e){
@@ -8988,11 +9036,19 @@ document.getElementById('ai-analyze').addEventListener('click', async () => {
     const res=await fetch('/api/ai-analysis',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:aiContext})});
     const data=await readJsonResponse(res);
     if(!res.ok || !data.text) throw new Error(data.error || 'AI 응답 오류');
-    renderPolicyReport(data.text); status.textContent=data.fallback?'대체 분석 모드로 변화 요약 완료':'변화 요약 완료';
-    connection.className='ai-connection ok'; connection.textContent=data.fallback?'대체 분석 모드가 현재 집계값을 쉬운 말로 정리했습니다.':'분석 서비스가 현재 집계값을 쉬운 말로 정리했습니다.';
+    const model=friendlyModelName(data.model||data.requestedModel);
+    const brief=data.quality==='brief';
+    const text=brief?`${data.text}\n\n# 화면 집계값으로 보강한 비교 안내\n${localAiFallback()}`:data.text;
+    renderPolicyReport(text,'ai',{model:data.model||data.requestedModel,quality:data.quality});
+    status.textContent=`${model}로 분석 완료${brief?' · 기본 해석 보강':''}`;
+    connection.className='ai-connection ok';
+    connection.textContent=`사용 모델: ${model}${data.fallback?' · 앞선 모델 응답 실패 후 대체 모델 사용':''}${brief?' · 짧은 응답을 화면 집계값으로 보강':''}`;
+    btn.textContent='AI 해설 다시 만들기';
   }catch(e){
-    renderPolicyReport(localAiFallback(),'rule'); status.textContent='기본 변화 요약으로 전환';
-    connection.className='ai-connection warn'; connection.textContent=friendlyAnalysisError(e.message);
+    const message=friendlyAnalysisError(e.message);
+    renderPolicyReport(localAiFallback(),'rule',{error:message}); status.textContent='AI 응답 실패 · 기본 요약으로 전환';
+    connection.className='ai-connection warn'; connection.textContent=`${message} 아래 결과는 AI가 아닌 화면 집계값의 기본 요약입니다.`;
+    btn.textContent='AI 해설 다시 시도';
   }finally{ btn.disabled=false; }
 });
 
