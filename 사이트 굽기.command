@@ -150,6 +150,14 @@ cp "$SRC_DASH/index.html" "$SRC_DASH/README.md" "$SRC_DASH/README.html" "$OUT/da
 [ -f "$SRC_DASH/gbe-logo.png" ] && cp "$SRC_DASH/gbe-logo.png" "$OUT/dashboard/gbe-logo.png"
 [ -f "$SRC_DASH/symbol1.jpg" ] && cp "$SRC_DASH/symbol1.jpg" "$OUT/dashboard/symbol1.jpg"
 [ -d "$SRC_DASH/assets" ] && cp -R "$SRC_DASH/assets" "$OUT/dashboard/assets"
+# ★ 새 지도 〔2026. 9. 10.〕 MapLibre 를 «저장소에 넣어» 씁니다 — 외부 CDN 이 아니라
+#   같은 출처에서 나갑니다(CSP script-src 'self' 그대로). 되돌릴 자리는 태그
+#   backup/sgis-map-2026-09-10 입니다.
+#   map-new.html 은 대시보드 안 「지도로 보기」로 옮긴 뒤 남긴 «시험판»입니다.
+#   비교할 자리로 한동안 함께 올리다가, 손볼 일이 없어지면 지웁니다.
+[ -f "$SRC_DASH/map-new.html" ] && cp "$SRC_DASH/map-new.html" "$OUT/dashboard/map-new.html"
+[ -f "$SRC_DASH/schools.json" ] && cp "$SRC_DASH/schools.json" "$OUT/dashboard/schools.json"
+[ -d "$SRC_DASH/vendor" ] && cp -R "$SRC_DASH/vendor" "$OUT/dashboard/vendor"
 cp -R "$SRC_APPS" "$OUT/apps"
 
 # ── 1-b. 주간 뉴스를 대시보드에 «심습니다» ────────────────────────
@@ -398,7 +406,7 @@ cat > "$OUT/_headers" <<'EOF'
   Permissions-Policy: geolocation=(), camera=(), microphone=(), interest-cohort=()
   Cache-Control: public, max-age=0, must-revalidate
 /dashboard/*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://sgisapi.mods.go.kr; img-src 'self' data: blob: https://sgisapi.mods.go.kr https://api.vworld.kr; font-src 'self'; connect-src 'self' https://sgisapi.mods.go.kr; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://sgisapi.mods.go.kr; img-src 'self' data: blob: https://sgisapi.mods.go.kr https://api.vworld.kr https://s3.amazonaws.com; font-src 'self'; worker-src 'self' blob:; child-src 'self' blob:; connect-src 'self' https://sgisapi.mods.go.kr https://api.vworld.kr https://s3.amazonaws.com; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
 /apps/*
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
 /

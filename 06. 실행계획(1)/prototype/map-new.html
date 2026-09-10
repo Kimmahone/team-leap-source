@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>경북 학령인구 지도 — 새 판</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="./vendor/maplibre-gl.css">
+<style>
+/* ══ 새 지도 〔2026. 9. 10.〕 ═══════════════════════════════════════════════
+   SGIS 라이브러리를 버리고 MapLibre GL 위에 브이월드 타일을 깝니다.
+
+   왜 갈아엎었나 — SGIS 의 `sop` 은 UTM-K 전용으로 만들어져 있어, 브이월드
+   타일을 얹으려 할 때마다 좌표계·타일층 어딘가에서 조용히 막혔습니다.
+   두 번 고쳤는데 두 번 다 «빈 화면»이었고, 오류도 나지 않아 브라우저 밖에서는
+   무엇이 막혔는지 알 길이 없었습니다.
+
+   MapLibre 는 웹 메르카토르가 기본이고 브이월드 타일이 바로 그 좌표계입니다.
+   앞서 손으로 검증한 타일 번호(z8 → 219/100)가 곧 MapLibre 의 기본 셈법입니다.
+
+   ★ 되돌릴 자리 — 태그 `backup/sgis-map-2026-09-10`, 브랜치 `backup/sgis-map`
+   ═════════════════════════════════════════════════════════════════════════ */
+:root{
+  --ink:#101A24; --ink-2:#4B5A69; --ink-3:#6F7F8F;
+  --panel:#FFFFFF; --bg:#F2F5F8; --line:#DBE3EB; --sunk:#EDF2F6;
+  --brand:#1B4FA0; --on-fill:#FFFFFF;
+  --lv-유:#6B3FA0; --lv-초:#0D6E5C; --lv-중:#1B4FA0; --lv-고:#A8560A; --lv-특수:#5A6672;
+  --font:"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
+  --mono:"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#E8EDF3; --ink-2:#AFBCC8; --ink-3:#8B99A6;
+    --panel:#151E28; --bg:#0D141B; --line:#28353F; --sunk:#111922;
+    --brand:#7FB3F7; --on-fill:#0D141B;
+    --lv-유:#C9A6F2; --lv-초:#4FD1B0; --lv-중:#7FB3F7; --lv-고:#F2A65A; --lv-특수:#97A3B0;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#E8EDF3; --ink-2:#AFBCC8; --ink-3:#8B99A6;
+  --panel:#151E28; --bg:#0D141B; --line:#28353F; --sunk:#111922;
+  --brand:#7FB3F7; --on-fill:#0D141B;
+  --lv-유:#C9A6F2; --lv-초:#4FD1B0; --lv-중:#7FB3F7; --lv-고:#F2A65A; --lv-특수:#97A3B0;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);overflow:hidden}
+
+/* 참고하신 화면처럼 «가장자리까지» 씁니다 — 왼쪽 패널 + 지도가 화면을 가득 채웁니다 */
+.shell{display:grid;grid-template-columns:340px 1fr;height:100vh}
+@media (max-width:820px){ .shell{grid-template-columns:1fr;grid-template-rows:auto 1fr} }
+
+.side{background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;
+  display:flex;flex-direction:column;gap:14px;padding:18px 18px 28px}
+.side h1{margin:0;font-size:17px;font-weight:800;letter-spacing:-.01em}
+.side .sub{margin:3px 0 0;font-size:12px;color:var(--ink-3)}
+.card{background:var(--sunk);border:1px solid var(--line);border-radius:10px;padding:13px 14px}
+.card h2{margin:0 0 9px;font-size:12px;font-weight:700;color:var(--ink-2);
+  letter-spacing:.04em}
+.row{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:12.5px;padding:6px 11px;min-height:32px;border-radius:999px;
+  border:1px solid var(--line);background:var(--panel);color:var(--ink-2);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-fill);font-weight:700}
+.chip:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.stat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat div{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 9px;text-align:center}
+.stat .k{font-size:10.5px;color:var(--ink-3)}
+.stat .v{font-family:var(--mono);font-size:16px;font-weight:600;color:var(--brand);
+  font-variant-numeric:tabular-nums;line-height:1.3}
+/* 화면 안 학교 목록 — 지도와 «같은 것»을 봅니다 */
+.list{max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:8px}
+.list .r{background:var(--panel);border:0;width:100%;text-align:left;font:inherit;
+  padding:7px 10px;display:grid;grid-template-columns:8px 1fr auto;gap:8px;align-items:center;cursor:pointer}
+.list .r:hover{background:var(--sunk)}
+.list .r:focus-visible{outline:2px solid var(--brand);outline-offset:-2px}
+.list .r i{width:8px;height:8px;border-radius:50%}
+.list .r b{font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.list .r span{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.list .empty{background:var(--panel);padding:12px;font-size:12px;color:var(--ink-3)}
+.legend{display:flex;flex-wrap:wrap;gap:5px 12px;font-size:11.5px;color:var(--ink-2)}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.note{font-size:11.5px;color:var(--ink-3);line-height:1.6}
+
+.mapwrap{position:relative}
+#map{position:absolute;inset:0}
+.status{position:absolute;left:12px;bottom:12px;z-index:5;background:var(--panel);
+  border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-size:12px;color:var(--ink-2);
+  box-shadow:0 2px 10px rgba(16,26,36,.14);max-width:min(520px,70vw)}
+.tools{position:absolute;left:12px;top:12px;z-index:5;display:flex;gap:6px;flex-wrap:wrap}
+.tools .chip{background:var(--panel);box-shadow:0 2px 8px rgba(16,26,36,.12)}
+
+/* 학교 딱지 — 확대했을 때만 이름이 섭니다 */
+.pin{width:13px;height:13px;border-radius:50%;border:2px solid #fff;
+  box-shadow:0 1px 4px rgba(16,26,36,.4);cursor:pointer}
+.lab{display:flex;align-items:center;gap:5px;white-space:nowrap;cursor:pointer;
+  background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:3px 8px 3px 6px;
+  font-size:11.5px;box-shadow:0 2px 8px rgba(16,26,36,.2);color:var(--ink)}
+.lab i{width:8px;height:8px;border-radius:50%;flex:none}
+.lab b{font-weight:700}
+.lab span{font-family:var(--mono);color:var(--brand);font-weight:600}
+.bub{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:5px 10px;
+  text-align:center;box-shadow:0 2px 10px rgba(16,26,36,.22);cursor:pointer;white-space:nowrap}
+.bub b{display:block;font-size:12px;font-weight:700}
+.bub span{display:block;font-family:var(--mono);font-size:11.5px;color:var(--brand);font-weight:600}
+.maplibregl-popup-content{font-family:var(--font);font-size:12.5px;border-radius:9px;padding:11px 13px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <div>
+      <h1>경북 학령인구 지도</h1>
+      <p class="sub">브이월드 배경 · 학교 1,539곳 · 2026년 공시</p>
+    </div>
+
+    <div class="card">
+      <h2>배경</h2>
+      <div class="row" id="bases"></div>
+    </div>
+
+    <div class="card">
+      <h2>보기</h2>
+      <div class="row">
+        <button type="button" class="chip" id="v2d" aria-pressed="true">2D</button>
+        <button type="button" class="chip" id="v3d" aria-pressed="false">3D 기울여 보기</button>
+        <button type="button" class="chip" id="reset">경북 전체로</button>
+      </div>
+      <p class="note" style="margin:9px 0 0">3D 는 지도를 기울여 봅니다. 산과 골짜기가
+      드러나 통학 거리를 눈으로 가늠하기 좋습니다.</p>
+    </div>
+
+    <div class="card">
+      <h2>학교급</h2>
+      <div class="row" id="levels"></div>
+    </div>
+
+    <div class="card">
+      <h2 id="statTitle">경북 전체</h2>
+      <div class="stat">
+        <div><div class="k">학교</div><div class="v" id="nSch">–</div></div>
+        <div><div class="k">학생</div><div class="v" id="nStu">–</div></div>
+        <div><div class="k">학급당</div><div class="v" id="nPer">–</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 id="listTitle">화면 안 학교</h2>
+      <div id="list" class="list">지도를 움직이면 이 자리에 채워집니다.</div>
+    </div>
+
+    <div class="card">
+      <h2>범례</h2>
+      <div class="legend" id="legend"></div>
+      <p class="note" style="margin:9px 0 0">멀리서는 시군으로 접히고,
+      확대하면 학교마다 이름과 학생 수가 섭니다.</p>
+    </div>
+
+    <p class="note">배경지도 · 브이월드(국토교통부) · 학교 위치는 학교알리미 공시값입니다.
+    이 화면은 새 지도를 시험하는 자리입니다.</p>
+  </aside>
+
+  <div class="mapwrap">
+    <div id="map"></div>
+    <div class="tools">
+      <button type="button" class="chip" id="themeBtn">어둡게</button>
+    </div>
+    <div class="status" id="status">지도를 준비하는 중입니다…</div>
+  </div>
+</div>
+
+<script src="./vendor/maplibre-gl.js"></script>
+<script>
+'use strict';
+/* ── 브이월드 타일 ────────────────────────────────────────────────────────
+   ★ 레이어마다 확장자가 다릅니다. 이것을 몰라 화면이 통째로 비었던 적이 있습니다.
+     Base·Hybrid·midnight → png · Satellite → jpeg  (하나씩 불러 확인한 값) */
+/* ★ 하이브리드는 «단독 배경이 아니라 덮개»입니다 〔2026. 9. 10.〕
+   타일을 받아 재어 보니 Base 는 39.9KB 인데 Hybrid 는 9.6KB 뿐입니다 —
+   길과 지명만 들어 있는 투명 그림입니다. 그것만 깔면 일반 지도보다 못한
+   허전한 화면이 됩니다. **위성 위에 얹어야** 「위성+지명」이 됩니다. */
+var BASES = [
+  { id:'Base',      name:'일반',      ext:'png',  base:'Base' },
+  { id:'Satellite', name:'위성',      ext:'jpeg', base:'Satellite' },
+  { id:'Hybrid',    name:'위성+지명', ext:'jpeg', base:'Satellite', over:'Hybrid', overExt:'png' },
+  { id:'midnight',  name:'야간',      ext:'png',  base:'midnight' }
+];
+
+/* ★ 고도 — 브이월드에는 없습니다. 하나씩 불러 확인했습니다(hillshade·terrain·dem 모두 500).
+   AWS Terrain Tiles(Terrarium)는 키 없이 열려 있고 우리 타일 번호로 바로 옵니다.
+   산과 골짜기가 드러나야 통학 거리를 눈으로 가늠할 수 있습니다. */
+var DEM_URL = 'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png';
+var LV = ['초','중','고','유','특수'];
+var LV_FULL = { '초':'초등학교','중':'중학교','고':'고등학교','유':'유치원','특수':'특수학교' };
+
+var state = { base:'Base', level:'전체', key:null, schools:[], sel:null };
+var map = null, popup = null, markers = [], sggMarkers = [];
+
+function say(t){ var el = document.getElementById('status'); if(el) el.textContent = t; }
+function lvColor(lv){
+  return getComputedStyle(document.documentElement).getPropertyValue('--lv-' + lv).trim() || '#1B4FA0';
+}
+function fmt(n){ return (n == null ? '–' : Number(n).toLocaleString('ko-KR')); }
+function compact(n){
+  n = Number(n) || 0;
+  if(n >= 10000) return (n/10000).toFixed(n >= 100000 ? 0 : 1).replace(/\.0$/,'') + '만';
+  if(n >= 1000) return (n/1000).toFixed(1).replace(/\.0$/,'') + '천';
+  return String(n);
+}
+function vwUrl(layer, ext){
+  return 'https://api.vworld.kr/req/wmts/1.0.0/' + state.key + '/' + layer + '/{z}/{y}/{x}.' + ext;
+}
+function baseOf(id){ return BASES.filter(function(x){ return x.id === id; })[0] || BASES[0]; }
+
+/* ── 자료 ─────────────────────────────────────────────────────────────── */
+function schoolHtml(s){
+  return '<b>' + s.n + '</b><br>' + LV_FULL[s.lv] + ' · ' + s.s +
+    '<br>학생 ' + fmt(s.st) + '명 · 학급 ' + fmt(s.cl) + '개' +
+    (s.cl > 0 ? ' · 학급당 ' + (s.st/s.cl).toFixed(1) + '명' : '') +
+    (s.fd ? '<br>' + s.fd + '년 개교 (' + (new Date().getFullYear() - s.fd) + '년째)' : '');
+}
+
+function shown(){
+  return state.schools.filter(function(s){
+    return state.level === '전체' || s.lv === state.level;
+  });
+}
+
+function renderStats(){
+  var list = shown();
+  if(state.sel) list = list.filter(function(s){ return s.s === state.sel; });
+  var stu = 0, cls = 0;
+  list.forEach(function(s){ stu += (s.st || 0); cls += (s.cl || 0); });
+  document.getElementById('statTitle').textContent = state.sel ? state.sel : '경북 전체';
+  document.getElementById('nSch').textContent = fmt(list.length);
+  document.getElementById('nStu').textContent = compact(stu);
+  document.getElementById('nPer').textContent = cls > 0 ? (stu/cls).toFixed(1) : '–';
+}
+
+/* ── 표시 ─────────────────────────────────────────────────────────────── */
+function clearMarkers(){
+  markers.forEach(function(m){ m.remove(); }); markers = [];
+  sggMarkers.forEach(function(m){ m.remove(); }); sggMarkers = [];
+}
+
+/* 배율에 따라 세는 단위가 바뀝니다 — 멀리서는 시군, 가까이서는 학교.
+   MapLibre 는 배율이 소수라 문턱을 소수로 둡니다. */
+/* ★ 문턱 〔2026. 9. 10.〕 처음엔 이름이 서는 자리를 11.8 로 두었는데
+   「확대해도 이름으로 안 바뀐다」는 말을 들었습니다. 사람이 학교 하나를 보려고
+   확대하는 배율은 대개 11 안팎입니다. 10.6 으로 낮추고, 지금 배율을 상태줄에
+   함께 적어 어디쯤인지 보이게 했습니다. */
+function tierFor(z){ return z < 9.2 ? 'sgg' : (z < 10.6 ? 'pin' : 'label'); }
+
+function draw(){
+  if(!map) return;
+  clearMarkers();
+  var z = map.getZoom(), tier = tierFor(z), list = shown();
+
+  if(tier === 'sgg'){
+    var by = {};
+    list.forEach(function(s){
+      var c = by[s.s] || (by[s.s] = { n:0, st:0, la:0, lo:0 });
+      c.n++; c.st += (s.st || 0); c.la += s.la; c.lo += s.lo;
+    });
+    Object.keys(by).forEach(function(k){
+      var c = by[k];
+      var el = document.createElement('div');
+      el.className = 'bub';
+      el.innerHTML = '<b>' + k + '</b><span>' + c.n + '곳 · ' + compact(c.st) + '명</span>';
+      el.addEventListener('click', function(){
+        state.sel = k; renderStats();
+        map.flyTo({ center:[c.lo/c.n, c.la/c.n], zoom:10.4, duration:900 });
+      });
+      sggMarkers.push(new maplibregl.Marker({ element:el })
+        .setLngLat([c.lo/c.n, c.la/c.n]).addTo(map));
+    });
+    say('시군 단위로 접어서 봅니다 · 학교 ' + fmt(list.length) + '곳 · 확대하면 학교가 나옵니다');
+    return;
+  }
+
+  /* 화면 안에 있는 것만 그립니다 — 1,539곳을 늘 그리면 느려집니다. */
+  var b = map.getBounds();
+  var vis = list.filter(function(s){
+    return s.lo >= b.getWest() && s.lo <= b.getEast() && s.la >= b.getSouth() && s.la <= b.getNorth();
+  });
+  var cap = tier === 'label' ? 260 : 900;
+  if(vis.length > cap) vis = vis.slice().sort(function(a,c){ return (c.st||0)-(a.st||0); }).slice(0, cap);
+
+  vis.forEach(function(s){
+    var el = document.createElement('div');
+    if(tier === 'label'){
+      el.className = 'lab';
+      el.innerHTML = '<i style="background:' + lvColor(s.lv) + '"></i>' +
+        '<b>' + s.n.replace(/(초등학교|중학교|고등학교|유치원|학교)$/, '') + '</b>' +
+        '<span>' + fmt(s.st) + '</span>';
+    }else{
+      el.className = 'pin';
+      el.style.background = lvColor(s.lv);
+    }
+    /* ★ 클릭을 손으로 달지 않고 MapLibre 가 잇게 합니다 〔2026. 9. 10.〕
+       「눌러지지 않는다」는 말을 들었습니다. 마커는 움직일 때마다 다시 만들어지는데,
+       그때 손으로 단 리스너가 함께 사라집니다. setPopup 은 마커가 스스로 맡습니다. */
+    var mk = new maplibregl.Marker({ element:el })
+      .setLngLat([s.lo, s.la])
+      .setPopup(new maplibregl.Popup({ offset:14 }).setHTML(schoolHtml(s)))
+      .addTo(map);
+    mk._school = s;
+    markers.push(mk);
+  });
+  renderList(vis, list.length);
+  say((tier === 'label' ? '학교 이름까지 봅니다' : '학교 위치를 봅니다') +
+      ' · 화면 안 ' + fmt(vis.length) + '곳' + (vis.length < list.length ? ' (전체 ' + fmt(list.length) + '곳)' : '') +
+      ' · 배율 ' + z.toFixed(1) + (tier === 'label' ? '' : ' (' + (10.6 - z).toFixed(1) + '만 더 확대하면 이름이 섭니다)'));
+}
+
+/* 화면 안 학교를 목록으로. 누르면 그 학교로 날아가 말풍선을 엽니다 —
+   목록과 지도가 «같은 것»을 보게 하는 자리입니다. */
+function renderList(vis, total){
+  var box = document.getElementById('list');
+  var t = document.getElementById('listTitle');
+  if(t) t.textContent = '화면 안 학교 ' + fmt(vis.length) + '곳';
+  if(!box) return;
+  if(!vis.length){ box.innerHTML = '<div class="empty">이 화면에는 학교가 없습니다.</div>'; return; }
+  var rows = vis.slice().sort(function(a,b){ return (b.st||0)-(a.st||0); }).slice(0, 120);
+  box.innerHTML = rows.map(function(s, i){
+    return '<button type="button" class="r" data-i="' + i + '">' +
+      '<i style="background:' + lvColor(s.lv) + '"></i>' +
+      '<b>' + s.n + '</b><span>' + fmt(s.st) + '</span></button>';
+  }).join('');
+  Array.prototype.forEach.call(box.querySelectorAll('.r'), function(btn){
+    btn.addEventListener('click', function(){
+      var s = rows[+btn.dataset.i];
+      map.flyTo({ center:[s.lo, s.la], zoom:Math.max(map.getZoom(), 13), duration:900 });
+      if(popup) popup.remove();
+      popup = new maplibregl.Popup({ offset:14 }).setLngLat([s.lo, s.la])
+        .setHTML(schoolHtml(s)).addTo(map);
+    });
+  });
+}
+
+/* ── 배경 갈아 끼우기 ─────────────────────────────────────────────────── */
+function setBase(id){
+  state.base = id;
+  var b = baseOf(id);
+  if(map && map.getSource('vworld')) map.getSource('vworld').setTiles([vwUrl(b.base, b.ext)]);
+  if(map && map.getSource('vworld-over')){
+    map.getSource('vworld-over').setTiles([vwUrl(b.over || 'Hybrid', b.overExt || 'png')]);
+    map.setLayoutProperty('vworld-over', 'visibility', b.over ? 'visible' : 'none');
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('#bases .chip'), function(c){
+    c.setAttribute('aria-pressed', String(c.dataset.base === id));
+  });
+}
+
+function buildChips(){
+  var wrap = document.getElementById('bases');
+  wrap.innerHTML = BASES.map(function(b){
+    return '<button type="button" class="chip" data-base="' + b.id + '" aria-pressed="' +
+      (b.id === state.base) + '">' + b.name + '</button>';
+  }).join('');
+  Array.prototype.forEach.call(wrap.querySelectorAll('.chip'), function(c){
+    c.addEventListener('click', function(){ setBase(c.dataset.base); });
+  });
+
+  var lw = document.getElementById('levels');
+  lw.innerHTML = ['전체'].concat(LV).map(function(l){
+    return '<button type="button" class="chip" data-lv="' + l + '" aria-pressed="' +
+      (l === state.level) + '">' + (l === '전체' ? '전체' : LV_FULL[l]) + '</button>';
+  }).join('');
+  Array.prototype.forEach.call(lw.querySelectorAll('.chip'), function(c){
+    c.addEventListener('click', function(){
+      state.level = c.dataset.lv;
+      Array.prototype.forEach.call(lw.querySelectorAll('.chip'), function(x){
+        x.setAttribute('aria-pressed', String(x.dataset.lv === state.level));
+      });
+      renderStats(); draw();
+    });
+  });
+
+  document.getElementById('legend').innerHTML = LV.map(function(l){
+    return '<span><i style="background:' + lvColor(l) + '"></i>' + LV_FULL[l] + '</span>';
+  }).join('');
+}
+
+/* ── 시작 ─────────────────────────────────────────────────────────────── */
+var GB = { center:[128.75, 36.35], zoom:7.6 };
+
+async function start(){
+  buildChips();
+  var kr, sr;
+  try{
+    kr = await fetch('/api/vworld-key').then(function(r){ return r.json(); });
+  }catch(e){ kr = null; }
+  if(!kr || !kr.ok || !kr.key){
+    say('브이월드 키를 받지 못했습니다. Cloudflare 변수에 VWORLD_API_KEY 가 있는지 확인해 주세요.');
+    return;
+  }
+  state.key = kr.key;
+
+  try{
+    sr = await fetch('./schools.json').then(function(r){ return r.json(); });
+  }catch(e){ sr = null; }
+  if(!sr){ say('학교 자료를 받지 못했습니다.'); return; }
+  state.schools = sr;
+  renderStats();
+
+  var b = baseOf(state.base);
+  map = new maplibregl.Map({
+    container: 'map',
+    style: {
+      version: 8,
+      sources: {
+        vworld:       { type:'raster', tiles:[vwUrl(b.base, b.ext)], tileSize:256, minzoom:6, maxzoom:19,
+                        attribution:'배경지도 · <a href="https://www.vworld.kr" target="_blank" rel="noopener">브이월드</a> 국토교통부' },
+        'vworld-over':{ type:'raster', tiles:[vwUrl('Hybrid','png')], tileSize:256, minzoom:6, maxzoom:19 },
+        /* 고도 — AWS Terrain Tiles(Terrarium). 브이월드에는 고도 타일이 없습니다. */
+        dem:          { type:'raster-dem', tiles:[DEM_URL], tileSize:256, minzoom:0, maxzoom:14,
+                        encoding:'terrarium',
+                        attribution:'고도 · <a href="https://registry.opendata.aws/terrain-tiles/" target="_blank" rel="noopener">AWS Terrain Tiles</a>' }
+      },
+      layers: [
+        { id:'vworld',      type:'raster', source:'vworld' },
+        { id:'vworld-over', type:'raster', source:'vworld-over',
+          layout:{ visibility: b.over ? 'visible' : 'none' } },
+        /* 음영 — 3D 로 기울이지 않아도 산줄기가 드러납니다 */
+        { id:'hills', type:'hillshade', source:'dem',
+          paint:{ 'hillshade-exaggeration':0.45, 'hillshade-shadow-color':'#2b3a46' },
+          layout:{ visibility:'none' } }
+      ]
+    },
+    center: GB.center, zoom: GB.zoom, minZoom: 6, maxZoom: 18,
+    pitch: 0, bearing: 0, attributionControl: true,
+    maxPitch: 75
+  });
+  map.addControl(new maplibregl.NavigationControl({ visualizePitch:true }), 'top-right');
+  map.addControl(new maplibregl.ScaleControl({ maxWidth:120, unit:'metric' }), 'bottom-right');
+
+  map.on('load', function(){ draw(); });
+  map.on('moveend', draw);
+  map.on('zoomend', draw);
+  map.on('error', function(e){
+    /* 타일이 안 오면 조용히 흰 화면이 됩니다 — 그렇다고 말합니다. */
+    say('배경지도를 받지 못했습니다 — 학교 위치는 그대로입니다. (' +
+        ((e && e.error && e.error.message) || '브이월드 응답 없음') + ')');
+  });
+
+  document.getElementById('v2d').addEventListener('click', function(){
+    try{ map.setTerrain(null); map.setLayoutProperty('hills','visibility','none'); }catch(e){}
+    map.easeTo({ pitch:0, bearing:0, duration:700 });
+    document.getElementById('v2d').setAttribute('aria-pressed','true');
+    document.getElementById('v3d').setAttribute('aria-pressed','false');
+  });
+  document.getElementById('v3d').addEventListener('click', function(){
+    /* ★ 기울이기만 하는 것이 아니라 «땅을 솟게» 합니다. 고도 자료가 있어야
+       산과 골짜기가 드러나고, 그래야 통학 거리를 눈으로 가늠할 수 있습니다. */
+    try{
+      map.setTerrain({ source:'dem', exaggeration:1.5 });
+      map.setLayoutProperty('hills','visibility','visible');
+    }catch(e){
+      say('고도 자료를 받지 못해 기울여 보기만 합니다.');
+    }
+    map.easeTo({ pitch:62, bearing:-20, duration:1100 });
+    document.getElementById('v2d').setAttribute('aria-pressed','false');
+    document.getElementById('v3d').setAttribute('aria-pressed','true');
+  });
+  document.getElementById('reset').addEventListener('click', function(){
+    state.sel = null; renderStats();
+    map.flyTo({ center:GB.center, zoom:GB.zoom, pitch:0, bearing:0, duration:900 });
+  });
+  document.getElementById('themeBtn').addEventListener('click', function(){
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+    this.textContent = dark ? '어둡게' : '밝게';
+    if(!dark && state.base === 'Base') setBase('midnight');
+    if(dark && state.base === 'midnight') setBase('Base');
+    draw();
+  });
+}
+start();
+</script>
+</body>
+</html>
