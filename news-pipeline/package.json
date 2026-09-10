@@ -6,10 +6,10 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
+    "weekly": "node build-weekly-issue.mjs --force",
     "check": "node ../tests/news-archive.test.mjs"
   },
   "dependencies": {
     "xlsx": "0.18.5"
   }
 }
-

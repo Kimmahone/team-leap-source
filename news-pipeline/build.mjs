@@ -106,6 +106,10 @@ function sha(file) {
 
 function ensure(dir) { fs.mkdirSync(dir, { recursive: true }); }
 function writeJson(file, data) { ensure(path.dirname(file)); fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n'); }
+function readJson(file, fallback) {
+  try { return JSON.parse(fs.readFileSync(file, 'utf8')); }
+  catch { return fallback; }
+}
 
 function parseRow(row) {
   const excluded = value(row, ['분석제외 여부','분석제외여부','제외여부']);
@@ -311,6 +315,9 @@ function main() {
   const all = dedupe(parsed).sort((a,b) => b.publishedAt.localeCompare(a.publishedAt));
   const curated = all.filter(a => a.topics.length);
   const analysis = curated.filter(a=>a.analysisRelevant&&a.headlineTopics.length).map(({analysisRelevant,headlineTopics,...article})=>({...article,topics:headlineTopics}));
+  /* BIG Kinds 원본을 다시 분석해도 이미 발행한 주간 이슈페이퍼는 지우지 않습니다.
+     분석 산출물은 갈아 끼우되, 발행 이력은 최대 52호를 이어 갑니다. */
+  const previousIssues = readJson(path.join(DEST,'issues','index.json'), []);
   fs.rmSync(DEST, {recursive:true,force:true}); ensure(DEST);
   fs.rmSync(WORK, {recursive:true,force:true}); ensure(WORK);
 
@@ -326,6 +333,7 @@ function main() {
   const network = makeNetwork(analysis); writeJson(path.join(DEST,'network.json'),network);
   const issue = {
     id:`${snapshot.anchorDate}-recent-30d`, status:'prototype',
+    source:'BIG Kinds 뉴스 검색·분석', publishedAt:snapshot.anchorDate,
     title:`최근 30일 경북 학령인구 뉴스 이슈 브리프`,
     period:snapshot.currentPeriod,
     lead:`최근 기사에서 ‘${snapshot.topics[0]?.topic || '학령인구'}’ 관련 보도가 가장 큰 비중을 보였습니다. 기사량은 정책 관심의 신호로만 읽고 학생 수 실적과는 구분해야 합니다.`,
@@ -335,7 +343,11 @@ function main() {
     caveat:snapshot.basis,
     review:'발행 전 담당자의 사실 확인과 문장 검토가 필요합니다.'
   };
-  writeJson(path.join(DEST,'issues','index.json'),[issue]);
+  const issues=[issue,...previousIssues.filter(p=>p&&p.id!==issue.id)]
+    .sort((a,b)=>String(b.publishedAt||b.period?.to||'').localeCompare(String(a.publishedAt||a.period?.to||'')))
+    .slice(0,52);
+  issues.forEach((p,i)=>{p.issueNo=issues.length-i;});
+  writeJson(path.join(DEST,'issues','index.json'),issues);
 
   for (const rel of ['snapshot.json','network.json','issues/index.json']) {
     const file=path.join(DEST,rel); outputFiles.push({path:rel,bytes:fs.statSync(file).size,sha256:sha(file)});
