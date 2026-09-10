@@ -1810,5 +1810,45 @@ console.log('\n■ 〔현황〕 구현 용어를 걷어냈다');
 check('「Pure SVG」·「Line Chart」 같은 말이 없다',
   !/Pure SVG/.test(html) && !/Line Chart/.test(html));
 
+
+console.log('\n■ 〔현황〕 안쪽 탭으로 나눈다');
+/* 한 화면에 여섯 칸을 세로로 쌓았더니 끝까지 보려면 스크롤을 너무 많이
+   내려야 했습니다. 무엇을 물으러 왔는지에 따라 볼 것이 다릅니다. */
+check('네 갈래로 나눈다', q("STATUS_VIEWS.join()") === 'where,how,who,what' &&
+  ((html.match(/data-status-view="/g) || []).length === 4));
+check('갈래마다 이름이 질문이다 (차트 목록이 아니라)',
+  /어디가 먼저인가<\/button>/.test(html) && /얼마나 줄어드나<\/button>/.test(html) &&
+  /누가 올라오나<\/button>/.test(html) && /무엇이 달라지나<\/button>/.test(html));
+check('한 갈래만 보인다', q(
+  "(function(){setStatusView('who');var n=0;STATUS_VIEWS.forEach(function(k){" +
+  "if(!document.getElementById('status-panel-'+k).hidden) n++});return n;})()") === 1);
+check('고른 갈래가 눌린 상태로 보인다', q(
+  "(function(){setStatusView('what');var b=document.querySelectorAll('[data-status-view]');" +
+  "return true;})()") === true &&
+  /b\.setAttribute\('aria-pressed', String\(b\.dataset\.statusView === v\)\)/.test(js));
+check('없는 갈래를 부르면 첫 갈래로 간다', q(
+  "(function(){setStatusView('없는것');return statusState.view;})()") === 'where');
+/* 뉴스 탭이 이미 쓰고 있는 모양을 그대로 씁니다 — 한 앱 안에서 같은 것은
+   같게 생겨야 합니다. */
+check('뉴스 탭과 같은 모양을 쓴다',
+  /<div class="news-view-tabs" role="tablist" aria-label="학령인구 현황 화면 선택">/.test(html));
+check('지난번에 보던 갈래로 연다', /localStorage\.setItem\('leap-status-view-v1', v\)/.test(js));
+
+console.log('\n■ 〔현황〕 갈래를 옮겨도 고른 시군을 잊지 않는다');
+/* 탭을 옮기다 고른 시군을 잊으면 다른 지역의 수를 읽게 됩니다. */
+check('어느 갈래에 있든 보고 있는 곳이 적힌다', /id="status-where"/.test(html) &&
+  /function renderStatusWhere/.test(js));
+check('시군을 고르면 그 이름이 적힌다', q(
+  "(function(){selectSgg('봉화');var h=document.getElementById('status-where')._html||'';" +
+  "return /봉화/.test(h);})()") === true);
+check('거기서 바로 경북 전체로 돌아올 수 있다',
+  /id="status-where-clear"/.test(byId['status-where']._html || ''));
+check('갈래를 옮겨도 시군은 그대로다', q(
+  "(function(){selectSgg('봉화');setStatusView('what');setStatusView('who');" +
+  "var k=statusState.sgg;selectSgg(null);return k;})()") === '봉화');
+check('경북 전체일 때는 고르는 법을 알려 준다', q(
+  "(function(){selectSgg(null);var h=document.getElementById('status-where')._html||'';" +
+  "return /어디가 먼저인가/.test(h);})()") === true);
+
 console.log(`\n${fail ? '✗' : '✓'}  통과 ${pass} · 실패 ${fail}\n`);
 process.exit(fail ? 1 : 0);

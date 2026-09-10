@@ -1146,6 +1146,18 @@ table.data .hl{color:var(--brand);font-weight:800}
 .mstone .mt em{font-style:normal;display:block;font-size:11.5px;color:var(--ink-3);margin-top:1px}
 .mstone.soft .my{color:var(--ink-3)}
 
+/* ── 안쪽 탭 ───────────────────────────────────────────────────────────── */
+.status-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.status-bar .news-view-tabs{margin:0}
+.status-panel[hidden]{display:none !important}
+/* 어느 탭에 있든 «지금 어디를 보고 있는지»는 늘 보입니다 */
+.status-where{margin:0;font-size:12.5px;color:var(--ink-2);display:flex;align-items:center;gap:7px}
+.status-where b{color:var(--brand);font-weight:700}
+.status-where button{font:inherit;font-size:11.5px;font-weight:600;border:1px solid var(--line);
+  background:var(--card);color:var(--ink-2);border-radius:999px;padding:4px 10px;min-height:28px;cursor:pointer}
+.status-where button:hover{border-color:var(--brand);color:var(--brand)}
+.status-where button:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+
 /* ══ 지도로 보기 〔2026. 9. 10.〕 ═══════════════════════════════════════════
    화면을 «가득» 씁니다. 본문 여백을 음수 여백으로 도로 물려 가장자리까지
    지도가 닿게 합니다. 참고하신 화면처럼 시원하게 보이는 까닭이 이것입니다.
@@ -2125,6 +2137,28 @@ body.map-maxed.home-wide #home-side{display:none}
 
     <details class="src-box" id="src-status" style="margin-bottom:14px"></details>
 
+    <!-- ══ 안쪽 탭 〔2026. 9. 10.〕 ═════════════════════════════════════════
+         한 화면에 여섯 칸을 세로로 쌓았더니 끝까지 보려면 스크롤을 너무 많이
+         내려야 했습니다. 무엇을 물으러 왔는지에 따라 볼 것이 다릅니다.
+         뉴스 탭이 이미 쓰고 있는 모양을 그대로 씁니다 — 한 앱 안에서 같은
+         것은 같게 생겨야 합니다. -->
+    <div class="status-bar">
+      <div class="news-view-tabs" role="tablist" aria-label="학령인구 현황 화면 선택">
+        <button type="button" role="tab" data-status-view="where" aria-pressed="true"
+                aria-controls="status-panel-where">어디가 먼저인가</button>
+        <button type="button" role="tab" data-status-view="how" aria-pressed="false"
+                aria-controls="status-panel-how">얼마나 줄어드나</button>
+        <button type="button" role="tab" data-status-view="who" aria-pressed="false"
+                aria-controls="status-panel-who">누가 올라오나</button>
+        <button type="button" role="tab" data-status-view="what" aria-pressed="false"
+                aria-controls="status-panel-what">무엇이 달라지나</button>
+      </div>
+      <!-- 어느 탭에 있든 «지금 어디를 보고 있는지»는 늘 보여야 합니다.
+           탭을 옮기다 고른 시군을 잊으면 다른 지역의 수를 읽게 됩니다. -->
+      <p class="status-where" id="status-where"></p>
+    </div>
+
+    <div class="status-panel" id="status-panel-where" role="tabpanel">
     <!-- ══ 어디가 먼저인가 — 시군 22곳 〔2026. 9. 10.〕 ═══════════════════════
          이 탭은 여태 «경북 전체»만 보여 줬습니다. 그런데 예산도 정원도 시군
          단위로 배정합니다. 도 합계로는 어디부터 할지 정할 수 없습니다.
@@ -2150,38 +2184,10 @@ body.map-maxed.home-wide #home-side{display:none}
       전망은 그 시군의 <b>실측 감소율</b>을 곱한 값이지 공식 추계가 아닙니다.</p>
     </div>
 
-    <!-- ══ 이미 학교에 앉아 있는 아이 〔2026. 9. 10.〕 ═══════════════════════
-         가장 센 자료인데 화면에 없었습니다. 학년별 인원은 917개 학교 전부
-         갖고 있습니다. 여기에는 출산율 가정도, 추계 모형도 들어가지 않습니다 —
-         이미 태어나 학교에 다니는 아이를 세는 것뿐입니다.
-         「예측일 뿐」이라는 반박을 받지 않는 자료입니다. -->
-    <div class="card" id="cohort-card">
-      <h2 style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <span id="cohort-title">이미 학교에 앉아 있는 아이</span>
-        <span class="asof">학교알리미 2026 공시 · 학년별 실적</span>
-      </h2>
-      <p class="sgg-board-lede" id="cohort-lede"></p>
-
-      <div class="cohort-wrap">
-        <div class="cohort-col">
-          <h3 class="cohort-h">앞으로 중학교에 들어올 아이</h3>
-          <p class="cohort-sub">지금 초등학교에 있는 아이가 그대로 올라오면 이렇게 됩니다.</p>
-          <div class="cohort-bars" id="cohort-mid"></div>
-        </div>
-        <div class="cohort-col">
-          <h3 class="cohort-h">앞으로 고등학교에 들어올 아이</h3>
-          <p class="cohort-sub">지금 초·중학교에 있는 아이가 그대로 올라오면 이렇게 됩니다.</p>
-          <div class="cohort-bars" id="cohort-high"></div>
-        </div>
-      </div>
-
-      <p class="mv-note" style="margin-top:12px">이 셈에는 <b>전학·유급·사립·특수학교로의
-      이동이 들어 있지 않습니다.</b> 지금 이 지역에 있는 아이가 <b>그대로 머문다고 보았을 때</b>의
-      수입니다. 그래서 실제와는 다르지만, <b>출산율을 가정하지 않는다</b>는 점에서
-      장래추계보다 흔들림이 적습니다.</p>
     </div>
 
-    <div class="card">
+    <div class="status-panel" id="status-panel-how" role="tabpanel" hidden>
+      <div class="card">
       <div class="map-toolbar" style="margin-bottom:16px">
         <button type="button" class="chip" id="ds-pop" aria-pressed="true">학령인구</button>
         <button type="button" class="chip" id="ds-stu" aria-pressed="false">재학생 수</button>
@@ -2243,19 +2249,6 @@ body.map-maxed.home-wide #home-side{display:none}
         </div>
       </div>
 
-      <!-- 학교알리미 공시값으로 그리는 학년별 학생 분포 -->
-      <div style="margin-top:24px;border-top:1px solid var(--line-2);padding-top:20px">
-        <h3 style="font-size:14px;color:var(--brand);margin-bottom:10px;display:flex;align-items:center;gap:6px">
-          <span id="pax-title">경북 2026 학년별 학생 분포 (초1 ~ 고3)</span>
-          <span style="font-size:11px;font-weight:400;color:var(--ink-3)">학교알리미 공시 실적</span>
-        </h3>
-        <div style="background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:16px;overflow-x:auto">
-          <svg id="pax-pyramid-svg" viewBox="0 0 600 240" style="width:100%;max-width:700px;height:auto;display:block;margin:0 auto" role="img" aria-label="학년별 인구 분포 피라미드">
-            <!-- SVG 차트가 JS로 자동 렌더링됩니다 -->
-          </svg>
-        </div>
-      </div>
-
       <div class="scroll-x" style="margin-top:16px">
         <table class="data" id="chart-table">
           <caption class="sr-only">연도별 학교급 학령인구 (단위: 천 명)</caption>
@@ -2275,42 +2268,100 @@ body.map-maxed.home-wide #home-side{display:none}
         </div>
       </div>
 
-      <!-- ══ 학급과 교원으로 옮겨 적기 〔2026. 9. 10.〕 ═══════════════════════
-           「학생 98,072명 감소」는 결정을 만들지 못합니다. 「학급 5,164개 ·
-           교원 8,386명」이 되어야 예산과 정원의 말이 됩니다.
-           그리고 이 둘은 «함께» 줄지 않습니다 — 하나를 지키면 다른 하나가
-           줄어듭니다. 어느 쪽을 고를지가 정책입니다. -->
-      <div class="convert" id="convert-box" style="margin-top:24px">
-        <h3 class="convert-h" id="convert-title">학생 수를 학급과 교원으로 옮겨 적으면</h3>
-        <p class="convert-sub" id="convert-sub"></p>
-        <div class="convert-now" id="convert-now"></div>
-        <div class="convert-forks">
-          <div class="fork" id="fork-a">
-            <span class="fk">갈래 하나</span>
-            <b class="ft">학급당 인원을 지금대로 지키면</b>
-            <div class="fv" id="fork-a-body"></div>
-          </div>
-          <div class="fork" id="fork-b">
-            <span class="fk">갈래 둘</span>
-            <b class="ft">학급 수를 지금대로 두면</b>
-            <div class="fv" id="fork-b-body"></div>
-          </div>
+      </div>
+    </div>
+
+    <div class="status-panel" id="status-panel-who" role="tabpanel" hidden>
+    <!-- ══ 이미 학교에 앉아 있는 아이 〔2026. 9. 10.〕 ═══════════════════════
+         가장 센 자료인데 화면에 없었습니다. 학년별 인원은 917개 학교 전부
+         갖고 있습니다. 여기에는 출산율 가정도, 추계 모형도 들어가지 않습니다 —
+         이미 태어나 학교에 다니는 아이를 세는 것뿐입니다.
+         「예측일 뿐」이라는 반박을 받지 않는 자료입니다. -->
+    <div class="card" id="cohort-card">
+      <h2 style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span id="cohort-title">이미 학교에 앉아 있는 아이</span>
+        <span class="asof">학교알리미 2026 공시 · 학년별 실적</span>
+      </h2>
+      <p class="sgg-board-lede" id="cohort-lede"></p>
+
+      <div class="cohort-wrap">
+        <div class="cohort-col">
+          <h3 class="cohort-h">앞으로 중학교에 들어올 아이</h3>
+          <p class="cohort-sub">지금 초등학교에 있는 아이가 그대로 올라오면 이렇게 됩니다.</p>
+          <div class="cohort-bars" id="cohort-mid"></div>
         </div>
-        <p class="convert-note">교원 수는 실제로 학급 수·과목·복식 여부·겸임으로
-        정해집니다. 여기서는 <b>지금의 교원 1인당 학생 수를 그대로 밀어 본 거친 셈</b>이라
-        정원 산정에 그대로 쓸 수 없습니다. <b>크기를 가늠하는 자리</b>입니다.</p>
+        <div class="cohort-col">
+          <h3 class="cohort-h">앞으로 고등학교에 들어올 아이</h3>
+          <p class="cohort-sub">지금 초·중학교에 있는 아이가 그대로 올라오면 이렇게 됩니다.</p>
+          <div class="cohort-bars" id="cohort-high"></div>
+        </div>
       </div>
 
-      <!-- ══ 언제 무슨 일이 오는가 〔2026. 9. 10.〕 ═══════════════════════════
-           연도별 추이선은 있지만 「그래서 몇 년에 무슨 일이 있나」는 사람이
-           눈으로 읽어야 했습니다. 넘는 자리를 짚어 줍니다.
-           「언제까지」가 있어야 계획이 됩니다. -->
-      <div class="convert" id="milestone-box" style="margin-top:24px">
-        <h3 class="convert-h" id="milestone-title">언제 무슨 일이 오는가</h3>
-        <p class="convert-sub" id="milestone-sub"></p>
-        <div class="mstones" id="milestones"></div>
+      <p class="mv-note" style="margin-top:12px">이 셈에는 <b>전학·유급·사립·특수학교로의
+      이동이 들어 있지 않습니다.</b> 지금 이 지역에 있는 아이가 <b>그대로 머문다고 보았을 때</b>의
+      수입니다. 그래서 실제와는 다르지만, <b>출산율을 가정하지 않는다</b>는 점에서
+      장래추계보다 흔들림이 적습니다.</p>
+    </div>
+
+      <div class="card">
+      <!-- 학교알리미 공시값으로 그리는 학년별 학생 분포 -->
+      <div style="margin-top:24px;border-top:1px solid var(--line-2);padding-top:20px">
+        <h3 style="font-size:14px;color:var(--brand);margin-bottom:10px;display:flex;align-items:center;gap:6px">
+          <span id="pax-title">경북 2026 학년별 학생 분포 (초1 ~ 고3)</span>
+          <span style="font-size:11px;font-weight:400;color:var(--ink-3)">학교알리미 공시 실적</span>
+        </h3>
+        <div style="background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:16px;overflow-x:auto">
+          <svg id="pax-pyramid-svg" viewBox="0 0 600 240" style="width:100%;max-width:700px;height:auto;display:block;margin:0 auto" role="img" aria-label="학년별 인구 분포 피라미드">
+            <!-- SVG 차트가 JS로 자동 렌더링됩니다 -->
+          </svg>
+        </div>
       </div>
 
+      </div>
+    </div>
+
+    <div class="status-panel" id="status-panel-what" role="tabpanel" hidden>
+      <div class="card">
+    <!-- ══ 학급과 교원으로 옮겨 적기 〔2026. 9. 10.〕 ═══════════════════════
+         「학생 98,072명 감소」는 결정을 만들지 못합니다. 「학급 5,164개 ·
+         교원 8,386명」이 되어야 예산과 정원의 말이 됩니다.
+         그리고 이 둘은 «함께» 줄지 않습니다 — 하나를 지키면 다른 하나가
+         줄어듭니다. 어느 쪽을 고를지가 정책입니다. -->
+    <div class="convert" id="convert-box" >
+      <h3 class="convert-h" id="convert-title">학생 수를 학급과 교원으로 옮겨 적으면</h3>
+      <p class="convert-sub" id="convert-sub"></p>
+      <div class="convert-now" id="convert-now"></div>
+      <div class="convert-forks">
+        <div class="fork" id="fork-a">
+          <span class="fk">갈래 하나</span>
+          <b class="ft">학급당 인원을 지금대로 지키면</b>
+          <div class="fv" id="fork-a-body"></div>
+        </div>
+        <div class="fork" id="fork-b">
+          <span class="fk">갈래 둘</span>
+          <b class="ft">학급 수를 지금대로 두면</b>
+          <div class="fv" id="fork-b-body"></div>
+        </div>
+      </div>
+      <p class="convert-note">교원 수는 실제로 학급 수·과목·복식 여부·겸임으로
+      정해집니다. 여기서는 <b>지금의 교원 1인당 학생 수를 그대로 밀어 본 거친 셈</b>이라
+      정원 산정에 그대로 쓸 수 없습니다. <b>크기를 가늠하는 자리</b>입니다.</p>
+    </div>
+
+    <!-- ══ 언제 무슨 일이 오는가 〔2026. 9. 10.〕 ═══════════════════════════
+         연도별 추이선은 있지만 「그래서 몇 년에 무슨 일이 있나」는 사람이
+         눈으로 읽어야 했습니다. 넘는 자리를 짚어 줍니다.
+         「언제까지」가 있어야 계획이 됩니다. -->
+    <div class="convert" id="milestone-box" >
+      <h3 class="convert-h" id="milestone-title">언제 무슨 일이 오는가</h3>
+      <p class="convert-sub" id="milestone-sub"></p>
+      <div class="mstones" id="milestones"></div>
+    </div>
+
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
       <div class="spec" style="margin-top:24px">
         <b>데이터 정의</b> — <b>학령인구</b>: KOSIS 주민등록인구(2016~2025)와 장래인구추계(2026~2036)의 6~18세 합계입니다.
         <b>학생수</b>: 학교알리미 2026 재학생 실적. 다른 연도의 미확보 구간은 단순 연결·모의값이므로 공식 학생수 전망으로 해석하지 않습니다.
@@ -7064,7 +7115,7 @@ function setColorBy(v){
      `series()` 는 천 명 단위이고 `regionStudents()` 는 낱낱의 수입니다.
      섞어 쓰면 1,000배 틀린 수가 «오류 없이» 화면에 뜹니다. 가장 무서운
      종류입니다. 그래서 한 자리(statusYear)에서 곱해 두고 그것만 씁니다. */
-const statusState = { sgg: null, sort: 'drop' };
+const statusState = { sgg: null, sort: 'drop', view: 'where' };
 
 /* 이 탭이 쓰는 한 해 값. 단위는 «명». 없으면 null 입니다 — 지어내지 않습니다. */
 function statusYear(sggKey, kind, year){
@@ -7541,6 +7592,43 @@ function openSimFor(sgg){
   location.hash = 'sim';
 }
 
+/* ══ 안쪽 탭 〔2026. 9. 10.〕 ═══════════════════════════════════════════════
+   한 화면에 여섯 칸을 세로로 쌓았더니 끝까지 보려면 스크롤을 너무 많이
+   내려야 했습니다. 무엇을 물으러 왔는지에 따라 볼 것이 다릅니다.
+
+     어디가 먼저인가 · 시군 22곳
+     얼마나 줄어드나 · 과거·현재·미래, 추이, 표
+     누가 올라오나  · 이미 학교에 앉아 있는 아이, 학년별 분포
+     무엇이 달라지나 · 학급과 교원, 넘는 해
+
+   ★ 탭을 옮겨도 «고른 시군»은 그대로입니다. 잊으면 다른 지역의 수를
+     읽게 되므로, 어느 탭에 있든 위에 적어 둡니다. */
+const STATUS_VIEWS = ['where', 'how', 'who', 'what'];
+
+function setStatusView(v){
+  if(STATUS_VIEWS.indexOf(v) < 0) v = STATUS_VIEWS[0];
+  statusState.view = v;
+  STATUS_VIEWS.forEach(k => {
+    const panel = document.getElementById('status-panel-' + k);
+    if(panel) panel.hidden = k !== v;
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-status-view]'), b =>
+    b.setAttribute('aria-pressed', String(b.dataset.statusView === v)));
+  try{ localStorage.setItem('leap-status-view-v1', v); }catch(_e){}
+}
+
+function renderStatusWhere(){
+  const el = document.getElementById('status-where');
+  if(!el) return;
+  const sgg = statusState.sgg;
+  el.innerHTML = sgg
+    ? `보고 있는 곳 <b>${htmlEsc(sgg)}</b>` +
+      '<button type="button" id="status-where-clear">경북 전체로</button>'
+    : '보고 있는 곳 <b>경북 전체</b> <span style="color:var(--ink-3)">— 「어디가 먼저인가」에서 시군을 고르면 네 화면이 모두 그 시군을 봅니다</span>';
+  const c = document.getElementById('status-where-clear');
+  if(c) c.addEventListener('click', () => selectSgg(null));
+}
+
 function selectSgg(key){
   statusState.sgg = key || null;
   /* 시군에는 주민등록 자료가 없습니다. 학생수로 바꿔 주고 왜인지 적습니다. */
@@ -7549,6 +7637,7 @@ function selectSgg(key){
   renderCohort();
   renderStatus();
   syncDsChips();
+  renderStatusWhere();
 }
 
 function syncDsChips(){
@@ -7779,6 +7868,10 @@ Array.prototype.forEach.call(document.querySelectorAll('[data-sggsort]'), btn =>
 onEl('sgg-clear', 'click', () => selectSgg(null));
 onEl('sgg-to-map', 'click', () => openMapFor(statusState.sgg));
 onEl('sgg-to-sim', 'click', () => openSimFor(statusState.sgg));
+
+Array.prototype.forEach.call(document.querySelectorAll('[data-status-view]'), b => {
+  b.addEventListener('click', () => setStatusView(b.dataset.statusView));
+});
 
 /* =========================================================
    5. 시뮬레이터
@@ -9843,6 +9936,13 @@ renderSggBoard();
 renderCohort();
 syncDsChips();
 renderStatus();
+renderStatusWhere();
+(function(){
+  /* 지난번에 보던 탭으로 엽니다 — 같은 것을 다시 찾아 누르지 않게. */
+  let v = 'where';
+  try{ v = localStorage.getItem('leap-status-view-v1') || 'where'; }catch(_e){}
+  setStatusView(v);
+})();
 renderSim();
 renderPaxPyramid();
 
