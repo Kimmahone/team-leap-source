@@ -2008,5 +2008,39 @@ check('마우스·터치·자판 세 갈래를 다 적는다',
   /<dt>마우스<\/dt>/.test(html) && /<dt>터치<\/dt>/.test(html) && /<dt>자판<\/dt>/.test(html));
 check('터치로 돌리는 법이 적혀 있다', /두 손가락을 비틀면<\/b> 돌아가고/.test(html));
 
+
+console.log('\n■ 〔폐교〕 몇 곳인지가 아니라 무엇을 뜻하는지를 말한다');
+/* 750곳이라는 수는 그 자체로는 결정을 만들지 않습니다. */
+q("renderClosedInsight()");
+check('그 자리가 있다', /id="closed-insight"/.test(html) && /function renderClosedInsight/.test(js));
+check('지금이 처음이 아니라고 말한다',
+  /지금이 처음 겪는\s*<\/b>|지금이 처음 겪는 일이 아닙니다/.test(byId['closed-insight-lede']._html || '') ||
+  /지금이 처음 겪는 일이 아닙니다/.test(js));
+check('가장 많이 문 닫은 연대를 스스로 찾는다',
+  q("closedFacts().peak") === '1990' && q("closedFacts().decade['1990']") === 422);
+/* 한 번 판 땅은 돌이킬 수 없습니다. 이 화면에서 가장 무거운 말입니다. */
+check('판 땅은 되돌릴 수 없다고 적는다',
+  /교육청 손을 떠났습니다.*되돌릴/.test(js));
+check('지금 다룰 수 있는 것을 따로 센다', q("closedFacts().keep") === 255);
+check('네 가지를 큰 수로 적는다',
+  ((byId['closed-facts']._html || '').match(/class="cf/g) || []).length === 4);
+/* 같은 100곳이라도 원래 많았던 곳과 적었던 곳은 뜻이 다릅니다. */
+check('있었던 학교 가운데 사라진 몫을 센다', q(
+  "(function(){var l=closedFacts().lost[0];return l.had === l.closed + l.now && l.pct > 0;})()") === true);
+check('가장 많이 잃은 시군이 맨 위에 온다', q("closedFacts().lost[0].s") === '영양');
+check('앞으로의 감소율도 나란히 놓는다', /앞으로 −\$\{x\.drop\.toFixed\(0\)\}%/.test(js));
+check('있었던 학교 수가 어림이라고 밝힌다', /있었던 학교 수는 어림<\/b>/.test(html));
+
+console.log('\n■ 〔폐교〕 목록은 접어 두고 지도로 잇는다');
+/* 750줄짜리 목록이 화면 아래를 채우고 있었습니다. 목록은 «찾을 때» 쓰는
+   것이지 «읽는 것»이 아닙니다. */
+check('목록을 접어 둔다', /<details class="card closed-list-box"/.test(html));
+check('무엇을 하는 자리인지 이름에 적는다', /폐교 목록에서 찾아보기/.test(html));
+check('지도로 가는 길이 있다', /id="closed-to-map"/.test(html));
+check('겹쳐 보기를 켠 채로 넘어간다 (가서 또 켜면 이어진 것이 아니다)',
+  /MV\.closed = true;[\s\S]{0,300}?location\.hash = 'map'/.test(js));
+check('좌표를 찾은 곳이 몇 곳인지 적는다', /id="closed-geo-count"/.test(html) &&
+  /없는 좌표를 시군 중심으로 대신하지 않습니다/.test(html));
+
 console.log(`\n${fail ? '✗' : '✓'}  통과 ${pass} · 실패 ${fail}\n`);
 process.exit(fail ? 1 : 0);
