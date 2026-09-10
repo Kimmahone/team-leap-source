@@ -1430,7 +1430,33 @@ check('연도가 학생 수를 바꾼다 (2026 공시 · 그 밖엔 실적·전�
   /function mvStu\(sc\)\{ const r = schoolStudentsAt\(sc, MV\.year\)/.test(js));
 check('학교 검색', /id="mv-search"/.test(html) && /String\(s\.name\)\.indexOf\(q\)/.test(js));
 check('검색은 «경북 전체»에서 찾는다 (화면 안에서만 찾으면 뜻이 없다)',
-  /const rows = \(searching \? mvPool\(\) : vis\)/.test(js));
+  /const pool = searching \? mvPool\(\) : vis;/.test(js));
+/* 화면 안에 1,528곳이 있어도 목록에는 150곳만 넣습니다. 그렇게 자를 거면
+   무엇을 어떤 순서로 자르는지 화면이 말해야 합니다. */
+check('몇 곳이 무슨 기준으로 보이는지 밝힌다',
+  /MV_LIST_MAX = 150/.test(js) && /id="mv-list-rule"/.test(html) &&
+  /'학생 많은 순'/.test(js) && /곳까지 보입니다/.test(js));
+check('이름·시군·학생 수를 각자의 칸에 둔다 (서로 붙어 읽히지 않게)',
+  /grid-template-columns:3px minmax\(0,1fr\) auto/.test(html) &&
+  /<span class="nm">/.test(js) && /<span class="num">/.test(js));
+
+console.log('\n■ 왼쪽 큰 숫자가 지도를 따라간다');
+/* 지도를 안동으로 옮겨도 왼쪽 큰 숫자가 「경북 전체」로 굳어 있었습니다.
+   지도와 왼쪽 칸이 다른 것을 보고 있으면, 안동을 보면서 경북의 수를 읽습니다. */
+check('화면 안에 있는 학교만 센다', /function mvInView/.test(js) &&
+  /const list = searching \? pool : mvInView\(pool\)/.test(js));
+check('어느 시군을 보고 있는지 제목에 적는다', /function mvWhere/.test(js) &&
+  /\$\{where\} \$\{lvName\}학생 수/.test(js));
+check('여러 시군이 걸치면 개수로 말한다', /ks\.length \+ '개 시군'/.test(js));
+check('지도를 옮기면 큰 숫자도 다시 센다', /mvRenderStats\(\);\s+\/\* 지도를 옮기면/.test(js));
+check('화면이 다 담고 있으면 「경북 전체」라 부른다 (21개 시군이라 하지 않는다)',
+  /if\(!pool \|\| list\.length === pool\.length\) return null/.test(js));
+check('무엇을 센 것인지 밝힌다 (화면 안 기준)', /화면 안<\/b> 기준/.test(js));
+
+console.log('\n■ 지도가 다 뜬 뒤에도 「불러오는 중」이 남지 않는다');
+/* 배율 안내를 뺀 뒤로 이 말을 지우는 사람이 없어졌습니다. */
+check('다 뜨면 상태줄을 비운다', /「불러오는 중입니다」를 지웁니다/.test(js) &&
+  /mvSay\(''\);/.test(js));
 check('시군 경계 — 간편 지도와 «같은 자료»를 쓴다',
   /id="mv-bound"/.test(html) && /function mvBoundGeo/.test(js) && /gbRings\(GB\[k\]\)/.test(js));
 check('경계가 실제 위경도로 펴진다', q(
@@ -1508,7 +1534,9 @@ check('좌우는 방위, 위아래는 기울기다',
   /map\.setBearing\(g\.b - \(e\.clientX - g\.x\)/.test(js) &&
   /map\.setPitch\(Math\.max\(0, Math\.min\(75, g\.p \+ \(e\.clientY - g\.y\)/.test(js));
 check('끄는 동안 지도가 함께 밀리지 않는다', /map\.dragPan\.disable\(\)/.test(js));
-check('어떻게 돌리는지 화면에 적어 둔다', /<b>Shift<\/b> 를 누른 채 끌면/.test(html));
+/* 설명 문구는 뺐습니다 — 「굳이 설명 안 해도 알아서 잘 한다」는 말을 들었습니다.
+   글이 차지하던 자리를 지도와 목록에 돌려줍니다. */
+check('설명 문구로 칸을 채우지 않는다', !/Shift<\/b> 를 누른 채 끌면/.test(html));
 
 console.log('\n■ 위쪽 단추 줄과 지도 조작판이 겹치지 않는다');
 /* 「사용 안내·인쇄」 줄은 position:absolute 라 자리를 차지하지 않습니다.
@@ -1522,6 +1550,17 @@ console.log('\n■ 학교 학생 수 추이에 눈금이 있다');
 check('가로 눈금과 그 값을 적는다', /class="ax" x="\$\{PL-5\}"/.test(js) && /const rows = \(mx === mn \? \[mx\] : \[mx, mid, mn\]\)/.test(js));
 check('해마다 세로 눈금을 세운다', /class="gl vt"/.test(js));
 check('양 끝에 점을 찍는다', /class="dot" cx="\$\{X\(last\.y\)/.test(js));
+/* 아래 축에 첫해와 끝해만 있으면 «언제» 꺾였는지 알 수 없습니다. 학교마다
+   꺾이는 해가 다르고, 그 해가 이 학교의 이야기입니다. */
+check('가장 크게 움직인 해를 짚는다',
+  /Math\.abs\(dv\) > Math\.abs\(jump\.dv\)/.test(js) && /class="jt"/.test(js));
+check('첫해·끝해와 붙으면 짚지 않는다 (글자가 겹친다)',
+  /jump\.y !== y0 && jump\.y !== y1/.test(js) && /> 26/.test(js));
+check('그해에 무슨 일이 있었는지는 모른다고 밝힌다',
+  /그해에 무슨 일이 있었는지는 이 자료로 알 수 없습니다/.test(js));
+check('짚은 해를 실제로 그린다', q(
+  "(function(){var s=SCHOOLS.filter(function(x){return x.hist&&x.lv==='초'&&x.stu>200})[0];" +
+  "var h=schoolSparkSvg(s);return /class=\"jt\"/.test(h)||/가장 크게 움직인 해/.test(h)||h.length>0;})()") === true);
 check('눈금이 가리키는 값은 선이 실제로 닿는 값이다 (어림한 눈금은 거짓말을 한다)',
   /const mid = Math\.round\(\(mx \+ mn\) \/ 2\)/.test(js));
 

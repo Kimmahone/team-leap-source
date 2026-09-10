@@ -337,6 +337,10 @@ a{color:var(--brand)}
 .sch-spark{height:84px;margin-top:2px}
 .spark .ax{font-size:8px;fill:var(--ink-3);font-variant-numeric:tabular-nums}
 .spark .vt{opacity:.55}
+/* 가장 크게 움직인 해 — 눈금과 다른 색으로 짚습니다 */
+.spark .jm{stroke:var(--leap-amber-mark);stroke-width:1.2;stroke-dasharray:2 2;opacity:.9}
+.spark .jd{fill:var(--leap-amber-mark)}
+.spark .jt{fill:var(--leap-amber-mark);font-weight:700}
 .spark .ax-y{opacity:.9}
 .sch-addr{margin-top:8px;font-size:11px;color:var(--ink-3)}
 /* 낡은 공시 — 「모른다」를 눈에 띄게 적습니다. 색만으로 말하지 않도록 글자도 있습니다. */
@@ -889,6 +893,63 @@ table.data .hl{color:var(--brand);font-weight:800}
   display:flex;flex-direction:column;gap:12px;padding:16px 16px 28px;min-width:0}
 .mv-card{background:var(--card-2);border:1px solid var(--line);border-radius:var(--radius);padding:12px 13px}
 .mv-card h2{margin:0 0 8px;font-size:11.5px;font-weight:700;color:var(--ink-2);letter-spacing:.04em}
+.mv-row{display:flex;flex-wrap:wrap;gap:6px}
+
+/* ── 학교 찾기 ─────────────────────────────────────────────────────────
+   input[type=search] 는 브라우저가 제 나름의 모양(각진 테두리·지우기 단추)을
+   입힙니다. 그대로 두면 이 화면에서 혼자 다른 물건처럼 보입니다. 벗기고
+   돋보기를 왼쪽에 둡니다. */
+.mv-search{position:relative;display:flex;align-items:center}
+.mv-search svg{position:absolute;left:12px;width:14px;height:14px;pointer-events:none;
+  fill:none;stroke:var(--ink-3);stroke-width:1.6;stroke-linecap:round}
+.mv-search input{width:100%;font:inherit;font-size:13px;padding:0 12px 0 33px;height:38px;
+  appearance:none;-webkit-appearance:none;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink)}
+.mv-search input::placeholder{color:var(--ink-3)}
+.mv-search input::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none;
+  width:14px;height:14px;border-radius:50%;background:var(--line);cursor:pointer}
+.mv-search input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-pale)}
+.mv-search:focus-within svg{stroke:var(--brand)}
+
+/* ── 화면 안 학교 ───────────────────────────────────────────────────────
+   ★ 이름·시군·학생 수를 «각자의 칸»에 둡니다 〔2026. 9. 10.〕
+     앞서 시군을 이름 안에 끼워 넣었더니 긴 이름에서 시군과 숫자가 서로 붙어
+     「구미인덕초등학교 구미1,877」 처럼 읽혔습니다. */
+.mv-list{max-height:300px;overflow-y:auto;border:1px solid var(--line);
+  border-radius:var(--leap-radius-sm);background:var(--card)}
+.mv-list .r{background:none;border:0;border-top:1px solid var(--line-2);width:100%;
+  text-align:left;font:inherit;padding:8px 11px;color:var(--ink);cursor:pointer;
+  display:grid;grid-template-columns:3px minmax(0,1fr) auto;gap:10px;align-items:center}
+.mv-list .r:first-child{border-top:0}
+.mv-list .r:hover{background:var(--card-2)}
+.mv-list .r:focus-visible{outline:2px solid var(--brand);outline-offset:-2px}
+.mv-list .r > i{width:3px;height:24px;border-radius:2px}
+.mv-list .r .nm{min-width:0;display:flex;flex-direction:column;gap:1px}
+.mv-list .r .nm b{font-size:12.8px;font-weight:600;line-height:1.35;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mv-list .r .nm em{font-style:normal;font-size:10.5px;color:var(--ink-3);letter-spacing:.02em}
+.mv-list .r .num{text-align:right;font-variant-numeric:tabular-nums;line-height:1.25}
+.mv-list .r .num b{display:block;font-size:13px;font-weight:700;color:var(--brand)}
+.mv-list .r .num i{font-style:normal;font-size:9.5px;color:var(--ink-3)}
+.mv-list .empty{padding:14px 12px;font-size:12.5px;color:var(--ink-3)}
+
+/* ── 범례 ───────────────────────────────────────────────────────────── */
+.mv-legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(82px,1fr));
+  gap:7px 10px;font-size:11.5px;color:var(--ink-2)}
+.mv-legend span{display:flex;align-items:center;gap:6px;min-width:0}
+.mv-legend i{width:9px;height:9px;border-radius:50%;flex:none}
+.mv-legend i.sq{border-radius:2px;background:transparent;border:1.5px dashed var(--ink-3)}
+
+/* ── 글씨 ───────────────────────────────────────────────────────────── */
+.mv-note{margin:0;font-size:11.5px;color:var(--ink-3);line-height:1.65}
+.mv-foot{margin:0;padding-top:13px;border-top:1px solid var(--line-2);
+  font-size:11px;color:var(--ink-3);line-height:1.7;display:flex;flex-direction:column;gap:2px}
+.mv-foot b{color:var(--ink-2);font-weight:600}
+.mv-card .stat-row{gap:7px;margin-bottom:0}
+.mv-card .stat{padding:8px 6px}
+.mv-card .stat .k{font-size:10.5px}
+.mv-card .stat .v{font-size:17px;font-variant-numeric:tabular-nums}
+.mv-card .stat .u{font-size:9.5px}
 .mv-map{position:relative;min-width:0;min-height:0}
 /* 왼쪽 칸을 접으면 그 칸이 차지하던 너비를 지도가 가져갑니다.
    ★ 칸을 숨기면 지도가 «첫 칸»이 됩니다 〔2026. 9. 10.〕
@@ -1707,8 +1768,6 @@ body.map-maxed.home-wide #home-side{display:none}
             <button type="button" class="chip" id="mv-3d" aria-pressed="false">3D 지형</button>
             <button type="button" class="chip" id="mv-reset">경북 전체로</button>
           </div>
-          <p class="mv-note" style="margin-top:7px"><b>Shift</b> 를 누른 채 끌면 지도가 돌아갑니다.
-          좌우로 끌면 방위, 위아래로 끌면 기울기입니다. 산 너머를 보려면 둘 다 씁니다.</p>
           <div class="mv-row" style="margin-top:6px">
             <button type="button" class="chip" id="mv-closed" aria-pressed="false">폐교 겹쳐 보기</button>
             <button type="button" class="chip" id="mv-bound" aria-pressed="true">시군 경계</button>
@@ -1734,21 +1793,25 @@ body.map-maxed.home-wide #home-side{display:none}
         </div>
 
         <div class="mv-card">
-          <h2>학교 찾기</h2>
-          <input type="search" id="mv-search" class="mv-input" placeholder="학교 이름으로 찾기">
-          <div class="mv-row" id="mv-levels" style="margin-top:8px"></div>
-        </div>
-
-        <div class="mv-card">
           <h2 id="mv-stat-title">경북 전체 학생 수</h2>
           <div class="stat-row" id="mv-stats"></div>
           <p class="unit-note" id="mv-stats-note" style="text-align:left" hidden></p>
+        </div>
+
+        <div class="mv-card">
+          <h2><label for="mv-search">학교 찾기</label></h2>
+          <div class="mv-search">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="M10.4 10.4 L14 14"/></svg>
+            <input type="search" id="mv-search" placeholder="학교 이름으로 찾기" autocomplete="off">
+          </div>
+          <div class="mv-row" id="mv-levels" style="margin-top:9px"></div>
         </div>
 
         <div class="mv-card" id="mv-detail-card" hidden></div>
 
         <div class="mv-card">
           <h2 id="mv-list-title">화면 안 학교</h2>
+          <p class="mv-note" id="mv-list-rule" style="margin:-2px 0 8px"></p>
           <div class="mv-list" id="mv-list"></div>
         </div>
 
@@ -1760,8 +1823,11 @@ body.map-maxed.home-wide #home-side{display:none}
           갈리지 않으므로 이름을 함께 적습니다.</p>
         </div>
 
-        <p class="mv-note">배경지도 · 브이월드(국토교통부) · 지형 · AWS Terrain Tiles ·
-        학교 위치 · 학교알리미 공시값 · 거리는 모두 직선거리입니다</p>
+        <p class="mv-foot">
+          <span>배경지도 · <b>브이월드</b> 국토교통부 · 지형 · <b>AWS Terrain Tiles</b></span>
+          <span>학교 위치와 학생 수 · <b>학교알리미 2026 공시</b> · 과거 실적 · <b>EDSS 교육통계</b></span>
+          <span>거리는 모두 <b>직선거리</b>입니다. 산을 넘는 길은 이보다 멉니다.</span>
+        </p>
       </aside>
       <div class="mv-map">
         <div id="mv-canvas"></div>
@@ -5300,16 +5366,41 @@ function schoolSparkSvg(sc){
   ).join('');
   const last = pts[pts.length-1];
 
+  /* ★ 가장 크게 움직인 해를 짚습니다 〔2026. 9. 10.〕
+     아래 축에 첫해와 끝해만 있으면 «언제» 꺾였는지 알 수 없습니다. 학교마다
+     꺾이는 해가 다르고, 그 해에 무슨 일이 있었는지가 이 학교의 이야기입니다
+     (아파트 입주, 산업단지, 통폐합). 한 해만 고릅니다 — 여럿을 적으면 아래
+     축이 서로 붙습니다. */
+  let jump = null;
+  for(let i = 1; i < pts.length; i++){
+    const dv = pts[i].v - pts[i-1].v;
+    if(!jump || Math.abs(dv) > Math.abs(jump.dv)) jump = { y: pts[i].y, v: pts[i].v, dv };
+  }
+  /* 첫해·끝해와 붙으면 글자가 겹칩니다. 그때는 짚지 않습니다. */
+  const jumpFar = jump && jump.y !== y0 && jump.y !== y1 &&
+                  Math.abs(X(jump.y) - X(y0)) > 26 && Math.abs(X(jump.y) - X(y1)) > 26;
+  const jumpMark = jumpFar
+    ? `<line class="gl jm" x1="${X(jump.y).toFixed(1)}" y1="${PT}" x2="${X(jump.y).toFixed(1)}" y2="${H-PB}"/>` +
+      `<circle class="dot jd" cx="${X(jump.y).toFixed(1)}" cy="${Y(jump.v).toFixed(1)}" r="2.8"/>` +
+      `<text class="jt" x="${X(jump.y).toFixed(1)}" y="${H-3}" text-anchor="middle">${jump.y}</text>`
+    : '';
+
   return '<div class="sch-sub2">이 학교 학생 수 추이</div>' +
     `<svg class="spark sch-spark" viewBox="0 0 ${W} ${H}" role="img" aria-label="이 학교 학생 수 추이">` +
       ticks + grid +
       `<line class="gl ax-y" x1="${PL}" y1="${PT}" x2="${PL}" y2="${H-PB}"/>` +
+      jumpMark +
       `<path class="ln" d="${d}"/>` +
       `<circle class="dot" cx="${X(pts[0].y).toFixed(1)}" cy="${Y(pts[0].v).toFixed(1)}" r="2.6"/>` +
       `<circle class="dot" cx="${X(last.y).toFixed(1)}" cy="${Y(last.v).toFixed(1)}" r="3.2"/>` +
       `<text x="${PL}" y="${H-3}">${y0}</text>` +
       `<text x="${W-PR}" y="${H-3}" text-anchor="end">${y1}</text>` +
     '</svg>' +
+    (jumpFar
+      ? `<div class="sch-note">가장 크게 움직인 해는 <b>${jump.y}년</b>입니다 — ` +
+        `한 해 만에 <b>${fmt(Math.abs(jump.dv))}명 ${jump.dv < 0 ? '줄었습니다' : '늘었습니다'}</b>. ` +
+        '<span class="q">그해에 무슨 일이 있었는지는 이 자료로 알 수 없습니다.</span></div>'
+      : '') +
     `<div class="sch-note">${y0}년 ${fmt(pts[0].v)}명에서 ${y1}년 ${fmt(pts[pts.length-1].v)}명으로 ` +
     `<b>${Math.abs(drop).toFixed(1)}% ${drop >= 0 ? '줄었습니다' : '늘었습니다'}</b>.</div>`;
 }
@@ -8627,23 +8718,52 @@ function mvPool(){
 }
 
 /* ── 왼쪽 통계 ─────────────────────────────────────────────────────────── */
+/* 화면 안에 있는 학교만 골라 냅니다. 지도가 아직 없으면 전부입니다. */
+function mvInView(list){
+  const map = MV.map;
+  if(!map || !map.getBounds) return list;
+  let b;
+  try{ b = map.getBounds(); }catch(_e){ return list; }
+  return list.filter(s =>
+    s.lon >= b.getWest() && s.lon <= b.getEast() &&
+    s.lat >= b.getSouth() && s.lat <= b.getNorth());
+}
+
+/* 화면 안 학교가 어느 시군에 있는지. 한 곳이면 그 이름, 여러 곳이면 개수. */
+function mvWhere(list, pool){
+  /* 화면이 다 담고 있으면 굳이 「21개 시군」이라 부르지 않습니다 — 경북 전체입니다. */
+  if(!pool || list.length === pool.length) return null;
+  const set = {};
+  list.forEach(s => { set[s.s] = 1; });
+  const ks = Object.keys(set);
+  if(!ks.length) return null;
+  if(ks.length === 1) return ks[0];
+  if(ks.length <= 3) return ks.join('·');
+  return ks.length + '개 시군';
+}
+
 function mvRenderStats(){
   const box = document.getElementById('mv-stats');
   const ttl = document.getElementById('mv-stat-title');
   const note = document.getElementById('mv-stats-note');
   if(!box) return;
-  const list = mvPool();
+  const pool = mvPool();
   const searching = !!MV.q.trim();
+  /* ★ 「경북 전체」로 굳어 있던 것을 고칩니다 〔2026. 9. 10.〕
+     지도를 안동으로 옮겨도 왼쪽 큰 숫자가 경북 전체였습니다. 지도와 왼쪽 칸이
+     다른 것을 보고 있으면, 지도의 안동을 보면서 경북의 수를 읽게 됩니다.
+     이제 «화면 안»을 셉니다 — 목록이 세는 것과 같은 무리입니다. */
+  const list = searching ? pool : mvInView(pool);
+  const where = searching ? null : mvWhere(list, pool);
+  const lvName = MV.level === '전체' ? '' : ((LEVEL_CFG[MV.level] || {}).full || MV.level) + ' ';
 
   if(ttl){
-    ttl.textContent = searching ? `‘${MV.q.trim()}’ 검색`
-      : (MV.level === '전체' ? '경북 전체 학생 수'
-                            : ((LEVEL_CFG[MV.level] || {}).full || MV.level) + ' 학생 수');
+    ttl.textContent = searching ? `‘${MV.q.trim()}’ 검색 결과`
+      : (where ? `${where} ${lvName}학생 수` : `경북 전체 ${lvName}학생 수`);
   }
 
-  /* ★ 학교급을 갈라서 봅니다 〔2026. 9. 10.〕 초·중·고를 한 덩어리로 더하면
-     「25만」이라는 수 하나만 남습니다. 그 수로는 어느 급이 먼저 무너지는지
-     알 수 없습니다 — 종합 대시보드가 초·중·고를 나눠 보여 주는 까닭과 같습니다. */
+  /* ★ 학교급을 갈라서 봅니다 — 초·중·고를 한 덩어리로 더하면 수 하나만 남습니다.
+     그 수로는 어느 급이 먼저 무너지는지 알 수 없습니다. */
   const by = {};
   LEVELS.forEach(l => { by[l] = { n:0, stu:0, cls:0 }; });
   list.forEach(sc => {
@@ -8667,7 +8787,8 @@ function mvRenderStats(){
         `유치원 <b>${fmt(by['유'].stu)}</b>명 (${fmt(by['유'].n)}곳) · ` +
         `특수학교 <b>${fmt(by['특수'].stu)}</b>명 (${fmt(by['특수'].n)}곳)<br>` +
         `모두 <b>${fmt(list.length)}</b>곳 · <b>${fmt(sum('stu'))}</b>명` +
-        (sum('cls') > 0 ? ` · 학급당 <b>${(sum('stu') / sum('cls')).toFixed(1)}</b>명` : '');
+        (sum('cls') > 0 ? ` · 학급당 <b>${(sum('stu') / sum('cls')).toFixed(1)}</b>명` : '') +
+        (searching ? '' : ' · <b>화면 안</b> 기준');
     }
   }else{
     /* 한 학교급만 볼 때는 나눌 것이 없습니다 — 그 급의 규모를 봅니다. */
@@ -8679,7 +8800,12 @@ function mvRenderStats(){
       (b.cls > 0
         ? `<div class="stat"><div class="k">학급당</div><div class="v">${(b.stu / b.cls).toFixed(1)}</div><div class="u">명</div></div>`
         : `<div class="stat"><div class="k">학교당</div><div class="v">${b.n ? Math.round(b.stu / b.n) : '–'}</div><div class="u">명</div></div>`);
-    if(note){ note.hidden = false; note.textContent = `${MV.year}년 ` + (Number(MV.year) === HOME_BASE_YEAR ? '공시' : (Number(MV.year) > HOME_BASE_YEAR ? '전망' : '실적')) + '입니다.'; }
+    if(note){
+      note.hidden = false;
+      note.textContent = `${MV.year}년 ` +
+        (Number(MV.year) === HOME_BASE_YEAR ? '공시' : (Number(MV.year) > HOME_BASE_YEAR ? '전망' : '실적')) +
+        (searching ? '' : ' · 화면 안 기준');
+    }
   }
 }
 
@@ -8760,6 +8886,7 @@ function mvDraw(){
     mvRenderList(list.filter(s =>
       s.lon >= bb.getWest() && s.lon <= bb.getEast() &&
       s.lat >= bb.getSouth() && s.lat <= bb.getNorth()), list.length, 'sgg');
+    mvRenderStats();
     if(MV.closed) mvDrawClosed();
     return;
   }
@@ -8801,6 +8928,7 @@ function mvDraw(){
   });
   mvMarkSelected();
   mvRenderList(vis, list.length, tier);
+  mvRenderStats();      /* 지도를 옮기면 왼쪽 큰 숫자도 그 자리를 셉니다 */
   /* ★ 배율 안내를 지웠습니다 〔2026. 9. 10.〕 지도를 움직일 때마다 아래쪽에
      띠가 떠서 지도를 가렸습니다. 몇 곳이 보이는지는 왼쪽 목록 제목이 이미
      말하고, 어떻게 하면 이름이 서는지는 범례 아래에 적어 두었습니다.
@@ -8835,27 +8963,45 @@ function mvDrawClosed(){
 /* ── 왼쪽 목록 ─────────────────────────────────────────────────────────────
    ★ 검색은 «경북 전체»에서 찾습니다. 화면 안에서만 찾으면, 찾으려는 학교가
      화면 밖에 있을 때 아무것도 나오지 않습니다 — 검색의 뜻이 없어집니다. */
+/* ★ 몇 곳이 보이는지, 무슨 기준인지 밝힙니다 〔2026. 9. 10.〕
+   화면 안에 1,528곳이 있어도 목록에는 150곳만 넣습니다. 그보다 많이 그리면
+   목록을 끄는 손이 걸리고, 읽지도 못합니다. 다만 «1,528곳» 이라 적어 놓고
+   150개만 보여 주면 나머지가 어디 갔는지 알 수 없습니다 — 그래서 적습니다. */
+const MV_LIST_MAX = 150;
+
 function mvRenderList(vis, total, tier){
   const box = document.getElementById('mv-list');
   const ttl = document.getElementById('mv-list-title');
+  const rule = document.getElementById('mv-list-rule');
   if(!box) return;
   const searching = !!MV.q.trim();
-  const rows = (searching ? mvPool() : vis).slice()
-    .sort((a,c) => searching ? String(a.name).localeCompare(String(c.name), 'ko')
-                             : (mvStu(c)||0) - (mvStu(a)||0))
-    .slice(0, 150);
+  const pool = searching ? mvPool() : vis;
+  const rows = pool.slice()
+    .sort((a, c) => searching ? String(a.name).localeCompare(String(c.name), 'ko')
+                              : (mvStu(c) || 0) - (mvStu(a) || 0))
+    .slice(0, MV_LIST_MAX);
   MV.rows = rows;
-  if(ttl) ttl.textContent = searching ? `찾은 학교 ${fmt(mvPool().length)}곳` : `화면 안 학교 ${fmt(vis.length)}곳`;
+
+  if(ttl) ttl.textContent = searching ? `찾은 학교 ${fmt(pool.length)}곳` : `화면 안 학교 ${fmt(vis.length)}곳`;
+  if(rule){
+    const cut = pool.length > rows.length;
+    rule.textContent = !pool.length ? ''
+      : (searching ? '이름 순' : '학생 많은 순') +
+        (cut ? ` · ${MV_LIST_MAX}곳까지 보입니다 (나머지 ${fmt(pool.length - rows.length)}곳은 지도를 좁히면 나옵니다)` : '');
+  }
   if(!rows.length){
     box.innerHTML = `<div class="empty">${searching ? '이름이 맞는 학교가 없습니다.' : '이 화면에는 학교가 없습니다.'}</div>`;
     return;
   }
+  const kind = Number(MV.year) === HOME_BASE_YEAR ? '명' : (Number(MV.year) > HOME_BASE_YEAR ? '명 전망' : '명 실적');
   box.innerHTML = rows.map((s, i) => {
     const v = mvStu(s);
+    const lvFull = (LEVEL_CFG[s.lv] || {}).full || s.lv;
     return `<button type="button" class="r" data-i="${i}">` +
       `<i style="background:${mvLvColor(s.lv)}"></i>` +
-      `<b>${htmlEsc(s.name)} <em>${htmlEsc(s.s)}</em></b>` +
-      `<span>${v == null ? '–' : fmt(v)}</span></button>`;
+      `<span class="nm"><b>${htmlEsc(s.name)}</b><em>${htmlEsc(s.s)} · ${htmlEsc(lvFull)}</em></span>` +
+      `<span class="num"><b>${v == null ? '–' : fmt(v)}</b><i>${v == null ? '자료 없음' : kind}</i></span>` +
+      '</button>';
   }).join('');
   Array.prototype.forEach.call(box.querySelectorAll('.r'), btn => {
     btn.addEventListener('click', () => {
@@ -9046,7 +9192,7 @@ function mvRenderLegend(){
   el.className = 'mv-legend';
   el.innerHTML = LEVELS.map(l =>
     `<span><i style="background:${mvLvColor(l)}"></i>${(LEVEL_CFG[l] || {}).full || l}</span>`).join('') +
-    (MV.closed ? '<span><i style="background:transparent;border:2px dashed var(--ink-3);border-radius:0"></i>폐교</span>' : '');
+    (MV.closed ? '<span><i class="sq"></i>폐교</span>' : '');
 }
 
 /* ── MapLibre 를 «열 때만» 불러옵니다 ───────────────────────────────────── */
@@ -9150,9 +9296,10 @@ async function mvStart(){
   map.addControl(new maplibregl.ScaleControl({ maxWidth:120, unit:'metric' }), 'bottom-right');
 
   map.on('load', mvDraw);
-  /* 키가 없다는 말은 mvSay 가 꼬리에 «늘» 붙입니다 — 여기서 또 적으면
-     같은 말을 두 번 하게 됩니다. 띄우기만 합니다. */
-  if(!MV.key) mvSay('');
+  /* ★ 「불러오는 중입니다」를 지웁니다 〔2026. 9. 10.〕 배율 안내를 뺀 뒤로
+     이 말을 지우는 사람이 없어져, 지도가 다 떴는데도 띠가 남아 있었습니다.
+     키가 없다는 말은 mvSay 가 꼬리에 «늘» 붙이므로 여기서는 비우기만 합니다. */
+  mvSay('');
   map.on('moveend', mvDraw);
   map.on('zoomend', mvDraw);
   map.on('error', e => {
