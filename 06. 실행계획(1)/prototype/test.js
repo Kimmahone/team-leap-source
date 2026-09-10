@@ -1523,7 +1523,12 @@ check('유치원·특수학교는 초·중·고에 더하지 않고 따로 적�
   /유치원 <b>\$\{fmt\(by\['유'\]\.stu\)\}<\/b>/.test(js) &&
   /특수학교 <b>\$\{fmt\(by\['특수'\]\.stu\)\}<\/b>/.test(js));
 check('큰 학교의 이름표가 작은 학교에 가리지 않는다',
-  /el\.style\.zIndex = String\(Math\.min\(400/.test(js));
+  /String\(Math\.min\(400, Math\.round\(\(mvStu\(sc\) \|\| 0\) \/ 5\)\)\)/.test(js));
+/* 누른 것이 뒤에 가리면, 눌렀는데 아무 일도 안 일어난 것처럼 보입니다. */
+check('고른 학교는 무조건 맨 앞이다', /const picked = selectedSchoolKey && schoolKey\(sc\) === selectedSchoolKey/.test(js) &&
+  /picked \? '800'/.test(js));
+check('다시 그리지 않고 차례만 바꾼다 (다시 만들면 말풍선이 닫힌다)',
+  /if\(on\) m\._el\.style\.zIndex = '800'/.test(js));
 check('재는 동안에는 말풍선을 떼어 둔다 (누르면 재는 점이 된다)',
   /if\(!MV\.ruler\) mk\.setPopup/.test(js));
 
@@ -2028,12 +2033,33 @@ check('학교급 색을 그때그때 넣는다', q(
 check('이름표에 꼬리가 있어 어느 점인지 가리킨다',
   /\.mv-lab::after\{content:""/.test(html) && /border-top:7px solid var\(--line\)/.test(html));
 check('닻을 아래에 두어 꼬리 끝이 학교 자리를 가리킨다',
-  /anchor:'bottom'/.test(js));
+  /anchor: 'bottom'/.test(js) || /anchor:'bottom'/.test(js));
+
+console.log('\n■ 같은 자리에 겹친 학교를 위로 쌓는다');
+/* 병설유치원은 본교 좌표를 그대로 씁니다 — 실제로 같은 건물이고, 그렇게
+   고쳐서 8.6km 어긋나던 것을 바로잡았습니다. 그 대신 이름표가 정확히
+   포개져 아래 것이 보이지 않게 되었습니다. */
+check('좌표를 흔들지 않고 그리는 자리만 올린다',
+  /좌표를 흔들어 놓지는 않습니다/.test(js) && /offset: \[0, \(tier === 'label' \? -6 : 0\) - idx \* step\]/.test(js));
+check('픽셀로 올려 아무리 확대해도 같은 만큼 떨어진다',
+  /const step = tier === 'label' \? 25 : 23/.test(js));
+check('쌓는 차례를 학교급으로 고정한다 (움직일 때마다 바뀌면 어지럽다)',
+  /const LV_ORDER = \{ 초:0, 중:1, 고:2, 특수:3, 유:4 \}/.test(js));
+check('병설은 본교와 같은 자리라고 말풍선이 적는다',
+  /본교와 같은 자리입니다 \(병설\)/.test(js));
+/* 실제로 겹친 자리가 있는지 — 없으면 이 규칙이 헛돕니다. */
+check('겹친 자리가 실제로 있다', q(
+  "(function(){var m={};SCHOOLS.forEach(function(s){if(s.lat==null)return;" +
+  "var k=s.lat.toFixed(5)+'|'+s.lon.toFixed(5);m[k]=(m[k]||0)+1});" +
+  "return Object.values(m).filter(function(n){return n>1}).length;})()") > 100);
 
 console.log('\n■ 지도 — 돌리는 법을 묻는 사람에게만 알려 준다');
 /* 「안내를 빼 달라」와 「안내가 필요하다」 사이입니다. 늘 펴 두면 세 줄이
    자리를 차지하고, 아주 없으면 돌리는 법을 알 길이 없습니다. */
-check('물음표 하나로 접어 둔다', /id="mv-turn-help"/.test(html) && /id="mv-turn-tip"/.test(html));
+/* 「?」 한 글자는 오류 표시처럼 읽힙니다. 무엇을 여는 단추인지 이름으로 적습니다. */
+check('무엇을 여는 단추인지 이름으로 적는다', /id="mv-turn-help"[^>]*>지도 사용법</.test(html) ||
+  />지도 사용법<\/button>/.test(html));
+check('접어 둘 자리가 있다', /id="mv-turn-tip"/.test(html));
 check('처음에는 접혀 있다', /id="mv-turn-tip" hidden/.test(html));
 check('마우스·터치·자판 세 갈래를 다 적는다',
   /<dt>마우스<\/dt>/.test(html) && /<dt>터치<\/dt>/.test(html) && /<dt>자판<\/dt>/.test(html));
@@ -2072,6 +2098,73 @@ check('겹쳐 보기를 켠 채로 넘어간다 (가서 또 켜면 이어진 것
   /MV\.closed = true;[\s\S]{0,300}?location\.hash = 'map'/.test(js));
 check('좌표를 찾은 곳이 몇 곳인지 적는다', /id="closed-geo-count"/.test(html) &&
   /없는 좌표를 시군 중심으로 대신하지 않습니다/.test(html));
+
+
+console.log('\n■ 〔다문화·특수〕 곁가지가 아니라 본줄기임을 첫 화면이 말한다');
+/* 전체 학생은 43% 줄어드는데 이 두 무리는 그만큼 줄지 않습니다. 지금 수가
+   그대로여도 합친 몫은 8.8% 에서 15.5% 가 됩니다 — 여섯 명 가운데 한 명. */
+q("renderMultiHeadline(); renderMultiGroups(); renderSpedRisk(); renderSpedAccessNote();");
+check('그 자리가 있다', /id="multi-headline"/.test(html) && /function renderMultiHeadline/.test(js));
+check('두 해를 나란히 놓는다',
+  ((byId['multi-share']._html || '').match(/class="sr"/g) || []).length === 2);
+check('몫이 실제로 커진다', q(
+  "(function(){var c=multiCounts();return c.then > c.now && c.then > 15;})()") === true,
+  q("JSON.stringify(multiCounts())"));
+/* 「늘어난다」와 「몫이 커진다」는 다릅니다. 확실한 것은 몫뿐입니다. */
+check('「지금 그대로일 때」라고 밝힌다', /지금 그대로일 때<\/b>의/.test(html));
+check('공식 추계가 아니라고 적는다', /공식 추계가 아닙니다/.test(html));
+
+console.log('\n■ 〔다문화·특수〕 좌우를 맞추고 갈래를 나눈다');
+/* 여태 왼쪽 3분의 2가 특수교육, 오른쪽 3분의 1에 다문화가 얹혀 있었습니다. */
+check('두 갈래로 나눈다', q("MULTI_VIEWS.join()") === 'sped,multi' &&
+  ((html.match(/data-multi-view="/g) || []).length === 2));
+check('한 갈래만 보인다', q(
+  "(function(){setMultiView('multi');var n=0;MULTI_VIEWS.forEach(function(k){" +
+  "if(!document.getElementById('multi-panel-'+k).hidden) n++});return n;})()") === 1);
+check('현황 탭과 같은 모양을 쓴다 (한 앱 안에서 같은 것은 같게)',
+  /<div class="news-view-tabs" role="tablist" aria-label="다문화·특수교육 화면 선택">/.test(html));
+check('갈래마다 기준일을 적는다', q(
+  "(function(){setMultiView('multi');return document.getElementById('multi-where')._html||'';})()").indexOf('도 단위만') >= 0);
+
+console.log('\n■ 〔다문화〕 이름이 가리고 있는 것을 드러낸다');
+/* 「다문화 학생 13,158명」이라고만 적으면 13,158명 모두에게 한국어 지원이
+   필요한 것처럼 읽힙니다. 실제로 시급할 수 있는 아이는 2,201명입니다. */
+check('세 무리를 갈라서 보여 준다',
+  ((byId['multi-groups']._html || '').match(/class="mg/g) || []).length === 3);
+check('83%가 국내출생임을 앞에 적는다', q(
+  "(function(){var g=multiByGroup();return Math.round(g.out['국내출생']/g.total*100);})()") === 83 &&
+  /한국에서 태어나 자랐습니다\.<\/b>/.test(js));
+check('한국어 지원이 시급할 수 있는 수를 따로 센다',
+  /한국어 지원이 시급할 수 있는 아이는 /.test(js) &&
+  /const need = \(out\['외국인가정'\] \|\| 0\) \+ \(out\['중도입국'\] \|\| 0\)/.test(js));
+check('세 무리의 합이 발표 합계와 맞는다', q("multiByGroup().total") === 13158);
+/* 이 구분은 교육통계연보의 분류일 뿐 한국어 능력을 잰 것이 아닙니다. */
+check('분류일 뿐이라고 밝힌다', /실제 한국어 능력을 잰 것이 아닙니다/.test(html));
+check('학교급마다 사정이 다른 것을 보여 준다',
+  ((byId['multi-bylevel']._html || '').match(/class="mlv"/g) || []).length === 3);
+check('시군을 못 고르는 까닭과 무엇을 받으면 되는지 적는다',
+  /없는 것을 시군 몫으로 나누지 않습니다/.test(html) && /class="need-list"/.test(html));
+
+console.log('\n■ 〔특수교육〕 학교가 줄면 특수학급도 옮겨야 한다');
+/* 특수학급 학생은 여러 학교에 흩어져 있습니다. 그 학교가 문을 닫으면 그
+   학급도 옮겨야 합니다. 적정규모 논의에서 가장 늦게 검토되는 자리입니다. */
+check('그 자리가 있다', /id="sped-risk-card"/.test(html) && /function renderSpedRisk/.test(js));
+check('소규모 학교만 고른다', q(
+  "(function(){return spedRiskRows().every(function(r){" +
+  "return r.size.key==='minimum'||r.size.key==='small';});})()") === true);
+check('학생이 적은 순으로 놓는다', q(
+  "(function(){var r=spedRiskRows();return r.length<2 || r[0].stu <= r[1].stu;})()") === true);
+check('가장 가까운 같은 급 학교까지의 거리를 함께 적는다',
+  /가장 가까운 같은 급/.test(byId['sped-risk']._html || ''));
+/* 학교 이름에 판단을 붙이면 이 대시보드는 그날로 못 쓰는 물건이 됩니다. */
+check('검토 순서를 정하지 않는다고 못 박는다',
+  /이 목록은 <b>검토 순서를 정하지\s*\n?\s*않습니다\.<\/b>/.test(html) &&
+  /적정규모학교 육성 계획을\s*\n?\s*따릅니다/.test(html));
+check('세어지지 않는 사람을 수 바로 옆에 적는다',
+  /일반학급에서 온전히 함께 배우는 학생은 <b>공시에 없어 빠져 있습니다\.<\/b>/.test(html));
+check('특수학교가 없는 시군과 거리를 앞으로 끌어낸다',
+  /function renderSpedAccessNote/.test(js) &&
+  /울릉은 바다 건너<\/b>/.test(js));
 
 console.log(`\n${fail ? '✗' : '✓'}  통과 ${pass} · 실패 ${fail}\n`);
 process.exit(fail ? 1 : 0);
