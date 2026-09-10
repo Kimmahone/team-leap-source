@@ -1199,8 +1199,16 @@ table.data .hl{color:var(--brand);font-weight:800}
 /* 학교가 줄면 특수학급도 옮겨야 합니다 */
 .risk-list{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);
   border-radius:8px;overflow:hidden;margin-top:4px}
+.risk-list{max-height:420px;overflow-y:auto}
+.risk-tools{gap:8px;flex-wrap:wrap;align-items:center}
+.risk-tools .select{min-height:36px}
 .rk{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:10px;
-  background:var(--card);padding:9px 12px;align-items:center}
+  background:var(--card);padding:9px 12px;align-items:center;
+  width:100%;border:0;font:inherit;text-align:left;color:var(--ink);cursor:pointer}
+.rk:hover{background:var(--brand-pale)}
+.rk:hover .nm b{color:var(--brand)}
+.rk:focus-visible{outline:2px solid var(--brand);outline-offset:-2px}
+.rk-empty{background:var(--card);padding:16px 12px;font-size:12.5px;color:var(--ink-3)}
 .rk .nm{min-width:0;display:flex;flex-direction:column;gap:1px}
 .rk .nm b{font-size:12.8px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rk .nm em{font-style:normal;font-size:10.5px;color:var(--ink-3)}
@@ -1293,16 +1301,6 @@ table.data .hl{color:var(--brand);font-weight:800}
    input[type=search] 는 브라우저가 제 나름의 모양(각진 테두리·지우기 단추)을
    입힙니다. 그대로 두면 이 화면에서 혼자 다른 물건처럼 보입니다. 벗기고
    돋보기를 왼쪽에 둡니다. */
-/* ── 돌리는 법 안내 ── 묻는 사람에게만. 늘 펴 두면 세 줄이 자리를 차지합니다 */
-.mv-help{color:var(--ink-3)}
-.mv-help::before{content:"?";display:inline-flex;align-items:center;justify-content:center;
-  width:14px;height:14px;margin-right:5px;border-radius:50%;
-  background:var(--ink-3);color:var(--card);font-size:9.5px;font-weight:800}
-.mv-help[aria-expanded="true"]{background:var(--brand);border-color:var(--brand);color:var(--leap-on-fill)}
-.mv-help[aria-expanded="true"]::before{background:var(--leap-on-fill);color:var(--brand)}
-.mv-tip{margin-top:8px;border:1px solid var(--line);border-radius:8px;background:var(--card);
-  padding:10px 11px;font-size:11.5px;line-height:1.6;color:var(--ink-2)}
-.mv-tip[hidden]{display:none}
 .mv-tip > b{display:block;font-size:12px;color:var(--ink);margin-bottom:6px}
 .mv-tip dl{margin:0;display:grid;gap:5px}
 .mv-tip dl > div{display:grid;grid-template-columns:38px minmax(0,1fr);gap:8px;align-items:baseline}
@@ -1371,6 +1369,7 @@ table.data .hl{color:var(--brand);font-weight:800}
 .mapview.side-off .mv-side{display:none}
 /* 접기 단추는 지도 «위»에 둡니다. 칸 안에 두면 접은 뒤 함께 사라져
    돌아올 길이 없어집니다. */
+.mv-map .maplibregl-ctrl-top-right{top:52px}
 .mv-fold-side{position:absolute;left:10px;top:10px;z-index:6;
   display:flex;align-items:center;gap:6px;font:inherit;font-size:12.5px;font-weight:600;
   min-height:34px;padding:0 12px 0 9px;border:1px solid var(--line);border-radius:999px;
@@ -1379,6 +1378,23 @@ table.data .hl{color:var(--brand);font-weight:800}
 .mv-fold-side:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
 .mv-fold-side .ic{font-size:15px;line-height:1}
 .mapview.side-off .mv-fold-side .ic{transform:scaleX(-1)}
+/* ── 돌리는 법 안내 ── 묻는 사람에게만. 지도 위 «오른쪽»에 둡니다.
+   ★ 접기 단추와 같은 꼴(.mv-fold-side)을 쓰므로, 자리를 덮어쓰는 규칙은
+     반드시 그 «뒤»에 와야 합니다. 앞에 두었더니 둘이 같은 자리에 겹쳐
+     「요약 접기」가 통째로 가려졌습니다. */
+.mv-help{left:auto;right:12px;top:10px}
+.mv-help .ic{display:inline-flex;align-items:center;justify-content:center;
+  width:15px;height:15px;border-radius:50%;background:var(--ink-3);color:var(--card);
+  font-size:10px;font-weight:800}
+.mv-help[aria-expanded="true"]{background:var(--brand);border-color:var(--brand);color:var(--leap-on-fill)}
+.mv-help[aria-expanded="true"] .ic{background:var(--leap-on-fill);color:var(--brand)}
+.mapview.side-off .mv-help .ic{transform:none}
+@media (max-width:900px){ .mv-help .lb{display:none} .mv-help{padding:0 9px} }
+.mv-tip{position:absolute;right:12px;top:52px;z-index:7;width:min(320px,calc(100% - 24px));
+  border:1px solid var(--line);border-radius:10px;background:var(--card);
+  padding:12px 13px;font-size:11.5px;line-height:1.6;color:var(--ink-2);
+  box-shadow:0 8px 22px rgba(16,26,36,.2)}
+.mv-tip[hidden]{display:none}
 @media (max-width:900px){
   .mapview.side-off{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr)}
 }
@@ -1455,6 +1471,45 @@ table.data .hl{color:var(--brand);font-weight:800}
      transform:translate 를 적어 넣어 서로 덮어씁니다 (마름모가 되지 않습니다). */
 .mv-closed{width:12px;height:12px;border:2px dashed var(--ink-3);background:var(--card);
   opacity:.9;cursor:pointer}
+/* ══ 학교 말풍선 〔2026. 9. 11.〕 ═════════════════════════════════════════
+   ★ 세 가지가 어긋나 있었습니다.
+     ① 딱지를 맨 앞(z-index 800)으로 올리자 말풍선이 그 뒤로 갔습니다.
+        말풍선은 «누른 결과»이므로 무엇보다 앞이어야 합니다.
+     ② 말풍선이 누른 딱지를 덮었습니다. 무엇을 눌렀는지 가려집니다.
+        딱지 위로 비켜서 뜨게 자리를 올립니다.
+     ③ MapLibre 가 흰 바탕·검은 글씨를 제 스타일로 박아 넣어, 어두운 화면에서
+        혼자 하얬습니다. 우리 토큰으로 덮어씁니다. */
+.mv-map .maplibregl-popup{z-index:1200}
+.mv-map .maplibregl-popup-content{
+  font-family:inherit;font-size:12.5px;line-height:1.65;
+  background:var(--card);color:var(--ink);
+  border:1px solid var(--line);border-radius:14px;
+  padding:13px 15px;box-shadow:0 8px 24px rgba(16,26,36,.22),0 2px 6px rgba(16,26,36,.12)}
+.mv-map .maplibregl-popup-content b{color:var(--ink);font-weight:700}
+.mv-map .maplibregl-popup-content span{color:var(--ink-3)}
+/* 꼬리도 함께 물들여야 합니다 — 안 그러면 흰 삼각형만 남습니다 */
+.mv-map .maplibregl-popup-anchor-bottom .maplibregl-popup-tip{border-top-color:var(--card)}
+.mv-map .maplibregl-popup-anchor-top .maplibregl-popup-tip{border-bottom-color:var(--card)}
+.mv-map .maplibregl-popup-anchor-left .maplibregl-popup-tip{border-right-color:var(--card)}
+.mv-map .maplibregl-popup-anchor-right .maplibregl-popup-tip{border-left-color:var(--card)}
+.mv-map .maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip,
+.mv-map .maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip{border-top-color:var(--card)}
+.mv-map .maplibregl-popup-anchor-top-left .maplibregl-popup-tip,
+.mv-map .maplibregl-popup-anchor-top-right .maplibregl-popup-tip{border-bottom-color:var(--card)}
+.mv-map .maplibregl-popup-close-button{
+  right:6px;top:5px;width:26px;height:26px;border-radius:50%;font-size:17px;line-height:1;
+  color:var(--ink-3);background:none;border:0}
+.mv-map .maplibregl-popup-close-button:hover{background:var(--card-2);color:var(--ink)}
+.mv-map .maplibregl-popup-close-button:focus-visible{outline:3px solid var(--brand);outline-offset:1px}
+
+/* 이웃까지의 거리 이름표 — 선의 가운데에 답니다 */
+.mv-nearchip{display:flex;align-items:center;gap:5px;white-space:nowrap;
+  background:var(--card);border:1px solid var(--leap-teal);border-radius:999px;
+  padding:2px 9px 2px 7px;font-size:11px;box-shadow:0 2px 7px rgba(16,26,36,.2);
+  color:var(--ink);pointer-events:none}
+.mv-nearchip b{color:var(--leap-teal);font-weight:800;font-variant-numeric:tabular-nums}
+.mv-nearchip span{color:var(--ink-3);font-size:10.5px}
+
 /* 거리를 재려고 찍은 자리. 번호를 달아 어느 것이 먼저인지 보이게 합니다. */
 .mv-rpt{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;
   justify-content:center;font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;
@@ -2292,10 +2347,6 @@ body.map-maxed.home-wide #home-side{display:none}
             <button type="button" class="chip" id="mv-reset">경북 전체로</button>
             <!-- 안내는 «묻는 사람에게만» 보여 줍니다. 늘 펴 두면 세 줄이 자리를
                  차지하고, 아주 없으면 돌리는 법을 알 길이 없습니다. -->
-            <!-- ★ 「?」 한 글자는 오류 표시처럼 읽힙니다 〔2026. 9. 11.〕
-                 무엇을 여는 단추인지 이름으로 적습니다. -->
-            <button type="button" class="chip mv-help" id="mv-turn-help"
-                    aria-expanded="false" aria-controls="mv-turn-tip">지도 사용법</button>
           </div>
           <div class="mv-tip" id="mv-turn-tip" hidden>
             <b>지도를 돌리고 기울이려면</b>
@@ -2379,6 +2430,14 @@ body.map-maxed.home-wide #home-side{display:none}
         <button type="button" class="mv-fold-side" id="mv-side-toggle"
                 aria-expanded="true" aria-controls="mv-side">
           <span class="ic" aria-hidden="true">‹</span><span class="lb">요약 접기</span>
+        </button>
+        <!-- ★ 「지도 사용법」을 칸 밖으로 냈습니다 〔2026. 9. 11.〕
+             「보기」 칸에 넣었더니 단추 줄이 넘쳐 줄바꿈이 나고 못생겨졌습니다.
+             지도 위 한 자리로 옮깁니다 — 세로 칸의 너비에 매이지 않고,
+             지도를 보다 궁금해진 자리에서 바로 손이 닿습니다. -->
+        <button type="button" class="mv-fold-side mv-help" id="mv-turn-help"
+                aria-expanded="false" aria-controls="mv-turn-tip">
+          <span class="ic" aria-hidden="true">?</span><span class="lb">지도 사용법</span>
         </button>
         <div class="mv-status" id="mv-status">지도를 준비하는 중입니다…</div>
       </div>
@@ -3025,8 +3084,33 @@ body.map-maxed.home-wide #home-side{display:none}
           <div class="card" id="sped-risk-card">
             <h2>학교가 줄면 특수학급도 옮겨야 합니다</h2>
             <p class="sgg-board-lede" id="sped-risk-lede"></p>
+            <!-- ★ 87곳을 다 볼 수 있게 〔2026. 9. 11.〕
+                 12곳만 보여 주고 나머지를 감추면, 우리 학교가 있는지 알 수
+                 없습니다. 다 보여 주되 «찾을 수 있게» 합니다 — 스크롤만
+                 길어지면 그것도 못 쓰는 목록입니다. -->
+            <div class="map-toolbar risk-tools" style="margin:2px 0 10px">
+              <div class="mv-search" style="flex:1;min-width:150px">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="M10.4 10.4 L14 14"/></svg>
+                <input type="search" id="risk-q" placeholder="학교 이름으로 찾기" autocomplete="off">
+              </div>
+              <label class="sr-only" for="risk-sig">시군</label>
+              <select id="risk-sig" class="select"><option value="">시군 전체</option></select>
+              <label class="sr-only" for="risk-lv">학교급</label>
+              <select id="risk-lv" class="select"><option value="">학교급 전체</option><option value="초">초등학교</option><option value="중">중학교</option><option value="고">고등학교</option></select>
+              <label class="sr-only" for="risk-sort">정렬</label>
+              <select id="risk-sort" class="select">
+                <option value="stu">학생 적은 순</option>
+                <option value="sped">특수학급 많은 순</option>
+                <option value="far">가장 가까운 학교가 먼 순</option>
+                <option value="name">이름 순</option>
+              </select>
+              <span class="map-note" id="risk-count"></span>
+            </div>
             <div class="risk-list" id="sped-risk"></div>
-            <p class="mv-note" style="margin-top:11px">이 목록은 <b>검토 순서를 정하지
+            <p class="mv-note" style="margin-top:11px">줄을 누르면 <b>지도에서 그 학교로
+            갑니다.</b> 가장 가까운 같은 급 학교 <b>세 곳까지 선을 그어</b> 거리를 보여
+            줍니다 — 사이에 산이 있으면 3D 지형에서 바로 보입니다.</p>
+            <p class="mv-note" style="margin-top:7px">이 목록은 <b>검토 순서를 정하지
             않습니다.</b> 학교별 판단은 그해 경상북도교육청 적정규모학교 육성 계획을
             따릅니다. 여기서는 <b>특수학급이 함께 걸리는 자리</b>를 미리 보아 두는 것뿐입니다.</p>
           </div>
@@ -6700,6 +6784,8 @@ function selectSchool(sc){
 }
 function clearSchool(){
   selectedSchoolKey = null;
+  /* 이웃 선은 «그 학교를 보려고» 그린 것입니다. 놓으면 함께 걷습니다. */
+  if(typeof mvClearNear === 'function' && typeof MV === 'object' && MV && MV.near) mvClearNear();
   renderSchoolCard();
   if(typeof mvRenderDetail === 'function') mvRenderDetail();
   if(homeState.mapMode === 'online' && currentMapLabelMode()) updateSchoolIcons();
@@ -8061,8 +8147,9 @@ function openMapFor(sgg){
   let tries = 0;
   const go = () => {
     if(typeof MV === 'undefined') return;
-    if(!MV.map){ if(++tries < 40) setTimeout(go, 250); return; }
-    try{ MV.map.flyTo({ center:[sg.lon, sg.lat], zoom:10.4, duration:900 }); }catch(_e){}
+    if(!MV.map){ if(++tries < 60) setTimeout(go, 200); return; }
+    /* 탭을 건너올 때는 날지 않고 바로 옮깁니다 (위 주석 참고) */
+    try{ MV.map.jumpTo({ center:[sg.lon, sg.lat], zoom:10.4 }); }catch(_e){}
   };
   setTimeout(go, 80);
 }
@@ -8358,6 +8445,19 @@ onEl('sgg-to-sim', 'click', () => openSimFor(statusState.sgg));
 
 /* 폐교 → 지도. 겹쳐 보기를 켠 채로 넘어갑니다 — 넘어가서 또 켜야 하면
    두 화면이 이어진 것이 아닙니다. */
+/* 특수학급 목록의 찾기·거르기·정렬 */
+(function(){
+  const on = (id, ev, fn) => { const el = document.getElementById(id); if(el) el.addEventListener(ev, fn); };
+  let t = null;
+  on('risk-q', 'input', e => {
+    clearTimeout(t);
+    t = setTimeout(() => { riskState.q = e.target.value || ''; renderSpedRisk(); }, 180);
+  });
+  on('risk-sig', 'change', e => { riskState.sig = e.target.value; renderSpedRisk(); });
+  on('risk-lv', 'change', e => { riskState.lv = e.target.value; renderSpedRisk(); });
+  on('risk-sort', 'change', e => { riskState.sort = e.target.value; renderSpedRisk(); });
+})();
+
 onEl('closed-to-map', 'click', () => {
   try{
     if(typeof MV === 'object' && MV && !MV.closed){
@@ -9608,30 +9708,110 @@ function renderSpedAccessNote(){
     '<b>울릉은 바다 건너</b>라 배나 비행기를 타야 합니다.';
 }
 
+const riskState = { q:'', sig:'', lv:'', sort:'stu' };
+
 function renderSpedRisk(){
   const box = document.getElementById('sped-risk');
   if(!box) return;
-  let rows; try{ rows = spedRiskRows(); }catch(_e){ return; }
-  const all = SCHOOLS.filter(s => HOME_SERIES_LEVELS.indexOf(s.lv) >= 0 && (s.sped || 0) > 0);
-  const kids = rows.reduce((a, r) => a + r.sped, 0);
+  let all; try{ all = spedRiskRows(); }catch(_e){ return; }
+  const holders = SCHOOLS.filter(s => HOME_SERIES_LEVELS.indexOf(s.lv) >= 0 && (s.sped || 0) > 0);
+  const kids = all.reduce((a, r) => a + r.sped, 0);
 
   const lede = document.getElementById('sped-risk-lede');
   if(lede){
     lede.innerHTML =
-      `특수학급을 둔 학교는 <b>${fmt(all.length)}곳</b>입니다. 그 가운데 ` +
-      `<b>${fmt(rows.length)}곳이 소규모</b>(학생 100명 이하)이고, 거기에 ` +
+      `특수학급을 둔 학교는 <b>${fmt(holders.length)}곳</b>입니다. 그 가운데 ` +
+      `<b>${fmt(all.length)}곳이 소규모</b>(학생 100명 이하)이고, 거기에 ` +
       `<b>특수학급 학생 ${fmt(kids)}명</b>이 있습니다. ` +
       '그 학교가 통합되면 <b>이 아이들이 먼저 옮겨야 합니다.</b> ' +
       '적정규모 논의에서 <b>가장 늦게 검토되는 자리</b>입니다.';
   }
-  box.innerHTML = rows.slice(0, 12).map(r =>
-    '<div class="rk">' +
+
+  /* 시군 고르개는 «목록에 실제로 있는 시군»만 채웁니다 — 없는 시군을 골라
+     빈 목록을 보게 하지 않습니다. */
+  const sel = document.getElementById('risk-sig');
+  if(sel && sel.options.length <= 1){
+    const seen = {};
+    all.forEach(r => { seen[r.s.s] = (seen[r.s.s] || 0) + 1; });
+    Object.keys(seen).sort((x, y) => x.localeCompare(y, 'ko')).forEach(k => {
+      const o = document.createElement('option');
+      o.value = k; o.textContent = `${k} (${seen[k]})`;
+      sel.appendChild(o);
+    });
+  }
+
+  const q = riskState.q.trim();
+  let rows = all.filter(r =>
+    (!q || String(r.s.name).indexOf(q) >= 0) &&
+    (!riskState.sig || r.s.s === riskState.sig) &&
+    (!riskState.lv || r.s.lv === riskState.lv));
+
+  const by = {
+    stu:  (a, b) => a.stu - b.stu,
+    sped: (a, b) => b.sped - a.sped || a.stu - b.stu,
+    far:  (a, b) => (b.near ? b.near.d : 0) - (a.near ? a.near.d : 0),
+    name: (a, b) => String(a.s.name).localeCompare(String(b.s.name), 'ko')
+  };
+  rows.sort(by[riskState.sort] || by.stu);
+  MV_RISK_ROWS = rows;
+
+  const cnt = document.getElementById('risk-count');
+  if(cnt) cnt.textContent = rows.length === all.length
+    ? `${fmt(all.length)}곳 모두` : `${fmt(rows.length)}곳 / ${fmt(all.length)}곳`;
+
+  if(!rows.length){
+    box.innerHTML = '<div class="rk-empty">고른 조건에 맞는 학교가 없습니다.</div>';
+    return;
+  }
+  box.innerHTML = rows.map((r, i) =>
+    `<button type="button" class="rk" data-risk="${i}">` +
     `<span class="nm"><b>${htmlEsc(r.s.name)}</b><em>${htmlEsc(r.s.s)} · ${htmlEsc((LEVEL_CFG[r.s.lv] || {}).full || r.s.lv)}</em></span>` +
     `<span class="v"><b>${fmt(r.stu)}</b><i>학생</i></span>` +
     `<span class="v hi"><b>${fmt(r.sped)}</b><i>특수학급</i></span>` +
     `<span class="v"><b>${r.near ? (r.near.d < 1 ? Math.round(r.near.d * 1000) + 'm' : r.near.d.toFixed(1) + 'km') : '–'}</b><i>가장 가까운 같은 급</i></span>` +
-    '</div>').join('') +
-    (rows.length > 12 ? `<p class="mv-note" style="margin-top:8px">학생이 적은 순으로 12곳까지 보입니다 (모두 ${fmt(rows.length)}곳).</p>` : '');
+    '</button>').join('');
+  Array.prototype.forEach.call(box.querySelectorAll('.rk'), btn => {
+    btn.addEventListener('click', () => {
+      const r = MV_RISK_ROWS[+btn.dataset.risk];
+      if(r) openMapForSchool(r.s);
+    });
+  });
+}
+let MV_RISK_ROWS = [];
+
+/* 학교 하나를 지도에서 보여 주고, 가장 가까운 같은 급 학교까지 선을 긋습니다.
+   ★ 지도는 «열 때» 라이브러리를 불러옵니다. 준비될 때까지 몇 번만 기다립니다. */
+function openMapForSchool(sc){
+  if(!sc || sc.lat == null) return;
+  selectSchool(sc);
+  location.hash = 'map';
+  let tries = 0;
+  const go = () => {
+    if(typeof MV === 'undefined') return;
+    if(!MV.map){ if(++tries < 60) setTimeout(go, 200); return; }
+    try{
+      const near = mvNearestOf(sc, 3);
+      /* ★ 이웃까지의 선은 «셋이 함께 화면에 들어와야» 뜻이 있습니다 〔2026. 9. 11.〕
+         처음에 1:26,000 으로 고정했더니 3.8km 떨어진 이웃이 화면 밖으로
+         나가 선이 보이지 않았습니다. 이웃이 얼마나 먼지는 학교마다 다르므로
+         «네 점이 다 들어오는 범위»를 재서 맞춥니다.
+
+         ★ 탭을 건너올 때는 날지 않고 바로 옮깁니다. 날아가는 그림은 지도를
+           보고 있던 사람에게 «어디서 어디로» 갔는지 알려 주는 것인데, 다른
+           탭에서 막 넘어온 사람은 출발 자리를 본 적이 없습니다. */
+      if(near.length){
+        const b = new maplibregl.LngLatBounds([sc.lon, sc.lat], [sc.lon, sc.lat]);
+        near.forEach(o => b.extend([o.x.lon, o.x.lat]));
+        MV.map.fitBounds(b, { padding:{ top:90, right:90, bottom:110, left:90 },
+                              maxZoom:15.5, duration:0 });
+      }else{
+        MV.map.jumpTo({ center:[sc.lon, sc.lat], zoom: mvZoomForRatio(26000, sc.lat) });
+      }
+      mvShowNear(sc, 3);
+      mvRenderDetail(true);
+    }catch(_e){}
+  };
+  setTimeout(go, 80);
 }
 
 function setMultiView(v){
@@ -11041,6 +11221,7 @@ const MV = {
   map:null, key:null,
   base:'Base', level:'전체', q:'', year:HOME_BASE_YEAR,
   closed:false, bound:true, ruler:false, rulerPts:[], rulerMarks:[],
+  near:null, nearMarks:[],
   is3d:false, marks:[], rows:[]
 };
 
@@ -11404,11 +11585,26 @@ function mvDraw(){
     }).setLngLat([sc.lon, sc.lat]);
     /* ★ 거리를 재는 동안에는 말풍선을 달지 않습니다 — 학교를 누르면 그 학교가
        재는 점이 됩니다. 통학 거리를 학교와 학교 사이로 재는 것이 이 화면의 쓸모입니다. */
-    if(!MV.ruler) mk.setPopup(new maplibregl.Popup({ offset:14 }).setHTML(mvPopupHtml(sc)));
+    /* ★ 말풍선이 누른 딱지를 덮지 않게 «딱지 높이만큼» 위로 띄웁니다.
+       딱지는 anchor:'bottom' 이라 점 위에 서 있고, 겹쳐 쌓인 것은 더 위에
+       있습니다. 그 높이를 더해 그 위에 뜨게 합니다. */
+    const lift = (tier === 'label' ? 34 : 32) + idx * step;
+    if(!MV.ruler) mk.setPopup(new maplibregl.Popup({
+      anchor: 'bottom', offset: [0, -lift], maxWidth: '280px'
+    }).setHTML(mvPopupHtml(sc)));
     mk.addTo(map);
     mk._sc = sc; mk._el = el;
-    el.addEventListener('click', () => {
-      if(MV.ruler){ mvRulerAdd(sc.lon, sc.lat, sc.name); return; }
+    el.addEventListener('click', ev => {
+      if(MV.ruler){
+        /* ★ 점이 두 번 찍히던 것을 고칩니다 〔2026. 9. 11.〕
+           딱지는 지도 안에 있는 DOM 이라, 누르면 이 리스너가 «학교 자리»를
+           찍고 그 누름이 지도까지 올라가 «누른 자리»를 한 번 더 찍었습니다.
+           그래서 두 학교를 눌렀는데 점이 넷이 되고, 사이에 엉뚱한 자리가
+           끼어 거리도 어긋났습니다. 여기서 멈춰 세웁니다. */
+        ev.stopPropagation();
+        mvRulerAdd(sc.lon, sc.lat, sc.name);
+        return;
+      }
       selectSchool(sc); mvRenderDetail(true);
     });
     MV.marks.push(mk);
@@ -11439,7 +11635,7 @@ function mvDrawClosed(){
     el.title = r.name + ' (폐교)';
     const mk = new maplibregl.Marker({ element:el })
       .setLngLat([+r.lon, +r.lat])
-      .setPopup(new maplibregl.Popup({ offset:12 }).setHTML(
+      .setPopup(new maplibregl.Popup({ anchor:'bottom', offset:[0, -16], maxWidth:'280px' }).setHTML(
         `<b>${htmlEsc(r.name)}</b> <span style="font-size:11px">(폐교)</span><br>` +
         `${htmlEsc(r.s)} · ${htmlEsc(String(r.year))}년에 문 닫음 · ${htmlEsc(r.lv)}<br>활용 · ${htmlEsc(r.use)}`))
       .addTo(map);
@@ -11495,7 +11691,11 @@ function mvRenderList(vis, total, tier){
       const s = MV.rows[+btn.dataset.i];
       if(!s) return;
       selectSchool(s); mvRenderDetail(true);
-      MV.map.flyTo({ center:[s.lon, s.lat], zoom:Math.max(MV.map.getZoom(), 12.4), duration:900 });
+      /* 목록에서 고른 것은 «그 학교를 보러» 가는 것입니다. 약 1:3,700 —
+         학교 건물과 운동장이 화면에 들어오고 옆 학교 딱지는 거의 비켜납니다.
+         지도에서 직접 누른 것은 보고 있던 크기를 그대로 둡니다. */
+      MV.map.flyTo({ center:[s.lon, s.lat],
+        zoom: Math.max(MV.map.getZoom(), mvZoomForRatio(3700, s.lat)), duration:900 });
     });
   });
 }
@@ -11649,6 +11849,21 @@ function mvNiceLen(m){
   return (r >= 5 ? 5 : r >= 2 ? 2 : 1) * p;
 }
 
+/* ★ 「1 : N 로 보이게」를 배율로 되돌려 셈합니다 〔2026. 9. 11.〕
+   목록에서 학교를 누를 때 «그 학교 하나가 보이는 크기»로 가야 하는데, 여태
+   배율 12.4(약 1:88,000)로 갔습니다. 그 크기에서는 옆 학교 딱지가 잔뜩 함께
+   보여 무엇을 고른 것인지 알기 어려웠습니다.
+
+     땅 미터/칸 = 비율 × CSS 한 칸의 길이
+     2^z = 156543.03392 × cos(위도) ÷ 땅 미터/칸
+
+   위도를 넣어 셈하므로 울릉과 고령이 같은 비율로 보입니다. */
+function mvZoomForRatio(ratio, lat){
+  const mPerPx = ratio * MV_CSS_PX_M;
+  const z = Math.log2(156543.03392 * Math.cos((lat || 36.4) * Math.PI / 180) / mPerPx);
+  return Math.max(6, Math.min(18, z));
+}
+
 function mvMountScale(map){
   const el = document.createElement('div');
   el.className = 'mv-scale';
@@ -11673,6 +11888,68 @@ function mvMountScale(map){
   map.on('move', draw);
   map.on('zoom', draw);
   draw();
+}
+
+/* ══ 이웃까지 얼마나 먼가 〔2026. 9. 11.〕 ═══════════════════════════════════
+   「이 학교가 통합되면 아이들이 어디로 가나」는 표의 숫자 한 칸으로는 와닿지
+   않습니다. 가장 가까운 같은 급 학교 두셋까지 «선을 그어» 보여 줍니다.
+   산과 강이 그 사이에 있으면 3D 지형 위에서 바로 보입니다.
+
+   ★ 직선거리입니다. 길을 따라간 거리도, 통학 시간도 아닙니다 — 그렇다고
+     선 옆에 적습니다. */
+function mvNearestOf(sc, n){
+  return SCHOOLS
+    .filter(x => x !== sc && x.lv === sc.lv && x.lat != null && x.lon != null)
+    .map(x => ({ x, d: haversineKm(sc.lat, sc.lon, x.lat, x.lon) }))
+    .sort((a, b) => a.d - b.d)
+    .slice(0, n || 3);
+}
+
+function mvClearNear(){
+  MV.nearMarks.forEach(m => { try{ m.remove(); }catch(_e){} });
+  MV.nearMarks = [];
+  MV.near = null;
+  const map = MV.map;
+  if(map && map.getSource('mv-near'))
+    map.getSource('mv-near').setData({ type:'FeatureCollection', features:[] });
+}
+
+function mvShowNear(sc, n){
+  const map = MV.map;
+  if(!map || !sc || sc.lat == null) return;
+  mvClearNear();
+  const near = mvNearestOf(sc, n || 3);
+  if(!near.length) return;
+  MV.near = { sc, near };
+
+  /* ★ idle 을 기다리지 않습니다 〔2026. 9. 11.〕 타일을 못 받는 형편에서는
+     idle 이 영영 오지 않아 선이 그려지지 않았습니다. 원본이 생길 때까지만
+     몇 번 기다립니다. */
+  let wait = 0;
+  const paint = () => {
+    if(!map.getSource('mv-near')){ if(++wait < 40) setTimeout(paint, 150); return; }
+    map.getSource('mv-near').setData({
+      type:'FeatureCollection',
+      features: near.map(o => ({
+        type:'Feature', properties:{},
+        geometry:{ type:'LineString', coordinates:[[sc.lon, sc.lat], [o.x.lon, o.x.lat]] }
+      }))
+    });
+    near.forEach(o => {
+      const el = document.createElement('div');
+      el.className = 'mv-nearchip';
+      el.innerHTML = `<b>${o.d < 1 ? Math.round(o.d * 1000) + 'm' : o.d.toFixed(1) + 'km'}</b>` +
+        `<span>${htmlEsc(String(o.x.name).replace(/(초등학교|중학교|고등학교|유치원|학교)$/, ''))}</span>`;
+      el.title = o.x.name + ' 까지 직선거리 ' +
+        (o.d < 1 ? Math.round(o.d * 1000) + 'm' : o.d.toFixed(2) + 'km');
+      /* 이름표는 «선의 가운데»에 답니다 — 끝에 달면 딱지와 겹칩니다. */
+      MV.nearMarks.push(new maplibregl.Marker({ element: el })
+        .setLngLat([(sc.lon + o.x.lon) / 2, (sc.lat + o.x.lat) / 2]).addTo(map));
+    });
+    mvSay(`${sc.name}에서 가장 가까운 ${(LEVEL_CFG[sc.lv] || {}).full || sc.lv} ` +
+      `${near.length}곳까지 직선거리를 그렸습니다 · 산을 넘는 길은 이보다 멉니다`);
+  };
+  paint();
 }
 
 /* ── 배경 갈아 끼우기 ───────────────────────────────────────────────────── */
@@ -11805,6 +12082,14 @@ async function mvStart(){
   layers.push({ id:'mv-bound', type:'line', source:'mv-bound',
     layout:{ visibility: MV.bound ? 'visible' : 'none' },
     paint:{ 'line-color': mvCss('--brand', '#1B4FA0'), 'line-width':1.4, 'line-opacity':0.75 } });
+  sources['mv-near'] = { type:'geojson', data:{ type:'FeatureCollection', features:[] } };
+  /* 선 아래에 흰 테를 한 겹 깝니다 — 위성 사진이든 지형이든 어떤 바탕
+     위에서도 읽히게 하려는 것입니다. 지도에서 선 하나만 그리면 배경에 묻힙니다. */
+  layers.push({ id:'mv-near-case', type:'line', source:'mv-near',
+    paint:{ 'line-color': mvCss('--card', '#fff'), 'line-width':5.4, 'line-opacity':.85 } });
+  layers.push({ id:'mv-near-line', type:'line', source:'mv-near',
+    paint:{ 'line-color': mvCss('--leap-teal', '#0D6E5C'), 'line-width':3,
+            'line-dasharray':[1.8,1.1] } });
   layers.push({ id:'mv-ruler-line', type:'line', source:'mv-ruler',
     filter:['==','$type','LineString'],
     paint:{ 'line-color': mvCss('--leap-amber-mark', '#CE6410'), 'line-width':3, 'line-dasharray':[2,1.4] } });
@@ -12022,7 +12307,8 @@ function mvWireControls(){
       const hit = mvPool()[0];
       if(!hit){ mvSay('이름이 맞는 학교가 없습니다.'); return; }
       selectSchool(hit); mvRenderDetail(true);
-      MV.map.flyTo({ center:[hit.lon, hit.lat], zoom:Math.max(MV.map.getZoom(), 12.4), duration:900 });
+      MV.map.flyTo({ center:[hit.lon, hit.lat],
+        zoom: Math.max(MV.map.getZoom(), mvZoomForRatio(3700, hit.lat)), duration:900 });
     });
   }
 }

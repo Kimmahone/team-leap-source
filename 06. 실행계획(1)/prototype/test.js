@@ -1507,7 +1507,11 @@ check('지도가 뜨기 전에 켜도 선을 잃지 않는다',
   /map\.once\('idle', mvRulerShapes\)/.test(js));
 check('글은 지도가 뜨기 전에도 적힌다', /function mvRulerText/.test(js) && /function mvRulerShapes/.test(js));
 check('학교 두 곳을 눌러 잰다 (통학 거리를 가늠하는 자리)',
-  /if\(MV\.ruler\)\{ mvRulerAdd\(sc\.lon, sc\.lat, sc\.name\); return; \}/.test(js));
+  /mvRulerAdd\(sc\.lon, sc\.lat, sc\.name\);/.test(js));
+/* ★ 딱지는 지도 안의 DOM 이라, 누르면 이 리스너가 학교 자리를 찍고 그 누름이
+   지도까지 올라가 「누른 자리」를 한 번 더 찍었습니다. 두 학교를 눌렀는데
+   점이 넷이 되고 사이에 엉뚱한 자리가 끼어 거리도 어긋났습니다. */
+check('학교를 누르면 점이 «한 번»만 찍힌다', /ev\.stopPropagation\(\);\s*\n\s*mvRulerAdd/.test(js));
 check('직선거리임을 밝힌다 (산을 넘는 길은 더 멀다)', /산을 넘는 길은 이보다 멉니다/.test(js));
 check('잰 값을 왼쪽 칸에도 남긴다 (상태줄은 지도를 한 번 움직이면 지워진다)',
   /id="mv-ruler-out"/.test(html) && /out\.hidden = false/.test(js));
@@ -1866,7 +1870,16 @@ check('다른 화면의 속을 함부로 뒤지지 않는다',
   /catch\(_e\)\{ \/\* 시뮬레이터 모양이 바뀌어도/.test(js));
 check('시뮬레이터 조건이 실제로 바뀐다', q(
   "(function(){openSimFor('봉화');return sim.sigungu.has('봉화') && sim.sigungu.size===1;})()") === true);
-check('지도를 못 열어도 타이머가 남지 않는다', /if\(\+\+tries < 40\)/.test(js));
+check('지도를 못 열어도 타이머가 남지 않는다', /if\(\+\+tries < 60\)/.test(js));
+/* 날아가는 그림은 지도를 보고 있던 사람에게 «어디서 어디로» 갔는지 알려 주는
+   것입니다. 다른 탭에서 막 넘어온 사람은 출발 자리를 본 적이 없습니다. */
+check('탭을 건너올 때는 날지 않고 바로 옮긴다',
+  /MV\.map\.jumpTo\(\{ center:\[sc\.lon, sc\.lat\]/.test(js) &&
+  /MV\.map\.jumpTo\(\{ center:\[sg\.lon, sg\.lat\], zoom:10\.4 \}\)/.test(js));
+/* 이웃이 얼마나 먼지는 학교마다 다릅니다. 1:26,000 으로 고정했더니 3.8km
+   떨어진 이웃이 화면 밖으로 나가 선이 보이지 않았습니다. */
+check('이웃 셋이 다 들어오는 범위로 맞춘다',
+  /MV\.map\.fitBounds\(b, \{ padding/.test(js) && /maxZoom:15\.5, duration:0/.test(js));
 
 console.log('\n■ 〔현황〕 구현 용어를 걷어냈다');
 check('「Pure SVG」·「Line Chart」 같은 말이 없다',
@@ -2057,8 +2070,16 @@ console.log('\n■ 지도 — 돌리는 법을 묻는 사람에게만 알려 준
 /* 「안내를 빼 달라」와 「안내가 필요하다」 사이입니다. 늘 펴 두면 세 줄이
    자리를 차지하고, 아주 없으면 돌리는 법을 알 길이 없습니다. */
 /* 「?」 한 글자는 오류 표시처럼 읽힙니다. 무엇을 여는 단추인지 이름으로 적습니다. */
-check('무엇을 여는 단추인지 이름으로 적는다', /id="mv-turn-help"[^>]*>지도 사용법</.test(html) ||
-  />지도 사용법<\/button>/.test(html));
+check('무엇을 여는 단추인지 이름으로 적는다', /id="mv-turn-help"[\s\S]{0,220}?지도 사용법/.test(html));
+/* 「보기」 칸에 넣었더니 단추 줄이 넘쳐 줄바꿈이 나고 못생겨졌습니다. */
+check('세로 칸이 아니라 지도 위에 둔다',
+  /<button type="button" class="mv-fold-side mv-help" id="mv-turn-help"/.test(html) &&
+  /\.mv-help\{left:auto;right:12px;top:10px\}/.test(html));
+check('확대·축소 단추와 겹치지 않는다', /\.mv-map \.maplibregl-ctrl-top-right\{top:52px\}/.test(html));
+/* 접기 단추와 같은 꼴을 쓰므로, 자리를 덮어쓰는 규칙은 반드시 그 뒤에 와야
+   합니다. 앞에 두었더니 둘이 겹쳐 「요약 접기」가 통째로 가려졌습니다. */
+check('요약 접기를 덮지 않는다 (규칙이 뒤에 온다)',
+  html.indexOf('.mv-fold-side{position:absolute') < html.indexOf('.mv-help{left:auto;right:12px'));
 check('접어 둘 자리가 있다', /id="mv-turn-tip"/.test(html));
 check('처음에는 접혀 있다', /id="mv-turn-tip" hidden/.test(html));
 check('마우스·터치·자판 세 갈래를 다 적는다',
@@ -2165,6 +2186,70 @@ check('세어지지 않는 사람을 수 바로 옆에 적는다',
 check('특수학교가 없는 시군과 거리를 앞으로 끌어낸다',
   /function renderSpedAccessNote/.test(js) &&
   /울릉은 바다 건너<\/b>/.test(js));
+
+
+console.log('\n■ 말풍선이 맨 앞에 오고, 딱지를 덮지 않고, 밝기를 따른다');
+/* 딱지를 맨 앞(z-index 800)으로 올리자 말풍선이 그 뒤로 갔습니다.
+   말풍선은 «누른 결과»이므로 무엇보다 앞이어야 합니다. */
+check('말풍선이 딱지보다 앞이다', /\.mv-map \.maplibregl-popup\{z-index:1200\}/.test(html));
+check('누른 딱지를 덮지 않게 위로 띄운다',
+  /const lift = \(tier === 'label' \? 34 : 32\) \+ idx \* step/.test(js) &&
+  /anchor: 'bottom', offset: \[0, -lift\]/.test(js));
+/* MapLibre 가 흰 바탕·검은 글씨를 제 스타일로 박아 넣어, 어두운 화면에서
+   혼자 하얬습니다. 꼬리도 함께 물들여야 흰 삼각형만 남지 않습니다. */
+check('밝기를 따라간다', /\.maplibregl-popup-content\{[\s\S]{0,200}?background:var\(--card\);color:var\(--ink\)/.test(html));
+check('꼬리도 함께 물든다', /\.maplibregl-popup-anchor-bottom \.maplibregl-popup-tip\{border-top-color:var\(--card\)\}/.test(html));
+check('각진 네모가 아니다', /\.maplibregl-popup-content\{[\s\S]{0,260}?border-radius:14px/.test(html));
+
+console.log('\n■ 목록에서 고르면 그 학교가 보이는 크기로 간다');
+/* 여태 배율 12.4(약 1:88,000)로 갔습니다. 그 크기에서는 옆 학교 딱지가 잔뜩
+   함께 보여 무엇을 고른 것인지 알기 어려웠습니다. */
+check('비율에서 배율을 되돌려 셈한다', /function mvZoomForRatio/.test(js));
+check('셈이 맞는다 (되돌리면 같은 비율)', q(
+  "(function(){var z=mvZoomForRatio(3700,36.4);" +
+  "var back=156543.03392*Math.cos(36.4*Math.PI/180)/Math.pow(2,z)/MV_CSS_PX_M;" +
+  "return Math.abs(back-3700) < 1;})()") === true);
+check('위도를 넣어 셈한다 (울릉과 고령이 같은 비율로 보인다)',
+  q("mvZoomForRatio(3700,37.5)") !== q("mvZoomForRatio(3700,35.8)"));
+check('목록에서 고르면 약 1:3,700 으로', /mvZoomForRatio\(3700, s\.lat\)/.test(js));
+
+console.log('\n■ 이웃까지 얼마나 먼지 지도에 그린다');
+/* 「이 학교가 통합되면 아이들이 어디로 가나」는 표의 숫자 한 칸으로는
+   와닿지 않습니다. 선을 그으면 사이에 산이 있는지도 보입니다. */
+check('그리는 코드가 있다', /function mvShowNear/.test(js) && /function mvNearestOf/.test(js));
+check('같은 학교급만 견준다', q(
+  "(function(){var sc=SCHOOLS.filter(function(x){return x.lv==='초'&&x.lat})[0];" +
+  "return mvNearestOf(sc,3).every(function(o){return o.x.lv==='초'&&o.x!==sc;});})()") === true);
+check('가까운 순으로 셋을 고른다', q(
+  "(function(){var sc=SCHOOLS.filter(function(x){return x.lv==='초'&&x.lat})[0];" +
+  "var n=mvNearestOf(sc,3);return n.length===3&&n[0].d<=n[1].d&&n[1].d<=n[2].d;})()") === true);
+check('이름표를 선 가운데에 단다 (끝에 달면 딱지와 겹친다)',
+  /\(sc\.lon \+ o\.x\.lon\) \/ 2, \(sc\.lat \+ o\.x\.lat\) \/ 2/.test(js));
+check('바탕에 묻히지 않게 흰 테를 깐다', /id:'mv-near-case'/.test(js));
+/* 타일을 못 받는 형편에서는 idle 이 영영 오지 않습니다. */
+check('idle 을 기다리지 않는다', /if\(\+\+wait < 40\) setTimeout\(paint, 150\)/.test(js));
+check('학교를 놓으면 선도 함께 걷는다',
+  /mvClearNear === 'function'[\s\S]{0,80}?mvClearNear\(\)/.test(js));
+check('직선거리임을 밝힌다', /산을 넘는 길은 이보다 멉니다/.test(js));
+
+console.log('\n■ 〔특수교육〕 87곳을 다 볼 수 있고, 찾을 수 있다');
+/* 12곳만 보여 주고 나머지를 감추면 우리 학교가 있는지 알 수 없습니다.
+   다 보여 주되 찾을 수 있게 합니다 — 스크롤만 길어지면 그것도 못 쓰는 목록입니다. */
+q("renderSpedRisk()");
+check('자르지 않고 다 보여 준다', q(
+  "(function(){var n=(document.getElementById('sped-risk')._html||'').match(/class=\"rk\"/g);" +
+  "return n ? n.length : 0;})()") === q("spedRiskRows().length"));
+check('찾기·거르기·정렬이 있다',
+  /id="risk-q"/.test(html) && /id="risk-sig"/.test(html) &&
+  /id="risk-lv"/.test(html) && /id="risk-sort"/.test(html));
+check('네 가지로 정렬한다', /stu:  \(a, b\)/.test(js) && /sped: \(a, b\)/.test(js) &&
+  /far:  \(a, b\)/.test(js) && /name: \(a, b\)/.test(js));
+check('몇 곳 가운데 몇 곳인지 적는다', /id="risk-count"/.test(html) &&
+  /곳 \/ \$\{fmt\(all\.length\)\}곳/.test(js));
+/* 없는 시군을 골라 빈 목록을 보게 하지 않습니다. */
+check('시군 고르개는 목록에 있는 시군만 채운다', /if\(sel && sel\.options\.length <= 1\)/.test(js));
+check('줄을 누르면 지도로 간다', /function openMapForSchool/.test(js) &&
+  /openMapForSchool\(r\.s\)/.test(js));
 
 console.log(`\n${fail ? '✗' : '✓'}  통과 ${pass} · 실패 ${fail}\n`);
 process.exit(fail ? 1 : 0);
