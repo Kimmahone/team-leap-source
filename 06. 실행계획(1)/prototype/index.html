@@ -852,7 +852,7 @@ button.marker:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 
 .bars{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:end;height:260px;padding-top:10px}
 .barcol{display:flex;flex-direction:column;justify-content:flex-end;height:100%}
-/* 막대는 색만으로 학교급을 전달하지 않는다 — 칸 안에 「고 39천명」처럼 글자를 함께 넣는다 */
+/* 막대는 색만으로 학교급을 전달하지 않는다 — 칸 안에 수를 함께 적는다 */
 .seg{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;
      color:var(--ink);border:1px solid var(--line);border-radius:3px 3px 0 0;min-height:18px}
 .seg + .seg{border-radius:0;border-top:0}
@@ -1013,6 +1013,44 @@ table.data .hl{color:var(--brand);font-weight:800}
    함정 1번: 브라우저의 「배경 그래픽」은 기본으로 꺼져 있어 CSS 배경은 인쇄되지 않습니다.
    그래서 인쇄에서는 바탕색에 의존하지 않고 테두리와 글자로만 구분합니다.
    ========================================================================== */
+
+/* ══ 학령인구 현황 〔2026. 9. 10.〕 ═══════════════════════════════════════
+   이 탭이 쓰는 자리입니다. 새 규칙은 여기 모아 씁니다. */
+.sgg-board-lede{margin:-2px 0 10px;font-size:13px;color:var(--ink-2);line-height:1.7;max-width:74ch}
+.sgg-board-lede b{color:var(--ink)}
+.sgg-board{display:grid;grid-template-columns:repeat(auto-fill,minmax(152px,1fr));gap:9px}
+/* 시군 하나 — 이름, 그 해 학생 수, 앞으로의 감소율, 21년 막대.
+   ★ 카드 자체가 «누르는 것»입니다. 안에 또 단추를 넣으면 어디를 눌러야
+     하는지 알기 어렵습니다. */
+.sgg-cell{position:relative;display:block;width:100%;text-align:left;font:inherit;cursor:pointer;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 11px 9px;
+  color:var(--ink);transition:border-color .12s,box-shadow .12s}
+.sgg-cell:hover{border-color:var(--brand);box-shadow:var(--leap-shadow)}
+.sgg-cell:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.sgg-cell[aria-pressed="true"]{border-color:var(--brand);box-shadow:0 0 0 2px var(--brand);
+  background:var(--brand-pale)}
+.sgg-cell .nm{display:flex;align-items:baseline;gap:6px;margin-bottom:1px}
+.sgg-cell .nm b{font-size:13.5px;font-weight:700}
+.sgg-cell .nm span{font-size:10.5px;color:var(--ink-3);margin-left:auto;
+  font-variant-numeric:tabular-nums}
+.sgg-cell .dr{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.25}
+.sgg-cell .dr em{font-style:normal;font-size:10px;font-weight:600;color:var(--ink-3);margin-left:3px}
+/* 감소가 심한 곳일수록 짙게. 색만으로 가르지 않으려고 수를 함께 적습니다. */
+.sgg-cell .dr.d3{color:var(--leap-amber)}
+.sgg-cell .dr.d2{color:var(--ink)}
+.sgg-cell .dr.d1{color:var(--leap-teal)}
+.sgg-cell .sp{display:block;width:100%;height:26px;margin-top:5px;overflow:visible}
+.sgg-cell .sp rect{fill:var(--brand);opacity:.55}
+.sgg-cell .sp rect.pj{fill:var(--ink-3);opacity:.32}
+.sgg-cell .sp line{stroke:var(--line);stroke-width:1}
+.sgg-cell[aria-pressed="true"] .sp rect{opacity:.75}
+.sgg-cell .up{color:var(--leap-teal)}
+.era .tot em{font-style:normal;font-size:12px;font-weight:600;color:var(--ink-3);margin-left:2px}
+/* 그 해 자료가 없는 막대 — 앵커로 이어 그리지 않고 «없다»고 적습니다 */
+.seg-none{display:flex;align-items:center;justify-content:center;height:38px;
+  border:1px dashed var(--line);border-radius:6px;background:var(--card-2);
+  color:var(--ink-3);font-size:11.5px}
+@media (max-width:640px){ .sgg-board{grid-template-columns:repeat(auto-fill,minmax(128px,1fr))} }
 
 /* ══ 지도로 보기 〔2026. 9. 10.〕 ═══════════════════════════════════════════
    화면을 «가득» 씁니다. 본문 여백을 음수 여백으로 도로 물려 가장자리까지
@@ -1993,10 +2031,33 @@ body.map-maxed.home-wide #home-side{display:none}
 
     <details class="src-box" id="src-status" style="margin-bottom:14px"></details>
 
+    <!-- ══ 어디가 먼저인가 — 시군 22곳 〔2026. 9. 10.〕 ═══════════════════════
+         이 탭은 여태 «경북 전체»만 보여 줬습니다. 그런데 예산도 정원도 시군
+         단위로 배정합니다. 도 합계로는 어디부터 할지 정할 수 없습니다.
+         22곳을 나란히 놓아야 「어디가 먼저인가」가 나옵니다. -->
+    <div class="card" id="sgg-board-card">
+      <h2 style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span>어디가 먼저인가 — 시군 22곳</span>
+        <span class="asof" id="asof-sggboard"></span>
+      </h2>
+      <p class="sgg-board-lede" id="sgg-board-lede"></p>
+      <div class="map-toolbar" style="margin:2px 0 12px">
+        <span class="mv-note" style="margin-right:2px">정렬</span>
+        <button type="button" class="chip" data-sggsort="drop" aria-pressed="true">많이 줄어드는 순</button>
+        <button type="button" class="chip" data-sggsort="size">학생 적은 순</button>
+        <button type="button" class="chip" data-sggsort="name">이름 순</button>
+        <button type="button" class="chip" id="sgg-clear" hidden>경북 전체로</button>
+      </div>
+      <div class="sgg-board" id="sgg-board" role="list"></div>
+      <p class="mv-note" style="margin-top:11px">막대 하나가 한 해입니다.
+      <b>2026년까지는 실적</b>(학교알리미·EDSS 교육통계), <b>2027년부터는 전망</b>입니다.
+      전망은 그 시군의 <b>실측 감소율</b>을 곱한 값이지 공식 추계가 아닙니다.</p>
+    </div>
+
     <div class="card">
       <div class="map-toolbar" style="margin-bottom:16px">
-        <button type="button" class="chip" id="ds-pop" aria-pressed="true">경북 학령인구</button>
-        <button type="button" class="chip" id="ds-stu" aria-pressed="false">경북 학생수</button>
+        <button type="button" class="chip" id="ds-pop" aria-pressed="true">학령인구</button>
+        <button type="button" class="chip" id="ds-stu" aria-pressed="false">재학생 수</button>
         <span class="map-note" id="ds-note"></span>
       </div>
 
@@ -2009,12 +2070,12 @@ body.map-maxed.home-wide #home-side{display:none}
             <label class="sr-only" for="yr-past">과거 연도</label>
             <select id="yr-past"></select>
           </div>
-          <div class="tot"><span id="tot-past">–</span>천명</div>
+          <div class="tot"><span id="tot-past">–</span><em>명</em></div>
         </div>
         <div class="era">
           <span class="badge now">현재</span>
           <div class="yr"><span style="font-size:22px;font-weight:800">2026</span></div>
-          <div class="tot"><span id="tot-now">–</span>천명</div>
+          <div class="tot"><span id="tot-now">–</span><em>명</em></div>
         </div>
         <div class="era">
           <span class="badge future">미래</span>
@@ -2022,7 +2083,7 @@ body.map-maxed.home-wide #home-side{display:none}
             <label class="sr-only" for="yr-future">미래 연도</label>
             <select id="yr-future"></select>
           </div>
-          <div class="tot"><span id="tot-future">–</span>천명</div>
+          <div class="tot"><span id="tot-future">–</span><em>명</em></div>
         </div>
       </div>
 
@@ -2049,8 +2110,8 @@ body.map-maxed.home-wide #home-side{display:none}
       <!-- 학교알리미 공시값으로 그리는 학년별 학생 분포 -->
       <div style="margin-top:24px;border-top:1px solid var(--line-2);padding-top:20px">
         <h3 style="font-size:14px;color:var(--brand);margin-bottom:10px;display:flex;align-items:center;gap:6px">
-          <span>2026 학년별 학생 분포 (초1 ~ 고3)</span>
-          <span style="font-size:11px;font-weight:400;color:var(--ink-3)">(학교알리미 공시 실적 · Pure SVG)</span>
+          <span id="pax-title">경북 2026 학년별 학생 분포 (초1 ~ 고3)</span>
+          <span style="font-size:11px;font-weight:400;color:var(--ink-3)">학교알리미 공시 실적</span>
         </h3>
         <div style="background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:16px;overflow-x:auto">
           <svg id="pax-pyramid-svg" viewBox="0 0 600 240" style="width:100%;max-width:700px;height:auto;display:block;margin:0 auto" role="img" aria-label="학년별 인구 분포 피라미드">
@@ -2070,8 +2131,7 @@ body.map-maxed.home-wide #home-side{display:none}
       <!-- 연도별 추이 선 그래프 -->
       <div style="margin-top:24px;border-top:1px solid var(--line-2);padding-top:20px">
         <h3 style="font-size:14px;color:var(--brand);margin-bottom:10px;display:flex;align-items:center;gap:6px">
-          <span id="trend-title">연도별 학령인구 추이 (Line Chart)</span>
-          <span style="font-size:11px;font-weight:400;color:var(--ink-3)">(Pure SVG 오프라인 차트)</span>
+          <span id="trend-title">연도별 학령인구 추이</span>
         </h3>
         <div style="background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:16px;overflow-x:auto">
           <svg id="trend-line-svg" viewBox="0 0 700 250" style="width:100%;max-width:800px;height:auto;display:block;margin:0 auto" role="img" aria-label="연도별 학생수 추이 선 그래프">
@@ -6823,7 +6883,146 @@ function setColorBy(v){
 
 /* =========================================================
    4. 학령인구 현황
-   ========================================================= */
+   =========================================================
+   ★ 시군을 고를 수 있게 했습니다 〔2026. 9. 10.〕
+     여태 이 탭은 «경북 전체»만 보여 줬습니다. 그런데 예산도 정원도 시군
+     단위로 배정합니다. 도 합계로는 어디부터 할지 정할 수 없습니다.
+
+   ★ 단위를 하나로 맞춥니다 — 값은 늘 «명»으로 다룹니다.
+     `series()` 는 천 명 단위이고 `regionStudents()` 는 낱낱의 수입니다.
+     섞어 쓰면 1,000배 틀린 수가 «오류 없이» 화면에 뜹니다. 가장 무서운
+     종류입니다. 그래서 한 자리(statusYear)에서 곱해 두고 그것만 씁니다. */
+const statusState = { sgg: null, sort: 'drop' };
+
+/* 이 탭이 쓰는 한 해 값. 단위는 «명». 없으면 null 입니다 — 지어내지 않습니다. */
+function statusYear(sggKey, kind, year){
+  year = Number(year);
+  if(kind === 'pop'){
+    /* 주민등록·장래추계는 «도 단위»로만 받아 두었습니다. 시군 몫으로 나누면
+       그것은 우리가 만든 수이지 통계청의 수가 아닙니다. 나누지 않습니다. */
+    if(sggKey) return null;
+    const v = series('pop', year);
+    if(!v) return null;
+    return { 초:v.초*1000, 중:v.중*1000, 고:v.고*1000,
+             kind: year <= 2025 ? '주민등록' : '장래추계' };
+  }
+  const o = {}; let k = null, any = false;
+  HOME_SERIES_LEVELS.forEach(lv => {
+    const r = regionStudents(sggKey, lv, year);
+    o[lv] = r.v;
+    if(r.v != null){ any = true; k = k || r.kind; }
+  });
+  if(!any) return null;
+  o.kind = k;
+  return o;
+}
+function statusTot(o){ return o ? (o.초||0)+(o.중||0)+(o.고||0) : null; }
+function statusRegion(){ return statusState.sgg || '경북 전체'; }
+
+/* ── 시군 22곳 나란히 ─────────────────────────────────────────────────── */
+function sggBoardRows(){
+  return SIGUNGU.map(sg => {
+    const pts = [];
+    for(let y = HOME_YEAR_MIN; y <= HOME_YEAR_MAX; y++){
+      const r = regionTotalStudents(sg.s, y);
+      pts.push({ y, v: r.v, kind: r.kind });
+    }
+    const now = regionTotalStudents(sg.s, HOME_BASE_YEAR).v;
+    const end = regionTotalStudents(sg.s, HOME_YEAR_MAX).v;
+    const first = regionTotalStudents(sg.s, HOME_YEAR_MIN).v;
+    return {
+      s: sg.s, pts, now, end, first,
+      drop: (now && end != null) ? (1 - end / now) * 100 : null,
+      past: (first && now != null) ? (1 - now / first) * 100 : null
+    };
+  });
+}
+
+function sggSpark(row){
+  /* 막대 하나가 한 해입니다. 선보다 막대가 나은 까닭은 «한 해»가 셈의 단위임을
+     눈으로 알려 주기 때문입니다. 전망 구간은 흐리게 — 색만으로 가르지 않으려고
+     카드 아래 글에도 「2027년부터는 전망」이라 적습니다. */
+  const vs = row.pts.map(p => p.v).filter(v => v != null);
+  if(!vs.length) return '';
+  const mx = Math.max(...vs);
+  const n = row.pts.length, W = 100, H = 26, gap = 0.6;
+  const bw = (W - gap * (n - 1)) / n;
+  const bars = row.pts.map((p, i) => {
+    if(p.v == null) return '';
+    const h = Math.max(1, p.v / mx * (H - 1));
+    const proj = p.y > HOME_BASE_YEAR;
+    return `<rect class="${proj ? 'pj' : ''}" x="${(i*(bw+gap)).toFixed(2)}" y="${(H-h).toFixed(2)}" ` +
+           `width="${bw.toFixed(2)}" height="${h.toFixed(2)}" rx="0.6"/>`;
+  }).join('');
+  /* 지금(2026)이 어디인지 선 하나로 짚습니다. */
+  const i26 = HOME_BASE_YEAR - HOME_YEAR_MIN;
+  const x26 = (i26 * (bw + gap) + bw + gap / 2).toFixed(2);
+  return `<svg class="sp" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">` +
+         bars + `<line x1="${x26}" y1="0" x2="${x26}" y2="${H}"/></svg>`;
+}
+
+function renderSggBoard(){
+  const box = document.getElementById('sgg-board');
+  if(!box) return;
+  let rows = sggBoardRows();
+  if(statusState.sort === 'drop') rows.sort((a, b) => (b.drop || 0) - (a.drop || 0));
+  else if(statusState.sort === 'size') rows.sort((a, b) => (a.now || 0) - (b.now || 0));
+  else rows.sort((a, b) => a.s.localeCompare(b.s, 'ko'));
+
+  box.innerHTML = rows.map(r => {
+    const d = r.drop;
+    const cls = d == null ? '' : (d >= 50 ? 'd3' : (d >= 42 ? 'd2' : 'd1'));
+    return `<button type="button" class="sgg-cell" role="listitem" data-sgg="${htmlEsc(r.s)}" ` +
+      `aria-pressed="${statusState.sgg === r.s}">` +
+      `<span class="nm"><b>${htmlEsc(r.s)}</b><span>${fmt(r.now || 0)}명</span></span>` +
+      `<span class="dr ${cls}">−${d == null ? '–' : d.toFixed(1)}%<em>2036년까지</em></span>` +
+      sggSpark(r) + '</button>';
+  }).join('');
+  Array.prototype.forEach.call(box.querySelectorAll('.sgg-cell'), btn => {
+    btn.addEventListener('click', () => selectSgg(btn.dataset.sgg === statusState.sgg ? null : btn.dataset.sgg));
+  });
+
+  /* 머리글에 «무엇을 보고 있는지»를 한 줄로 적습니다. 카드 22장만 있으면
+     어디가 심한지는 보이는데 그것이 무슨 뜻인지가 남지 않습니다. */
+  const lede = document.getElementById('sgg-board-lede');
+  if(lede){
+    const worst = rows.slice().sort((a, b) => (b.drop || 0) - (a.drop || 0))[0];
+    const best  = rows.slice().sort((a, b) => (a.drop || 0) - (b.drop || 0))[0];
+    const grew  = rows.filter(r => r.past != null && r.past < 0).map(r => r.s);
+    lede.innerHTML =
+      `2026년 경북의 초·중·고 학생은 <b>${fmt(regionTotalStudents(null, HOME_BASE_YEAR).v)}명</b>입니다. ` +
+      `2036년에는 <b>${fmt(regionTotalStudents(null, HOME_YEAR_MAX).v)}명</b>이 됩니다. ` +
+      `가장 가파른 곳은 <b>${htmlEsc(worst.s)}(−${worst.drop.toFixed(1)}%)</b>, ` +
+      `가장 완만한 곳은 <b>${htmlEsc(best.s)}(−${best.drop.toFixed(1)}%)</b>입니다.` +
+      (grew.length
+        ? ` 지난 10년에 학생이 <b class="up">늘어난 곳은 ${grew.map(htmlEsc).join('·')}</b> 뿐입니다.`
+        : '');
+  }
+  const clr = document.getElementById('sgg-clear');
+  if(clr) clr.hidden = !statusState.sgg;
+}
+
+function selectSgg(key){
+  statusState.sgg = key || null;
+  /* 시군에는 주민등록 자료가 없습니다. 학생수로 바꿔 주고 왜인지 적습니다. */
+  if(statusState.sgg && dsKind === 'pop') dsKind = 'stu';
+  renderSggBoard();
+  renderStatus();
+  syncDsChips();
+}
+
+function syncDsChips(){
+  const p = document.getElementById('ds-pop'), t = document.getElementById('ds-stu');
+  if(!p || !t) return;
+  p.setAttribute('aria-pressed', String(dsKind === 'pop'));
+  t.setAttribute('aria-pressed', String(dsKind === 'stu'));
+  /* 시군을 고른 동안에는 학령인구를 누를 수 없습니다 — 그 자료가 없습니다. */
+  p.disabled = !!statusState.sgg;
+  p.title = statusState.sgg
+    ? '주민등록·장래추계는 도 단위로만 받아 두었습니다. 시군은 학생수로 봅니다.'
+    : '';
+}
+
 let dsKind = 'pop';
 const yrPast = document.getElementById('yr-past');
 const yrFut  = document.getElementById('yr-future');
@@ -6831,65 +7030,103 @@ for(let y=2016;y<=2025;y++){ const o=new Option(y,y); if(y===2016)o.selected=tru
 for(let y=2027;y<=2036;y++){ const o=new Option(y,y); if(y===2036)o.selected=true; yrFut.add(o); }
 
 function renderStatus(){
+  const sgg = statusState.sgg, region = statusRegion();
   const py = +yrPast.value, fy = +yrFut.value;
-  const P = series(dsKind, py), N = series(dsKind, 2026), F = series(dsKind, fy);
-  const tot = o => o.초+o.중+o.고;
-  document.getElementById('tot-past').textContent   = tot(P);
-  document.getElementById('tot-now').textContent    = tot(N);
-  document.getElementById('tot-future').textContent = tot(F);
-  document.getElementById('chart-title').textContent =
-    dsKind==='pop' ? '경북 학령인구(6~18세) 변동현황' : '경북 학생수 변동현황';
-  const populationSource = 'KOSIS 주민등록인구(2016~2025) · 장래인구추계(2026~2036) · 6~18세';
-  const studentSource = '학교알리미 2026 공시 실적 · 그 외 연도는 비교용 단순 연결값';
-  document.getElementById('ds-note').textContent = dsKind==='pop' ? populationSource : studentSource;
-  document.getElementById('status-source').textContent = '자료출처: ' + (dsKind==='pop' ? populationSource : studentSource);
-  document.getElementById('trend-title').textContent = dsKind==='pop' ? '연도별 학령인구 추이 (Line Chart)' : '연도별 학생수 추이 (Line Chart)';
-  document.getElementById('trend-line-svg').setAttribute('aria-label', dsKind==='pop' ? '연도별 학령인구 추이 선 그래프' : '연도별 학생수 추이 선 그래프');
+  const P = statusYear(sgg, dsKind, py),
+        N = statusYear(sgg, dsKind, HOME_BASE_YEAR),
+        F = statusYear(sgg, dsKind, fy);
+  const isPop = dsKind === 'pop';
 
-  const maxT = Math.max(tot(P),tot(N),tot(F));
-  const bars = document.getElementById('bars'); bars.innerHTML='';
-  [[P,py],[N,2026],[F,fy]].forEach(([o,y]) => {
+  /* 값은 «명»입니다. 학령인구는 천 명 단위로 반올림해 받아 둔 값이라
+     낱낱의 자리까지 맞지는 않습니다 — 그렇다고 아래에 적습니다. */
+  const cell = v => v == null ? '–' : fmt(v);
+  document.getElementById('tot-past').textContent   = cell(statusTot(P));
+  document.getElementById('tot-now').textContent    = cell(statusTot(N));
+  document.getElementById('tot-future').textContent = cell(statusTot(F));
+
+  document.getElementById('chart-title').textContent =
+    isPop ? `${region} 학령인구(6~18세) 변동현황` : `${region} 학생수 변동현황`;
+
+  const popSrc = 'KOSIS 주민등록인구(2016~2025) · 장래인구추계(2026~2036) · 6~18세 · 천 명 단위 반올림';
+  const stuSrc = sgg
+    ? `${region} · EDSS 교육통계 실적(2016~2025) · 학교알리미 2026 공시 · 2027년부터는 실측 감소율 전망`
+    : 'EDSS 교육통계 실적(2016~2025) · 학교알리미 2026 공시 · 2027년부터는 실측 감소율 전망';
+  const src = isPop ? popSrc : stuSrc;
+  document.getElementById('ds-note').textContent = src;
+  document.getElementById('status-source').textContent = '자료출처: ' + src;
+  document.getElementById('trend-title').textContent =
+    isPop ? `${region} 연도별 학령인구 추이` : `${region} 연도별 학생수 추이`;
+  document.getElementById('trend-line-svg').setAttribute('aria-label',
+    isPop ? '연도별 학령인구 추이' : '연도별 학생수 추이');
+  /* 보고 있는 자료의 이름을 딱지에 적습니다 — 「KOSIS」가 재학생 화면에
+     붙어 있으면 그 화면 전체를 의심하게 됩니다. */
+  const asof = document.getElementById('asof-status');
+  if(asof) asof.textContent = isPop
+    ? 'KOSIS · 주민등록 · 장래추계'
+    : 'EDSS · 학교알리미 ' + HOME_BASE_YEAR + ' 공시';
+
+  /* ── 과거·현재·미래 막대 ── */
+  const totals = [P, N, F].map(statusTot).filter(v => v != null);
+  const maxT = totals.length ? Math.max(...totals) : 1;
+  const bars = document.getElementById('bars'); bars.innerHTML = '';
+  [[P, py], [N, HOME_BASE_YEAR], [F, fy]].forEach(([o]) => {
     const col = document.createElement('div');
-    col.className='barcol';
-    col.style.height = (tot(o)/maxT*100)+'%';
+    col.className = 'barcol';
+    if(!o){
+      /* 그 해 자료가 없습니다. 앵커로 이어 그리면 그 막대가 실적처럼 보입니다. */
+      col.style.height = '0%';
+      col.innerHTML = '<div class="seg seg-none">자료 없음</div>';
+      bars.appendChild(col);
+      return;
+    }
+    col.style.height = (statusTot(o) / maxT * 100) + '%';
     col.innerHTML =
-      `<div class="seg seg-high" style="flex:${o.고}">${o.고}천명</div>
-       <div class="seg seg-mid"  style="flex:${o.중}">${o.중}천명</div>
-       <div class="seg seg-elem" style="flex:${o.초}">${o.초}천명</div>`;
+      `<div class="seg seg-high" style="flex:${o.고}">${fmt(o.고)}</div>
+       <div class="seg seg-mid"  style="flex:${o.중}">${fmt(o.중)}</div>
+       <div class="seg seg-elem" style="flex:${o.초}">${fmt(o.초)}</div>`;
     bars.appendChild(col);
   });
 
-  document.getElementById('th-past').textContent   = py+'년';
-  document.getElementById('th-future').textContent = fy+'년';
-  const rows = [['초등학교','초'],['중학교','중'],['고등학교','고']];
-  let html='';
-  rows.forEach(([label,k]) => {
-    const diff = F[k]-P[k], pct = (diff/P[k]*100).toFixed(1);
-    html += `<tr><td>${label}</td><td>${P[k]}</td><td>${N[k]}</td><td>${F[k]}</td>
-             <td class="${diff<0?'down':''}">${diff>0?'+':''}${diff} (${pct}%)</td></tr>`;
+  /* ── 표 ── */
+  document.getElementById('th-past').textContent   = py + '년';
+  document.getElementById('th-future').textContent = fy + '년';
+  const rows = [['초등학교', '초'], ['중학교', '중'], ['고등학교', '고']];
+  const gap = (a, b) => {
+    if(a == null || b == null || !a) return '<td class="dim">–</td>';
+    const d = b - a, pct = (d / a * 100).toFixed(1);
+    return `<td class="${d < 0 ? 'down' : ''}">${d > 0 ? '+' : ''}${fmt(d)} (${pct}%)</td>`;
+  };
+  let html = '';
+  rows.forEach(([label, k]) => {
+    html += `<tr><td>${label}</td><td>${cell(P && P[k])}</td><td>${cell(N && N[k])}</td>` +
+            `<td>${cell(F && F[k])}</td>${gap(P && P[k], F && F[k])}</tr>`;
   });
-  const dT = tot(F)-tot(P), pT=(dT/tot(P)*100).toFixed(1);
-  html += `<tr class="total"><td>계</td><td>${tot(P)}</td><td>${tot(N)}</td><td>${tot(F)}</td>
-           <td class="${dT<0?'down':''}">${dT>0?'+':''}${dT} (${pT}%)</td></tr>`;
+  html += `<tr class="total"><td>계</td><td>${cell(statusTot(P))}</td><td>${cell(statusTot(N))}</td>` +
+          `<td>${cell(statusTot(F))}</td>${gap(statusTot(P), statusTot(F))}</tr>`;
   document.getElementById('chart-tbody').innerHTML = html;
+
   renderTrendLineChart();
+  renderPaxPyramid();
 }
 
 function renderTrendLineChart() {
   const svg = document.getElementById('trend-line-svg');
   if (!svg) return;
+  /* ★ 고른 시군을 따릅니다 〔2026. 9. 10.〕 값은 statusYear 가 «명»으로
+     맞춰 돌려줍니다 — 이 함수가 series() 를 따로 부르면 단위가 갈라집니다. */
   const years = [];
   const vals = [];
   let maxV = 0;
-  let minV = 999999;
-  for(let y=2016; y<=2036; y++) {
-    const v = series(dsKind, y);
-    const tot = v.초 + v.중 + v.고;
+  let minV = Infinity;
+  for(let y = HOME_YEAR_MIN; y <= HOME_YEAR_MAX; y++){
+    const tot = statusTot(statusYear(statusState.sgg, dsKind, y));
     years.push(y);
-    vals.push(tot);
+    vals.push(tot);                 /* 없는 해는 null — 지어내지 않습니다 */
+    if(tot == null) continue;
     if(tot > maxV) maxV = tot;
     if(tot < minV) minV = tot;
   }
+  if(!isFinite(minV)){ svg.innerHTML = ''; return; }
   
   const width = 700;
   const height = 250;
@@ -6898,15 +7135,20 @@ function renderTrendLineChart() {
   const innerW = width - padding.left - padding.right;
   const innerH = height - padding.top - padding.bottom;
   
-  // To avoid line sticking to the very bottom, adjust minV
-  const yMin = Math.max(0, minV - 20);
-  const yMax = maxV + 20;
+  /* 선이 바닥에 붙지 않게 위아래로 조금 띄웁니다.
+     ★ 예전에는 늘 ±20 이었습니다. 값이 천 명 단위일 때 만든 값이라,
+       낱낱의 «명»으로 바꾼 지금은 사실상 0 입니다. 크기에 맞춰 띄웁니다. */
+  const padV = Math.max(1, (maxV - minV) * 0.08);
+  const yMin = Math.max(0, minV - padV);
+  const yMax = maxV + padV;
   
   const points = vals.map((v, i) => {
     const x = padding.left + (i / (years.length - 1)) * innerW;
-    const y = padding.top + innerH - ((v - yMin) / (yMax - yMin)) * innerH;
+    const y = v == null ? null
+      : padding.top + innerH - ((v - yMin) / (yMax - yMin)) * innerH;
     return {x, y, v, yr: years[i]};
-  });
+  }).filter(p => p.y != null);
+  if(points.length < 2){ svg.innerHTML = ''; return; }
   
   /* ★ 〔2026. 9. 10.〕 실적과 추계를 «한 선»으로 그리고 있었습니다.
      2016~2025 는 실제로 일어난 일이고 2027~2036 은 아직 안 일어난 일인데
@@ -6965,14 +7207,25 @@ function renderTrendLineChart() {
 }
 yrPast.addEventListener('change', renderStatus);
 yrFut.addEventListener('change', renderStatus);
-document.getElementById('ds-pop').addEventListener('click', ()=>setDs('pop'));
-document.getElementById('ds-stu').addEventListener('click', ()=>setDs('stu'));
+onEl('ds-pop', 'click', () => setDs('pop'));
+onEl('ds-stu', 'click', () => setDs('stu'));
 function setDs(k){
-  dsKind=k;
-  document.getElementById('ds-pop').setAttribute('aria-pressed', k==='pop');
-  document.getElementById('ds-stu').setAttribute('aria-pressed', k==='stu');
+  if(k === 'pop' && statusState.sgg) return;   /* 시군에는 그 자료가 없습니다 */
+  dsKind = k;
+  syncDsChips();
   renderStatus();
 }
+
+/* 시군 보드의 정렬과 「경북 전체로」 */
+Array.prototype.forEach.call(document.querySelectorAll('[data-sggsort]'), btn => {
+  btn.addEventListener('click', () => {
+    statusState.sort = btn.dataset.sggsort;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-sggsort]'), x =>
+      x.setAttribute('aria-pressed', String(x.dataset.sggsort === statusState.sort)));
+    renderSggBoard();
+  });
+});
+onEl('sgg-clear', 'click', () => selectSgg(null));
 
 /* =========================================================
    5. 시뮬레이터
@@ -7649,12 +7902,14 @@ document.getElementById('ai-analyze').addEventListener('click', async () => {
 function renderPaxPyramid() {
   const svg = document.getElementById('pax-pyramid-svg');
   if (!svg) return;
+  /* 고른 시군을 따릅니다. 아무것도 고르지 않았으면 경북 전체입니다. */
+  const sgg = (typeof statusState === 'object' && statusState) ? statusState.sgg : null;
+  const pool = SCHOOLS.filter(s => Array.isArray(s.grades) && (!sgg || s.s === sgg));
   const grades = [];
   ['초','중','고'].forEach(lv => {
     const n = LEVEL_CFG[lv].grades;
     for(let i=0;i<n;i++){
-      const val = SCHOOLS.filter(s=>s.lv===lv && Array.isArray(s.grades))
-        .reduce((a,s)=>a+(s.grades[i]||0),0);
+      const val = pool.filter(s => s.lv === lv).reduce((a,s)=>a+(s.grades[i]||0),0);
       grades.push({label:lv+(i+1), val, level:lv});
     }
   });
@@ -7669,7 +7924,10 @@ function renderPaxPyramid() {
     h += `<text x="${Math.min(x+w+8,548)}" y="${y+11}" font-size="10" font-weight="600" fill="var(--ink-2)">${fmt(g.val)}명</text>`;
   });
   svg.setAttribute('viewBox', `0 0 600 ${startY+grades.length*(barHeight+gap)+8}`);
-  svg.setAttribute('aria-label', '학교알리미 2026 공시 기준 초등학교 1학년부터 고등학교 3학년까지 학생 수');
+  svg.setAttribute('aria-label',
+    (sgg ? sgg + ' ' : '경북 ') + '학교알리미 2026 공시 기준 초등학교 1학년부터 고등학교 3학년까지 학생 수');
+  const cap = document.getElementById('pax-title');
+  if(cap) cap.textContent = (sgg ? sgg : '경북') + ' 2026 학년별 학생 분포 (초1 ~ 고3)';
   svg.innerHTML=h;
 }
 
@@ -8975,6 +9233,10 @@ function renderProvenance(){
   setAsof('asof-homemap',  ALLIMI_ASOF);
 
   /* ── 학령인구 현황 ── */
+  /* ★ 이 딱지는 «학령인구» 를 볼 때만 KOSIS 입니다 〔2026. 9. 10.〕
+     재학생 수를 보는 동안에도 「KOSIS」라 적혀 있었습니다. 보고 있는 자료가
+     아닌 곳의 이름이 붙으면 그 화면 전체를 의심하게 됩니다.
+     renderStatus 가 보는 자료에 맞춰 다시 적습니다. */
   setAsof('asof-status', 'KOSIS · ' + ALLIMI_ASOF);
   srcTable(document.getElementById('src-status'), [
     ['학령인구 (6~18세)', '2016~2025 실적 · 2026~ 장래추계', 'KOSIS 주민등록인구·장래인구추계'],
@@ -9024,6 +9286,8 @@ const HOME_TAB_ON = false;
 applyEdssWording();
 syncSigChips();
 if(HOME_TAB_ON){ renderHomePanel(); renderTilemap(); }
+renderSggBoard();
+syncDsChips();
 renderStatus();
 renderSim();
 renderPaxPyramid();

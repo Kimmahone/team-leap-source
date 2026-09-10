@@ -715,10 +715,18 @@ check('학년별 학생 차트가 학교알리미 grades를 합산한다', html.
 check('유치원 수를 배열에서 동적으로 센다', /source-kinder-count[\s\S]*KINDERGARTENS\.length/.test(html));
 check('유치원 교원 수 미확보를 명시한다', html.includes("homeState.level==='유' ? '자료 미확보'"));
 check('KOSIS 공식 학령인구 시계열을 우선 사용한다', /const KOSIS_POP = \{/.test(html) && /kind==='pop' && KOSIS_POP\[year\]/.test(html));
-check('학령인구 현황은 실제 KOSIS 출처와 학생수 모의값을 구분해 표시한다',
+/* ★ 문구를 고쳤습니다 〔2026. 9. 10.〕 예전에는 학생수 계열을 「그 외 연도는
+   비교용 단순 연결값」이라 적었습니다. EDSS 교육통계 실적을 심은 뒤로는
+   사실이 아닙니다 — 2016~2025 는 실적이고, 2027년부터가 전망입니다.
+   자료가 좋아졌는데 설명이 따라오지 않으면 그것도 틀린 화면입니다. */
+check('학령인구 현황이 자료의 성격을 있는 그대로 적는다',
   html.includes('id="status-source"') && html.includes('KOSIS 주민등록인구(2016~2025)') &&
-  html.includes('학교알리미 2026 공시 실적 · 그 외 연도는 비교용 단순 연결값') &&
+  /EDSS 교육통계 실적\(2016~2025\)/.test(html) &&
+  /2027년부터는 실측 감소율 전망/.test(html) &&
+  !html.includes('그 외 연도는 비교용 단순 연결값') &&
   !html.includes('국가데이터처 장래인구추계 (더미 보간값)'));
+check('학령인구는 천 명 단위로 반올림된 값임을 밝힌다',
+  /천 명 단위 반올림/.test(html));
 check('학령인구·학생수 모드에 맞춰 추이 제목을 바꾼다',
   html.includes('id="trend-title"') && /학령인구 추이/.test(html) && /학생수 추이/.test(html));
 /* 지키려는 것은 「학생수 계열이 무엇인지 적는다」입니다. 문장을 통째로 못 박으면
@@ -1602,6 +1610,65 @@ check('배경지도·고도 타일이 허용되어 있다',
   /img-src[^;]*https:\/\/api\.vworld\.kr/.test(bake) && /img-src[^;]*https:\/\/s3\.amazonaws\.com/.test(bake));
 check('MapLibre 의 일꾼(worker)이 허용되어 있다', /worker-src 'self' blob:/.test(bake));
 check('vendor 폴더가 함께 실린다', /vendor/.test(bake));
+
+
+console.log('\n■ 〔현황〕 시군을 고를 수 있다');
+/* 이 탭은 여태 「경북 전체」만 보여 줬습니다. 그런데 예산도 정원도 시군
+   단위로 배정합니다. 도 합계로는 어디부터 할지 정할 수 없습니다. */
+check('시군 22곳을 나란히 놓는 자리가 있다',
+  /id="sgg-board"/.test(html) && /function renderSggBoard/.test(js));
+check('22곳이 실제로 그려진다',
+  ((byId['sgg-board']._html || '').match(/class="sgg-cell"/g) || []).length === 22);
+check('고른 것이 눌린 상태로 보인다', q(
+  "(function(){selectSgg('안동');var h=document.getElementById('sgg-board')._html||'';" +
+  "return /data-sgg=\"안동\" aria-pressed=\"true\"/.test(h);})()") === true);
+check('한 번 더 누르면 경북 전체로 돌아온다', q(
+  "(function(){selectSgg('안동');selectSgg(null);return statusState.sgg;})()") === null);
+
+console.log('\n■ 〔현황〕 고른 시군을 화면 전체가 따라간다');
+q("selectSgg('안동')");
+check('제목이 그 시군을 말한다', /안동/.test(byId['chart-title'].textContent || ''),
+  '제목: ' + byId['chart-title'].textContent);
+check('학년별 분포도 그 시군을 센다', /안동/.test(byId['pax-title'].textContent || ''));
+check('출처 줄에도 그 시군이 적힌다', /안동/.test(byId['status-source'].textContent || ''));
+check('안동 2026 합계가 시군 실적과 맞는다',
+  Number(String(byId['tot-now'].textContent || '').replace(/,/g,'')) ===
+  q("regionTotalStudents('안동',2026).v"),
+  '화면: ' + byId['tot-now'].textContent + ' · 자료: ' + q("regionTotalStudents('안동',2026).v"));
+check('시군 합계가 도 합계와 맞는다 (쪼개서 세도 같아야 한다)', q(
+  "(function(){var s=0;SIGUNGU.forEach(function(g){s+=regionTotalStudents(g.s,2026).v||0});" +
+  "return s === regionTotalStudents(null,2026).v;})()") === true);
+
+console.log('\n■ 〔현황〕 없는 자료를 시군 몫으로 나누지 않는다');
+/* 주민등록·장래추계는 도 단위로만 받아 두었습니다. 시군 몫으로 나누면 그것은
+   우리가 만든 수이지 통계청의 수가 아닙니다. */
+check('시군에는 학령인구를 주지 않는다', q("statusYear('안동','pop',2026)") === null);
+check('시군을 고르면 학생수로 바꾸고 단추를 잠근다',
+  q("(function(){dsKind='pop';selectSgg('안동');return dsKind;})()") === 'stu' &&
+  byId['ds-pop'].disabled === true);
+check('왜 잠겼는지 적어 둔다', /도 단위로만 받아 두었습니다/.test(byId['ds-pop'].title || ''));
+check('잠긴 동안에는 눌러도 바뀌지 않는다',
+  q("(function(){selectSgg('안동');setDs('pop');return dsKind;})()") === 'stu');
+
+console.log('\n■ 〔현황〕 단위를 하나로 맞춘다');
+/* series() 는 천 명 단위이고 regionStudents() 는 낱낱의 수입니다. 섞어 쓰면
+   1,000배 틀린 수가 «오류 없이» 화면에 뜹니다. 가장 무서운 종류입니다. */
+check('학령인구도 명으로 돌려준다', q("statusYear(null,'pop',2026).초") === q("series('pop',2026).초 * 1000"));
+check('화면에 「천명」이라 적힌 자리가 없다', !/천명/.test(html));
+check('학령인구가 반올림된 값임을 밝힌다', /천 명 단위 반올림/.test(html));
+
+console.log('\n■ 〔현황〕 보고 있는 자료의 이름을 딱지에 적는다');
+/* 재학생 수를 보는 동안에도 「KOSIS」라 적혀 있었습니다. 보고 있는 자료가
+   아닌 곳의 이름이 붙으면 그 화면 전체를 의심하게 됩니다. */
+q("selectSgg(null); setDs('stu');");
+check('재학생을 볼 때는 EDSS·학교알리미라 적는다', /EDSS/.test(byId['asof-status'].textContent || ''),
+  '딱지: ' + byId['asof-status'].textContent);
+q("setDs('pop')");
+check('학령인구를 볼 때는 KOSIS 라 적는다', /KOSIS/.test(byId['asof-status'].textContent || ''));
+
+console.log('\n■ 〔현황〕 구현 용어를 걷어냈다');
+check('「Pure SVG」·「Line Chart」 같은 말이 없다',
+  !/Pure SVG/.test(html) && !/Line Chart/.test(html));
 
 console.log(`\n${fail ? '✗' : '✓'}  통과 ${pass} · 실패 ${fail}\n`);
 process.exit(fail ? 1 : 0);
