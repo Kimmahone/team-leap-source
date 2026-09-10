@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-10T02:31:27.720Z",
+  "source": "BIG Kinds 뉴스 검색·분석",
+  "coverage": {
+    "from": "2016-01-04",
+    "to": "2026-09-09"
+  },
+  "counts": {
+    "sourceRows": 29277,
+    "deduplicated": 19980,
+    "curated": 9538
+  },
+  "topics": {
+    "통폐합·적정규모": 2632,
+    "지역소멸·인구": 2332,
+    "교육혁신·특구": 2323,
+    "교원·정원": 2086,
+    "통학·돌봄": 1547,
+    "교육재정": 1492
+  },
+  "years": {
+    "2016": 473,
+    "2017": 444,
+    "2018": 602,
+    "2019": 557,
+    "2020": 582,
+    "2021": 901,
+    "2022": 880,
+    "2023": 1142,
+    "2024": 1912,
+    "2025": 1284,
+    "2026": 761
+  },
+  "publicFields": [
+    "집계값",
+    "근거기사 제목",
+    "근거기사 링크",
+    "발행일",
+    "언론사",
+    "주제",
+    "시군",
+    "키워드"
+  ],
+  "excludedFields": [
+    "본문",
+    "기사본문",
+    "description",
+    "persons"
+  ],
+  "files": [
+    {
+      "path": "snapshot.json",
+      "bytes": 6395,
+      "sha256": "2bd6ae05e84861f5b2d8ecb146839763e7fa2d72dafccd4eed7e110bbc501d7d"
+    },
+    {
+      "path": "network.json",
+      "bytes": 20418,
+      "sha256": "8b5924bc3380fcf98d27b26d5d04cc1fa0ed521b2059e2ea699bed87268d8fce"
+    },
+    {
+      "path": "issues/index.json",
+      "bytes": 3667,
+      "sha256": "66d120cdbd724aa99924e785f9db11ff4b0e2c0c8c891f0ca7a574649f21f720"
+    }
+  ]
+}

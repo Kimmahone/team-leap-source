@@ -1,0 +1,130 @@
+[
+  {
+    "id": "2026-09-09-recent-30d",
+    "status": "prototype",
+    "title": "최근 30일 경북 학령인구 뉴스 이슈 브리프",
+    "period": {
+      "from": "2026-08-11",
+      "to": "2026-09-09",
+      "count": 131
+    },
+    "lead": "최근 기사에서 ‘교육재정’ 관련 보도가 가장 큰 비중을 보였습니다. 기사량은 정책 관심의 신호로만 읽고 학생 수 실적과는 구분해야 합니다.",
+    "topics": [
+      {
+        "topic": "교육재정",
+        "current": 46,
+        "prior": 12,
+        "currentShare": 35.1,
+        "priorShare": 16,
+        "changePp": 19.1
+      },
+      {
+        "topic": "교원·정원",
+        "current": 40,
+        "prior": 6,
+        "currentShare": 30.5,
+        "priorShare": 8,
+        "changePp": 22.5
+      },
+      {
+        "topic": "지역소멸·인구",
+        "current": 26,
+        "prior": 27,
+        "currentShare": 19.8,
+        "priorShare": 36,
+        "changePp": -16.2
+      }
+    ],
+    "keywords": [
+      {
+        "name": "학년도",
+        "value": 31
+      },
+      {
+        "name": "교육부",
+        "value": 29
+      },
+      {
+        "name": "ai",
+        "value": 25
+      },
+      {
+        "name": "학생부",
+        "value": 20
+      },
+      {
+        "name": "경쟁력",
+        "value": 19
+      },
+      {
+        "name": "경북교육청",
+        "value": 18
+      },
+      {
+        "name": "신입생",
+        "value": 18
+      },
+      {
+        "name": "수시모집",
+        "value": 17
+      }
+    ],
+    "evidence": [
+      {
+        "id": "b4546dbca0f0e34c",
+        "title": "경산시, 교육혁신선도지역 도전 본격화 12개 기관 손잡았다",
+        "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4083699",
+        "publishedAt": "2026-09-09",
+        "press": "경북일보",
+        "topics": [
+          "교육재정",
+          "지역소멸·인구",
+          "교육혁신·특구"
+        ]
+      },
+      {
+        "id": "85a993908d291c07",
+        "title": "김천시, 학교 대학 기업 잇는 '지역인재 정주 생태계' 구축",
+        "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4083691",
+        "publishedAt": "2026-09-09",
+        "press": "경북일보",
+        "topics": [
+          "지역소멸·인구",
+          "교육혁신·특구"
+        ]
+      },
+      {
+        "id": "f1e46ab4d2d6b7c9",
+        "title": "대구 경북 수능 지원자 줄었지만 'N수생' 12.2% 급증",
+        "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4083580",
+        "publishedAt": "2026-09-09",
+        "press": "경북일보",
+        "topics": [
+          "지역소멸·인구"
+        ]
+      },
+      {
+        "id": "937d3a74cd4112fe",
+        "title": "경북도 국민의힘, 2027년 국비 확보 '원팀 총력전'",
+        "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4083557",
+        "publishedAt": "2026-09-09",
+        "press": "경북일보",
+        "topics": [
+          "교육재정"
+        ]
+      },
+      {
+        "id": "0549f582bd0c42f3",
+        "title": "지방 사립대, 신속 구조개선-선별 지원 병행해야",
+        "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4083518",
+        "publishedAt": "2026-09-09",
+        "press": "경북일보",
+        "topics": [
+          "교육재정"
+        ]
+      }
+    ],
+    "caveat": "기사량은 사회적 관심의 신호이며 실제 학생 수·학교 수의 증감을 뜻하지 않습니다.",
+    "review": "발행 전 담당자의 사실 확인과 문장 검토가 필요합니다."
+  }
+]

@@ -1,0 +1,310 @@
+{
+  "basis": "기사량은 사회적 관심의 신호이며 실제 학생 수·학교 수의 증감을 뜻하지 않습니다.",
+  "anchorDate": "2026-09-09",
+  "currentPeriod": {
+    "from": "2026-08-11",
+    "to": "2026-09-09",
+    "count": 131
+  },
+  "priorPeriod": {
+    "from": "2026-07-12",
+    "to": "2026-08-10",
+    "count": 75
+  },
+  "topics": [
+    {
+      "topic": "교육재정",
+      "current": 46,
+      "prior": 12,
+      "currentShare": 35.1,
+      "priorShare": 16,
+      "changePp": 19.1
+    },
+    {
+      "topic": "교원·정원",
+      "current": 40,
+      "prior": 6,
+      "currentShare": 30.5,
+      "priorShare": 8,
+      "changePp": 22.5
+    },
+    {
+      "topic": "지역소멸·인구",
+      "current": 26,
+      "prior": 27,
+      "currentShare": 19.8,
+      "priorShare": 36,
+      "changePp": -16.2
+    },
+    {
+      "topic": "교육혁신·특구",
+      "current": 26,
+      "prior": 33,
+      "currentShare": 19.8,
+      "priorShare": 44,
+      "changePp": -24.2
+    },
+    {
+      "topic": "통학·돌봄",
+      "current": 22,
+      "prior": 8,
+      "currentShare": 16.8,
+      "priorShare": 10.7,
+      "changePp": 6.1
+    },
+    {
+      "topic": "통폐합·적정규모",
+      "current": 19,
+      "prior": 20,
+      "currentShare": 14.5,
+      "priorShare": 26.7,
+      "changePp": -12.2
+    }
+  ],
+  "keywords": [
+    {
+      "name": "학년도",
+      "value": 31
+    },
+    {
+      "name": "교육부",
+      "value": 29
+    },
+    {
+      "name": "ai",
+      "value": 25
+    },
+    {
+      "name": "학생부",
+      "value": 20
+    },
+    {
+      "name": "경쟁력",
+      "value": 19
+    },
+    {
+      "name": "경북교육청",
+      "value": 18
+    },
+    {
+      "name": "신입생",
+      "value": 18
+    },
+    {
+      "name": "수시모집",
+      "value": 17
+    },
+    {
+      "name": "장학금",
+      "value": 17
+    },
+    {
+      "name": "학생들",
+      "value": 17
+    },
+    {
+      "name": "합격자",
+      "value": 17
+    },
+    {
+      "name": "교부금",
+      "value": 15
+    },
+    {
+      "name": "경북도",
+      "value": 14
+    },
+    {
+      "name": "전문대학",
+      "value": 14
+    },
+    {
+      "name": "기숙사",
+      "value": 13
+    },
+    {
+      "name": "내국세",
+      "value": 12
+    },
+    {
+      "name": "교육감",
+      "value": 11
+    },
+    {
+      "name": "대구",
+      "value": 11
+    },
+    {
+      "name": "농산어촌",
+      "value": 10
+    },
+    {
+      "name": "교육청",
+      "value": 9
+    }
+  ],
+  "regions": [
+    {
+      "name": "포항시",
+      "value": 18
+    },
+    {
+      "name": "안동시",
+      "value": 12
+    },
+    {
+      "name": "문경시",
+      "value": 10
+    },
+    {
+      "name": "경주시",
+      "value": 9
+    },
+    {
+      "name": "예천군",
+      "value": 9
+    },
+    {
+      "name": "경산시",
+      "value": 8
+    },
+    {
+      "name": "구미시",
+      "value": 6
+    },
+    {
+      "name": "상주시",
+      "value": 6
+    },
+    {
+      "name": "울진군",
+      "value": 5
+    },
+    {
+      "name": "김천시",
+      "value": 3
+    },
+    {
+      "name": "영덕군",
+      "value": 3
+    },
+    {
+      "name": "영천시",
+      "value": 3
+    },
+    {
+      "name": "의성군",
+      "value": 3
+    },
+    {
+      "name": "봉화군",
+      "value": 2
+    },
+    {
+      "name": "영양군",
+      "value": 2
+    },
+    {
+      "name": "영주시",
+      "value": 2
+    },
+    {
+      "name": "청도군",
+      "value": 2
+    },
+    {
+      "name": "청송군",
+      "value": 2
+    },
+    {
+      "name": "칠곡군",
+      "value": 1
+    }
+  ],
+  "evidence": [
+    {
+      "id": "b4546dbca0f0e34c",
+      "title": "경산시, 교육혁신선도지역 도전 본격화 12개 기관 손잡았다",
+      "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4083699",
+      "publishedAt": "2026-09-09",
+      "press": "경북일보",
+      "topics": [
+        "교육재정",
+        "지역소멸·인구",
+        "교육혁신·특구"
+      ]
+    },
+    {
+      "id": "85a993908d291c07",
+      "title": "김천시, 학교 대학 기업 잇는 '지역인재 정주 생태계' 구축",
+      "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4083691",
+      "publishedAt": "2026-09-09",
+      "press": "경북일보",
+      "topics": [
+        "지역소멸·인구",
+        "교육혁신·특구"
+      ]
+    },
+    {
+      "id": "f1e46ab4d2d6b7c9",
+      "title": "대구 경북 수능 지원자 줄었지만 'N수생' 12.2% 급증",
+      "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4083580",
+      "publishedAt": "2026-09-09",
+      "press": "경북일보",
+      "topics": [
+        "지역소멸·인구"
+      ]
+    },
+    {
+      "id": "937d3a74cd4112fe",
+      "title": "경북도 국민의힘, 2027년 국비 확보 '원팀 총력전'",
+      "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4083557",
+      "publishedAt": "2026-09-09",
+      "press": "경북일보",
+      "topics": [
+        "교육재정"
+      ]
+    },
+    {
+      "id": "0549f582bd0c42f3",
+      "title": "지방 사립대, 신속 구조개선-선별 지원 병행해야",
+      "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4083518",
+      "publishedAt": "2026-09-09",
+      "press": "경북일보",
+      "topics": [
+        "교육재정"
+      ]
+    },
+    {
+      "id": "670d9f9205d533d7",
+      "title": "경북도-국민의힘, 내년 국비 확보 지역 현안 해결 공조",
+      "link": "http://www.breaknews.com/1235092",
+      "publishedAt": "2026-09-08",
+      "press": "브레이크뉴스",
+      "topics": [
+        "교육재정"
+      ]
+    },
+    {
+      "id": "f01aea86c7dfd0b1",
+      "title": "계명문화대학교, 2027학년도 수시 1차 모집서 전체 정원 84%인 1685명 선발",
+      "link": "www.hidomin.com/news/articleView.html?idxno=720383",
+      "publishedAt": "2026-09-08",
+      "press": "경북도민일보",
+      "topics": [
+        "교육재정",
+        "교원·정원"
+      ]
+    },
+    {
+      "id": "a104101a978881ce",
+      "title": "경북도-국민의힘, 원팀으로 국비확보 총력전",
+      "link": "https://www.newspim.com/news/view/20260908001112",
+      "publishedAt": "2026-09-08",
+      "press": "뉴스핌",
+      "topics": [
+        "교육재정"
+      ]
+    }
+  ]
+}

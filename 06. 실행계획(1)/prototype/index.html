@@ -631,6 +631,28 @@ a{color:var(--brand)}
 .news-stale-hard{background:var(--over-bg);border-color:var(--over);color:var(--ink)}
 .news-stale-hard b{color:var(--over)}
 
+/* 뉴스는 「최신」과 「빅카인즈 분석」의 출처가 다릅니다.
+   한 화면에 섞어 놓지 않고 탭과 기준일로 갈라 읽게 합니다. */
+.news-view-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px;padding:5px;
+  border:1px solid var(--line);border-radius:10px;background:var(--card-2);width:max-content;max-width:100%}
+.news-view-tabs button{border:0;border-radius:7px;padding:9px 14px;background:transparent;color:var(--ink-2);
+  font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.news-view-tabs button[aria-pressed="true"]{background:var(--card);color:var(--brand);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.news-analysis-hero{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.news-analysis-hero .box{border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--card-2)}
+.news-analysis-hero .k{font-size:11.5px;color:var(--ink-3);margin-bottom:5px}.news-analysis-hero .v{font-size:22px;font-weight:800;color:var(--ink)}
+.news-analysis-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);gap:14px}
+.news-analysis-panel{border:1px solid var(--line);border-radius:10px;padding:15px;background:var(--card)}
+.news-analysis-panel h3{font-size:14px;margin:0 0 12px}.news-topic-row{display:grid;grid-template-columns:110px 1fr 70px;gap:9px;align-items:center;margin:9px 0;font-size:12px}
+.news-topic-track{height:9px;background:var(--card-2);border-radius:99px;overflow:hidden}.news-topic-fill{height:100%;background:var(--brand);border-radius:inherit}
+.news-topic-delta{text-align:right;font-variant-numeric:tabular-nums}.news-topic-delta.up{color:var(--over)}.news-topic-delta.down{color:var(--under)}
+.news-keywords{display:flex;gap:7px;flex-wrap:wrap}.news-keywords span{border:1px solid var(--line);border-radius:99px;padding:5px 9px;font-size:12px;background:var(--card-2)}
+.news-ranked{list-style:none;padding:0;margin:0}.news-ranked li{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:12px}
+.news-evidence{margin-top:14px}.news-evidence a{color:var(--ink);text-decoration:none}.news-evidence a:hover{text-decoration:underline;color:var(--brand)}
+.news-paper{max-width:860px;margin:0 auto;border:1px solid var(--line);border-radius:4px;background:var(--card);padding:34px;box-shadow:0 6px 22px rgba(0,0,0,.08)}
+.news-paper .paper-kicker{font-size:11px;letter-spacing:.08em;color:var(--brand);font-weight:800}.news-paper h2{font-size:25px;margin:8px 0 5px}.news-paper .paper-period{font-size:12px;color:var(--ink-3);margin-bottom:24px}.news-paper .paper-lead{font-size:16px;line-height:1.75;border-left:4px solid var(--brand);padding-left:15px}.news-paper h3{font-size:14px;margin:24px 0 8px}.news-paper .paper-note{font-size:11.5px;color:var(--ink-3);border-top:1px solid var(--line);margin-top:22px;padding-top:12px;line-height:1.6}
+@media(max-width:800px){.news-analysis-hero{grid-template-columns:repeat(2,1fr)}.news-analysis-grid{grid-template-columns:1fr}.news-paper{padding:22px}.news-topic-row{grid-template-columns:100px 1fr 62px}}
+
 /* 쓸 수 없는 칩 — 눌러도 되는 것처럼 보이지 않게 합니다 */
 .chip:disabled, .chip.chip-off{
   opacity:.45; cursor:not-allowed; text-decoration:line-through;
@@ -1688,9 +1710,17 @@ body.map-maxed.home-wide #home-side{display:none}
   <!-- ================= 4. 뉴스 ================= -->
   <section id="view-news" class="view" hidden>
     <div class="page-head">
-      <h1>주간 뉴스 클리핑</h1>
-      <span class="desc">학령인구 감소 관련 보도 및 AI 주간 브리핑</span>
+      <h1>학령인구 뉴스 분석</h1>
+      <span class="desc">최신 보도와 과거 자료를 구분해 정책 관심의 변화를 살펴봅니다</span>
     </div>
+
+    <div class="news-view-tabs" role="group" aria-label="뉴스 화면 선택">
+      <button type="button" data-news-view="latest" aria-pressed="true">최신 뉴스</button>
+      <button type="button" data-news-view="analysis" aria-pressed="false">이슈 분석</button>
+      <button type="button" data-news-view="papers" aria-pressed="false">이슈페이퍼</button>
+    </div>
+
+    <div id="news-latest-panel">
 
     <details class="src-box" id="src-news" style="margin-bottom:14px"></details>
 
@@ -1734,8 +1764,23 @@ body.map-maxed.home-wide #home-side{display:none}
 
       <div class="spec" style="margin-top:24px; padding-top:16px; border-top:1px dashed var(--line-2);">
         <b>저작권 유의</b> — 기사 <b>전문을 저장·재배포하지 않습니다.</b>
-        제목 · 언론사 · 발행일 · 원문 링크 · <b>자체 생성 요약문(인사이트)</b>만 보관하고 본문은 외부 링크로 연결합니다.
+        제목 · 언론사 · 발행일 · 원문 링크 · <b>검색 API 제공 요약문</b>만 보관하고 본문은 외부 링크로 연결합니다.
       </div>
+    </div>
+    </div>
+
+    <div id="news-analysis-panel" hidden>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap">
+          <div><h2 style="margin-bottom:4px">최근 30일 이슈 변화</h2><div class="map-note" id="news-analysis-period">빅카인즈 자료를 불러오는 중입니다.</div></div>
+          <span class="asof" id="news-analysis-asof">BIG Kinds</span>
+        </div>
+        <div id="news-analysis-content" aria-live="polite">「이슈 분석」을 열면 필요한 자료만 불러옵니다.</div>
+      </div>
+    </div>
+
+    <div id="news-papers-panel" hidden>
+      <div id="news-paper-content" aria-live="polite">「이슈페이퍼」를 열면 프로토타입을 불러옵니다.</div>
     </div>
   </section>
 
@@ -2322,6 +2367,88 @@ body.map-maxed.home-wide #home-side{display:none}
   } else {
     startNews();
   }
+})();
+
+/* =========================================================
+   빅카인즈 이슈 분석 — 누를 때만 경량 집계 자료를 불러옵니다
+   ---------------------------------------------------------
+   최신 뉴스(news-history.json)는 매일 자동수집하고, 이 자료는 과거 비교용
+   아카이브입니다. 출처와 갱신 주기가 달라 같은 배열로 합치지 않습니다.
+   ========================================================= */
+(function(){
+  if(typeof document === 'undefined') return;
+  var loaded=null;
+  function esc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+  function safe(u){u=String(u||'');return /^https?:\/\//i.test(u)?u:'';}
+  function fmt(n){return Number(n||0).toLocaleString('ko-KR');}
+  function panel(name){return document.getElementById('news-'+name+'-panel');}
+
+  function loadArchive(){
+    if(loaded) return loaded;
+    loaded=Promise.all([
+      fetch('assets/news/manifest.json').then(function(r){if(!r.ok)throw new Error('manifest '+r.status);return r.json();}),
+      fetch('assets/news/snapshot.json').then(function(r){if(!r.ok)throw new Error('snapshot '+r.status);return r.json();}),
+      fetch('assets/news/issues/index.json').then(function(r){if(!r.ok)throw new Error('issues '+r.status);return r.json();})
+    ]).then(function(v){return {manifest:v[0],snapshot:v[1],issues:v[2]};});
+    return loaded;
+  }
+
+  function evidence(rows){
+    return '<ol class="news-ranked news-evidence">'+(rows||[]).map(function(a){
+      var url=safe(a.link), label=esc(a.title), meta=[a.publishedAt,a.press].filter(Boolean).join(' · ');
+      return '<li><span>'+(url?'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+label+'</a>':label)+'</span><small>'+esc(meta)+'</small></li>';
+    }).join('')+'</ol>';
+  }
+
+  function renderAnalysis(data){
+    var m=data.manifest,s=data.snapshot,box=document.getElementById('news-analysis-content');
+    var period=document.getElementById('news-analysis-period');
+    var asof=document.getElementById('news-analysis-asof');
+    if(period) period.textContent=s.currentPeriod.from+' ~ '+s.currentPeriod.to+'와 직전 30일을 비교합니다.';
+    if(asof) asof.textContent=s.anchorDate+' 기준 · BIG Kinds';
+    var topics=s.topics.map(function(t){
+      var d=Number(t.changePp||0),cl=d>0?' up':(d<0?' down':'');
+      return '<div class="news-topic-row"><b>'+esc(t.topic)+'</b><div class="news-topic-track"><div class="news-topic-fill" style="width:'+Math.min(100,t.currentShare)+'%"></div></div><span class="news-topic-delta'+cl+'">'+t.currentShare+'%<br><small>'+(d>0?'+':'')+d+'%p</small></span></div>';
+    }).join('');
+    var keywords='<div class="news-keywords">'+s.keywords.map(function(k){return '<span>'+esc(k.name)+' <b>'+fmt(k.value)+'</b></span>';}).join('')+'</div>';
+    var regions='<ol class="news-ranked">'+s.regions.slice(0,10).map(function(r){return '<li><span>'+esc(r.name)+'</span><b>'+fmt(r.value)+'건</b></li>';}).join('')+'</ol>';
+    box.innerHTML=
+      '<div class="news-analysis-hero">'+
+        '<div class="box"><div class="k">분석 대상</div><div class="v">'+fmt(m.counts.curated)+'건</div></div>'+
+        '<div class="box"><div class="k">최근 30일</div><div class="v">'+fmt(s.currentPeriod.count)+'건</div></div>'+
+        '<div class="box"><div class="k">직전 30일</div><div class="v">'+fmt(s.priorPeriod.count)+'건</div></div>'+
+        '<div class="box"><div class="k">자료 기간</div><div class="v" style="font-size:16px">'+esc(m.coverage.from.slice(0,4))+'–'+esc(m.coverage.to.slice(0,4))+'</div></div>'+
+      '</div>'+
+      '<div class="news-analysis-grid"><div class="news-analysis-panel"><h3>주제별 기사 비중과 직전 기간 대비</h3>'+topics+'</div><div class="news-analysis-panel"><h3>언급이 많은 시군</h3>'+regions+'</div></div>'+
+      '<div class="news-analysis-panel" style="margin-top:14px"><h3>최근 다빈도 키워드</h3>'+keywords+'</div>'+
+      '<div class="news-analysis-panel" style="margin-top:14px"><h3>분석 근거 기사</h3>'+evidence(s.evidence)+'</div>'+
+      '<p class="src-note" style="padding-left:0">'+esc(s.basis)+' · 주제는 한 기사에 여러 개가 붙을 수 있어 비중의 합이 100%를 넘을 수 있습니다.</p>';
+  }
+
+  function renderPapers(data){
+    var out=document.getElementById('news-paper-content'),p=(data.issues||[])[0];
+    if(!p){out.innerHTML='<div class="card">아직 작성된 이슈페이퍼가 없습니다.</div>';return;}
+    var topics='<ul>'+p.topics.map(function(t){return '<li><b>'+esc(t.topic)+'</b> — 최근 '+t.currentShare+'%, 직전 기간 대비 '+(t.changePp>0?'+':'')+t.changePp+'%p</li>';}).join('')+'</ul>';
+    var keys='<div class="news-keywords">'+p.keywords.map(function(k){return '<span>'+esc(k.name)+' <b>'+fmt(k.value)+'</b></span>';}).join('')+'</div>';
+    out.innerHTML='<article class="news-paper">'+
+      '<div class="paper-kicker">이슈페이퍼 · '+esc(p.status==='prototype'?'프로토타입 / 검토 전':p.status)+'</div>'+
+      '<h2>'+esc(p.title)+'</h2><div class="paper-period">'+esc(p.period.from)+' ~ '+esc(p.period.to)+' · BIG Kinds</div>'+
+      '<p class="paper-lead">'+esc(p.lead)+'</p><h3>주요 주제 변화</h3>'+topics+
+      '<h3>핵심 키워드</h3>'+keys+'<h3>근거 기사</h3>'+evidence(p.evidence)+
+      '<div class="paper-note"><b>해석 유의</b> — '+esc(p.caveat)+'<br>'+esc(p.review)+'</div></article>';
+  }
+
+  function show(name){
+    ['latest','analysis','papers'].forEach(function(n){var p=panel(n);if(p)p.hidden=n!==name;});
+    Array.prototype.forEach.call(document.querySelectorAll('[data-news-view]'),function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-news-view')===name));});
+    if(name==='latest') return;
+    var target=name==='analysis'?document.getElementById('news-analysis-content'):document.getElementById('news-paper-content');
+    if(target) target.textContent='빅카인즈 집계 자료를 불러오는 중입니다…';
+    loadArchive().then(function(d){if(name==='analysis')renderAnalysis(d);else renderPapers(d);}).catch(function(e){if(target)target.innerHTML='<div class="card"><b>분석 자료를 불러오지 못했습니다.</b><br><span class="map-note">'+esc(e.message)+'</span></div>';});
+  }
+
+  function start(){Array.prototype.forEach.call(document.querySelectorAll('[data-news-view]'),function(b){b.addEventListener('click',function(){show(b.getAttribute('data-news-view'));});});}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
 
 /* =========================================================
