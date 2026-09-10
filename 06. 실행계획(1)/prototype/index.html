@@ -655,8 +655,9 @@ a{color:var(--brand)}
 .news-paper{max-width:860px;margin:0 auto;border:1px solid var(--line);border-radius:4px;background:var(--card);padding:34px;box-shadow:0 6px 22px rgba(0,0,0,.08)}
 .news-paper .paper-kicker{font-size:11px;letter-spacing:.08em;color:var(--brand);font-weight:800}.news-paper h2{font-size:25px;margin:8px 0 5px}.news-paper .paper-period{font-size:12px;color:var(--ink-3);margin-bottom:24px}.news-paper .paper-lead{font-size:16px;line-height:1.75;border-left:4px solid var(--brand);padding-left:15px}.news-paper h3{font-size:14px;margin:24px 0 8px}.news-paper .paper-note{font-size:11.5px;color:var(--ink-3);border-top:1px solid var(--line);margin-top:22px;padding-top:12px;line-height:1.6}
 .news-viz-stack{display:grid;gap:14px;margin-top:14px}.news-viz-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}.news-viz-head h3{margin:0 0 4px}.news-viz-head p{margin:0;color:var(--ink-3);font-size:11.5px;line-height:1.55}
-.news-trend{width:100%;height:auto;display:block;overflow:visible}.news-trend .grid{stroke:var(--line);stroke-width:1}.news-trend .axis-label{fill:var(--ink-3);font-size:10px}.news-trend .bar{fill:color-mix(in srgb,var(--brand) 20%,transparent)}.news-trend .bar:hover{fill:color-mix(in srgb,var(--brand) 36%,transparent)}.news-trend .line{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}.news-trend .dot{stroke:var(--card);stroke-width:2}
-.news-chart-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;font-size:11.5px;color:var(--ink-2)}.news-chart-legend span{display:inline-flex;align-items:center;gap:5px}.news-chart-legend i{width:18px;height:4px;border-radius:99px;background:var(--legend-color)}
+.news-trend-wrap{position:relative}.news-trend{width:100%;height:auto;display:block;overflow:visible}.news-trend .grid{stroke:var(--line);stroke-width:1}.news-trend .axis-label{fill:var(--ink-3);font-size:11px}.news-trend .axis-title{fill:var(--ink-2);font-size:11.5px;font-weight:800}.news-trend .bar{fill:color-mix(in srgb,var(--brand) 20%,transparent);transition:fill .14s ease}.news-trend .bar:hover,.news-trend .bar:focus{fill:color-mix(in srgb,var(--brand) 42%,transparent);outline:none}.news-trend .line{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.news-trend .dot{stroke:var(--card);stroke-width:2.5;cursor:crosshair;transition:r .14s ease}.news-trend .dot:hover,.news-trend .dot:focus{r:6;outline:none}
+.news-chart-tooltip{position:absolute;z-index:3;display:none;pointer-events:none;max-width:220px;padding:7px 9px;border-radius:7px;background:#102f5c;color:#fff;font-size:11.5px;font-weight:700;line-height:1.45;box-shadow:0 6px 18px rgba(15,40,75,.22);transform:translate(10px,-100%)}.news-chart-tooltip.is-open{display:block}
+.news-chart-legend{display:flex;gap:10px 18px;flex-wrap:wrap;margin-top:10px;padding:9px 11px;border-radius:8px;background:var(--card-2);font-size:13px;font-weight:700;color:var(--ink-2)}.news-chart-legend span{display:inline-flex;align-items:center;gap:7px}.news-chart-legend i{width:26px;height:5px;border-radius:99px;background:var(--legend-color)}
 .news-wordcloud{min-height:246px;display:flex;align-content:center;align-items:center;justify-content:center;gap:8px 13px;flex-wrap:wrap;padding:18px;border-radius:12px;background:radial-gradient(circle at 48% 45%,color-mix(in srgb,var(--brand) 9%,var(--card)),var(--card-2) 72%)}.news-wordcloud span{display:inline-block;color:var(--brand);font-weight:800;line-height:1;white-space:nowrap;transition:transform .16s ease,color .16s ease}.news-wordcloud span:nth-child(4n+2){color:var(--under)}.news-wordcloud span:nth-child(4n+3){color:var(--warn)}.news-wordcloud span:nth-child(4n){color:var(--ink-2)}.news-wordcloud span:hover{transform:scale(1.09)}
 .news-key-bars{display:grid;gap:10px}.news-key-bar{display:grid;grid-template-columns:minmax(82px,120px) 1fr 76px;gap:9px;align-items:center;font-size:12px}.news-key-bar .track{height:10px;border-radius:99px;background:var(--card-2);overflow:hidden}.news-key-bar .fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--brand),color-mix(in srgb,var(--brand) 55%,var(--under)))}.news-key-bar .change{text-align:right;color:var(--ink-3);font-variant-numeric:tabular-nums}.news-key-bar .change.up{color:var(--over)}.news-key-bar .change.down{color:var(--under)}
 .news-cluster-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.news-cluster{border:1px solid var(--line);border-radius:12px;padding:13px;background:var(--card-2);min-height:164px}.news-cluster-top{display:flex;gap:10px;align-items:center;margin-bottom:10px}.news-cluster-orb{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;background:color-mix(in srgb,var(--brand) 16%,var(--card));border:2px solid color-mix(in srgb,var(--brand) 55%,var(--line));color:var(--brand);font-size:13px;font-weight:800}.news-cluster h4{font-size:12.5px;line-height:1.4;margin:0}.news-cluster p{margin:3px 0 0;font-size:10.5px;color:var(--ink-3)}.news-cluster a{display:block;color:var(--ink-2);font-size:11px;line-height:1.45;text-decoration:none;margin-top:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.news-cluster a:hover{color:var(--brand);text-decoration:underline}
@@ -735,7 +736,7 @@ a{color:var(--brand)}
   body.print-news-paper #news-analysis-panel,
   body.print-news-paper .paper-toolbar{display:none !important}
   body.print-news-paper #news-papers-panel{display:block !important}
-  body.print-news-paper .news-paper{max-width:none;border:0;border-radius:0;box-shadow:none}
+  body.print-news-paper .news-paper{max-width:none;height:279mm;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden;border:0;border-radius:0;box-shadow:none}
   body.print-news-paper .paper-masthead{background:#102f5c !important;color:#fff !important;padding:3mm 5mm}
   body.print-news-paper .paper-brand{font-size:8.5pt}
   body.print-news-paper .paper-edition{font-size:7pt}
@@ -744,27 +745,30 @@ a{color:var(--brand)}
   body.print-news-paper .paper-deck{font-size:9pt;line-height:1.5;max-width:none}
   body.print-news-paper .paper-meta{margin-top:3mm;padding-top:2.5mm;font-size:7pt}
   body.print-news-paper .paper-screen-body{display:none !important}
-  body.print-news-paper .paper-print-body{display:block !important;padding:4mm 6mm 3mm}
-  body.print-news-paper .print-paper-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2.2mm;margin-bottom:3mm}
+  body.print-news-paper .paper-print-body{display:grid !important;grid-template-rows:auto auto minmax(0,1fr) auto auto;gap:3mm;flex:1;min-height:0;padding:4mm 6mm 3mm}
+  body.print-news-paper .print-paper-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2.2mm;margin:0}
   body.print-news-paper .print-paper-stat{border:1px solid #aaa;border-top:2px solid #123d76;border-radius:2mm;padding:2.2mm 2.5mm}
   body.print-news-paper .print-paper-stat b{display:block;font-size:12pt;line-height:1.1}
   body.print-news-paper .print-paper-stat span{font-size:6.8pt;color:#444}
-  body.print-news-paper .print-paper-highlights{display:grid;grid-template-columns:repeat(3,1fr);gap:2mm;margin-bottom:3mm}
+  body.print-news-paper .print-paper-highlights{display:grid;grid-template-columns:repeat(3,1fr);gap:2mm;margin:0}
   body.print-news-paper .print-paper-highlights p{margin:0;border:1px solid #bbb;border-radius:2mm;padding:2.2mm;font-size:7.2pt;line-height:1.42}
-  body.print-news-paper .print-paper-viz{display:grid;grid-template-columns:1.35fr .65fr;gap:3mm;margin-bottom:3mm}
-  body.print-news-paper .print-paper-box{border:1px solid #aaa;border-radius:2mm;padding:2.5mm}
+  body.print-news-paper .print-paper-viz{display:grid;grid-template-columns:1.35fr .65fr;gap:3mm;min-height:0;margin:0}
+  body.print-news-paper .print-paper-box{border:1px solid #aaa;border-radius:2mm;padding:2.5mm;min-height:0}
   body.print-news-paper .print-paper-box h3{font-size:9pt;margin:0 0 1mm}
-  body.print-news-paper .print-paper-box .news-trend{max-height:37mm}
+  body.print-news-paper .print-paper-viz .print-paper-box:first-child{display:flex;flex-direction:column}
+  body.print-news-paper .print-paper-viz .news-trend-wrap{flex:1;min-height:0;display:flex;align-items:stretch}
+  body.print-news-paper .print-paper-viz .news-trend{width:100%;height:100%;max-height:none}
   body.print-news-paper .print-paper-box .news-chart-legend{display:none}
+  body.print-news-paper .news-chart-tooltip{display:none !important}
   body.print-news-paper .paper-topic-row{grid-template-columns:25mm 1fr 15mm;gap:1.5mm;margin:1.7mm 0;font-size:6.8pt}
   body.print-news-paper .news-topic-track{height:2mm}
-  body.print-news-paper .print-paper-meta{display:grid;grid-template-columns:1fr 1fr;gap:3mm;margin-bottom:3mm}
+  body.print-news-paper .print-paper-meta{display:grid;grid-template-columns:1fr 1fr;gap:3mm;margin:0}
   body.print-news-paper .print-paper-tags{display:flex;gap:1.2mm;flex-wrap:wrap}
   body.print-news-paper .print-paper-tags span{border:1px solid #aaa;border-radius:99px;padding:1mm 1.8mm;font-size:6.8pt}
   body.print-news-paper .print-paper-evidence{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:1.5mm 4mm}
   body.print-news-paper .print-paper-evidence li{font-size:7pt;line-height:1.35;border-top:1px solid #bbb;padding-top:1.3mm}
   body.print-news-paper .print-paper-evidence small{display:block;color:#444;margin-top:.6mm}
-  body.print-news-paper .print-paper-foot{font-size:6.5pt;line-height:1.35;color:#444;border-top:1px solid #999;margin-top:2.5mm;padding-top:1.5mm}
+  body.print-news-paper .print-paper-foot{font-size:6.5pt;line-height:1.35;color:#444;border-top:1px solid #999;margin:0;padding-top:1.5mm}
   body.print-news-paper a[href^="http"]::after{content:""}
 }
 
@@ -897,8 +901,10 @@ table.data .hl{color:var(--brand);font-weight:800}
 
 .sim-tables{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media (max-width:900px){.sim-tables{grid-template-columns:1fr}}
-.news-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:16px;}
-/* 쪽 넘기기 — 한 쪽 20건(4열 × 5줄). 단추는 44px 이상(원칙 7번). */
+.news-section-head{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:14px}.news-section-head h2{margin:0}.news-freshness{display:grid;grid-template-columns:auto auto;gap:2px 9px;align-items:center;padding:8px 11px;border:1px solid var(--line);border-radius:9px;background:var(--card-2);white-space:nowrap}.news-freshness span{grid-row:1/3;width:7px;height:7px;border-radius:50%;background:var(--under);box-shadow:0 0 0 4px color-mix(in srgb,var(--under) 14%,transparent)}.news-freshness small{font-size:10px;color:var(--ink-3);line-height:1}.news-freshness b{font-size:12px;color:var(--ink);line-height:1.2}
+.news-filter-panel{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin-bottom:20px;padding:13px 14px;border:1px solid var(--line);border-radius:11px;background:var(--card-2)}.news-filter-group{display:grid;gap:7px}.news-filter-label{font-size:11px;font-weight:800;color:var(--ink-3);letter-spacing:.03em}.news-filter-controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.news-filter-result{margin-left:auto;align-self:center;font-size:12px;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums}.news-filter-panel .select{min-height:40px;min-width:190px}
+.news-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:stretch}.news-card{min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:var(--card);display:flex;flex-direction:column;box-shadow:0 5px 18px rgba(15,40,75,.07);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}.news-card:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--brand) 45%,var(--line));box-shadow:0 12px 28px rgba(15,40,75,.13)}.news-card-cover{height:128px;display:grid;place-items:center;color:#fff;font-size:40px;background:linear-gradient(135deg,#9a7a38,#3565a9)}.news-card:nth-child(3n+2) .news-card-cover{background:linear-gradient(135deg,#59706d,#315f9c)}.news-card:nth-child(3n) .news-card-cover{background:linear-gradient(135deg,#8f773f,#4772b0)}.news-card-body{padding:17px;display:flex;flex-direction:column;flex:1;min-width:0}.news-card-date{font-size:11.5px;color:var(--ink-3);margin-bottom:7px}.news-card-title{font-weight:800;font-size:15px;line-height:1.45;margin-bottom:9px;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.news-card-desc{font-size:12.5px;color:var(--ink-2);line-height:1.6;margin-bottom:15px;flex:1;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}.news-card-link,.news-card-no-link{min-height:40px;box-sizing:border-box;display:grid;place-items:center;border-radius:7px;font-size:12.5px;font-weight:800;text-align:center}.news-card-link{border:1px solid var(--brand);color:var(--brand);background:var(--card);text-decoration:none}.news-card-link:hover{background:var(--brand);color:#fff}.news-card-no-link{color:var(--ink-3)}.news-card-feature{grid-column:span 2;display:grid;grid-template-columns:minmax(190px,.75fr) minmax(0,1.25fr)}.news-card-feature .news-card-cover{height:auto;min-height:286px;font-size:56px}.news-card-feature .news-card-title{font-size:19px;-webkit-line-clamp:3}.news-card-feature .news-card-desc{-webkit-line-clamp:5}
+/* 쪽 넘기기 — 한 쪽 15건(3열 × 5줄). 단추는 44px 이상(원칙 7번). */
 .news-pager{display:flex; gap:6px; justify-content:center; align-items:center;
   flex-wrap:wrap; margin-top:20px}
 .news-pager button{min-width:44px; min-height:44px; padding:0 12px; border-radius:8px;
@@ -909,8 +915,8 @@ table.data .hl{color:var(--brand);font-weight:800}
 .news-pager button:disabled{opacity:.4; cursor:default}
 .news-pager .sep{color:var(--ink-3); padding:0 2px}
 @media print{.news-pager{display:none}}
-@media (max-width:1080px){.news-grid{grid-template-columns:repeat(2, 1fr);}}
-@media (max-width:600px){.news-grid{grid-template-columns:1fr;}}
+@media (max-width:1120px){.news-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.news-card-feature{grid-column:span 2}.news-filter-result{width:100%;margin-left:0}}
+@media (max-width:680px){.news-section-head{align-items:flex-start;flex-direction:column}.news-freshness{align-self:stretch}.news-filter-panel{align-items:stretch}.news-filter-group{width:100%}.news-filter-panel .select{width:100%}.news-grid{grid-template-columns:1fr}.news-card-feature{grid-column:span 1;display:flex}.news-card-feature .news-card-cover{height:128px;min-height:0;font-size:40px}}
 .ai-output{word-break:keep-all;min-height:96px;margin-top:12px;padding:22px 24px;
   border:1px solid var(--line);border-radius:10px;background:var(--card);font:inherit;line-height:1.75;color:var(--ink)}
 .policy-report{max-width:900px;margin:0 auto}
@@ -2034,25 +2040,33 @@ body.map-maxed.home-wide #home-side{display:none}
     <details class="src-box" id="src-news" style="margin-bottom:14px"></details>
 
     <div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-        <h2>AI 주간 브리핑 &amp; 뉴스 히스토리<span class="asof" id="asof-news"></span></h2>
+      <div class="news-section-head">
+        <h2>AI 주간 브리핑 &amp; 뉴스 히스토리</h2>
+        <div class="news-freshness" aria-label="최근 수집 기사 기준일">
+          <span aria-hidden="true"></span><small>최근 수집 기사</small><b id="news-asof">확인 중</b>
+        </div>
       </div>
       
       <!-- ★ 〔2026. 8. 12.〕 이 단추 셋은 **아무 데도 붙어 있지 않았습니다.**
            `aria-pressed` 만 손으로 적힌 장식이었고, 눌러도 아무 일이 없었습니다.
            히스토리를 심으면서 실제로 거르게 했습니다. data-days 가 기간입니다. -->
-      <div class="map-toolbar" style="margin-bottom: 20px;">
-        <span style="font-size: 13px; font-weight: 600; color: var(--ink-2); margin-right: 8px;">기간 필터:</span>
-        <button type="button" class="chip" data-news-days="0" aria-pressed="true">전체 보기</button>
-        <button type="button" class="chip" data-news-days="7" aria-pressed="false">주간(최근 7일)</button>
-        <button type="button" class="chip" data-news-days="30" aria-pressed="false">월간(최근 30일)</button>
-        <label class="sr-only" for="news-topic">뉴스 주제</label>
-        <select id="news-topic" class="select" aria-label="뉴스 주제 필터">
-          <option value="전체">전체 주제</option><option>통폐합·적정규모</option><option>교육재정</option>
-          <option>교원·정원</option><option>통학·돌봄</option><option>지역소멸·인구</option><option>교육혁신·특구</option>
-        </select>
-        <span class="map-note" id="news-asof"></span>
-        <span id="news-count" style="margin-left:auto; font-size:12px; color:var(--ink-3);"></span>
+      <div class="news-filter-panel" aria-label="뉴스 필터">
+        <div class="news-filter-group">
+          <span class="news-filter-label">기간</span>
+          <div class="news-filter-controls">
+            <button type="button" class="chip" data-news-days="0" aria-pressed="true">전체</button>
+            <button type="button" class="chip" data-news-days="7" aria-pressed="false">최근 7일</button>
+            <button type="button" class="chip" data-news-days="30" aria-pressed="false">최근 30일</button>
+          </div>
+        </div>
+        <div class="news-filter-group">
+          <label class="news-filter-label" for="news-topic">주제</label>
+          <select id="news-topic" class="select" aria-label="뉴스 주제 필터">
+            <option value="전체">전체 주제</option><option>통폐합·적정규모</option><option>교육재정</option>
+            <option>교원·정원</option><option>통학·돌봄</option><option>지역소멸·인구</option><option>교육혁신·특구</option>
+          </select>
+        </div>
+        <span id="news-count" class="news-filter-result" aria-live="polite"></span>
       </div>
 
       <!-- ★ 뉴스는 «구울 때» 여기 심깁니다 — 화면이 켜진 뒤에 받아오지 않습니다.
@@ -2068,7 +2082,7 @@ body.map-maxed.home-wide #home-side{display:none}
         <div style="padding:40px; text-align:center; color:var(--ink-3); grid-column:1/-1;">뉴스를 불러오는 중입니다...</div>
       </div>
 
-      <!-- 쪽 넘기기 — 한 쪽에 20건(4열 × 5줄)입니다. 기사가 20건 이하면 나오지 않습니다. -->
+      <!-- 쪽 넘기기 — 한 쪽에 15건(3열 × 5줄)입니다. 기사가 15건 이하면 나오지 않습니다. -->
       <nav id="news-pager" class="news-pager" aria-label="뉴스 쪽 넘기기" hidden></nav>
 
       <div class="spec" style="margin-top:24px; padding-top:16px; border-top:1px dashed var(--line-2);">
@@ -2463,9 +2477,9 @@ body.map-maxed.home-wide #home-side{display:none}
   var newsTopic = '전체';
   var NEWS_ALL = null;
 
-  /* 한 쪽에 20건 — 4열 × 5줄이라 화면이 정확히 채워집니다.
+  /* 한 쪽에 15건 — 3열 × 5줄이라 기사 제목과 요약을 읽을 폭을 확보합니다.
      기사가 쌓이면(히스토리 60건까지) 한 쪽에 다 넣을 때 스크롤이 길어집니다. */
-  var NEWS_PER_PAGE = 20;
+  var NEWS_PER_PAGE = 15;
   var newsPage = 1;
 
   function withinDays(pubDate, days) {
@@ -2540,18 +2554,19 @@ body.map-maxed.home-wide #home-side{display:none}
       const link = safeUrl(news.originallink || news.link);
       const dateStr = fmtDate(news.pubDate);
       const title = esc(news.title);
+      const featured = idx === 0 && newsPage === 1 ? ' news-card-feature' : '';
       return '' +
-        '<div style="border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--bg); display:flex; flex-direction:column; box-shadow:0 2px 8px rgba(0,0,0,0.04);">' +
-          '<div aria-hidden="true" style="height:120px; background:linear-gradient(45deg, var(--under), var(--brand)); opacity:0.85; display:flex; align-items:center; justify-content:center; color:#fff; font-size:40px;">' + emojis[idx % emojis.length] + '</div>' +
-          '<div style="padding:16px; display:flex; flex-direction:column; flex:1;">' +
-            '<div style="font-size:11.5px; color:var(--ink-3); margin-bottom:6px;">' + esc(dateStr) + '</div>' +
-            '<div style="font-weight:700; font-size:15px; line-height:1.4; margin-bottom:10px; color:var(--ink); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;" title="' + title + '">' + title + '</div>' +
-            '<div style="font-size:13px; color:var(--ink-2); line-height:1.5; margin-bottom:16px; flex:1; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden;">' + esc(news.description) + '</div>' +
+        '<article class="news-card' + featured + '">' +
+          '<div class="news-card-cover" aria-hidden="true">' + emojis[idx % emojis.length] + '</div>' +
+          '<div class="news-card-body">' +
+            '<div class="news-card-date">' + esc(dateStr) + '</div>' +
+            '<div class="news-card-title" title="' + title + '">' + title + '</div>' +
+            '<div class="news-card-desc">' + esc(news.description) + '</div>' +
             (link
-              ? '<a href="' + esc(link) + '" target="_blank" rel="noopener noreferrer" style="font-size:12.5px; font-weight:700; padding:8px 12px; background:var(--card); color:var(--brand); border:1px solid var(--brand); border-radius:6px; text-decoration:none; text-align:center; display:block;">원문 읽기 ↗</a>'
-              : '<span style="font-size:12.5px; color:var(--ink-3); text-align:center; display:block; padding:8px 12px;">원문 주소 없음</span>') +
+              ? '<a class="news-card-link" href="' + esc(link) + '" target="_blank" rel="noopener noreferrer">원문 읽기 ↗</a>'
+              : '<span class="news-card-no-link">원문 주소 없음</span>') +
           '</div>' +
-        '</div>';
+        '</article>';
     });
 
     container.innerHTML = cards.join('');
@@ -2586,7 +2601,7 @@ body.map-maxed.home-wide #home-side{display:none}
         if (!p || p === newsPage) return;
         newsPage = p;
         renderNews();
-        /* 쪽을 넘기면 목록 맨 위로 — 20건을 넘기고 나서 아래쪽에 남아 있으면
+        /* 쪽을 넘기면 목록 맨 위로 — 15건을 넘기고 나서 아래쪽에 남아 있으면
            무엇이 바뀌었는지 안 보입니다. */
         const top = document.getElementById('news-container');
         if (top && top.scrollIntoView) top.scrollIntoView({ block: 'start' });
@@ -2710,17 +2725,34 @@ body.map-maxed.home-wide #home-side{display:none}
   }
 
   function trendChart(s){
-    var rows=s.weeklyTrend||[],w=760,h=260,p={l:38,r:14,t:18,b:38};
+    var rows=s.weeklyTrend||[],w=760,h=278,p={l:54,r:14,t:18,b:42};
     if(!rows.length)return '<p class="map-note">주간 경향 자료가 없습니다.</p>';
     var topicTotals={};rows.forEach(function(r){Object.keys(r.topics||{}).forEach(function(k){topicTotals[k]=(topicTotals[k]||0)+r.topics[k];});});
     var top=Object.keys(topicTotals).sort(function(a,b){return topicTotals[b]-topicTotals[a];}).slice(0,3);
     var colors=['#2859a8','#c66a12','#16806a'],max=Math.max.apply(null,rows.map(function(r){return r.total;}))||1;
     var cw=w-p.l-p.r,ch=h-p.t-p.b,bw=Math.max(8,cw/rows.length*.58);
     var grid=[0,.25,.5,.75,1].map(function(q){var y=p.t+ch*(1-q),v=Math.round(max*q);return '<line class="grid" x1="'+p.l+'" y1="'+y+'" x2="'+(w-p.r)+'" y2="'+y+'"/><text class="axis-label" x="'+(p.l-7)+'" y="'+(y+3)+'" text-anchor="end">'+v+'</text>';}).join('');
-    var bars=rows.map(function(r,i){var x=p.l+(i+.5)*cw/rows.length,y=p.t+ch-r.total/max*ch;return '<rect class="bar" x="'+(x-bw/2)+'" y="'+y+'" width="'+bw+'" height="'+(p.t+ch-y)+'" rx="3"><title>'+esc(r.from)+'~'+esc(r.to)+' · 전체 '+r.total+'건</title></rect><text class="axis-label" x="'+x+'" y="'+(h-17)+'" text-anchor="middle">'+esc(r.from.slice(5).replace('-','.'))+'</text>';}).join('');
-    var lines=top.map(function(topic,ti){var pts=rows.map(function(r,i){var x=p.l+(i+.5)*cw/rows.length,y=p.t+ch-(r.topics[topic]||0)/max*ch;return [x,y,r.topics[topic]||0];});return '<path class="line" stroke="'+colors[ti]+'" d="'+pts.map(function(pt,i){return (i?'L':'M')+pt[0]+' '+pt[1];}).join(' ')+'"/>'+pts.map(function(pt,i){return '<circle class="dot" fill="'+colors[ti]+'" cx="'+pt[0]+'" cy="'+pt[1]+'" r="3"><title>'+esc(rows[i].from)+' · '+esc(topic)+' '+pt[2]+'건</title></circle>';}).join('');}).join('');
+    var bars=rows.map(function(r,i){var x=p.l+(i+.5)*cw/rows.length,y=p.t+ch-r.total/max*ch,tip=r.from+' ~ '+r.to+' · 전체 기사 '+r.total+'건';return '<rect class="bar" tabindex="0" role="img" aria-label="'+esc(tip)+'" data-news-tip="'+esc(tip)+'" x="'+(x-bw/2)+'" y="'+y+'" width="'+bw+'" height="'+(p.t+ch-y)+'" rx="3"><title>'+esc(tip)+'</title></rect><text class="axis-label" x="'+x+'" y="'+(h-17)+'" text-anchor="middle">'+esc(r.from.slice(5).replace('-','.'))+'</text>';}).join('');
+    var lines=top.map(function(topic,ti){var pts=rows.map(function(r,i){var x=p.l+(i+.5)*cw/rows.length,y=p.t+ch-(r.topics[topic]||0)/max*ch;return [x,y,r.topics[topic]||0];});return '<path class="line" stroke="'+colors[ti]+'" d="'+pts.map(function(pt,i){return (i?'L':'M')+pt[0]+' '+pt[1];}).join(' ')+'"/>'+pts.map(function(pt,i){var tip=rows[i].from+' 시작 주 · '+topic+' '+pt[2]+'건';return '<circle class="dot" tabindex="0" role="img" aria-label="'+esc(tip)+'" data-news-tip="'+esc(tip)+'" fill="'+colors[ti]+'" cx="'+pt[0]+'" cy="'+pt[1]+'" r="4"><title>'+esc(tip)+'</title></circle>';}).join('');}).join('');
     var legend='<div class="news-chart-legend"><span><i style="--legend-color:color-mix(in srgb,var(--brand) 28%,transparent)"></i>전체 기사량</span>'+top.map(function(t,i){return '<span><i style="--legend-color:'+colors[i]+'"></i>'+esc(t)+'</span>';}).join('')+'</div>';
-    return '<svg class="news-trend" viewBox="0 0 '+w+' '+h+'" role="img" aria-label="최근 12주 기사량과 주요 주제 경향">'+grid+bars+lines+'</svg>'+legend;
+    return '<div class="news-trend-wrap"><svg class="news-trend" viewBox="0 0 '+w+' '+h+'" role="img" aria-label="최근 12주 기사량과 주요 주제 경향"><text class="axis-title" x="15" y="'+(p.t+ch/2)+'" text-anchor="middle" transform="rotate(-90 15 '+(p.t+ch/2)+')">기사 수(건)</text>'+grid+bars+lines+'</svg><div class="news-chart-tooltip" role="status" aria-live="polite"></div></div>'+legend;
+  }
+
+  function wireTrendTooltips(root){
+    if(!root)return;
+    Array.prototype.forEach.call(root.querySelectorAll('.news-trend-wrap'),function(wrap){
+      var tip=wrap.querySelector('.news-chart-tooltip');
+      if(!tip)return;
+      function show(target,x,y){
+        var value=target&&target.getAttribute('data-news-tip');if(!value)return;
+        var r=wrap.getBoundingClientRect();tip.textContent=value;tip.style.left=Math.max(4,Math.min(r.width-190,x-r.left))+'px';tip.style.top=Math.max(28,y-r.top)+'px';tip.classList.add('is-open');
+      }
+      function hide(){tip.classList.remove('is-open');}
+      wrap.addEventListener('pointermove',function(e){var target=e.target.closest&&e.target.closest('[data-news-tip]');if(target)show(target,e.clientX,e.clientY);else hide();});
+      wrap.addEventListener('pointerleave',hide);
+      wrap.addEventListener('focusin',function(e){var target=e.target.closest&&e.target.closest('[data-news-tip]');if(!target)return;var r=target.getBoundingClientRect();show(target,r.left+r.width/2,r.top);});
+      wrap.addEventListener('focusout',hide);
+    });
   }
 
   function wordCloud(s){
@@ -2797,6 +2829,7 @@ body.map-maxed.home-wide #home-side{display:none}
         '<div class="news-analysis-panel"><div class="news-viz-head"><div><h3>뉴스에서 많이 언급된 지역, 학생 수는 어떻게 변했나</h3><p>최근 뉴스의 지역별 관심 변화와 EDSS 학생 수 장기 변화를 서로 다른 두 칸에 나란히 표시합니다.</p></div><span class="asof">뉴스 최근 30일 · EDSS 2016–2025</span></div>'+regionSignalView(s)+'<div class="news-method"><b>이렇게 해석하세요</b> — 예를 들어 ‘관심↑ · 학생↓’는 최근 그 지역을 언급한 기사가 늘었고, 2016~2025 학생 수는 감소했다는 뜻입니다. 뉴스 증가가 학생 감소의 원인이라는 의미도, 앞으로의 학생 수 예측도 아닙니다.</div></div>'+
         '<div class="news-analysis-panel"><h3>분석 근거 기사</h3>'+evidence(s.evidence)+'</div>'+
       '</div><p class="src-note" style="padding-left:0">'+esc(s.basis)+' · 주제는 한 기사에 여러 개가 붙을 수 있어 비중의 합이 100%를 넘을 수 있습니다. 학생 수 전망은 뉴스량이 아니라 검증된 EDSS 코호트 모형을 사용합니다.</p>';
+    wireTrendTooltips(box);
   }
 
   function paperTopicChart(rows){
@@ -2812,7 +2845,7 @@ body.map-maxed.home-wide #home-side{display:none}
     var w=560,h=190,pad={l:28,r:8,t:14,b:32},max=Math.max.apply(null,rows.map(function(r){return r.total;}))||1,cw=(w-pad.l-pad.r)/rows.length;
     var grid=[0,.5,1].map(function(q){var y=pad.t+(h-pad.t-pad.b)*(1-q);return '<line class="grid" x1="'+pad.l+'" y1="'+y+'" x2="'+(w-pad.r)+'" y2="'+y+'"/><text class="axis-label" x="'+(pad.l-5)+'" y="'+(y+3)+'" text-anchor="end">'+Math.round(max*q)+'</text>';}).join('');
     var bars=rows.map(function(r,i){var bh=(h-pad.t-pad.b)*r.total/max,x=pad.l+i*cw+cw*.2,y=h-pad.b-bh;return '<rect class="bar" x="'+x+'" y="'+y+'" width="'+cw*.6+'" height="'+bh+'" rx="3"><title>'+esc(r.date)+' · '+r.total+'건</title></rect><text class="axis-label" x="'+(x+cw*.3)+'" y="'+(h-12)+'" text-anchor="middle">'+esc(r.date.slice(5).replace('-','.'))+'</text>';}).join('');
-    return '<svg class="news-trend" viewBox="0 0 '+w+' '+h+'" role="img" aria-label="최근 7일 기사량">'+grid+bars+'</svg>';
+    return '<div class="news-trend-wrap"><svg class="news-trend" viewBox="0 0 '+w+' '+h+'" role="img" aria-label="최근 7일 기사량"><text class="axis-title" x="10" y="'+(pad.t+(h-pad.t-pad.b)/2)+'" text-anchor="middle" transform="rotate(-90 10 '+(pad.t+(h-pad.t-pad.b)/2)+')">기사 수(건)</text>'+grid+bars+'</svg><div class="news-chart-tooltip" role="status" aria-live="polite"></div></div>';
   }
 
   function paperEvidence(rows){
@@ -2848,7 +2881,7 @@ body.map-maxed.home-wide #home-side{display:none}
     var clusterHtml=clusters.length?'<div class="news-cluster-grid">'+clusters.map(function(c){return '<div class="news-cluster"><div class="news-cluster-top"><div class="news-cluster-orb">'+c.size+'건</div><div><h4>'+esc(c.label)+'</h4><p>평균 유사도 '+Math.round(c.cohesion*100)+'/100</p></div></div></div>';}).join('')+'</div>':'<p class="map-note">이번 호에는 기준을 넘은 유사 보도 묶음이 없습니다.</p>';
     var regionHtml='<div class="news-keywords">'+regions.slice(0,8).map(function(r){return '<span>'+esc(r.name)+' <b>'+fmt(r.value)+'건</b></span>';}).join('')+'</div>';
     return '<article class="news-paper">'+
-      '<header class="paper-masthead"><div class="paper-brand">TEAM LEAP · 경북 학령인구 NEWS</div><div class="paper-edition">WEEKLY ISSUE PAPER<br>제 '+fmt(issueNo)+'호</div></header>'+
+      '<header class="paper-masthead"><div class="paper-brand">경북 학령인구 뉴스 브리프</div><div class="paper-edition">WEEKLY ISSUE PAPER<br>제 '+fmt(issueNo)+'호</div></header>'+
       '<div class="paper-hero"><div class="paper-kicker">이번 주의 데이터 브리핑 · '+esc(status)+'</div><h2 class="paper-headline">'+esc(p.title)+'</h2><p class="paper-deck">'+esc(p.lead)+'</p><div class="paper-meta"><span>발행 '+esc(p.publishedAt||p.period.to)+'</span><span>분석기간 '+esc(p.period.from)+' ~ '+esc(p.period.to)+'</span><span>출처 '+esc(source)+'</span></div></div>'+
       '<div class="paper-body paper-screen-body"><div class="paper-stat-grid">'+
         '<div class="paper-stat"><b>'+fmt(p.period.count)+'건</b><span>이번 호 분석 기사</span></div>'+
@@ -2871,16 +2904,19 @@ body.map-maxed.home-wide #home-side{display:none}
     var paperSource=p.source||'BIG Kinds 뉴스 검색·분석';
     var options=papers.map(function(x,i){return '<option value="'+esc(x.id)+'"'+(x.id===p.id?' selected':'')+'>'+(esc(x.publishedAt||x.period.to))+' · '+esc(x.title)+'</option>';}).join('');
     out.innerHTML='<div class="paper-toolbar no-print"><span class="paper-history-label">지난 이슈페이퍼</span><select id="news-paper-select" class="select" aria-label="이슈페이퍼 발행 이력">'+options+'</select><span class="paper-count">총 '+papers.length+'호 보관</span><button type="button" class="paper-print" id="news-paper-print">인쇄 · PDF 저장</button></div>'+paperArticle(data,p);
+    wireTrendTooltips(out);
     var select=document.getElementById('news-paper-select');
     if(select)select.addEventListener('change',function(){renderPapers(data,select.value);});
     var print=document.getElementById('news-paper-print');
     if(print)print.addEventListener('click',function(){
       var pageStyle=document.getElementById('print-page-mode');
+      var previousTitle=document.title;
+      document.title='경북 학령인구 주간 뉴스 이슈페이퍼';
       document.getElementById('print-report-title').textContent='주간 학령인구 뉴스 이슈페이퍼';
       document.getElementById('print-report-subtitle').textContent=(p.publishedAt||p.period.to)+' · '+paperSource;
       if(pageStyle)pageStyle.textContent='@media print{@page{size:A4 portrait;margin:9mm}}';
       document.body.classList.add('print-news-paper');
-      window.addEventListener('afterprint',function(){document.body.classList.remove('print-news-paper');if(pageStyle)pageStyle.textContent='';},{once:true});
+      window.addEventListener('afterprint',function(){document.body.classList.remove('print-news-paper');document.title=previousTitle;if(pageStyle)pageStyle.textContent='';},{once:true});
       window.print();
     });
   }
@@ -2901,6 +2937,7 @@ body.map-maxed.home-wide #home-side{display:none}
     var requested=match&&match[1];
     if(requested==='papers'&&/[?&]printPaper=1(?:&|$)/.test(query)){
       document.body.classList.add('print-news-paper');
+      document.title='경북 학령인구 주간 뉴스 이슈페이퍼';
       var printStyle=document.getElementById('print-page-mode');
       if(printStyle)printStyle.textContent='@media print{@page{size:A4 portrait;margin:9mm}}';
     }
@@ -8864,8 +8901,7 @@ function renderProvenance(){
   ], '<b>모의 전망은 공식 예측이 아닙니다.</b> 지역 간 이동을 반영하지 않으며, 학교 개편 판단의 근거로 쓸 수 없습니다.');
 
   /* ── 뉴스 클리핑 ── */
-  setAsof('asof-news', nAsof ? nAsof + ' 기준' : '');
-  setAsof('news-asof', nAsof ? `가장 최근 기사 ${nAsof}` : '');
+  setAsof('news-asof', nAsof || '확인 필요');
   srcTable(document.getElementById('src-news'), [
     ['기사 목록', nAsof ? nAsof + ' 까지' : '수집분', '네이버 뉴스 검색 API (자동 수집)'],
     ['주제 분류', '—', '기존 6개 주제로 분류 (새 주제가 저절로 늘지 않습니다)'],

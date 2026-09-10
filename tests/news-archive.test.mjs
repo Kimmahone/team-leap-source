@@ -54,6 +54,9 @@ check('기사량을 학생 수 변화로 읽지 않도록 화면에 적는다',/
 check('경향·워드클라우드·다빈도 키워드·벡터 군집을 한 화면에 둔다',/최근 12주 보도 경향/.test(html)&&/핵심 키워드 워드클라우드/.test(html)&&/다빈도 키워드/.test(html)&&/벡터 유사도 기반 기사 군집/.test(html));
 check('뉴스와 EDSS 학생 수 변화를 쉽게 나란히 보되 예측으로 오해시키지 않는다',/뉴스에서 많이 언급된 지역, 학생 수는 어떻게 변했나/.test(html)&&/뉴스 증가가 학생 감소의 원인이라는 의미도/.test(html)&&/EDSS 코호트 모형/.test(html));
 check('이슈페이퍼는 히스토리 선택과 인쇄를 지원한다',/news-paper-select/.test(html)&&/news-paper-print/.test(html)&&/print-news-paper/.test(html));
+check('뉴스 필터는 기간과 주제를 따로 표시한다',/news-filter-label[^>]*>기간</.test(html)&&/news-filter-label[^>]*[^>]*for="news-topic"[^>]*>주제</.test(html));
+check('12주 경향은 기사 수 단위와 수치 툴팁을 제공한다',/기사 수\(건\)/.test(html)&&/data-news-tip/.test(html)&&/wireTrendTooltips/.test(html));
+check('이슈페이퍼 표제에서 TEAM LEAP을 제외한다',/paper-brand">경북 학령인구 뉴스 브리프</.test(html));
 
 console.log(`✓ 뉴스 인계·공개자료 검사 통과 ${pass} · 실패 ${fail}`);
 process.exit(fail?1:0);

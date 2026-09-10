@@ -530,8 +530,8 @@ check('기간 필터 단추가 실제로 걸러 준다',
 check('뉴스를 주간·월간·주제별로 필터링하고 출력한다',
   html.includes('id="news-topic"') && /withinTopic/.test(html) && /function newsExportSheets/.test(html));
 check('몇 건인지 화면에 적는다', html.includes('id="news-count"'));
-/* 쪽 넘기기 — 한 쪽 20건(4열 × 5줄). 히스토리가 60건까지 쌓이므로 한 쪽에 다 넣으면 길어집니다. */
-check('한 쪽에 20건이다', /NEWS_PER_PAGE = 20/.test(html));
+/* 쪽 넘기기 — 한 쪽 15건(3열 × 5줄). 제목과 요약을 읽을 폭을 확보합니다. */
+check('한 쪽에 15건이다', /NEWS_PER_PAGE = 15/.test(html));
 check('쪽 넘기기 자리가 있다', html.includes('id="news-pager"'));
 check('쪽이 하나뿐이면 쪽 넘기기를 감춘다', /pageCount <= 1[\s\S]{0,80}hidden = true/.test(html));
 check('기간을 바꾸면 첫 쪽으로 돌아간다', /newsPage = 1;\s*\/\/ 기간을 바꾸면/.test(html));
