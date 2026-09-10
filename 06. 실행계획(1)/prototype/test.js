@@ -1611,6 +1611,23 @@ check('배경지도·고도 타일이 허용되어 있다',
 check('MapLibre 의 일꾼(worker)이 허용되어 있다', /worker-src 'self' blob:/.test(bake));
 check('vendor 폴더가 함께 실린다', /vendor/.test(bake));
 
+console.log('\n■ 〔시뮬〕 시나리오를 이름으로 고른다');
+check('처음 온 사람이 읽을 수 있는 시나리오 카드 세 장이 있다',
+  /data-sim-scenario="fixed"/.test(html) && /지금 그대로 두면/.test(html) &&
+  /data-sim-scenario="class20"/.test(html) && /학급당 20명을 지키면/.test(html) &&
+  /data-sim-scenario="grade1"/.test(html) && /학년당 1학급 기준이면/.test(html));
+check('시나리오가 기존 계산 엔진의 라디오와 숫자를 실제로 바꾼다',
+  /function applySimScenario/.test(js) && /setSimRadio\('basis-mode',cfg\.mode\)/.test(js) &&
+  /Object\.entries\(cfg\.values/.test(js));
+check('세부 설정은 자세히 고치기에 접어 둔다',
+  /<details class="sim-advanced"/.test(html) && /<summary>자세히 고치기/.test(html));
+check('학생·학급·학교 변화가 상세표보다 먼저 나온다',
+  html.indexOf('id="sim-change-title"') < html.indexOf('class="sim-tables"') &&
+  /id="sim-delta-stu"/.test(html) && /id="sim-delta-cls"/.test(html) && /id="sim-delta-sch"/.test(html));
+check('고정한 기준과 계산된 결과를 글자로도 구분한다',
+  /고정한 기준/.test(html) && /계산된 결과/.test(html) && /renderSimChange/.test(js));
+check('복식학급을 계산하지 않고 한 것으로 단정하지 않는다',
+  !/data-sim-scenario="grade1"[\s\S]{0,400}?복식학급 없이/.test(html));
 
 console.log('\n■ 〔현황〕 시군을 고를 수 있다');
 /* 이 탭은 여태 「경북 전체」만 보여 줬습니다. 그런데 예산도 정원도 시군

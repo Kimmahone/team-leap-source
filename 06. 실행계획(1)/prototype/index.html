@@ -889,6 +889,11 @@ table.data .hl{color:var(--brand);font-weight:800}
 /* ---------- 시뮬레이터 ---------- */
 .sim-wrap{display:grid;grid-template-columns:262px 1fr;gap:14px}
 @media (max-width:1080px){.sim-wrap{grid-template-columns:1fr}}
+/* ══ 학생수 시뮬레이터 ═══════════════════════════════════════════════
+   복잡한 산출 기준보다 사람이 실제로 묻는 질문을 먼저 보여 줍니다. */
+.sim-workspace{min-width:0}.sim-question{border:1px solid var(--line);border-radius:11px;padding:16px;background:var(--card);margin-bottom:14px}.sim-question-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:13px}.sim-question-head h2{font-size:16px;margin:0 0 4px}.sim-question-head p{font-size:11.5px;line-height:1.55;color:var(--ink-3);margin:0}.sim-question-head .asof{flex:none}.sim-scenario-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.sim-scenario{position:relative;min-height:132px;padding:14px;text-align:left;border:1px solid var(--line);border-radius:10px;background:var(--card-2);color:var(--ink);font:inherit;cursor:pointer;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease}.sim-scenario:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--brand) 45%,var(--line));box-shadow:0 7px 18px rgba(15,40,75,.09)}.sim-scenario[aria-pressed="true"]{border:2px solid var(--brand);padding:13px;background:color-mix(in srgb,var(--brand) 7%,var(--card));box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 10%,transparent)}.sim-scenario .scenario-tag{display:inline-flex;align-items:center;min-height:22px;padding:0 7px;border-radius:99px;background:var(--card);color:var(--brand);font-size:10px;font-weight:800;margin-bottom:9px}.sim-scenario[aria-pressed="true"] .scenario-tag{background:var(--brand);color:var(--leap-on-fill)}.sim-scenario b{display:block;font-size:14px;line-height:1.4;margin-bottom:6px}.sim-scenario small{display:block;color:var(--ink-3);font-size:11px;line-height:1.5}.sim-scenario .scenario-arrow{display:block;color:var(--ink-2);font-size:10.5px;font-weight:700;margin-top:9px}.sim-advanced{border:1px solid var(--line);border-radius:9px;background:var(--card);margin:11px 0 0}.sim-advanced>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:42px;padding:0 12px;cursor:pointer;font-size:12px;font-weight:800;color:var(--ink-2);list-style:none}.sim-advanced>summary::-webkit-details-marker{display:none}.sim-advanced>summary::after{content:"＋";color:var(--brand);font-size:16px}.sim-advanced[open]>summary{border-bottom:1px solid var(--line)}.sim-advanced[open]>summary::after{content:"−"}.sim-advanced-summary{font-weight:500;color:var(--ink-3);margin-left:auto}.sim-advanced-body{padding:12px 14px 4px}.sim-advanced .basis-quick{margin-top:0}
+.sim-change{border:1px solid var(--line);border-radius:11px;padding:16px;background:var(--card);margin-bottom:14px}.sim-change-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.sim-change-head h2{font-size:16px;margin:0 0 4px}.sim-change-context{font-size:11.5px;color:var(--ink-3);line-height:1.5}.sim-change-legend{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;font-size:10.5px;color:var(--ink-3)}.sim-change-legend span{display:inline-flex;align-items:center;gap:5px}.sim-change-legend i{width:9px;height:9px;border-radius:3px;background:var(--brand)}.sim-change-legend .result i{background:var(--over)}.sim-change-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.sim-change-kpi{border:1px solid var(--line);border-top:3px solid var(--ink-3);border-radius:9px;padding:13px;background:var(--card-2)}.sim-change-kpi.is-input{border-top-color:var(--brand)}.sim-change-kpi.is-output{border-top-color:var(--over)}.sim-change-kpi.is-forecast{border-top-color:var(--leap-teal)}.sim-change-kpi .k{display:flex;align-items:center;justify-content:space-between;gap:7px;font-size:11px;color:var(--ink-3)}.sim-change-kpi .role{padding:2px 6px;border-radius:99px;background:var(--card);font-size:9.5px;font-weight:800}.sim-change-kpi.is-input .role{color:var(--brand)}.sim-change-kpi.is-output .role{color:var(--over)}.sim-change-kpi.is-forecast .role{color:var(--leap-teal)}.sim-change-kpi strong{display:block;font-size:25px;line-height:1.2;margin:8px 0 5px;font-variant-numeric:tabular-nums}.sim-change-kpi.is-output strong{color:var(--over)}.sim-change-kpi small{display:block;color:var(--ink-3);font-size:10.5px;line-height:1.45}.sim-change-insight{margin-top:11px;padding:10px 12px;border-radius:8px;background:var(--card-2);border-left:4px solid var(--brand);font-size:11.5px;line-height:1.6;color:var(--ink-2)}.sim-table-heading{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:2px 0 9px}.sim-table-heading h2{font-size:14px;margin:0}.sim-table-heading span{font-size:10.5px;color:var(--ink-3)}
+@media(max-width:980px){.sim-scenario-grid{grid-template-columns:1fr}.sim-scenario{min-height:0}.sim-change-grid{grid-template-columns:1fr}.sim-change-head{display:block}.sim-change-legend{justify-content:flex-start;margin-top:8px}}
 .filter-group{border-bottom:1px solid var(--line-2);padding:11px 0}
 .filter-group:last-child{border-bottom:0}
 .filter-group > .lb{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:7px}
@@ -975,7 +980,7 @@ table.data .hl{color:var(--brand);font-weight:800}
 .panel .ph .y{font-size:21px;font-weight:800;color:var(--leap-teal)}
 .panel.pred .ph .y{color:var(--brand)}
 .panel.pred table.data th{background:var(--card)}
-.panel-note{font-size:11px;color:var(--ink-3);margin-top:8px;text-align:right}
+.panel-note{font-size:11px;color:var(--ink-3);margin-top:8px;text-align:right;white-space:pre-line}
 
 .basis{border:1px solid var(--brand);border-radius:9px;padding:12px 14px;background:var(--card);margin-top:14px}
 .basis h3{font-size:13px;margin-bottom:9px;color:var(--brand)}
@@ -984,10 +989,10 @@ table.data .hl{color:var(--brand);font-weight:800}
   padding:6px 10px;background:var(--card);font-size:11.5px;font-weight:700;color:var(--ink-2)}
 .basis-quick label:has(input:checked){background:var(--brand);border-color:var(--brand);color:var(--leap-on-fill)}
 .basis-quick input{accent-color:var(--brand)}
-.basis fieldset{border:0;padding:0;margin:0 0 10px}
-.basis legend{font-size:12.5px;font-weight:700;padding:0;margin-bottom:5px}
-.basis label{display:flex;align-items:center;gap:6px;font-size:12.5px;padding:5px 0;color:var(--ink-2)}
-.basis label input[type="number"]{width:66px;padding:4px 6px}
+.basis fieldset,.sim-advanced fieldset{border:0;padding:0;margin:0 0 10px}
+.basis legend,.sim-advanced legend{font-size:12.5px;font-weight:700;padding:0;margin-bottom:5px}
+.basis label,.sim-advanced fieldset label{display:flex;align-items:center;gap:6px;font-size:12.5px;padding:5px 0;color:var(--ink-2);flex-wrap:wrap}
+.basis label input[type="number"],.sim-advanced label input[type="number"]{width:66px;padding:4px 6px}
 .assump{font-size:11.5px;color:var(--ink-3);border-top:1px dashed var(--line);padding-top:8px;margin-top:4px}
 
 /* ---------- 뉴스 ---------- */
@@ -2443,7 +2448,79 @@ body.map-maxed.home-wide #home-side{display:none}
       </div>
 
       <!-- 결과 -->
-      <div>
+      <div class="sim-workspace">
+        <section class="sim-question" aria-labelledby="sim-question-title">
+          <div class="sim-question-head">
+            <div>
+              <h2 id="sim-question-title">어떤 조건으로 비교할까요?</h2>
+              <p>정책 질문을 고르면 산출 기준이 자동으로 설정됩니다. 숫자를 직접 바꾸려면 「자세히 고치기」를 펼치세요.</p>
+            </div>
+            <span class="asof">1단계 · 시나리오</span>
+          </div>
+          <div class="sim-scenario-grid" role="group" aria-label="학생 수 모의 시나리오">
+            <button type="button" class="sim-scenario" data-sim-scenario="fixed" aria-pressed="true">
+              <span class="scenario-tag">현재 체계 유지</span>
+              <b>지금 그대로 두면</b>
+              <small>2026년 학교 수와 학급 수를 그대로 둡니다.</small>
+              <span class="scenario-arrow">결과 → 학급당 평균 학생 수</span>
+            </button>
+            <button type="button" class="sim-scenario" data-sim-scenario="class20" aria-pressed="false">
+              <span class="scenario-tag">학급 규모 유지</span>
+              <b>학급당 20명을 지키면</b>
+              <small>한 학급의 학생 수를 20명으로 두고 필요한 규모를 계산합니다.</small>
+              <span class="scenario-arrow">결과 → 필요한 학급·학교 수</span>
+            </button>
+            <button type="button" class="sim-scenario" data-sim-scenario="grade1" aria-pressed="false">
+              <span class="scenario-tag">학년 단위 검토</span>
+              <b>학년당 1학급 기준이면</b>
+              <small>학급당 20명, 학교별 학년당 최대 1학급으로 비교합니다.</small>
+              <span class="scenario-arrow">결과 → 필요한 학급·학교 수</span>
+            </button>
+          </div>
+
+          <details class="sim-advanced" id="sim-advanced">
+            <summary>자세히 고치기 <span class="sim-advanced-summary" id="sim-advanced-summary">현재 체계 유지</span></summary>
+            <div class="sim-advanced-body">
+              <div class="basis-quick" aria-label="모의연도 산출 기준 선택">
+                <label><input type="radio" name="basis-mode" value="sch" checked> 학교 수 기준</label>
+                <label><input type="radio" name="basis-mode" value="cls"> 학급당 학생 수 기준</label>
+              </div>
+              <fieldset id="fs-sch">
+                <legend>학교 수 기준 세부 설정</legend>
+                <label><input type="radio" name="sch-basis" value="fixed" checked> 기준연도 학교 수, 학급 수 기준</label>
+                <label><input type="radio" name="sch-basis" value="rate"> 기준연도 학생수 감소율 반영 기준</label>
+                <label><input type="radio" name="sch-basis" value="custom"> 기준연도 학교수 대비 지정 감소율
+                  <input type="number" id="sch-rate" value="10" min="0" max="90" step="1" aria-label="학교수 지정 감소율"> % 기준</label>
+              </fieldset>
+              <fieldset id="fs-cls">
+                <legend>학급당 학생 수 기준 세부 설정</legend>
+                <label><input type="radio" name="cls-basis" value="base" checked> 기준연도 학급당 학생 수 기준</label>
+                <label><input type="radio" name="cls-basis" value="pm"> 학급당 학생 수
+                  <input type="number" id="cls-n" value="20" min="5" max="40" aria-label="학급당 학생 수"> 명 ±
+                  <input type="number" id="cls-d" value="2" min="0" max="10" aria-label="허용 편차"> 명 기준</label>
+                <label><input type="radio" name="cls-basis" value="grade"> 학급당
+                  <input type="number" id="cls-g" value="20" min="5" max="40" aria-label="학급당 학생 수 상한"> 명,
+                  학년당 <input type="number" id="cls-c" value="2" min="1" max="10" aria-label="학년당 학급 수 상한"> 학급 기준</label>
+              </fieldset>
+              <div class="assump" id="assump"></div>
+            </div>
+          </details>
+        </section>
+
+        <section class="sim-change" aria-labelledby="sim-change-title" aria-live="polite">
+          <div class="sim-change-head">
+            <div><h2 id="sim-change-title">2026년과 모의연도, 무엇이 달라지나</h2><div class="sim-change-context" id="sim-change-context">현재 조건을 계산하는 중입니다.</div></div>
+            <div class="sim-change-legend" aria-label="결과 구분"><span><i></i>고정한 기준</span><span class="result"><i></i>계산된 결과</span></div>
+          </div>
+          <div class="sim-change-grid">
+            <article class="sim-change-kpi is-forecast" id="sim-kpi-stu"><div class="k"><span>학생 수</span><span class="role">공통 전망</span></div><strong id="sim-delta-stu">—</strong><small id="sim-range-stu">—</small></article>
+            <article class="sim-change-kpi is-input" id="sim-kpi-cls"><div class="k"><span>학급 수</span><span class="role" id="sim-role-cls">고정한 기준</span></div><strong id="sim-delta-cls">—</strong><small id="sim-range-cls">—</small></article>
+            <article class="sim-change-kpi is-input" id="sim-kpi-sch"><div class="k"><span>학교 수</span><span class="role" id="sim-role-sch">고정한 기준</span></div><strong id="sim-delta-sch">—</strong><small id="sim-range-sch">—</small></article>
+          </div>
+          <div class="sim-change-insight" id="sim-change-insight">선택한 시나리오의 의미를 계산하는 중입니다.</div>
+        </section>
+
+        <div class="sim-table-heading"><h2>상세 수치로 확인하기</h2><span>표는 옮겨 적기와 검산을 위해 그대로 제공합니다.</span></div>
         <div class="sim-tables">
           <div class="panel">
             <div class="ph"><span class="t">기준자료</span><span class="y">2026</span></div>
@@ -2462,10 +2539,6 @@ body.map-maxed.home-wide #home-side{display:none}
               <label class="sr-only" for="pred-year">모의 연도</label>
               <select id="pred-year" class="select" style="font-size:19px;font-weight:800"></select>
             </div>
-            <div class="basis-quick" aria-label="모의연도 산출 기준 선택">
-              <label><input type="radio" name="basis-mode" value="sch" checked> 학교 수 기준</label>
-              <label><input type="radio" name="basis-mode" value="cls"> 학급당 학생 수 기준</label>
-            </div>
             <div class="scroll-x">
               <table class="data">
                 <caption class="sr-only">모의연도 시군별 전망</caption>
@@ -2482,32 +2555,6 @@ body.map-maxed.home-wide #home-side{display:none}
         <div class="result-actions no-print">
           <span style="font-size:11.5px;color:var(--ink-3)">현재 조건의 기준·모의 비교표</span>
           <button type="button" class="chip" id="sim-export-xls">Excel(.xls)로 저장</button>
-        </div>
-
-        <!-- 기준 전환 -->
-        <div class="basis">
-          <h3>모의연도 산출 기준 <span style="font-weight:400;font-size:11.5px;color:var(--ink-3)">— 무엇을 고정할지 고르면 나머지가 비교값으로 나옵니다</span></h3>
-
-          <fieldset id="fs-sch">
-            <legend>학교 수 기준 세부 설정</legend>
-            <label><input type="radio" name="sch-basis" value="fixed" checked> 기준연도 학교 수, 학급 수 기준</label>
-            <label><input type="radio" name="sch-basis" value="rate"> 기준연도 학생수 감소율 반영 기준</label>
-            <label><input type="radio" name="sch-basis" value="custom"> 기준연도 학교수 대비 지정 감소율
-              <input type="number" id="sch-rate" value="10" min="0" max="90" step="1" aria-label="학교수 지정 감소율"> % 기준</label>
-          </fieldset>
-
-          <fieldset id="fs-cls">
-            <legend>학급당 학생 수 기준 세부 설정</legend>
-            <label><input type="radio" name="cls-basis" value="base" checked> 기준연도 학급당 학생 수 기준</label>
-            <label><input type="radio" name="cls-basis" value="pm"> 학급당 학생 수
-              <input type="number" id="cls-n" value="20" min="5" max="40" aria-label="학급당 학생 수"> 명 ±
-              <input type="number" id="cls-d" value="2" min="0" max="10" aria-label="허용 편차"> 명 기준</label>
-            <label><input type="radio" name="cls-basis" value="grade"> 학급당
-              <input type="number" id="cls-g" value="20" min="5" max="40" aria-label="학급당 학생 수 상한"> 명,
-              학년당 <input type="number" id="cls-c" value="2" min="1" max="10" aria-label="학년당 학급 수 상한"> 학급 기준</label>
-          </fieldset>
-
-          <div class="assump" id="assump"></div>
         </div>
 
         <div class="spec">
@@ -7838,6 +7885,74 @@ document.querySelectorAll('input[name="basis-mode"],input[name="sch-basis"],inpu
 ['sch-rate','cls-n','cls-d','cls-g','cls-c'].forEach(id =>
   document.getElementById(id).addEventListener('input', renderSim));
 
+const SIM_SCENARIOS = {
+  fixed:{label:'현재 체계 유지',mode:'sch',basis:'fixed'},
+  class20:{label:'학급당 20명',mode:'cls',basis:'pm',values:{'cls-n':20,'cls-d':0}},
+  grade1:{label:'학년당 1학급',mode:'cls',basis:'grade',values:{'cls-g':20,'cls-c':1}}
+};
+function setSimRadio(name,value){
+  document.querySelectorAll(`input[name="${name}"]`).forEach(el=>{el.checked=el.value===value;});
+}
+function applySimScenario(key){
+  const cfg=SIM_SCENARIOS[key];
+  if(!cfg) return;
+  setSimRadio('basis-mode',cfg.mode);
+  setSimRadio(cfg.mode==='sch'?'sch-basis':'cls-basis',cfg.basis);
+  Object.entries(cfg.values||{}).forEach(([id,value])=>{document.getElementById(id).value=value;});
+  renderSim();
+}
+document.querySelectorAll('[data-sim-scenario]').forEach(btn=>{
+  btn.addEventListener('click',()=>applySimScenario(btn.dataset.simScenario));
+});
+function currentSimScenario(){
+  const mode=document.querySelector('input[name="basis-mode"]:checked').value;
+  if(mode==='sch'&&document.querySelector('input[name="sch-basis"]:checked').value==='fixed') return 'fixed';
+  if(mode==='cls'){
+    const basis=document.querySelector('input[name="cls-basis"]:checked').value;
+    if(basis==='pm'&&numOf('cls-n')===20&&numOf('cls-d')===0) return 'class20';
+    if(basis==='grade'&&numOf('cls-g')===20&&numOf('cls-c')===1) return 'grade1';
+  }
+  return '';
+}
+function syncSimScenarioCards(){
+  const current=currentSimScenario();
+  document.querySelectorAll('[data-sim-scenario]').forEach(btn=>{
+    const selected=btn.dataset.simScenario===current;
+    btn.setAttribute('aria-pressed',String(selected));
+    btn.className='sim-scenario'+(selected?' is-selected':'');
+  });
+  const label=document.getElementById('sim-advanced-summary');
+  if(label) label.textContent=current?SIM_SCENARIOS[current].label:'사용자 설정';
+}
+function simDeltaText(value,unit){
+  const rounded=Math.round(value);
+  if(rounded===0) return '변화 없음';
+  return `${rounded>0?'+':'−'}${fmt(Math.abs(rounded))}${unit}`;
+}
+function renderSimChange(base,row,predStu,regionLabel){
+  if(!row) return;
+  const mode=row.projection.mode;
+  const output=mode==='cls';
+  document.getElementById('sim-change-context').textContent=
+    `${regionLabel} · ${LEVEL_CFG[sim.level].full} · 2026년 실적과 ${sim.year}년 모의값 비교`;
+  document.getElementById('sim-delta-stu').textContent=simDeltaText(predStu-base.stu,'명');
+  document.getElementById('sim-range-stu').textContent=`${fmt(base.stu)}명 → ${fmt(predStu)}명`;
+  document.getElementById('sim-delta-cls').textContent=simDeltaText(row.projection.cls-base.cls,'개');
+  document.getElementById('sim-range-cls').textContent=`${fmt(base.cls)}개 → ${fmt(row.projection.cls)}개`;
+  document.getElementById('sim-delta-sch').textContent=simDeltaText(row.projection.sch-base.sch,'교');
+  document.getElementById('sim-range-sch').textContent=`${fmt(base.sch)}교 → ${fmt(row.projection.sch)}교`;
+  ['cls','sch'].forEach(kind=>{
+    document.getElementById(`sim-kpi-${kind}`).className='sim-change-kpi '+(output?'is-output':'is-input');
+    document.getElementById(`sim-role-${kind}`).textContent=output?'계산된 결과':'고정한 기준';
+  });
+  const insight=document.getElementById('sim-change-insight');
+  if(mode==='sch'){
+    insight.innerHTML=`학교·학급 규모를 기준으로 두면 학급당 평균 학생 수가 <b>${row.perBase.toFixed(1)}명</b>에서 <b>${row.perPred.toFixed(1)}명</b>으로 바뀝니다.`;
+  }else{
+    insight.innerHTML=`${currentBasisDescription()}을 적용하면 필요한 규모는 <b>학급 ${fmt(row.projection.cls)}개</b>, <b>학교 ${fmt(row.projection.sch)}교</b>로 계산됩니다.`;
+  }
+}
+
 function filteredSigungu(){
   return SIGUNGU.filter(sg => !sim.sigungu.size || sim.sigungu.has(sg.s));
 }
@@ -7951,6 +8066,12 @@ function renderSim(){
   const regionLabel = list.length===SIGUNGU.length ? '경북 전체' : (list.length ? list.map(s=>s.name).join(', ') : '선택된 지역 없음');
   const totalRow = simExportRows[0];
   const dropPct = allBase.stu>0 ? (100*(1-allPredStu/allBase.stu)).toFixed(1) : '0.0';
+  syncSimScenarioCards();
+  renderSimChange(allBase,totalRow,allPredStu,regionLabel);
+  const predNote=document.getElementById('pred-basis-note');
+  if(predNote) predNote.textContent=`기준자료: 학교알리미 2026 공시 실적\n모의전망: ${PROJ_WORD} · 시군별 ${RATE_WORD} 반영\n* 공식 장래 학생수 추계가 아니며 지역 간 이동을 반영하지 않음`;
+  const specProj=document.getElementById('spec-proj');
+  if(specProj) specProj.innerHTML=`<br><b>모의전망(2027~)은 공식 예측이 아닙니다.</b> <b>${PROJ_WORD}</b>과 시군별 <b>${RATE_WORD}</b>을 활용한 조건 비교이며, 지역 간 이동은 반영하지 않습니다.`;
   aiContext = [
     '분석 목적: 공개 데이터 변화 이해를 돕는 쉬운 요약',
     `학교급: ${LEVEL_CFG[lv].full}`,
