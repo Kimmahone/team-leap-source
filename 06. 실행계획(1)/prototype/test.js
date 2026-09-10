@@ -1734,6 +1734,51 @@ check('교원 셈이 거칠다고 밝힌다',
   /정원 산정에 그대로 쓸 수 없습니다/.test(html) && /크기를 가늠하는 자리/.test(html));
 check('미래 연도를 바꾸면 함께 바뀐다', /renderConvert\(\);\s+\/\* 미래 연도를 바꾸면/.test(js));
 
+console.log('\n■ 〔현황〕 두 수가 왜 다른지 화면이 말한다');
+/* 단추를 갈아 끼우면 고등학교가 88천 명과 63천 명으로 갈립니다. 화면이 그
+   까닭을 말하지 않으면 「어느 쪽이 맞나」에서 멈추고, 그 순간 화면 전체를
+   의심하게 됩니다. */
+q("selectSgg(null); setDs('pop');");
+check('그 자리가 있다', /id="gap-box"/.test(html) && /function renderGap/.test(js));
+check('나이 구간이 몇 살인지 적는다',
+  /초 6~11세\(<b>여섯 살<\/b>\)/.test(js) && /고 15~18세\(<b>네 살<\/b>\)/.test(js));
+check('고등학교는 세 학년임을 짚는다', /고등학교는 세 학년<\/b>입니다/.test(js));
+/* bake-kosis.mjs 가 나누는 방식과 같아야 합니다 — 다르면 설명이 거짓말이 됩니다. */
+check('구간이 굽는 스크립트와 같다',
+  q("AGE_BAND['고'].from") === 15 && q("AGE_BAND['고'].to") === 18 &&
+  q("AGE_BAND['초'].from") === 6 && q("AGE_BAND['초'].to") === 11);
+check('학년 수에 맞추면 재학생에 가까워진다', q(
+  "(function(){var r=gapRows(2026);if(!r)return true;var g=r.filter(function(x){return x.lv==='고'})[0];" +
+  "return Math.abs(g.fitted-g.stu) < Math.abs(g.pop-g.stu);})()") === true);
+check('구간을 맞춘 뒤 남는 차이가 진짜 신호라고 적는다',
+  /남는 \$\{fmt\(Math\.abs\(sum\('rest'\)\)\)\}명<\/b>이 진짜 신호/.test(js));
+check('어림이라고 밝힌다', /학년 수에 맞춘 수는 어림<\/b>/.test(js));
+check('시군에는 견줄 자료가 없어 감춘다', q(
+  "(function(){selectSgg('안동');var h=document.getElementById('gap-box').hidden;" +
+  "selectSgg(null);return h;})()") === true);
+
+console.log('\n■ 〔현황〕 언제 무슨 일이 오는지 짚는다');
+/* 연도별 추이선은 있지만 「그래서 몇 년에 무슨 일이 있나」는 사람이 눈으로
+   읽어야 했습니다. 「언제까지」가 있어야 계획이 됩니다. */
+check('그 자리가 있다', /id="milestone-box"/.test(html) && /function renderMilestones/.test(js));
+check('넘는 해가 실제로 그려진다',
+  ((byId['milestones']._html || '').match(/class="mstone/g) || []).length >= 4,
+  '개수: ' + ((byId['milestones']._html || '').match(/class="mstone/g) || []).length);
+check('학교급마다 도착하는 해가 다르다고 적는다',
+  /중학교에 6년, 고등학교에\s*\n?\s*'\s*\+\s*'9년 걸려 옵니다/.test(js) ||
+  /9년 걸려 옵니다/.test(js));
+/* 한 해 만에 문턱을 훌쩍 넘는 해가 있어서, 80% 라 적어 놓고 73% 인 일이 생깁니다. */
+check('그 해의 실제 비율을 함께 적는다',
+  /\$\{HOME_BASE_YEAR\}년의 <b>\$\{Math\.round\(then \/ now \* 100\)\}%<\/b>/.test(js));
+check('이미 학교에 있는 아이가 도착하는 해도 짚는다',
+  /전망이 아니라 이미 학교에 있는 아이입니다/.test(js) &&
+  /이미 학교에 있는 아이/.test(byId['milestones']._html || ''));
+check('넘는 해를 실제로 셈한다 (2026 기준 아래로 처음 내려가는 해)',
+  q("crossYear(null,'초',0.8)") > 2026 && q("crossYear(null,'초',0.8)") <= 2036);
+check('고른 시군을 따라간다', q(
+  "(function(){selectSgg('봉화');var a=crossYear('봉화','초',0.8);selectSgg(null);" +
+  "var b=crossYear(null,'초',0.8);return a!=null&&b!=null;})()") === true);
+
 console.log('\n■ 〔현황〕 큰 수를 읽을 수 있게 적는다');
 /* 값이 천 명 단위이던 때는 「321」이었는데, 낱낱의 명으로 바꾸면서
    「321000」이 되어 읽히지 않았습니다. */
