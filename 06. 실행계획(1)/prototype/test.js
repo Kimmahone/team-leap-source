@@ -715,10 +715,18 @@ check('학년별 학생 차트가 학교알리미 grades를 합산한다', html.
 check('유치원 수를 배열에서 동적으로 센다', /source-kinder-count[\s\S]*KINDERGARTENS\.length/.test(html));
 check('유치원 교원 수 미확보를 명시한다', html.includes("homeState.level==='유' ? '자료 미확보'"));
 check('KOSIS 공식 학령인구 시계열을 우선 사용한다', /const KOSIS_POP = \{/.test(html) && /kind==='pop' && KOSIS_POP\[year\]/.test(html));
-check('학령인구 현황은 실제 KOSIS 출처와 학생수 모의값을 구분해 표시한다',
+/* ★ 문구를 고쳤습니다 〔2026. 9. 10.〕 예전에는 학생수 계열을 「그 외 연도는
+   비교용 단순 연결값」이라 적었습니다. EDSS 교육통계 실적을 심은 뒤로는
+   사실이 아닙니다 — 2016~2025 는 실적이고, 2027년부터가 전망입니다.
+   자료가 좋아졌는데 설명이 따라오지 않으면 그것도 틀린 화면입니다. */
+check('학령인구 현황이 자료의 성격을 있는 그대로 적는다',
   html.includes('id="status-source"') && html.includes('KOSIS 주민등록인구(2016~2025)') &&
-  html.includes('학교알리미 2026 공시 실적 · 그 외 연도는 비교용 단순 연결값') &&
+  /EDSS 교육통계 실적\(2016~2025\)/.test(html) &&
+  /2027년부터는 실측 감소율 전망/.test(html) &&
+  !html.includes('그 외 연도는 비교용 단순 연결값') &&
   !html.includes('국가데이터처 장래인구추계 (더미 보간값)'));
+check('학령인구는 천 명 단위로 반올림된 값임을 밝힌다',
+  /천 명 단위 반올림/.test(html));
 check('학령인구·학생수 모드에 맞춰 추이 제목을 바꾼다',
   html.includes('id="trend-title"') && /학령인구 추이/.test(html) && /학생수 추이/.test(html));
 /* 지키려는 것은 「학생수 계열이 무엇인지 적는다」입니다. 문장을 통째로 못 박으면
@@ -1620,6 +1628,204 @@ check('고정한 기준과 계산된 결과를 글자로도 구분한다',
   /고정한 기준/.test(html) && /계산된 결과/.test(html) && /renderSimChange/.test(js));
 check('복식학급을 계산하지 않고 한 것으로 단정하지 않는다',
   !/data-sim-scenario="grade1"[\s\S]{0,400}?복식학급 없이/.test(html));
+
+console.log('\n■ 〔현황〕 시군을 고를 수 있다');
+/* 이 탭은 여태 「경북 전체」만 보여 줬습니다. 그런데 예산도 정원도 시군
+   단위로 배정합니다. 도 합계로는 어디부터 할지 정할 수 없습니다. */
+check('시군 22곳을 나란히 놓는 자리가 있다',
+  /id="sgg-board"/.test(html) && /function renderSggBoard/.test(js));
+check('22곳이 실제로 그려진다',
+  ((byId['sgg-board']._html || '').match(/class="sgg-cell"/g) || []).length === 22);
+check('고른 것이 눌린 상태로 보인다', q(
+  "(function(){selectSgg('안동');var h=document.getElementById('sgg-board')._html||'';" +
+  "return /data-sgg=\"안동\" aria-pressed=\"true\"/.test(h);})()") === true);
+check('한 번 더 누르면 경북 전체로 돌아온다', q(
+  "(function(){selectSgg('안동');selectSgg(null);return statusState.sgg;})()") === null);
+
+console.log('\n■ 〔현황〕 고른 시군을 화면 전체가 따라간다');
+q("selectSgg('안동')");
+check('제목이 그 시군을 말한다', /안동/.test(byId['chart-title'].textContent || ''),
+  '제목: ' + byId['chart-title'].textContent);
+check('학년별 분포도 그 시군을 센다', /안동/.test(byId['pax-title'].textContent || ''));
+check('출처 줄에도 그 시군이 적힌다', /안동/.test(byId['status-source'].textContent || ''));
+check('안동 2026 합계가 시군 실적과 맞는다',
+  Number(String(byId['tot-now'].textContent || '').replace(/,/g,'')) ===
+  q("regionTotalStudents('안동',2026).v"),
+  '화면: ' + byId['tot-now'].textContent + ' · 자료: ' + q("regionTotalStudents('안동',2026).v"));
+check('시군 합계가 도 합계와 맞는다 (쪼개서 세도 같아야 한다)', q(
+  "(function(){var s=0;SIGUNGU.forEach(function(g){s+=regionTotalStudents(g.s,2026).v||0});" +
+  "return s === regionTotalStudents(null,2026).v;})()") === true);
+
+console.log('\n■ 〔현황〕 없는 자료를 시군 몫으로 나누지 않는다');
+/* 주민등록·장래추계는 도 단위로만 받아 두었습니다. 시군 몫으로 나누면 그것은
+   우리가 만든 수이지 통계청의 수가 아닙니다. */
+check('시군에는 학령인구를 주지 않는다', q("statusYear('안동','pop',2026)") === null);
+check('시군을 고르면 학생수로 바꾸고 단추를 잠근다',
+  q("(function(){dsKind='pop';selectSgg('안동');return dsKind;})()") === 'stu' &&
+  byId['ds-pop'].disabled === true);
+check('왜 잠겼는지 적어 둔다', /도 단위로만 받아 두었습니다/.test(byId['ds-pop'].title || ''));
+check('잠긴 동안에는 눌러도 바뀌지 않는다',
+  q("(function(){selectSgg('안동');setDs('pop');return dsKind;})()") === 'stu');
+
+console.log('\n■ 〔현황〕 단위를 하나로 맞춘다');
+/* series() 는 천 명 단위이고 regionStudents() 는 낱낱의 수입니다. 섞어 쓰면
+   1,000배 틀린 수가 «오류 없이» 화면에 뜹니다. 가장 무서운 종류입니다. */
+check('학령인구도 명으로 돌려준다', q("statusYear(null,'pop',2026).초") === q("series('pop',2026).초 * 1000"));
+check('화면에 「천명」이라 적힌 자리가 없다', !/천명/.test(html));
+check('학령인구가 반올림된 값임을 밝힌다', /천 명 단위 반올림/.test(html));
+
+console.log('\n■ 〔현황〕 보고 있는 자료의 이름을 딱지에 적는다');
+/* 재학생 수를 보는 동안에도 「KOSIS」라 적혀 있었습니다. 보고 있는 자료가
+   아닌 곳의 이름이 붙으면 그 화면 전체를 의심하게 됩니다. */
+q("selectSgg(null); setDs('stu');");
+check('재학생을 볼 때는 EDSS·학교알리미라 적는다', /EDSS/.test(byId['asof-status'].textContent || ''),
+  '딱지: ' + byId['asof-status'].textContent);
+q("setDs('pop')");
+check('학령인구를 볼 때는 KOSIS 라 적는다', /KOSIS/.test(byId['asof-status'].textContent || ''));
+
+console.log('\n■ 〔현황〕 이미 학교에 앉아 있는 아이로 앞날을 말한다');
+/* 학년별 인원은 917개 학교 전부 갖고 있습니다. 이 아이들이 그대로 올라오면
+   몇 해 뒤 중1·고1이 몇 명이 되는지 «셀 수» 있습니다. 출산율 가정도, 추계
+   모형도 들어가지 않습니다 — 「예측일 뿐」이라는 반박을 받지 않습니다. */
+q("selectSgg(null)");
+check('그 자리가 있다', /id="cohort-card"/.test(html) && /function renderCohort/.test(js));
+check('중학교 신입생 여섯 해가 그려진다',
+  ((byId['cohort-mid']._html || '').match(/class="cohort-row/g) || []).length === 7,
+  '줄 수: ' + ((byId['cohort-mid']._html || '').match(/class="cohort-row/g) || []).length);
+check('고등학교 신입생 아홉 해가 그려진다',
+  ((byId['cohort-high']._html || '').match(/class="cohort-row/g) || []).length === 10);
+check('견줄 「지금」 줄이 맨 위에 있다', /class="cohort-row now"/.test(byId['cohort-mid']._html || ''));
+/* 초6(i=5)은 2027년에 중1이 되고, 초1(i=0)은 2032년에 중1이 됩니다. */
+check('도착하는 해를 바르게 셈한다',
+  /2027년[\s\S]*?지금 초6/.test(byId['cohort-mid']._html || '') &&
+  /2032년[\s\S]*?지금 초1/.test(byId['cohort-mid']._html || ''));
+check('고1은 세 해 뒤에 도착한다 (중1 → 고1 은 3년)',
+  /2035년[\s\S]*?지금 초1/.test(byId['cohort-high']._html || ''));
+check('지금 초1 인원이 그대로 실린다',
+  new RegExp(q("fmt(cohortGrades(null)['초'][0])").replace(/,/g,',')).test(byId['cohort-mid']._html || ''));
+check('머리글이 초1과 초6의 차이를 말한다',
+  /초등학교 1학년은/.test(byId['cohort-lede']._html || '') &&
+  /6학년은/.test(byId['cohort-lede']._html || ''));
+/* 마지막 줄은 둘 다 «지금 초1» 입니다 — 같은 수를 두 번 적으면 다른 값처럼 읽힙니다. */
+check('한 무리가 두 자리에 도착한다고 한 번에 말한다',
+  /중학교 1학년<\/b>이 되고/.test(js) && /고등학교 1학년<\/b>이 됩니다/.test(js));
+check('무엇이 빠졌는지 밝힌다 (전학·유급·사립·특수)',
+  /전학·유급·사립·특수학교로의/.test(html) && /그대로 머문다고 보았을 때/.test(html));
+check('고른 시군을 따라간다', q(
+  "(function(){selectSgg('안동');var a=cohortGrades('안동')['초'][0];" +
+  "selectSgg(null);var b=cohortGrades(null)['초'][0];return a>0&&b>a;})()") === true);
+
+console.log('\n■ 〔현황〕 학생 수를 학급과 교원으로 옮겨 적는다');
+/* 「학생 98,072명 감소」는 결정을 만들지 못합니다. 「학급 5,148개 · 교원
+   8,343명」이 되어야 예산과 정원의 말이 됩니다. */
+q("selectSgg(null)");
+check('그 자리가 있다', /id="convert-box"/.test(html) && /function renderConvert/.test(js));
+check('지금의 학생·학급·교원을 먼저 적는다',
+  /2026년 학생/.test(byId['convert-now']._html || '') &&
+  /2026년 학급/.test(byId['convert-now']._html || '') &&
+  /2026년 교원/.test(byId['convert-now']._html || ''));
+/* 두 갈래는 «나란히» 놓습니다 — 위아래로 두면 하나가 결론처럼 읽힙니다. */
+check('두 갈래를 나란히 놓는다 (하나를 결론으로 고르지 않는다)',
+  /id="fork-a"/.test(html) && /id="fork-b"/.test(html) &&
+  /\.convert-forks\{display:grid;grid-template-columns:1fr 1fr/.test(html));
+check('갈래 하나는 학급과 교원이 줄어든다',
+  /필요한 학급/.test(byId['fork-a-body']._html || '') &&
+  /필요한 교원/.test(byId['fork-a-body']._html || ''));
+check('갈래 둘은 학급당 인원이 줄어든다',
+  /학급당/.test(byId['fork-b-body']._html || '') &&
+  /교원 1인당/.test(byId['fork-b-body']._html || ''));
+/* ★ 여기에 「6792」 같은 실제 값을 박아 두면 안 됩니다 〔2026. 9. 10.〕
+   EDSS 시험자료를 심고 다시 돌리는 검사가 있어서, 지어낸 자료에서는 그 수가
+   나오지 않습니다. 값이 아니라 «관계»를 봅니다 — 화면에 뜬 학급 수가
+   학생 ÷ 학급당과 같은가. */
+check('셈이 맞는다 (학급당을 지키면 학급 = 학생 ÷ 학급당)', q(
+  "(function(){var n=convertNow(null);var later=regionTotalStudents(null,2036).v;" +
+  "if(!n.perCls||later==null) return true;" +
+  "var want=Math.round(later/n.perCls);" +
+  "var shown=(document.getElementById('fork-a-body')._html||'').match(/<b>([\\d,]+)<\\/b>개/);" +
+  "return !!shown && Number(shown[1].replace(/,/g,'')) === want;})()") === true);
+check('0 은 변화로 적지 않는다 (변화 없음이지 변화가 아니다)',
+  /delta === 0\) \? '' :/.test(js));
+/* 교원 수는 실제로 학급 수·과목·복식 여부·겸임으로 정해집니다. */
+check('교원 셈이 거칠다고 밝힌다',
+  /정원 산정에 그대로 쓸 수 없습니다/.test(html) && /크기를 가늠하는 자리/.test(html));
+check('미래 연도를 바꾸면 함께 바뀐다', /renderConvert\(\);\s+\/\* 미래 연도를 바꾸면/.test(js));
+
+console.log('\n■ 〔현황〕 두 수가 왜 다른지 화면이 말한다');
+/* 단추를 갈아 끼우면 고등학교가 88천 명과 63천 명으로 갈립니다. 화면이 그
+   까닭을 말하지 않으면 「어느 쪽이 맞나」에서 멈추고, 그 순간 화면 전체를
+   의심하게 됩니다. */
+q("selectSgg(null); setDs('pop');");
+check('그 자리가 있다', /id="gap-box"/.test(html) && /function renderGap/.test(js));
+check('나이 구간이 몇 살인지 적는다',
+  /초 6~11세\(<b>여섯 살<\/b>\)/.test(js) && /고 15~18세\(<b>네 살<\/b>\)/.test(js));
+check('고등학교는 세 학년임을 짚는다', /고등학교는 세 학년<\/b>입니다/.test(js));
+/* bake-kosis.mjs 가 나누는 방식과 같아야 합니다 — 다르면 설명이 거짓말이 됩니다. */
+check('구간이 굽는 스크립트와 같다',
+  q("AGE_BAND['고'].from") === 15 && q("AGE_BAND['고'].to") === 18 &&
+  q("AGE_BAND['초'].from") === 6 && q("AGE_BAND['초'].to") === 11);
+check('학년 수에 맞추면 재학생에 가까워진다', q(
+  "(function(){var r=gapRows(2026);if(!r)return true;var g=r.filter(function(x){return x.lv==='고'})[0];" +
+  "return Math.abs(g.fitted-g.stu) < Math.abs(g.pop-g.stu);})()") === true);
+check('구간을 맞춘 뒤 남는 차이가 진짜 신호라고 적는다',
+  /남는 \$\{fmt\(Math\.abs\(sum\('rest'\)\)\)\}명<\/b>이 진짜 신호/.test(js));
+check('어림이라고 밝힌다', /학년 수에 맞춘 수는 어림<\/b>/.test(js));
+check('시군에는 견줄 자료가 없어 감춘다', q(
+  "(function(){selectSgg('안동');var h=document.getElementById('gap-box').hidden;" +
+  "selectSgg(null);return h;})()") === true);
+
+console.log('\n■ 〔현황〕 언제 무슨 일이 오는지 짚는다');
+/* 연도별 추이선은 있지만 「그래서 몇 년에 무슨 일이 있나」는 사람이 눈으로
+   읽어야 했습니다. 「언제까지」가 있어야 계획이 됩니다. */
+check('그 자리가 있다', /id="milestone-box"/.test(html) && /function renderMilestones/.test(js));
+check('넘는 해가 실제로 그려진다',
+  ((byId['milestones']._html || '').match(/class="mstone/g) || []).length >= 4,
+  '개수: ' + ((byId['milestones']._html || '').match(/class="mstone/g) || []).length);
+check('학교급마다 도착하는 해가 다르다고 적는다',
+  /중학교에 6년, 고등학교에\s*\n?\s*'\s*\+\s*'9년 걸려 옵니다/.test(js) ||
+  /9년 걸려 옵니다/.test(js));
+/* 한 해 만에 문턱을 훌쩍 넘는 해가 있어서, 80% 라 적어 놓고 73% 인 일이 생깁니다. */
+check('그 해의 실제 비율을 함께 적는다',
+  /\$\{HOME_BASE_YEAR\}년의 <b>\$\{Math\.round\(then \/ now \* 100\)\}%<\/b>/.test(js));
+check('이미 학교에 있는 아이가 도착하는 해도 짚는다',
+  /전망이 아니라 이미 학교에 있는 아이입니다/.test(js) &&
+  /이미 학교에 있는 아이/.test(byId['milestones']._html || ''));
+check('넘는 해를 실제로 셈한다 (2026 기준 아래로 처음 내려가는 해)',
+  q("crossYear(null,'초',0.8)") > 2026 && q("crossYear(null,'초',0.8)") <= 2036);
+check('고른 시군을 따라간다', q(
+  "(function(){selectSgg('봉화');var a=crossYear('봉화','초',0.8);selectSgg(null);" +
+  "var b=crossYear(null,'초',0.8);return a!=null&&b!=null;})()") === true);
+
+console.log('\n■ 〔현황〕 큰 수를 읽을 수 있게 적는다');
+/* 값이 천 명 단위이던 때는 「321」이었는데, 낱낱의 명으로 바꾸면서
+   「321000」이 되어 읽히지 않았습니다. */
+check('만 명이 넘으면 접어서 적는다', q("statusShort(321000)") === '32만' &&
+  q("statusShort(9412)") === '9,412');
+check('「현재」 점선이 값을 관통하지 않는다', /text-anchor="\$\{isNow \? 'start' : 'middle'\}"/.test(js));
+
+console.log('\n■ 〔현황〕 세 화면이 같은 것을 보게 잇는다');
+/* 여태 탭 셋이 각자 따로 살았습니다. 현황에서 봉화가 가파르다는 것을 알아도,
+   봉화의 학교가 어디 있는지 보려면 지도로 가서 다시 찾아야 했습니다. */
+check('시군을 고르면 두 길이 열린다',
+  /id="sgg-to-map"/.test(html) && /id="sgg-to-sim"/.test(html) &&
+  /function openMapFor/.test(js) && /function openSimFor/.test(js));
+check('경북 전체일 때는 감춘다', q(
+  "(function(){selectSgg(null);return document.getElementById('sgg-to-map').hidden;})()") === true);
+check('어디로 가는지 단추에 적는다', q(
+  "(function(){selectSgg('봉화');var t=document.getElementById('sgg-to-map').textContent;" +
+  "selectSgg(null);return t;})()") === '봉화 지도에서 보기');
+/* 시뮬레이터는 다른 사람이 고치고 있습니다. 그쪽 모양이 바뀌어도 이 단추
+   때문에 화면이 멎으면 안 됩니다. */
+check('다른 화면의 속을 함부로 뒤지지 않는다',
+  /typeof sim === 'object' && sim && sim\.sigungu && sim\.sigungu\.clear/.test(js) &&
+  /catch\(_e\)\{ \/\* 시뮬레이터 모양이 바뀌어도/.test(js));
+check('시뮬레이터 조건이 실제로 바뀐다', q(
+  "(function(){openSimFor('봉화');return sim.sigungu.has('봉화') && sim.sigungu.size===1;})()") === true);
+check('지도를 못 열어도 타이머가 남지 않는다', /if\(\+\+tries < 40\)/.test(js));
+
+console.log('\n■ 〔현황〕 구현 용어를 걷어냈다');
+check('「Pure SVG」·「Line Chart」 같은 말이 없다',
+  !/Pure SVG/.test(html) && !/Line Chart/.test(html));
 
 console.log(`\n${fail ? '✗' : '✓'}  통과 ${pass} · 실패 ${fail}\n`);
 process.exit(fail ? 1 : 0);
