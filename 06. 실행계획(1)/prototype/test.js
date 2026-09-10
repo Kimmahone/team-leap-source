@@ -1666,6 +1666,38 @@ check('재학생을 볼 때는 EDSS·학교알리미라 적는다', /EDSS/.test(
 q("setDs('pop')");
 check('학령인구를 볼 때는 KOSIS 라 적는다', /KOSIS/.test(byId['asof-status'].textContent || ''));
 
+console.log('\n■ 〔현황〕 이미 학교에 앉아 있는 아이로 앞날을 말한다');
+/* 학년별 인원은 917개 학교 전부 갖고 있습니다. 이 아이들이 그대로 올라오면
+   몇 해 뒤 중1·고1이 몇 명이 되는지 «셀 수» 있습니다. 출산율 가정도, 추계
+   모형도 들어가지 않습니다 — 「예측일 뿐」이라는 반박을 받지 않습니다. */
+q("selectSgg(null)");
+check('그 자리가 있다', /id="cohort-card"/.test(html) && /function renderCohort/.test(js));
+check('중학교 신입생 여섯 해가 그려진다',
+  ((byId['cohort-mid']._html || '').match(/class="cohort-row/g) || []).length === 7,
+  '줄 수: ' + ((byId['cohort-mid']._html || '').match(/class="cohort-row/g) || []).length);
+check('고등학교 신입생 아홉 해가 그려진다',
+  ((byId['cohort-high']._html || '').match(/class="cohort-row/g) || []).length === 10);
+check('견줄 「지금」 줄이 맨 위에 있다', /class="cohort-row now"/.test(byId['cohort-mid']._html || ''));
+/* 초6(i=5)은 2027년에 중1이 되고, 초1(i=0)은 2032년에 중1이 됩니다. */
+check('도착하는 해를 바르게 셈한다',
+  /2027년[\s\S]*?지금 초6/.test(byId['cohort-mid']._html || '') &&
+  /2032년[\s\S]*?지금 초1/.test(byId['cohort-mid']._html || ''));
+check('고1은 세 해 뒤에 도착한다 (중1 → 고1 은 3년)',
+  /2035년[\s\S]*?지금 초1/.test(byId['cohort-high']._html || ''));
+check('지금 초1 인원이 그대로 실린다',
+  new RegExp(q("fmt(cohortGrades(null)['초'][0])").replace(/,/g,',')).test(byId['cohort-mid']._html || ''));
+check('머리글이 초1과 초6의 차이를 말한다',
+  /초등학교 1학년은/.test(byId['cohort-lede']._html || '') &&
+  /6학년은/.test(byId['cohort-lede']._html || ''));
+/* 마지막 줄은 둘 다 «지금 초1» 입니다 — 같은 수를 두 번 적으면 다른 값처럼 읽힙니다. */
+check('한 무리가 두 자리에 도착한다고 한 번에 말한다',
+  /중학교 1학년<\/b>이 되고/.test(js) && /고등학교 1학년<\/b>이 됩니다/.test(js));
+check('무엇이 빠졌는지 밝힌다 (전학·유급·사립·특수)',
+  /전학·유급·사립·특수학교로의/.test(html) && /그대로 머문다고 보았을 때/.test(html));
+check('고른 시군을 따라간다', q(
+  "(function(){selectSgg('안동');var a=cohortGrades('안동')['초'][0];" +
+  "selectSgg(null);var b=cohortGrades(null)['초'][0];return a>0&&b>a;})()") === true);
+
 console.log('\n■ 〔현황〕 구현 용어를 걷어냈다');
 check('「Pure SVG」·「Line Chart」 같은 말이 없다',
   !/Pure SVG/.test(html) && !/Line Chart/.test(html));

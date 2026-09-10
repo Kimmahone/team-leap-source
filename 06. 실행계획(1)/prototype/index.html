@@ -1052,6 +1052,30 @@ table.data .hl{color:var(--brand);font-weight:800}
   color:var(--ink-3);font-size:11.5px}
 @media (max-width:640px){ .sgg-board{grid-template-columns:repeat(auto-fill,minmax(128px,1fr))} }
 
+/* ── 이미 학교에 앉아 있는 아이 ────────────────────────────────────────── */
+.cohort-wrap{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:6px}
+@media (max-width:820px){ .cohort-wrap{grid-template-columns:1fr;gap:18px} }
+.cohort-h{margin:0 0 3px;font-size:14px;font-weight:700;color:var(--brand)}
+.cohort-sub{margin:0 0 11px;font-size:12px;color:var(--ink-3);line-height:1.6}
+.cohort-bars{display:flex;flex-direction:column;gap:5px}
+/* 한 줄이 한 해입니다. 연도·막대·인원 세 칸으로 나눕니다 —
+   막대 안에 수를 넣으면 짧은 막대에서 글자가 삐져나옵니다. */
+.cohort-row{display:grid;grid-template-columns:46px minmax(0,1fr) 84px;gap:9px;align-items:center}
+.cohort-row .yr{font-size:11.5px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.cohort-row .track{position:relative;height:20px;background:var(--card-2);border-radius:4px}
+.cohort-row .fill{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--brand);opacity:.72}
+.cohort-row .val{text-align:right;font-size:12.5px;font-weight:700;
+  font-variant-numeric:tabular-nums;color:var(--ink)}
+.cohort-row .val em{font-style:normal;font-weight:600;font-size:10.5px;color:var(--ink-3);
+  display:block;line-height:1.3}
+/* 「지금」 줄은 견주는 자리라 따로 표시합니다 */
+.cohort-row.now .yr{font-weight:700;color:var(--ink)}
+.cohort-row.now .fill{background:var(--ink-3);opacity:.55}
+.cohort-row.now .val{color:var(--ink-2)}
+.cohort-row.down .val{color:var(--leap-amber)}
+.cohort-gapline{margin:7px 0 0;font-size:11.5px;color:var(--ink-3);line-height:1.6}
+.cohort-gapline b{color:var(--leap-amber)}
+
 /* ══ 지도로 보기 〔2026. 9. 10.〕 ═══════════════════════════════════════════
    화면을 «가득» 씁니다. 본문 여백을 음수 여백으로 도로 물려 가장자리까지
    지도가 닿게 합니다. 참고하신 화면처럼 시원하게 보이는 까닭이 이것입니다.
@@ -2052,6 +2076,37 @@ body.map-maxed.home-wide #home-side{display:none}
       <p class="mv-note" style="margin-top:11px">막대 하나가 한 해입니다.
       <b>2026년까지는 실적</b>(학교알리미·EDSS 교육통계), <b>2027년부터는 전망</b>입니다.
       전망은 그 시군의 <b>실측 감소율</b>을 곱한 값이지 공식 추계가 아닙니다.</p>
+    </div>
+
+    <!-- ══ 이미 학교에 앉아 있는 아이 〔2026. 9. 10.〕 ═══════════════════════
+         가장 센 자료인데 화면에 없었습니다. 학년별 인원은 917개 학교 전부
+         갖고 있습니다. 여기에는 출산율 가정도, 추계 모형도 들어가지 않습니다 —
+         이미 태어나 학교에 다니는 아이를 세는 것뿐입니다.
+         「예측일 뿐」이라는 반박을 받지 않는 자료입니다. -->
+    <div class="card" id="cohort-card">
+      <h2 style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span id="cohort-title">이미 학교에 앉아 있는 아이</span>
+        <span class="asof">학교알리미 2026 공시 · 학년별 실적</span>
+      </h2>
+      <p class="sgg-board-lede" id="cohort-lede"></p>
+
+      <div class="cohort-wrap">
+        <div class="cohort-col">
+          <h3 class="cohort-h">앞으로 중학교에 들어올 아이</h3>
+          <p class="cohort-sub">지금 초등학교에 있는 아이가 그대로 올라오면 이렇게 됩니다.</p>
+          <div class="cohort-bars" id="cohort-mid"></div>
+        </div>
+        <div class="cohort-col">
+          <h3 class="cohort-h">앞으로 고등학교에 들어올 아이</h3>
+          <p class="cohort-sub">지금 초·중학교에 있는 아이가 그대로 올라오면 이렇게 됩니다.</p>
+          <div class="cohort-bars" id="cohort-high"></div>
+        </div>
+      </div>
+
+      <p class="mv-note" style="margin-top:12px">이 셈에는 <b>전학·유급·사립·특수학교로의
+      이동이 들어 있지 않습니다.</b> 지금 이 지역에 있는 아이가 <b>그대로 머문다고 보았을 때</b>의
+      수입니다. 그래서 실제와는 다르지만, <b>출산율을 가정하지 않는다</b>는 점에서
+      장래추계보다 흔들림이 적습니다.</p>
     </div>
 
     <div class="card">
@@ -7002,11 +7057,102 @@ function renderSggBoard(){
   if(clr) clr.hidden = !statusState.sgg;
 }
 
+/* ══ 이미 학교에 앉아 있는 아이 〔2026. 9. 10.〕 ═══════════════════════════
+   학년별 인원은 917개 학교 전부 갖고 있습니다(`sc.grades`). 이 아이들이
+   그대로 올라오면 몇 해 뒤 중1·고1이 몇 명이 되는지 «셀 수» 있습니다.
+
+   여기에는 출산율 가정도, 추계 모형도 들어가지 않습니다. 이미 태어나 학교에
+   다니는 아이를 세는 것뿐입니다. 그래서 「예측일 뿐」이라는 반박을 받지
+   않습니다 — 이 대시보드에서 설득력이 가장 높은 자료입니다.
+
+   ★ 다만 전학·유급·사립·특수학교로의 이동은 들어 있지 않습니다.
+     「그대로 머문다면」이라는 단서를 화면에 반드시 함께 적습니다. */
+function cohortGrades(sgg){
+  const pool = SCHOOLS.filter(s => Array.isArray(s.grades) && s.grades.length && (!sgg || s.s === sgg));
+  const g = {};
+  ['초','중','고'].forEach(lv => {
+    const n = (LEVEL_CFG[lv] || {}).grades || 0;
+    const at = pool.filter(s => s.lv === lv);
+    g[lv] = [];
+    for(let i = 0; i < n; i++) g[lv].push(at.reduce((a, s) => a + (s.grades[i] || 0), 0));
+  });
+  return g;
+}
+
+/* 한 줄 = 한 해. 「지금」 줄을 맨 위에 두어 견줄 자리를 만듭니다. */
+function cohortRows(rows, mx){
+  return rows.map(r => {
+    const w = mx > 0 ? Math.max(1.5, r.v / mx * 100) : 0;
+    const cls = (r.now ? ' now' : '') + (!r.now && r.v < r.ref ? ' down' : '');
+    return `<div class="cohort-row${cls}">` +
+      `<span class="yr">${r.now ? '지금' : r.y + '년'}</span>` +
+      `<span class="track"><span class="fill" style="width:${w.toFixed(1)}%"></span></span>` +
+      `<span class="val">${fmt(r.v)}<em>${htmlEsc(r.note)}</em></span>` +
+    '</div>';
+  }).join('');
+}
+
+function renderCohort(){
+  const box = document.getElementById('cohort-mid');
+  if(!box) return;
+  const sgg = statusState.sgg, region = statusRegion();
+  const g = cohortGrades(sgg);
+  const 초 = g['초'] || [], 중 = g['중'] || [], 고 = g['고'] || [];
+  const nowMid = 중[0] || 0, nowHigh = 고[0] || 0;
+
+  const t = document.getElementById('cohort-title');
+  if(t) t.textContent = `${region} — 이미 학교에 앉아 있는 아이`;
+
+  /* ── 중학교 신입생 ── 초 i학년(0부터)은 (2032 − i)년에 중1이 됩니다.
+     초6(i=5) → 2027, 초1(i=0) → 2032. */
+  const mid = [{ y: HOME_BASE_YEAR, v: nowMid, now: true, note: '지금 중1', ref: nowMid }];
+  for(let i = 초.length - 1; i >= 0; i--){
+    mid.push({ y: HOME_BASE_YEAR + 6 - i, v: 초[i], note: `지금 초${i + 1}`, ref: nowMid });
+  }
+  const midMax = Math.max(...mid.map(r => r.v), 1);
+  box.innerHTML = cohortRows(mid, midMax);
+
+  /* ── 고등학교 신입생 ── 중 j학년은 (2029 − j)년에, 초 i학년은 (2035 − i)년에 고1. */
+  const high = [{ y: HOME_BASE_YEAR, v: nowHigh, now: true, note: '지금 고1', ref: nowHigh }];
+  for(let j = 중.length - 1; j >= 0; j--){
+    high.push({ y: HOME_BASE_YEAR + 3 - j, v: 중[j], note: `지금 중${j + 1}`, ref: nowHigh });
+  }
+  for(let i = 초.length - 1; i >= 0; i--){
+    high.push({ y: HOME_BASE_YEAR + 9 - i, v: 초[i], note: `지금 초${i + 1}`, ref: nowHigh });
+  }
+  const highMax = Math.max(...high.map(r => r.v), 1);
+  const hb = document.getElementById('cohort-high');
+  if(hb) hb.innerHTML = cohortRows(high, highMax);
+
+  /* ── 머리글 ── 초1과 초6의 차이가 이 화면에서 가장 센 한 줄입니다. */
+  const lede = document.getElementById('cohort-lede');
+  if(!lede) return;
+  const g1 = 초[0] || 0, g6 = 초[초.length - 1] || 0;
+  const diff = g6 - g1;
+  const lastMid = mid[mid.length - 1], lastHigh = high[high.length - 1];
+  const midDrop = nowMid > 0 ? (1 - lastMid.v / nowMid) * 100 : null;
+  /* 마지막 줄은 둘 다 «지금 초1» 입니다 — 같은 수를 두 번 적으면 다른 값처럼
+     읽힙니다. 한 무리가 두 자리에 도착한다고 한 번에 말합니다. */
+  const highDrop = nowHigh > 0 ? (1 - g1 / nowHigh) * 100 : null;
+  lede.innerHTML =
+    `${htmlEsc(region)}의 <b>초등학교 1학년은 ${fmt(g1)}명</b>, <b>6학년은 ${fmt(g6)}명</b>입니다. ` +
+    (diff > 0
+      ? `1학년이 <b>${fmt(diff)}명(${(diff / g6 * 100).toFixed(0)}%) 적습니다.</b> `
+      : (diff < 0 ? `1학년이 <b>${fmt(-diff)}명 많습니다.</b> ` : '')) +
+    `이 아이들이 그대로 올라오면 <b>${lastMid.y}년에 중학교 1학년</b>이 되고 ` +
+    `<b>${lastHigh.y}년에 고등학교 1학년</b>이 됩니다. ` +
+    (midDrop != null && midDrop > 0
+      ? `그때 중1은 지금보다 <b>${midDrop.toFixed(0)}%</b>, 고1은 <b>${highDrop.toFixed(0)}%</b> 적습니다. `
+      : '') +
+    '여기에는 <b>출산율 가정도, 추계 모형도 들어가지 않습니다.</b>';
+}
+
 function selectSgg(key){
   statusState.sgg = key || null;
   /* 시군에는 주민등록 자료가 없습니다. 학생수로 바꿔 주고 왜인지 적습니다. */
   if(statusState.sgg && dsKind === 'pop') dsKind = 'stu';
   renderSggBoard();
+  renderCohort();
   renderStatus();
   syncDsChips();
 }
@@ -9287,6 +9433,7 @@ applyEdssWording();
 syncSigChips();
 if(HOME_TAB_ON){ renderHomePanel(); renderTilemap(); }
 renderSggBoard();
+renderCohort();
 syncDsChips();
 renderStatus();
 renderSim();
