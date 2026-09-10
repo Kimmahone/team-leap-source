@@ -1717,9 +1717,16 @@ check('갈래 하나는 학급과 교원이 줄어든다',
 check('갈래 둘은 학급당 인원이 줄어든다',
   /학급당/.test(byId['fork-b-body']._html || '') &&
   /교원 1인당/.test(byId['fork-b-body']._html || ''));
+/* ★ 여기에 「6792」 같은 실제 값을 박아 두면 안 됩니다 〔2026. 9. 10.〕
+   EDSS 시험자료를 심고 다시 돌리는 검사가 있어서, 지어낸 자료에서는 그 수가
+   나오지 않습니다. 값이 아니라 «관계»를 봅니다 — 화면에 뜬 학급 수가
+   학생 ÷ 학급당과 같은가. */
 check('셈이 맞는다 (학급당을 지키면 학급 = 학생 ÷ 학급당)', q(
   "(function(){var n=convertNow(null);var later=regionTotalStudents(null,2036).v;" +
-  "return Math.round(later/n.perCls) === 6792;})()") === true);
+  "if(!n.perCls||later==null) return true;" +
+  "var want=Math.round(later/n.perCls);" +
+  "var shown=(document.getElementById('fork-a-body')._html||'').match(/<b>([\\d,]+)<\\/b>개/);" +
+  "return !!shown && Number(shown[1].replace(/,/g,'')) === want;})()") === true);
 check('0 은 변화로 적지 않는다 (변화 없음이지 변화가 아니다)',
   /delta === 0\) \? '' :/.test(js));
 /* 교원 수는 실제로 학급 수·과목·복식 여부·겸임으로 정해집니다. */
