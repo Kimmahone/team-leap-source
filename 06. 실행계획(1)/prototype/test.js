@@ -13,6 +13,11 @@ const APP = process.argv[2] || path.join(__dirname, 'index.html');
 const html = fs.readFileSync(APP, 'utf8');
 const js = html.match(/<script>([\s\S]*?)<\/script>/)[1];
 
+/* 굽는 스크립트도 함께 봅니다 — 브라우저 규칙(CSP)과 «무엇을 함께 싣는지»가
+   여기에 있습니다. 지도는 이 규칙에 막히면 조용히 빈 화면이 됩니다. */
+const BAKE = path.join(__dirname, '..', '..', '사이트 굽기.command');
+const bake = fs.existsSync(BAKE) ? fs.readFileSync(BAKE, 'utf8') : '';
+
 let pass = 0, fail = 0;
 const check = (n, c, extra) => {
   if (c) { pass++; console.log('  OK   ' + n); }
@@ -1327,6 +1332,125 @@ check('전망은 점선이다 (색만으로 가르지 않는다)', /stroke-dasha
 check('2026 을 겹쳐 선이 끊기지 않게 한다', /p\.yr >= BASE_Y/.test(js));
 check('무엇이 실적이고 무엇이 전망인지 «글자로도» 적는다',
   /전망 \(아직 일어나지 않은 일\)/.test(js) && /실적</.test(js));
+
+
+console.log('\n■ 「지도로 보기」가 화면을 통째로 쓴다');
+/* 종합 대시보드의 지도 칸은 요약용이라 좁습니다. 자세히 볼 자리를 따로 둡니다.
+   SGIS 위에 브이월드를 얹으려다 두 번 빈 화면을 봤고, MapLibre 로 갈아탔습니다. */
+check('메뉴에 「지도로 보기」가 있다', /data-view="map"/.test(html));
+check('그 화면이 실제로 있다', /id="view-map"/.test(html));
+check('좌우 가장자리까지 쓴다 (본문 여백을 도로 물린다)',
+  /\.mapview\{[^}]*margin:0 -24px/.test(html));
+/* 위쪽에는 「사용 안내·인쇄」 줄이 있어 덮으면 안 됩니다. 머리글 높이는 글자 크기와
+   창 너비에 따라 달라져 식으로는 어긋납니다 — 실제로 재서 넣습니다. */
+check('높이는 식으로 셈하지 않고 실제로 재서 넣는다',
+  /function mvFit\(\)/.test(js) && /box\.getBoundingClientRect\(\)\.top/.test(js) &&
+  /window\.innerHeight - top/.test(js));
+check('창 크기가 바뀌면 다시 잰다', /activeView === 'map'\) mvFit\(\)/.test(js));
+check('지도 화면에서는 본문 아래 여백을 없앤다',
+  /\.main\.is-map\{padding-bottom:0\}/.test(html) && /classList\.toggle\('is-map', name === 'map'\)/.test(js));
+check('지도를 기다리는 동안에도 왼쪽 칸은 채워 둔다 (빈 상자는 「고장」으로 읽힌다)',
+  /mvRenderStats\(\);\s+\/\* 지도를 기다리는 동안/.test(js));
+check('화면을 열 때만 MapLibre 를 부른다 (다른 화면에 800KB 를 지우지 않는다)',
+  /function mvLoadLib\(\)/.test(js) && /js\.src = '\.\/vendor\/maplibre-gl\.js'/.test(js) &&
+  /name === 'map' && typeof mvOpen === 'function'/.test(js));
+check('라이브러리를 못 받으면 그렇다고 말한다 (조용히 빈 화면이 되지 않는다)',
+  /지도 라이브러리를 불러오지 못했습니다/.test(js));
+check('인증키는 HTML 에 없고 서버에서 받는다',
+  /fetch\('\/api\/vworld-key'\)/.test(js) && !/VWORLD_API_KEY\s*=\s*'/.test(js));
+check('키가 없어도 학교와 경계는 그린다', /배경지도가 없습니다 — 학교 위치와 시군 경계는 그대로입니다/.test(js));
+check('배경지도가 없는 까닭을 «늘» 붙여 둔다 (한 번 움직이면 지워지면 안 된다)',
+  /MV\.ready && !MV\.key \? ' · 배경지도 없음/.test(js));
+/* 오래된 업무용 PC·원격 데스크톱에는 WebGL 이 없습니다. 감싸지 않으면
+   「불러오는 중」에서 영영 멈춘 것처럼 보입니다. */
+check('WebGL 이 없어도 멈춘 것처럼 보이지 않는다',
+  /WebGL 없음/.test(js) && /try\{\s*map = new maplibregl\.Map/.test(js));
+
+console.log('\n■ 배율에 따라 세는 단위가 바뀐다');
+check('시군 → 점 → 이름 세 단계다', q("[mvTier(8), mvTier(10), mvTier(12)]").join() === 'sgg,pin,label');
+check('이름이 서는 문턱이 10.6 이다 (11.8 은 너무 높아 안 바뀌어 보였다)',
+  q("mvTier(10.5)") === 'pin' && q("mvTier(10.7)") === 'label');
+check('지금 배율을 적어 어디쯤인지 보인다', /배율 \$\{z\.toFixed\(1\)\}/.test(js));
+
+console.log('\n■ 학교를 누르면 왼쪽 칸에 그 학교가 펼쳐진다');
+/* 「학교를 눌렀을 때 왼쪽에 자세한 정보가 안 뜬다」는 말을 듣고 붙인 자리입니다. */
+check('상세 자리가 있다', /id="mv-detail-card"/.test(html));
+check('종합 대시보드와 «같은 카드»를 쓴다 (두 벌을 만들지 않는다)',
+  /function schoolCardHtml\(sc, year, closeId\)/.test(js) &&
+  /schoolCardHtml\(sc, homeState\.year, 'home-school-close'\)/.test(js) &&
+  /schoolCardHtml\(sc, MV\.year, 'mv-school-close'\)/.test(js));
+check('카드가 실제로 내용을 돌려준다 (return 뒤 줄바꿈이면 빈 값이 된다)',
+  /class="sch-name"/.test(q("(function(){var s=SCHOOLS.filter(function(x){return x.grades&&x.grades.length})[0];return schoolCardHtml(s,2026,'t');})()")));
+check('보는 해가 화면마다 달라도 된다 (해를 받아서 쓴다)',
+  q("(function(){var s=SCHOOLS.filter(function(x){return x.grades&&x.grades.length})[0];return schoolCardHtml(s,2031,'t').indexOf('2031년')>=0;})()") === true);
+check('학교를 고르면 두 화면이 함께 바뀐다',
+  /typeof mvRenderDetail === 'function'/.test(js));
+
+console.log('\n■ 옮겨 붙인 것들이 다 붙었다');
+check('폐교 겹쳐 보기', /id="mv-closed"/.test(html) && /function mvDrawClosed/.test(js) &&
+  /closedMapRows\(\)/.test(js));
+check('연도 슬라이더', /id="mv-year"/.test(html) && /MV\.year = Number\(yr\.value\)/.test(js));
+check('연도가 학생 수를 바꾼다 (2026 공시 · 그 밖엔 실적·전망)',
+  /function mvStu\(sc\)\{ const r = schoolStudentsAt\(sc, MV\.year\)/.test(js));
+check('학교 검색', /id="mv-search"/.test(html) && /String\(s\.name\)\.indexOf\(q\)/.test(js));
+check('검색은 «경북 전체»에서 찾는다 (화면 안에서만 찾으면 뜻이 없다)',
+  /const rows = \(searching \? mvPool\(\) : vis\)/.test(js));
+check('시군 경계 — 간편 지도와 «같은 자료»를 쓴다',
+  /id="mv-bound"/.test(html) && /function mvBoundGeo/.test(js) && /gbRings\(GB\[k\]\)/.test(js));
+check('경계가 실제 위경도로 펴진다', q(
+  "(function(){var f=mvBoundGeo().features;if(!f.length)return false;" +
+  "var c=f[0].geometry.coordinates[0];return c[0]>124&&c[0]<132&&c[1]>34&&c[1]<38;})()") === true);
+check('거리 재기 — SGIS 가 주던 자를 새로 만들었다',
+  /id="mv-ruler"/.test(html) && /function mvRulerAdd/.test(js) && /haversineKm\(pts\[0\]\.lat/.test(js));
+check('학교 두 곳을 눌러 잰다 (통학 거리를 가늠하는 자리)',
+  /if\(MV\.ruler\)\{ mvRulerAdd\(sc\.lon, sc\.lat, sc\.name\); return; \}/.test(js));
+check('직선거리임을 밝힌다 (산을 넘는 길은 더 멀다)', /산을 넘는 길은 이보다 멉니다/.test(js));
+check('잰 값을 왼쪽 칸에도 남긴다 (상태줄은 지도를 한 번 움직이면 지워진다)',
+  /id="mv-ruler-out"/.test(html) && /out\.hidden = false/.test(js));
+console.log('\n■ 그 해에 없는 수를 「–」로 보여 주지 않는다');
+/* 학급 수는 2026년 공시에만 있습니다. 다른 해에 「학급당 –」은 고장으로 읽힙니다. */
+check('학급 수가 없는 해에는 「학교당」으로 바꿔 말한다',
+  /\{ k:'학교당', v: list\.length \? Math\.round\(stu \/ list\.length\)/.test(js));
+check('큰 학교의 이름표가 작은 학교에 가리지 않는다',
+  /el\.style\.zIndex = String\(Math\.min\(400/.test(js));
+check('재는 동안에는 말풍선을 떼어 둔다 (누르면 재는 점이 된다)',
+  /if\(!MV\.ruler\) mk\.setPopup/.test(js));
+
+console.log('\n■ 3D 는 기울이는 것이 아니라 «땅이 솟는» 것이다');
+check('고도 자료를 쓴다 (브이월드에는 없어 AWS Terrain Tiles 를 쓴다)',
+  /terrarium/.test(js) && /encoding:'terrarium'/.test(js));
+check('setTerrain 으로 땅을 솟게 한다', /setTerrain\(\{ source:'mv-dem', exaggeration:1\.5 \}\)/.test(js));
+check('음영도 함께 켠다 (기울이지 않아도 산줄기가 보인다)',
+  /setLayoutProperty\('mv-hills','visibility','visible'\)/.test(js));
+check('2D 로 되돌리면 지형을 끈다', /setTerrain\(null\)/.test(js));
+
+console.log('\n■ 배경 타일은 레이어마다 확장자가 다르다');
+/* 틀린 확장자는 200 으로 «오류 XML» 을 돌려줍니다 — 조용히 빈 화면이 됩니다. */
+check('위성만 jpeg 이고 나머지는 png 다', q(
+  "MV_BASES.map(function(b){return b.id+':'+b.ext}).join()") === 'Base:png,Satellite:jpeg,Hybrid:jpeg,midnight:png');
+check('「위성+지명」은 위성 «위에» 얹는다 (하이브리드만 깔면 허전하다)', q(
+  "(function(){var h=MV_BASES.filter(function(b){return b.id==='Hybrid'})[0];" +
+  "return h.base==='Satellite'&&h.over==='Hybrid'&&h.overExt==='png';})()") === true);
+
+console.log('\n■ 다크 모드에서 지도 위의 선도 함께 바뀐다');
+/* MapLibre 의 paint 값에는 CSS 변수를 넣을 수 없습니다 — 바뀐 것을 듣고 손으로 갈아야 합니다. */
+check('화면 밝기가 바뀌는 것을 듣는다',
+  /attributeFilter:\['data-theme'\]/.test(js) && /prefers-color-scheme: dark\)'\)\.addEventListener\('change', repaint\)/.test(js));
+check('색은 토큰에서 읽는다 (지도만 다른 팔레트를 쓰지 않는다)',
+  /function mvCss\(name, fallback\)/.test(js) && /mvCss\('--brand'/.test(js));
+/* 이 앱의 토큰은 `--brand:var(--leap-blue)` 처럼 별칭이라, 그대로 읽으면
+   'var(--leap-blue)' 라는 «글자»가 나옵니다. MapLibre 는 그것을 색으로 읽지 못해
+   시군 경계가 통째로 안 그려졌습니다. 브라우저에게 풀어 달라고 시켜야 합니다. */
+check('별칭 토큰을 «풀어서» 읽는다 (var(--…) 글자를 색으로 주면 선이 안 그려진다)',
+  /color:var\('\s*\+ name \+ '\)/.test(js) && /getComputedStyle\(probe\)\.color/.test(js));
+check('읽은 색을 쟁여 둔다 (딱지마다 부르면 지도가 굼떠진다)',
+  /MV_CSS_CACHE\[name\]/.test(js) && /MV_CSS_CACHE = \{\};\s+\/\* 쟁여 둔 색을 비웁니다/.test(js));
+
+console.log('\n■ 지도가 브라우저 규칙(CSP)에 막히지 않는다');
+check('배경지도·고도 타일이 허용되어 있다',
+  /img-src[^;]*https:\/\/api\.vworld\.kr/.test(bake) && /img-src[^;]*https:\/\/s3\.amazonaws\.com/.test(bake));
+check('MapLibre 의 일꾼(worker)이 허용되어 있다', /worker-src 'self' blob:/.test(bake));
+check('vendor 폴더가 함께 실린다', /vendor/.test(bake));
 
 console.log(`\n${fail ? '✗' : '✓'}  통과 ${pass} · 실패 ${fail}\n`);
 process.exit(fail ? 1 : 0);
