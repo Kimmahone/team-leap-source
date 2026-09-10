@@ -118,8 +118,41 @@ try {
 check('스크립트가 예외 없이 끝까지 실행된다', !threw, threw && (threw.message + '\n         ' + String(threw.stack).split('\n')[1]));
 if (threw) { console.log('\n중단'); process.exit(1); }
 
+console.log('\n■ 치워 둔 종합 대시보드 — 지우지 않았고, 여전히 돌아간다');
+/* ★ 〔2026. 9. 10.〕 지도가 제 화면을 갖게 되면서 종합 대시보드가 하던 일이
+   겹쳤습니다. 화면은 `parked-home` 보관 칸에 담고 그리는 일만 멈췄습니다.
+   지운 것이 아니므로 **코드는 계속 돌아가야 합니다** — 되살릴 때 고장 나 있으면
+   치워 둔 뜻이 없습니다. 아래 검사는 그리는 일을 손으로 불러서 확인합니다. */
+/* 주석 안에는 남아 있어야 하고(되살릴 수 있게), 주석 밖에는 없어야 합니다.
+   주석을 걷어낸 뒤에 찾는 것이 가장 확실합니다. */
+const htmlLive = html.replace(/<!--[\s\S]*?-->/g, '');
+check('메뉴에서는 빠졌다 (주석 안에는 남아 있다)',
+  /<!--[\s\S]*?data-view="home"[\s\S]*?-->/.test(html) &&
+  !/data-view="home"/.test(htmlLive));
+check('화면은 지우지 않고 보관 칸에 담았다',
+  /<template id="parked-home">/.test(html) && /id="view-home" class="view"/.test(html));
+/* 보관 칸 안의 것은 화면에 그려지지도, getElementById 로 잡히지도 않습니다.
+   HTML 주석으로는 감쌀 수 없습니다 — 안에 «--» 와 겹친 주석이 들어 있습니다. */
+check('왜 주석이 아닌지 적어 두었다', /HTML 주석은 붙임표 두 개를 품을 수 없고/.test(html));
+/* ★ 이 검사가 있는 까닭 〔2026. 9. 10.〕 위 설명을 처음 쓸 때 «--» 라고 적었다가
+   그 자리에서 주석이 끊겨 설명문이 화면 맨 위에 쏟아졌습니다. 설명하던 함정에
+   그대로 빠진 것입니다. 주석 안에 붙임표 두 개가 있으면 잡습니다. */
+check('주석 안에 붙임표 두 개가 없다 (있으면 거기서 주석이 끊긴다)',
+  (html.match(/<!--([\s\S]*?)-->/g) || []).every(c => !c.slice(4, -3).includes('--')));
+check('되살리는 스위치가 하나다', /const HOME_TAB_ON = false/.test(js) &&
+  /if\(HOME_TAB_ON\)\{ renderHomePanel\(\); renderTilemap\(\); \}/.test(js));
+check('첫 화면은 메뉴에 남은 첫 항목이다 (없는 화면으로 열지 않는다)',
+  /const DEFAULT_VIEW = DEFAULT_NAV_ORDER\[0\] \|\| 'map'/.test(js) &&
+  !/showView\(location\.hash\.slice\(1\) \|\| 'home'\)/.test(js));
+let parkedThrew = null;
+/* q 는 아래에서 만들어집니다 — 여기서는 sandbox 를 바로 씁니다. */
+try{ vm.runInContext("renderHomePanel(); renderTilemap(); renderHomeInsight(); setMapMode('offline');", sandbox); }
+catch(e){ parkedThrew = e; }
+check('치워 둔 뒤에도 그리는 코드가 멀쩡하다 (되살릴 수 있다)',
+  !parkedThrew, parkedThrew && parkedThrew.message);
+
 /* ---------- 렌더 결과 ---------- */
-console.log('\n■ 렌더');
+console.log('\n■ 렌더 (보관 칸의 화면을 손으로 그려서 봅니다)');
 const tilemap = byId['home-tilemap'];
 const rgCount = ((tilemap._html || '').match(/class="rg[ "]/g) || []).length;
 check('지도에 시군 22곳이 그려진다', rgCount === 22, '그려진 수: ' + rgCount);
@@ -1251,7 +1284,7 @@ console.log('\n■ 학교를 본 뒤 «보던 자리»로 돌아온다');
 check('되돌아갈 자리를 한 칸 기억한다', /let mapReturn/.test(js) && /function captureMapView/.test(js));
 check('떠나기 «직전»에 기억한다', /rememberMapView\(\);\s*\/\/ ← 떠나기/.test(js));
 check('되돌리는 갈래가 있다', /function restoreMapView/.test(js));
-check('단추가 있다', /id="home-map-back"/.test(html) && /home-map-back'\)\.addEventListener\('click', restoreMapView\)/.test(js));
+check('단추가 있다', /id="home-map-back"/.test(html) && /onEl\('home-map-back', 'click', restoreMapView\)/.test(js));
 check('실제 위치 지도는 중심과 배율을 함께 되돌린다',
   /sgisMap\.setView\(v\.center, v\.zoom\)/.test(js));
 check('간편 지도는 «시군»까지 되돌린다 (다른 시군 학교를 봤을 수 있다)',
@@ -1446,16 +1479,28 @@ check('큰 학교의 이름표가 작은 학교에 가리지 않는다',
 check('재는 동안에는 말풍선을 떼어 둔다 (누르면 재는 점이 된다)',
   /if\(!MV\.ruler\) mk\.setPopup/.test(js));
 
-console.log('\n■ 왼쪽 칸을 접을 수 있다');
-/* 배경·보기·연도·찾기·통계·목록·범례가 모두 펴져 있으면 세로로 길어서,
-   학교를 눌렀을 때 상세 카드가 화면 밖에 있습니다. */
-check('칸마다 접는 손잡이가 있다', (html.match(/class="mv-fold"/g) || []).length >= 6);
-check('제목 줄 전체가 누르는 자리다 (작은 화살표만 노리면 잘 안 눌린다)',
-  /\.mv-fold\{[^}]*width:100%/.test(html));
-check('접은 자리는 이 브라우저에 남는다', /MV_FOLD_KEY = 'leap-map-folds-v1'/.test(js) &&
-  /localStorage\.setItem\(MV_FOLD_KEY/.test(js));
-check('무엇을 접었는지 화면 읽기 도구도 안다',
-  /btn\.setAttribute\('aria-expanded'/.test(js) && /btn\.setAttribute\('aria-controls'/.test(js));
+console.log('\n■ 왼쪽 칸을 접으면 지도가 넓어진다');
+/* ★ 처음에는 카드를 하나씩 접게 했습니다. 그런데 다 접어도 지도가 넓어지지
+   않았습니다 — 칸의 너비가 그대로였기 때문입니다. 접는 뜻은 자리를 아끼는 것이
+   아니라 «지도를 넓게 보는 것»이었습니다. */
+/* ★ 칸을 숨기면 지도가 «첫 칸»이 됩니다. `0 minmax(0,1fr)` 로 두면 지도가
+   그 0 짜리 칸에 들어가 손톱만 해집니다 — 접었을 때는 칸이 하나입니다. */
+check('접으면 칸이 차지하던 너비를 지도가 가져간다',
+  /\.mapview\.side-off\{grid-template-columns:minmax\(0,1fr\)\}/.test(html) &&
+  /\.mapview\.side-off \.mv-side\{display:none\}/.test(html));
+check('단추는 지도 «위»에 둔다 (칸 안에 두면 접은 뒤 함께 사라진다)',
+  /\.mv-fold-side\{position:absolute/.test(html) &&
+  /<button type="button" class="mv-fold-side" id="mv-side-toggle"/.test(html));
+check('접힌 상태를 화면 읽기 도구도 안다',
+  /aria-expanded="true" aria-controls="mv-side"/.test(html) &&
+  /btn\.setAttribute\('aria-expanded', String\(!!open\)\)/.test(js));
+check('접은 자리는 이 브라우저에 남는다',
+  /MV_SIDE_KEY = 'leap-map-side-v1'/.test(js) && /localStorage\.setItem\(MV_SIDE_KEY/.test(js));
+check('접으면 지도에 다시 재라고 말한다', /mvSetSide[\s\S]{0,700}?MV\.map\.resize\(\)/.test(js));
+/* 카드마다 손잡이를 달았을 때, 제목이 없는 카드에서는 화살표가 맨 앞 칸을
+   가로채 엉뚱한 자리에 섰습니다. 손잡이가 하나면 그런 어긋남이 없습니다. */
+check('카드마다 접는 손잡이는 두지 않는다',
+  !/class="mv-fold"/.test(html) && !/mvWireFolds/.test(js));
 
 console.log('\n■ Shift 를 누르고 끌면 지도가 돌아간다');
 /* MapLibre 가 본디 주는 길(오른쪽 단추 끌기·Ctrl+끌기)은 업무용 노트북에서
