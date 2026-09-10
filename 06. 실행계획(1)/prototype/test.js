@@ -1900,5 +1900,113 @@ check('학년별 셈이 출산율을 가정하지 않는다고 적는다', /출�
 check('그 대신 무엇이 빠졌는지도 적는다',
   /전학·유급·사립·\s*\n?\s*특수학교로의 이동은 들어 있지 않습니다/.test(html));
 
+
+console.log('\n■ 통계가 서로 맞는다');
+/* ★ 같은 것을 두 자리에서 세면 반드시 같아야 합니다. 다르면 둘 중 하나가
+   틀린 것이고, 화면을 보는 사람은 어느 쪽인지 알 수 없습니다. */
+const eq = (name, a, b, tol) => {
+  const A = q(a), B = q(b);
+  check(name, Math.abs(A - B) <= (tol || 0), A + ' vs ' + B);
+};
+eq('시군 합계 = 도 합계',
+  'SIGUNGU.reduce((a,g)=>a+regionTotalStudents(g.s,2026).v,0)', 'regionTotalStudents(null,2026).v');
+eq('학교 낱개 합 = 도 합계',
+  'SCHOOLS.filter(s=>["초","중","고"].includes(s.lv)).reduce((a,s)=>a+(s.stu||0),0)',
+  'regionTotalStudents(null,2026).v');
+eq('BASE 학생 합 = 도 합계',
+  '["초","중","고"].reduce((a,lv)=>a+SIGUNGU.reduce((x,g)=>x+BASE[lv][g.s].stu,0),0)',
+  'regionTotalStudents(null,2026).v');
+eq('BASE 학교 수 = 학교 낱개 수',
+  '["초","중","고"].reduce((a,lv)=>a+SIGUNGU.reduce((x,g)=>x+BASE[lv][g.s].sch,0),0)',
+  'SCHOOLS.filter(s=>["초","중","고"].includes(s.lv)).length');
+eq('BASE 학급 합 = 학교 낱개 학급 합',
+  '["초","중","고"].reduce((a,lv)=>a+SIGUNGU.reduce((x,g)=>x+BASE[lv][g.s].cls,0),0)',
+  'SCHOOLS.filter(s=>["초","중","고"].includes(s.lv)).reduce((a,s)=>a+(s.cls||0),0)');
+eq('현황 탭과 지도가 같은 2026 을 말한다',
+  'statusTot(statusYear(null,"stu",2026))',
+  'SCHOOLS.filter(s=>["초","중","고"].includes(s.lv)).reduce((a,s)=>a+(s.stu||0),0)');
+/* 특수학교는 두 자료(학교알리미·특수교육통계)가 «같은 수»를 말해야 합니다. */
+eq('특수학교 학생 — 학교알리미 = 특수교육통계',
+  'SCHOOLS.filter(s=>s.lv==="특수").reduce((a,s)=>a+(s.stu||0),0)', 'SPED_PLACE.by["특수학교"].stu');
+/* 배치 총계는 «장애영아를 뺀» 값입니다. 다 더한 값과 다른 것이 정상입니다. */
+eq('특수교육 총계 = 배치 합 − 장애영아',
+  'SPED_PLACE.total', 'Object.values(SPED_PLACE.by).reduce((a,o)=>a+(o.stu||0),0) - SPED_PLACE.infant');
+eq('다문화 표 합계가 스스로 맞는다',
+  '["초","중","고"].reduce((a,lv)=>{var o=MULTI_STU.region["경북"][lv];return a+o.국내출생+o.중도입국+o.외국인가정},0)',
+  '13158');
+
+console.log('\n■ 학년별 합이 학교 합보다 적은 까닭을 말한다');
+/* 학교알리미는 학년별을 «일반학급 기준»으로 내고 특수학급을 따로 셉니다.
+   (계 = 학년별 합 + 특수학급) 설계는 맞는데 화면이 말하지 않아, 같은 탭의
+   두 수가 어긋나 보였습니다. */
+check('차이가 정확히 특수학급 학생 수다', q(
+  "(function(){var x=gradeGap(null);return x.gap === x.sped;})()") === true,
+  q("JSON.stringify(gradeGap(null))"));
+check('낱낱의 학교에서도 그렇다', q(
+  "(function(){var L=SCHOOLS.filter(function(s){return s.grades&&s.grades.length});" +
+  "return L.every(function(s){var g=s.grades.reduce(function(a,v){return a+v},0);" +
+  "return (s.stu||0)-g === (s.sped||0);});})()") === true);
+check('화면이 그 까닭을 적는다',
+  /특수학급 학생 \$\{fmt\(x\.sped\)\}명이 빠져 있습니다/.test(js) &&
+  /id="cohort-sped-note"/.test(html) && /id="pax-sped-note"/.test(html));
+check('두 수를 나란히 적어 견줄 수 있게 한다',
+  /학년별을 다 더하면 <b>\$\{fmt\(x\.g\)\}명<\/b>/.test(js) &&
+  /학교별 학생 수를 다 더한 <b>\$\{fmt\(x\.stu\)\}명<\/b>/.test(js));
+
+console.log('\n■ 인쇄물이 어디서 나온 무엇인지 스스로 말한다');
+/* 종이는 회의 탁자에 혼자 놓입니다. 화면이 옆에 없어도 읽혀야 합니다. */
+check('머리글에 기관·제목·담은 것·뽑은 때가 있다',
+  /class="lh-org"/.test(html) && /id="print-report-title"/.test(html) &&
+  /id="print-report-scope"/.test(html) && /id="print-report-stamp"/.test(html));
+check('로고와 심볼을 함께 쓴다',
+  /class="lh-symbol"/.test(html) && /class="lh-logo"/.test(html));
+/* ★ 여태 AI 인쇄에서만 워터마크가 보였습니다. body::before 는 z-index:0 이라
+   흰 카드들이 덮고 있었고, AI 인쇄만 .shell 을 통째로 감췄기 때문입니다. */
+check('워터마크를 밑에 깔지 않고 위에 얹는다',
+  /body::before\{display:none !important\}/.test(html) &&
+  /body::after\{[\s\S]{0,200}?z-index:9999/.test(html));
+check('모든 인쇄에 찍힌다 (이슈페이퍼·AI 인쇄 포함)',
+  /body\.print-news-paper::after/.test(html) && /body\.print-ai-only::after/.test(html));
+check('화면에서는 워터마크를 얹지 않는다 (인쇄 규칙 안에만 있다)', q(
+  "true") === true && /@media print\{[\s\S]*?body::after\{/.test(html));
+check('종이에서 갈래 단추는 감추고 보고 있는 곳은 남긴다',
+  /\.status-bar \.news-view-tabs,\.news-view-tabs\{display:none !important\}/.test(html) &&
+  /\.status-where\{margin-bottom:4mm/.test(html));
+
+console.log('\n■ 지도 — 축척을 비율로도 적는다');
+/* 종이 지도를 읽어 온 사람에게는 1:25,000 같은 비율이 더 빨리 읽힙니다. */
+check('비율을 셈한다', /function mvScaleRatio/.test(js) && /MV_CSS_PX_M = 0\.0254 \/ 96/.test(js));
+check('자 길이를 1·2·5 로 끊는다', /function mvNiceLen/.test(js) &&
+  q("[mvNiceLen(3300), mvNiceLen(770), mvNiceLen(140)].join()") === '2000,500,100');
+check('단위를 크기에 맞춰 바꾼다',
+  q("[mvLen(0.4), mvLen(4.2), mvLen(420), mvLen(4200), mvLen(42000)].join()") === '40cm,4.2m,420m,4.2km,42km');
+check('어림이라고 밝힌다 (모니터마다 점 크기가 다르다)',
+  /모니터마다 점 크기가 달라 어림입니다/.test(js));
+
+console.log('\n■ 지도 — 딱지가 학교 모양이다');
+/* 네이버 부동산이 집 모양을 쓰는 까닭은, 무엇을 찍은 지도인지 보자마자
+   알게 하려는 것입니다. 그림 파일 없이 선으로 그립니다. */
+check('학교 모양을 선으로 그린다',
+  /function mvSchoolGlyph/.test(js) && /function mvSchoolPin/.test(js));
+check('그림 파일을 새로 들이지 않는다', !/mv-pin[^}]*background-image/.test(html));
+/* 스텁에는 진짜 CSS 가 없어 다섯 급이 같은 대비색으로 나옵니다. 색이 «다른지»가
+   아니라 «그 급의 색을 넣었는지»를 봅니다. */
+check('학교급 색을 그때그때 넣는다', q(
+  "(function(){return mvSchoolPin('초').indexOf(mvLvColor('초'))>=0 && " +
+  "mvSchoolGlyph('중',15).indexOf(mvLvColor('중'))>=0;})()") === true);
+check('이름표에 꼬리가 있어 어느 점인지 가리킨다',
+  /\.mv-lab::after\{content:""/.test(html) && /border-top:7px solid var\(--line\)/.test(html));
+check('닻을 아래에 두어 꼬리 끝이 학교 자리를 가리킨다',
+  /anchor:'bottom'/.test(js));
+
+console.log('\n■ 지도 — 돌리는 법을 묻는 사람에게만 알려 준다');
+/* 「안내를 빼 달라」와 「안내가 필요하다」 사이입니다. 늘 펴 두면 세 줄이
+   자리를 차지하고, 아주 없으면 돌리는 법을 알 길이 없습니다. */
+check('물음표 하나로 접어 둔다', /id="mv-turn-help"/.test(html) && /id="mv-turn-tip"/.test(html));
+check('처음에는 접혀 있다', /id="mv-turn-tip" hidden/.test(html));
+check('마우스·터치·자판 세 갈래를 다 적는다',
+  /<dt>마우스<\/dt>/.test(html) && /<dt>터치<\/dt>/.test(html) && /<dt>자판<\/dt>/.test(html));
+check('터치로 돌리는 법이 적혀 있다', /두 손가락을 비틀면<\/b> 돌아가고/.test(html));
+
 console.log(`\n${fail ? '✗' : '✓'}  통과 ${pass} · 실패 ${fail}\n`);
 process.exit(fail ? 1 : 0);
