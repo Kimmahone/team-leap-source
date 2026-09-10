@@ -1,0 +1,15 @@
+{
+  "name": "team-leap-news-pipeline",
+  "private": true,
+  "version": "1.0.0",
+  "description": "빅카인즈 원본에서 TEAM LEAP 뉴스 분석용 공개 산출물을 생성합니다.",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "weekly": "node build-weekly-issue.mjs --force",
+    "check": "node ../tests/news-archive.test.mjs"
+  },
+  "dependencies": {
+    "xlsx": "0.18.5"
+  }
+}

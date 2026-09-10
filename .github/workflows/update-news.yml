@@ -104,11 +104,22 @@ jobs:
           NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
         run: node fetch-news.js
 
+      # 뉴스는 매일 모으지만 이슈페이퍼는 일요일 아침에만 1호를 만듭니다.
+      # workflow_dispatch로 손으로 돌리면 현재 자료로 동일 기준일 페이퍼를 갱신합니다.
+      - name: 주간 이슈페이퍼 생성
+        if: github.event_name != 'push'
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            node news-pipeline/build-weekly-issue.mjs --force
+          else
+            node news-pipeline/build-weekly-issue.mjs
+          fi
+
       - name: 변경된 뉴스 커밋 (team-leap-source)
         run: |
           git config --global user.name  "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add news-history.json
+          git add news-history.json "06. 실행계획(1)/prototype/assets/news/issues/index.json"
           if git diff --cached --quiet; then
             echo "새로운 뉴스가 없습니다."
           else

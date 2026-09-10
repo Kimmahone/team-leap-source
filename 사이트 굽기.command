@@ -149,6 +149,7 @@ mkdir -p "$OUT/dashboard"
 cp "$SRC_DASH/index.html" "$SRC_DASH/README.md" "$SRC_DASH/README.html" "$OUT/dashboard/"
 [ -f "$SRC_DASH/gbe-logo.png" ] && cp "$SRC_DASH/gbe-logo.png" "$OUT/dashboard/gbe-logo.png"
 [ -f "$SRC_DASH/symbol1.jpg" ] && cp "$SRC_DASH/symbol1.jpg" "$OUT/dashboard/symbol1.jpg"
+[ -d "$SRC_DASH/assets" ] && cp -R "$SRC_DASH/assets" "$OUT/dashboard/assets"
 # ★ 새 지도 〔2026. 9. 10.〕 MapLibre 를 «저장소에 넣어» 씁니다 — 외부 CDN 이 아니라
 #   같은 출처에서 나갑니다(CSP script-src 'self' 그대로). 되돌릴 자리는 태그
 #   backup/sgis-map-2026-09-10 입니다.

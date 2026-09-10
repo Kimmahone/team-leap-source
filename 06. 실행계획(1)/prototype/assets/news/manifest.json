@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-10T03:31:54.461Z",
+  "source": "BIG Kinds 뉴스 검색·분석",
+  "coverage": {
+    "from": "2016-01-04",
+    "to": "2026-09-09"
+  },
+  "counts": {
+    "sourceRows": 29277,
+    "deduplicated": 19980,
+    "curated": 8633,
+    "analysisReady": 1875
+  },
+  "topics": {
+    "교육혁신·특구": 687,
+    "통폐합·적정규모": 631,
+    "지역소멸·인구": 290,
+    "통학·돌봄": 236,
+    "교원·정원": 117,
+    "교육재정": 57
+  },
+  "years": {
+    "2016": 76,
+    "2017": 63,
+    "2018": 101,
+    "2019": 63,
+    "2020": 84,
+    "2021": 103,
+    "2022": 92,
+    "2023": 248,
+    "2024": 534,
+    "2025": 354,
+    "2026": 157
+  },
+  "analysisMethod": {
+    "scope": "경북·시군 + 제목의 초중등 학령인구 직접 신호 + 제목의 6대 주제",
+    "vectorization": "기사 제목·BIG Kinds 특성추출 키워드 TF-IDF",
+    "similarity": "cosine",
+    "threshold": 0.28,
+    "populationComparison": "EDSS 2016~2025 초·중·고 학생 수 변화율; 인과·예측으로 사용하지 않음"
+  },
+  "publicFields": [
+    "집계값",
+    "근거기사 제목",
+    "근거기사 링크",
+    "발행일",
+    "언론사",
+    "주제",
+    "시군",
+    "키워드"
+  ],
+  "excludedFields": [
+    "본문",
+    "기사본문",
+    "description",
+    "persons"
+  ],
+  "files": [
+    {
+      "path": "snapshot.json",
+      "bytes": 17469,
+      "sha256": "7953eb8aee3217a2da2bbbb94bdfa55221ed5c4c727f2ede6b6325e70e729399"
+    },
+    {
+      "path": "network.json",
+      "bytes": 20390,
+      "sha256": "c98c40eb8dd0b446be62851fdcb06e52dc7dc46eec1e3301e7e0cb45d007494d"
+    },
+    {
+      "path": "issues/index.json",
+      "bytes": 7439,
+      "sha256": "31e625c0b24c3ab6f56a826cac56e1467d970104fcad55bddc2c10a9753c87d7"
+    }
+  ]
+}

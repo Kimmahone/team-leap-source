@@ -1,0 +1,72 @@
+{
+  "generatedAt": "2026-09-10T03:31:54.461Z",
+  "source": "BIG Kinds",
+  "sources": [
+    {
+      "file": "NewsResult_20160101-20161231.xlsx",
+      "bytes": 2505759,
+      "rows": 1798,
+      "sha256": "52ad76ff33bfdbd1630e7699fac3cb7c916a779acae77c4063066feba17f45c0"
+    },
+    {
+      "file": "NewsResult_20170101-20171231.xlsx",
+      "bytes": 2622218,
+      "rows": 1958,
+      "sha256": "c9b7796ff4b52e93034cb8727fb8802b5e12749ef73094f3dc1173ed491ad238"
+    },
+    {
+      "file": "NewsResult_20180101-20181231.xlsx",
+      "bytes": 2826460,
+      "rows": 2092,
+      "sha256": "1272e13de5f225add8f838e9a1cbf5e0881c9e9726cf39dd1f20d5de82377d99"
+    },
+    {
+      "file": "NewsResult_20190101-20191231.xlsx",
+      "bytes": 2953548,
+      "rows": 2178,
+      "sha256": "ccc5e94c2122084359c6ab82ed385be64adc2564afc540c56c893a2d9cbc7ece"
+    },
+    {
+      "file": "NewsResult_20200101-20201231.xlsx",
+      "bytes": 2847596,
+      "rows": 2132,
+      "sha256": "65aed9782e01451d131ac0278b1bbf620f89181efa94668f3b041ff3e5eab162"
+    },
+    {
+      "file": "NewsResult_20210101-20211231.xlsx",
+      "bytes": 3567926,
+      "rows": 2645,
+      "sha256": "43cfe6aebea2fde14ad966418804cbcc3c0b7f156d34b73d87b2bcccc3c3548b"
+    },
+    {
+      "file": "NewsResult_20220101-20221231.xlsx",
+      "bytes": 3540015,
+      "rows": 2565,
+      "sha256": "e5540ebbfa00683dc922d942590c2071921e2e0dd64ed473ea3e4225045db971"
+    },
+    {
+      "file": "NewsResult_20230101-20231231.xlsx",
+      "bytes": 4539574,
+      "rows": 3394,
+      "sha256": "9379429ef21aa8c35868ef2223577e1bf86470ae9b3e381e8604cbcf350ee604"
+    },
+    {
+      "file": "NewsResult_20240101-20241231.xlsx",
+      "bytes": 6506473,
+      "rows": 4819,
+      "sha256": "fda5cd52796a18c556465d2464a270006192910f84221385a5f94589bd2d9510"
+    },
+    {
+      "file": "NewsResult_20250101-20251231.xlsx",
+      "bytes": 4635838,
+      "rows": 3463,
+      "sha256": "1978933754d8465e53b0d521442b80d4a51672988affacfb80a7d653698b5186"
+    },
+    {
+      "file": "NewsResult_20260101-20260910.xlsx",
+      "bytes": 3134221,
+      "rows": 2233,
+      "sha256": "55ce722ebbec0c72907619d197390c7d0d2b59697cda30f3545e191574a9bfda"
+    }
+  ]
+}

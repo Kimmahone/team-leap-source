@@ -450,10 +450,13 @@ const fetchTargets = [...CODE_ONLY.matchAll(/\bfetch\s*\(\s*(['"])([^'"]+)\1/g)]
 /* 지키는 것은 «개수»가 아니라 규칙입니다 — 부르는 곳이 전부 같은 출처이고,
    그 목록을 우리가 «이름으로 알고 있어야» 합니다. 모르는 주소가 하나라도
    끼면 빨개집니다. 〔2026. 9. 10. 위성 지도 키를 받는 자리가 늘었습니다〕 */
-const FETCH_OK = ['/api/ai-analysis', '/api/data-status', '/api/vworld-key'];
+const FETCH_OK = [
+  '/api/ai-analysis', '/api/data-status', '/api/vworld-key',
+  'assets/news/manifest.json', 'assets/news/snapshot.json', 'assets/news/issues/index.json'
+];
 check('fetch 는 같은 출처의 «아는 주소»만 부른다',
   fetchTargets.length > 0 &&
-  fetchTargets.every(t => t.startsWith('/') && FETCH_OK.includes(t)),
+  fetchTargets.every(t => (t.startsWith('/') || t.startsWith('assets/news/')) && FETCH_OK.includes(t)),
   fetchTargets.join(', '));
 check('그 목록에 밖으로 나가는 주소가 없다',
   FETCH_OK.every(t => !/^https?:/i.test(t)));
