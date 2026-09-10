@@ -346,8 +346,8 @@ check('공개 시뮬레이터 범위를 시군·학교급으로 한정한다',
   !html.includes('id="size-max"') && html.includes('id="sig-grid"') && html.includes('id="sim-level"'));
 check('내부 정책 명부를 요구하는 시뮬레이터 필터가 없다',
   !html.includes('data-f="innov"') && !/공식 대상 명부 미확보/.test(html));
-check('AI 변화 읽기 도우미는 시뮬레이터 설명 뒤 맨 아래에 둔다',
-  html.indexOf('id="ai-briefing"') > html.indexOf('<b>계산 방식</b>'));
+check('AI 변화 읽기 도우미는 스크롤 없이 여는 내부 탭으로 둔다',
+  html.includes('data-sim-view="ai"') && html.includes('id="sim-panel-ai"') && html.includes('id="ai-briefing"'));
 check('가나다순 용어 도움말을 오른쪽 서랍으로 제공한다',
   html.includes('id="glossary-drawer"') && html.includes('id="glossary-toggle"') &&
   html.indexOf('<summary>교원 수</summary>') < html.indexOf('<summary>학령인구</summary>'));
@@ -1605,7 +1605,7 @@ check('vendor 폴더가 함께 실린다', /vendor/.test(bake));
 
 console.log('\n■ 〔시뮬〕 시나리오를 이름으로 고른다');
 check('처음 온 사람이 읽을 수 있는 시나리오 카드 세 장이 있다',
-  /data-sim-scenario="fixed"/.test(html) && /지금 그대로 두면/.test(html) &&
+  /data-sim-scenario="fixed"/.test(html) && /학교·학급 규모를 유지하면/.test(html) &&
   /data-sim-scenario="class20"/.test(html) && /학급당 20명을 지키면/.test(html) &&
   /data-sim-scenario="grade1"/.test(html) && /학년당 1학급 기준이면/.test(html));
 check('시나리오가 기존 계산 엔진의 라디오와 숫자를 실제로 바꾼다',
@@ -1613,6 +1613,15 @@ check('시나리오가 기존 계산 엔진의 라디오와 숫자를 실제로 
   /Object\.entries\(cfg\.values/.test(js));
 check('세부 설정은 자세히 고치기에 접어 둔다',
   /<details class="sim-advanced"/.test(html) && /<summary>자세히 고치기/.test(html));
+check('세 시나리오 카드의 결과 수치는 조회 조건에 따라 다시 계산한다',
+  /id="scenario-fixed-live"/.test(html) && /id="scenario-class20-live"/.test(html) &&
+  /id="scenario-grade1-live"/.test(html) && /function renderScenarioPreviews/.test(js));
+check('모의연도는 변화 요약 제목에서 선택하고 상세표는 같은 연도를 표시한다',
+  html.indexOf('id="pred-year"') < html.indexOf('id="sim-panel-detail"') &&
+  /id="pred-year-label"/.test(html) && /sim-change-title[^\n]*textContent=`2026년과/.test(js));
+check('요약·상세 수치·AI 인사이트를 독립 내부 탭으로 전환한다',
+  ['overview','detail','ai'].every(v=>html.includes(`data-sim-view="${v}"`)&&html.includes(`data-sim-panel="${v}"`)) &&
+  /function showSimPanel/.test(js));
 check('학생·학급·학교 변화가 상세표보다 먼저 나온다',
   html.indexOf('id="sim-change-title"') < html.indexOf('class="sim-tables"') &&
   /id="sim-delta-stu"/.test(html) && /id="sim-delta-cls"/.test(html) && /id="sim-delta-sch"/.test(html));
