@@ -2141,6 +2141,8 @@ body.map-maxed.home-wide #home-side{display:none}
         <button type="button" class="chip" data-sggsort="size">학생 적은 순</button>
         <button type="button" class="chip" data-sggsort="name">이름 순</button>
         <button type="button" class="chip" id="sgg-clear" hidden>경북 전체로</button>
+        <button type="button" class="chip" id="sgg-to-map" hidden>지도에서 보기</button>
+        <button type="button" class="chip" id="sgg-to-sim" hidden>시뮬레이터에서 보기</button>
       </div>
       <div class="sgg-board" id="sgg-board" role="list"></div>
       <p class="mv-note" style="margin-top:11px">막대 하나가 한 해입니다.
@@ -7174,8 +7176,14 @@ function renderSggBoard(){
         ? ` 지난 10년에 학생이 <b class="up">늘어난 곳은 ${grew.map(htmlEsc).join('·')}</b> 뿐입니다.`
         : '');
   }
-  const clr = document.getElementById('sgg-clear');
-  if(clr) clr.hidden = !statusState.sgg;
+  ['sgg-clear', 'sgg-to-map', 'sgg-to-sim'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.hidden = !statusState.sgg;
+  });
+  const toMap = document.getElementById('sgg-to-map');
+  const toSim = document.getElementById('sgg-to-sim');
+  if(toMap) toMap.textContent = statusState.sgg ? `${statusState.sgg} 지도에서 보기` : '지도에서 보기';
+  if(toSim) toSim.textContent = statusState.sgg ? `${statusState.sgg} 시뮬레이터에서 보기` : '시뮬레이터에서 보기';
 }
 
 /* ══ 이미 학교에 앉아 있는 아이 〔2026. 9. 10.〕 ═══════════════════════════
@@ -7498,6 +7506,41 @@ function renderMilestones(){
     `<span class="mt">${e.t}<em>${e.n}</em></span></div>`).join('');
 }
 
+/* ══ 세 화면이 «같은 것»을 보게 〔2026. 9. 10.〕 ═══════════════════════════
+   여태 탭 셋이 각자 따로 살았습니다. 현황에서 봉화가 가파르다는 것을 알아도,
+   봉화의 학교가 어디 있는지 보려면 지도로 가서 다시 찾아야 했습니다.
+   고른 것이 따라다니면 화면 세 개가 «한 화면»이 됩니다.
+
+   ★ 다른 화면의 속을 함부로 뒤지지 않습니다. 있으면 쓰고 없으면 조용히
+     넘어갑니다 — 시뮬레이터는 다른 사람이 고치고 있어서, 그쪽 모양이 바뀌어도
+     이 단추 때문에 화면이 멎으면 안 됩니다. */
+function openMapFor(sgg){
+  const sg = SIGUNGU.filter(x => x.s === sgg)[0];
+  location.hash = 'map';
+  if(!sg) return;
+  /* 지도는 «열 때» 라이브러리를 불러옵니다. 준비될 때까지 몇 번만 기다립니다 —
+     끝없이 기다리면 지도를 못 여는 형편에서 타이머가 남습니다. */
+  let tries = 0;
+  const go = () => {
+    if(typeof MV === 'undefined') return;
+    if(!MV.map){ if(++tries < 40) setTimeout(go, 250); return; }
+    try{ MV.map.flyTo({ center:[sg.lon, sg.lat], zoom:10.4, duration:900 }); }catch(_e){}
+  };
+  setTimeout(go, 80);
+}
+
+function openSimFor(sgg){
+  try{
+    if(typeof sim === 'object' && sim && sim.sigungu && sim.sigungu.clear){
+      sim.sigungu.clear();
+      if(sgg) sim.sigungu.add(sgg);
+      if(typeof syncSigChips === 'function') syncSigChips();
+      if(typeof renderSim === 'function') renderSim();
+    }
+  }catch(_e){ /* 시뮬레이터 모양이 바뀌어도 넘어가는 것만은 됩니다 */ }
+  location.hash = 'sim';
+}
+
 function selectSgg(key){
   statusState.sgg = key || null;
   /* 시군에는 주민등록 자료가 없습니다. 학생수로 바꿔 주고 왜인지 적습니다. */
@@ -7734,6 +7777,8 @@ Array.prototype.forEach.call(document.querySelectorAll('[data-sggsort]'), btn =>
   });
 });
 onEl('sgg-clear', 'click', () => selectSgg(null));
+onEl('sgg-to-map', 'click', () => openMapFor(statusState.sgg));
+onEl('sgg-to-sim', 'click', () => openSimFor(statusState.sgg));
 
 /* =========================================================
    5. 시뮬레이터

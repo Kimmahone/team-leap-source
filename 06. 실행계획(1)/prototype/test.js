@@ -1786,6 +1786,26 @@ check('만 명이 넘으면 접어서 적는다', q("statusShort(321000)") === '
   q("statusShort(9412)") === '9,412');
 check('「현재」 점선이 값을 관통하지 않는다', /text-anchor="\$\{isNow \? 'start' : 'middle'\}"/.test(js));
 
+console.log('\n■ 〔현황〕 세 화면이 같은 것을 보게 잇는다');
+/* 여태 탭 셋이 각자 따로 살았습니다. 현황에서 봉화가 가파르다는 것을 알아도,
+   봉화의 학교가 어디 있는지 보려면 지도로 가서 다시 찾아야 했습니다. */
+check('시군을 고르면 두 길이 열린다',
+  /id="sgg-to-map"/.test(html) && /id="sgg-to-sim"/.test(html) &&
+  /function openMapFor/.test(js) && /function openSimFor/.test(js));
+check('경북 전체일 때는 감춘다', q(
+  "(function(){selectSgg(null);return document.getElementById('sgg-to-map').hidden;})()") === true);
+check('어디로 가는지 단추에 적는다', q(
+  "(function(){selectSgg('봉화');var t=document.getElementById('sgg-to-map').textContent;" +
+  "selectSgg(null);return t;})()") === '봉화 지도에서 보기');
+/* 시뮬레이터는 다른 사람이 고치고 있습니다. 그쪽 모양이 바뀌어도 이 단추
+   때문에 화면이 멎으면 안 됩니다. */
+check('다른 화면의 속을 함부로 뒤지지 않는다',
+  /typeof sim === 'object' && sim && sim\.sigungu && sim\.sigungu\.clear/.test(js) &&
+  /catch\(_e\)\{ \/\* 시뮬레이터 모양이 바뀌어도/.test(js));
+check('시뮬레이터 조건이 실제로 바뀐다', q(
+  "(function(){openSimFor('봉화');return sim.sigungu.has('봉화') && sim.sigungu.size===1;})()") === true);
+check('지도를 못 열어도 타이머가 남지 않는다', /if\(\+\+tries < 40\)/.test(js));
+
 console.log('\n■ 〔현황〕 구현 용어를 걷어냈다');
 check('「Pure SVG」·「Line Chart」 같은 말이 없다',
   !/Pure SVG/.test(html) && !/Line Chart/.test(html));
