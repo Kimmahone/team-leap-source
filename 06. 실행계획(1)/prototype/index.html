@@ -1114,6 +1114,36 @@ table.data .hl{color:var(--brand);font-weight:800}
 .convert-note{margin:11px 0 0;font-size:11.5px;color:var(--ink-3);line-height:1.65}
 .convert-note b{color:var(--ink-2)}
 
+/* ── 폐교가 말해 주는 것 ───────────────────────────────────────────────── */
+.closed-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));gap:10px;margin-top:4px}
+.closed-facts .cf{border:1px solid var(--line);border-radius:10px;padding:12px 13px;background:var(--card)}
+.closed-facts .cf.warn{border-color:var(--leap-amber);background:var(--card-2)}
+.closed-facts .k{font-size:11px;color:var(--ink-3);margin-bottom:3px}
+.closed-facts .v{font-size:26px;font-weight:800;color:var(--brand);line-height:1.15;
+  font-variant-numeric:tabular-nums}
+.closed-facts .cf.warn .v{color:var(--leap-amber)}
+.closed-facts .v em{font-style:normal;font-size:12px;font-weight:600;color:var(--ink-3);margin-left:3px}
+.closed-facts p{margin:6px 0 0;font-size:11.5px;line-height:1.6;color:var(--ink-2)}
+/* 있었던 학교 가운데 사라진 몫 */
+.closed-lost{display:grid;gap:6px}
+.cl{display:grid;grid-template-columns:44px minmax(0,1fr) 40px;gap:9px;align-items:center;
+  font-size:12px;row-gap:1px}
+.cl .nm{font-weight:700;color:var(--ink)}
+.cl .track{height:14px;background:var(--card-2);border-radius:4px;overflow:hidden}
+.cl .fill{display:block;height:100%;background:var(--leap-amber-mark);opacity:.75;border-radius:4px}
+.cl .pc{text-align:right;font-weight:800;color:var(--leap-amber);font-variant-numeric:tabular-nums}
+.cl .sub{grid-column:2/4;font-size:10.5px;color:var(--ink-3);font-variant-numeric:tabular-nums;
+  margin-bottom:3px}
+/* 목록은 접어 둡니다 — 찾을 때 쓰는 것이지 읽는 것이 아닙니다 */
+.closed-list-box > summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:9px;
+  font-size:14px;color:var(--ink)}
+.closed-list-box > summary::-webkit-details-marker{display:none}
+.closed-list-box > summary::before{content:"▸";color:var(--brand);font-size:12px;transition:transform .15s}
+.closed-list-box[open] > summary::before{transform:rotate(90deg)}
+.closed-list-box > summary:hover{color:var(--brand)}
+.closed-list-box > summary:focus-visible{outline:3px solid var(--brand);outline-offset:3px;border-radius:6px}
+.closed-list-box > summary .asof{margin-left:auto}
+
 /* ── 두 수가 왜 다른가 ─────────────────────────────────────────────────── */
 .gapbox{margin:-6px 0 14px;border:1px solid var(--line);border-radius:9px;background:var(--card-2)}
 .gapbox summary{cursor:pointer;list-style:none;padding:10px 13px;font-size:12.5px;font-weight:600;
@@ -1194,6 +1224,23 @@ table.data .hl{color:var(--brand);font-weight:800}
    input[type=search] 는 브라우저가 제 나름의 모양(각진 테두리·지우기 단추)을
    입힙니다. 그대로 두면 이 화면에서 혼자 다른 물건처럼 보입니다. 벗기고
    돋보기를 왼쪽에 둡니다. */
+/* ── 돌리는 법 안내 ── 묻는 사람에게만. 늘 펴 두면 세 줄이 자리를 차지합니다 */
+.mv-help{flex:none;width:26px;height:26px;align-self:center;border-radius:50%;
+  border:1px solid var(--line);background:var(--card);color:var(--ink-3);
+  font:inherit;font-size:12px;font-weight:800;cursor:pointer;line-height:1}
+.mv-help:hover{border-color:var(--brand);color:var(--brand)}
+.mv-help[aria-expanded="true"]{background:var(--brand);border-color:var(--brand);color:var(--leap-on-fill)}
+.mv-help:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.mv-tip{margin-top:8px;border:1px solid var(--line);border-radius:8px;background:var(--card);
+  padding:10px 11px;font-size:11.5px;line-height:1.6;color:var(--ink-2)}
+.mv-tip[hidden]{display:none}
+.mv-tip > b{display:block;font-size:12px;color:var(--ink);margin-bottom:6px}
+.mv-tip dl{margin:0;display:grid;gap:5px}
+.mv-tip dl > div{display:grid;grid-template-columns:38px minmax(0,1fr);gap:8px;align-items:baseline}
+.mv-tip dt{font-size:10.5px;font-weight:700;color:var(--ink-3)}
+.mv-tip dd{margin:0}
+.mv-tip b{color:var(--ink);font-weight:700}
+.mv-tip p{margin:7px 0 0;color:var(--ink-3)}
 .mv-search{position:relative;display:flex;align-items:center}
 .mv-search svg{position:absolute;left:12px;width:14px;height:14px;pointer-events:none;
   fill:none;stroke:var(--ink-3);stroke-width:1.6;stroke-linecap:round}
@@ -1267,19 +1314,42 @@ table.data .hl{color:var(--brand);font-weight:800}
   .mapview.side-off{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr)}
 }
 #mv-canvas{position:absolute;inset:0;background:var(--card-2)}
+/* ── 축척 ── 자와 비율을 함께. 종이 지도를 읽어 온 사람에게는 비율이 빠릅니다 */
+.mv-scale{position:absolute;right:12px;bottom:26px;z-index:5;display:flex;align-items:center;gap:8px;
+  background:var(--card);border:1px solid var(--line);border-radius:7px;padding:5px 10px;
+  box-shadow:var(--leap-shadow);font-size:11px;color:var(--ink-2);
+  font-variant-numeric:tabular-nums}
+.mv-scale .bar{display:block;height:8px;border-left:2px solid var(--ink-2);
+  border-right:2px solid var(--ink-2);border-bottom:2px solid var(--ink-2);min-width:24px}
+.mv-scale .len{font-weight:700;color:var(--ink)}
+.mv-scale .ratio{padding-left:8px;border-left:1px solid var(--line);color:var(--ink-3)}
 .mv-status{position:absolute;left:12px;bottom:24px;z-index:5;background:var(--card);
   border:1px solid var(--line);border-radius:var(--leap-radius-sm);padding:7px 12px;
   font-size:12px;color:var(--ink-2);box-shadow:var(--leap-shadow);max-width:min(560px,68%)}
 
-/* 딱지 — 멀리서는 시군 묶음, 가까이서는 점, 더 가까이서는 이름 */
-.mv-pin{width:13px;height:13px;border-radius:50%;border:2px solid var(--card);
-  box-shadow:0 1px 4px rgba(16,26,36,.45);cursor:pointer}
-.mv-pin.is-on{width:19px;height:19px;border-width:3px;box-shadow:0 0 0 3px var(--brand)}
-.mv-lab{display:flex;align-items:center;gap:5px;white-space:nowrap;cursor:pointer;
-  background:var(--card);border:1px solid var(--line);border-radius:7px;padding:3px 8px 3px 6px;
+/* ── 학교 딱지 ─────────────────────────────────────────────────────────
+   멀리서는 시군 묶음, 가까이서는 «학교 모양 핀», 더 가까이서는 이름표.
+   ★ 그림 파일을 쓰지 않고 SVG 선으로 그립니다 — 학교급 다섯 색에 밝기 두 벌이면
+     파일이 열 개가 됩니다. 선으로 그리면 색은 그때그때 넣습니다. */
+.mv-pin{width:20px;height:26px;cursor:pointer;
+  filter:drop-shadow(0 1px 3px rgba(16,26,36,.45))}
+.mv-pin svg{display:block}
+.mv-pin.is-on{filter:drop-shadow(0 2px 5px rgba(16,26,36,.55))}
+.mv-pin.is-on svg{transform:scale(1.2);transform-origin:50% 100%}
+/* 이름표 — 네이버 부동산처럼 «아래로 꼬리»가 있어야 어느 점을 가리키는지
+   한눈에 보입니다. 꼬리가 없으면 그냥 떠 있는 상자로 읽힙니다. */
+.mv-lab{position:relative;display:flex;align-items:center;gap:5px;white-space:nowrap;cursor:pointer;
+  background:var(--card);border:1px solid var(--line);border-radius:9px;padding:3px 9px 3px 5px;
   font-size:11.5px;box-shadow:0 2px 8px rgba(16,26,36,.2);color:var(--ink)}
+.mv-lab::after{content:"";position:absolute;left:50%;bottom:-7px;margin-left:-6px;
+  width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;
+  border-top:7px solid var(--line)}
+.mv-lab::before{content:"";position:absolute;left:50%;bottom:-5px;margin-left:-5px;z-index:1;
+  width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;
+  border-top:6px solid var(--card)}
 .mv-lab.is-on{border-color:var(--brand);box-shadow:0 0 0 2px var(--brand)}
-.mv-lab i{width:8px;height:8px;border-radius:50%;flex:none}
+.mv-lab.is-on::after{border-top-color:var(--brand)}
+.mv-lab .sg{flex:none;display:block}
 .mv-lab b{font-weight:700}
 .mv-lab span{font-variant-numeric:tabular-nums;color:var(--brand);font-weight:600}
 .mv-bub{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:5px 10px;
@@ -1312,12 +1382,46 @@ table.data .hl{color:var(--brand);font-weight:800}
   @page{size:A4 landscape;margin:12mm 11mm 15mm}
   html,body{height:auto !important;overflow:visible !important}
   body{font-size:9.5pt;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  body::before{z-index:0;background-size:300px auto;opacity:.045}
+  /* ── 워터마크 ── 〔2026. 9. 10.〕
+     ★ 왜 여태 AI 인쇄에서만 보였나 — body::before 는 z-index:0 이고 그 위에
+       .shell(z-index:1)과 흰 카드들이 덮고 있었습니다. AI 인쇄는 .shell 을
+       통째로 감추므로 그때만 드러났던 것입니다.
+
+     워터마크는 «밑에 까는 것»이 아니라 «위에 얹는 것»입니다. ::after 로
+     맨 위에 올리고 옅게 둡니다. 0.06 이면 표의 글자를 읽는 데 걸리지 않습니다.
+     position:fixed 라 Chromium 이 장마다 다시 그립니다. */
+  body::before{display:none !important}
+  body::after{
+    content:"";position:fixed;inset:0;z-index:9999;pointer-events:none;
+    background:url("symbol1.jpg") center 50%/62mm auto no-repeat;
+    opacity:.06;
+  }
+  /* 이슈페이퍼는 제 머리글(masthead)을 가진 신문 꼴이라 가운데 큰 표시가
+     겹칩니다. 그 화면에서는 작게, 아래쪽 구석에 둡니다. */
+  body.print-news-paper::after{background-size:32mm auto;background-position:center 90%;opacity:.05}
   .no-print,.sidebar,.top-tools,.glossary-drawer,.glossary-backdrop,.map-toolbar .chip,#home-reset,#sim-clear{display:none !important}
   .shell{display:block;position:relative;z-index:1}
   .main{padding:0;overflow:visible !important}
-  .print-letterhead{display:grid !important;grid-template-columns:minmax(0,1fr) 15mm;align-items:center;column-gap:5mm;border-bottom:2px solid #000;margin-bottom:5mm;padding:0 0 3mm;width:100%;box-sizing:border-box}
-  .print-letterhead img{display:block;width:15mm;height:15mm;object-fit:contain;justify-self:end}.print-letterhead h1{font-size:16pt;line-height:1.2;margin:0}.print-letterhead p{margin:1mm 0 0;font-size:8.5pt;color:#333}
+  /* ── 머리글 ── 기관 · 문서 이름 · 담은 것 · 뽑은 때 네 가지를 답니다.
+     종이는 회의 탁자에 혼자 놓입니다. 화면이 옆에 없어도 읽혀야 합니다. */
+  .print-letterhead{display:grid !important;
+    grid-template-columns:auto minmax(0,1fr) auto;align-items:end;column-gap:6mm;
+    border-bottom:.6mm solid #1B4FA0;margin-bottom:5mm;padding:0 0 2.6mm;
+    width:100%;box-sizing:border-box;break-inside:avoid}
+  .print-letterhead .lh-mark{display:flex;align-items:center;gap:2.4mm}
+  .print-letterhead .lh-symbol{display:block;width:11mm;height:11mm;object-fit:contain}
+  .print-letterhead .lh-logo{display:block;height:7mm;width:auto;object-fit:contain}
+  .print-letterhead .lh-org{margin:0;font-size:7.5pt;letter-spacing:.06em;color:#1B4FA0;font-weight:700}
+  .print-letterhead h1{font-size:17pt;line-height:1.15;margin:.6mm 0 0;letter-spacing:-.02em}
+  .print-letterhead .lh-sub{margin:1mm 0 0;font-size:8.5pt;color:#333;line-height:1.4}
+  /* 오른쪽은 «언제·무엇을» 입니다. 한 줄로 흘리지 않고 이름표를 붙여 둡니다 —
+     나중에 이 종이만 남았을 때 조건을 되짚을 수 있어야 합니다. */
+  .print-letterhead .lh-meta{margin:0;display:grid;gap:1mm;text-align:right;min-width:38mm}
+  .print-letterhead .lh-meta > div{display:grid;grid-template-columns:auto auto;
+    justify-content:end;column-gap:2.4mm;align-items:baseline}
+  .print-letterhead .lh-meta dt{font-size:6.8pt;color:#666;letter-spacing:.05em}
+  .print-letterhead .lh-meta dd{margin:0;font-size:8pt;color:#111;font-weight:600;
+    max-width:46mm;overflow-wrap:anywhere}
   /* 고정 꼬리말은 Chromium이 다음 장의 본문 위에 반복해서 그립니다. 인쇄물에는 넣지 않습니다. */
   .print-footer{display:none !important}
   .card{border:1px solid #999;box-shadow:none;margin-bottom:6mm;overflow:visible !important}
@@ -1329,6 +1433,12 @@ table.data .hl{color:var(--brand);font-weight:800}
   .panel{border:1px solid #999;margin-bottom:6mm}
   .panel.pred{border-top:3px solid #000}
   .page-head{display:none !important}
+  /* 종이에서 갈래 단추는 뜻이 없습니다 — 누를 수 없으니까요. 다만 «어느 곳을
+     보고 있었는지»는 남아야 합니다. 단추만 감추고 그 줄은 남깁니다.
+     어느 갈래였는지는 머리글의 「조회 조건」이 말합니다. */
+  .status-bar .news-view-tabs,.news-view-tabs{display:none !important}
+  .status-where{margin-bottom:4mm;font-size:9pt;color:#111}
+  .status-where button{display:none !important}
   h1,h2,h3,h4,.print-keep{break-after:avoid;page-break-after:avoid}
   table{break-inside:auto;page-break-inside:auto}thead{display:table-header-group}tfoot{display:table-footer-group}
   tr,.marker,.tile,.news-item,.criteria-guide-grid section,.ai-purpose-list span{break-inside:avoid;page-break-inside:avoid}
@@ -1380,8 +1490,14 @@ table.data .hl{color:var(--brand);font-weight:800}
   #ai-print-report{display:none !important}
   body.print-ai-only .shell{display:none !important}
   body.print-ai-only #ai-print-report{display:block !important;position:relative;z-index:1}
+  /* ★ 두 갈래를 함께 살립니다 〔2026. 9. 11.〕
+     시뮬레이터 쪽에서 AI 인쇄의 «색»을 따로 잡아 주었고(아래 토큰 한 줄),
+     이쪽에서는 워터마크를 ::before 에서 ::after 로 «위로» 옮겼습니다.
+     같은 줄이라 부딪혔을 뿐, 서로 다른 것을 고친 것입니다.
+     색은 그대로 두고 워터마크만 ::after 로 적습니다 — ::before 는 이 파일
+     위쪽에서 이미 display:none 이라 그대로 두면 워터마크가 사라집니다. */
   body.print-ai-only{--brand:#164f9d;--brand-pale:#edf4fd;--over:#b9322a;--leap-teal:#087968;--ink:#101c2b;--ink-2:#3d4a5b;--ink-3:#657184;--line:#bfcddd;--line-2:#d9e2ec;--card:#fff;--card-2:#f4f7fb;--leap-on-fill:#fff}
-  body.print-ai-only::before{background-size:250px auto;opacity:.045}
+  body.print-ai-only::after{background-size:62mm auto;opacity:.06}
   body.print-ai-only .policy-report{max-width:none;width:100%;font-size:9pt}
   body.print-ai-only .policy-report .report-cover{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   body.print-ai-only .policy-report .ai-insight-hero{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -1735,12 +1851,24 @@ body.map-maxed.home-wide #home-side{display:none}
   </nav>
 
   <main class="main">
+    <!-- ══ 인쇄 머리글 〔2026. 9. 10.〕 ═══════════════════════════════════════
+         종이로 나가면 이 종이가 «어디서 나온 무엇인지»를 스스로 말해야 합니다.
+         회의 탁자에 놓이면 화면이 옆에 없기 때문입니다.
+         기관 · 문서 이름 · 무엇을 담았는지 · 언제 뽑았는지 네 가지를 답니다. -->
     <header class="print-letterhead print-only" aria-hidden="true">
-      <div>
-        <h1 id="print-report-title">경북 학령인구 데이터 플랫폼</h1>
-        <p id="print-report-subtitle">현재 조회 조건을 반영한 출력물</p>
+      <div class="lh-mark">
+        <img src="symbol1.jpg" alt="" class="lh-symbol">
+        <img src="gbe-logo.png" alt="" class="lh-logo">
       </div>
-      <img src="symbol1.jpg" alt="">
+      <div class="lh-body">
+        <p class="lh-org">경상북도교육청 · GBE-AI Lab</p>
+        <h1 id="print-report-title">경북 학령인구 데이터 플랫폼</h1>
+        <p class="lh-sub" id="print-report-subtitle">현재 조회 조건을 반영한 출력물</p>
+      </div>
+      <dl class="lh-meta">
+        <div><dt>출력</dt><dd id="print-report-stamp">–</dd></div>
+        <div><dt>조회 조건</dt><dd id="print-report-scope">–</dd></div>
+      </dl>
     </header>
     <div class="top-tools no-print">
       <button type="button" class="guide-btn" id="guide-toggle" aria-expanded="false" aria-controls="guide-drawer">사용 안내</button>
@@ -2068,6 +2196,22 @@ body.map-maxed.home-wide #home-side{display:none}
             <button type="button" class="chip" id="mv-2d" aria-pressed="true">2D</button>
             <button type="button" class="chip" id="mv-3d" aria-pressed="false">3D 지형</button>
             <button type="button" class="chip" id="mv-reset">경북 전체로</button>
+            <!-- 안내는 «묻는 사람에게만» 보여 줍니다. 늘 펴 두면 세 줄이 자리를
+                 차지하고, 아주 없으면 돌리는 법을 알 길이 없습니다. -->
+            <button type="button" class="mv-help" id="mv-turn-help"
+                    aria-expanded="false" aria-controls="mv-turn-tip"
+                    title="지도를 돌리고 기울이는 법">?</button>
+          </div>
+          <div class="mv-tip" id="mv-turn-tip" hidden>
+            <b>지도를 돌리고 기울이려면</b>
+            <dl>
+              <div><dt>마우스</dt><dd><b>Shift</b> 를 누른 채 끌기 · 오른쪽 단추로 끌기 ·
+                오른쪽 위 <b>나침반</b>을 끌기</dd></div>
+              <div><dt>터치</dt><dd><b>두 손가락을 비틀면</b> 돌아가고,
+                <b>두 손가락을 위아래로 밀면</b> 기울어집니다</dd></div>
+              <div><dt>자판</dt><dd>지도를 한 번 누른 뒤 <b>Shift + 화살표</b></dd></div>
+            </dl>
+            <p>좌우가 방위, 위아래가 기울기입니다. 산 너머를 보려면 둘 다 씁니다.</p>
           </div>
           <div class="mv-row" style="margin-top:6px">
             <button type="button" class="chip" id="mv-closed" aria-pressed="false">폐교 겹쳐 보기</button>
@@ -2318,6 +2462,12 @@ body.map-maxed.home-wide #home-side{display:none}
       이동이 들어 있지 않습니다.</b> 지금 이 지역에 있는 아이가 <b>그대로 머문다고 보았을 때</b>의
       수입니다. 그래서 실제와는 다르지만, <b>출산율을 가정하지 않는다</b>는 점에서
       장래추계보다 흔들림이 적습니다.</p>
+      <!-- ★ 두 수가 다른 까닭 〔2026. 9. 10.〕
+           학년별을 다 더하면 학교 학생 수 합보다 적습니다. 학교알리미가
+           학년별 인원을 «일반학급 기준»으로 내고, 특수학급 학생은 따로 세기
+           때문입니다(계 = 학년별 합 + 특수학급). 설계는 맞는데 화면이 그것을
+           말하지 않아, 같은 탭의 두 수가 어긋나 보였습니다. -->
+      <p class="mv-note" id="cohort-sped-note" style="margin-top:7px"></p>
     </div>
 
       <div class="card">
@@ -2332,6 +2482,7 @@ body.map-maxed.home-wide #home-side{display:none}
             <!-- SVG 차트가 JS로 자동 렌더링됩니다 -->
           </svg>
         </div>
+        <p class="mv-note" id="pax-sped-note" style="margin-top:8px"></p>
       </div>
 
       </div>
@@ -2801,6 +2952,28 @@ body.map-maxed.home-wide #home-side{display:none}
       <details class="src-box" id="src-closed" style="margin-bottom:14px"></details>
       <div class="kpi" id="closed-kpi"></div>
 
+      <!-- ══ 폐교가 말해 주는 것 〔2026. 9. 10.〕 ═══════════════════════════════
+           여태 이 탭은 «몇 곳인지»만 셌습니다. 750곳이라는 수는 그 자체로는
+           결정을 만들지 않습니다.
+
+           이 자료가 정말로 말해 주는 것은 셋입니다.
+             ① 지금이 «처음»이 아니라는 것 — 1990년대에 이미 422곳을 겪었습니다
+             ② 있었던 학교 가운데 얼마가 사라졌는지 — 시군마다 아주 다릅니다
+             ③ 한 번 판 땅은 «돌이킬 수 없다»는 것 — 매각 495곳은 남의 땅입니다
+           지금의 결정이 30년 뒤에 그렇게 남습니다. -->
+      <div class="card" id="closed-insight" style="margin-top:16px">
+        <h2>폐교가 말해 주는 것</h2>
+        <p class="sgg-board-lede" id="closed-insight-lede"></p>
+        <div class="closed-facts" id="closed-facts"></div>
+        <h3 class="cohort-h" style="margin-top:16px">있었던 학교 가운데 얼마가 사라졌나</h3>
+        <p class="cohort-sub">지금 남은 학교와 문 닫은 학교를 더한 것이 «있었던 학교»입니다.
+        같은 100곳이라도 원래 많았던 곳과 원래 적었던 곳은 뜻이 다릅니다.</p>
+        <div class="closed-lost" id="closed-lost"></div>
+        <p class="mv-note" style="margin-top:10px">문 닫은 해가 1982년까지 거슬러 올라갑니다.
+        그 사이 시군 경계와 학교 이름이 바뀐 곳이 있어 <b>있었던 학교 수는 어림</b>입니다.
+        <b>초등학교가 658곳(88%)</b>으로 거의 전부입니다.</p>
+      </div>
+
       <div style="display:grid; grid-template-columns:2fr 1fr; gap:20px; margin-top:16px;">
         <div>
           <div class="card">
@@ -2826,24 +2999,30 @@ body.map-maxed.home-wide #home-side{display:none}
             <div id="closed-use"></div>
           </div>
           <div class="card">
-            <h2 style="font-size:14px; color:var(--ink-3); margin-bottom:10px;">지도에 핀을 찍으려면</h2>
-            <p style="margin:0; font-size:12.5px; line-height:1.75; color:var(--ink-2)">
-              이 자료에는 <b>주소만 있고 위경도가 없습니다.</b>
-              그래서 <b>이 탭에는 아직 학교별 지도가 없습니다</b> — 시군별 분포는 위의 막대로 봅니다.<br>
-              <span style="color:var(--ink-3)">주소를 좌표로 바꾸는 길은 열려 있습니다
-              (유치원 614곳에 쓴 것과 같은 방법). 실제로 재어 보니 활용 대상 255곳 가운데
-              <b>249곳(98%)</b>에서 좌표를 찾았고, 비어 있는 <b>미활용 70곳은 모두</b> 찾았습니다.
-              못 찾은 6곳은 «외 6필지»처럼 번지에 군더더기가 붙었거나 없어진 리 지번입니다.
-              없는 좌표를 시군 중심으로 대신하지는 않습니다 —
-              그러면 «그 자리에 있는 것»처럼 보입니다.</span>
+            <h2 style="font-size:14px; color:var(--ink-3); margin-bottom:10px;">어디에 있나</h2>
+            <p style="margin:0 0 10px; font-size:12.5px; line-height:1.75; color:var(--ink-2)">
+              <b id="closed-geo-count">–</b>곳은 좌표를 찾아 두어 <b>지도에서 볼 수 있습니다.</b>
+              「지도로 보기」에서 <b>폐교 겹쳐 보기</b>를 켜면 지금 학교와 나란히 놓입니다 —
+              문 닫은 자리와 남은 학교가 <b>얼마나 떨어져 있는지</b>가 그 화면에서 보입니다.
+            </p>
+            <button type="button" class="chip" id="closed-to-map" style="width:100%">지도에서 폐교 보기</button>
+            <p style="margin:10px 0 0; font-size:11.5px; line-height:1.7; color:var(--ink-3)">
+              이 자료에는 주소만 있고 위경도가 없어 <b>주소로 좌표를 찾았습니다.</b>
+              활용 대상 255곳 가운데 <b>249곳(98%)</b>에서 찾았고, 비어 있는 <b>미활용 70곳은
+              모두</b> 찾았습니다. 못 찾은 6곳은 «외 6필지»처럼 번지에 군더더기가 붙었거나
+              없어진 리 지번입니다. <b>없는 좌표를 시군 중심으로 대신하지 않습니다</b> —
+              그러면 «그 자리에 있는 것»처럼 보입니다.
             </p>
           </div>
         </div>
       </div>
 
-      <div class="card">
-        <h2>폐교 목록<span class="asof" id="asof-closed3"></span></h2>
-        <div class="map-toolbar" style="margin-bottom:10px">
+      <!-- ★ 목록을 접어 둡니다 〔2026. 9. 10.〕
+           750줄짜리 목록이 화면 아래를 채우고 있었습니다. 목록은 «찾을 때»
+           쓰는 것이지 «읽는 것»이 아닙니다. 필요할 때 펴서 씁니다. -->
+      <details class="card closed-list-box" id="closed-list-box">
+        <summary><b>폐교 목록에서 찾아보기</b><span class="asof" id="asof-closed3"></span></summary>
+        <div class="map-toolbar" style="margin:12px 0 10px">
           <label class="sr-only" for="closed-filter-sig">시군</label>
           <select id="closed-filter-sig" class="select"><option value="">시군 전체</option></select>
           <label class="sr-only" for="closed-filter-use">활용현황</label>
@@ -2854,7 +3033,7 @@ body.map-maxed.home-wide #home-side{display:none}
         </div>
         <div id="closed-list"></div>
         <button type="button" class="chip no-print" id="closed-more" style="margin-top:10px" hidden aria-expanded="false"></button>
-      </div>
+      </details>
     </div>
   </section>
 
@@ -3362,6 +3541,8 @@ body.map-maxed.home-wide #home-side{display:none}
       if(pageStyle)pageStyle.textContent='@media print{@page{size:A4 portrait;margin:9mm}}';
       document.body.classList.add('print-news-paper');
       window.addEventListener('afterprint',function(){document.body.classList.remove('print-news-paper');document.title=previousTitle;if(pageStyle)pageStyle.textContent='';},{once:true});
+      /* 이슈페이퍼도 «어디서 나온 것인지»는 남아야 합니다. 신문 꼴이라
+         머리글은 제 것을 쓰고, 워터마크만 아래쪽 구석에 작게 찍습니다. */
       window.print();
     });
   }
@@ -7368,6 +7549,29 @@ function cohortRows(rows, mx){
   }).join('');
 }
 
+/* 학년별을 다 더하면 학교 학생 수 합보다 «적습니다». 학교알리미가 학년별
+   인원을 일반학급 기준으로 내고 특수학급 학생을 따로 세기 때문입니다
+   (계 = 학년별 합 + 특수학급). 그 차이를 화면이 스스로 말하게 합니다. */
+function gradeGap(sgg){
+  const L = SCHOOLS.filter(s => Array.isArray(s.grades) && s.grades.length && (!sgg || s.s === sgg));
+  let stu = 0, g = 0, sped = 0;
+  L.forEach(s => {
+    stu += (s.stu || 0);
+    g += s.grades.reduce((a, v) => a + v, 0);
+    sped += (s.sped || 0);
+  });
+  return { stu, g, sped, gap: stu - g, schools: L.length };
+}
+
+function spedNoteText(sgg, region){
+  const x = gradeGap(sgg);
+  if(!x.gap) return '';
+  return `학년별 인원에는 <b>특수학급 학생 ${fmt(x.sped)}명이 빠져 있습니다.</b> ` +
+    `학교알리미가 학년별을 일반학급 기준으로 내고 특수학급을 따로 세기 때문입니다. ` +
+    `그래서 ${htmlEsc(region)}의 학년별을 다 더하면 <b>${fmt(x.g)}명</b>이고, ` +
+    `학교별 학생 수를 다 더한 <b>${fmt(x.stu)}명</b>과 그만큼 다릅니다.`;
+}
+
 function renderCohort(){
   const box = document.getElementById('cohort-mid');
   if(!box) return;
@@ -7401,6 +7605,9 @@ function renderCohort(){
   if(hb) hb.innerHTML = cohortRows(high, highMax);
 
   /* ── 머리글 ── 초1과 초6의 차이가 이 화면에서 가장 센 한 줄입니다. */
+  const sn = document.getElementById('cohort-sped-note');
+  if(sn) sn.innerHTML = spedNoteText(sgg, region);
+
   const lede = document.getElementById('cohort-lede');
   if(!lede) return;
   const g1 = 초[0] || 0, g6 = 초[초.length - 1] || 0;
@@ -7964,6 +8171,21 @@ Array.prototype.forEach.call(document.querySelectorAll('[data-sggsort]'), btn =>
 onEl('sgg-clear', 'click', () => selectSgg(null));
 onEl('sgg-to-map', 'click', () => openMapFor(statusState.sgg));
 onEl('sgg-to-sim', 'click', () => openSimFor(statusState.sgg));
+
+/* 폐교 → 지도. 겹쳐 보기를 켠 채로 넘어갑니다 — 넘어가서 또 켜야 하면
+   두 화면이 이어진 것이 아닙니다. */
+onEl('closed-to-map', 'click', () => {
+  try{
+    if(typeof MV === 'object' && MV && !MV.closed){
+      MV.closed = true;
+      const b = document.getElementById('mv-closed');
+      if(b) b.setAttribute('aria-pressed', 'true');
+      if(typeof mvRenderLegend === 'function') mvRenderLegend();
+      if(MV.map && typeof mvDraw === 'function') mvDraw();
+    }
+  }catch(_e){}
+  location.hash = 'map';
+});
 
 Array.prototype.forEach.call(document.querySelectorAll('[data-status-view]'), b => {
   b.addEventListener('click', () => setStatusView(b.dataset.statusView));
@@ -8637,9 +8859,37 @@ function runPrint(mode){
   window.addEventListener('afterprint',finishPrintMode,{once:true});
   if(typeof window.print==='function') window.print();
 }
+/* 이 종이가 «무엇을 담고 있는지»를 한 줄로. 화면마다 고른 것이 다릅니다.
+   종이만 남았을 때 조건을 되짚을 수 있어야 합니다. 〔2026. 9. 10.〕 */
+function printScopeText(){
+  try{
+    if(activeView === 'status'){
+      const where = (typeof statusState === 'object' && statusState && statusState.sgg) || '경북 전체';
+      const tab = { where:'어디가 먼저인가', how:'얼마나 줄어드나',
+                    who:'누가 올라오나', what:'무엇이 달라지나' }[statusState.view] || '';
+      const kind = (typeof dsKind !== 'undefined' && dsKind === 'pop') ? '학령인구' : '재학생 수';
+      return [where, kind, tab].filter(Boolean).join(' · ');
+    }
+    if(activeView === 'map'){
+      const where = (typeof MV === 'object' && MV && MV.level !== '전체')
+        ? ((LEVEL_CFG[MV.level] || {}).full || MV.level) : '전체 학교급';
+      return [`${MV.year}년`, where, MV.is3d ? '3D 지형' : '2D'].join(' · ');
+    }
+    if(activeView === 'multi') return `특수교육 ${SPED_PLACE.year}년 · 다문화 ${MULTI_STU.year}년`;
+    if(activeView === 'closed') return typeof CLOSED !== 'undefined' && CLOSED ? CLOSED.basis : '폐교 활용 현황';
+    if(activeView === 'news') return '주간 뉴스 클리핑';
+  }catch(_e){}
+  return '현재 화면의 조회 조건';
+}
+
 function printCurrentView(){
   document.getElementById('print-report-title').textContent=VIEW_PRINT_NAMES[activeView]||'경북 학령인구 데이터 플랫폼';
-  document.getElementById('print-report-subtitle').textContent=`${printStamp()} · 현재 화면의 조회 조건 반영`;
+  document.getElementById('print-report-subtitle').textContent=
+    '화면에 보이던 것을 그대로 옮긴 출력물입니다. 값의 출처와 한계는 각 표 아래에 함께 실었습니다.';
+  const stamp=document.getElementById('print-report-stamp');
+  if(stamp) stamp.textContent=printStamp();
+  const scope=document.getElementById('print-report-scope');
+  if(scope) scope.textContent=printScopeText();
   document.querySelectorAll(`#view-${activeView} details.src-box`).forEach(el=>el.open=true);
   runPrint('view');
 }
@@ -8886,6 +9136,8 @@ function renderPaxPyramid() {
     (sgg ? sgg + ' ' : '경북 ') + '학교알리미 2026 공시 기준 초등학교 1학년부터 고등학교 3학년까지 학생 수');
   const cap = document.getElementById('pax-title');
   if(cap) cap.textContent = (sgg ? sgg : '경북') + ' 2026 학년별 학생 분포 (초1 ~ 고3)';
+  const pn = document.getElementById('pax-sped-note');
+  if(pn && typeof spedNoteText === 'function') pn.innerHTML = spedNoteText(sgg, sgg || '경북 전체');
   svg.innerHTML=h;
 }
 
@@ -9933,6 +10185,89 @@ function closedRows(){
   });
 }
 
+/* ══ 폐교가 말해 주는 것 〔2026. 9. 10.〕 ═══════════════════════════════════
+   여태 이 탭은 «몇 곳인지»만 셌습니다. 750곳이라는 수는 그 자체로는 결정을
+   만들지 않습니다. 이 자료가 정말로 말해 주는 것은 셋입니다.
+
+     ① 지금이 «처음»이 아닙니다 — 1990년대에만 422곳이 문을 닫았습니다
+     ② 시군마다 «있었던 학교 가운데 사라진 몫»이 아주 다릅니다
+     ③ 한 번 판 땅은 돌이킬 수 없습니다 — 매각 495곳은 이미 남의 땅입니다
+
+   ③ 이 이 화면에서 가장 무거운 말입니다. 지금의 결정이 30년 뒤에 그렇게
+   남습니다. */
+function closedFacts(){
+  const rows = closedRows();
+  const by = k => rows.reduce((a, r) => { a[r[k]] = (a[r[k]] || 0) + 1; return a; }, {});
+  const use = by('use'), sig = by('s'), lv = by('lv');
+  const decade = {};
+  rows.forEach(r => { const d = Math.floor(Number(r.year) / 10) * 10; if(d) decade[d] = (decade[d] || 0) + 1; });
+  const live = {};
+  SCHOOLS.forEach(s => { if(HOME_SERIES_LEVELS.indexOf(s.lv) >= 0) live[s.s] = (live[s.s] || 0) + 1; });
+  /* 있었던 학교 = 지금 남은 학교 + 문 닫은 학교. 시군 경계와 이름이 바뀐 곳이
+     있어 어림입니다 — 화면에 그렇다고 적습니다. */
+  const lost = SIGUNGU.map(g => {
+    const closed = sig[g.s] || 0, now = live[g.s] || 0, had = closed + now;
+    return { s: g.s, closed, now, had, pct: had ? closed / had * 100 : 0,
+             drop: (() => { const a = regionTotalStudents(g.s, HOME_BASE_YEAR).v,
+                                  b = regionTotalStudents(g.s, HOME_YEAR_MAX).v;
+                            return (a && b != null) ? (1 - b / a) * 100 : null; })() };
+  }).sort((a, b) => b.pct - a.pct);
+  const keep = rows.length - (use['매각'] || 0);
+  return { rows, use, sig, lv, decade, lost, keep,
+           peak: Object.keys(decade).sort((a, b) => decade[b] - decade[a])[0] };
+}
+
+function renderClosedInsight(){
+  const g = document.getElementById('closed-geo-count');
+  if(g && typeof closedMapRows === 'function'){
+    try{ g.textContent = fmt(closedMapRows().length); }catch(_e){}
+  }
+  const box = document.getElementById('closed-facts');
+  if(!box || typeof closedRows !== 'function') return;
+  let f; try{ f = closedFacts(); }catch(_e){ return; }
+  const n = f.rows.length;
+  const peakN = f.decade[f.peak] || 0;
+
+  const lede = document.getElementById('closed-insight-lede');
+  if(lede){
+    lede.innerHTML =
+      `경북에서 문을 닫은 학교는 <b>${fmt(n)}곳</b>입니다. ` +
+      `그 가운데 <b>${fmt(peakN)}곳(${Math.round(peakN / n * 100)}%)이 ${f.peak}년대</b>에 몰려 있습니다 — ` +
+      `<b>지금이 처음 겪는 일이 아닙니다.</b> ` +
+      `그때 무엇을 했고 그 자리가 지금 어떻게 되었는지가, 앞으로의 답에 가장 가까운 자료입니다.`;
+  }
+
+  const fact = (k, v, u, note, tone) =>
+    `<div class="cf ${tone || ''}"><div class="k">${k}</div>` +
+    `<div class="v">${v}<em>${u}</em></div><p>${note}</p></div>`;
+
+  box.innerHTML =
+    fact(`${f.peak}년대에 문 닫은 학교`, fmt(peakN), '곳',
+         `전체의 ${Math.round(peakN / n * 100)}%. 한 세대 만에 겪은 일입니다.`) +
+    fact('이미 판 땅', fmt(f.use['매각'] || 0), '곳',
+         `전체의 ${Math.round((f.use['매각'] || 0) / n * 100)}%. <b>교육청 손을 떠났습니다.</b> 되돌릴 수 없습니다.`,
+         'warn') +
+    fact('지금 다룰 수 있는 것', fmt(f.keep), '곳',
+         '자체활용 · 대부 · 미활용을 더한 수입니다.') +
+    fact('비어 있는 곳', fmt(f.use['미활용'] || 0), '곳',
+         '쓰이지도, 팔리지도 않은 자리입니다.', 'warn');
+
+  /* 있었던 학교 가운데 사라진 몫 — 같은 100곳이라도 원래 많았던 곳과
+     적었던 곳은 뜻이 다릅니다. */
+  const wrap = document.getElementById('closed-lost');
+  if(!wrap) return;
+  const top = f.lost.slice(0, 12);
+  const mx = Math.max(...top.map(x => x.pct), 1);
+  wrap.innerHTML = top.map(x =>
+    '<div class="cl">' +
+    `<span class="nm">${htmlEsc(x.s)}</span>` +
+    `<span class="track"><span class="fill" style="width:${(x.pct / mx * 100).toFixed(1)}%"></span></span>` +
+    `<span class="pc">${Math.round(x.pct)}%</span>` +
+    `<span class="sub">${fmt(x.closed)} / ${fmt(x.had)}곳` +
+      (x.drop != null ? ` · 앞으로 −${x.drop.toFixed(0)}%` : '') + '</span>' +
+    '</div>').join('');
+}
+
 function renderClosed(){
   const body = document.getElementById('closed-body');
   const empty = document.getElementById('closed-empty');
@@ -10501,6 +10836,45 @@ function mvClearMarks(){
   MV.marks = [];
 }
 
+/* ══ 학교 모양 딱지 〔2026. 9. 10.〕 ═══════════════════════════════════════
+   여태 색깔 동그라미였습니다. 네이버 부동산이 집 모양을 쓰는 까닭은,
+   무엇을 찍은 지도인지 «보자마자» 알게 하려는 것입니다.
+
+   그림 파일은 쓰지 않습니다. 학교 모양은 지붕·건물·창·깃대 네 조각이면
+   되고, 그것은 SVG 선 몇 개입니다. 파일을 쓰면 다크 모드마다 한 벌씩
+   만들어야 하고, 학교급 다섯 색이면 열 벌이 됩니다. 선으로 그리면 색은
+   그때그때 넣습니다. */
+function mvSchoolGlyph(lv, size){
+  const c = mvLvColor(lv);
+  return `<svg class="sg" viewBox="0 0 16 16" width="${size}" height="${size}" aria-hidden="true">` +
+    /* 깃대 — 학교임을 가장 빨리 알려 주는 조각입니다 */
+    `<path d="M8 1.2v2.1" stroke="${c}" stroke-width="1" stroke-linecap="round"/>` +
+    `<path d="M8 1.4l2.4.9L8 3.2z" fill="${c}"/>` +
+    /* 지붕 */
+    `<path d="M8 3.6 14.4 7H1.6z" fill="${c}"/>` +
+    /* 건물 */
+    `<rect x="3" y="7" width="10" height="7" rx=".8" fill="${c}" opacity=".82"/>` +
+    /* 창과 문 — 흰 구멍으로 뚫어 건물처럼 보이게 합니다 */
+    `<rect x="4.4" y="8.4" width="2" height="2" rx=".3" fill="#fff" opacity=".95"/>` +
+    `<rect x="9.6" y="8.4" width="2" height="2" rx=".3" fill="#fff" opacity=".95"/>` +
+    `<rect x="6.9" y="10.6" width="2.2" height="3.4" rx=".3" fill="#fff" opacity=".95"/>` +
+    '</svg>';
+}
+
+/* 가까이 가기 전, 이름 없이 자리만 찍을 때 쓰는 «핀» 모양입니다.
+   ★ 회전은 안쪽 조각에 겁니다 — MapLibre 가 딱지 바깥쪽에 transform 을
+     적어 넣기 때문에, 바깥에 걸면 자리가 어긋납니다. */
+function mvSchoolPin(lv){
+  const c = mvLvColor(lv);
+  return `<svg viewBox="0 0 20 26" width="20" height="26" aria-hidden="true">` +
+    `<path d="M10 25.4S19 15.9 19 10A9 9 0 1 0 1 10c0 5.9 9 15.4 9 15.4z" ` +
+      `fill="${c}" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/>` +
+    `<path d="M10 5.4 15 8.6H5z" fill="#fff"/>` +
+    `<rect x="6.2" y="8.6" width="7.6" height="5.2" rx=".6" fill="#fff"/>` +
+    `<rect x="9.1" y="10.6" width="1.8" height="3.2" rx=".3" fill="${c}"/>` +
+    '</svg>';
+}
+
 function mvPopupHtml(sc){
   const v = mvStu(sc);
   const lvFull = (LEVEL_CFG[sc.lv] || {}).full || sc.lv;
@@ -10557,18 +10931,21 @@ function mvDraw(){
     if(tier === 'label'){
       el.className = 'mv-lab';
       const v = mvStu(sc);
-      el.innerHTML = `<i style="background:${mvLvColor(sc.lv)}"></i>` +
+      el.innerHTML = mvSchoolGlyph(sc.lv, 15) +
         `<b>${htmlEsc(String(sc.name).replace(/(초등학교|중학교|고등학교|유치원|학교)$/, ''))}</b>` +
         `<span>${v == null ? '–' : fmt(v)}</span>`;
     }else{
       el.className = 'mv-pin';
-      el.style.background = mvLvColor(sc.lv);
+      el.innerHTML = mvSchoolPin(sc.lv);
       el.title = sc.name;
     }
     /* 이름표가 겹칠 때 어느 것이 위로 올지는 순서가 정합니다 — 학생이 많은 학교를
        위로 올립니다. 작은 학교가 큰 학교를 가리면 지도를 잘못 읽게 됩니다. */
     if(tier === 'label') el.style.zIndex = String(Math.min(400, Math.round((mvStu(sc) || 0) / 5)));
-    const mk = new maplibregl.Marker({ element:el }).setLngLat([sc.lon, sc.lat]);
+    /* ★ 닻을 «아래»로 둡니다 — 꼬리 끝이 그 학교 자리를 가리켜야 합니다.
+       가운데로 두면 상자가 학교 위에 얹혀 어디를 가리키는지 알 수 없습니다. */
+    const mk = new maplibregl.Marker({ element:el, anchor:'bottom', offset:[0, tier === 'label' ? -6 : 0] })
+      .setLngLat([sc.lon, sc.lat]);
     /* ★ 거리를 재는 동안에는 말풍선을 달지 않습니다 — 학교를 누르면 그 학교가
        재는 점이 됩니다. 통학 거리를 학교와 학교 사이로 재는 것이 이 화면의 쓸모입니다. */
     if(!MV.ruler) mk.setPopup(new maplibregl.Popup({ offset:14 }).setHTML(mvPopupHtml(sc)));
@@ -10783,6 +11160,65 @@ function mvRulerText(){
   }
 }
 
+/* ══ 축척 ══════════════════════════════════════════════════════════════════
+   화면의 1cm 가 땅에서 몇 cm 인가 — 그것이 «비율»입니다.
+
+   CSS 한 칸(px)은 96분의 1인치, 곧 0.26458mm 로 봅니다. 화면 한 칸이 땅에서
+   몇 미터인지를 알면 비율이 나옵니다.
+
+     땅 미터/칸 ÷ 0.00026458 m/칸  =  1 : N
+
+   ★ 실제 모니터의 점 크기는 저마다 다릅니다. 그래서 이 비율은 «어림»이고,
+     화면에 그렇다고 적습니다. 종이로 뽑으면 또 달라집니다. */
+const MV_CSS_PX_M = 0.0254 / 96;   /* CSS 한 칸의 실제 길이(미터) */
+
+function mvScaleRatio(map){
+  const lat = map.getCenter().lat;
+  /* 웹 메르카토르에서 한 칸이 덮는 땅 길이 — 위도가 높을수록 짧아집니다. */
+  const mPerPx = 156543.03392 * Math.cos(lat * Math.PI / 180) / Math.pow(2, map.getZoom());
+  return mPerPx / MV_CSS_PX_M;
+}
+
+/* 사람이 읽는 길이. 1m 아래는 cm, 1km 위는 km 로 적습니다. */
+function mvLen(m){
+  if(m < 1) return Math.round(m * 100) + 'cm';
+  if(m < 1000) return (m < 10 ? m.toFixed(1) : Math.round(m)) + 'm';
+  return (m < 10000 ? (m / 1000).toFixed(1) : Math.round(m / 1000).toLocaleString('ko-KR')) + 'km';
+}
+
+/* 자의 길이는 «어중간한 수»가 되지 않게 1·2·5 로 끊습니다. */
+function mvNiceLen(m){
+  const p = Math.pow(10, Math.floor(Math.log10(m)));
+  const r = m / p;
+  return (r >= 5 ? 5 : r >= 2 ? 2 : 1) * p;
+}
+
+function mvMountScale(map){
+  const el = document.createElement('div');
+  el.className = 'mv-scale';
+  el.innerHTML = '<span class="bar"></span><b class="len">–</b><span class="ratio">–</span>';
+  const wrap = document.querySelector('.mv-map');
+  if(wrap) wrap.appendChild(el);
+
+  const draw = () => {
+    const ratio = mvScaleRatio(map);
+    const mPerPx = ratio * MV_CSS_PX_M;
+    const want = 92;                       /* 자를 이만큼 그리고 싶습니다 */
+    const len = mvNiceLen(mPerPx * want);  /* 그 길이를 어중간하지 않게 끊습니다 */
+    const px = Math.round(len / mPerPx);
+    const bar = el.querySelector('.bar');
+    if(bar) bar.style.width = px + 'px';
+    const l = el.querySelector('.len'); if(l) l.textContent = mvLen(len);
+    const r = el.querySelector('.ratio');
+    if(r) r.textContent = '1 : ' + Math.round(ratio).toLocaleString('ko-KR');
+    el.title = '화면의 1cm 가 땅에서 약 ' + mvLen(ratio / 100) + ' 입니다. ' +
+      '모니터마다 점 크기가 달라 어림입니다.';
+  };
+  map.on('move', draw);
+  map.on('zoom', draw);
+  draw();
+}
+
 /* ── 배경 갈아 끼우기 ───────────────────────────────────────────────────── */
 function mvSetBase(id){
   MV.base = id;
@@ -10947,7 +11383,11 @@ async function mvStart(){
   MV.map = map;
   MV.ready = true; MV.loading = false;
   map.addControl(new maplibregl.NavigationControl({ visualizePitch:true }), 'top-right');
-  map.addControl(new maplibregl.ScaleControl({ maxWidth:120, unit:'metric' }), 'bottom-right');
+  /* ★ 축척을 «비율»로도 적습니다 〔2026. 9. 10.〕
+     MapLibre 가 주는 자는 「500 m」 한 줄뿐입니다. 종이 지도를 읽어 온 사람에게는
+     1:25,000 같은 비율이 더 빨리 읽히고, 인쇄물에 옮겨 적을 때도 비율이
+     있어야 합니다. 둘 다 적습니다. */
+  mvMountScale(map);
 
   map.on('load', mvDraw);
   /* ★ 「불러오는 중입니다」를 지웁니다 〔2026. 9. 10.〕 배율 안내를 뺀 뒤로
@@ -11063,6 +11503,14 @@ function mvWireControls(){
     document.getElementById('mv-2d').setAttribute('aria-pressed','false');
     document.getElementById('mv-3d').setAttribute('aria-pressed','true');
   });
+  on('mv-turn-help', () => {
+    const b = document.getElementById('mv-turn-help');
+    const t = document.getElementById('mv-turn-tip');
+    if(!b || !t) return;
+    const open = b.getAttribute('aria-expanded') === 'true';
+    b.setAttribute('aria-expanded', String(!open));
+    t.hidden = open;
+  });
   on('mv-reset', () => {
     MV.map.flyTo({ center:MV_HOME_VIEW.center, zoom:MV_HOME_VIEW.zoom, pitch:0, bearing:0, duration:900 });
   });
@@ -11159,6 +11607,7 @@ function mvOpen(){
 if(HOME_TAB_ON) renderHomeInsight();
 renderMulti();
 renderClosed();
+renderClosedInsight();
 renderProvenance();
 /* 첫 화면은 이제 지도입니다 — 종합 대시보드가 없으니 그리로 갈 수 없습니다. */
 showView(location.hash.slice(1) || DEFAULT_VIEW);
