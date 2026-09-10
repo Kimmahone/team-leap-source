@@ -152,6 +152,8 @@ cp "$SRC_DASH/index.html" "$SRC_DASH/README.md" "$SRC_DASH/README.html" "$OUT/da
 # ★ 새 지도 〔2026. 9. 10.〕 MapLibre 를 «저장소에 넣어» 씁니다 — 외부 CDN 이 아니라
 #   같은 출처에서 나갑니다(CSP script-src 'self' 그대로). 되돌릴 자리는 태그
 #   backup/sgis-map-2026-09-10 입니다.
+#   map-new.html 은 대시보드 안 「지도로 보기」로 옮긴 뒤 남긴 «시험판»입니다.
+#   비교할 자리로 한동안 함께 올리다가, 손볼 일이 없어지면 지웁니다.
 [ -f "$SRC_DASH/map-new.html" ] && cp "$SRC_DASH/map-new.html" "$OUT/dashboard/map-new.html"
 [ -f "$SRC_DASH/schools.json" ] && cp "$SRC_DASH/schools.json" "$OUT/dashboard/schools.json"
 [ -d "$SRC_DASH/vendor" ] && cp -R "$SRC_DASH/vendor" "$OUT/dashboard/vendor"
