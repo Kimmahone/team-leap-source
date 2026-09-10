@@ -1698,6 +1698,42 @@ check('고른 시군을 따라간다', q(
   "(function(){selectSgg('안동');var a=cohortGrades('안동')['초'][0];" +
   "selectSgg(null);var b=cohortGrades(null)['초'][0];return a>0&&b>a;})()") === true);
 
+console.log('\n■ 〔현황〕 학생 수를 학급과 교원으로 옮겨 적는다');
+/* 「학생 98,072명 감소」는 결정을 만들지 못합니다. 「학급 5,148개 · 교원
+   8,343명」이 되어야 예산과 정원의 말이 됩니다. */
+q("selectSgg(null)");
+check('그 자리가 있다', /id="convert-box"/.test(html) && /function renderConvert/.test(js));
+check('지금의 학생·학급·교원을 먼저 적는다',
+  /2026년 학생/.test(byId['convert-now']._html || '') &&
+  /2026년 학급/.test(byId['convert-now']._html || '') &&
+  /2026년 교원/.test(byId['convert-now']._html || ''));
+/* 두 갈래는 «나란히» 놓습니다 — 위아래로 두면 하나가 결론처럼 읽힙니다. */
+check('두 갈래를 나란히 놓는다 (하나를 결론으로 고르지 않는다)',
+  /id="fork-a"/.test(html) && /id="fork-b"/.test(html) &&
+  /\.convert-forks\{display:grid;grid-template-columns:1fr 1fr/.test(html));
+check('갈래 하나는 학급과 교원이 줄어든다',
+  /필요한 학급/.test(byId['fork-a-body']._html || '') &&
+  /필요한 교원/.test(byId['fork-a-body']._html || ''));
+check('갈래 둘은 학급당 인원이 줄어든다',
+  /학급당/.test(byId['fork-b-body']._html || '') &&
+  /교원 1인당/.test(byId['fork-b-body']._html || ''));
+check('셈이 맞는다 (학급당을 지키면 학급 = 학생 ÷ 학급당)', q(
+  "(function(){var n=convertNow(null);var later=regionTotalStudents(null,2036).v;" +
+  "return Math.round(later/n.perCls) === 6792;})()") === true);
+check('0 은 변화로 적지 않는다 (변화 없음이지 변화가 아니다)',
+  /delta === 0\) \? '' :/.test(js));
+/* 교원 수는 실제로 학급 수·과목·복식 여부·겸임으로 정해집니다. */
+check('교원 셈이 거칠다고 밝힌다',
+  /정원 산정에 그대로 쓸 수 없습니다/.test(html) && /크기를 가늠하는 자리/.test(html));
+check('미래 연도를 바꾸면 함께 바뀐다', /renderConvert\(\);\s+\/\* 미래 연도를 바꾸면/.test(js));
+
+console.log('\n■ 〔현황〕 큰 수를 읽을 수 있게 적는다');
+/* 값이 천 명 단위이던 때는 「321」이었는데, 낱낱의 명으로 바꾸면서
+   「321000」이 되어 읽히지 않았습니다. */
+check('만 명이 넘으면 접어서 적는다', q("statusShort(321000)") === '32만' &&
+  q("statusShort(9412)") === '9,412');
+check('「현재」 점선이 값을 관통하지 않는다', /text-anchor="\$\{isNow \? 'start' : 'middle'\}"/.test(js));
+
 console.log('\n■ 〔현황〕 구현 용어를 걷어냈다');
 check('「Pure SVG」·「Line Chart」 같은 말이 없다',
   !/Pure SVG/.test(html) && !/Line Chart/.test(html));

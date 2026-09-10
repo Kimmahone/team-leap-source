@@ -1076,6 +1076,33 @@ table.data .hl{color:var(--brand);font-weight:800}
 .cohort-gapline{margin:7px 0 0;font-size:11.5px;color:var(--ink-3);line-height:1.6}
 .cohort-gapline b{color:var(--leap-amber)}
 
+/* ── 학급과 교원으로 옮겨 적기 ─────────────────────────────────────────── */
+.convert{border-top:1px solid var(--line-2);padding-top:20px}
+.convert-h{margin:0 0 4px;font-size:15px;font-weight:700;color:var(--brand)}
+.convert-sub{margin:0 0 13px;font-size:13px;color:var(--ink-2);line-height:1.7;max-width:72ch}
+.convert-sub b{color:var(--ink)}
+.convert-now{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px;margin-bottom:13px}
+.convert-now .n{background:var(--card-2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+.convert-now .n .k{font-size:11px;color:var(--ink-3)}
+.convert-now .n .v{font-size:20px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.25}
+.convert-now .n .u{font-size:10.5px;color:var(--ink-3)}
+/* 두 갈래는 «나란히» 놓습니다 — 위아래로 두면 하나가 결론처럼 읽힙니다 */
+.convert-forks{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+@media (max-width:760px){ .convert-forks{grid-template-columns:1fr} }
+.fork{border:1px solid var(--line);border-radius:10px;padding:13px 14px;background:var(--card)}
+.fork .fk{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.07em;
+  color:var(--ink-3);margin-bottom:5px}
+.fork .ft{display:block;font-size:13.5px;font-weight:700;margin-bottom:10px;color:var(--ink)}
+.fork .fv{display:flex;flex-direction:column;gap:8px}
+.fork .line{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:baseline}
+.fork .line .lk{font-size:12px;color:var(--ink-2)}
+.fork .line .lv{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.fork .line .lv b{font-size:17px;font-weight:800;color:var(--brand)}
+.fork .line .lv em{font-style:normal;font-size:11px;color:var(--leap-amber);margin-left:5px;font-weight:700}
+.fork .line .lv em.up{color:var(--leap-teal)}
+.convert-note{margin:11px 0 0;font-size:11.5px;color:var(--ink-3);line-height:1.65}
+.convert-note b{color:var(--ink-2)}
+
 /* ══ 지도로 보기 〔2026. 9. 10.〕 ═══════════════════════════════════════════
    화면을 «가득» 씁니다. 본문 여백을 음수 여백으로 도로 물려 가장자리까지
    지도가 닿게 합니다. 참고하신 화면처럼 시원하게 보이는 까닭이 이것입니다.
@@ -2192,6 +2219,32 @@ body.map-maxed.home-wide #home-side{display:none}
           <svg id="trend-line-svg" viewBox="0 0 700 250" style="width:100%;max-width:800px;height:auto;display:block;margin:0 auto" role="img" aria-label="연도별 학생수 추이 선 그래프">
           </svg>
         </div>
+      </div>
+
+      <!-- ══ 학급과 교원으로 옮겨 적기 〔2026. 9. 10.〕 ═══════════════════════
+           「학생 98,072명 감소」는 결정을 만들지 못합니다. 「학급 5,164개 ·
+           교원 8,386명」이 되어야 예산과 정원의 말이 됩니다.
+           그리고 이 둘은 «함께» 줄지 않습니다 — 하나를 지키면 다른 하나가
+           줄어듭니다. 어느 쪽을 고를지가 정책입니다. -->
+      <div class="convert" id="convert-box" style="margin-top:24px">
+        <h3 class="convert-h" id="convert-title">학생 수를 학급과 교원으로 옮겨 적으면</h3>
+        <p class="convert-sub" id="convert-sub"></p>
+        <div class="convert-now" id="convert-now"></div>
+        <div class="convert-forks">
+          <div class="fork" id="fork-a">
+            <span class="fk">갈래 하나</span>
+            <b class="ft">학급당 인원을 지금대로 지키면</b>
+            <div class="fv" id="fork-a-body"></div>
+          </div>
+          <div class="fork" id="fork-b">
+            <span class="fk">갈래 둘</span>
+            <b class="ft">학급 수를 지금대로 두면</b>
+            <div class="fv" id="fork-b-body"></div>
+          </div>
+        </div>
+        <p class="convert-note">교원 수는 실제로 학급 수·과목·복식 여부·겸임으로
+        정해집니다. 여기서는 <b>지금의 교원 1인당 학생 수를 그대로 밀어 본 거친 셈</b>이라
+        정원 산정에 그대로 쓸 수 없습니다. <b>크기를 가늠하는 자리</b>입니다.</p>
       </div>
 
       <div class="spec" style="margin-top:24px">
@@ -6971,6 +7024,12 @@ function statusYear(sggKey, kind, year){
   o.kind = k;
   return o;
 }
+/* 좁은 자리에 쓰는 짧은 표기. 만 명이 넘으면 접습니다. */
+function statusShort(n){
+  n = Number(n) || 0;
+  if(n >= 10000) return (n / 10000).toFixed(n >= 100000 ? 0 : 1).replace(/\.0$/, '') + '만';
+  return fmt(n);
+}
 function statusTot(o){ return o ? (o.초||0)+(o.중||0)+(o.고||0) : null; }
 function statusRegion(){ return statusState.sgg || '경북 전체'; }
 
@@ -7147,6 +7206,92 @@ function renderCohort(){
     '여기에는 <b>출산율 가정도, 추계 모형도 들어가지 않습니다.</b>';
 }
 
+/* ══ 학급과 교원으로 옮겨 적기 〔2026. 9. 10.〕 ═══════════════════════════
+   「학생 98,072명 감소」는 결정을 만들지 못합니다. 「학급 5,164개 · 교원
+   8,386명」이 되어야 예산과 정원의 말이 됩니다.
+
+   그리고 이 둘은 «함께» 줄지 않습니다. 학급당 인원을 지키면 학급이 줄고,
+   학급 수를 지키면 학급당 인원이 줄어듭니다. 어느 쪽을 고를지가 정책입니다.
+   그래서 결론을 하나 내지 않고 «두 갈래»를 나란히 놓습니다.
+
+   ★ 교원 수는 실제로 학급 수·과목·복식 여부·겸임으로 정해집니다. 여기서는
+     지금의 교원 1인당 학생 수를 그대로 밀어 본 거친 셈이라 정원 산정에
+     그대로 쓸 수 없습니다. 화면에 그렇다고 적습니다. */
+function convertNow(sgg){
+  const L = SCHOOLS.filter(s => HOME_SERIES_LEVELS.indexOf(s.lv) >= 0 && (!sgg || s.s === sgg));
+  let stu = 0, cls = 0, tch = 0;
+  L.forEach(s => { stu += (s.stu || 0); cls += (s.cls || 0); tch += (s.teach || 0); });
+  return { sch: L.length, stu, cls, tch,
+           perCls: cls > 0 ? stu / cls : null,
+           perTch: tch > 0 ? stu / tch : null };
+}
+
+function renderConvert(){
+  const box = document.getElementById('convert-now');
+  if(!box) return;
+  const sgg = statusState.sgg, region = statusRegion();
+  const now = convertNow(sgg);
+  const fy = Number(yrFut.value) || HOME_YEAR_MAX;
+  const later = regionTotalStudents(sgg, fy).v;
+
+  const t = document.getElementById('convert-title');
+  if(t) t.textContent = `${region} — 학생 수를 학급과 교원으로 옮겨 적으면`;
+
+  box.innerHTML =
+    `<div class="n"><div class="k">${HOME_BASE_YEAR}년 학생</div><div class="v">${fmt(now.stu)}</div><div class="u">명 · 초·중·고</div></div>` +
+    `<div class="n"><div class="k">${HOME_BASE_YEAR}년 학급</div><div class="v">${fmt(now.cls)}</div><div class="u">개 · 학급당 ${now.perCls ? now.perCls.toFixed(1) : '–'}명</div></div>` +
+    `<div class="n"><div class="k">${HOME_BASE_YEAR}년 교원</div><div class="v">${fmt(now.tch)}</div><div class="u">명 · 1인당 ${now.perTch ? now.perTch.toFixed(1) : '–'}명</div></div>` +
+    `<div class="n"><div class="k">${fy}년 학생</div><div class="v">${later == null ? '–' : fmt(later)}</div><div class="u">명 · 전망</div></div>`;
+
+  const sub = document.getElementById('convert-sub');
+  const a = document.getElementById('fork-a-body');
+  const b = document.getElementById('fork-b-body');
+  if(later == null || !now.stu){
+    if(sub) sub.textContent = `${fy}년 전망을 낼 수 없습니다.`;
+    if(a) a.innerHTML = ''; if(b) b.innerHTML = '';
+    return;
+  }
+
+  const drop = now.stu - later;
+  if(sub){
+    sub.innerHTML = `${HOME_BASE_YEAR}년 ${fmt(now.stu)}명에서 ${fy}년 <b>${fmt(later)}명</b>으로 ` +
+      `<b>${fmt(drop)}명(${(drop / now.stu * 100).toFixed(1)}%)</b> 줄어듭니다. ` +
+      '그 줄어든 몫을 <b>학급으로 받을지 학급당 인원으로 받을지</b>는 저절로 정해지지 않습니다.';
+  }
+
+  const line = (k, v, unit, delta, better) => {
+    /* 0 은 «변화 없음»이지 변화가 아닙니다. 눈에 띄게 적지 않습니다. */
+    const d = (delta == null || delta === 0) ? '' :
+      `<em class="${better ? 'up' : ''}">${delta > 0 ? '+' : ''}${fmt(delta)}</em>`;
+    return `<div class="line"><span class="lk">${k}</span>` +
+           `<span class="lv"><b>${v}</b>${unit}${d}</span></div>`;
+  };
+
+  /* 갈래 하나 — 학급당 인원을 지금대로. 학급과 교원이 줄어듭니다. */
+  if(a){
+    const needCls = now.perCls ? Math.round(later / now.perCls) : null;
+    const needTch = now.perTch ? Math.round(later / now.perTch) : null;
+    a.innerHTML =
+      line('학급당', now.perCls ? now.perCls.toFixed(1) : '–', '명', null) +
+      line('필요한 학급', needCls == null ? '–' : fmt(needCls), '개',
+           needCls == null ? null : needCls - now.cls) +
+      line('필요한 교원', needTch == null ? '–' : fmt(needTch), '명',
+           needTch == null ? null : needTch - now.tch);
+  }
+
+  /* 갈래 둘 — 학급 수를 지금대로. 학급당 인원이 줄어듭니다. */
+  if(b){
+    const per = now.cls > 0 ? later / now.cls : null;
+    const perT = now.tch > 0 ? later / now.tch : null;
+    b.innerHTML =
+      line('학급', fmt(now.cls), '개', 0) +
+      line('학급당', per == null ? '–' : per.toFixed(1), '명',
+           (per == null || !now.perCls) ? null : +(per - now.perCls).toFixed(1)) +
+      line('교원 1인당', perT == null ? '–' : perT.toFixed(1), '명',
+           (perT == null || !now.perTch) ? null : +(perT - now.perTch).toFixed(1));
+  }
+}
+
 function selectSgg(key){
   statusState.sgg = key || null;
   /* 시군에는 주민등록 자료가 없습니다. 학생수로 바꿔 주고 왜인지 적습니다. */
@@ -7253,6 +7398,7 @@ function renderStatus(){
 
   renderTrendLineChart();
   renderPaxPyramid();
+  renderConvert();      /* 미래 연도를 바꾸면 환산도 함께 바뀝니다 */
 }
 
 function renderTrendLineChart() {
@@ -7338,7 +7484,15 @@ function renderTrendLineChart() {
     h += `<circle cx="${p.x}" cy="${p.y}" r="4" fill="var(--card)" stroke="var(--leap-blue)" stroke-width="2"/>`;
     if (i % 2 === 0 || p.yr === 2026) {
       h += `<text x="${p.x}" y="${height - padding.bottom + 20}" font-size="11" font-weight="${p.yr===2026?'700':'400'}" fill="var(--ink-3)" text-anchor="middle">${p.yr}</text>`;
-      h += `<text x="${p.x}" y="${p.y - 12}" font-size="11" font-weight="${p.yr===2026?'700':'500'}" fill="var(--ink-2)" text-anchor="middle">${p.v}</text>`;
+      /* ★ 자릿점을 찍습니다 〔2026. 9. 10.〕 값이 천 명 단위이던 때는 「321」
+         이었는데, 낱낱의 명으로 바꾸면서 「321000」이 되어 읽히지 않았습니다.
+         가로가 좁아 만 명 위는 「32.1만」으로 접습니다. */
+      /* ★ 「현재」 세로 점선이 2026 값 이름표를 가운데로 관통했습니다.
+         그 해만 선 오른쪽으로 밀어 적습니다. */
+      const isNow = p.yr === BASE_Y;
+      h += `<text x="${isNow ? p.x + 8 : p.x}" y="${p.y - 12}" font-size="11" ` +
+           `font-weight="${isNow ? '700' : '500'}" fill="var(--ink-2)" ` +
+           `text-anchor="${isNow ? 'start' : 'middle'}">${statusShort(p.v)}</text>`;
     }
   });
   
