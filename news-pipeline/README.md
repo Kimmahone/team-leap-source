@@ -62,3 +62,4 @@ npm run check
 원본 파일을 메신저로 한 번 보내고 끝내지 않습니다. **팀 공유 폴더 접근권한 + GitHub 재생성 코드 + 체크섬** 세 가지가 모두 있어야 인계가 완료됩니다.
 
 새 자료를 내려받는 화면별 순서는 [`BIGKINDS_DOWNLOAD.md`](BIGKINDS_DOWNLOAD.md)를 따릅니다.
+시각화·벡터화·유사도 분류와 EDSS 결합 원칙은 [`ANALYSIS_METHOD.md`](ANALYSIS_METHOD.md)를 따릅니다.

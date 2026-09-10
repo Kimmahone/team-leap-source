@@ -19,8 +19,8 @@ const DEST = arg('--dest', path.join(ROOT, '06. 실행계획(1)', 'prototype', '
 const WORK = arg('--work', path.join(HERE, 'work'));
 
 const TOPICS = [
-  ['통폐합·적정규모', /폐교|통폐합|통합 ?운영|적정규모|분교|학교 ?통합|소규모 ?학교|나홀로 ?입학|신입생 ?0명|입학생 ?0명/],
-  ['교육재정', /교부금|재정|예산|교육재정/],
+  ['통폐합·적정규모', /폐교|학교[^.]{0,20}통폐합|통폐합[^.]{0,20}학교|통합 ?운영|적정규모|분교|학교 ?통합|소규모 ?학교|나홀로 ?입학|신입생 ?0명|입학생 ?0명/],
+  ['교육재정', /교부금|교육재정|교육 ?예산|학교[^.]{0,20}예산|예산[^.]{0,20}학교/],
   ['교원·정원', /교원|정원|교사 ?수|배치 ?기준|공무원 ?정원|임용 ?절벽/],
   ['통학·돌봄', /통학|스쿨버스|돌봄|기숙/],
   ['지역소멸·인구', /지역소멸|인구감소|소멸위험|저출생|저출산|학령인구|학생수 ?감소/],
@@ -41,12 +41,20 @@ const REGIONS = [
 const GYEONGBUK = /경북|경상북도|포항|경주|김천|안동|구미|영주|영천|문경|경산|의성|청송|영덕|성주(?!들|신)|칠곡|예천|봉화|울진|울릉|고령군|영양군|상주시|청도군/;
 const GYEONGBUK_PRESS = /경북|매일신문|영남일보|대구일보|대경일보|경북도민일보|경북매일/;
 const DAEGU_ONLY = /대구시교육청|대구광역시교육청|대구 달서|대구 수성|대구 중구|대구 남구|대구 서구|대구 북구|대구 동구/;
+const K12_SIGNAL = /학령인구|학생 ?수|초등|중학교|고등학교|유치원|특수학교|소규모 ?학교|폐교|통폐합|분교|교원|교사|통학|돌봄|늘봄|교육발전특구|저출생|저출산|지역소멸|학교 ?신설|학급|교부금|교육재정/;
+const HIGHER_ED_ONLY = /대학교|대학(?!교)|수시 ?모집|정시 ?모집|수능|학과|전형|합격자|입학사정/;
+const DEMOGRAPHIC_OVERRIDE = /학령인구|학생 ?수[^.]{0,15}(?:감소|증가|변화)|지역소멸|저출생|저출산|초등|중학교|고등학교|유치원|교육청|교원/;
 
 const STOP = new Set([
   '관계자','이날','지난해','올해','내년','최근','이번','그동안','대부분','다양한','통해','위해',
   '대한','관련','사업','행사','개최','사진','기자','대상','가운데','주요','추진','강화','마련',
   '진행','운영','지원','계획','실시','참여','확대','노력','발표','예정','선정','제공','조성',
   '뉴스','보도','결과','내용','경북','경상북도','학생','학교','교육'
+]);
+
+const VECTOR_STOP = new Set([
+  ...STOP, '학생들','학년도','대구','교육부','교육청','경북도','경북교육청','경상북도교육청',
+  '지역','전국','정부','교육감','학교는','학생은','학교가','학생이','학교의','학생의'
 ]);
 
 function clean(v) {
@@ -117,6 +125,7 @@ function parseRow(row) {
   if (DAEGU_ONLY.test(`${title} ${body} ${locationRaw}`) && !mentionsGyeongbuk) return null;
   if (!mentionsGyeongbuk && !GYEONGBUK_PRESS.test(press)) return null;
   let topics = TOPICS.filter(([, re]) => re.test(text)).map(([name]) => name);
+  const headlineTopics = TOPICS.filter(([,re])=>re.test(title)).map(([name])=>name);
   /* 기사라기보다 수상·인사 명단인 짧은 알림은 학교명 속 '분교' 같은 낱말로
      통폐합 기사로 오인하지 않습니다. 원자료에는 남기되 6대 주제에서는 뺍니다. */
   if (!clean(value(row, ['URL','url','링크','link','originallink'])) && title.length < 8 && /훈장|포상|인사/.test(title)) topics = [];
@@ -126,9 +135,10 @@ function parseRow(row) {
     link: clean(value(row, ['URL','url','링크','link','originallink'])),
     publishedAt,
     press,
-    topics,
+    topics,headlineTopics,
     regions,
-    keywords: topKeywords(keywordRaw)
+    keywords: topKeywords(keywordRaw),
+    analysisRelevant:mentionsGyeongbuk&&K12_SIGNAL.test(title)&&(!HIGHER_ED_ONLY.test(title)||DEMOGRAPHIC_OVERRIDE.test(title))
   };
   article.id = idFor(article);
   return article;
@@ -151,6 +161,85 @@ function count(items, getter) {
   return [...map].sort((a,b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ko'));
 }
 
+function isoDay(ms) { return new Date(ms).toISOString().slice(0,10); }
+function dateMs(v) { return new Date(`${v}T00:00:00Z`).getTime(); }
+
+function weeklyTrend(items, latest, weeks=12) {
+  const anchor=dateMs(latest), weekday=(new Date(anchor).getUTCDay()+6)%7;
+  const thisMonday=anchor-weekday*864e5;
+  const out=[];
+  for(let i=weeks-1;i>=0;i--){
+    const from=thisMonday-i*7*864e5, to=Math.min(from+7*864e5,anchor+864e5);
+    const rows=items.filter(a=>{const t=dateMs(a.publishedAt);return t>=from&&t<to;});
+    out.push({
+      from:isoDay(from),to:isoDay(to-864e5),total:rows.length,
+      topics:Object.fromEntries(TOPICS.map(([topic])=>[topic,rows.filter(a=>a.topics.includes(topic)).length]))
+    });
+  }
+  return out;
+}
+
+function vectorTokens(article) {
+  const title=(article.title.toLowerCase().match(/[가-힣a-z0-9]{2,}/g)||[]);
+  const keywords=(article.keywords||[]).flatMap(k=>String(k).toLowerCase().split(/\s+/));
+  return [...title,...keywords].map(v=>v.replace(/[^가-힣a-z0-9]/g,''))
+    .filter(v=>v.length>=2&&!/^\d+$/.test(v)&&!VECTOR_STOP.has(v));
+}
+
+function normalizeVector(v) {
+  let norm=0; for(const value of v.values()) norm+=value*value;
+  norm=Math.sqrt(norm)||1; for(const [key,value] of v) v.set(key,value/norm);
+  return v;
+}
+
+function cosine(a,b) {
+  let small=a,big=b;if(a.size>b.size){small=b;big=a;}
+  let sum=0;for(const [key,value] of small)sum+=value*(big.get(key)||0);return sum;
+}
+
+/* 제목과 BIG Kinds 특성추출 키워드를 희소 TF-IDF 벡터로 만든 뒤,
+   코사인 유사도를 쓰는 결정론적 k-means로 비슷한 기사를 묶습니다.
+   외부 AI 서비스나 기사 본문 공개 없이 같은 원본에서 재현할 수 있습니다. */
+function similarityClusters(items) {
+  const docs=items.map((article,index)=>({article,index,tokens:vectorTokens(article)})).filter(d=>d.tokens.length);
+  if(!docs.length)return {method:'TF-IDF + cosine similarity',documents:0,clusters:[]};
+  const df=new Map();
+  for(const d of docs)for(const token of new Set(d.tokens))df.set(token,(df.get(token)||0)+1);
+  for(const d of docs){
+    const tf=new Map();for(const token of d.tokens)tf.set(token,(tf.get(token)||0)+1);
+    d.vector=normalizeVector(new Map([...tf].map(([token,n])=>[token,(1+Math.log(n))*(1+Math.log((docs.length+1)/((df.get(token)||0)+1)))])));
+  }
+  const threshold=.28,groups=[];
+  for(const d of docs){
+    let chosen=null,score=-1;
+    for(const group of groups){const s=cosine(d.vector,group.centroid);if(s>score){score=s;chosen=group;}}
+    if(!chosen||score<threshold){groups.push({members:[d],centroid:new Map(d.vector)});continue;}
+    chosen.members.push(d);
+    const next=new Map();for(const member of chosen.members)for(const [token,value] of member.vector)next.set(token,(next.get(token)||0)+value/chosen.members.length);
+    chosen.centroid=normalizeVector(next);
+  }
+  const clusters=groups.filter(group=>group.members.length>=2).map((group,i)=>{
+    const {members,centroid}=group;
+    const keywords=[...centroid].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'ko')).slice(0,4).map(([name])=>name);
+    const dominantTopic=count(members,d=>d.article.topics).at(0)?.[0]||'기타';
+    const ranked=members.map(d=>({d,score:cosine(d.vector,centroid)})).sort((a,b)=>b.score-a.score||a.d.index-b.d.index);
+    const cohesion=ranked.reduce((n,r)=>n+r.score,0)/ranked.length;
+    return {
+      id:`cluster-${i+1}`,label:[dominantTopic,...keywords.slice(0,2)].join(' · '),keywords,size:members.length,
+      share:+(members.length/docs.length*100).toFixed(1),cohesion:+cohesion.toFixed(2),
+      samples:ranked.slice(0,3).map(({d,score})=>({
+        id:d.article.id,title:d.article.title,link:d.article.link,publishedAt:d.article.publishedAt,
+        press:d.article.press,similarity:+score.toFixed(2)
+      }))
+    };
+  }).sort((a,b)=>b.size-a.size||b.cohesion-a.cohesion).slice(0,6);
+  const grouped=clusters.reduce((n,c)=>n+c.size,0);
+  return {
+    method:`제목·BIG Kinds 특성추출 키워드 TF-IDF 벡터화 → 코사인 유사도 ${threshold} 이상 묶음`,
+    documents:docs.length,clusterCount:clusters.length,grouped,unclustered:docs.length-grouped,threshold,clusters
+  };
+}
+
 function makeSnapshot(items) {
   const latest = items[0]?.publishedAt || '';
   const anchor = latest ? new Date(`${latest}T00:00:00Z`) : new Date();
@@ -170,14 +259,22 @@ function makeSnapshot(items) {
     const beforeShare = prior.length ? before / prior.length * 100 : 0;
     return { topic, current: now, prior: before, currentShare:+nowShare.toFixed(1), priorShare:+beforeShare.toFixed(1), changePp:+(nowShare-beforeShare).toFixed(1) };
   }).sort((a,b) => b.currentShare - a.currentShare);
+  const priorKeywords=new Map(count(prior,a=>a.keywords));
+  const keywordCloud=count(current,a=>a.keywords).slice(0,32).map(([name,value])=>({name,value,prior:priorKeywords.get(name)||0,change:value-(priorKeywords.get(name)||0)}));
+  const priorRegions=new Map(count(prior,a=>a.regions));
+  const regionSignals=count(current,a=>a.regions).map(([name,value])=>({name,current:value,prior:priorRegions.get(name)||0,change:value-(priorRegions.get(name)||0)}));
   return {
     basis: '기사량은 사회적 관심의 신호이며 실제 학생 수·학교 수의 증감을 뜻하지 않습니다.',
     anchorDate: latest,
     currentPeriod: { from:new Date(currentStart).toISOString().slice(0,10), to:latest, count:current.length },
     priorPeriod: { from:new Date(priorStart).toISOString().slice(0,10), to:new Date(currentStart-864e5).toISOString().slice(0,10), count:prior.length },
     topics: topicRows,
-    keywords: count(current, a => a.keywords).slice(0,20).map(([name,value]) => ({name,value})),
+    weeklyTrend:weeklyTrend(items,latest,12),
+    keywords: keywordCloud.slice(0,20),
+    keywordCloud,
     regions: count(current, a => a.regions).slice(0,22).map(([name,value]) => ({name,value})),
+    regionSignals,
+    similarity:similarityClusters(current),
     evidence: current.filter(a => a.link).slice(0,8).map(({id,title,link,publishedAt,press,topics}) => ({id,title,link,publishedAt,press,topics}))
   };
 }
@@ -213,6 +310,7 @@ function main() {
   }
   const all = dedupe(parsed).sort((a,b) => b.publishedAt.localeCompare(a.publishedAt));
   const curated = all.filter(a => a.topics.length);
+  const analysis = curated.filter(a=>a.analysisRelevant&&a.headlineTopics.length).map(({analysisRelevant,headlineTopics,...article})=>({...article,topics:headlineTopics}));
   fs.rmSync(DEST, {recursive:true,force:true}); ensure(DEST);
   fs.rmSync(WORK, {recursive:true,force:true}); ensure(WORK);
 
@@ -224,14 +322,15 @@ function main() {
        소수의 근거 기사만 두고, 연도별 목록은 gitignore 된 work에 남깁니다. */
     const file = path.join(WORK, 'archive', `${year}.json`); writeJson(file, rows);
   }
-  const snapshot = makeSnapshot(curated); writeJson(path.join(DEST,'snapshot.json'),snapshot);
-  const network = makeNetwork(curated); writeJson(path.join(DEST,'network.json'),network);
+  const snapshot = makeSnapshot(analysis); writeJson(path.join(DEST,'snapshot.json'),snapshot);
+  const network = makeNetwork(analysis); writeJson(path.join(DEST,'network.json'),network);
   const issue = {
     id:`${snapshot.anchorDate}-recent-30d`, status:'prototype',
     title:`최근 30일 경북 학령인구 뉴스 이슈 브리프`,
     period:snapshot.currentPeriod,
     lead:`최근 기사에서 ‘${snapshot.topics[0]?.topic || '학령인구'}’ 관련 보도가 가장 큰 비중을 보였습니다. 기사량은 정책 관심의 신호로만 읽고 학생 수 실적과는 구분해야 합니다.`,
     topics:snapshot.topics.slice(0,3), keywords:snapshot.keywords.slice(0,8),
+    clusters:snapshot.similarity.clusters.slice(0,3),
     evidence:snapshot.evidence.slice(0,5),
     caveat:snapshot.basis,
     review:'발행 전 담당자의 사실 확인과 문장 검토가 필요합니다.'
@@ -244,14 +343,19 @@ function main() {
   const manifest = {
     schemaVersion:1, generatedAt:new Date().toISOString(), source:'BIG Kinds 뉴스 검색·분석',
     coverage:{from:curated.at(-1)?.publishedAt || '',to:curated[0]?.publishedAt || ''},
-    counts:{sourceRows:sources.reduce((n,s)=>n+s.rows,0),deduplicated:all.length,curated:curated.length},
-    topics:Object.fromEntries(count(curated,a=>a.topics)), years:Object.fromEntries(count(curated,a=>[a.publishedAt.slice(0,4)]).sort((a,b)=>a[0].localeCompare(b[0]))),
+    counts:{sourceRows:sources.reduce((n,s)=>n+s.rows,0),deduplicated:all.length,curated:curated.length,analysisReady:analysis.length},
+    topics:Object.fromEntries(count(analysis,a=>a.topics)), years:Object.fromEntries(count(analysis,a=>[a.publishedAt.slice(0,4)]).sort((a,b)=>a[0].localeCompare(b[0]))),
+    analysisMethod:{
+      scope:'경북·시군 + 제목의 초중등 학령인구 직접 신호 + 제목의 6대 주제',
+      vectorization:'기사 제목·BIG Kinds 특성추출 키워드 TF-IDF',similarity:'cosine',threshold:.28,
+      populationComparison:'EDSS 2016~2025 초·중·고 학생 수 변화율; 인과·예측으로 사용하지 않음'
+    },
     publicFields:['집계값','근거기사 제목','근거기사 링크','발행일','언론사','주제','시군','키워드'],
     excludedFields:['본문','기사본문','description','persons'], files:outputFiles
   };
   writeJson(path.join(DEST,'manifest.json'),manifest);
   writeJson(path.join(HERE,'source-manifest.json'),{generatedAt:manifest.generatedAt,source:'BIG Kinds',sources});
-  console.log(`원본 ${manifest.counts.sourceRows.toLocaleString()}행 → 중복 제거 ${all.length.toLocaleString()}건 → 6대 주제 ${curated.length.toLocaleString()}건`);
+  console.log(`원본 ${manifest.counts.sourceRows.toLocaleString()}행 → 중복 제거 ${all.length.toLocaleString()}건 → 6대 주제 ${curated.length.toLocaleString()}건 → 분석 적합 ${analysis.length.toLocaleString()}건`);
   console.log(`공개 산출물: ${DEST}`);
   console.log(`내부 연도별 목록: ${path.join(WORK,'archive')} (GitHub·배포 제외)`);
 }

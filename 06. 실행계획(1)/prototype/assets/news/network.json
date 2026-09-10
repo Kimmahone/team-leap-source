@@ -2,1155 +2,1155 @@
   "nodes": [
     {
       "id": "교육부",
-      "value": 1990,
-      "kind": "키워드"
-    },
-    {
-      "id": "포항시",
-      "value": 1656,
-      "kind": "시군"
-    },
-    {
-      "id": "학생들",
-      "value": 1410,
-      "kind": "키워드"
-    },
-    {
-      "id": "구미시",
-      "value": 1350,
-      "kind": "시군"
-    },
-    {
-      "id": "안동시",
-      "value": 1309,
-      "kind": "시군"
-    },
-    {
-      "id": "경주시",
-      "value": 1178,
-      "kind": "시군"
-    },
-    {
-      "id": "대구",
-      "value": 1099,
-      "kind": "키워드"
-    },
-    {
-      "id": "학년도",
-      "value": 1033,
-      "kind": "키워드"
-    },
-    {
-      "id": "학부모",
-      "value": 951,
-      "kind": "키워드"
-    },
-    {
-      "id": "신입생",
-      "value": 899,
-      "kind": "키워드"
-    },
-    {
-      "id": "경북도",
-      "value": 879,
-      "kind": "키워드"
-    },
-    {
-      "id": "경북교육청",
-      "value": 830,
-      "kind": "키워드"
-    },
-    {
-      "id": "상주시",
-      "value": 752,
-      "kind": "시군"
-    },
-    {
-      "id": "교육청",
-      "value": 701,
-      "kind": "키워드"
-    },
-    {
-      "id": "경산시",
-      "value": 666,
-      "kind": "시군"
-    },
-    {
-      "id": "포항",
-      "value": 634,
-      "kind": "키워드"
-    },
-    {
-      "id": "중학교",
-      "value": 620,
-      "kind": "키워드"
-    },
-    {
-      "id": "울릉군",
-      "value": 616,
-      "kind": "시군"
-    },
-    {
-      "id": "영주시",
-      "value": 608,
-      "kind": "시군"
-    },
-    {
-      "id": "서울",
-      "value": 571,
-      "kind": "키워드"
-    },
-    {
-      "id": "김천시",
-      "value": 560,
-      "kind": "시군"
-    },
-    {
-      "id": "영천시",
-      "value": 558,
-      "kind": "시군"
-    },
-    {
-      "id": "의성군",
-      "value": 554,
-      "kind": "시군"
-    },
-    {
-      "id": "장학금",
-      "value": 547,
+      "value": 499,
       "kind": "키워드"
     },
     {
       "id": "늘봄학교",
-      "value": 546,
-      "kind": "키워드"
-    },
-    {
-      "id": "봉화군",
-      "value": 518,
-      "kind": "시군"
-    },
-    {
-      "id": "고등학교",
-      "value": 516,
-      "kind": "키워드"
-    },
-    {
-      "id": "울진군",
-      "value": 512,
-      "kind": "시군"
-    },
-    {
-      "id": "지자체",
-      "value": 491,
-      "kind": "키워드"
-    },
-    {
-      "id": "교육감",
-      "value": 482,
-      "kind": "키워드"
-    },
-    {
-      "id": "예천군",
-      "value": 480,
-      "kind": "시군"
-    },
-    {
-      "id": "경쟁력",
-      "value": 468,
-      "kind": "키워드"
-    },
-    {
-      "id": "경북대",
-      "value": 454,
-      "kind": "키워드"
-    },
-    {
-      "id": "기숙사",
-      "value": 445,
-      "kind": "키워드"
-    },
-    {
-      "id": "구미",
-      "value": 441,
-      "kind": "키워드"
-    },
-    {
-      "id": "칠곡군",
-      "value": 441,
-      "kind": "시군"
-    },
-    {
-      "id": "지원청",
-      "value": 421,
-      "kind": "키워드"
-    },
-    {
-      "id": "임종식",
       "value": 415,
       "kind": "키워드"
     },
     {
-      "id": "경주",
-      "value": 412,
-      "kind": "키워드"
-    },
-    {
-      "id": "문경시",
-      "value": 412,
+      "id": "포항시",
+      "value": 342,
       "kind": "시군"
     },
     {
-      "id": "수도권",
-      "value": 412,
+      "id": "경북교육청",
+      "value": 341,
       "kind": "키워드"
     },
     {
       "id": "늘봄",
-      "value": 385,
-      "kind": "키워드"
-    },
-    {
-      "id": "위원회",
-      "value": 384,
-      "kind": "키워드"
-    },
-    {
-      "id": "영덕군",
-      "value": 367,
-      "kind": "시군"
-    },
-    {
-      "id": "안동",
-      "value": 366,
-      "kind": "키워드"
-    },
-    {
-      "id": "교육발전특구",
-      "value": 355,
-      "kind": "키워드"
-    },
-    {
-      "id": "전남",
-      "value": 353,
-      "kind": "키워드"
-    },
-    {
-      "id": "교직원",
-      "value": 329,
-      "kind": "키워드"
-    },
-    {
-      "id": "등록금",
       "value": 327,
       "kind": "키워드"
     },
     {
+      "id": "교육청",
+      "value": 317,
+      "kind": "키워드"
+    },
+    {
+      "id": "구미시",
+      "value": 317,
+      "kind": "시군"
+    },
+    {
+      "id": "학부모",
+      "value": 306,
+      "kind": "키워드"
+    },
+    {
+      "id": "안동시",
+      "value": 288,
+      "kind": "시군"
+    },
+    {
+      "id": "학생들",
+      "value": 283,
+      "kind": "키워드"
+    },
+    {
+      "id": "경주시",
+      "value": 229,
+      "kind": "시군"
+    },
+    {
+      "id": "교육발전특구",
+      "value": 209,
+      "kind": "키워드"
+    },
+    {
+      "id": "경북도",
+      "value": 207,
+      "kind": "키워드"
+    },
+    {
+      "id": "대구",
+      "value": 200,
+      "kind": "키워드"
+    },
+    {
+      "id": "상주시",
+      "value": 185,
+      "kind": "시군"
+    },
+    {
+      "id": "경산시",
+      "value": 180,
+      "kind": "시군"
+    },
+    {
+      "id": "영주시",
+      "value": 173,
+      "kind": "시군"
+    },
+    {
+      "id": "김천시",
+      "value": 172,
+      "kind": "시군"
+    },
+    {
+      "id": "지자체",
+      "value": 167,
+      "kind": "키워드"
+    },
+    {
+      "id": "울릉군",
+      "value": 158,
+      "kind": "시군"
+    },
+    {
+      "id": "영천시",
+      "value": 153,
+      "kind": "시군"
+    },
+    {
+      "id": "중학교",
+      "value": 153,
+      "kind": "키워드"
+    },
+    {
+      "id": "칠곡군",
+      "value": 150,
+      "kind": "시군"
+    },
+    {
+      "id": "예천군",
+      "value": 146,
+      "kind": "시군"
+    },
+    {
+      "id": "울진군",
+      "value": 146,
+      "kind": "시군"
+    },
+    {
+      "id": "포항",
+      "value": 141,
+      "kind": "키워드"
+    },
+    {
+      "id": "봉화군",
+      "value": 139,
+      "kind": "시군"
+    },
+    {
+      "id": "지원청",
+      "value": 138,
+      "kind": "키워드"
+    },
+    {
+      "id": "전남",
+      "value": 134,
+      "kind": "키워드"
+    },
+    {
+      "id": "임종식",
+      "value": 131,
+      "kind": "키워드"
+    },
+    {
+      "id": "서울",
+      "value": 124,
+      "kind": "키워드"
+    },
+    {
+      "id": "교육감",
+      "value": 120,
+      "kind": "키워드"
+    },
+    {
+      "id": "의성군",
+      "value": 119,
+      "kind": "시군"
+    },
+    {
       "id": "아이들",
-      "value": 324,
+      "value": 108,
+      "kind": "키워드"
+    },
+    {
+      "id": "문경시",
+      "value": 105,
+      "kind": "시군"
+    },
+    {
+      "id": "고등학교",
+      "value": 99,
+      "kind": "키워드"
+    },
+    {
+      "id": "신입생",
+      "value": 99,
+      "kind": "키워드"
+    },
+    {
+      "id": "구미",
+      "value": 94,
+      "kind": "키워드"
+    },
+    {
+      "id": "경주",
+      "value": 91,
+      "kind": "키워드"
+    },
+    {
+      "id": "영덕군",
+      "value": 91,
+      "kind": "시군"
+    },
+    {
+      "id": "위원회",
+      "value": 90,
+      "kind": "키워드"
+    },
+    {
+      "id": "경북도교육청",
+      "value": 86,
+      "kind": "키워드"
+    },
+    {
+      "id": "시범지역",
+      "value": 86,
+      "kind": "키워드"
+    },
+    {
+      "id": "저출생",
+      "value": 85,
+      "kind": "키워드"
+    },
+    {
+      "id": "공교육",
+      "value": 84,
+      "kind": "키워드"
+    },
+    {
+      "id": "경남",
+      "value": 82,
+      "kind": "키워드"
+    },
+    {
+      "id": "학년도",
+      "value": 81,
+      "kind": "키워드"
+    },
+    {
+      "id": "안동",
+      "value": 79,
+      "kind": "키워드"
+    },
+    {
+      "id": "학령인구",
+      "value": 77,
+      "kind": "키워드"
+    },
+    {
+      "id": "강원",
+      "value": 76,
       "kind": "키워드"
     }
   ],
   "links": [
     {
-      "source": "포항",
-      "target": "포항시",
-      "value": 587
-    },
-    {
-      "source": "구미",
-      "target": "구미시",
-      "value": 406
-    },
-    {
-      "source": "경주",
-      "target": "경주시",
-      "value": 382
-    },
-    {
-      "source": "안동",
-      "target": "안동시",
-      "value": 322
-    },
-    {
       "source": "늘봄",
       "target": "늘봄학교",
-      "value": 308
-    },
-    {
-      "source": "안동시",
-      "target": "포항시",
-      "value": 306
-    },
-    {
-      "source": "학부모",
-      "target": "학생들",
-      "value": 290
-    },
-    {
-      "source": "구미시",
-      "target": "포항시",
-      "value": 282
-    },
-    {
-      "source": "경주시",
-      "target": "포항시",
-      "value": 278
-    },
-    {
-      "source": "상주시",
-      "target": "안동시",
-      "value": 271
-    },
-    {
-      "source": "구미시",
-      "target": "안동시",
-      "value": 264
-    },
-    {
-      "source": "안동시",
-      "target": "예천군",
-      "value": 256
-    },
-    {
-      "source": "교육감",
-      "target": "임종식",
-      "value": 246
-    },
-    {
-      "source": "교육부",
-      "target": "대구",
-      "value": 244
-    },
-    {
-      "source": "교육부",
-      "target": "학년도",
-      "value": 243
-    },
-    {
-      "source": "교육부",
-      "target": "교육청",
-      "value": 241
-    },
-    {
-      "source": "구미시",
-      "target": "상주시",
-      "value": 238
-    },
-    {
-      "source": "경주시",
-      "target": "교육부",
-      "value": 221
-    },
-    {
-      "source": "경북도",
-      "target": "안동시",
-      "value": 212
-    },
-    {
-      "source": "경북교육청",
-      "target": "임종식",
-      "value": 211
-    },
-    {
-      "source": "김천시",
-      "target": "포항시",
-      "value": 207
-    },
-    {
-      "source": "상주시",
-      "target": "포항시",
-      "value": 204
-    },
-    {
-      "source": "신입생",
-      "target": "학년도",
-      "value": 202
-    },
-    {
-      "source": "교육부",
-      "target": "학생들",
-      "value": 198
-    },
-    {
-      "source": "교육부",
-      "target": "신입생",
-      "value": 194
+      "value": 275
     },
     {
       "source": "교육부",
       "target": "늘봄학교",
-      "value": 192
-    },
-    {
-      "source": "교육부",
-      "target": "구미시",
-      "value": 187
-    },
-    {
-      "source": "경산시",
-      "target": "구미시",
-      "value": 187
-    },
-    {
-      "source": "교육부",
-      "target": "포항시",
-      "value": 184
-    },
-    {
-      "source": "경북도",
-      "target": "포항시",
-      "value": 177
+      "value": 157
     },
     {
       "source": "늘봄학교",
       "target": "학부모",
-      "value": 176
-    },
-    {
-      "source": "포항시",
-      "target": "학생들",
-      "value": 174
-    },
-    {
-      "source": "구미시",
-      "target": "김천시",
-      "value": 172
-    },
-    {
-      "source": "구미시",
-      "target": "칠곡군",
-      "value": 172
-    },
-    {
-      "source": "교육부",
-      "target": "지자체",
-      "value": 169
-    },
-    {
-      "source": "고등학교",
-      "target": "중학교",
-      "value": 167
-    },
-    {
-      "source": "경주시",
-      "target": "안동시",
-      "value": 166
-    },
-    {
-      "source": "김천시",
-      "target": "안동시",
-      "value": 160
-    },
-    {
-      "source": "교육부",
-      "target": "학부모",
-      "value": 159
-    },
-    {
-      "source": "경산시",
-      "target": "포항시",
-      "value": 159
-    },
-    {
-      "source": "신입생",
-      "target": "장학금",
-      "value": 158
-    },
-    {
-      "source": "구미시",
-      "target": "학생들",
-      "value": 158
-    },
-    {
-      "source": "학년도",
-      "target": "학생들",
-      "value": 155
-    },
-    {
-      "source": "안동시",
-      "target": "영주시",
-      "value": 154
-    },
-    {
-      "source": "교육부",
-      "target": "안동시",
-      "value": 153
-    },
-    {
-      "source": "경주시",
-      "target": "구미시",
-      "value": 152
-    },
-    {
-      "source": "안동시",
-      "target": "의성군",
-      "value": 152
-    },
-    {
-      "source": "칠곡군",
-      "target": "포항시",
-      "value": 149
-    },
-    {
-      "source": "경북교육청",
-      "target": "학부모",
-      "value": 149
-    },
-    {
-      "source": "구미시",
-      "target": "대구",
       "value": 148
     },
     {
-      "source": "영천시",
-      "target": "포항시",
-      "value": 148
+      "source": "교육부",
+      "target": "교육청",
+      "value": 136
     },
     {
-      "source": "안동시",
-      "target": "칠곡군",
-      "value": 147
+      "source": "포항",
+      "target": "포항시",
+      "value": 121
     },
     {
       "source": "경북교육청",
       "target": "늘봄학교",
-      "value": 145
-    },
-    {
-      "source": "안동시",
-      "target": "영천시",
-      "value": 141
-    },
-    {
-      "source": "경주시",
-      "target": "김천시",
-      "value": 140
-    },
-    {
-      "source": "경북대",
-      "target": "교육부",
-      "value": 139
-    },
-    {
-      "source": "상주시",
-      "target": "영주시",
-      "value": 139
-    },
-    {
-      "source": "안동시",
-      "target": "학생들",
-      "value": 139
-    },
-    {
-      "source": "상주시",
-      "target": "영천시",
-      "value": 139
-    },
-    {
-      "source": "교육청",
-      "target": "늘봄학교",
-      "value": 138
-    },
-    {
-      "source": "봉화군",
-      "target": "안동시",
-      "value": 137
-    },
-    {
-      "source": "상주시",
-      "target": "예천군",
-      "value": 137
-    },
-    {
-      "source": "경북도",
-      "target": "경주시",
-      "value": 137
-    },
-    {
-      "source": "예천군",
-      "target": "포항시",
-      "value": 136
-    },
-    {
-      "source": "울릉군",
-      "target": "포항시",
-      "value": 136
-    },
-    {
-      "source": "김천시",
-      "target": "상주시",
-      "value": 135
-    },
-    {
-      "source": "상주시",
-      "target": "칠곡군",
-      "value": 135
-    },
-    {
-      "source": "김천시",
-      "target": "영천시",
-      "value": 135
-    },
-    {
-      "source": "장학금",
-      "target": "학년도",
-      "value": 134
-    },
-    {
-      "source": "구미시",
-      "target": "예천군",
-      "value": 134
-    },
-    {
-      "source": "경북교육청",
-      "target": "교육감",
-      "value": 133
-    },
-    {
-      "source": "등록금",
-      "target": "장학금",
-      "value": 133
-    },
-    {
-      "source": "늘봄",
-      "target": "학부모",
-      "value": 133
-    },
-    {
-      "source": "문경시",
-      "target": "안동시",
-      "value": 132
-    },
-    {
-      "source": "교육부",
-      "target": "서울",
-      "value": 132
-    },
-    {
-      "source": "울진군",
-      "target": "포항시",
-      "value": 131
-    },
-    {
-      "source": "기숙사",
-      "target": "학생들",
-      "value": 131
-    },
-    {
-      "source": "경북교육청",
-      "target": "학생들",
-      "value": 130
-    },
-    {
-      "source": "교육부",
-      "target": "장학금",
-      "value": 128
-    },
-    {
-      "source": "포항시",
-      "target": "학부모",
-      "value": 126
-    },
-    {
-      "source": "교육부",
-      "target": "전남",
-      "value": 125
-    },
-    {
-      "source": "경산시",
-      "target": "경주시",
-      "value": 125
-    },
-    {
-      "source": "경북도",
-      "target": "구미시",
-      "value": 124
-    },
-    {
-      "source": "경북교육청",
-      "target": "늘봄",
-      "value": 124
-    },
-    {
-      "source": "경산시",
-      "target": "영천시",
-      "value": 124
-    },
-    {
-      "source": "구미시",
-      "target": "영천시",
-      "value": 123
-    },
-    {
-      "source": "경산시",
-      "target": "교육부",
-      "value": 122
-    },
-    {
-      "source": "대구",
-      "target": "학년도",
-      "value": 122
-    },
-    {
-      "source": "봉화군",
-      "target": "포항시",
-      "value": 122
-    },
-    {
-      "source": "서울",
-      "target": "수도권",
       "value": 121
     },
     {
       "source": "교육청",
+      "target": "늘봄학교",
+      "value": 117
+    },
+    {
+      "source": "늘봄",
       "target": "학부모",
-      "value": 120
-    },
-    {
-      "source": "구미시",
-      "target": "울진군",
-      "value": 119
-    },
-    {
-      "source": "교육발전특구",
-      "target": "교육부",
-      "value": 119
-    },
-    {
-      "source": "상주시",
-      "target": "의성군",
-      "value": 118
-    },
-    {
-      "source": "교육부",
-      "target": "수도권",
-      "value": 118
-    },
-    {
-      "source": "문경시",
-      "target": "상주시",
-      "value": 117
-    },
-    {
-      "source": "경북교육청",
-      "target": "중학교",
-      "value": 117
-    },
-    {
-      "source": "대구",
-      "target": "학생들",
       "value": 116
     },
     {
-      "source": "경주시",
-      "target": "상주시",
-      "value": 115
+      "source": "경북교육청",
+      "target": "늘봄",
+      "value": 112
     },
     {
-      "source": "경주시",
-      "target": "학생들",
-      "value": 114
-    },
-    {
-      "source": "의성군",
+      "source": "안동시",
       "target": "포항시",
-      "value": 114
+      "value": 111
+    },
+    {
+      "source": "구미시",
+      "target": "포항시",
+      "value": 111
     },
     {
       "source": "교육부",
       "target": "늘봄",
-      "value": 114
+      "value": 101
     },
     {
-      "source": "경북교육청",
+      "source": "구미시",
       "target": "안동시",
-      "value": 113
-    },
-    {
-      "source": "경북대",
-      "target": "대구",
-      "value": 111
-    },
-    {
-      "source": "경주시",
-      "target": "의성군",
-      "value": 111
-    },
-    {
-      "source": "신입생",
-      "target": "학생들",
-      "value": 110
-    },
-    {
-      "source": "경북교육청",
-      "target": "포항시",
-      "value": 110
-    },
-    {
-      "source": "경주시",
-      "target": "영천시",
-      "value": 110
-    },
-    {
-      "source": "예천군",
-      "target": "칠곡군",
-      "value": 110
-    },
-    {
-      "source": "장학금",
-      "target": "학생들",
-      "value": 109
-    },
-    {
-      "source": "안동시",
-      "target": "울진군",
-      "value": 109
-    },
-    {
-      "source": "경북교육청",
-      "target": "교육청",
-      "value": 108
-    },
-    {
-      "source": "경쟁력",
-      "target": "교육부",
-      "value": 108
-    },
-    {
-      "source": "울릉군",
-      "target": "학생들",
-      "value": 108
-    },
-    {
-      "source": "경북대",
-      "target": "학년도",
-      "value": 108
-    },
-    {
-      "source": "경산시",
-      "target": "김천시",
-      "value": 108
-    },
-    {
-      "source": "경주시",
-      "target": "신입생",
-      "value": 107
-    },
-    {
-      "source": "경북교육청",
-      "target": "교육부",
-      "value": 107
+      "value": 100
     },
     {
       "source": "상주시",
-      "target": "학생들",
-      "value": 107
-    },
-    {
-      "source": "경산시",
       "target": "안동시",
-      "value": 107
+      "value": 93
     },
     {
-      "source": "봉화군",
-      "target": "상주시",
-      "value": 106
-    },
-    {
-      "source": "중학교",
-      "target": "학생들",
-      "value": 106
-    },
-    {
-      "source": "구미시",
-      "target": "의성군",
-      "value": 106
-    },
-    {
-      "source": "구미시",
-      "target": "영주시",
-      "value": 106
-    },
-    {
-      "source": "중학교",
+      "source": "상주시",
       "target": "포항시",
-      "value": 105
+      "value": 91
     },
     {
-      "source": "영주시",
-      "target": "영천시",
-      "value": 105
+      "source": "구미시",
+      "target": "상주시",
+      "value": 90
+    },
+    {
+      "source": "경북교육청",
+      "target": "학부모",
+      "value": 89
+    },
+    {
+      "source": "경북교육청",
+      "target": "임종식",
+      "value": 85
     },
     {
       "source": "김천시",
-      "target": "의성군",
-      "value": 105
-    },
-    {
-      "source": "경북교육청",
-      "target": "고등학교",
-      "value": 104
-    },
-    {
-      "source": "교육부",
-      "target": "등록금",
-      "value": 104
-    },
-    {
-      "source": "교육발전특구",
       "target": "포항시",
-      "value": 103
-    },
-    {
-      "source": "대구",
-      "target": "신입생",
-      "value": 102
-    },
-    {
-      "source": "고등학교",
-      "target": "학생들",
-      "value": 102
-    },
-    {
-      "source": "경북교육청",
-      "target": "경주시",
-      "value": 102
-    },
-    {
-      "source": "영주시",
-      "target": "포항시",
-      "value": 100
-    },
-    {
-      "source": "교육감",
-      "target": "학부모",
-      "value": 100
+      "value": 84
     },
     {
       "source": "안동시",
-      "target": "학년도",
-      "value": 99
+      "target": "예천군",
+      "value": 84
     },
     {
-      "source": "경북도",
-      "target": "교육부",
-      "value": 99
+      "source": "학부모",
+      "target": "학생들",
+      "value": 82
     },
     {
-      "source": "교육부",
-      "target": "위원회",
-      "value": 98
+      "source": "구미시",
+      "target": "칠곡군",
+      "value": 81
     },
     {
-      "source": "상주시",
-      "target": "울진군",
-      "value": 97
-    },
-    {
-      "source": "교육부",
-      "target": "교직원",
-      "value": 97
-    },
-    {
-      "source": "신입생",
-      "target": "포항시",
-      "value": 96
-    },
-    {
-      "source": "경주시",
-      "target": "학년도",
-      "value": 96
+      "source": "구미",
+      "target": "구미시",
+      "value": 79
     },
     {
       "source": "교육발전특구",
-      "target": "안동시",
-      "value": 96
+      "target": "교육부",
+      "value": 79
     },
     {
-      "source": "기숙사",
-      "target": "신입생",
-      "value": 95
+      "source": "경산시",
+      "target": "구미시",
+      "value": 79
+    },
+    {
+      "source": "교육부",
+      "target": "학부모",
+      "value": 78
+    },
+    {
+      "source": "경주",
+      "target": "경주시",
+      "value": 75
     },
     {
       "source": "늘봄학교",
       "target": "학생들",
-      "value": 95
+      "value": 73
     },
     {
-      "source": "중학교",
-      "target": "학부모",
-      "value": 94
-    },
-    {
-      "source": "영천시",
-      "target": "의성군",
-      "value": 94
-    },
-    {
-      "source": "구미시",
-      "target": "학부모",
-      "value": 93
-    },
-    {
-      "source": "경산시",
-      "target": "상주시",
-      "value": 93
-    },
-    {
-      "source": "봉화군",
-      "target": "의성군",
-      "value": 92
-    },
-    {
-      "source": "대구",
-      "target": "학부모",
-      "value": 92
-    },
-    {
-      "source": "안동시",
-      "target": "포항",
-      "value": 91
-    },
-    {
-      "source": "경주시",
-      "target": "포항",
-      "value": 91
-    },
-    {
-      "source": "대구",
-      "target": "서울",
-      "value": 91
-    },
-    {
-      "source": "영주시",
-      "target": "학생들",
-      "value": 90
+      "source": "김천시",
+      "target": "영천시",
+      "value": 73
     },
     {
       "source": "늘봄",
       "target": "학생들",
-      "value": 90
+      "value": 71
     },
     {
-      "source": "영덕군",
+      "source": "예천군",
       "target": "포항시",
-      "value": 89
-    },
-    {
-      "source": "봉화군",
-      "target": "울진군",
-      "value": 88
-    },
-    {
-      "source": "신입생",
-      "target": "안동시",
-      "value": 88
-    },
-    {
-      "source": "고등학교",
-      "target": "교육부",
-      "value": 88
-    },
-    {
-      "source": "학년도",
-      "target": "학부모",
-      "value": 88
-    },
-    {
-      "source": "문경시",
-      "target": "영천시",
-      "value": 88
+      "value": 70
     },
     {
       "source": "교육청",
-      "target": "포항시",
-      "value": 88
-    },
-    {
-      "source": "포항시",
-      "target": "학년도",
-      "value": 87
-    },
-    {
-      "source": "교육청",
-      "target": "전남",
-      "value": 86
+      "target": "늘봄",
+      "value": 69
     },
     {
       "source": "경주시",
-      "target": "문경시",
-      "value": 86
+      "target": "포항시",
+      "value": 69
     },
     {
-      "source": "지원청",
-      "target": "학부모",
-      "value": 85
-    },
-    {
-      "source": "교육감",
-      "target": "교육청",
-      "value": 85
-    },
-    {
-      "source": "아이들",
-      "target": "학부모",
-      "value": 85
+      "source": "안동시",
+      "target": "칠곡군",
+      "value": 68
     },
     {
       "source": "김천시",
-      "target": "영주시",
-      "value": 85
+      "target": "안동시",
+      "value": 68
     },
     {
-      "source": "지원청",
-      "target": "학생들",
-      "value": 84
+      "source": "칠곡군",
+      "target": "포항시",
+      "value": 68
     },
     {
-      "source": "경북도",
-      "target": "예천군",
-      "value": 84
+      "source": "구미시",
+      "target": "김천시",
+      "value": 67
     },
     {
       "source": "교육부",
-      "target": "중학교",
-      "value": 84
+      "target": "전남",
+      "value": 66
+    },
+    {
+      "source": "경주시",
+      "target": "김천시",
+      "value": 65
+    },
+    {
+      "source": "구미시",
+      "target": "예천군",
+      "value": 64
+    },
+    {
+      "source": "상주시",
+      "target": "칠곡군",
+      "value": 62
+    },
+    {
+      "source": "교육발전특구",
+      "target": "포항시",
+      "value": 62
     },
     {
       "source": "경산시",
-      "target": "학생들",
-      "value": 83
+      "target": "김천시",
+      "value": 62
     },
     {
-      "source": "임종식",
-      "target": "학생들",
-      "value": 83
+      "source": "교육부",
+      "target": "대구",
+      "value": 61
+    },
+    {
+      "source": "김천시",
+      "target": "상주시",
+      "value": 61
+    },
+    {
+      "source": "경산시",
+      "target": "포항시",
+      "value": 60
+    },
+    {
+      "source": "상주시",
+      "target": "영천시",
+      "value": 59
+    },
+    {
+      "source": "상주시",
+      "target": "예천군",
+      "value": 58
+    },
+    {
+      "source": "안동",
+      "target": "안동시",
+      "value": 58
+    },
+    {
+      "source": "영천시",
+      "target": "포항시",
+      "value": 58
+    },
+    {
+      "source": "구미시",
+      "target": "영천시",
+      "value": 58
     },
     {
       "source": "교육발전특구",
       "target": "지자체",
-      "value": 83
+      "value": 58
+    },
+    {
+      "source": "교육감",
+      "target": "임종식",
+      "value": 57
+    },
+    {
+      "source": "안동시",
+      "target": "영천시",
+      "value": 57
+    },
+    {
+      "source": "경북교육청",
+      "target": "학생들",
+      "value": 56
+    },
+    {
+      "source": "교육청",
+      "target": "학부모",
+      "value": 55
+    },
+    {
+      "source": "교육청",
+      "target": "전남",
+      "value": 55
+    },
+    {
+      "source": "경산시",
+      "target": "영천시",
+      "value": 55
+    },
+    {
+      "source": "교육부",
+      "target": "지자체",
+      "value": 55
+    },
+    {
+      "source": "교육발전특구",
+      "target": "시범지역",
+      "value": 54
+    },
+    {
+      "source": "경주시",
+      "target": "구미시",
+      "value": 54
+    },
+    {
+      "source": "예천군",
+      "target": "칠곡군",
+      "value": 53
+    },
+    {
+      "source": "경북교육청",
+      "target": "교육부",
+      "value": 52
+    },
+    {
+      "source": "늘봄학교",
+      "target": "임종식",
+      "value": 51
+    },
+    {
+      "source": "봉화군",
+      "target": "포항시",
+      "value": 51
+    },
+    {
+      "source": "늘봄",
+      "target": "임종식",
+      "value": 50
+    },
+    {
+      "source": "울진군",
+      "target": "포항시",
+      "value": 49
+    },
+    {
+      "source": "김천시",
+      "target": "영주시",
+      "value": 49
+    },
+    {
+      "source": "교육발전특구",
+      "target": "안동시",
+      "value": 48
+    },
+    {
+      "source": "경산시",
+      "target": "안동시",
+      "value": 48
+    },
+    {
+      "source": "봉화군",
+      "target": "안동시",
+      "value": 47
+    },
+    {
+      "source": "경주시",
+      "target": "영천시",
+      "value": 47
+    },
+    {
+      "source": "공교육",
+      "target": "교육발전특구",
+      "value": 47
+    },
+    {
+      "source": "구미시",
+      "target": "울진군",
+      "value": 47
+    },
+    {
+      "source": "경북교육청",
+      "target": "교육감",
+      "value": 46
+    },
+    {
+      "source": "안동시",
+      "target": "영주시",
+      "value": 46
+    },
+    {
+      "source": "영주시",
+      "target": "영천시",
+      "value": 46
+    },
+    {
+      "source": "교육부",
+      "target": "포항시",
+      "value": 46
+    },
+    {
+      "source": "경북도",
+      "target": "안동시",
+      "value": 45
+    },
+    {
+      "source": "상주시",
+      "target": "영주시",
+      "value": 45
+    },
+    {
+      "source": "경산시",
+      "target": "경주시",
+      "value": 45
+    },
+    {
+      "source": "경산시",
+      "target": "영주시",
+      "value": 45
+    },
+    {
+      "source": "경북도",
+      "target": "저출생",
+      "value": 45
+    },
+    {
+      "source": "경북교육청",
+      "target": "교육청",
+      "value": 44
+    },
+    {
+      "source": "교육부",
+      "target": "학생들",
+      "value": 44
+    },
+    {
+      "source": "영주시",
+      "target": "포항시",
+      "value": 44
+    },
+    {
+      "source": "경산시",
+      "target": "상주시",
+      "value": 44
+    },
+    {
+      "source": "울진군",
+      "target": "칠곡군",
+      "value": 44
+    },
+    {
+      "source": "봉화군",
+      "target": "상주시",
+      "value": 43
+    },
+    {
+      "source": "상주시",
+      "target": "울진군",
+      "value": 43
+    },
+    {
+      "source": "경북교육청",
+      "target": "포항시",
+      "value": 43
+    },
+    {
+      "source": "경주시",
+      "target": "상주시",
+      "value": 43
+    },
+    {
+      "source": "경주시",
+      "target": "안동시",
+      "value": 43
+    },
+    {
+      "source": "교육발전특구",
+      "target": "예천군",
+      "value": 43
+    },
+    {
+      "source": "늘봄",
+      "target": "지원청",
+      "value": 42
+    },
+    {
+      "source": "교육발전특구",
+      "target": "구미시",
+      "value": 42
+    },
+    {
+      "source": "경북도",
+      "target": "늘봄학교",
+      "value": 42
+    },
+    {
+      "source": "교육부",
+      "target": "시범지역",
+      "value": 42
+    },
+    {
+      "source": "강원",
+      "target": "전남",
+      "value": 41
+    },
+    {
+      "source": "교육부",
+      "target": "구미시",
+      "value": 41
+    },
+    {
+      "source": "봉화군",
+      "target": "울진군",
+      "value": 40
+    },
+    {
+      "source": "경북도",
+      "target": "구미시",
+      "value": 40
+    },
+    {
+      "source": "고등학교",
+      "target": "중학교",
+      "value": 40
+    },
+    {
+      "source": "구미시",
+      "target": "영주시",
+      "value": 40
+    },
+    {
+      "source": "울릉군",
+      "target": "포항시",
+      "value": 40
+    },
+    {
+      "source": "경북교육청",
+      "target": "안동시",
+      "value": 40
+    },
+    {
+      "source": "봉화군",
+      "target": "칠곡군",
+      "value": 40
+    },
+    {
+      "source": "늘봄학교",
+      "target": "지원청",
+      "value": 39
+    },
+    {
+      "source": "경주시",
+      "target": "문경시",
+      "value": 39
+    },
+    {
+      "source": "경북교육청",
+      "target": "김천시",
+      "value": 38
+    },
+    {
+      "source": "구미시",
+      "target": "봉화군",
+      "value": 38
+    },
+    {
+      "source": "늘봄학교",
+      "target": "전남",
+      "value": 38
+    },
+    {
+      "source": "교육발전특구",
+      "target": "울진군",
+      "value": 37
     },
     {
       "source": "봉화군",
       "target": "예천군",
-      "value": 82
+      "value": 37
+    },
+    {
+      "source": "늘봄학교",
+      "target": "대구",
+      "value": 37
+    },
+    {
+      "source": "교육발전특구",
+      "target": "울릉군",
+      "value": 37
+    },
+    {
+      "source": "임종식",
+      "target": "학부모",
+      "value": 36
+    },
+    {
+      "source": "문경시",
+      "target": "영천시",
+      "value": 36
+    },
+    {
+      "source": "교육부",
+      "target": "서울",
+      "value": 36
+    },
+    {
+      "source": "늘봄학교",
+      "target": "아이들",
+      "value": 36
+    },
+    {
+      "source": "포항시",
+      "target": "학생들",
+      "value": 35
+    },
+    {
+      "source": "안동시",
+      "target": "울진군",
+      "value": 35
+    },
+    {
+      "source": "문경시",
+      "target": "상주시",
+      "value": 35
+    },
+    {
+      "source": "경산시",
+      "target": "교육부",
+      "value": 35
+    },
+    {
+      "source": "경북교육청",
+      "target": "경주시",
+      "value": 35
+    },
+    {
+      "source": "경주시",
+      "target": "교육발전특구",
+      "value": 35
     },
     {
       "source": "경산시",
       "target": "칠곡군",
-      "value": 82
+      "value": 34
+    },
+    {
+      "source": "문경시",
+      "target": "안동시",
+      "value": 34
+    },
+    {
+      "source": "안동시",
+      "target": "의성군",
+      "value": 34
+    },
+    {
+      "source": "구미시",
+      "target": "늘봄학교",
+      "value": 34
+    },
+    {
+      "source": "서울",
+      "target": "전남",
+      "value": 34
+    },
+    {
+      "source": "경남",
+      "target": "전남",
+      "value": 34
+    },
+    {
+      "source": "김천시",
+      "target": "문경시",
+      "value": 34
     },
     {
       "source": "교육부",
-      "target": "김천시",
-      "value": 82
+      "target": "안동시",
+      "value": 34
     },
     {
-      "source": "등록금",
-      "target": "학년도",
-      "value": 81
+      "source": "경주시",
+      "target": "지자체",
+      "value": 34
+    },
+    {
+      "source": "교육발전특구",
+      "target": "위원회",
+      "value": 34
+    },
+    {
+      "source": "임종식",
+      "target": "학생들",
+      "value": 33
+    },
+    {
+      "source": "늘봄",
+      "target": "아이들",
+      "value": 33
+    },
+    {
+      "source": "교육발전특구",
+      "target": "교육청",
+      "value": 33
+    },
+    {
+      "source": "교육발전특구",
+      "target": "상주시",
+      "value": 33
+    },
+    {
+      "source": "공교육",
+      "target": "교육부",
+      "value": 33
+    },
+    {
+      "source": "김천시",
+      "target": "칠곡군",
+      "value": 33
+    },
+    {
+      "source": "경북교육청",
+      "target": "구미시",
+      "value": 33
+    },
+    {
+      "source": "대구",
+      "target": "학부모",
+      "value": 32
+    },
+    {
+      "source": "김천시",
+      "target": "의성군",
+      "value": 32
+    },
+    {
+      "source": "시범지역",
+      "target": "지자체",
+      "value": 32
+    },
+    {
+      "source": "김천시",
+      "target": "영덕군",
+      "value": 31
+    },
+    {
+      "source": "경주시",
+      "target": "영주시",
+      "value": 31
+    },
+    {
+      "source": "경남",
+      "target": "교육부",
+      "value": 31
+    },
+    {
+      "source": "구미시",
+      "target": "문경시",
+      "value": 31
+    },
+    {
+      "source": "교육감",
+      "target": "늘봄학교",
+      "value": 31
+    },
+    {
+      "source": "교육감",
+      "target": "늘봄",
+      "value": 31
+    },
+    {
+      "source": "강원",
+      "target": "경남",
+      "value": 31
+    },
+    {
+      "source": "지원청",
+      "target": "학생들",
+      "value": 30
+    },
+    {
+      "source": "교육청",
+      "target": "학생들",
+      "value": 30
+    },
+    {
+      "source": "경북교육청",
+      "target": "중학교",
+      "value": 30
+    },
+    {
+      "source": "구미시",
+      "target": "학부모",
+      "value": 30
+    },
+    {
+      "source": "경북도",
+      "target": "포항시",
+      "value": 30
+    },
+    {
+      "source": "구미시",
+      "target": "늘봄",
+      "value": 30
+    },
+    {
+      "source": "교육발전특구",
+      "target": "봉화군",
+      "value": 30
+    },
+    {
+      "source": "예천군",
+      "target": "울진군",
+      "value": 30
+    },
+    {
+      "source": "울릉군",
+      "target": "울진군",
+      "value": 29
+    },
+    {
+      "source": "중학교",
+      "target": "학생들",
+      "value": 29
+    },
+    {
+      "source": "중학교",
+      "target": "포항시",
+      "value": 29
+    },
+    {
+      "source": "문경시",
+      "target": "포항시",
+      "value": 29
+    },
+    {
+      "source": "강원",
+      "target": "교육부",
+      "value": 29
+    },
+    {
+      "source": "경북도",
+      "target": "교육청",
+      "value": 29
+    },
+    {
+      "source": "교육청",
+      "target": "지자체",
+      "value": 29
+    },
+    {
+      "source": "영천시",
+      "target": "칠곡군",
+      "value": 29
+    },
+    {
+      "source": "경주",
+      "target": "지자체",
+      "value": 29
+    },
+    {
+      "source": "포항시",
+      "target": "학부모",
+      "value": 28
+    },
+    {
+      "source": "교육청",
+      "target": "대구",
+      "value": 28
+    },
+    {
+      "source": "아이들",
+      "target": "학생들",
+      "value": 28
+    },
+    {
+      "source": "영천시",
+      "target": "의성군",
+      "value": 28
+    },
+    {
+      "source": "의성군",
+      "target": "포항시",
+      "value": 28
+    },
+    {
+      "source": "교육부",
+      "target": "위원회",
+      "value": 28
+    },
+    {
+      "source": "교육발전특구",
+      "target": "칠곡군",
+      "value": 28
+    },
+    {
+      "source": "지원청",
+      "target": "학부모",
+      "value": 27
+    },
+    {
+      "source": "아이들",
+      "target": "학부모",
+      "value": 27
+    },
+    {
+      "source": "봉화군",
+      "target": "울릉군",
+      "value": 27
     }
   ]
 }
