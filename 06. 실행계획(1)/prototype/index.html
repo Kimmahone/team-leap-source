@@ -887,13 +887,15 @@ table.data .hl{color:var(--brand);font-weight:800}
 .scroll-x{overflow-x:auto}
 
 /* ---------- 시뮬레이터 ---------- */
-.sim-wrap{display:grid;grid-template-columns:262px 1fr;gap:14px}
+.sim-wrap{display:grid;grid-template-columns:262px 1fr;gap:14px;align-items:start}
 @media (max-width:1080px){.sim-wrap{grid-template-columns:1fr}}
 /* ══ 학생수 시뮬레이터 ═══════════════════════════════════════════════
    복잡한 산출 기준보다 사람이 실제로 묻는 질문을 먼저 보여 줍니다. */
-.sim-workspace{min-width:0}.sim-question{border:1px solid var(--line);border-radius:11px;padding:16px;background:var(--card);margin-bottom:14px}.sim-question-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:13px}.sim-question-head h2{font-size:16px;margin:0 0 4px}.sim-question-head p{font-size:11.5px;line-height:1.55;color:var(--ink-3);margin:0}.sim-question-head .asof{flex:none}.sim-scenario-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.sim-scenario{position:relative;min-height:132px;padding:14px;text-align:left;border:1px solid var(--line);border-radius:10px;background:var(--card-2);color:var(--ink);font:inherit;cursor:pointer;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease}.sim-scenario:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--brand) 45%,var(--line));box-shadow:0 7px 18px rgba(15,40,75,.09)}.sim-scenario[aria-pressed="true"]{border:2px solid var(--brand);padding:13px;background:color-mix(in srgb,var(--brand) 7%,var(--card));box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 10%,transparent)}.sim-scenario .scenario-tag{display:inline-flex;align-items:center;min-height:22px;padding:0 7px;border-radius:99px;background:var(--card);color:var(--brand);font-size:10px;font-weight:800;margin-bottom:9px}.sim-scenario[aria-pressed="true"] .scenario-tag{background:var(--brand);color:var(--leap-on-fill)}.sim-scenario b{display:block;font-size:14px;line-height:1.4;margin-bottom:6px}.sim-scenario small{display:block;color:var(--ink-3);font-size:11px;line-height:1.5}.sim-scenario .scenario-arrow{display:block;color:var(--ink-2);font-size:10.5px;font-weight:700;margin-top:9px}.sim-advanced{border:1px solid var(--line);border-radius:9px;background:var(--card);margin:11px 0 0}.sim-advanced>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:42px;padding:0 12px;cursor:pointer;font-size:12px;font-weight:800;color:var(--ink-2);list-style:none}.sim-advanced>summary::-webkit-details-marker{display:none}.sim-advanced>summary::after{content:"＋";color:var(--brand);font-size:16px}.sim-advanced[open]>summary{border-bottom:1px solid var(--line)}.sim-advanced[open]>summary::after{content:"−"}.sim-advanced-summary{font-weight:500;color:var(--ink-3);margin-left:auto}.sim-advanced-body{padding:12px 14px 4px}.sim-advanced .basis-quick{margin-top:0}
-.sim-change{border:1px solid var(--line);border-radius:11px;padding:16px;background:var(--card);margin-bottom:14px}.sim-change-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.sim-change-head h2{font-size:16px;margin:0 0 4px}.sim-change-context{font-size:11.5px;color:var(--ink-3);line-height:1.5}.sim-change-legend{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;font-size:10.5px;color:var(--ink-3)}.sim-change-legend span{display:inline-flex;align-items:center;gap:5px}.sim-change-legend i{width:9px;height:9px;border-radius:3px;background:var(--brand)}.sim-change-legend .result i{background:var(--over)}.sim-change-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.sim-change-kpi{border:1px solid var(--line);border-top:3px solid var(--ink-3);border-radius:9px;padding:13px;background:var(--card-2)}.sim-change-kpi.is-input{border-top-color:var(--brand)}.sim-change-kpi.is-output{border-top-color:var(--over)}.sim-change-kpi.is-forecast{border-top-color:var(--leap-teal)}.sim-change-kpi .k{display:flex;align-items:center;justify-content:space-between;gap:7px;font-size:11px;color:var(--ink-3)}.sim-change-kpi .role{padding:2px 6px;border-radius:99px;background:var(--card);font-size:9.5px;font-weight:800}.sim-change-kpi.is-input .role{color:var(--brand)}.sim-change-kpi.is-output .role{color:var(--over)}.sim-change-kpi.is-forecast .role{color:var(--leap-teal)}.sim-change-kpi strong{display:block;font-size:25px;line-height:1.2;margin:8px 0 5px;font-variant-numeric:tabular-nums}.sim-change-kpi.is-output strong{color:var(--over)}.sim-change-kpi small{display:block;color:var(--ink-3);font-size:10.5px;line-height:1.45}.sim-change-insight{margin-top:11px;padding:10px 12px;border-radius:8px;background:var(--card-2);border-left:4px solid var(--brand);font-size:11.5px;line-height:1.6;color:var(--ink-2)}.sim-table-heading{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:2px 0 9px}.sim-table-heading h2{font-size:14px;margin:0}.sim-table-heading span{font-size:10.5px;color:var(--ink-3)}
-@media(max-width:980px){.sim-scenario-grid{grid-template-columns:1fr}.sim-scenario{min-height:0}.sim-change-grid{grid-template-columns:1fr}.sim-change-head{display:block}.sim-change-legend{justify-content:flex-start;margin-top:8px}}
+.sim-side-card{position:sticky;top:14px}.sim-workspace{min-width:0}.sim-panel[hidden]{display:none!important}.sim-question{border:1px solid var(--line);border-radius:11px;padding:16px;background:var(--card);margin-bottom:14px}.sim-question-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:13px}.sim-question-head h2{font-size:16px;margin:0 0 4px}.sim-question-head p{font-size:11.5px;line-height:1.55;color:var(--ink-3);margin:0}.sim-question-head .asof{flex:none}.sim-scenario-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.sim-scenario{position:relative;min-height:154px;padding:14px;text-align:left;border:1px solid var(--line);border-radius:10px;background:var(--card-2);color:var(--ink);font:inherit;cursor:pointer;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease}.sim-scenario:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--brand) 45%,var(--line));box-shadow:0 7px 18px rgba(15,40,75,.09)}.sim-scenario[aria-pressed="true"]{border:2px solid var(--brand);padding:13px;background:color-mix(in srgb,var(--brand) 7%,var(--card));box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 10%,transparent)}.sim-scenario .scenario-tag{display:inline-flex;align-items:center;min-height:22px;padding:0 7px;border-radius:99px;background:var(--card);color:var(--brand);font-size:10px;font-weight:800;margin-bottom:9px}.sim-scenario[aria-pressed="true"] .scenario-tag{background:var(--brand);color:var(--leap-on-fill)}.sim-scenario b{display:block;font-size:14px;line-height:1.4;margin-bottom:6px}.sim-scenario small{display:block;color:var(--ink-3);font-size:11px;line-height:1.5}.sim-scenario .scenario-arrow{display:block;color:var(--ink-2);font-size:10.5px;font-weight:700;margin-top:9px}.sim-scenario .scenario-live{display:block;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);color:var(--brand);font-size:11px;font-weight:800;line-height:1.45;font-variant-numeric:tabular-nums}.sim-advanced{border:1px solid var(--line);border-radius:9px;background:var(--card);margin:11px 0 0}.sim-advanced>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:42px;padding:0 12px;cursor:pointer;font-size:12px;font-weight:800;color:var(--ink-2);list-style:none}.sim-advanced>summary::-webkit-details-marker{display:none}.sim-advanced>summary::after{content:"＋";color:var(--brand);font-size:16px}.sim-advanced[open]>summary{border-bottom:1px solid var(--line)}.sim-advanced[open]>summary::after{content:"−"}.sim-advanced-summary{font-weight:500;color:var(--ink-3);margin-left:auto}.sim-advanced-body{padding:12px 14px 4px}.sim-advanced .basis-quick{margin-top:0}
+.sim-view-nav{display:grid;gap:7px;margin-top:4px}.sim-view-nav .lb{margin-bottom:2px}.sim-view-btn{width:100%;min-height:58px;display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:9px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink);font:inherit;text-align:left;cursor:pointer}.sim-view-btn:hover{border-color:var(--brand);background:var(--brand-pale)}.sim-view-btn[aria-selected="true"]{border-color:var(--brand);background:var(--brand-pale);box-shadow:inset 3px 0 0 var(--brand)}.sim-view-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:8px;background:var(--card-2);color:var(--brand);font-size:15px;font-weight:900}.sim-view-copy b,.sim-view-copy small{display:block}.sim-view-copy b{font-size:12px}.sim-view-copy small{margin-top:2px;font-size:10px;color:var(--ink-3);line-height:1.35}.sim-view-arrow{color:var(--brand);font-weight:900}.sim-change{border:1px solid var(--line);border-radius:11px;padding:16px;background:var(--card);margin-bottom:14px}.sim-change-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.sim-change-head h2{font-size:16px;margin:0 0 4px}.sim-change-context{font-size:11.5px;color:var(--ink-3);line-height:1.5}.sim-change-tools{display:grid;justify-items:end;gap:8px}.sim-year-control{display:flex;align-items:center;gap:7px;padding:5px 7px 5px 10px;border:1px solid var(--line);border-radius:9px;background:var(--card-2);font-size:11px;font-weight:800;color:var(--ink-2)}.sim-year-control .select{min-height:34px;padding:4px 30px 4px 9px;font-size:14px;font-weight:900;color:var(--brand)}.sim-change-legend{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;font-size:10.5px;color:var(--ink-3)}.sim-change-legend span{display:inline-flex;align-items:center;gap:5px}.sim-change-legend i{width:9px;height:9px;border-radius:3px;background:var(--brand)}.sim-change-legend .result i{background:var(--over)}.sim-change-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.sim-change-kpi{border:1px solid var(--line);border-top:3px solid var(--ink-3);border-radius:9px;padding:13px;background:var(--card-2)}.sim-change-kpi.is-input{border-top-color:var(--brand)}.sim-change-kpi.is-output{border-top-color:var(--over)}.sim-change-kpi.is-forecast{border-top-color:var(--leap-teal)}.sim-change-kpi .k{display:flex;align-items:center;justify-content:space-between;gap:7px;font-size:11px;color:var(--ink-3)}.sim-change-kpi .role{padding:2px 6px;border-radius:99px;background:var(--card);font-size:9.5px;font-weight:800}.sim-change-kpi.is-input .role{color:var(--brand)}.sim-change-kpi.is-output .role{color:var(--over)}.sim-change-kpi.is-forecast .role{color:var(--leap-teal)}.sim-change-kpi strong{display:block;font-size:25px;line-height:1.2;margin:8px 0 5px;font-variant-numeric:tabular-nums}.sim-change-kpi.is-output strong{color:var(--over)}.sim-change-kpi small{display:block;color:var(--ink-3);font-size:10.5px;line-height:1.45}.sim-change-insight{margin-top:11px;padding:10px 12px;border-radius:8px;background:var(--card-2);border-left:4px solid var(--brand);font-size:11.5px;line-height:1.6;color:var(--ink-2)}.sim-table-heading{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:2px 0 9px}.sim-table-heading h2{font-size:16px;margin:0}.sim-table-heading span{font-size:10.5px;color:var(--ink-3)}
+@media(max-width:1080px){.sim-side-card{position:static}.sim-view-nav{grid-template-columns:repeat(3,minmax(0,1fr))}.sim-view-nav .lb{grid-column:1/-1}.sim-view-btn{grid-template-columns:28px 1fr}.sim-view-icon{width:28px;height:28px}.sim-view-arrow{display:none}}
+@media(max-width:980px){.sim-scenario-grid{grid-template-columns:1fr}.sim-scenario{min-height:0}.sim-change-grid{grid-template-columns:1fr}.sim-change-head{display:block}.sim-change-tools{justify-items:start;margin-top:10px}.sim-change-legend{justify-content:flex-start}}
+@media(max-width:620px){.sim-view-nav{grid-template-columns:1fr}.sim-view-btn{min-height:50px}}
 .filter-group{border-bottom:1px solid var(--line-2);padding:11px 0}
 .filter-group:last-child{border-bottom:0}
 .filter-group > .lb{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:7px}
@@ -952,6 +954,7 @@ table.data .hl{color:var(--brand);font-weight:800}
 .ai-connection{display:inline-flex;align-items:center;gap:6px;margin:0 0 10px;font-size:11.5px;color:var(--ink-3)}
 .ai-connection::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ink-3)}
 .ai-connection.ok::before{background:var(--fit)}.ai-connection.warn::before{background:var(--under)}
+.ai-action-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.ai-action-row .chip{min-height:40px}.ai-insight-board{display:grid;gap:13px}.ai-insight-hero{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px;border-radius:10px;background:linear-gradient(135deg,var(--brand),color-mix(in srgb,var(--brand) 64%,var(--leap-teal)));color:var(--leap-on-fill)}.ai-insight-hero b{display:block;font-size:16px;line-height:1.45}.ai-insight-hero small{display:block;margin-top:4px;opacity:.82;font-size:10.5px}.ai-insight-hero strong{font-size:28px;white-space:nowrap;font-variant-numeric:tabular-nums}.ai-insight-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.ai-insight-kpi{padding:11px;border:1px solid var(--line);border-radius:9px;background:var(--card-2)}.ai-insight-kpi span{display:block;font-size:10.5px;color:var(--ink-3)}.ai-insight-kpi b{display:block;margin:5px 0 2px;font-size:18px;color:var(--ink)}.ai-insight-kpi small{font-size:10px;color:var(--ink-3)}.ai-region-bars{padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--card)}.ai-region-bars h3{font-size:12.5px;margin:0 0 9px}.ai-region-row{display:grid;grid-template-columns:58px 1fr 48px;align-items:center;gap:8px;margin-top:7px;font-size:10.5px}.ai-region-row i{display:block;height:8px;border-radius:99px;background:var(--line-2);overflow:hidden}.ai-region-row i::after{content:"";display:block;width:var(--w);height:100%;border-radius:inherit;background:var(--over)}.ai-region-row b{text-align:right;color:var(--over);font-variant-numeric:tabular-nums}.ai-narrative{border-top:1px solid var(--line);padding-top:2px}.ai-narrative h3{margin-top:16px}.ai-empty-note{padding:11px 12px;border-radius:8px;background:var(--brand-pale);color:var(--ink-2);font-size:11.5px;line-height:1.6}.sim-panel-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.sim-panel-heading h2{font-size:17px;margin:0 0 4px}.sim-panel-heading p{font-size:11.5px;color:var(--ink-3);margin:0}
 .result-actions{display:flex;justify-content:flex-end;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
 @media (max-width:720px){
   .dummy-banner{padding:8px 12px}.shell{display:block;min-height:0}
@@ -967,6 +970,7 @@ table.data .hl{color:var(--brand);font-weight:800}
   .era .yr select{font-size:17px}.era .tot{font-size:16px}.bars{gap:6px}
   .src-tbl{min-width:620px}.src-box{overflow-x:auto}
   .ai-purpose-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ai-insight-kpis{grid-template-columns:1fr}.ai-insight-hero{align-items:flex-start;flex-direction:column}.ai-insight-hero strong{font-size:24px}
 }
 .chip.chip-ext:not([aria-pressed="true"]) { border-color: var(--over); color: var(--over); }
 .panel{border:1px solid var(--line);border-radius:9px;padding:13px 14px;background:var(--card)}
@@ -2487,9 +2491,22 @@ body.map-maxed.home-wide #home-side{display:none}
 
     <div class="sim-wrap">
       <!-- 조회군 필터 -->
-      <div class="card">
+      <div class="card sim-side-card">
         <h2>기준연도 2026 · 비교 조건<span class="asof" id="asof-sim"></span></h2>
         <p style="margin:-4px 0 6px;color:var(--ink-3);font-size:11.5px;line-height:1.55">공개된 시군·학교급 집계만 사용합니다. 선택 조건은 기준자료와 모의자료에 함께 적용됩니다.</p>
+
+        <nav class="sim-view-nav" role="tablist" aria-label="시뮬레이터 보기 전환">
+          <div class="lb">결과 보기</div>
+          <button type="button" class="sim-view-btn" data-sim-view="overview" role="tab" aria-selected="true" aria-controls="sim-panel-overview">
+            <span class="sim-view-icon">①</span><span class="sim-view-copy"><b>시나리오·요약</b><small>조건 선택과 핵심 변화</small></span><span class="sim-view-arrow">›</span>
+          </button>
+          <button type="button" class="sim-view-btn" data-sim-view="detail" role="tab" aria-selected="false" aria-controls="sim-panel-detail">
+            <span class="sim-view-icon">表</span><span class="sim-view-copy"><b>상세 수치</b><small>시군별 표와 Excel</small></span><span class="sim-view-arrow">›</span>
+          </button>
+          <button type="button" class="sim-view-btn" data-sim-view="ai" role="tab" aria-selected="false" aria-controls="sim-panel-ai">
+            <span class="sim-view-icon">AI</span><span class="sim-view-copy"><b>AI 인사이트</b><small>변화 신호와 비교 질문</small></span><span class="sim-view-arrow">›</span>
+          </button>
+        </nav>
 
         <div class="filter-group">
           <div class="lb">시군</div>
@@ -2511,10 +2528,12 @@ body.map-maxed.home-wide #home-side{display:none}
           <button type="button" class="chip" id="sim-clear" style="width:100%;text-align:center">시군 선택 초기화</button>
           <div class="filter-summary" id="sim-filter-summary" aria-live="polite">필터를 계산하는 중입니다.</div>
         </div>
+
       </div>
 
       <!-- 결과 -->
       <div class="sim-workspace">
+        <div class="sim-panel" id="sim-panel-overview" data-sim-panel="overview" role="tabpanel">
         <section class="sim-question" aria-labelledby="sim-question-title">
           <div class="sim-question-head">
             <div>
@@ -2526,21 +2545,21 @@ body.map-maxed.home-wide #home-side{display:none}
           <div class="sim-scenario-grid" role="group" aria-label="학생 수 모의 시나리오">
             <button type="button" class="sim-scenario" data-sim-scenario="fixed" aria-pressed="true">
               <span class="scenario-tag">현재 체계 유지</span>
-              <b>지금 그대로 두면</b>
+              <b>학교·학급 규모를 유지하면</b>
               <small>2026년 학교 수와 학급 수를 그대로 둡니다.</small>
-              <span class="scenario-arrow">결과 → 학급당 평균 학생 수</span>
+              <span class="scenario-live" id="scenario-fixed-live">계산하는 중입니다.</span>
             </button>
             <button type="button" class="sim-scenario" data-sim-scenario="class20" aria-pressed="false">
               <span class="scenario-tag">학급 규모 유지</span>
               <b>학급당 20명을 지키면</b>
               <small>한 학급의 학생 수를 20명으로 두고 필요한 규모를 계산합니다.</small>
-              <span class="scenario-arrow">결과 → 필요한 학급·학교 수</span>
+              <span class="scenario-live" id="scenario-class20-live">계산하는 중입니다.</span>
             </button>
             <button type="button" class="sim-scenario" data-sim-scenario="grade1" aria-pressed="false">
               <span class="scenario-tag">학년 단위 검토</span>
               <b>학년당 1학급 기준이면</b>
               <small>학급당 20명, 학교별 학년당 최대 1학급으로 비교합니다.</small>
-              <span class="scenario-arrow">결과 → 필요한 학급·학교 수</span>
+              <span class="scenario-live" id="scenario-grade1-live">계산하는 중입니다.</span>
             </button>
           </div>
 
@@ -2576,7 +2595,10 @@ body.map-maxed.home-wide #home-side{display:none}
         <section class="sim-change" aria-labelledby="sim-change-title" aria-live="polite">
           <div class="sim-change-head">
             <div><h2 id="sim-change-title">2026년과 모의연도, 무엇이 달라지나</h2><div class="sim-change-context" id="sim-change-context">현재 조건을 계산하는 중입니다.</div></div>
-            <div class="sim-change-legend" aria-label="결과 구분"><span><i></i>고정한 기준</span><span class="result"><i></i>계산된 결과</span></div>
+            <div class="sim-change-tools">
+              <label class="sim-year-control" for="pred-year">비교 연도 <select id="pred-year" class="select" aria-label="모의 연도"></select></label>
+              <div class="sim-change-legend" aria-label="결과 구분"><span><i></i>고정한 기준</span><span class="result"><i></i>계산된 결과</span></div>
+            </div>
           </div>
           <div class="sim-change-grid">
             <article class="sim-change-kpi is-forecast" id="sim-kpi-stu"><div class="k"><span>학생 수</span><span class="role">공통 전망</span></div><strong id="sim-delta-stu">—</strong><small id="sim-range-stu">—</small></article>
@@ -2585,8 +2607,11 @@ body.map-maxed.home-wide #home-side{display:none}
           </div>
           <div class="sim-change-insight" id="sim-change-insight">선택한 시나리오의 의미를 계산하는 중입니다.</div>
         </section>
+        </div>
 
-        <div class="sim-table-heading"><h2>상세 수치로 확인하기</h2><span>표는 옮겨 적기와 검산을 위해 그대로 제공합니다.</span></div>
+        <section class="sim-panel" id="sim-panel-detail" data-sim-panel="detail" role="tabpanel" hidden>
+        <div class="sim-panel-heading"><div><h2>상세 수치</h2><p>기준연도와 선택한 비교 연도의 시군별 값을 나란히 검산할 수 있습니다.</p></div><span class="asof">2단계 · 표</span></div>
+        <div class="sim-table-heading"><h2>시군별 기준·모의 비교</h2><span>표는 옮겨 적기와 검산을 위해 그대로 제공합니다.</span></div>
         <div class="sim-tables">
           <div class="panel">
             <div class="ph"><span class="t">기준자료</span><span class="y">2026</span></div>
@@ -2602,8 +2627,7 @@ body.map-maxed.home-wide #home-side{display:none}
           <div class="panel pred">
             <div class="ph">
               <span class="t">모의연도</span>
-              <label class="sr-only" for="pred-year">모의 연도</label>
-              <select id="pred-year" class="select" style="font-size:19px;font-weight:800"></select>
+              <span class="y" id="pred-year-label">2030</span>
             </div>
             <div class="scroll-x">
               <table class="data">
@@ -2633,8 +2657,11 @@ body.map-maxed.home-wide #home-side{display:none}
           <br>그래서 <b>「몇 명이 될 것이다」로 읽으면 안 됩니다.</b> 기준을 바꿔 가며
           <b>어느 쪽으로 얼마나 움직이는지</b>를 보는 자리입니다.
         </div>
+        </section>
 
-        <div class="card ai-briefing" id="ai-briefing">
+        <section class="sim-panel" id="sim-panel-ai" data-sim-panel="ai" role="tabpanel" hidden>
+        <div class="sim-panel-heading"><div><h2>AI 인사이트</h2><p>현재 조건의 핵심 변화와 우선 비교할 지역을 먼저 보고, 필요할 때 AI 해설을 요청합니다.</p></div><span class="asof">3단계 · 해석</span></div>
+        <div class="card ai-briefing" id="ai-briefing" style="margin-top:0">
           <span class="ai-kicker">데이터 읽기 도움</span>
           <h2>AI 변화 읽기 도우미</h2>
           <p class="ai-purpose"><b>무엇을 하나요?</b> 지금 선택한 시군·학교급·모의연도의 집계값을 읽고, 숫자의 변화와 해석할 때 주의할 점을 쉬운 말로 정리합니다. 미래를 확정하거나 행정 결정을 대신하는 기능은 아닙니다.</p>
@@ -2643,13 +2670,16 @@ body.map-maxed.home-wide #home-side{display:none}
           </div>
           <div class="ai-connection" id="ai-connection">분석 설정을 확인하지 않았습니다.</div>
           <div class="ai-context-preview" id="ai-context-preview">현재 조건을 계산하는 중입니다.</div>
-          <button type="button" class="chip" id="ai-check">분석 설정 확인</button>
-          <button type="button" class="chip" id="ai-analyze">이 결과 쉽게 읽기</button>
-          <button type="button" class="chip" id="ai-print" disabled>변화 요약 인쇄</button>
-          <span id="ai-status" role="status" aria-live="polite" style="margin-left:8px;color:var(--ink-3);font-size:12px"></span>
-          <div id="ai-output" class="ai-output" aria-live="polite">아직 분석하지 않았습니다. 실행하면 학생수 변화, 해석 주의사항, 비교 질문과 더 살펴볼 공개자료가 표시됩니다.</div>
+          <div class="ai-action-row">
+            <button type="button" class="chip" id="ai-check">분석 설정 확인</button>
+            <button type="button" class="chip" id="ai-analyze">AI 해설 만들기</button>
+            <button type="button" class="chip" id="ai-print" disabled>인사이트 인쇄</button>
+            <span id="ai-status" role="status" aria-live="polite" style="color:var(--ink-3);font-size:12px"></span>
+          </div>
+          <div id="ai-output" class="ai-output" aria-live="polite">현재 조건의 인사이트를 준비하는 중입니다.</div>
           <p style="margin:9px 0 0;color:var(--ink-3);font-size:11.5px;line-height:1.55">개별 학생·교직원 정보는 보내지 않고 화면에 표시된 집계값만 전송합니다. 무료 사용량이 끝나거나 연결이 실패하면 같은 집계값의 기본 요약으로 전환합니다.</p>
         </div>
+        </section>
 
       </div>
     </div>
@@ -7942,6 +7972,34 @@ Array.prototype.forEach.call(document.querySelectorAll('[data-status-view]'), b 
    공개자료로 안정적으로 설명할 수 없는 내부 분류·학교별 미래값은 만들지 않습니다. */
 const sim = { level:'초', sigungu:new Set(), year:2030 };
 
+let simView='overview';
+function showSimPanel(view,moveFocus=false){
+  if(!['overview','detail','ai'].includes(view)) view='overview';
+  simView=view;
+  document.querySelectorAll('[data-sim-panel]').forEach(panel=>{panel.hidden=panel.dataset.simPanel!==view;});
+  document.querySelectorAll('[data-sim-view]').forEach(btn=>{
+    const selected=btn.dataset.simView===view;
+    btn.setAttribute('aria-selected',String(selected));
+    btn.tabIndex=selected?0:-1;
+  });
+  if(moveFocus){
+    const panel=document.querySelector(`[data-sim-panel="${view}"]`);
+    panel?.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+document.querySelectorAll('[data-sim-view]').forEach(btn=>{
+  btn.addEventListener('click',()=>showSimPanel(btn.dataset.simView,true));
+  btn.addEventListener('keydown',event=>{
+    if(!['ArrowDown','ArrowRight','ArrowUp','ArrowLeft'].includes(event.key)) return;
+    event.preventDefault();
+    const order=['overview','detail','ai'];
+    const step=['ArrowDown','ArrowRight'].includes(event.key)?1:-1;
+    const next=order[(order.indexOf(simView)+step+order.length)%order.length];
+    showSimPanel(next);
+    document.querySelector(`[data-sim-view="${next}"]`)?.focus();
+  });
+});
+
 const predYear = document.getElementById('pred-year');
 for(let y=2027;y<=2040;y++){ const o=new Option(y,y); if(y===2030)o.selected=true; predYear.add(o); }
 predYear.addEventListener('change', e => { sim.year=+e.target.value; renderSim(); });
@@ -7994,7 +8052,7 @@ document.querySelectorAll('input[name="basis-mode"],input[name="sch-basis"],inpu
   document.getElementById(id).addEventListener('input', renderSim));
 
 const SIM_SCENARIOS = {
-  fixed:{label:'현재 체계 유지',mode:'sch',basis:'fixed'},
+  fixed:{label:'학교·학급 규모 유지',mode:'sch',basis:'fixed'},
   class20:{label:'학급당 20명',mode:'cls',basis:'pm',values:{'cls-n':20,'cls-d':0}},
   grade1:{label:'학년당 1학급',mode:'cls',basis:'grade',values:{'cls-g':20,'cls-c':1}}
 };
@@ -8041,6 +8099,7 @@ function renderSimChange(base,row,predStu,regionLabel){
   if(!row) return;
   const mode=row.projection.mode;
   const output=mode==='cls';
+  document.getElementById('sim-change-title').textContent=`2026년과 ${sim.year}년, 무엇이 달라지나`;
   document.getElementById('sim-change-context').textContent=
     `${regionLabel} · ${LEVEL_CFG[sim.level].full} · 2026년 실적과 ${sim.year}년 모의값 비교`;
   document.getElementById('sim-delta-stu').textContent=simDeltaText(predStu-base.stu,'명');
@@ -8074,41 +8133,51 @@ function aggregate(sg, lv){
 
 const numOf = id => Math.max(0, +document.getElementById(id).value || 0);
 
+function calculateProjection(base,predStu,drop,mode,basis,values={}){
+  let cls,sch;
+  if(mode==='sch'){
+    const rate=Math.max(0,+values.rate||0);
+    const k=basis==='fixed'?1:basis==='rate'?(1-drop):(1-rate/100);
+    sch=Math.max(1,Math.round(base.sch*k));
+    cls=Math.max(sch,Math.round(base.cls*k));
+  }else{
+    let limit;
+    if(basis==='base') limit=base.cls>0?base.stu/base.cls:LEVEL_CFG[sim.level].clsSize;
+    else if(basis==='pm') limit=Math.max(1,(+values.n||0)+(+values.d||0));
+    else limit=Math.max(1,+values.g||0);
+    cls=Math.max(1,Math.ceil(predStu/limit));
+    if(basis==='grade'){
+      const maxPerSchool=Math.max(1,(+values.c||0)*LEVEL_CFG[sim.level].grades);
+      sch=Math.max(1,Math.ceil(cls/maxPerSchool));
+    }else{
+      const clsPerSchool=base.sch>0?base.cls/base.sch:LEVEL_CFG[sim.level].grades;
+      sch=Math.max(1,Math.round(cls/clsPerSchool));
+    }
+  }
+  return {cls,sch,mode};
+}
+
 /* 모의연도의 학급수·학교수 산출.
    구성안 5쪽 구조: 두 모드 중 하나만 활성. 고정한 쪽이 입력, 나머지가 결과. */
 function project(base, predStu, drop){
   const mode = document.querySelector('input[name="basis-mode"]:checked').value;
-  let cls, sch;
-
   if(mode === 'sch'){
-    // 학교 수 기준 — 학교수·학급수를 정하고 학급당 평균이 결과
     const m = document.querySelector('input[name="sch-basis"]:checked').value;
-    const k = m==='fixed' ? 1
-            : m==='rate'  ? (1-drop)
-            : (1 - numOf('sch-rate')/100);
-    sch = Math.max(1, Math.round(base.sch * k));
-    cls = Math.max(sch, Math.round(base.cls * k));
-  } else {
-    // 학급당 학생 수 기준 — 학급당을 정하고 학급수·학교수가 결과
-    const m = document.querySelector('input[name="cls-basis"]:checked').value;
-    let L;
-    if(m === 'base')      L = base.cls>0 ? base.stu/base.cls : LEVEL_CFG[sim.level].clsSize;
-    else if(m === 'pm')   L = numOf('cls-n') + numOf('cls-d');   // 상한(n+d)으로 학급수 산출
-    else                  L = numOf('cls-g');
-    L = Math.max(1, L);
-    cls = Math.max(1, Math.ceil(predStu / L));
-
-    if(m === 'grade'){
-      // 학년당 학급수 상한 → 학교당 최대 학급수로 학교 수 하한이 결정됨
-      const maxPerSchool = Math.max(1, numOf('cls-c') * LEVEL_CFG[sim.level].grades);
-      sch = Math.max(1, Math.ceil(cls / maxPerSchool));
-    } else {
-      // 학교당 평균 학급수를 유지한다고 가정
-      const clsPerSchool = base.sch>0 ? base.cls/base.sch : LEVEL_CFG[sim.level].grades;
-      sch = Math.max(1, Math.round(cls / clsPerSchool));
-    }
+    return calculateProjection(base,predStu,drop,mode,m,{rate:numOf('sch-rate')});
   }
-  return {cls, sch, mode};
+  const m = document.querySelector('input[name="cls-basis"]:checked').value;
+  return calculateProjection(base,predStu,drop,mode,m,{n:numOf('cls-n'),d:numOf('cls-d'),g:numOf('cls-g'),c:numOf('cls-c')});
+}
+
+function renderScenarioPreviews(base,predStu){
+  const drop=base.stu>0?1-predStu/base.stu:0;
+  const fixed=calculateProjection(base,predStu,drop,'sch','fixed');
+  const class20=calculateProjection(base,predStu,drop,'cls','pm',{n:20,d:0});
+  const grade1=calculateProjection(base,predStu,drop,'cls','grade',{g:20,c:1});
+  const fixedPer=fixed.cls>0?predStu/fixed.cls:0;
+  document.getElementById('scenario-fixed-live').textContent=`${sim.year}년 → 학급당 평균 ${fixedPer.toFixed(1)}명`;
+  document.getElementById('scenario-class20-live').textContent=`${fmt(predStu)}명 → ${fmt(class20.cls)}학급 · ${fmt(class20.sch)}교`;
+  document.getElementById('scenario-grade1-live').textContent=`${fmt(predStu)}명 → ${fmt(grade1.cls)}학급 · ${fmt(grade1.sch)}교`;
 }
 
 /* 모의연도가 기준연도 이하이면 굴릴 것이 없습니다 — 그해 값을 그대로 씁니다.
@@ -8175,7 +8244,10 @@ function renderSim(){
   const totalRow = simExportRows[0];
   const dropPct = allBase.stu>0 ? (100*(1-allPredStu/allBase.stu)).toFixed(1) : '0.0';
   syncSimScenarioCards();
+  renderScenarioPreviews(allBase,allPredStu);
   renderSimChange(allBase,totalRow,allPredStu,regionLabel);
+  const predYearLabel=document.getElementById('pred-year-label');
+  if(predYearLabel) predYearLabel.textContent=sim.year;
   const predNote=document.getElementById('pred-basis-note');
   if(predNote) predNote.textContent=`기준자료: 학교알리미 2026 공시 실적\n모의전망: ${PROJ_WORD} · 시군별 ${RATE_WORD} 반영\n* 공식 장래 학생수 추계가 아니며 지역 간 이동을 반영하지 않음`;
   const specProj=document.getElementById('spec-proj');
@@ -8193,6 +8265,7 @@ function renderSim(){
   ].join('\n');
   document.getElementById('ai-context-preview').textContent =
     `${regionLabel} · ${LEVEL_CFG[lv].full} · 2026년 ${fmt(allBase.stu)}명 → ${sim.year}년 모의 ${fmt(allPredStu)}명 (${dropPct}% 감소)`;
+  renderAiSnapshot();
   document.getElementById('sim-filter-summary').textContent =
     `${sim.sigungu.size ? `선택 시군 ${sim.sigungu.size}곳` : '경북 전체 22개 시군'} · ${LEVEL_CFG[lv].full}`;
 
@@ -8226,7 +8299,14 @@ function renderSim(){
 }
 
 function localAiFallback(){
-  return `# 기본 변화 요약\n\n[학생수 변화]\n${aiContext}\n\n[함께 비교할 질문]\n- 기준연도와 모의연도의 차이는 어느 시군에서 크게 나타나는가?\n- 학교 수 기준과 학급당 학생 수 기준을 바꾸면 결과가 어떻게 달라지는가?\n\n[더 살펴볼 공개자료]\n- KOSIS 출생아수·연령별 인구·장래인구, 학교알리미 여러 해의 학년별 학생수\n\n[한계]\n분석 서비스 응답을 받지 못해 화면의 집계값을 규칙으로 정리했습니다. 모의값은 공식 장래 학생수 추계가 아닙니다.`;
+  const total=simExportRows.find(row=>row.isTotal)||simExportRows[0];
+  if(!total) return '# 기본 변화 요약\n현재 조건의 집계값을 준비하는 중입니다.';
+  const studentDelta=total.predStu-total.base.stu;
+  const pct=total.base.stu?Math.abs(studentDelta/total.base.stu*100).toFixed(1):'0.0';
+  const classDelta=total.projection.cls-total.base.cls;
+  const schoolDelta=total.projection.sch-total.base.sch;
+  const top=simExportRows.filter(row=>!row.isTotal).slice().sort((a,b)=>Math.abs(b.drop)-Math.abs(a.drop)).slice(0,3).map(row=>`${row.label} ${Math.abs(row.drop*100).toFixed(1)}%`).join(', ');
+  return `# 지금 읽어야 할 변화\n- ${LEVEL_CFG[sim.level].full} 학생 수는 2026년 ${fmt(total.base.stu)}명에서 ${sim.year}년 모의 ${fmt(total.predStu)}명으로 ${fmt(Math.abs(studentDelta))}명(${pct}%) 줄어드는 조건입니다.\n- ${currentBasisDescription()}을 적용하면 학급 수는 ${simDeltaText(classDelta,'개')}, 학교 수는 ${simDeltaText(schoolDelta,'교')}입니다.\n\n# 먼저 비교할 지점\n- 변화폭이 큰 지역은 ${top||'현재 선택 지역'}입니다. 학생 수가 적은 군 지역은 같은 감소율이라도 학교 운영에 미치는 영향이 다를 수 있습니다.\n- 학교 수를 고정한 결과와 학급당 학생 수를 고정한 결과를 나란히 비교하면, 무엇을 정책 기준으로 두었는지에 따른 차이를 확인할 수 있습니다.\n\n# 함께 볼 질문\n- 학급당 학생 수가 줄어도 통학 거리와 최소 학급을 함께 지킬 수 있는가?\n- 출생아 수와 전입·전출을 더하면 지역별 변화 순서가 달라지는가?\n- 학교별 학년 규모를 확인했을 때 먼저 지원이 필요한 곳은 어디인가?\n\n# 더 살펴볼 공개자료\n- KOSIS 출생아 수·연령별 인구·전입전출, 학교알리미 여러 해의 학년별 학생 수\n\n# 해석 한계\n이 요약은 화면의 집계값을 규칙으로 정리했습니다. ${sim.year}년 값은 공식 장래 학생 수 추계가 아니며 지역 간 이동을 반영하지 않습니다.`;
 }
 
 function xmlEsc(v){
@@ -8282,9 +8362,12 @@ function currentBasisDescription(){
     return m==='fixed' ? '학교 수·학급 수 유지' : m==='rate' ? '학생수 감소율 비례 축소' : `학교 수 ${document.getElementById('sch-rate').value}% 감축`;
   }
   const m=document.querySelector('input[name="cls-basis"]:checked').value;
-  return m==='base' ? '기준연도 학급당 학생 수 유지' : m==='pm'
-    ? `학급당 ${document.getElementById('cls-n').value}명 ± ${document.getElementById('cls-d').value}명`
-    : `학급당 ${document.getElementById('cls-g').value}명·학년당 ${document.getElementById('cls-c').value}학급`;
+  if(m==='base') return '기준연도 학급당 학생 수 유지';
+  if(m==='pm'){
+    const n=document.getElementById('cls-n').value,d=+document.getElementById('cls-d').value;
+    return `학급당 ${n}명${d?` ± ${d}명`:''}`;
+  }
+  return `학급당 ${document.getElementById('cls-g').value}명·학년당 ${document.getElementById('cls-c').value}학급`;
 }
 function simulatorSheets(){
   const orderedExportRows = simExportRows.filter(r=>r.isTotal)
@@ -8566,6 +8649,33 @@ function policyMarkdown(value){
   });
   close();return html;
 }
+function aiInsightBoardHtml(text='',source=''){
+  const total=simExportRows.find(row=>row.isTotal) || simExportRows[0];
+  if(!total) return '<div class="ai-empty-note">현재 조건의 집계값을 준비하는 중입니다.</div>';
+  const studentDelta=total.predStu-total.base.stu;
+  const studentPct=total.base.stu?studentDelta/total.base.stu*100:0;
+  const classDelta=total.projection.cls-total.base.cls;
+  const schoolDelta=total.projection.sch-total.base.sch;
+  const regions=simExportRows.filter(row=>!row.isTotal).slice().sort((a,b)=>Math.abs(b.drop)-Math.abs(a.drop)).slice(0,5);
+  const maxDrop=Math.max(.01,...regions.map(row=>Math.abs(row.drop)));
+  const bars=regions.length?regions.map(row=>{
+    const pct=(row.drop*100).toFixed(1);
+    return `<div class="ai-region-row"><span>${htmlEsc(row.label)}</span><i style="--w:${Math.max(4,Math.abs(row.drop)/maxDrop*100).toFixed(1)}%"></i><b>${row.drop>=0?'−':'+'}${Math.abs(pct)}%</b></div>`;
+  }).join(''):'<div class="ai-empty-note">선택 조건에 해당하는 시군 자료가 없습니다.</div>';
+  const narrative=text?`<div class="ai-narrative">${policyMarkdown(text)}</div>`:
+    '<div class="ai-empty-note"><b>AI 해설 만들기</b>를 누르면 이 변화가 뜻하는 바, 해석할 때의 주의점, 다음에 비교할 질문을 현재 조건에 맞춰 덧붙입니다.</div>';
+  return `<div class="ai-insight-board">
+    <div class="ai-insight-hero"><div><b>${htmlEsc(LEVEL_CFG[sim.level].full)} 학생 수 변화 신호</b><small>2026년 실적과 ${sim.year}년 모의값 비교 · 공식 장래추계 아님</small></div><strong>${studentPct>0?'+':''}${studentPct.toFixed(1)}%</strong></div>
+    <div class="ai-insight-kpis">
+      <div class="ai-insight-kpi"><span>학생 수 변화</span><b>${simDeltaText(studentDelta,'명')}</b><small>${fmt(total.base.stu)}명 → ${fmt(total.predStu)}명</small></div>
+      <div class="ai-insight-kpi"><span>학급 수 변화</span><b>${simDeltaText(classDelta,'개')}</b><small>${fmt(total.base.cls)}개 → ${fmt(total.projection.cls)}개</small></div>
+      <div class="ai-insight-kpi"><span>학교 수 변화</span><b>${simDeltaText(schoolDelta,'교')}</b><small>${fmt(total.base.sch)}교 → ${fmt(total.projection.sch)}교</small></div>
+    </div>
+    <div class="ai-region-bars"><h3>변화폭을 먼저 비교할 지역${regions.length>1?' 5곳':''}</h3>${bars}</div>
+    ${narrative}
+    ${source?`<div class="ai-empty-note">${source==='ai'?'AI 해설은':'기본 요약은'} 화면의 집계값만 읽었습니다. 정책 판단 전에는 출생아 수, 전입·전출, 학교별 학년 자료를 함께 확인하세요.</div>`:''}
+  </div>`;
+}
 function policyReportHtml(text){
   return `<article class="policy-report">
     <header class="report-cover">
@@ -8577,16 +8687,32 @@ function policyReportHtml(text){
     <p class="report-note">개별 학생·교직원 정보는 포함하지 않았습니다. 모의값은 공개된 집계자료에 가정을 적용한 참고값이며 공식 장래 학생수 추계가 아닙니다.</p>
   </article>`;
 }
-function renderPolicyReport(text){
+function renderPolicyReport(text,source='ai'){
   const html=policyReportHtml(text);
-  document.getElementById('ai-output').innerHTML=html;
+  document.getElementById('ai-output').innerHTML=aiInsightBoardHtml(text,source);
   document.getElementById('ai-print-report').innerHTML=html;
   document.getElementById('ai-print').disabled=false;
 }
+function renderAiSnapshot(){
+  document.getElementById('ai-output').innerHTML=aiInsightBoardHtml();
+  document.getElementById('ai-print').disabled=true;
+  document.getElementById('ai-status').textContent='';
+}
+async function readJsonResponse(response){
+  const type=response.headers.get('content-type')||'';
+  const raw=await response.text();
+  if(!type.includes('application/json')){
+    if(['127.0.0.1','localhost'].includes(location.hostname)) throw new Error('LOCAL_API_HTML');
+    throw new Error(`HTTP ${response.status} 응답 형식 오류`);
+  }
+  try{return JSON.parse(raw);}catch(_error){throw new Error('JSON 응답 해석 오류');}
+}
 function friendlyAnalysisError(message){
   const m=String(message||'');
+  if(/LOCAL_API_HTML/.test(m)) return '일반 파일 서버가 API 대신 HTML을 돌려주었습니다. 「열어보기.command」로 다시 열거나 배포 미리보기에서 확인해 주세요.';
   if(/무료 사용량|RESOURCE_EXHAUSTED|429|quota/i.test(m)) return '두 분석 모드의 현재 무료 사용량이 모두 소진되었습니다. 잠시 후 다시 시도해 주세요.';
   if(/503|key|설정|configured/i.test(m)) return '분석 서비스가 아직 준비되지 않았습니다. 관리자에게 설정 상태를 확인해 주세요.';
+  if(/502|504|시간|timeout/i.test(m)) return '분석 응답이 늦어 기본 요약으로 전환했습니다. 잠시 후 다시 시도할 수 있습니다.';
   return '분석 서비스 응답을 받지 못했습니다.';
 }
 document.getElementById('sim-export-xls').addEventListener('click', exportSimXls);
@@ -8598,7 +8724,7 @@ document.getElementById('ai-check').addEventListener('click', async () => {
   status.textContent='분석 설정을 확인하는 중…';
   try{
     const res=await fetch('/api/data-status');
-    const data=await res.json();
+    const data=await readJsonResponse(res);
     const gemini=(data.services||[]).find(s=>s.id==='gemini');
     if(!res.ok || !gemini) throw new Error('AI 서비스 상태를 읽지 못했습니다.');
     connection.className='ai-connection '+(gemini.configured?'ok':'warn');
@@ -8616,12 +8742,12 @@ document.getElementById('ai-analyze').addEventListener('click', async () => {
   btn.disabled=true; status.textContent='변화 요약을 만드는 중…'; out.textContent='현재 조건의 공개 집계값만 안전하게 전송하고 있습니다.';
   try{
     const res=await fetch('/api/ai-analysis',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:aiContext})});
-    const data=await res.json();
+    const data=await readJsonResponse(res);
     if(!res.ok || !data.text) throw new Error(data.error || 'AI 응답 오류');
     renderPolicyReport(data.text); status.textContent=data.fallback?'대체 분석 모드로 변화 요약 완료':'변화 요약 완료';
     connection.className='ai-connection ok'; connection.textContent=data.fallback?'대체 분석 모드가 현재 집계값을 쉬운 말로 정리했습니다.':'분석 서비스가 현재 집계값을 쉬운 말로 정리했습니다.';
   }catch(e){
-    renderPolicyReport(localAiFallback()); status.textContent='기본 변화 요약으로 전환';
+    renderPolicyReport(localAiFallback(),'rule'); status.textContent='기본 변화 요약으로 전환';
     connection.className='ai-connection warn'; connection.textContent=friendlyAnalysisError(e.message);
   }finally{ btn.disabled=false; }
 });

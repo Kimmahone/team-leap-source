@@ -69,25 +69,35 @@ LIVE = "https://team-leap.pages.dev"
 # 맥에 딸려 오는 파이썬은 인증서 꾸러미가 없어 https 를 스스로 확인하지 못합니다
 # (CERTIFICATE_VERIFY_FAILED). curl 은 시스템 인증서를 그대로 씁니다.
 class H(http.server.SimpleHTTPRequestHandler):
+    def proxy_api(self, method):
+        try:
+            args = ["curl", "-sS", "--max-time", "70", "-X", method,
+                    "-w", "\n%{http_code}\n%{content_type}"]
+            payload = None
+            if method == "POST":
+                length = int(self.headers.get("content-length", "0"))
+                payload = self.rfile.read(length)
+                args += ["-H", "content-type: application/json", "--data-binary", "@-"]
+            args.append(LIVE + self.path)
+            out = subprocess.run(args, input=payload, capture_output=True, check=True).stdout
+            body, status, ctype = out.rsplit(b"\n", 2)
+            self.send_response(int(status))
+            self.send_header("content-type", ctype.decode().strip() or "application/octet-stream")
+            self.send_header("content-length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+        except Exception:
+            self.send_error(502, "live api unreachable")
+
     def do_GET(self):
         if self.path.startswith("/api/"):
-            try:
-                out = subprocess.run(
-                    ["curl", "-sS", "--max-time", "25", "-w", "\n%{content_type}",
-                     LIVE + self.path],
-                    capture_output=True, check=True).stdout
-                body, _, ctype = out.rpartition(b"\n")
-                ctype = ctype.decode().strip() or "application/octet-stream"
-                self.send_response(200)
-                self.send_header("content-type", ctype)
-                self.send_header("content-length", str(len(body)))
-                self.end_headers()
-                self.wfile.write(body)
-            except Exception:
-                # 못 받아 오면 404 — 화면이 스스로 간편 지도로 내려앉습니다.
-                self.send_error(404, "live api unreachable")
-            return
+            return self.proxy_api("GET")
         return super().do_GET()
+
+    def do_POST(self):
+        if self.path.startswith("/api/"):
+            return self.proxy_api("POST")
+        self.send_error(405, "method not allowed")
 
     def log_message(self, fmt, *a):
         pass   # 조용히
