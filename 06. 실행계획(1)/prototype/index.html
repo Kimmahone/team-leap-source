@@ -334,7 +334,10 @@ a{color:var(--brand)}
 /* 한 학년에 한 학급뿐 — 다음 해에 더 줄일 여지가 없는 자리입니다. */
 .sch-grades .one{color:var(--under);font-weight:800}
 .sch-sub2{margin-top:12px;font-size:11px;font-weight:700;color:var(--ink-2)}
-.sch-spark{height:46px;margin-top:2px}
+.sch-spark{height:84px;margin-top:2px}
+.spark .ax{font-size:8px;fill:var(--ink-3);font-variant-numeric:tabular-nums}
+.spark .vt{opacity:.55}
+.spark .ax-y{opacity:.9}
 .sch-addr{margin-top:8px;font-size:11px;color:var(--ink-3)}
 /* 낡은 공시 — 「모른다」를 눈에 띄게 적습니다. 색만으로 말하지 않도록 글자도 있습니다. */
 .sch-stale{margin-top:10px;padding:8px 10px;border-radius:8px;font-size:11px;line-height:1.55;
@@ -885,7 +888,20 @@ table.data .hl{color:var(--brand);font-weight:800}
 .mv-side{background:var(--card);border-right:1px solid var(--line);overflow-y:auto;
   display:flex;flex-direction:column;gap:12px;padding:16px 16px 28px;min-width:0}
 .mv-card{background:var(--card-2);border:1px solid var(--line);border-radius:var(--radius);padding:12px 13px}
-.mv-card h2{margin:0 0 8px;font-size:11.5px;font-weight:700;color:var(--ink-2);letter-spacing:.04em}
+.mv-card h2{margin:0;font-size:11.5px;font-weight:700;color:var(--ink-2);letter-spacing:.04em}
+.mv-card > h2 + .mv-body,.mv-card > .mv-body{margin-top:8px}
+/* 접는 손잡이 — 종합 대시보드의 「요약 접기」와 같은 결입니다.
+   제목 줄 전체가 누르는 자리입니다. 작은 화살표만 노리게 하면 잘 눌리지 않습니다. */
+.mv-fold{display:flex;align-items:center;gap:8px;width:100%;font:inherit;color:inherit;
+  background:none;border:0;padding:0;min-height:26px;cursor:pointer;text-align:left}
+.mv-fold > span:first-child{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mv-fold .cv{margin-left:auto;flex:none;font-size:13px;line-height:1;color:var(--ink-3);
+  transition:transform .15s}
+.mv-fold[aria-expanded="false"] .cv{transform:rotate(-90deg)}
+.mv-fold:hover{color:var(--brand)}
+.mv-fold:focus-visible{outline:3px solid var(--brand);outline-offset:2px;border-radius:5px}
+.mv-body[hidden]{display:none}
+@media (prefers-reduced-motion:reduce){.mv-fold .cv{transition:none}}
 .mv-row{display:flex;flex-wrap:wrap;gap:6px}
 .mv-input{width:100%;font:inherit;font-size:13px;padding:7px 10px;min-height:36px;
   border:1px solid var(--line);border-radius:var(--leap-radius-sm);background:var(--card);color:var(--ink)}
@@ -934,6 +950,11 @@ table.data .hl{color:var(--brand);font-weight:800}
      transform:translate 를 적어 넣어 서로 덮어씁니다 (마름모가 되지 않습니다). */
 .mv-closed{width:12px;height:12px;border:2px dashed var(--ink-3);background:var(--card);
   opacity:.9;cursor:pointer}
+/* 거리를 재려고 찍은 자리. 번호를 달아 어느 것이 먼저인지 보이게 합니다. */
+.mv-rpt{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;
+  background:var(--leap-amber-mark);color:var(--leap-on-fill);border:2px solid var(--card);
+  box-shadow:0 1px 5px rgba(16,26,36,.4)}
 @media print{.mapview{display:none}}
 
 @media print{
@@ -1666,26 +1687,37 @@ body.map-maxed.home-wide #home-side{display:none}
     <div class="mapview">
       <aside class="mv-side" id="mv-side">
         <div class="mv-card">
-          <h2>배경</h2>
-          <div class="mv-row" id="mv-bases"></div>
+          <h2><button type="button" class="mv-fold" data-fold="bases" aria-expanded="true">배경<span class="cv" aria-hidden="true">⌄</span></button></h2>
+          <div class="mv-body" id="mv-fold-bases">
+            <div class="mv-row" id="mv-bases"></div>
+          </div>
         </div>
         <div class="mv-card">
-          <h2>보기</h2>
+          <h2><button type="button" class="mv-fold" data-fold="view" aria-expanded="true">보기<span class="cv" aria-hidden="true">⌄</span></button></h2>
+          <div class="mv-body" id="mv-fold-view">
           <div class="mv-row">
             <button type="button" class="chip" id="mv-2d" aria-pressed="true">2D</button>
             <button type="button" class="chip" id="mv-3d" aria-pressed="false">3D 지형</button>
             <button type="button" class="chip" id="mv-reset">경북 전체로</button>
           </div>
+          <p class="mv-note" style="margin-top:7px"><b>Shift</b> 를 누른 채 끌면 지도가 돌아갑니다.
+          좌우로 끌면 방위, 위아래로 끌면 기울기입니다. 산 너머를 보려면 둘 다 씁니다.</p>
           <div class="mv-row" style="margin-top:6px">
             <button type="button" class="chip" id="mv-closed" aria-pressed="false">폐교 겹쳐 보기</button>
             <button type="button" class="chip" id="mv-bound" aria-pressed="true">시군 경계</button>
             <button type="button" class="chip" id="mv-ruler" aria-pressed="false">거리 재기</button>
           </div>
+          <div class="mv-row" style="margin-top:6px">
+            <button type="button" class="chip" id="mv-ruler-undo" hidden>⌫ 한 점 지우기</button>
+            <button type="button" class="chip" id="mv-ruler-clear" hidden>모두 지우기</button>
+          </div>
           <p class="mv-note" id="mv-ruler-out" style="margin-top:8px" hidden></p>
+          </div>
         </div>
 
         <div class="mv-card">
-          <h2>연도</h2>
+          <h2><button type="button" class="mv-fold" data-fold="year" aria-expanded="true">연도<span class="cv" aria-hidden="true">⌄</span></button></h2>
+          <div class="mv-body" id="mv-fold-year">
           <div class="year-slider" style="margin:0">
             <div class="year-head">
               <label for="mv-year">연도</label><b id="mv-year-label">2026</b>
@@ -1694,32 +1726,42 @@ body.map-maxed.home-wide #home-side{display:none}
             <input type="range" id="mv-year" min="2016" max="2036" step="1" value="2026">
             <div class="year-ends"><span>2016</span><span>2026 현재</span><span>2036</span></div>
           </div>
+          </div>
         </div>
 
         <div class="mv-card">
-          <h2>학교 찾기</h2>
-          <input type="search" id="mv-search" class="mv-input" placeholder="학교 이름으로 찾기">
-          <div class="mv-row" id="mv-levels" style="margin-top:8px"></div>
+          <h2><button type="button" class="mv-fold" data-fold="find" aria-expanded="true">학교 찾기<span class="cv" aria-hidden="true">⌄</span></button></h2>
+          <div class="mv-body" id="mv-fold-find">
+            <input type="search" id="mv-search" class="mv-input" placeholder="학교 이름으로 찾기">
+            <div class="mv-row" id="mv-levels" style="margin-top:8px"></div>
+          </div>
         </div>
 
         <div class="mv-card">
-          <h2 id="mv-stat-title">경북 전체</h2>
-          <div class="kpi" id="mv-stats"></div>
+          <h2><button type="button" class="mv-fold" data-fold="stat" aria-expanded="true"><span id="mv-stat-title">경북 전체 학생 수</span><span class="cv" aria-hidden="true">⌄</span></button></h2>
+          <div class="mv-body" id="mv-fold-stat">
+            <div class="stat-row" id="mv-stats"></div>
+            <p class="unit-note" id="mv-stats-note" style="text-align:left" hidden></p>
+          </div>
         </div>
 
         <div class="mv-card" id="mv-detail-card" hidden></div>
 
         <div class="mv-card">
-          <h2 id="mv-list-title">화면 안 학교</h2>
-          <div class="mv-list" id="mv-list"></div>
+          <h2><button type="button" class="mv-fold" data-fold="list" aria-expanded="true"><span id="mv-list-title">화면 안 학교</span><span class="cv" aria-hidden="true">⌄</span></button></h2>
+          <div class="mv-body" id="mv-fold-list">
+            <div class="mv-list" id="mv-list"></div>
+          </div>
         </div>
 
         <div class="mv-card">
-          <h2>범례</h2>
-          <div class="mv-legend" id="mv-legend"></div>
+          <h2><button type="button" class="mv-fold" data-fold="legend" aria-expanded="false">범례<span class="cv" aria-hidden="true">⌄</span></button></h2>
+          <div class="mv-body" id="mv-fold-legend">
+            <div class="mv-legend" id="mv-legend"></div>
           <p class="mv-note" style="margin-top:9px">멀리서는 시군으로 접히고, 확대하면
           학교마다 이름과 학생 수가 섭니다. 다섯 색은 명도가 비슷해 색만으로는
           갈리지 않으므로 이름을 함께 적습니다.</p>
+          </div>
         </div>
 
         <p class="mv-note">배경지도 · 브이월드(국토교통부) · 지형 · AWS Terrain Tiles ·
@@ -5210,19 +5252,41 @@ function schoolSparkSvg(sc){
   EDSS_SCHOOL_YS.forEach((y, i) => { if(sc.hist.s[i] != null) pts.push({ y, v: sc.hist.s[i] }); });
   if(sc.stu != null) pts.push({ y: HOME_BASE_YEAR, v: sc.stu });
   if(pts.length < 3) return '';
-  const W = 292, H = 46, PL = 2, PR = 2, PT = 4, PB = 12;
+  /* ★ 눈금을 넣습니다 〔2026. 9. 10.〕 선 하나만 있으면 「올라갔다·내려갔다」는
+     보이는데 «얼마나»가 안 보입니다. 가로 눈금 세 줄과 그 값, 해마다 세로 눈금,
+     그리고 양 끝 점을 넣습니다. 눈금이 가리키는 값은 모두 선이 실제로 닿는
+     값입니다 — 어림한 눈금을 그리면 그림이 거짓말을 합니다. */
+  const W = 292, H = 84, PL = 34, PR = 6, PT = 8, PB = 16;
   const vs = pts.map(p => p.v), mx = Math.max(...vs), mn = Math.min(...vs);
   const span = Math.max(1, mx - mn), y0 = pts[0].y, y1 = pts[pts.length-1].y;
   const X = y => PL + (y - y0) / Math.max(1, y1 - y0) * (W - PL - PR);
   const Y = v => PT + (1 - (v - mn) / span) * (H - PT - PB);
   const d = pts.map((p, i) => (i ? 'L' : 'M') + X(p.y).toFixed(1) + ' ' + Y(p.v).toFixed(1)).join(' ');
   const drop = pts[0].v > 0 ? (1 - pts[pts.length-1].v / pts[0].v) * 100 : 0;
+
+  /* 가로 눈금 — 가장 높은 값, 가운데, 가장 낮은 값. 셋이면 충분하고
+     넷부터는 46px 짜리 그림에서 글자가 서로 붙습니다. */
+  const mid = Math.round((mx + mn) / 2);
+  const rows = (mx === mn ? [mx] : [mx, mid, mn]);
+  const grid = rows.map(v =>
+    `<line class="gl" x1="${PL}" y1="${Y(v).toFixed(1)}" x2="${W-PR}" y2="${Y(v).toFixed(1)}"/>` +
+    `<text class="ax" x="${PL-5}" y="${(Y(v)+3).toFixed(1)}" text-anchor="end">${fmt(v)}</text>`
+  ).join('');
+  /* 세로 눈금 — 해마다 하나. 몇 해치인지 세지 않아도 눈에 들어옵니다. */
+  const ticks = pts.map(p =>
+    `<line class="gl vt" x1="${X(p.y).toFixed(1)}" y1="${PT}" x2="${X(p.y).toFixed(1)}" y2="${H-PB}"/>`
+  ).join('');
+  const last = pts[pts.length-1];
+
   return '<div class="sch-sub2">이 학교 학생 수 추이</div>' +
     `<svg class="spark sch-spark" viewBox="0 0 ${W} ${H}" role="img" aria-label="이 학교 학생 수 추이">` +
-      `<line class="gl" x1="${PL}" y1="${H-PB}" x2="${W-PR}" y2="${H-PB}"/>` +
+      ticks + grid +
+      `<line class="gl ax-y" x1="${PL}" y1="${PT}" x2="${PL}" y2="${H-PB}"/>` +
       `<path class="ln" d="${d}"/>` +
-      `<text x="${PL}" y="${H-2}">${y0}</text>` +
-      `<text x="${W-PR}" y="${H-2}" text-anchor="end">${y1}</text>` +
+      `<circle class="dot" cx="${X(pts[0].y).toFixed(1)}" cy="${Y(pts[0].v).toFixed(1)}" r="2.6"/>` +
+      `<circle class="dot" cx="${X(last.y).toFixed(1)}" cy="${Y(last.v).toFixed(1)}" r="3.2"/>` +
+      `<text x="${PL}" y="${H-3}">${y0}</text>` +
+      `<text x="${W-PR}" y="${H-3}" text-anchor="end">${y1}</text>` +
     '</svg>' +
     `<div class="sch-note">${y0}년 ${fmt(pts[0].v)}명에서 ${y1}년 ${fmt(pts[pts.length-1].v)}명으로 ` +
     `<b>${Math.abs(drop).toFixed(1)}% ${drop >= 0 ? '줄었습니다' : '늘었습니다'}</b>.</div>`;
@@ -8461,7 +8525,7 @@ const MV = {
   loading:false, ready:false, failed:false,
   map:null, key:null,
   base:'Base', level:'전체', q:'', year:HOME_BASE_YEAR,
-  closed:false, bound:true, ruler:false, rulerPts:[],
+  closed:false, bound:true, ruler:false, rulerPts:[], rulerMarks:[],
   is3d:false, marks:[], rows:[]
 };
 
@@ -8470,7 +8534,12 @@ function mvSay(t){
   if(!el) return;
   /* 배경지도가 없는 까닭은 «늘» 붙여 둡니다. 한 번만 적으면 지도를 한 번
      움직이는 순간 지워져, 왜 허전한지 알 길이 없어집니다. */
-  el.textContent = t + (MV.ready && !MV.key ? ' · 배경지도 없음 (브이월드 키를 받지 못했습니다)' : '');
+  const tail = (MV.ready && !MV.key)
+    ? '배경지도 없음 — 브이월드 키를 받지 못했습니다 (학교 위치와 시군 경계는 그대로입니다)' : '';
+  const txt = [t, tail].filter(Boolean).join(' · ');
+  el.textContent = txt;
+  /* 할 말이 없으면 띠를 아예 치웁니다 — 빈 상자가 지도를 가립니다. */
+  el.hidden = !txt;
 }
 function mvCompact(n){
   n = Number(n) || 0;
@@ -8533,24 +8602,57 @@ function mvPool(){
 function mvRenderStats(){
   const box = document.getElementById('mv-stats');
   const ttl = document.getElementById('mv-stat-title');
+  const note = document.getElementById('mv-stats-note');
   if(!box) return;
   const list = mvPool();
-  let stu = 0, cls = 0, known = 0;
-  list.forEach(s => {
-    const v = mvStu(s);
-    if(v != null){ stu += v; known++; }
-    if(Number(MV.year) === HOME_BASE_YEAR && s.cls) cls += s.cls;
+  const searching = !!MV.q.trim();
+
+  if(ttl){
+    ttl.textContent = searching ? `‘${MV.q.trim()}’ 검색`
+      : (MV.level === '전체' ? '경북 전체 학생 수'
+                            : ((LEVEL_CFG[MV.level] || {}).full || MV.level) + ' 학생 수');
+  }
+
+  /* ★ 학교급을 갈라서 봅니다 〔2026. 9. 10.〕 초·중·고를 한 덩어리로 더하면
+     「25만」이라는 수 하나만 남습니다. 그 수로는 어느 급이 먼저 무너지는지
+     알 수 없습니다 — 종합 대시보드가 초·중·고를 나눠 보여 주는 까닭과 같습니다. */
+  const by = {};
+  LEVELS.forEach(l => { by[l] = { n:0, stu:0, cls:0 }; });
+  list.forEach(sc => {
+    const b = by[sc.lv]; if(!b) return;
+    const v = mvStu(sc);
+    b.n++; if(v != null) b.stu += v;
+    if(Number(MV.year) === HOME_BASE_YEAR && sc.cls) b.cls += sc.cls;
   });
-  if(ttl) ttl.textContent = MV.q.trim() ? `‘${MV.q.trim()}’ 검색` : (MV.level === '전체' ? '경북 전체' : (LEVEL_CFG[MV.level] || {}).full || MV.level);
-  /* 학급 수는 2026년 공시에만 있습니다. 다른 해에 「학급당 –」을 보여 주면
-     고장으로 읽힙니다. 그 해에 뜻이 있는 수(학교 한 곳당 학생)로 바꿉니다. */
-  const third = cls > 0
-    ? { k:'학급당', v:(stu / cls).toFixed(1) }
-    : { k:'학교당', v: list.length ? Math.round(stu / list.length) : '–' };
-  box.innerHTML =
-    `<div class="box"><div class="k">학교</div><div class="v">${fmt(list.length)}</div></div>` +
-    `<div class="box"><div class="k">학생</div><div class="v">${mvCompact(stu)}</div></div>` +
-    `<div class="box"><div class="k">${third.k}</div><div class="v">${third.v}</div></div>`;
+  const sum = k => LEVELS.reduce((a, l) => a + by[l][k], 0);
+
+  if(MV.level === '전체'){
+    box.className = 'stat-row';
+    box.innerHTML = HOME_SERIES_LEVELS.map(l =>
+      `<div class="stat"><div class="k">${(LEVEL_CFG[l] || {}).full || l}</div>` +
+      `<div class="v">${fmt(by[l].stu)}</div><div class="u">명 · ${fmt(by[l].n)}곳</div></div>`).join('');
+    if(note){
+      /* 유치원과 특수학교는 자리를 다르게 씁니다 — 학령인구 셈에 함께 더하면
+         초·중·고 수가 부풀어 보입니다. 아래에 따로 적습니다. */
+      note.hidden = false;
+      note.innerHTML =
+        `유치원 <b>${fmt(by['유'].stu)}</b>명 (${fmt(by['유'].n)}곳) · ` +
+        `특수학교 <b>${fmt(by['특수'].stu)}</b>명 (${fmt(by['특수'].n)}곳)<br>` +
+        `모두 <b>${fmt(list.length)}</b>곳 · <b>${fmt(sum('stu'))}</b>명` +
+        (sum('cls') > 0 ? ` · 학급당 <b>${(sum('stu') / sum('cls')).toFixed(1)}</b>명` : '');
+    }
+  }else{
+    /* 한 학교급만 볼 때는 나눌 것이 없습니다 — 그 급의 규모를 봅니다. */
+    const b = by[MV.level] || { n:0, stu:0, cls:0 };
+    box.className = 'stat-row';
+    box.innerHTML =
+      `<div class="stat"><div class="k">학교</div><div class="v">${fmt(b.n)}</div><div class="u">곳</div></div>` +
+      `<div class="stat"><div class="k">학생</div><div class="v">${fmt(b.stu)}</div><div class="u">명</div></div>` +
+      (b.cls > 0
+        ? `<div class="stat"><div class="k">학급당</div><div class="v">${(b.stu / b.cls).toFixed(1)}</div><div class="u">명</div></div>`
+        : `<div class="stat"><div class="k">학교당</div><div class="v">${b.n ? Math.round(b.stu / b.n) : '–'}</div><div class="u">명</div></div>`);
+    if(note){ note.hidden = false; note.textContent = `${MV.year}년 ` + (Number(MV.year) === HOME_BASE_YEAR ? '공시' : (Number(MV.year) > HOME_BASE_YEAR ? '전망' : '실적')) + '입니다.'; }
+  }
 }
 
 /* ── 왼쪽 학교 상세 ─────────────────────────────────────────────────────
@@ -8569,6 +8671,8 @@ function mvRenderDetail(scrollTo){
   mvMarkSelected();
   /* 왼쪽 칸이 길어 카드가 아래에 숨습니다 — 처음 펼 때는 보이는 자리로 옮겨 줍니다.
      「눌렀는데 아무 일도 안 일어난다」로 읽히지 않게 하는 자리입니다. */
+  /* 목록 칸이 접혀 있어도 상세는 펴 줍니다 — 눌렀는데 아무 일도 없는 것처럼
+     보이면 안 됩니다. */
   if((scrollTo || wasHidden) && box.scrollIntoView){
     try{ box.scrollIntoView({ block:'nearest', behavior: leapMotionOff() ? 'auto' : 'smooth' }); }catch(_e){}
   }
@@ -8628,7 +8732,6 @@ function mvDraw(){
     mvRenderList(list.filter(s =>
       s.lon >= bb.getWest() && s.lon <= bb.getEast() &&
       s.lat >= bb.getSouth() && s.lat <= bb.getNorth()), list.length, 'sgg');
-    mvSay(`시군으로 접어서 봅니다 · 학교 ${fmt(list.length)}곳 · 배율 ${z.toFixed(1)} · 확대하면 학교가 나옵니다`);
     if(MV.closed) mvDrawClosed();
     return;
   }
@@ -8670,10 +8773,10 @@ function mvDraw(){
   });
   mvMarkSelected();
   mvRenderList(vis, list.length, tier);
-  mvSay((tier === 'label' ? '학교 이름까지 봅니다' : '학교 위치를 봅니다') +
-    ` · 화면 안 ${fmt(vis.length)}곳` + (vis.length < list.length ? ` (전체 ${fmt(list.length)}곳)` : '') +
-    ` · 배율 ${z.toFixed(1)}` +
-    (tier === 'label' ? '' : ` · ${(10.6 - z).toFixed(1)}만 더 확대하면 이름이 섭니다`));
+  /* ★ 배율 안내를 지웠습니다 〔2026. 9. 10.〕 지도를 움직일 때마다 아래쪽에
+     띠가 떠서 지도를 가렸습니다. 몇 곳이 보이는지는 왼쪽 목록 제목이 이미
+     말하고, 어떻게 하면 이름이 서는지는 범례 아래에 적어 두었습니다.
+     상태줄은 이제 «말할 일이 있을 때만» 뜹니다 — 거리 재기, 오류, 키 없음. */
   if(MV.closed) mvDrawClosed();
 }
 
@@ -8754,40 +8857,101 @@ function mvBoundGeo(){
    SGIS 가 주던 자를 새로 만듭니다. 좌표를 다 갖고 있어 어렵지 않습니다.
    학교를 두 번 누르면 그 사이 거리가 나옵니다 — 통학 거리를 가늠하는 자리입니다.
    ※ 직선거리입니다. 산을 넘는 길은 이보다 훨씬 멉니다. */
+/* ★ 점은 «여러 개» 찍습니다 〔2026. 9. 10.〕 처음에는 두 개만 받았습니다.
+   그런데 통학 길은 한 번에 곧게 가지 않습니다 — 학교에서 마을을 거쳐 다음
+   학교까지, 꺾이는 자리마다 찍어야 실제 거리에 가까워집니다.
+   구간마다 거리를 적고 맨 아래에 합을 냅니다. 되돌리기(⌫)와 지우기를 둡니다. */
 function mvRulerAdd(lon, lat, name){
-  if(MV.rulerPts.length >= 2) MV.rulerPts = [];
   MV.rulerPts.push({ lon, lat, name: name || null });
   mvRulerPaint();
 }
+function mvRulerUndo(){ MV.rulerPts.pop(); mvRulerPaint(); }
 function mvRulerClear(){ MV.rulerPts = []; mvRulerPaint(); }
-function mvRulerPaint(){
-  const map = MV.map;
-  if(!map || !map.getSource('mv-ruler')) return;
-  const pts = MV.rulerPts;
-  const feats = pts.map(p => ({ type:'Feature', properties:{}, geometry:{ type:'Point', coordinates:[p.lon, p.lat] } }));
-  if(pts.length === 2){
-    feats.push({ type:'Feature', properties:{}, geometry:{ type:'LineString', coordinates:pts.map(p => [p.lon, p.lat]) } });
+
+function mvRulerLegs(){
+  const pts = MV.rulerPts, legs = [];
+  for(let i = 1; i < pts.length; i++){
+    legs.push({
+      from: pts[i-1], to: pts[i],
+      km: haversineKm(pts[i-1].lat, pts[i-1].lon, pts[i].lat, pts[i].lon)
+    });
   }
-  map.getSource('mv-ruler').setData({ type:'FeatureCollection', features:feats });
-  /* 잰 값은 왼쪽 칸에도 남깁니다 — 상태줄은 지도를 한 번 움직이면 지워집니다. */
+  return legs;
+}
+function mvKm(km){ return km < 1 ? Math.round(km * 1000) + 'm' : km.toFixed(2) + 'km'; }
+
+function mvRulerPaint(){
+  mvRulerText();
+  mvRulerShapes();
+}
+
+/* 지도 위의 선과 점. ★ 스타일이 아직 서지 않았으면 source 가 없습니다 —
+   그때는 조용히 지나가고 스타일이 선 뒤에 한 번 더 부릅니다. 예전에는 여기서
+   그냥 돌아가 버려서, 지도가 뜨기 전에 켠 자는 선을 영영 못 봤습니다. */
+function mvRulerShapes(){
+  const map = MV.map;
+  if(!map) return;
+  MV.rulerMarks.forEach(m => { try{ m.remove(); }catch(_e){} });
+  MV.rulerMarks = [];
+
+  if(!map.getSource('mv-ruler')){
+    map.once('idle', mvRulerShapes);
+    return;
+  }
+  const pts = MV.rulerPts;
+  map.getSource('mv-ruler').setData({
+    type:'FeatureCollection',
+    features: pts.length >= 2
+      ? [{ type:'Feature', properties:{}, geometry:{ type:'LineString', coordinates: pts.map(p => [p.lon, p.lat]) } }]
+      : []
+  });
+  pts.forEach((p, i) => {
+    const el = document.createElement('div');
+    el.className = 'mv-rpt';
+    /* 학교 이름표는 학생 수만큼(최대 400) 올라갑니다. 찍은 자리는 그보다 위에
+       있어야 합니다 — 재는 자리가 이름표에 가리면 무엇을 재는지 알 수 없습니다. */
+    el.style.zIndex = '600';
+    el.textContent = String(i + 1);
+    el.title = p.name || `${i + 1}번째 자리`;
+    MV.rulerMarks.push(new maplibregl.Marker({ element:el }).setLngLat([p.lon, p.lat]).addTo(map));
+  });
+}
+
+/* 왼쪽 칸과 상태줄의 글. 지도가 뜨기 전에도 적힙니다. */
+function mvRulerText(){
+  const pts = MV.rulerPts;
   const out = document.getElementById('mv-ruler-out');
-  if(pts.length === 2){
-    const d = haversineKm(pts[0].lat, pts[0].lon, pts[1].lat, pts[1].lon);
-    const txt = d < 1 ? Math.round(d * 1000) + 'm' : d.toFixed(2) + 'km';
-    const nm = pts.filter(p => p.name).map(p => p.name);
-    const who = nm.length === 2 ? `${nm[0]} ↔ ${nm[1]} · ` : '';
-    mvSay(who + `직선거리 ${txt} · 산을 넘는 길은 이보다 멉니다 · 한 번 더 누르면 다시 잽니다`);
+  const undo = document.getElementById('mv-ruler-undo');
+  const clr = document.getElementById('mv-ruler-clear');
+  if(undo) undo.hidden = pts.length < 1;
+  if(clr) clr.hidden = pts.length < 1;
+
+  if(pts.length < 2){
+    mvSay(pts.length === 1
+      ? ((pts[0].name ? pts[0].name + '에서 · ' : '') + '다음 자리를 눌러 주세요')
+      : (MV.ruler ? '거리를 잴 자리를 차례로 누르세요 — 학교를 눌러도 되고 빈 곳을 눌러도 됩니다' : ''));
     if(out){
-      out.hidden = false;
-      out.innerHTML = (nm.length === 2 ? `<b>${htmlEsc(nm[0])}</b> ↔ <b>${htmlEsc(nm[1])}</b><br>` : '') +
-        `직선거리 <b>${txt}</b> · 산을 넘는 길은 이보다 멉니다`;
+      out.hidden = pts.length < 1;
+      out.innerHTML = pts.length === 1
+        ? `<b>1.</b> ${htmlEsc(pts[0].name || '찍은 자리')} · 다음 자리를 눌러 주세요.`
+        : '';
     }
-  }else if(pts.length === 1){
-    mvSay((pts[0].name ? pts[0].name + '에서 · ' : '') + '잴 두 번째 자리를 눌러 주세요');
-    if(out){ out.hidden = false; out.textContent = (pts[0].name ? pts[0].name + '에서 · ' : '') + '두 번째 자리를 눌러 주세요.'; }
-  }else{
-    mvSay('거리를 잴 두 자리를 누르세요 — 학교를 눌러도 되고 빈 곳을 눌러도 됩니다');
-    if(out){ out.hidden = true; out.innerHTML = ''; }
+    return;
+  }
+
+  const legs = mvRulerLegs();
+  const total = legs.reduce((a, l) => a + l.km, 0);
+  const label = p => p.name || '찍은 자리';
+  mvSay(`${pts.length}곳 · 직선거리 합 ${mvKm(total)} · 산을 넘는 길은 이보다 멉니다`);
+  if(out){
+    out.hidden = false;
+    /* 구간이 많아지면 다 적을 자리가 없습니다. 다섯 구간까지 적고 나머지는 셉니다. */
+    const show = legs.slice(-5);
+    const skipped = legs.length - show.length;
+    out.innerHTML =
+      (skipped > 0 ? `<span style="opacity:.7">앞선 ${skipped}구간 줄임</span><br>` : '') +
+      show.map(l => `${htmlEsc(label(l.from))} → ${htmlEsc(label(l.to))} <b>${mvKm(l.km)}</b>`).join('<br>') +
+      `<br><b>합 ${mvKm(total)}</b> · 산을 넘는 길은 이보다 멉니다`;
   }
 }
 
@@ -8876,6 +9040,8 @@ async function mvStart(){
   if(MV.loading || MV.ready) return;
   MV.loading = true;
   mvBuildChips();
+  /* 접기는 지도보다 먼저 답니다 — 지도를 못 만드는 형편에서도 왼쪽 칸은 씁니다. */
+  mvWireFolds();
   mvRenderStats();          /* 지도를 기다리는 동안에도 왼쪽 칸은 채워 둡니다 */
   mvSay('지도 라이브러리를 불러오는 중입니다…');
 
@@ -8922,10 +9088,11 @@ async function mvStart(){
   layers.push({ id:'mv-ruler-line', type:'line', source:'mv-ruler',
     filter:['==','$type','LineString'],
     paint:{ 'line-color': mvCss('--leap-amber-mark', '#CE6410'), 'line-width':3, 'line-dasharray':[2,1.4] } });
-  layers.push({ id:'mv-ruler-dot', type:'circle', source:'mv-ruler',
-    filter:['==','$type','Point'],
-    paint:{ 'circle-radius':6, 'circle-color': mvCss('--leap-amber-mark', '#CE6410'),
-            'circle-stroke-width':2, 'circle-stroke-color': mvCss('--card', '#fff') } });
+  /* ★ 찍은 점은 지도 안(symbol)이 아니라 «DOM 딱지»로 그립니다 〔2026. 9. 10.〕
+     지도 안에 글자를 세우려면 style 에 glyphs(글꼴 서버) 주소가 있어야 합니다.
+     우리는 그런 서버를 두지 않습니다. 주소 없이 symbol 을 넣으면 번호가
+     통째로 안 보입니다 — 조용히 사라지는 쪽이라 알아차리기도 어렵습니다.
+     딱지로 그리면 브라우저 글꼴을 그대로 쓰고 색도 토큰을 따라갑니다. */
 
   /* ★ WebGL 이 꺼져 있는 형편이 있습니다 — 오래된 업무용 PC, 원격 데스크톱,
      그래픽 드라이버 정책. 그때 MapLibre 는 만들어지는 자리에서 바로 멎습니다.
@@ -8955,7 +9122,9 @@ async function mvStart(){
   map.addControl(new maplibregl.ScaleControl({ maxWidth:120, unit:'metric' }), 'bottom-right');
 
   map.on('load', mvDraw);
-  if(!MV.key) mvSay('브이월드 키를 받지 못해 배경지도가 없습니다 — 학교 위치와 시군 경계는 그대로입니다.');
+  /* 키가 없다는 말은 mvSay 가 꼬리에 «늘» 붙입니다 — 여기서 또 적으면
+     같은 말을 두 번 하게 됩니다. 띄우기만 합니다. */
+  if(!MV.key) mvSay('');
   map.on('moveend', mvDraw);
   map.on('zoomend', mvDraw);
   map.on('error', e => {
@@ -8965,11 +9134,85 @@ async function mvStart(){
   });
   /* 빈 곳을 누르면 거리를 잽니다. 딱지는 캔버스 밖의 DOM 이라 여기로 오지 않습니다. */
   map.on('click', e => { if(MV.ruler) mvRulerAdd(e.lngLat.lng, e.lngLat.lat, null); });
+  mvWireRotate(map);
 
   mvWireControls();
   mvWatchTheme();
   mvRenderStats();
   mvRenderDetail();
+}
+
+/* ★ Shift 를 누르고 끌면 돌아갑니다 〔2026. 9. 10.〕
+   MapLibre 가 본디 주는 길은 «오른쪽 단추로 끌기»와 «Ctrl+끌기»입니다. 둘 다
+   업무용 노트북에서 손에 익지 않습니다. Shift+끌기는 본디 «상자로 확대»에
+   묶여 있어 먼저 풀고 그 자리에 돌리기를 겁니다.
+   좌우로 끌면 방위가 돌고, 위아래로 끌면 기울기가 바뀝니다 — 3D 로 볼 때
+   산 너머를 보려면 둘 다 필요합니다. */
+function mvWireRotate(map){
+  try{ map.boxZoom.disable(); }catch(_e){}
+  const cv = map.getCanvas();
+  let g = null;
+  const stop = () => {
+    if(!g) return;
+    g = null;
+    cv.style.cursor = '';
+    try{ map.dragPan.enable(); }catch(_e){}
+  };
+  cv.addEventListener('mousedown', e => {
+    if(!e.shiftKey || e.button !== 0) return;
+    e.preventDefault();
+    /* 끄는 동안 지도가 함께 밀리면 무엇이 돌고 무엇이 미는지 알 수 없습니다. */
+    try{ map.dragPan.disable(); }catch(_e){}
+    g = { x:e.clientX, y:e.clientY, b:map.getBearing(), p:map.getPitch() };
+    cv.style.cursor = 'grabbing';
+  });
+  window.addEventListener('mousemove', e => {
+    if(!g) return;
+    map.setBearing(g.b - (e.clientX - g.x) * 0.45);
+    map.setPitch(Math.max(0, Math.min(75, g.p + (e.clientY - g.y) * 0.32)));
+  });
+  window.addEventListener('mouseup', stop);
+  window.addEventListener('blur', stop);
+}
+
+/* ★ 왼쪽 칸도 접힙니다 〔2026. 9. 10.〕 배경·보기·연도·찾기·통계·목록·범례가
+   모두 펴져 있으면 세로로 길어서, 학교를 눌렀을 때 상세 카드가 화면 밖에
+   있습니다. 안 쓰는 칸은 접어 두게 합니다. 접은 자리는 이 브라우저에 남습니다 —
+   기기를 바꾸면 다시 접으면 됩니다(메뉴 순서와 같은 방식). */
+const MV_FOLD_KEY = 'leap-map-folds-v1';
+function mvFoldState(){
+  try{ return JSON.parse(localStorage.getItem(MV_FOLD_KEY) || '{}') || {}; }catch(_e){ return {}; }
+}
+function mvSetFold(name, open){
+  const btn = document.querySelector('.mv-fold[data-fold="' + name + '"]');
+  const body = document.getElementById('mv-fold-' + name);
+  if(!btn || !body) return;
+  btn.setAttribute('aria-expanded', String(!!open));
+  body.hidden = !open;
+}
+let mvFoldsWired = false;
+function mvWireFolds(){
+  if(mvFoldsWired) return;   /* 실패 뒤 다시 열면 mvStart 가 또 불립니다 */
+  mvFoldsWired = true;
+  const saved = mvFoldState();
+  Array.prototype.forEach.call(document.querySelectorAll('.mv-fold'), btn => {
+    const name = btn.dataset.fold;
+    const body = document.getElementById('mv-fold-' + name);
+    if(!body) return;
+    btn.setAttribute('aria-controls', body.id);
+    /* 저장된 것이 있으면 그것을, 없으면 마크업에 적힌 첫 상태를 씁니다. */
+    const open = Object.prototype.hasOwnProperty.call(saved, name)
+      ? !!saved[name] : btn.getAttribute('aria-expanded') !== 'false';
+    mvSetFold(name, open);
+    btn.addEventListener('click', () => {
+      const now = btn.getAttribute('aria-expanded') === 'true';
+      mvSetFold(name, !now);
+      const st = mvFoldState(); st[name] = !now;
+      try{ localStorage.setItem(MV_FOLD_KEY, JSON.stringify(st)); }catch(_e){}
+      /* 접거나 펴면 지도 칸의 높이는 그대로지만 목록이 잘릴 수 있습니다. */
+      if(MV.map){ try{ MV.map.resize(); }catch(_e){} }
+    });
+  });
 }
 
 function mvWireControls(){
@@ -9012,8 +9255,10 @@ function mvWireControls(){
     document.getElementById('mv-ruler').setAttribute('aria-pressed', String(MV.ruler));
     mvRulerClear();
     mvDraw();               /* 재는 동안에는 말풍선을 떼야 하므로 다시 그립니다 */
-    if(!MV.ruler) mvSay('거리 재기를 껐습니다.');
+    if(!MV.ruler) mvSay('');
   });
+  on('mv-ruler-undo', mvRulerUndo);
+  on('mv-ruler-clear', mvRulerClear);
 
   const yr = document.getElementById('mv-year');
   if(yr){
@@ -9057,6 +9302,17 @@ function mvWireControls(){
 function mvFit(){
   const box = document.querySelector('.mapview');
   if(!box || !box.getBoundingClientRect) return;
+  /* ★ 위쪽 단추 줄을 피해서 내려옵니다 〔2026. 9. 10.〕
+     「사용 안내·인쇄」 줄은 position:absolute 라 자리를 차지하지 않습니다.
+     그래서 지도가 그 밑으로 파고들어 확대·축소 단추와 겹쳤습니다.
+     그 줄이 실제로 끝나는 자리를 재서 그만큼 내려 놓습니다 — 글자 크기나
+     창 너비가 달라져도 어긋나지 않습니다. */
+  const tools = document.querySelector('.top-tools');
+  if(tools && tools.getBoundingClientRect){
+    box.style.marginTop = '0px';
+    const gap = Math.round(tools.getBoundingClientRect().bottom + 12 - box.getBoundingClientRect().top);
+    box.style.marginTop = Math.max(0, gap) + 'px';
+  }
   const top = box.getBoundingClientRect().top;
   const h = Math.max(420, Math.round(window.innerHeight - top));
   box.style.height = h + 'px';

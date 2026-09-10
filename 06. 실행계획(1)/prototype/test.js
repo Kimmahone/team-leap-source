@@ -1358,9 +1358,9 @@ check('라이브러리를 못 받으면 그렇다고 말한다 (조용히 빈 �
   /지도 라이브러리를 불러오지 못했습니다/.test(js));
 check('인증키는 HTML 에 없고 서버에서 받는다',
   /fetch\('\/api\/vworld-key'\)/.test(js) && !/VWORLD_API_KEY\s*=\s*'/.test(js));
-check('키가 없어도 학교와 경계는 그린다', /배경지도가 없습니다 — 학교 위치와 시군 경계는 그대로입니다/.test(js));
+check('키가 없어도 학교와 경계는 그린다', /학교 위치와 시군 경계는 그대로입니다/.test(js));
 check('배경지도가 없는 까닭을 «늘» 붙여 둔다 (한 번 움직이면 지워지면 안 된다)',
-  /MV\.ready && !MV\.key \? ' · 배경지도 없음/.test(js));
+  /\(MV\.ready && !MV\.key\)\s*\n?\s*\? '배경지도 없음/.test(js));
 /* 오래된 업무용 PC·원격 데스크톱에는 WebGL 이 없습니다. 감싸지 않으면
    「불러오는 중」에서 영영 멈춘 것처럼 보입니다. */
 check('WebGL 이 없어도 멈춘 것처럼 보이지 않는다',
@@ -1370,7 +1370,10 @@ console.log('\n■ 배율에 따라 세는 단위가 바뀐다');
 check('시군 → 점 → 이름 세 단계다', q("[mvTier(8), mvTier(10), mvTier(12)]").join() === 'sgg,pin,label');
 check('이름이 서는 문턱이 10.6 이다 (11.8 은 너무 높아 안 바뀌어 보였다)',
   q("mvTier(10.5)") === 'pin' && q("mvTier(10.7)") === 'label');
-check('지금 배율을 적어 어디쯤인지 보인다', /배율 \$\{z\.toFixed\(1\)\}/.test(js));
+/* ★ 배율 안내 띠는 지웠습니다 〔2026. 9. 10.〕 지도를 움직일 때마다 아래쪽에
+   띠가 떠서 지도를 가렸습니다. 몇 곳이 보이는지는 목록 제목이 이미 말합니다. */
+check('배율 안내 띠로 지도를 가리지 않는다', !/배율 \$\{z\.toFixed\(1\)\}/.test(js));
+check('할 말이 없으면 상태줄을 아예 치운다', /el\.hidden = !txt/.test(js));
 
 console.log('\n■ 학교를 누르면 왼쪽 칸에 그 학교가 펼쳐진다');
 /* 「학교를 눌렀을 때 왼쪽에 자세한 정보가 안 뜬다」는 말을 듣고 붙인 자리입니다. */
@@ -1401,7 +1404,24 @@ check('경계가 실제 위경도로 펴진다', q(
   "(function(){var f=mvBoundGeo().features;if(!f.length)return false;" +
   "var c=f[0].geometry.coordinates[0];return c[0]>124&&c[0]<132&&c[1]>34&&c[1]<38;})()") === true);
 check('거리 재기 — SGIS 가 주던 자를 새로 만들었다',
-  /id="mv-ruler"/.test(html) && /function mvRulerAdd/.test(js) && /haversineKm\(pts\[0\]\.lat/.test(js));
+  /id="mv-ruler"/.test(html) && /function mvRulerAdd/.test(js) && /function mvRulerLegs/.test(js));
+/* 통학 길은 한 번에 곧게 가지 않습니다 — 꺾이는 자리마다 찍어야 실제에 가까워집니다. */
+check('점을 여러 개 찍을 수 있다 (두 개로 끊지 않는다)',
+  !/if\(MV\.rulerPts\.length >= 2\) MV\.rulerPts = \[\]/.test(js) &&
+  /MV\.rulerPts\.push/.test(js));
+check('구간마다 거리를 적고 합을 낸다',
+  /legs\.reduce\(\(a, l\) => a \+ l\.km, 0\)/.test(js) && /합 \$\{mvKm\(total\)\}/.test(js));
+check('되돌리기와 지우기가 있다',
+  /id="mv-ruler-undo"/.test(html) && /id="mv-ruler-clear"/.test(html) &&
+  /function mvRulerUndo/.test(js));
+/* 지도 안에 글자를 세우려면 style 에 glyphs(글꼴 서버) 주소가 있어야 합니다.
+   우리는 그런 서버를 두지 않습니다 — 번호는 DOM 딱지로 그립니다. */
+check('찍은 차례를 번호로 적는다', /el\.className = 'mv-rpt'/.test(js) && /\.mv-rpt\{/.test(html));
+check('없는 글꼴 서버에 기대지 않는다', !/'text-field'/.test(js));
+check('찍은 자리가 학교 이름표에 가리지 않는다', /el\.style\.zIndex = '600'/.test(js));
+check('지도가 뜨기 전에 켜도 선을 잃지 않는다',
+  /map\.once\('idle', mvRulerShapes\)/.test(js));
+check('글은 지도가 뜨기 전에도 적힌다', /function mvRulerText/.test(js) && /function mvRulerShapes/.test(js));
 check('학교 두 곳을 눌러 잰다 (통학 거리를 가늠하는 자리)',
   /if\(MV\.ruler\)\{ mvRulerAdd\(sc\.lon, sc\.lat, sc\.name\); return; \}/.test(js));
 check('직선거리임을 밝힌다 (산을 넘는 길은 더 멀다)', /산을 넘는 길은 이보다 멉니다/.test(js));
@@ -1410,11 +1430,55 @@ check('잰 값을 왼쪽 칸에도 남긴다 (상태줄은 지도를 한 번 움
 console.log('\n■ 그 해에 없는 수를 「–」로 보여 주지 않는다');
 /* 학급 수는 2026년 공시에만 있습니다. 다른 해에 「학급당 –」은 고장으로 읽힙니다. */
 check('학급 수가 없는 해에는 「학교당」으로 바꿔 말한다',
-  /\{ k:'학교당', v: list\.length \? Math\.round\(stu \/ list\.length\)/.test(js));
+  /학교당<\/div><div class="v">\$\{b\.n \? Math\.round\(b\.stu \/ b\.n\)/.test(js));
+/* 초·중·고를 한 덩어리로 더하면 「25만」 하나만 남습니다. 그 수로는 어느 급이
+   먼저 무너지는지 알 수 없습니다 — 종합 대시보드가 나눠 보여 주는 까닭과 같습니다. */
+check('경북 전체는 학교급을 갈라서 보여 준다',
+  /HOME_SERIES_LEVELS\.map\(l =>/.test(js) && /box\.className = 'stat-row'/.test(js));
+check('유치원·특수학교는 초·중·고에 더하지 않고 따로 적는다',
+  /유치원 <b>\$\{fmt\(by\['유'\]\.stu\)\}<\/b>/.test(js) &&
+  /특수학교 <b>\$\{fmt\(by\['특수'\]\.stu\)\}<\/b>/.test(js));
 check('큰 학교의 이름표가 작은 학교에 가리지 않는다',
   /el\.style\.zIndex = String\(Math\.min\(400/.test(js));
 check('재는 동안에는 말풍선을 떼어 둔다 (누르면 재는 점이 된다)',
   /if\(!MV\.ruler\) mk\.setPopup/.test(js));
+
+console.log('\n■ 왼쪽 칸을 접을 수 있다');
+/* 배경·보기·연도·찾기·통계·목록·범례가 모두 펴져 있으면 세로로 길어서,
+   학교를 눌렀을 때 상세 카드가 화면 밖에 있습니다. */
+check('칸마다 접는 손잡이가 있다', (html.match(/class="mv-fold"/g) || []).length >= 6);
+check('제목 줄 전체가 누르는 자리다 (작은 화살표만 노리면 잘 안 눌린다)',
+  /\.mv-fold\{[^}]*width:100%/.test(html));
+check('접은 자리는 이 브라우저에 남는다', /MV_FOLD_KEY = 'leap-map-folds-v1'/.test(js) &&
+  /localStorage\.setItem\(MV_FOLD_KEY/.test(js));
+check('무엇을 접었는지 화면 읽기 도구도 안다',
+  /btn\.setAttribute\('aria-expanded'/.test(js) && /btn\.setAttribute\('aria-controls'/.test(js));
+
+console.log('\n■ Shift 를 누르고 끌면 지도가 돌아간다');
+/* MapLibre 가 본디 주는 길(오른쪽 단추 끌기·Ctrl+끌기)은 업무용 노트북에서
+   손에 익지 않습니다. Shift+끌기는 본디 상자 확대에 묶여 있어 먼저 풉니다. */
+check('상자 확대를 풀고 그 자리에 돌리기를 건다',
+  /map\.boxZoom\.disable\(\)/.test(js) && /function mvWireRotate/.test(js));
+check('좌우는 방위, 위아래는 기울기다',
+  /map\.setBearing\(g\.b - \(e\.clientX - g\.x\)/.test(js) &&
+  /map\.setPitch\(Math\.max\(0, Math\.min\(75, g\.p \+ \(e\.clientY - g\.y\)/.test(js));
+check('끄는 동안 지도가 함께 밀리지 않는다', /map\.dragPan\.disable\(\)/.test(js));
+check('어떻게 돌리는지 화면에 적어 둔다', /<b>Shift<\/b> 를 누른 채 끌면/.test(html));
+
+console.log('\n■ 위쪽 단추 줄과 지도 조작판이 겹치지 않는다');
+/* 「사용 안내·인쇄」 줄은 position:absolute 라 자리를 차지하지 않습니다.
+   그래서 지도가 그 밑으로 파고들어 확대·축소 단추와 겹쳤습니다. */
+check('그 줄이 끝나는 자리를 재서 그만큼 내려 놓는다',
+  /tools\.getBoundingClientRect\(\)\.bottom \+ 12/.test(js) &&
+  /box\.style\.marginTop/.test(js));
+
+console.log('\n■ 학교 학생 수 추이에 눈금이 있다');
+/* 선 하나만 있으면 「올라갔다·내려갔다」는 보이는데 «얼마나»가 안 보입니다. */
+check('가로 눈금과 그 값을 적는다', /class="ax" x="\$\{PL-5\}"/.test(js) && /const rows = \(mx === mn \? \[mx\] : \[mx, mid, mn\]\)/.test(js));
+check('해마다 세로 눈금을 세운다', /class="gl vt"/.test(js));
+check('양 끝에 점을 찍는다', /class="dot" cx="\$\{X\(last\.y\)/.test(js));
+check('눈금이 가리키는 값은 선이 실제로 닿는 값이다 (어림한 눈금은 거짓말을 한다)',
+  /const mid = Math\.round\(\(mx \+ mn\) \/ 2\)/.test(js));
 
 console.log('\n■ 3D 는 기울이는 것이 아니라 «땅이 솟는» 것이다');
 check('고도 자료를 쓴다 (브이월드에는 없어 AWS Terrain Tiles 를 쓴다)',
