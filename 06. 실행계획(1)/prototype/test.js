@@ -347,6 +347,15 @@ check('모든 메뉴에 현재 화면 인쇄와 Excel 출력 도구가 있다',
   html.includes('id="export-current"') && html.includes('id="print-current"') && /function currentViewExport/.test(html));
 check('인쇄물에 전용 표제와 A4 가로 쪽 설정이 있다',
   html.includes('class="print-letterhead print-only"') && /@page\{size:A4 landscape/.test(html));
+check('현재 화면·AI 인사이트·이슈페이퍼의 종이 여백을 상20·하15·좌우20mm로 통일한다',
+  (html.match(/margin:20mm 20mm 15mm 20mm/g)||[]).length>=5 &&
+  !/margin:(?:9mm|12mm 14mm 14mm|12mm 11mm 15mm)/.test(html));
+check('A4 세로 전용 출력물의 실제 내용 높이는 공통 여백을 뺀 262mm다',
+  /body\.print-news-paper \.news-paper\{[^}]*height:262mm/.test(html) &&
+  /body\.print-ai-only \.policy-report\{[^}]*width:100%;min-height:262mm/.test(html));
+check('AI 인사이트는 인쇄할 때 한 줄 흐름으로 풀어 마지막 해설이 다음 장으로 밀리지 않는다',
+  /body\.print-ai-only \.policy-report \.ai-insight-board\{display:block\}/.test(html) &&
+  /body\.print-ai-only \.policy-report \.ai-narrative\{[^}]*break-inside:auto;page-break-inside:auto/.test(html));
 check('본문을 덮던 고정 인쇄 꼬리말을 제거했다',
   !html.includes('class="print-footer print-only"') && /\.print-footer\{display:none\s*!important\}/.test(html));
 check('긴 카드 전체를 한 쪽에 강제하지 않아 페이지 잘림을 막는다',
@@ -2058,6 +2067,12 @@ check('워터마크를 밑에 깔지 않고 위에 얹는다',
   /body::after\{[\s\S]{0,200}?z-index:9999/.test(html));
 check('모든 인쇄에 찍힌다 (이슈페이퍼·AI 인쇄 포함)',
   /body\.print-news-paper::after/.test(html) && /body\.print-ai-only::after/.test(html));
+check('이슈페이퍼 워터마크도 다른 인쇄물과 같은 중앙·62mm 크기다',
+  /body\.print-news-paper::after\{background-size:62mm auto;background-position:center 50%;opacity:\.06\}/.test(html) &&
+  !/body\.print-news-paper::after\{[^}]*32mm|body\.print-news-paper::after\{[^}]*90%/.test(html));
+check('AI 보고서는 본문을 2쪽으로 밀지 않고 마지막 안내선을 내용 영역 하단에 맞춘다',
+  /\.policy-report \.report-body\{flex:0 0 auto\}/.test(html) &&
+  /\.policy-report \.report-note\{margin-top:auto;padding-top:2mm/.test(html));
 check('화면에서는 워터마크를 얹지 않는다 (인쇄 규칙 안에만 있다)', q(
   "true") === true && /@media print\{[\s\S]*?body::after\{/.test(html));
 check('종이에서 갈래 단추는 감추고 보고 있는 곳은 남긴다',
