@@ -2,7 +2,7 @@
    응답이 불완전하면 현재 고정형과 직전 고정형으로 내려갑니다. */
 const MODELS = ['gemini-flash-latest','gemini-3.8-flash','gemini-3.7-flash'];
 const MAX_PROMPT = 12000;
-const SYSTEM_PROMPT = '당신은 경상북도 학령인구 공개 데이터를 일반 사용자가 쉽게 이해하도록 돕는 해설자입니다. 제공된 집계값만 사용하고 숫자를 만들지 마세요. 기준연도 실적과 공식 장래추계가 아닌 모의 비교값을 명확히 구분하세요. 반드시 다음 5개 제목을 순서대로 쓰세요: 학생수 변화, 해석할 때 주의할 점, 함께 비교할 질문, 더 살펴볼 공개자료, 분석 한계. 각 제목에는 서로 다른 내용의 글머리표를 2개 이상 쓰고, 첫 항목에는 입력받은 실제 숫자 비교를 포함하세요. 전체 분량은 한국어 700~1,200자로 작성하세요. 정책·사업 실적을 추정하거나 개인자료를 요구하지 마세요.';
+const SYSTEM_PROMPT = '당신은 경상북도 학령인구 공개 데이터를 일반 사용자가 이해하도록 돕는 데이터 해설자입니다. 입력은 현재 필터에 맞춘 JSON이며 입력에 없는 숫자를 만들지 마세요. 단순히 학생·학급·학교 합계를 되풀이하지 말고 actualTrend, scenarios, comparison, signals의 차이를 연결해 이번 조건에서만 성립하는 해석을 작성하세요. comparison.type이 school이면 학교 이름을 2곳 이상 언급하되 통폐합·위험 학교로 단정하지 말고 공개 실적의 확인 순서라고 표현하세요. comparison.type이 region이면 서로 다른 시군을 비교하세요. 반드시 다음 5개 제목을 순서대로 쓰세요: 이번 조건의 핵심 신호, 근거가 되는 비교, 산출 기준이 바뀌면, 다음 확인 자료, 분석 한계. 전체 글머리표는 8개 이상, 한국어 750~1,300자로 작성하고 최소 2개 문장 끝에 [근거: 입력의 필드명과 수치]를 붙이세요. 기준연도 실적과 공식 장래추계가 아닌 모의값을 명확히 구분하고 정책·사업 효과를 추정하거나 개인자료를 요구하지 마세요.';
 
 const headers = {
   'Content-Type': 'application/json; charset=utf-8',
@@ -26,10 +26,11 @@ function outputText(data){
 
 function outputQuality(text){
   const value=String(text||'').trim();
-  const topics=['학생수 변화','주의','비교할 질문','공개자료','분석 한계'];
+  const topics=['이번 조건의 핵심 신호','근거가 되는 비교','산출 기준이 바뀌면','다음 확인 자료','분석 한계'];
   const topicHits=topics.filter(topic=>value.includes(topic)).length;
   const bullets=(value.match(/(?:^|\n)\s*(?:[-*]|\d+[.)])\s+/g)||[]).length;
-  return {ok:value.length>=520&&topicHits>=4&&bullets>=7,length:value.length,topicHits,bullets};
+  const evidence=(value.match(/\[근거:/g)||[]).length;
+  return {ok:value.length>=600&&topicHits>=4&&bullets>=8&&evidence>=2,length:value.length,topicHits,bullets,evidence};
 }
 
 async function requestAnalysis(model, apiKey, prompt){
