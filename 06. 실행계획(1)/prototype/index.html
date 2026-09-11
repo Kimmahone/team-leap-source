@@ -740,7 +740,8 @@ a{color:var(--brand)}
   body.print-news-paper #news-analysis-panel,
   body.print-news-paper .paper-toolbar{display:none !important}
   body.print-news-paper #news-papers-panel{display:block !important}
-  body.print-news-paper .news-paper{max-width:none;height:279mm;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden;border:0;border-radius:0;box-shadow:none}
+  /* A4 세로 297mm - 위 20mm - 아래 15mm = 실제 내용 높이 262mm */
+  body.print-news-paper .news-paper{max-width:none;height:262mm;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden;border:0;border-radius:0;box-shadow:none}
   body.print-news-paper .paper-masthead{background:#102f5c !important;color:#fff !important;padding:3mm 5mm}
   body.print-news-paper .paper-brand{font-size:8.5pt}
   body.print-news-paper .paper-edition{font-size:7pt}
@@ -1559,7 +1560,9 @@ table.data .hl{color:var(--brand);font-weight:800}
     --over:#000; --fit:#000; --under:#000;
     --over-bg:#fff; --fit-bg:#fff; --under-bg:#fff;
   }
-  @page{size:A4 landscape;margin:12mm 11mm 15mm}
+  /* 모든 인쇄 경로가 같은 종이 가장자리를 씁니다.
+     위 20 · 아래 15 · 좌우 20mm — 세로·가로는 달라도 여백은 같습니다. */
+  @page{size:A4 landscape;margin:20mm 20mm 15mm 20mm}
   html,body{height:auto !important;overflow:visible !important}
   body{font-size:9.5pt;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   /* ── 워터마크 ── 〔2026. 9. 10.〕
@@ -1576,9 +1579,8 @@ table.data .hl{color:var(--brand);font-weight:800}
     background:url("symbol1.jpg") center 50%/62mm auto no-repeat;
     opacity:.06;
   }
-  /* 이슈페이퍼는 제 머리글(masthead)을 가진 신문 꼴이라 가운데 큰 표시가
-     겹칩니다. 그 화면에서는 작게, 아래쪽 구석에 둡니다. */
-  body.print-news-paper::after{background-size:32mm auto;background-position:center 90%;opacity:.05}
+  /* 이슈페이퍼도 다른 인쇄물과 같은 위치·크기를 씁니다. */
+  body.print-news-paper::after{background-size:62mm auto;background-position:center 50%;opacity:.06}
   .no-print,.sidebar,.top-tools,.glossary-drawer,.glossary-backdrop,.map-toolbar .chip,#home-reset,#sim-clear{display:none !important}
   .shell{display:block;position:relative;z-index:1}
   .main{padding:0;overflow:visible !important}
@@ -1678,18 +1680,43 @@ table.data .hl{color:var(--brand);font-weight:800}
      위쪽에서 이미 display:none 이라 그대로 두면 워터마크가 사라집니다. */
   body.print-ai-only{--brand:#164f9d;--brand-pale:#edf4fd;--over:#b9322a;--leap-teal:#087968;--ink:#101c2b;--ink-2:#3d4a5b;--ink-3:#657184;--line:#bfcddd;--line-2:#d9e2ec;--card:#fff;--card-2:#f4f7fb;--leap-on-fill:#fff}
   body.print-ai-only::after{background-size:62mm auto;opacity:.06}
-  body.print-ai-only .policy-report{max-width:none;width:100%;font-size:9pt}
+  body.print-ai-only .policy-report{max-width:none;width:100%;min-height:262mm;display:flex;flex-direction:column;font-size:7.5pt}
+  /* 화면용 grid의 마지막 해설은 인쇄 엔진에서 통째로 다음 장으로 넘어갑니다.
+     인쇄할 때만 한 줄 흐름으로 풀어 A4 한 장 안에서 자연스럽게 이어지게 합니다. */
+  body.print-ai-only .policy-report .report-body{flex:0 0 auto}
+  body.print-ai-only .policy-report .ai-insight-board{display:block}
+  body.print-ai-only .policy-report .ai-insight-board>*+*{margin-top:1.3mm}
+  body.print-ai-only .policy-report .ai-narrative{break-inside:auto;page-break-inside:auto;margin-top:1.3mm;padding-top:.6mm}
+  body.print-ai-only .policy-report .ai-narrative ul,body.print-ai-only .policy-report .ai-narrative ol{break-inside:auto;page-break-inside:auto}
+  body.print-ai-only .policy-report .report-cover{padding:9px 11px;margin-bottom:6px}
+  body.print-ai-only .policy-report .report-brand img{width:27px;height:27px}
+  body.print-ai-only .policy-report .report-cover h2{margin:7px 0 2px;font-size:18px}
+  body.print-ai-only .policy-report .report-subtitle{font-size:9px}
+  body.print-ai-only .policy-report .report-meta{margin-top:5px}
+  body.print-ai-only .policy-report .report-model-line{margin-bottom:5px;padding:5px 7px;font-size:8.5px}
+  body.print-ai-only .policy-report .ai-insight-hero{padding:7px 9px}
+  body.print-ai-only .policy-report .ai-insight-hero b{font-size:13px}
+  body.print-ai-only .policy-report .ai-insight-hero strong{font-size:21px}
+  body.print-ai-only .policy-report .ai-insight-kpi{padding:6px}
+  body.print-ai-only .policy-report .ai-insight-kpi b{margin:3px 0 1px;font-size:14px}
+  body.print-ai-only .policy-report .ai-evidence-sub{margin-bottom:5px}
+  body.print-ai-only .policy-report .ai-scenario-list{gap:3px}
+  body.print-ai-only .policy-report .ai-compare-head{margin-bottom:4px}
+  body.print-ai-only .policy-report .ai-compare-note{margin-top:4px}
+  body.print-ai-only .policy-report .ai-narrative h3{margin-top:7px;font-size:11px}
+  body.print-ai-only .policy-report .ai-narrative p,body.print-ai-only .policy-report .ai-narrative li{font-size:8px;line-height:1.35}
+  body.print-ai-only .policy-report .report-note{margin-top:auto;padding-top:2mm;font-size:8px}
   body.print-ai-only .policy-report .report-cover{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   body.print-ai-only .policy-report .ai-insight-hero{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   body.print-ai-only .policy-report .ai-compare-row i::after,body.print-ai-only .policy-report .trend-fill,body.print-ai-only .policy-report .trend-line{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   body.print-ai-only .policy-report .report-cover,body.print-ai-only .policy-report .ai-insight-hero,body.print-ai-only .policy-report .ai-insight-kpis,body.print-ai-only .policy-report .ai-evidence-grid,body.print-ai-only .policy-report .ai-signal-grid,body.print-ai-only .policy-report .ai-compare-card{break-inside:avoid;page-break-inside:avoid}
   body.print-ai-only .policy-report .ai-evidence-card,body.print-ai-only .policy-report .ai-compare-card{padding:7px}
-  body.print-ai-only .policy-report .ai-trend-svg{max-height:82px}
-  body.print-ai-only .policy-report .ai-scenario-item{padding:4px 6px}
-  body.print-ai-only .policy-report .ai-signal{padding:6px 8px}
+  body.print-ai-only .policy-report .ai-trend-svg{max-height:68px}
+  body.print-ai-only .policy-report .ai-scenario-item{padding:2px 5px}
+  body.print-ai-only .policy-report .ai-signal{padding:4px 6px;font-size:8.5px}
   body.print-ai-only .policy-report .ai-metric-tabs{display:none}
-  body.print-ai-only .policy-report .ai-compare-list{gap:4px}
-  body.print-ai-only .policy-report .ai-compare-row{font-size:9px}
+  body.print-ai-only .policy-report .ai-compare-list{gap:2px}
+  body.print-ai-only .policy-report .ai-compare-row{font-size:8px}
 }
 .print-only{display:none}
 
@@ -3896,11 +3923,11 @@ body.map-maxed.home-wide #home-side{display:none}
       document.title='경북 학령인구 주간 뉴스 이슈페이퍼';
       document.getElementById('print-report-title').textContent='주간 학령인구 뉴스 이슈페이퍼';
       document.getElementById('print-report-subtitle').textContent=(p.publishedAt||p.period.to)+' · '+paperSource;
-      if(pageStyle)pageStyle.textContent='@media print{@page{size:A4 portrait;margin:9mm}}';
+      if(pageStyle)pageStyle.textContent='@media print{@page{size:A4 portrait;margin:20mm 20mm 15mm 20mm}}';
       document.body.classList.add('print-news-paper');
       window.addEventListener('afterprint',function(){document.body.classList.remove('print-news-paper');document.title=previousTitle;if(pageStyle)pageStyle.textContent='';},{once:true});
-      /* 이슈페이퍼도 «어디서 나온 것인지»는 남아야 합니다. 신문 꼴이라
-         머리글은 제 것을 쓰고, 워터마크만 아래쪽 구석에 작게 찍습니다. */
+      /* 이슈페이퍼도 «어디서 나온 것인지»는 남아야 합니다. 신문형 머리글은
+         그대로 두고, 여백과 워터마크는 다른 인쇄물과 같은 규칙을 씁니다. */
       window.print();
     });
   }
@@ -3923,7 +3950,7 @@ body.map-maxed.home-wide #home-side{display:none}
       document.body.classList.add('print-news-paper');
       document.title='경북 학령인구 주간 뉴스 이슈페이퍼';
       var printStyle=document.getElementById('print-page-mode');
-      if(printStyle)printStyle.textContent='@media print{@page{size:A4 portrait;margin:9mm}}';
+      if(printStyle)printStyle.textContent='@media print{@page{size:A4 portrait;margin:20mm 20mm 15mm 20mm}}';
     }
     if(requested==='analysis'||requested==='papers')show(requested);
   }
@@ -9401,8 +9428,8 @@ function finishPrintMode(){
 function runPrint(mode){
   const pageStyle=document.getElementById('print-page-mode');
   pageStyle.textContent=mode==='ai'
-    ? '@media print{@page{size:A4 portrait;margin:12mm 14mm 14mm}}'
-    : '@media print{@page{size:A4 landscape;margin:12mm 11mm 15mm}}';
+    ? '@media print{@page{size:A4 portrait;margin:20mm 20mm 15mm 20mm}}'
+    : '@media print{@page{size:A4 landscape;margin:20mm 20mm 15mm 20mm}}';
   document.body.classList.toggle('print-ai-only',mode==='ai');
   window.addEventListener('afterprint',finishPrintMode,{once:true});
   if(typeof window.print==='function') window.print();
