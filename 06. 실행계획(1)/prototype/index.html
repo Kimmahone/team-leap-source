@@ -1062,6 +1062,20 @@ table.data .hl{color:var(--brand);font-weight:800}
   border:1px dashed var(--line);border-radius:6px;background:var(--card-2);
   color:var(--ink-3);font-size:11.5px}
 @media (max-width:640px){ .sgg-board{grid-template-columns:repeat(auto-fill,minmax(128px,1fr))} }
+/* ── 두 칸 짜리 배치 ── 〔2026. 9. 11.〕
+   특수교육·폐교 화면이 인라인 style 로 2fr 1fr 을 박아 두었습니다. 인라인에는
+   @media 를 걸 수 없어 좁은 화면에서 오른쪽 칸이 화면 밖으로 밀려났습니다.
+   클래스로 옮겨 접히게 합니다. minmax(0,…) 이 없으면 안의 표가 칸을 밀어냅니다. */
+.two-cols{display:grid;gap:20px;margin-top:16px}
+.two-cols.wide{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
+.two-cols.even{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+/* 좁은 화면에서 한 칸으로. «.two-cols» 하나만 적으면 «.two-cols.wide» 쪽
+   특정도가 높아 이 규칙이 집니다 — @media 는 특정도를 올려 주지 않습니다. */
+@media (max-width:900px){
+  .two-cols.wide,.two-cols.even{grid-template-columns:minmax(0,1fr)}
+  /* 표는 카드를 밀어내는 대신 제 안에서 옆으로 굴러갑니다 */
+  #sped-bylevel,#sped-classes,#sped-donut{overflow-x:auto}
+}
 
 /* ── 이미 학교에 앉아 있는 아이 ────────────────────────────────────────── */
 .cohort-wrap{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:6px}
@@ -1395,6 +1409,11 @@ table.data .hl{color:var(--brand);font-weight:800}
   padding:12px 13px;font-size:11.5px;line-height:1.6;color:var(--ink-2);
   box-shadow:0 8px 22px rgba(16,26,36,.2)}
 .mv-tip[hidden]{display:none}
+.mv-tip-close{position:absolute;right:7px;top:6px;width:26px;height:26px;border:0;
+  border-radius:50%;background:none;color:var(--ink-3);font-size:17px;line-height:1;cursor:pointer}
+.mv-tip-close:hover{background:var(--card-2);color:var(--ink)}
+.mv-tip-close:focus-visible{outline:3px solid var(--brand);outline-offset:1px}
+.mv-tip > b{padding-right:26px}
 @media (max-width:900px){
   .mapview.side-off{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr)}
 }
@@ -1507,8 +1526,19 @@ table.data .hl{color:var(--brand);font-weight:800}
   background:var(--card);border:1px solid var(--leap-teal);border-radius:999px;
   padding:2px 9px 2px 7px;font-size:11px;box-shadow:0 2px 7px rgba(16,26,36,.2);
   color:var(--ink);pointer-events:none}
+/* 껍데기에는 자리를 잡아 주지 않습니다 — MapLibre 가 여기에 position 과
+   transform 을 직접 씁니다. 우리가 건드릴 것은 «안쪽 딱지»뿐입니다.
+   여기에 transition 을 걸면 안 됩니다: 겹침을 풀 때마다 «지금 어디에
+   있는지»를 다시 재는데, 애니메이션 중에는 중간값이 잡혀 자리가
+   흔들립니다 〔2026. 9. 11.〕 */
 .mv-nearchip b{color:var(--leap-teal);font-weight:800;font-variant-numeric:tabular-nums}
 .mv-nearchip span{color:var(--ink-3);font-size:10.5px}
+/* 거리 재기의 구간 거리 — 이웃 선과 같은 꼴이되 색만 자의 색을 따릅니다.
+   두 가지가 같이 떠 있을 때 어느 것이 무엇인지 갈려야 합니다. */
+.mv-legchip{border-color:var(--leap-amber-mark)}
+.mv-legchip b{color:var(--leap-amber)}
+.mv-sumchip{border-color:var(--leap-amber-mark);border-width:2px}
+.mv-sumchip b{color:var(--leap-amber)}
 
 /* 거리를 재려고 찍은 자리. 번호를 달아 어느 것이 먼저인지 보이게 합니다. */
 .mv-rpt{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;
@@ -1913,13 +1943,20 @@ body.map-maxed.home-wide #home-side{display:none}
   </div>
   <p class="glossary-intro">대시보드에서 사용하는 교육·인구 용어를 가나다순으로 정리했습니다. 수치의 출처와 예측의 한계는 각 화면의 ‘자료 출처’도 함께 확인해 주세요.</p>
   <div class="glossary-list">
+    <details><summary>개교년도</summary><div>학교가 문을 연 해입니다. 학교의 <b>나이</b>는 그 지역이 어느 국면에 있는지를 한 줄로 말해 줍니다 — 1960~70년대 학교가 많은 시군은 그 세대가 빠져나간 뒤의 모습이고, 2010년대 학교는 신도시의 신호입니다.<span class="source">출처: 학교알리미 공시 (916곳)</span></div></details>
     <details><summary>교원 수</summary><div>학교알리미 공시의 교원 현황을 학교별로 합산한 값입니다. 현재 전체 KPI는 유치원 교원을 제외합니다.<span class="source">출처: 학교알리미 공시</span></div></details>
-    <details><summary>인구감소지역</summary><div>인구·재정·지역 여건 등을 종합해 행정안전부가 지정한 지역입니다. 2021년 10월 처음 지정하며 지정 주기는 5년입니다. 경북은 고령·문경·봉화·상주·성주·안동·영덕·영양·영주·영천·울릉·울진·의성·청도·청송 15곳입니다.<span class="source">출처: 행정안전부 인구감소지역 지정 결과(89개)</span></div></details>
+    <details><summary>다문화 학생</summary><div>세 무리로 나뉩니다. <b>국내출생</b>(국제결혼가정에서 한국에서 태어남) · <b>중도입국</b>(자라다가 들어옴) · <b>외국인가정</b>(부모가 모두 외국 국적)입니다. 경북은 <b>국내출생이 83%</b>라 한 덩어리로 세면 «모두에게 한국어 지원이 필요한 것»처럼 읽힙니다. 필요한 지원이 무리마다 다릅니다.<span class="source">출처: 한국교육개발원 교육통계연보 「다문화학생 현황」 · 도 단위만 있습니다</span></div></details>
     <details><summary>모의 학생수</summary><div id="tip-simstu">선택한 연도까지 시군·학교급별 공개 실적에 가정한 감소율을 적용한 비교값입니다. 공식 장래추계나 확정 예측이 아니며, 변화 방향과 계산 조건을 이해하는 참고값입니다.<span class="source">향후 공개된 출생아수와 여러 해의 학년별 실적으로 산출법을 개선</span></div></details>
+    <details><summary>배치유형</summary><div>특수교육 대상 학생이 <b>어디에서 배우는가</b>입니다. <b>특수학교</b>·<b>특수학급</b>(일반학교 안)·<b>일반학급</b>(순회 지원) 셋으로 셉니다. 일반학급에서 <b>온전히 함께 배우는 학생(완전통합)은 공시에 없어 빠져 있습니다.</b> 그래서 이 대시보드는 「특수교육 대상자」가 아니라 «배치 기준»이라고 부릅니다.<span class="source">출처: 국립특수교육원 특수교육통계</span></div></details>
+    <details><summary>인구감소지역</summary><div>인구·재정·지역 여건 등을 종합해 행정안전부가 지정한 지역입니다. 2021년 10월 처음 지정하며 지정 주기는 5년입니다. 경북은 고령·문경·봉화·상주·성주·안동·영덕·영양·영주·영천·울릉·울진·의성·청도·청송 15곳입니다.<span class="source">출처: 행정안전부 인구감소지역 지정 결과(89개)</span></div></details>
     <details><summary>적정규모학교</summary><div>학생 수 기준으로 최소규모 15명 이하, 소규모 100명 이하, 적정규모 참고선을 동 60명 이상·읍면 30명 이상으로 제시하며, 겹치면 적정규모를 우선합니다. 학급당 학생 수의 과밀 여부와는 별개이고, 학교 통폐합을 자동 결정하는 기준도 아닙니다.<span class="source">이 기준선은 참고용입니다. 학교별 판단은 그해 경상북도교육청 적정규모학교 육성 계획을 따릅니다.</span></div></details>
+    <details><summary>직선거리</summary><div>두 자리를 <b>곧게 이은</b> 길이입니다. 지도의 「거리 재기」와 학교 카드의 「가장 가까운 학교」가 모두 직선거리입니다. <b>길을 따라간 거리도, 통학 시간도 아닙니다</b> — 산을 넘거나 물을 건너면 실제로는 훨씬 멉니다. 울릉군은 바다 건너라 특히 다릅니다.</div></details>
     <details><summary>초등학교</summary><div>초등 보통교육을 실시하는 6년제 학교입니다. 이 화면의 학교·학생·학급 값은 학교알리미 공시 자료를 사용합니다.<span class="source">출처: 초·중등교육법, 학교알리미</span></div></details>
-    <details><summary>학생 수</summary><div>해당 학교에 재학 중인 학생을 학교별·학교급별로 합산한 값입니다. 학령인구와는 범위가 다릅니다.<span class="source">출처: 학교알리미 2026 공시</span></div></details>
+    <details><summary>축척 비율</summary><div>지도 오른쪽 아래의 <b>1 : 25,000</b> 같은 표시입니다. 화면의 1cm 가 땅에서 250m 라는 뜻입니다. 종이 지도를 읽어 온 사람에게는 자보다 비율이 빠릅니다. <b>모니터마다 점 크기가 달라 어림</b>이고, 종이로 뽑으면 또 달라집니다.</div></details>
+    <details><summary>코호트</summary><div>같은 해에 함께 학교에 들어간 <b>아이들의 무리</b>입니다. 지금 초등학교 1학년은 6년 뒤 중학교 1학년, 9년 뒤 고등학교 1학년이 됩니다. <b>이미 태어나 학교에 다니는 아이를 세는 것</b>이라 출산율 가정도, 추계 모형도 들어가지 않습니다. 그래서 장래추계보다 흔들림이 적습니다. 다만 <b>전학·유급·사립·특수학교로의 이동은 들어 있지 않습니다.</b></div></details>
+    <details><summary>학년별 인원</summary><div>학교알리미가 내는 학년마다의 학생 수입니다. <b>일반학급 기준</b>이라 특수학급 학생은 빠져 있고, 따로 셉니다(계 = 학년별 합 + 특수학급). 그래서 학년별을 다 더하면 학교 전체 학생 수보다 <b>적습니다.</b><span class="source">출처: 학교알리미 공시 · 초·중·고 917곳 전부</span></div></details>
     <details><summary>학령인구</summary><div>이 대시보드에서는 초·중·고교 학령에 해당하는 6~18세 인구를 뜻합니다. 실제 재학생 수와 같지 않습니다.<span class="source">출처: KOSIS 주민등록인구 및 장래인구추계</span></div></details>
+    <details><summary>학생 수</summary><div>해당 학교에 재학 중인 학생을 학교별·학교급별로 합산한 값입니다. 학령인구와는 범위가 다릅니다.<span class="source">출처: 학교알리미 2026 공시</span></div></details>
   </div>
 </aside>
 
@@ -1928,15 +1965,54 @@ body.map-maxed.home-wide #home-side{display:none}
     <h2>대시보드 사용 안내</h2>
     <button type="button" class="glossary-close" id="guide-close" aria-label="대시보드 사용 안내 닫기">×</button>
   </div>
-  <p class="glossary-intro">메뉴별로 무엇을 확인하고 어떤 결과를 저장할 수 있는지 정리했습니다. 화면 오른쪽 위의 인쇄·Excel 버튼은 지금 보고 있는 메뉴와 필터 조건을 그대로 사용합니다.</p>
+  <!-- ★ 화면이 바뀌면 안내도 바뀌어야 합니다 〔2026. 9. 11.〕
+       여기에는 「종합 대시보드」가 첫 줄에 있었는데 그 화면은 치워 두었고,
+       새로 만든 「지도로 보기」는 한 줄도 없었습니다. 안내가 화면과 다르면
+       읽는 사람이 자기가 잘못 보고 있다고 여깁니다. -->
+  <p class="glossary-intro">메뉴마다 무엇을 보고 무엇을 저장할 수 있는지 적었습니다. 오른쪽 위의 <b>인쇄</b>와 <b>Excel</b>은 <b>지금 보고 있는 화면과 고른 조건을 그대로</b> 씁니다.</p>
   <div class="glossary-list">
-    <details><summary>종합 대시보드</summary><div>학교급·학교명·학교 수/학생 수를 바꾸고, 간편 지도와 실제 위치 지도에서 시군 및 학교를 비교합니다.</div></details>
-    <details><summary>경북 학령인구 현황</summary><div>기준연도와 비교연도를 고르고 학령인구와 재학생 수의 변화·추이를 확인합니다.</div></details>
-    <details><summary>학생수 시뮬레이터</summary><div>시군과 학교급을 선택해 현재 학생수·학급수·학교수와 조건별 모의 전망을 비교합니다. 학교별 미래 학생수를 확정적으로 예측하는 기능은 아닙니다.</div></details>
-    <details><summary>뉴스 클리핑</summary><div>전체·주간·월간 및 주제별로 기사를 거른 뒤 현재 결과를 인쇄하거나 Excel로 저장합니다. 새 기사는 기존의 6개 고정 주제로 분류되므로 주제 목록이 매주 늘어나지 않습니다.</div></details>
-    <details><summary>다문화 및 특수교육</summary><div>특수교육대상자를 배치유형(특수학교·특수학급·일반학급)별로 보고, 시군·학교급별 분포와 특수학교까지의 거리를 확인합니다. 다문화 학생은 교육통계연보 기준입니다.</div></details>
-    <details><summary>폐교 활용 현황</summary><div>경북 폐교를 시군·활용현황·폐교연도로 나눠 보고 목록에서 검색합니다. 매각한 폐교는 교육청 재산이 아니므로 활용 정책의 대상이 아닙니다.</div></details>
-    <details><summary>출력 방법</summary><div><ul><li><b>현재 화면 인쇄</b>: 브라우저 인쇄창에서 PDF 저장도 가능</li><li><b>현재 메뉴 Excel</b>: 조건·원자료·요약·시각화 시트를 메뉴에 맞게 생성</li></ul></div></details>
+    <details><summary>지도로 보기</summary><div>학교 1,539곳을 실제 자리에 놓고 봅니다.
+      <ul><li><b>배경</b> 일반·위성·위성+지명·야간</li>
+      <li><b>3D 지형</b> 땅이 솟습니다. 산 너머 통학 거리를 눈으로 가늠하는 자리입니다</li>
+      <li><b>연도</b>를 옮기면 딱지의 학생 수가 그 해를 따릅니다 (2016~2036)</li>
+      <li><b>거리 재기</b>로 학교와 학교 사이를 잽니다 — <b>직선거리</b>입니다</li>
+      <li><b>폐교 겹쳐 보기</b>로 문 닫은 자리와 남은 학교를 나란히 봅니다</li></ul>
+      학교를 누르면 왼쪽 칸에 학년별·추이·가장 가까운 학교까지 폅니다.
+      돌리고 기울이는 법은 지도 오른쪽 위 <b>지도 사용법</b>에 있습니다.</div></details>
+    <details><summary>경북 학령인구 현황</summary><div>네 갈래로 나뉩니다.
+      <ul><li><b>어디가 먼저인가</b> 시군 22곳을 나란히 놓고 감소율로 견줍니다</li>
+      <li><b>얼마나 줄어드나</b> 과거·현재·미래와 추이·표</li>
+      <li><b>누가 올라오나</b> 이미 학교에 앉아 있는 아이로 6~9년 뒤를 셉니다</li>
+      <li><b>무엇이 달라지나</b> 학생 수를 학급 수·교원 수로 옮겨 적습니다</li></ul>
+      시군을 고르면 네 갈래가 모두 그 시군을 봅니다. <b>학령인구는 도 단위로만</b>
+      받아 두어, 시군을 고르면 재학생 수로 바뀝니다.</div></details>
+    <details><summary>학생수 시뮬레이터</summary><div>시나리오를 고르면 산출 기준이 함께 바뀝니다.
+      <b>무엇을 고정하면 무엇이 희생되는지</b>를 보는 자리입니다 — 학교·학급 수를
+      지키면 학급당 인원이 줄고, 학급당 인원을 지키면 학급·학교가 줄어듭니다.
+      <b>「몇 명이 될 것이다」로 읽으면 안 됩니다.</b> 공식 장래 학생수 추계가 아니며
+      지역 간 이동도 반영하지 않습니다.</div></details>
+    <details><summary>주간 뉴스 클리핑</summary><div>최신 뉴스·이슈 분석·이슈페이퍼 세 갈래입니다.
+      기사는 고정 주제로 분류하므로 주제 목록이 매주 늘어나지 않습니다.
+      저작권 때문에 <b>제목·언론사·발행일·원문 링크와 자체 요약</b>만 담습니다.</div></details>
+    <details><summary>다문화 및 특수교육 모니터링</summary><div>맨 위에서 <b>전체가 줄면 두 무리의 몫이
+      커진다</b>는 것을 한 그림으로 봅니다. 그 아래는 두 갈래입니다.
+      <ul><li><b>특수교육</b> 배치유형·시군별·특수학교까지의 거리, 그리고
+      <b>학교가 줄면 특수학급도 옮겨야 하는 자리</b> 목록. 줄을 누르면 지도에서
+      가장 가까운 같은 급 학교 셋까지 거리를 그려 줍니다</li>
+      <li><b>다문화</b> 13,158명을 국내출생·외국인가정·중도입국 <b>세 무리로 갈라</b>
+      봅니다. 필요한 지원이 무리마다 다릅니다</li></ul></div></details>
+    <details><summary>폐교 활용 현황</summary><div><b>몇 곳인지보다 무엇을 뜻하는지</b>를 먼저
+      봅니다 — 1990년대에만 422곳이 문을 닫았고, 매각한 495곳은 이미 교육청 손을
+      떠났습니다. 「지도에서 폐교 보기」를 누르면 겹쳐 보기를 켠 채 지도로 갑니다.
+      목록은 접어 두었습니다 — 찾을 때 펴서 씁니다.</div></details>
+    <details><summary>인쇄와 Excel</summary><div>
+      <ul><li><b>현재 화면 인쇄</b> 지금 보고 있는 화면만 나갑니다. 종이 맨 위에
+      기관·문서 이름·조회 조건·뽑은 때가 적히고 <b>경북교육 표시가 장마다</b>
+      찍힙니다. 인쇄창에서 PDF 로도 저장됩니다</li>
+      <li><b>현재 메뉴 Excel</b> 화면마다 다른 시트를 만듭니다. 지도에서는 조회
+      조건·학교급별 요약·화면 안 학교 목록이, 폐교에서는 목록 전체가 들어갑니다</li>
+      <li><b>메뉴 순서</b> 내 메뉴 차례를 바꿉니다. 이 브라우저에만 저장됩니다</li>
+      <li><b>화면 밝기</b> 밝은 화면과 어두운 화면을 바꿉니다</li></ul></div></details>
   </div>
 </aside>
 
@@ -2349,6 +2425,12 @@ body.map-maxed.home-wide #home-side{display:none}
                  차지하고, 아주 없으면 돌리는 법을 알 길이 없습니다. -->
           </div>
           <div class="mv-tip" id="mv-turn-tip" hidden>
+            <!-- ★ 닫는 길을 냅니다 〔2026. 9. 11.〕 여는 단추를 다시 누르면
+                 닫히긴 했지만, 그 단추가 상자 «밖 위쪽»에 있어 닫는 길로 보이지
+                 않았습니다. 상자 안에 ×를 두고, 지도를 누르거나 Esc 를 눌러도
+                 닫힙니다. -->
+            <button type="button" class="mv-tip-close" id="mv-tip-close"
+                    aria-label="지도 사용법 닫기">×</button>
             <b>지도를 돌리고 기울이려면</b>
             <dl>
               <div><dt>마우스</dt><dd><b>Shift</b> 를 누른 채 끌기 · 오른쪽 단추로 끌기 ·
@@ -3054,7 +3136,7 @@ body.map-maxed.home-wide #home-side{display:none}
     <div class="status-panel" id="multi-panel-sped" role="tabpanel">
       <div class="kpi" id="sped-kpi"></div>
 
-      <div style="display:grid; grid-template-columns:2fr 1fr; gap:20px; margin-top:16px;">
+      <div class="two-cols wide">
         <div>
           <div class="card">
             <h2>학교급별 — 어디에 몰려 있는가<span class="asof" id="asof-bylevel"></span></h2>
@@ -3152,7 +3234,7 @@ body.map-maxed.home-wide #home-side{display:none}
         모어인 아이가 있습니다.</p>
       </div>
 
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:16px">
+      <div class="two-cols even">
         <div class="card">
           <h2>학교급마다 사정이 다릅니다</h2>
           <div id="multi-bylevel"></div>
@@ -3242,7 +3324,7 @@ body.map-maxed.home-wide #home-side{display:none}
         <b>초등학교가 658곳(88%)</b>으로 거의 전부입니다.</p>
       </div>
 
-      <div style="display:grid; grid-template-columns:2fr 1fr; gap:20px; margin-top:16px;">
+      <div class="two-cols wide">
         <div>
           <div class="card">
             <h2>시군별 폐교 수<span class="asof" id="asof-closed1"></span></h2>
@@ -9115,18 +9197,84 @@ function closedExportSheets(){
       note:'화면에는 120곳만 보이지만 여기에는 전부 들어 있습니다.',rows:list}
   ];
 }
+/* ══ 지도 화면의 Excel ═══════════════════════════════════════════════════
+   ★ 여태 지도에서 「현재 메뉴 Excel」을 누르면 «폐교 자료»가 나왔습니다
+     〔2026. 9. 11.〕 갈래를 else 로 흘려 두었는데, 그 뒤에 지도 화면이
+     생기면서 아무도 이 자리를 고치지 않았습니다. 조용히 틀린 파일이
+     나가는 자리였습니다.
+
+   지도에서 내보낼 것은 «지금 화면이 세고 있는 것»입니다 — 보고 있는 해,
+   고른 학교급, 화면 안 학교 목록. */
+function mapExportSheets(){
+  const pool = (typeof mvPool === 'function') ? mvPool() : [];
+  const vis = (typeof mvInView === 'function') ? mvInView(pool) : pool;
+  const year = (typeof MV === 'object' && MV) ? MV.year : HOME_BASE_YEAR;
+  const kind = Number(year) === HOME_BASE_YEAR ? '공시'
+    : (Number(year) > HOME_BASE_YEAR ? '전망' : '실적');
+  const lvName = (MV.level === '전체') ? '전체' : ((LEVEL_CFG[MV.level] || {}).full || MV.level);
+
+  const cond = [
+    ['보고 있는 해', String(year) + '년 (' + kind + ')'],
+    ['학교급', lvName],
+    ['학교 이름 찾기', MV.q ? MV.q : '(없음)'],
+    ['화면 안 학교', fmt(vis.length) + '곳'],
+    ['고른 조건의 학교', fmt(pool.length) + '곳'],
+    ['폐교 겹쳐 보기', MV.closed ? '켬' : '끔']
+  ];
+
+  const rows = vis.slice().sort((a, b) => (mvStu(b) || 0) - (mvStu(a) || 0)).map(sc => {
+    const v = mvStu(sc);
+    return [sc.name, sc.s, (LEVEL_CFG[sc.lv] || {}).full || sc.lv,
+            v == null ? '' : v, kind,
+            Number(year) === HOME_BASE_YEAR ? (sc.cls || '') : '',
+            sc.teach || '', sc.sped || '', sc.founded || '',
+            sc.lat == null ? '' : sc.lat, sc.lon == null ? '' : sc.lon, sc.addr || ''];
+  });
+
+  /* 학교급마다 몇 곳·몇 명인지 — 화면 왼쪽 큰 숫자와 같은 셈입니다. */
+  const byLv = LEVELS.map(lv => {
+    const g = vis.filter(x => x.lv === lv);
+    const stu = g.reduce((a, x) => a + (mvStu(x) || 0), 0);
+    return [(LEVEL_CFG[lv] || {}).full || lv, g.length, stu];
+  });
+
+  const sheets = [
+    { name:'조건', title:'지도 화면의 조회 조건', rows:[['항목','값']].concat(cond),
+      note:'화면에 보이던 것을 그대로 옮겼습니다.' },
+    { name:'학교급별', title:'화면 안 학교급별 요약',
+      rows:[['학교급','학교 수','학생 수']].concat(byLv) },
+    { name:'화면안학교', title:'화면 안 학교 ' + fmt(vis.length) + '곳',
+      rows:[['학교','시군','학교급','학생 수','값의 성격','학급 수','교원 수','특수학급','개교년도','위도','경도','주소']].concat(rows),
+      note:'학급 수는 2026년 공시에만 있습니다. 좌표는 학교알리미 공시값입니다.' }
+  ];
+
+  if(MV.closed && typeof closedMapRows === 'function'){
+    try{
+      const c = closedMapRows().map(r => [r.name, r.s, r.lv, r.year, r.use, r.lat, r.lon]);
+      sheets.push({ name:'겹쳐본폐교', title:'지도에 겹쳐 본 폐교 ' + fmt(c.length) + '곳',
+        rows:[['학교','시군','학교급','폐교연도','활용현황','위도','경도']].concat(c),
+        note:'매각한 폐교와 좌표를 못 찾은 곳은 빠져 있습니다.' });
+    }catch(_e){}
+  }
+  return sheets;
+}
+
 function currentViewExport(){
-  const names={home:'종합대시보드',status:'학령인구현황',sim:'학생수시뮬레이터',news:'뉴스클리핑',multi:'특수교육모니터링',closed:'폐교활용현황'};
+  const names={map:'지도',home:'종합대시보드',status:'학령인구현황',sim:'학생수시뮬레이터',news:'뉴스클리핑',multi:'특수교육모니터링',closed:'폐교활용현황'};
   let sheets;
-  if(activeView==='home') sheets=homeExportSheets();
+  if(activeView==='map') sheets=mapExportSheets();
+  else if(activeView==='home') sheets=homeExportSheets();
   else if(activeView==='status') sheets=statusExportSheets();
   else if(activeView==='sim') sheets=simulatorSheets();
   else if(activeView==='news') sheets=newsExportSheets();
   else if(activeView==='multi') sheets=multiExportSheets();
-  else sheets=closedExportSheets();
+  else if(activeView==='closed') sheets=closedExportSheets();
+  /* ★ 모르는 화면이면 «아무 자료나» 내보내지 않습니다. 조용히 틀린 파일이
+     나가는 것보다, 안 나가고 왜인지 말하는 편이 낫습니다. */
+  else { alert('이 화면은 아직 Excel 로 내보낼 수 없습니다.'); return; }
   downloadSpreadsheet(sheets,`경북_${names[activeView]||'대시보드'}_${new Date().toISOString().slice(0,10)}.xls`);
 }
-const VIEW_PRINT_NAMES={home:'종합 대시보드',status:'경북 학령인구 현황',sim:'학생수 시뮬레이터',news:'뉴스 클리핑',multi:'다문화 및 특수교육 모니터링',closed:'폐교 활용 현황'};
+const VIEW_PRINT_NAMES={map:'경북 학교 지도',home:'종합 대시보드',status:'경북 학령인구 현황',sim:'학생수 시뮬레이터',news:'뉴스 클리핑',multi:'다문화 및 특수교육 모니터링',closed:'폐교 활용 현황'};
 function printStamp(){
   return new Intl.DateTimeFormat('ko-KR',{dateStyle:'long',timeStyle:'short'}).format(new Date());
 }
@@ -9158,6 +9306,18 @@ function printScopeText(){
       const where = (typeof MV === 'object' && MV && MV.level !== '전체')
         ? ((LEVEL_CFG[MV.level] || {}).full || MV.level) : '전체 학교급';
       return [`${MV.year}년`, where, MV.is3d ? '3D 지형' : '2D'].join(' · ');
+    }
+    /* ★ 시뮬레이터도 조건을 적습니다 〔2026. 9. 11.〕
+       여섯 화면 가운데 여기만 «현재 화면의 조회 조건»이라고만 찍혀 나왔습니다.
+       어떤 조건으로 돌린 모의였는지 종이에 없으면 그 종이는 못 읽습니다.
+       화면이 이미 적어 둔 요약을 그대로 옮겨 적습니다 — 계산은 하지 않습니다. */
+    if(activeView === 'sim'){
+      const el = document.getElementById('sim-filter-summary');
+      const f = ((el && el.textContent) || '').replace(/\s+/g, ' ').trim();
+      const tab = { overview:'한눈에 보기', detail:'시군별 비교', ai:'AI 해설' }[
+        typeof simView !== 'undefined' ? simView : ''] || '';
+      const cond = (f && f.indexOf('계산') < 0) ? f : '';
+      return [cond, tab].filter(Boolean).join(' · ') || '학생수 시뮬레이터';
     }
     if(activeView === 'multi') return `특수교육 ${SPED_PLACE.year}년 · 다문화 ${MULTI_STU.year}년`;
     if(activeView === 'closed') return typeof CLOSED !== 'undefined' && CLOSED ? CLOSED.basis : '폐교 활용 현황';
@@ -9357,7 +9517,11 @@ document.getElementById('ai-analyze').addEventListener('click', async () => {
     if(focus){if(open)pair.close.focus();else pair.open.focus();}
   }
   pairs.forEach(pair=>{
-    pair.open.addEventListener('click',()=>setOpen(pair,true));
+    /* ★ 여는 단추는 «여닫는» 단추입니다 〔2026. 9. 11.〕
+       aria-expanded 를 달아 놓고 다시 눌러도 안 닫히면, 그 표시가 거짓말이
+       됩니다. 열어 준 단추를 다시 누르는 것은 «닫아 달라»는 뜻입니다. */
+    pair.open.addEventListener('click',()=>
+      setOpen(pair, pair.drawer.getAttribute('aria-hidden')!=='false'));
     pair.close.addEventListener('click',()=>setOpen(pair,false));
   });
   backdrop.addEventListener('click',()=>{const open=pairs.find(p=>p.drawer.getAttribute('aria-hidden')==='false');if(open)setOpen(open,false,false);});
@@ -11221,7 +11385,7 @@ const MV = {
   map:null, key:null,
   base:'Base', level:'전체', q:'', year:HOME_BASE_YEAR,
   closed:false, bound:true, ruler:false, rulerPts:[], rulerMarks:[],
-  near:null, nearMarks:[],
+  near:null, nearMarks:[], chips:[],
   is3d:false, marks:[], rows:[]
 };
 
@@ -11749,6 +11913,58 @@ function mvRulerPaint(){
 /* 지도 위의 선과 점. ★ 스타일이 아직 서지 않았으면 source 가 없습니다 —
    그때는 조용히 지나가고 스타일이 선 뒤에 한 번 더 부릅니다. 예전에는 여기서
    그냥 돌아가 버려서, 지도가 뜨기 전에 켠 자는 선을 영영 못 봤습니다. */
+/* ── 지도 위 거리 쪽지 ─────────────────────────────────────────────────
+   구간이 짧으면 가운데 쪽지끼리 겹쳐 둘 다 못 읽게 됩니다 〔2026. 9. 11.〕.
+   마커의 transform 은 MapLibre 가 매 프레임 덮어쓰므로, 겹침을 풀려면
+   «껍데기»를 마커로 삼고 안쪽 딱지를 따로 내려야 합니다. */
+function mvChipMarker(map, lngLat, cls, html, title, opts){
+  const wrap = document.createElement('div');
+  wrap.className = 'mv-chipwrap';
+  /* 시군 이름표는 학생 수만큼(최대 400) 올라갑니다. 잰 거리가 그 뒤로 가면
+     읽을 수 없습니다 — 찍은 자리(600)보다도 위에 둡니다 〔2026. 9. 11.〕 */
+  wrap.style.zIndex = /sumchip/.test(cls) ? '620' : '610';
+  const el = document.createElement('div');
+  el.className = cls;
+  el.innerHTML = html;
+  if(title) el.title = title;
+  wrap.appendChild(el);
+  MV.chips.push(el);
+  const m = new maplibregl.Marker(Object.assign({ element: wrap }, opts || {}));
+  return m.setLngLat(lngLat).addTo(map);
+}
+let mvSpaceRaf = 0, mvSpaceTry = 0;
+function mvSpaceChips(){
+  if(mvSpaceRaf) return;
+  /* requestAnimationFrame 이 아니라 타이머를 씁니다 — 탭이 화면 밖이거나
+     프레임이 멈춘 형편에서는 rAF 가 영영 오지 않아, 쪽지가 겹친 채로
+     남았습니다 〔2026. 9. 11.〕 */
+  mvSpaceRaf = setTimeout(() => {
+    mvSpaceRaf = 0;
+    const list = MV.chips.filter(el => el.isConnected);
+    MV.chips = list;
+    list.forEach(el => { el.style.transform = ''; });
+    if(list.length < 2){ mvSpaceTry = 0; return; }
+    const boxes = list.map(el => ({ el, r: el.getBoundingClientRect() }));
+    /* 아직 자리를 못 잡은 쪽지는 크기가 0 으로 잽니다. 그대로 재면 «겹치지
+       않는다»고 읽혀 그냥 지나갑니다 — 자리를 잡을 때까지 몇 번 더 봅니다. */
+    if(boxes.some(b => !b.r.width) && mvSpaceTry++ < 25){ mvSpaceChips(); return; }
+    mvSpaceTry = 0;
+    boxes.sort((a, b) => a.r.top - b.r.top);
+    const done = [];
+    boxes.forEach(b => {
+      let dy = 0, guard = 0;
+      while(guard++ < 12){
+        const hit = done.find(o =>
+          o.left < b.r.right && b.r.left < o.right &&
+          b.r.top + dy < o.bottom && o.top < b.r.bottom + dy);
+        if(!hit) break;
+        dy = hit.bottom - b.r.top + 4;
+      }
+      if(dy) b.el.style.transform = `translateY(${Math.round(dy)}px)`;
+      done.push({ left:b.r.left, right:b.r.right, top:b.r.top + dy, bottom:b.r.bottom + dy });
+    });
+  }, 16);
+}
 function mvRulerShapes(){
   const map = MV.map;
   if(!map) return;
@@ -11766,6 +11982,34 @@ function mvRulerShapes(){
       ? [{ type:'Feature', properties:{}, geometry:{ type:'LineString', coordinates: pts.map(p => [p.lon, p.lat]) } }]
       : []
   });
+  /* ★ 잰 거리를 지도 위에도 적습니다 〔2026. 9. 11.〕
+     여태 왼쪽 칸에만 있어, 지도를 보면서 재는 사람이 «눈을 옮겨야» 했습니다.
+     특수학급 이웃 선이 하는 것과 같은 방식으로 구간마다 가운데에 답니다. */
+  mvRulerLegs().forEach(l => {
+    MV.rulerMarks.push(mvChipMarker(map,
+      [(l.from.lon + l.to.lon) / 2, (l.from.lat + l.to.lat) / 2],
+      'mv-nearchip mv-legchip', `<b>${mvKm(l.km)}</b>`,
+      `${l.from.name || '찍은 자리'} → ${l.to.name || '찍은 자리'} 직선거리 ${mvKm(l.km)}`));
+  });
+  /* 두 구간을 넘으면 «합»도 지도에 한 번 적습니다 — 구간 수를 눈으로 더하지
+     않게 합니다. 마지막 점 «너머»에 둡니다: 아래로만 내리면 마지막 구간의
+     가운데 쪽지와 겹쳐 둘 다 못 읽게 됩니다 〔2026. 9. 11.〕. 가던 방향으로
+     한 뼘 더 나가면 선 위도, 다른 쪽지 위도 아닙니다. */
+  if(pts.length > 2){
+    const total = mvRulerLegs().reduce((a, l) => a + l.km, 0);
+    const last = pts[pts.length - 1];
+    const prev = pts[pts.length - 2];
+    /* 화면의 y 는 위도와 반대로 갑니다 */
+    let dx = last.lon - prev.lon, dy = -(last.lat - prev.lat);
+    const len = Math.hypot(dx, dy) || 1;
+    dx = dx / len * 46; dy = dy / len * 46;
+    MV.rulerMarks.push(mvChipMarker(map, [last.lon, last.lat],
+      'mv-nearchip mv-sumchip',
+      `<b>합 ${mvKm(total)}</b><span>${pts.length}곳</span>`,
+      `${pts.length}곳을 이어 잰 직선거리 합 ${mvKm(total)}`, { offset:[dx, dy] }));
+  }
+  mvSpaceChips();
+
   pts.forEach((p, i) => {
     const el = document.createElement('div');
     el.className = 'mv-rpt';
@@ -11887,6 +12131,10 @@ function mvMountScale(map){
   };
   map.on('move', draw);
   map.on('zoom', draw);
+  /* 지도를 움직이면 쪽지 사이 간격도 다시 잽니다 — 줌을 당기면 붙고
+     멀어지면 떨어지기 때문입니다 〔2026. 9. 11.〕 */
+  map.on('move', mvSpaceChips);
+  map.on('zoom', mvSpaceChips);
   draw();
 }
 
@@ -11936,16 +12184,15 @@ function mvShowNear(sc, n){
       }))
     });
     near.forEach(o => {
-      const el = document.createElement('div');
-      el.className = 'mv-nearchip';
-      el.innerHTML = `<b>${o.d < 1 ? Math.round(o.d * 1000) + 'm' : o.d.toFixed(1) + 'km'}</b>` +
-        `<span>${htmlEsc(String(o.x.name).replace(/(초등학교|중학교|고등학교|유치원|학교)$/, ''))}</span>`;
-      el.title = o.x.name + ' 까지 직선거리 ' +
-        (o.d < 1 ? Math.round(o.d * 1000) + 'm' : o.d.toFixed(2) + 'km');
       /* 이름표는 «선의 가운데»에 답니다 — 끝에 달면 딱지와 겹칩니다. */
-      MV.nearMarks.push(new maplibregl.Marker({ element: el })
-        .setLngLat([(sc.lon + o.x.lon) / 2, (sc.lat + o.x.lat) / 2]).addTo(map));
+      MV.nearMarks.push(mvChipMarker(map,
+        [(sc.lon + o.x.lon) / 2, (sc.lat + o.x.lat) / 2], 'mv-nearchip',
+        `<b>${o.d < 1 ? Math.round(o.d * 1000) + 'm' : o.d.toFixed(1) + 'km'}</b>` +
+        `<span>${htmlEsc(String(o.x.name).replace(/(초등학교|중학교|고등학교|유치원|학교)$/, ''))}</span>`,
+        o.x.name + ' 까지 직선거리 ' +
+        (o.d < 1 ? Math.round(o.d * 1000) + 'm' : o.d.toFixed(2) + 'km')));
     });
+    mvSpaceChips();
     mvSay(`${sc.name}에서 가장 가까운 ${(LEVEL_CFG[sc.lv] || {}).full || sc.lv} ` +
       `${near.length}곳까지 직선거리를 그렸습니다 · 산을 넘는 길은 이보다 멉니다`);
   };
@@ -12244,14 +12491,28 @@ function mvWireControls(){
     document.getElementById('mv-2d').setAttribute('aria-pressed','false');
     document.getElementById('mv-3d').setAttribute('aria-pressed','true');
   });
-  on('mv-turn-help', () => {
+  /* 여는 길과 닫는 길을 한 자리에 모읍니다 — 어디서 닫든 같은 일이 일어나야
+     합니다. 지도를 누르거나 Esc 를 눌러도 닫힙니다. */
+  const turnTip = open => {
     const b = document.getElementById('mv-turn-help');
     const t = document.getElementById('mv-turn-tip');
     if(!b || !t) return;
-    const open = b.getAttribute('aria-expanded') === 'true';
-    b.setAttribute('aria-expanded', String(!open));
-    t.hidden = open;
+    b.setAttribute('aria-expanded', String(!!open));
+    t.hidden = !open;
+  };
+  on('mv-turn-help', () => {
+    const b = document.getElementById('mv-turn-help');
+    turnTip(b && b.getAttribute('aria-expanded') !== 'true');
   });
+  on('mv-tip-close', () => turnTip(false));
+  /* ★ `map` 은 mvStart 안의 이름입니다 — 이 함수에는 없습니다 〔2026. 9. 11.〕
+     그냥 `map` 이라 썼다가 이 줄에서 멎었고, 그 뒤의 배선(3D·폐교·거리 재기·
+     연도 슬라이더·학교 찾기)이 «통째로» 달리지 않았습니다. 오류는 약속이
+     깨진 자리에만 남아 화면에는 아무 표시도 나지 않았습니다. */
+  if(MV.map) MV.map.on('click', () => turnTip(false));
+  try{
+    window.addEventListener('keydown', e => { if(e.key === 'Escape') turnTip(false); });
+  }catch(_e){}
   on('mv-reset', () => {
     MV.map.flyTo({ center:MV_HOME_VIEW.center, zoom:MV_HOME_VIEW.zoom, pitch:0, bearing:0, duration:900 });
   });

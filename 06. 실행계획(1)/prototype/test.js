@@ -366,11 +366,34 @@ check('가나다순 용어 도움말을 오른쪽 서랍으로 제공한다',
   html.includes('id="glossary-drawer"') && html.includes('id="glossary-toggle"') &&
   html.indexOf('<summary>교원 수</summary>') < html.indexOf('<summary>학령인구</summary>'));
 check('사용 안내도 용어 도움말처럼 토글 목록으로 제공한다',
-  html.includes('id="guide-drawer"') && /<details><summary>종합 대시보드<\/summary>/.test(html));
+  html.includes('id="guide-drawer"') && /<details><summary>지도로 보기<\/summary>/.test(html));
+/* ★ 안내가 화면과 어긋나면 읽는 사람이 «자기가 잘못 보고 있다»고 여깁니다
+   〔2026. 9. 11.〕 여기에는 치워 둔 「종합 대시보드」가 첫 줄에 있었고, 새로
+   만든 「지도로 보기」는 한 줄도 없었습니다. 메뉴에 있는 화면은 안내에도
+   있어야 합니다 — 앞으로 화면이 늘어도 이 검사가 잡습니다. */
+check('메뉴에 있는 화면은 안내에도 있다', (() => {
+  const live = html.replace(/<!--[\s\S]*?-->/g, '');
+  const menu = Array.from(live.matchAll(/data-view="[a-z]+"[^>]*>(?:<span[^>]*>[^<]*<\/span>)?([^<]+)</g))
+                    .map(m => m[1].trim()).filter(Boolean);
+  const guide = live.slice(live.indexOf('id="guide-drawer"'), live.indexOf('id="nav-order-drawer"'));
+  const missing = menu.filter(n => guide.indexOf(n) < 0);
+  return { ok: missing.length === 0, missing };
+})().ok, '안내에 없는 메뉴: ' + (() => {
+  const live = html.replace(/<!--[\s\S]*?-->/g, '');
+  const menu = Array.from(live.matchAll(/data-view="[a-z]+"[^>]*>(?:<span[^>]*>[^<]*<\/span>)?([^<]+)</g))
+                    .map(m => m[1].trim()).filter(Boolean);
+  const guide = live.slice(live.indexOf('id="guide-drawer"'), live.indexOf('id="nav-order-drawer"'));
+  return menu.filter(n => guide.indexOf(n) < 0).join(', ') || '없음';
+})());
+check('치워 둔 화면을 안내가 붙들고 있지 않다', (() => {
+  const live = html.replace(/<!--[\s\S]*?-->/g, '');
+  const guide = live.slice(live.indexOf('id="guide-drawer"'), live.indexOf('id="nav-order-drawer"'));
+  return guide.indexOf('<summary>종합 대시보드') < 0;
+})());
 check('사용자가 자신의 브라우저에서 메뉴 순서를 바꿀 수 있다',
   html.includes('id="nav-order-drawer"') && html.includes("NAV_ORDER_KEY = 'leap-nav-order-v1'") && /function applyNavOrder/.test(html));
 check('전체 작업을 설명하는 사용 안내 서랍을 제공한다',
-  html.includes('id="guide-drawer"') && html.includes('id="guide-toggle"') && /출력 방법/.test(html));
+  html.includes('id="guide-drawer"') && html.includes('id="guide-toggle"') && /인쇄와 Excel/.test(html));
 q("sim.sigungu.clear();renderSim()");
 
 /* 같은 학교가 두 번 들어오는 것 — 굽는 스크립트가 «덧붙이기»만 하면 생깁니다.
@@ -2250,6 +2273,110 @@ check('몇 곳 가운데 몇 곳인지 적는다', /id="risk-count"/.test(html) 
 check('시군 고르개는 목록에 있는 시군만 채운다', /if\(sel && sel\.options\.length <= 1\)/.test(js));
 check('줄을 누르면 지도로 간다', /function openMapForSchool/.test(js) &&
   /openMapForSchool\(r\.s\)/.test(js));
+
+
+console.log('\n■ 위쪽 단추 줄이 화면과 맞는다');
+/* ★ 지도에서 「현재 메뉴 Excel」을 누르면 «폐교 자료»가 나왔습니다
+   〔2026. 9. 11.〕 갈래를 else 로 흘려 두었는데 그 뒤에 지도 화면이 생겼고
+   아무도 이 자리를 고치지 않았습니다. 조용히 틀린 파일이 나가는 자리였습니다. */
+check('지도에도 제 Excel 이 있다', /function mapExportSheets/.test(js) &&
+  /if\(activeView==='map'\) sheets=mapExportSheets\(\)/.test(js));
+check('모르는 화면이면 아무 자료나 내보내지 않는다',
+  /else \{ alert\('이 화면은 아직 Excel 로 내보낼 수 없습니다\.'\); return; \}/.test(js));
+check('지도 Excel 에 조건·요약·목록이 다 들어간다', q(
+  "(function(){var sh=mapExportSheets();var n=sh.map(function(x){return x.name}).join();" +
+  "return n.indexOf('조건')>=0 && n.indexOf('학교급별')>=0 && n.indexOf('화면안학교')>=0;})()") === true);
+check('내보낸 학교 수가 화면이 세는 수와 같다', q(
+  "(function(){var sh=mapExportSheets();var rows=sh.filter(function(x){return x.name==='화면안학교'})[0].rows;" +
+  "return rows.length - 1 === mvInView(mvPool()).length;})()") === true);
+check('인쇄 이름에도 지도가 있다', /VIEW_PRINT_NAMES=\{map:'경북 학교 지도'/.test(js));
+
+console.log('\n■ 용어 도움말이 스스로 한 말을 지킨다');
+/* 「가나다순으로 정리했습니다」라고 적어 놓고 실제로는 어긋나 있었습니다.
+   적어 놓은 것과 다른 화면은 그 자체로 틀린 화면입니다. */
+check('가나다순이라고 적었으면 정말 가나다순이다', (() => {
+  const a = html.indexOf('id="glossary-drawer"'), b = html.indexOf('id="guide-drawer"');
+  const t = Array.from(html.slice(a, b).matchAll(/<details><summary>([^<]+)<\/summary>/g)).map(m => m[1]);
+  return t.length >= 10 && JSON.stringify(t) === JSON.stringify(t.slice().sort());
+})());
+/* 화면에 나오는 말은 용어 도움말에도 있어야 합니다. */
+check('새 화면이 쓰는 말이 들어 있다',
+  ['코호트','축척 비율','배치유형','직선거리','학년별 인원','다문화 학생','개교년도']
+    .every(w => new RegExp('<summary>' + w + '<\/summary>').test(html)));
+
+console.log('\n■ 지도 사용법을 닫을 수 있다');
+/* 여는 단추를 다시 눌러도 닫히긴 했지만, 그 단추가 상자 «밖 위쪽»에 있어
+   닫는 길로 보이지 않았습니다. */
+check('상자 안에 닫는 단추가 있다', /id="mv-tip-close"/.test(html));
+check('여는 길과 닫는 길이 한 자리에 모여 있다', /const turnTip = open =>/.test(js));
+check('지도를 누르거나 Esc 로도 닫힌다',
+  /if\(MV\.map\) MV\.map\.on\('click', \(\) => turnTip\(false\)\)/.test(js) &&
+  /e\.key === 'Escape'\) turnTip\(false\)/.test(js));
+/* ★ mvWireControls 안에는 `map` 이라는 이름이 없습니다. 그냥 쓰면 그 줄에서
+   멎고 뒤의 배선이 통째로 달리지 않는데, 오류는 약속이 깨진 자리에만 남아
+   화면에는 아무 표시도 나지 않습니다. 가장 조용한 종류입니다. */
+check('그 함수에 없는 이름을 쓰지 않는다', (() => {
+  const a = js.indexOf('function mvWireControls(){');
+  const b = js.indexOf('\nfunction ', a + 10);
+  return !/(^|[^.\w])map\.(on|flyTo|jumpTo|getZoom)\(/.test(js.slice(a, b));
+})());
+
+console.log('\n■ 잰 거리를 지도 위에서도 본다');
+/* 여태 왼쪽 칸에만 있어, 지도를 보면서 재는 사람이 눈을 옮겨야 했습니다. */
+check('구간마다 거리를 지도에 적는다', /'mv-nearchip mv-legchip'/.test(js));
+check('두 구간을 넘으면 합도 지도에 적는다', /'mv-nearchip mv-sumchip'/.test(js));
+check('이웃 선과 자를 색으로 가른다',
+  /\.mv-legchip\{border-color:var\(--leap-amber-mark\)\}/.test(html) &&
+  /\.mv-nearchip\{[\s\S]{0,200}?border:1px solid var\(--leap-teal\)/.test(html));
+
+/* ── 점검 한 바퀴에서 나온 것들 〔2026. 9. 11.〕 ───────────────────────── */
+
+check('여는 단추는 다시 누르면 닫는다', () => {
+  const m = html.match(/pair\.open\.addEventListener\('click',\s*\(\)\s*=>\s*([\s\S]{0,160}?)\);/);
+  if(!m) throw new Error('서랍 여닫이 배선을 못 찾았습니다');
+  if(/setOpen\(pair,\s*true\)/.test(m[1]))
+    throw new Error('늘 열기만 합니다 — aria-expanded 가 거짓말을 하게 됩니다');
+  if(!/aria-hidden/.test(m[1]))
+    throw new Error('지금 열려 있는지 보지 않고 있습니다');
+});
+
+check('좁은 화면에서 두 칸이 한 칸으로 접힌다', () => {
+  if(!/\.two-cols\{/.test(html)) throw new Error('.two-cols 규칙이 없습니다');
+  if(/style="display:grid; grid-template-columns:2fr 1fr/.test(html))
+    throw new Error('인라인 격자가 남아 있습니다 — @media 를 걸 수 없습니다');
+  const m = html.match(/@media \(max-width:900px\)\{\s*\n?\s*\.two-cols[^}]*\}/);
+  if(!m) throw new Error('접는 규칙이 없습니다');
+  if(!/\.two-cols\.wide/.test(m[0]) || !/\.two-cols\.even/.test(m[0]))
+    throw new Error('.two-cols 만 적으면 .two-cols.wide 에 특정도로 집니다');
+});
+
+check('시뮬레이터 인쇄에도 조회 조건이 찍힌다', () => {
+  const m = html.match(/function printScopeText\(\)\{[\s\S]*?\n\}/);
+  if(!m) throw new Error('printScopeText 를 못 찾았습니다');
+  ['status','map','sim','multi','closed','news'].forEach(v => {
+    if(!new RegExp(`activeView === '${v}'`).test(m[0]))
+      throw new Error(`${v} 화면의 조회 조건이 없습니다`);
+  });
+  if(!/sim-filter-summary/.test(m[0]))
+    throw new Error('시뮬레이터는 화면이 적어 둔 요약을 그대로 옮겨야 합니다');
+});
+
+check('거리 쪽지는 겹치면 서로 비켜 준다', () => {
+  if(!/function mvSpaceChips\(\)/.test(js)) throw new Error('겹침 푸는 함수가 없습니다');
+  if(!/function mvChipMarker\(/.test(js)) throw new Error('쪽지 만드는 함수가 없습니다');
+  if(!/mv-chipwrap/.test(js))
+    throw new Error('껍데기가 없으면 MapLibre 가 transform 을 덮어씁니다');
+  if(/\.mv-chipwrap[^{]*\{[^}]*transition/.test(html))
+    throw new Error('쪽지에 transition 을 걸면 다시 잴 때 중간값이 잡힙니다');
+  if(!/boxes\.some\(b => !b\.r\.width\)/.test(js))
+    throw new Error('자리를 못 잡은 쪽지는 크기가 0 으로 잡혀 겹침을 놓칩니다');
+  ["map.on('move', mvSpaceChips)", "map.on('zoom', mvSpaceChips)"].forEach(x => {
+    if(js.indexOf(x) < 0) throw new Error(x + ' 가 없습니다 — 줌을 당기면 도로 겹칩니다');
+  });
+  const body = (js.match(/function mvSpaceChips\(\)\{[\s\S]*?\n\}/) || [''])[0];
+  if(!/isConnected/.test(body)) throw new Error('지운 쪽지를 계속 세게 됩니다');
+  if(!/guard/.test(body)) throw new Error('밀어내기가 멈추지 않을 수 있습니다');
+});
 
 console.log(`\n${fail ? '✗' : '✓'}  통과 ${pass} · 실패 ${fail}\n`);
 process.exit(fail ? 1 : 0);
