@@ -309,10 +309,29 @@ check('행정안전부 지정 경북 인구감소지역은 15곳이고 예천은
 q("sim.sigungu=new Set(['영주']);sim.level='중';renderSim()");
 const yjMid = q("aggregate(SIGUNGU.find(sg=>sg.s==='영주'),'중').stu");
 check('시뮬레이터 전체 행이 현재 지역 필터를 따른다',
-  q('simExportRows[0].base.stu') === yjMid && /선택 지역: 영주시/.test(q('aiContext')),
+  q('simExportRows[0].base.stu') === yjMid && q('JSON.parse(aiContext).scope.region')==='영주시',
   '영주 중학생: '+yjMid+' / 내보내기 합계: '+q('simExportRows[0].base.stu'));
-check('AI가 변화·주의·비교질문·공개자료 형식의 쉬운 해설을 요청한다',
-  /해석 주의사항/.test(q('aiContext')) && /더 살펴볼 공개자료/.test(q('aiContext')));
+check('AI에는 합계뿐 아니라 실적 추이·세 시나리오·비교 대상을 JSON으로 전달한다',
+  q("(function(){var d=JSON.parse(aiContext);return d.version===2&&d.actualTrend.length>=2&&d.scenarios.length===3&&d.comparison.type==='school'})()"));
+check('AI 인사이트와 인쇄물에 실적 추이·세 기준·비교 막대 시각화가 함께 들어간다',
+  /function aiTrendHtml/.test(html) && /function aiScenarioHtml/.test(html) &&
+  /function aiComparisonHtml/.test(html) && /class="ai-evidence-grid"/.test(q('aiInsightBoardHtml()')) &&
+  /ai-trend-svg/.test(q('aiInsightBoardHtml()')) && /ai-scenario-item/.test(q('aiInsightBoardHtml()')));
+q("sim.sigungu=new Set(['포항']);sim.level='초';renderSim()");
+check('시군 한 곳을 고르면 같은 시군 대신 그 안의 학교를 비교한다',
+  q("aiInsightData.comparison.type==='school'") && q("aiInsightData.comparison.region")==='포항시' &&
+  q("aiInsightData.comparison.metrics.decrease.length")>0 && !/변화폭을 먼저 비교할 지역/.test(q('aiInsightBoardHtml()')),
+  q("aiInsightData.comparison.metrics.decrease.map(r=>r.name).join(',')"));
+check('학교 비교에는 EDSS 실적 기간과 학교명이 함께 들어간다',
+  q("aiInsightData.comparison.metrics.decrease.every(r=>r.firstYear<r.lastYear&&/학교/.test(r.name))"));
+check('학교 근거를 늘려도 AI 요청 허용 크기 12,000자를 넘지 않는다', q('aiContext.length')<12000,
+  '포항 초등학교 AI 입력 '+q('aiContext.length')+'자');
+check('학교 비교는 감소 인원·감소율·현재 소규모의 세 관점을 전환한다',
+  q("['decrease','rate','size'].every(k=>aiInsightData.comparison.metrics[k].length>0)") &&
+  (q("(aiInsightBoardHtml().match(/data-ai-school-metric=/g)||[]).length")===3));
+q("sim.sigungu=new Set(['포항','구미']);renderSim()");
+check('여러 시군을 고르면 선택 시군끼리 비교한다',
+  q("aiInsightData.comparison.type==='region'") && q("aiInsightData.comparison.rows.length")===2);
 check('현재 조건 비교표를 Excel xls로 저장할 수 있다',
   html.includes('id="sim-export-xls"') && /function exportSimXls/.test(html) && /\.xls`/.test(html));
 check('상세 Excel은 요약·기준·예측·시각화·산출기준 시트를 만든다',
@@ -321,7 +340,7 @@ check('상세 Excel은 요약·기준·예측·시각화·산출기준 시트를
 check('Excel 시군 행은 기능개선안의 표준 순서로 다시 정렬한다',
   /EXPORT_SIGUNGU_ORDER\s*=\s*\['포항','경주','김천','안동','구미','영주','영천','상주','문경','경산','의성','청송','영양','영덕','청도','고령','성주','칠곡','예천','봉화','울진','울릉'\]/.test(html) &&
   /orderedExportRows[\s\S]*exportSigunguIndex/.test(html));
-q("sim.sigungu=new Set();renderSim()");
+q("sim.sigungu=new Set();sim.level='중';renderSim()");
 check('상세 Excel의 실제 행도 포항부터 울릉까지 표준 순서다',
   q("simulatorSheets()[1].rows.slice(2).map(r=>r[0]).join(',')") === '포항,경주,김천,안동,구미,영주,영천,상주,문경,경산,의성,청송,영양,영덕,청도,고령,성주,칠곡,예천,봉화,울진,울릉');
 check('모든 메뉴에 현재 화면 인쇄와 Excel 출력 도구가 있다',
