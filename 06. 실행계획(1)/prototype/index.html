@@ -1301,15 +1301,15 @@ table.data .hl{color:var(--brand);font-weight:800}
 /* 좌우로만 물립니다. 위쪽에는 「사용 안내·인쇄」 줄이 있어 덮으면 안 됩니다.
    높이는 화면에 드러난 뒤 mvFit 이 «실제로 재서» 넣습니다 — 머리글 높이가
    글자 크기나 창 너비에 따라 달라지므로 계산식으로는 어긋납니다. */
-.mapview{display:grid;grid-template-columns:340px minmax(0,1fr);
+.mapview{display:grid;grid-template-columns:296px minmax(0,1fr);
   margin:0 -24px;height:min(76vh, 900px);min-height:420px}
 .main.is-map{padding-bottom:0}
 @media (max-width:900px){
   .mapview{grid-template-columns:1fr;grid-template-rows:minmax(220px,42%) minmax(240px,58%)}
 }
 .mv-side{background:var(--card);border-right:1px solid var(--line);overflow-y:auto;
-  display:flex;flex-direction:column;gap:12px;padding:16px 16px 28px;min-width:0}
-.mv-card{background:var(--card-2);border:1px solid var(--line);border-radius:var(--radius);padding:12px 13px}
+  display:flex;flex-direction:column;gap:8px;padding:10px 10px 18px;min-width:0}
+.mv-card{background:var(--card-2);border:1px solid var(--line);border-radius:var(--radius);padding:10px}
 .mv-card h2{margin:0 0 8px;font-size:11.5px;font-weight:700;color:var(--ink-2);letter-spacing:.04em}
 .mv-row{display:flex;flex-wrap:wrap;gap:6px}
 
@@ -2492,7 +2492,7 @@ body.map-maxed.home-wide #home-side{display:none}
           <h2>연도</h2>
           <div class="year-slider" style="margin:0">
             <div class="year-head">
-              <label for="mv-year">연도</label><b id="mv-year-label">2026</b>
+              <label for="mv-year">연도</label><b id="mv-year-label">2026년</b>
               <span class="year-kind" id="mv-year-kind"></span>
             </div>
             <input type="range" id="mv-year" min="2016" max="2036" step="1" value="2026">
@@ -11578,7 +11578,9 @@ const MV_BASES = [
   { id:'Base',      name:'일반',      ext:'png',  base:'Base' },
   { id:'Satellite', name:'위성',      ext:'jpeg', base:'Satellite' },
   { id:'Hybrid',    name:'위성+지명', ext:'jpeg', base:'Satellite', over:'Hybrid', overExt:'png' },
-  { id:'midnight',  name:'야간',      ext:'png',  base:'midnight' }
+  { id:'midnight',  name:'야간',      ext:'png',  base:'midnight' },
+  /* 현재 WMTS는 gray를 거절하므로 Base를 저채도로 렌더링합니다. */
+  { id:'gray',      name:'회색',      ext:'png',  base:'Base', saturation:-1 }
 ];
 /* 고도 — 브이월드에는 없습니다(hillshade·terrain·dem 모두 500 을 돌려줍니다).
    AWS Terrain Tiles 는 키 없이 열려 있고 타일 번호가 같아 그대로 맞습니다.
@@ -11594,6 +11596,38 @@ const MV = {
   near:null, nearMarks:[], chips:[],
   is3d:false, marks:[], rows:[]
 };
+
+/* AWS 고도 타일은 14단계까지만 제공되지만 브이월드 배경은 19단계까지
+   확대됩니다. 산지를 볼 때는 원래 값 1.5를 유지하되, DEM의 실제 해상도를 넘어
+   학교·도로 수준으로 가까이 확대할 때는 빠르게 낮추고 16단계부터 고도면을
+   끕니다. 광역 산세는 살리면서 도로·운동장·논밭이 물결처럼 휘는 일을 막습니다. */
+function mvTerrainExaggeration(zoom){
+  const z=Number(zoom)||0;
+  if(z<=15.2)return 1.5;
+  if(z>=16)return 0;
+  return Number((1.5-(z-15.2)*(1.5/.8)).toFixed(2));
+}
+function mvTerrainPitch(zoom){return Number(zoom)>=15.6?42:62;}
+function mvApplyTerrain(map){
+  if(!map||!map.isStyleLoaded?.()||!map.getSource('mv-dem'))return;
+  try{
+    if(!MV.is3d){
+      if(map.getTerrain?.())map.setTerrain(null);
+      map.setLayoutProperty('mv-hills','visibility','none');
+      return;
+    }
+    const amount=mvTerrainExaggeration(map.getZoom());
+    if(amount<=0){
+      if(map.getTerrain?.())map.setTerrain(null);
+      map.setLayoutProperty('mv-hills','visibility','visible');
+      return;
+    }
+    const terrain=map.getTerrain?.();
+    if(!terrain||Math.abs((+terrain.exaggeration||0)-amount)>.01)
+      map.setTerrain({source:'mv-dem',exaggeration:amount});
+    map.setLayoutProperty('mv-hills','visibility','visible');
+  }catch(_e){}
+}
 
 function mvSay(t){
   const el = document.getElementById('mv-status');
@@ -11948,7 +11982,9 @@ function mvDraw(){
       el.classList.add('is-stacked');
       if(idx > 0) el.title = (el.title ? el.title + ' · ' : '') + '같은 자리에 있는 학교라 위로 올려 그렸습니다';
     }
-    const step = tier === 'label' ? 25 : 23;
+    /* 이름표 한 장의 실제 높이(꼬리 포함)보다 넉넉히 띄웁니다.
+       25px은 병설유치원과 본교 상자가 다시 포개지는 회귀가 있었습니다. */
+    const step = tier === 'label' ? 40 : 30;
     const mk = new maplibregl.Marker({
       element: el, anchor: 'bottom',
       offset: [0, (tier === 'label' ? -6 : 0) - idx * step]
@@ -12411,6 +12447,8 @@ function mvSetBase(id){
   const b = mvBaseOf(id), map = MV.map;
   if(map && map.getSource('mv-vworld') && MV.key){
     map.getSource('mv-vworld').setTiles([mvUrl(b.base, b.ext)]);
+    map.setPaintProperty('mv-vworld','raster-saturation',b.saturation ?? 0);
+    map.setPaintProperty('mv-vworld','raster-opacity',id==='gray'?0.75:1);
     map.getSource('mv-vworld-over').setTiles([mvUrl(b.over || 'Hybrid', b.overExt || 'png')]);
     map.setLayoutProperty('mv-vworld-over', 'visibility', b.over ? 'visible' : 'none');
   }
@@ -12590,6 +12628,12 @@ async function mvStart(){
   mvSay('');
   map.on('moveend', mvDraw);
   map.on('zoomend', mvDraw);
+  map.on('zoomend', () => {
+    if(!MV.is3d)return;
+    mvApplyTerrain(map);
+    const pitch=mvTerrainPitch(map.getZoom());
+    if(map.getPitch()>pitch)map.easeTo({pitch,duration:260});
+  });
   map.on('error', e => {
     /* 타일이 안 오면 조용히 흰 화면이 됩니다 — 그렇다고 말합니다. */
     const msg = (e && e.error && e.error.message) || '응답 없음';
@@ -12690,10 +12734,9 @@ function mvWireControls(){
        산과 골짜기가 드러나고, 그래야 통학 거리를 눈으로 가늠할 수 있습니다. */
     MV.is3d = true;
     try{
-      MV.map.setTerrain({ source:'mv-dem', exaggeration:1.5 });
-      MV.map.setLayoutProperty('mv-hills','visibility','visible');
+      mvApplyTerrain(MV.map);
     }catch(_e){ mvSay('고도 자료를 받지 못해 기울여 보기만 합니다.'); }
-    MV.map.easeTo({ pitch:62, bearing:-20, duration:1100 });
+    MV.map.easeTo({ pitch:mvTerrainPitch(MV.map.getZoom()), bearing:-15, duration:900 });
     document.getElementById('mv-2d').setAttribute('aria-pressed','false');
     document.getElementById('mv-3d').setAttribute('aria-pressed','true');
   });
@@ -12749,7 +12792,7 @@ function mvWireControls(){
       MV.year = Number(yr.value);
       const lab = document.getElementById('mv-year-label');
       const kind = document.getElementById('mv-year-kind');
-      if(lab) lab.textContent = MV.year;
+      if(lab) lab.textContent = MV.year + '년';
       if(kind){
         const proj = MV.year > HOME_BASE_YEAR;
         kind.textContent = MV.year === HOME_BASE_YEAR ? '2026년 공시' : (proj ? '전망' : '실적');
@@ -12847,5 +12890,7 @@ if(HOME_TAB_ON){
 }
 </script>
 
+<link rel="stylesheet" href="./assets/map-policy.css">
+<script src="./assets/map-policy.js"></script>
 </body>
 </html>
