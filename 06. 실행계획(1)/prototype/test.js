@@ -19,6 +19,14 @@ const BAKE = path.join(__dirname, '..', '..', '사이트 굽기.command');
 const bake = fs.existsSync(BAKE) ? fs.readFileSync(BAKE, 'utf8') : '';
 const AI_API = path.join(__dirname, '..', '..', 'functions', 'api', 'ai-analysis.js');
 const aiApi = fs.existsSync(AI_API) ? fs.readFileSync(AI_API, 'utf8') : '';
+const MAP_POLICY = path.join(__dirname, 'assets', 'map-policy.js');
+const mapPolicy = fs.existsSync(MAP_POLICY) ? fs.readFileSync(MAP_POLICY, 'utf8') : '';
+const MAP_POLICY_CSS = path.join(__dirname, 'assets', 'map-policy.css');
+const mapPolicyCss = fs.existsSync(MAP_POLICY_CSS) ? fs.readFileSync(MAP_POLICY_CSS, 'utf8') : '';
+const MAP_CONTEXT = path.join(__dirname, 'assets', 'map-context.js');
+const mapContext = fs.existsSync(MAP_CONTEXT) ? fs.readFileSync(MAP_CONTEXT, 'utf8') : '';
+const MAP_CONTEXT_CSS = path.join(__dirname, 'assets', 'map-context.css');
+const mapContextCss = fs.existsSync(MAP_CONTEXT_CSS) ? fs.readFileSync(MAP_CONTEXT_CSS, 'utf8') : '';
 
 let pass = 0, fail = 0;
 const check = (n, c, extra) => {
@@ -1652,7 +1660,14 @@ check('눈금이 가리키는 값은 선이 실제로 닿는 값이다 (어림�
 console.log('\n■ 3D 는 기울이는 것이 아니라 «땅이 솟는» 것이다');
 check('고도 자료를 쓴다 (브이월드에는 없어 AWS Terrain Tiles 를 쓴다)',
   /terrarium/.test(js) && /encoding:'terrarium'/.test(js));
-check('setTerrain 으로 땅을 솟게 한다', /setTerrain\(\{ source:'mv-dem', exaggeration:1\.5 \}\)/.test(js));
+check('setTerrain 으로 땅을 솟게 한다', /setTerrain\(\{source:'mv-dem',exaggeration:amount\}\)/.test(js));
+check('산지는 원래 1.5배 높이로 보이고 학교·도로 근접 확대에서만 낮춘다',
+  /function mvTerrainExaggeration/.test(js) && /z<=15\.2\)return 1\.5/.test(js) &&
+  /z>=16\)return 0/.test(js) && /amount<=0/.test(js) && /setTerrain\(null\)/.test(js) &&
+  /mvApplyTerrain\(map\)/.test(js));
+check('3D 산지 기울기는 원래 수준이고 근접 확대에서만 완화된다',
+  /function mvTerrainPitch\(zoom\)\{return Number\(zoom\)>=15\.6\?42:62;\}/.test(js) &&
+  /pitch:mvTerrainPitch\(MV\.map\.getZoom\(\)\)/.test(js));
 check('음영도 함께 켠다 (기울이지 않아도 산줄기가 보인다)',
   /setLayoutProperty\('mv-hills','visibility','visible'\)/.test(js));
 check('2D 로 되돌리면 지형을 끈다', /setTerrain\(null\)/.test(js));
@@ -1660,7 +1675,7 @@ check('2D 로 되돌리면 지형을 끈다', /setTerrain\(null\)/.test(js));
 console.log('\n■ 배경 타일은 레이어마다 확장자가 다르다');
 /* 틀린 확장자는 200 으로 «오류 XML» 을 돌려줍니다 — 조용히 빈 화면이 됩니다. */
 check('위성만 jpeg 이고 나머지는 png 다', q(
-  "MV_BASES.map(function(b){return b.id+':'+b.ext}).join()") === 'Base:png,Satellite:jpeg,Hybrid:jpeg,midnight:png');
+  "MV_BASES.map(function(b){return b.id+':'+b.ext}).join()") === 'Base:png,Satellite:jpeg,Hybrid:jpeg,midnight:png,gray:png');
 check('「위성+지명」은 위성 «위에» 얹는다 (하이브리드만 깔면 허전하다)', q(
   "(function(){var h=MV_BASES.filter(function(b){return b.id==='Hybrid'})[0];" +
   "return h.base==='Satellite'&&h.over==='Hybrid'&&h.overExt==='png';})()") === true);
@@ -2112,7 +2127,7 @@ console.log('\n■ 같은 자리에 겹친 학교를 위로 쌓는다');
 check('좌표를 흔들지 않고 그리는 자리만 올린다',
   /좌표를 흔들어 놓지는 않습니다/.test(js) && /offset: \[0, \(tier === 'label' \? -6 : 0\) - idx \* step\]/.test(js));
 check('픽셀로 올려 아무리 확대해도 같은 만큼 떨어진다',
-  /const step = tier === 'label' \? 25 : 23/.test(js));
+  /const step = tier === 'label' \? 40 : 30/.test(js));
 check('쌓는 차례를 학교급으로 고정한다 (움직일 때마다 바뀌면 어지럽다)',
   /const LV_ORDER = \{ 초:0, 중:1, 고:2, 특수:3, 유:4 \}/.test(js));
 check('병설은 본교와 같은 자리라고 말풍선이 적는다',
@@ -2411,6 +2426,101 @@ check('거리 쪽지는 겹치면 서로 비켜 준다', () => {
   if(!/isConnected/.test(body)) throw new Error('지운 쪽지를 계속 세게 됩니다');
   if(!/guard/.test(body)) throw new Error('밀어내기가 멈추지 않을 수 있습니다');
 });
+
+console.log('\n■ 지도 비교 기능은 지도를 가리지 않고 필요한 때만 연다');
+check('왼쪽 요약은 배경 다음 보기 순서다', () => {
+  const side = html.match(/<aside class="mv-side" id="mv-side">([\s\S]*?)<\/aside>/);
+  if(!side) throw new Error('지도 요약 영역을 찾지 못했습니다');
+  const bg = side[1].indexOf('<h4>배경</h4>');
+  const view = side[1].indexOf('<h4>보기</h4>');
+  if(bg < 0 || view < 0 || bg > view) throw new Error('배경 → 보기 순서가 아닙니다');
+});
+check('비교 도구는 지도 위에서 필요할 때만 연다',
+  /class="mp-panel"[^>]*hidden/.test(mapPolicy) &&
+  /id="mp-tools-toggle"[^>]*aria-expanded="false"/.test(mapPolicy));
+check('과거·현재와 현재·미래를 쉬운 이름으로 구분한다',
+  />과거·현재 비교<\/option>/.test(mapPolicy) && />현재·미래 비교<\/option>/.test(mapPolicy) &&
+  !/>시뮬레이터 조건 비교<\/option>/.test(mapPolicy));
+check('비교 연도에는 년을 붙인다',
+  /2026년 공시/.test(mapPolicy) && /\$\{P\.from\}년 실적/.test(mapPolicy));
+check('지도에 지역·학교의 정확한 수치를 표시한다',
+  /className='mp-value-mark'/.test(mapPolicy) && /class="mp-total-grid"/.test(mapPolicy));
+check('학교 비교함은 접힌 상태로 시작한다', /<details class="mp-tray">/.test(mapPolicy));
+check('별도 정책지도 출력 기능은 남기지 않는다',
+  !/A4 정책지도 출력|지도로 함께 출력|async function printMap/.test(mapPolicy));
+check('숨긴 비교 설명은 레이아웃을 차지하지 않는다', /#mp-caption\[hidden\]\{display:none\}/.test(mapPolicyCss));
+check('비교 종료와 설정 창 접기를 서로 다르게 처리한다',
+  /function closeTools\(\)\{[\s\S]*?setMode\('normal'\)/.test(mapPolicy) &&
+  /id="mp-panel-min"[^>]*설정 창만 접기/.test(mapPolicy) &&
+  /\$\('mp-panel-min'\)\.onclick=\(\)=>setPanel\(false\)/.test(mapPolicy) &&
+  /\$\('mp-panel-close'\)\.onclick=closeTools/.test(mapPolicy));
+check('과거 비교는 두 연도 값이 있는 학교만 지도에 표시한다',
+  /function comparisonPool\(\)/.test(mapPolicy) &&
+  /features:comparisonPool\(\)\.map/.test(mapPolicy) &&
+  /미연결 \$\{fmt\(excluded\)\}교 제외/.test(mapPolicy) &&
+  !/미연결은 회색/.test(mapPolicy));
+check('학생 수 변화는 원 없이 네모 값 상자로 통일한다',
+  /circle-opacity':0/.test(mapPolicy) &&
+  /className='mp-value-mark'/.test(mapPolicy) &&
+  !/className='mp-value-mark'\+\(row\.value==null/.test(mapPolicy));
+check('비교 값 상자는 축척별 묶음으로 모두 대표하고 겹침을 푼다',
+  /function settleValueMarks\(/.test(mapPolicy) &&
+  /function boxesOverlap\(/.test(mapPolicy) &&
+  /function clusterRows\(/.test(mapPolicy) &&
+  /교 묶음/.test(mapPolicy) &&
+  !/\.slice\(0,map\.getZoom\(\)<10\.6\?26:42\)/.test(mapPolicy) &&
+  /mp-value-wrap/.test(mapPolicy) &&
+  /is-crowded/.test(mapPolicy));
+check('현재·미래는 확대하면 학교별 참고 배분값을 보여 준다',
+  /function scenarioSchoolRows\(/.test(mapPolicy) &&
+  /target\*v\/currentTotal/.test(mapPolicy) &&
+  /학교별 참고 배분값/.test(mapPolicy) &&
+  /공식 학교별 예측이 아닙니다/.test(mapPolicy));
+check('좌우 비교의 오른쪽 값 상자는 지도 이동을 기다리지 않고 그린다',
+  /if\(compare&&P\.second\)renderValueMarks\(P\.second,true\)/.test(mapPolicy) &&
+  !/compare&&P\.second\?\.loaded\(\)/.test(mapPolicy));
+check('비교 보조 지도도 같은 적응형 3D 높이를 쓴다',
+  /typeof mvApplyTerrain==='function'\)mvApplyTerrain\(s\)/.test(mapPolicy));
+check('비교 패널은 작고 가장 앞에 있으며 요약 버튼 가까이에 있다',
+  /\.mp-panel\{[^}]*z-index:1600[^}]*width:min\(304px/.test(mapPolicyCss) &&
+  /\.mp-tools-toggle\{left:104px!important;z-index:1501!important\}/.test(mapPolicyCss));
+check('조건 바꾸기는 해시를 함께 바꿔 지도 메뉴를 다시 누를 수 있다',
+  /function goView\(name\)\{[\s\S]*?location\.hash=hash/.test(mapPolicy) &&
+  /\$\('mp-go-sim'\)\.onclick=\(\)=>\{setPanel\(false\);goView\('sim'\);\}/.test(mapPolicy));
+check('병설유치원과 본교 이름표 간격은 상자 높이보다 크다',
+  /const step = tier === 'label' \? 40 : 30/.test(js));
+
+console.log('\n■ 지도 7~8단계는 요약 칸을 늘리지 않고 실제 자료를 구분한다');
+check('지역 여건 도구는 지도 위에서 필요할 때만 연다',
+  /class="mc-panel"[^>]*hidden/.test(mapContext) &&
+  /id="mc-tools-toggle"[^>]*aria-expanded="false"/.test(mapContext));
+check('통학 접근과 연령별 인구를 한 도구 안의 두 탭으로 가른다',
+  /id="mc-tab-access"/.test(mapContext) && /id="mc-tab-population"/.test(mapContext));
+check('도로망 요청은 브라우저 키 없이 같은 출처 API만 부른다',
+  /fetch\('\/api\/route-access'/.test(mapContext) &&
+  !/Authorization\s*:|api\.openrouteservice\.org|api\.heigit\.org/.test(mapContext));
+check('직선거리와 도로거리·예상시간을 함께 보여 준다',
+  /haversineKm\(sc\.lat,sc\.lon/.test(mapContext) && /도로 \$\{roadText\} · 예상 \$\{timeText\}/.test(mapContext));
+check('통학 결과를 실제 통학 기록으로 오해하지 않게 한다',
+  /실제 통학차량 노선·교통상황·학생별 기록은 포함하지 않습니다/.test(mapContext));
+check('정적 로컬 서버의 POST 미지원 상태를 API 장애로 오해하지 않게 한다',
+  /local&&\[404,405,501\]\.includes\(error\.status\)/.test(mapContext) &&
+  /정적 로컬 서버에서는 통학 API를 쓸 수 없습니다/.test(mapContext));
+check('지역 여건 창을 접으면 목적지 찍기 상태도 끝난다',
+  /else\{\s*disarmDestination\(\);\s*if\(!preserve\)clearAll\(\)/.test(mapContext));
+check('SGIS 5세 단위만 쓰고 5~19세는 근사라고 밝힌다',
+  /5~19세 합계는 학령기 근사치이며 재학생 수가 아닙니다/.test(mapContext) &&
+  !/0~5세|6~11세|12~14세|15~17세/.test(mapContext));
+check('낮은 인구와 자료 없음을 서로 다른 상태로 그린다',
+  /missing:value==null\?1:0/.test(mapContext) && /자료 없음/.test(mapContext));
+check('비교 도구와 지역 여건 도구는 동시에 열리지 않는다',
+  /MapPolicy\.closeTools\(\)/.test(mapContext) &&
+  /mp-tools-toggle[^\n]*addEventListener\('click'/.test(mapContext));
+check('학교 상세에서 바로 통학 접근을 열 수 있다',
+  /통학 접근 보기/.test(mapContext) && /const detail=mvRenderDetail/.test(mapContext));
+check('새 지도 도구의 스타일과 스크립트가 실제 HTML에 실린다',
+  /assets\/map-context\.css/.test(html) && /assets\/map-context\.js/.test(html) &&
+  /\.mc-panel\{[^}]*z-index:1610/.test(mapContextCss));
 
 console.log(`\n${fail ? '✗' : '✓'}  통과 ${pass} · 실패 ${fail}\n`);
 process.exit(fail ? 1 : 0);

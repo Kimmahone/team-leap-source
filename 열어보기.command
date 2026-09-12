@@ -102,7 +102,8 @@ class H(http.server.SimpleHTTPRequestHandler):
     def log_message(self, fmt, *a):
         pass   # 조용히
 
-socketserver.TCPServer.allow_reuse_address = True
-with socketserver.TCPServer(("127.0.0.1", PORT), H) as httpd:
+socketserver.ThreadingTCPServer.allow_reuse_address = True
+socketserver.ThreadingTCPServer.daemon_threads = True
+with socketserver.ThreadingTCPServer(("127.0.0.1", PORT), H) as httpd:
     httpd.serve_forever()
 PYEOF
