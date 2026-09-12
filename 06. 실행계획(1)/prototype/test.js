@@ -23,6 +23,10 @@ const MAP_POLICY = path.join(__dirname, 'assets', 'map-policy.js');
 const mapPolicy = fs.existsSync(MAP_POLICY) ? fs.readFileSync(MAP_POLICY, 'utf8') : '';
 const MAP_POLICY_CSS = path.join(__dirname, 'assets', 'map-policy.css');
 const mapPolicyCss = fs.existsSync(MAP_POLICY_CSS) ? fs.readFileSync(MAP_POLICY_CSS, 'utf8') : '';
+const MAP_CONTEXT = path.join(__dirname, 'assets', 'map-context.js');
+const mapContext = fs.existsSync(MAP_CONTEXT) ? fs.readFileSync(MAP_CONTEXT, 'utf8') : '';
+const MAP_CONTEXT_CSS = path.join(__dirname, 'assets', 'map-context.css');
+const mapContextCss = fs.existsSync(MAP_CONTEXT_CSS) ? fs.readFileSync(MAP_CONTEXT_CSS, 'utf8') : '';
 
 let pass = 0, fail = 0;
 const check = (n, c, extra) => {
@@ -2485,6 +2489,38 @@ check('조건 바꾸기는 해시를 함께 바꿔 지도 메뉴를 다시 누�
   /\$\('mp-go-sim'\)\.onclick=\(\)=>\{setPanel\(false\);goView\('sim'\);\}/.test(mapPolicy));
 check('병설유치원과 본교 이름표 간격은 상자 높이보다 크다',
   /const step = tier === 'label' \? 40 : 30/.test(js));
+
+console.log('\n■ 지도 7~8단계는 요약 칸을 늘리지 않고 실제 자료를 구분한다');
+check('지역 여건 도구는 지도 위에서 필요할 때만 연다',
+  /class="mc-panel"[^>]*hidden/.test(mapContext) &&
+  /id="mc-tools-toggle"[^>]*aria-expanded="false"/.test(mapContext));
+check('통학 접근과 연령별 인구를 한 도구 안의 두 탭으로 가른다',
+  /id="mc-tab-access"/.test(mapContext) && /id="mc-tab-population"/.test(mapContext));
+check('도로망 요청은 브라우저 키 없이 같은 출처 API만 부른다',
+  /fetch\('\/api\/route-access'/.test(mapContext) &&
+  !/Authorization\s*:|api\.openrouteservice\.org|api\.heigit\.org/.test(mapContext));
+check('직선거리와 도로거리·예상시간을 함께 보여 준다',
+  /haversineKm\(sc\.lat,sc\.lon/.test(mapContext) && /도로 \$\{roadText\} · 예상 \$\{timeText\}/.test(mapContext));
+check('통학 결과를 실제 통학 기록으로 오해하지 않게 한다',
+  /실제 통학차량 노선·교통상황·학생별 기록은 포함하지 않습니다/.test(mapContext));
+check('정적 로컬 서버의 POST 미지원 상태를 API 장애로 오해하지 않게 한다',
+  /local&&\[404,405,501\]\.includes\(error\.status\)/.test(mapContext) &&
+  /정적 로컬 서버에서는 통학 API를 쓸 수 없습니다/.test(mapContext));
+check('지역 여건 창을 접으면 목적지 찍기 상태도 끝난다',
+  /else\{\s*disarmDestination\(\);\s*if\(!preserve\)clearAll\(\)/.test(mapContext));
+check('SGIS 5세 단위만 쓰고 5~19세는 근사라고 밝힌다',
+  /5~19세 합계는 학령기 근사치이며 재학생 수가 아닙니다/.test(mapContext) &&
+  !/0~5세|6~11세|12~14세|15~17세/.test(mapContext));
+check('낮은 인구와 자료 없음을 서로 다른 상태로 그린다',
+  /missing:value==null\?1:0/.test(mapContext) && /자료 없음/.test(mapContext));
+check('비교 도구와 지역 여건 도구는 동시에 열리지 않는다',
+  /MapPolicy\.closeTools\(\)/.test(mapContext) &&
+  /mp-tools-toggle[^\n]*addEventListener\('click'/.test(mapContext));
+check('학교 상세에서 바로 통학 접근을 열 수 있다',
+  /통학 접근 보기/.test(mapContext) && /const detail=mvRenderDetail/.test(mapContext));
+check('새 지도 도구의 스타일과 스크립트가 실제 HTML에 실린다',
+  /assets\/map-context\.css/.test(html) && /assets\/map-context\.js/.test(html) &&
+  /\.mc-panel\{[^}]*z-index:1610/.test(mapContextCss));
 
 console.log(`\n${fail ? '✗' : '✓'}  통과 ${pass} · 실패 ${fail}\n`);
 process.exit(fail ? 1 : 0);
