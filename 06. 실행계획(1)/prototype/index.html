@@ -11585,7 +11585,7 @@ const MV_BASES = [
 /* 고도 — 브이월드에는 없습니다(hillshade·terrain·dem 모두 500 을 돌려줍니다).
    AWS Terrain Tiles 는 키 없이 열려 있고 타일 번호가 같아 그대로 맞습니다.
    산과 골짜기가 드러나야 통학 거리를 눈으로 가늠할 수 있습니다. */
-const MV_DEM = 'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png';
+const MV_DEM = 'leap-dem://{z}/{x}/{y}.png';
 const MV_HOME_VIEW = { center:[128.75, 36.35], zoom:7.6 };
 
 const MV = {
@@ -11597,17 +11597,10 @@ const MV = {
   is3d:false, marks:[], rows:[]
 };
 
-/* AWS 고도 타일은 14단계까지만 제공되지만 브이월드 배경은 19단계까지
-   확대됩니다. 산지를 볼 때는 원래 값 1.5를 유지하되, DEM의 실제 해상도를 넘어
-   학교·도로 수준으로 가까이 확대할 때는 빠르게 낮추고 16단계부터 고도면을
-   끕니다. 광역 산세는 살리면서 도로·운동장·논밭이 물결처럼 휘는 일을 막습니다. */
-function mvTerrainExaggeration(zoom){
-  const z=Number(zoom)||0;
-  if(z<=15.2)return 1.5;
-  if(z>=16)return 0;
-  return Number((1.5-(z-15.2)*(1.5/.8)).toFixed(2));
-}
-function mvTerrainPitch(zoom){return Number(zoom)>=15.6?42:62;}
+/* 산세의 과장값은 배율에 관계없이 유지합니다. 완만한 지형의 작은 요철은
+   terrain-worker에서 미터 단위 고도를 보정하며, 산 능선은 원자료를 유지합니다. */
+function mvTerrainExaggeration(){return 1.5;}
+function mvTerrainPitch(){return 62;}
 function mvApplyTerrain(map){
   if(!map||!map.isStyleLoaded?.()||!map.getSource('mv-dem'))return;
   try{
@@ -11617,11 +11610,6 @@ function mvApplyTerrain(map){
       return;
     }
     const amount=mvTerrainExaggeration(map.getZoom());
-    if(amount<=0){
-      if(map.getTerrain?.())map.setTerrain(null);
-      map.setLayoutProperty('mv-hills','visibility','visible');
-      return;
-    }
     const terrain=map.getTerrain?.();
     if(!terrain||Math.abs((+terrain.exaggeration||0)-amount)>.01)
       map.setTerrain({source:'mv-dem',exaggeration:amount});
@@ -12547,6 +12535,7 @@ async function mvStart(){
     if(r && r.ok && r.key) MV.key = r.key;
   }catch(_e){ MV.key = null; }
 
+  installTerrainProtocol(maplibregl);
   const b = mvBaseOf(MV.base);
   const sources = {
     'mv-bound': { type:'geojson', data: mvBoundGeo() },
@@ -12622,6 +12611,11 @@ async function mvStart(){
   mvMountScale(map);
 
   map.on('load', mvDraw);
+  // A fast 2D → 3D toggle can happen while the style is still updating.
+  // Restore the requested terrain once ready, without resetting an active terrain.
+  map.on('idle', () => {
+    if(MV.is3d && !map.getTerrain()) mvApplyTerrain(map);
+  });
   /* ★ 「불러오는 중입니다」를 지웁니다 〔2026. 9. 10.〕 배율 안내를 뺀 뒤로
      이 말을 지우는 사람이 없어져, 지도가 다 떴는데도 띠가 남아 있었습니다.
      키가 없다는 말은 mvSay 가 꼬리에 «늘» 붙이므로 여기서는 비우기만 합니다. */
@@ -12892,7 +12886,6 @@ if(HOME_TAB_ON){
 
 <link rel="stylesheet" href="./assets/map-policy.css">
 <script src="./assets/map-policy.js"></script>
-<link rel="stylesheet" href="./assets/map-context.css">
-<script src="./assets/map-context.js"></script>
+<script src="./assets/terrain-protocol.js"></script>
 </body>
 </html>

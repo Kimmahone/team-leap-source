@@ -67,16 +67,6 @@ export const DATASETS = [
     id: 'D11', name: '폐교 재산·활용 현황', provider: '지방교육재정알리미',
     referenceDate: '2026년 기준 750곳', refresh: '연 1회 공개 자료 확인', status: 'partial',
     script: 'open api/bake-closed-schools.mjs', artifact: '06. 실행계획(1)/prototype/index.html'
-  },
-  {
-    id: 'D12', name: '도로망 기반 통학 접근성', provider: 'OpenRouteService',
-    referenceDate: '조회 시점 도로망', refresh: '실시간 조회·월 1회 서비스 상태 확인', status: 'partial',
-    script: null, artifact: '06. 실행계획(1)/prototype/assets/map-context.js'
-  },
-  {
-    id: 'D13', name: '연령별 시군 인구', provider: '통계청 SGIS',
-    referenceDate: '2015~2022 인구주택총조사', refresh: '연 1회 지원연도 확인', status: 'partial',
-    script: null, artifact: '06. 실행계획(1)/prototype/assets/map-context.js'
   }
 ];
 
@@ -86,11 +76,6 @@ export const SERVICES = [
     id: 'sgis', name: 'SGIS 실제 위치 지도', env: ['SGIS_CONSUMER_KEY'],
     optionalEnv: ['SGIS_CONSUMER_SECRET'], runtime: true
   },
-  {
-    id: 'sgis_population', name: 'SGIS 연령별 시군 인구',
-    env: ['SGIS_CONSUMER_KEY', 'SGIS_CONSUMER_SECRET'], runtime: true
-  },
-  { id: 'ors', name: '도로망 기반 통학 접근성', env: ['ORS_API_KEY'], runtime: true },
   { id: 'schoolinfo', name: '학교알리미 갱신', env: ['SCHOOLINFO_API_KEY'], runtime: false },
   {
     id: 'edss', name: 'EDSS 학교 기준·학생·학급 보완 API',

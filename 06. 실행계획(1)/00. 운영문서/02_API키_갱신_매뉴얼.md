@@ -9,7 +9,6 @@
 | EDSS 학생·학급 등 | API별 `EDSS_…_API_KEY` | 학생·학급·개황·위치정보 보완 | **GitHub Actions Secret만 등록** | 각 API 승인·키 수령 시 |
 | KOSIS | `KOSIS_API_KEY` | 출생아·연령별 인구·장래인구 | GitHub Actions Secret, 로컬 `.dev.vars` | 매월 개정 확인 |
 | SGIS | `SGIS_CONSUMER_KEY`, `SGIS_CONSUMER_SECRET` | 실제 위치 지도·연령별 시군 인구 | Cloudflare Secret, 로컬 `.dev.vars` | 분기 상태 확인 |
-| OpenRouteService | `ORS_API_KEY` | 도로망 기반 통학 도달권·경로 | Cloudflare Secret, 로컬 `.dev.vars` | 월 1회 한도·상태 확인 |
 | 유치원알리미 | `KINDER_API_KEY` | 유치원 기본현황·원아·학급 | GitHub Actions Secret, 로컬 `.dev.vars` | 분기 새 공시 확인 |
 | 변화 읽기 도우미 | `GEMINI_API_KEY` | 집계값의 쉬운 해설 | Cloudflare Secret, 로컬 `.dev.vars` | 월 1회와 장애 시 |
 | 뉴스 검색 | `NAVER_CLIENT_ID`, `NAVER_CLIENT_SECRET` | 주간 뉴스 수집 | GitHub Actions Secret | 주간 자동 실행 결과 확인 |
