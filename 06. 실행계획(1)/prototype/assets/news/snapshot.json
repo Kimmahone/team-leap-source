@@ -2,7 +2,7 @@
   "id": "2026-09-13-naver-rolling",
   "sourceKind": "naver-rolling",
   "source": "네이버 뉴스 검색 API · 3일 주기 분석",
-  "generatedAt": "2026-09-12T22:40:10.537Z",
+  "generatedAt": "2026-09-13T02:29:56.927Z",
   "cadenceDays": 3,
   "basis": "기사량은 사회적 관심의 신호이며 실제 학생 수·학교 수의 증감을 뜻하지 않습니다.",
   "anchorDate": "2026-09-13",
