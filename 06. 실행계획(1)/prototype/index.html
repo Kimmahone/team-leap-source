@@ -638,8 +638,8 @@ a{color:var(--brand)}
 .news-stale-hard{background:var(--over-bg);border-color:var(--over);color:var(--ink)}
 .news-stale-hard b{color:var(--over)}
 
-/* 뉴스는 「최신」과 「빅카인즈 분석」의 출처가 다릅니다.
-   한 화면에 섞어 놓지 않고 탭과 기준일로 갈라 읽게 합니다. */
+/* 최신 뉴스, 네이버 자동 분석, BIG Kinds 정밀 분석은 출처와 갱신 주기가 달라
+   같은 배열로 합치지 않습니다. 탭·분석 이력·기준일로 갈라 읽게 합니다. */
 .news-view-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px;padding:5px;
   border:1px solid var(--line);border-radius:10px;background:var(--card-2);width:max-content;max-width:100%}
 .news-view-tabs button{border:0;border-radius:7px;padding:9px 14px;background:transparent;color:var(--ink-2);
@@ -648,6 +648,9 @@ a{color:var(--brand)}
 .news-analysis-hero{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
 .news-analysis-hero .box{border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--card-2)}
 .news-analysis-hero .k{font-size:11.5px;color:var(--ink-3);margin-bottom:5px}.news-analysis-hero .v{font-size:22px;font-weight:800;color:var(--ink)}
+.analysis-history-toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 0 14px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card-2)}
+.analysis-history-toolbar label{font-size:12px;font-weight:800;color:var(--ink-2)}
+.analysis-history-toolbar select{min-width:250px;max-width:100%}.analysis-history-toolbar span{font-size:11.5px;color:var(--ink-3)}
 .news-analysis-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);gap:14px}
 .news-analysis-panel{border:1px solid var(--line);border-radius:10px;padding:15px;background:var(--card)}
 .news-analysis-panel h3{font-size:14px;margin:0 0 12px}.news-topic-row{display:grid;grid-template-columns:110px 1fr 70px;gap:9px;align-items:center;margin:9px 0;font-size:12px}
@@ -689,7 +692,7 @@ a{color:var(--brand)}
 .signal-change.up{color:var(--over)}.signal-change.down{color:var(--under)}
 .signal-label{display:inline-flex;justify-content:center;padding:4px 7px;border-radius:99px;background:var(--card-2);color:var(--ink-2);font-size:10.5px;font-weight:700}
 
-/* 주간 이슈페이퍼 — 웹에서는 뉴스 기사, 종이에서는 A4 브리프로 읽힙니다. */
+/* 3일 주기 이슈페이퍼 — 웹에서는 뉴스 기사, 종이에서는 A4 브리프로 읽힙니다. */
 .paper-toolbar{max-width:980px;margin:0 auto 12px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
 .paper-toolbar .paper-history-label{font-size:12px;font-weight:800;color:var(--ink-2)}
 .paper-toolbar select{min-width:250px;max-width:100%}
@@ -2844,7 +2847,7 @@ body.map-maxed.home-wide #home-side{display:none}
 
     <div class="card">
       <div class="news-section-head">
-        <h2>AI 주간 브리핑 &amp; 뉴스 히스토리</h2>
+        <h2>최신 뉴스 &amp; 뉴스 히스토리</h2>
         <div class="news-freshness" aria-label="최근 수집 기사 기준일">
           <span aria-hidden="true"></span><small>최근 수집 기사</small><b id="news-asof">확인 중</b>
         </div>
@@ -2898,15 +2901,15 @@ body.map-maxed.home-wide #home-side{display:none}
     <div id="news-analysis-panel" hidden>
       <div class="card">
         <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap">
-          <div><h2 style="margin-bottom:4px">최근 30일 이슈 변화</h2><div class="map-note" id="news-analysis-period">빅카인즈 자료를 불러오는 중입니다.</div></div>
-          <span class="asof" id="news-analysis-asof">BIG Kinds</span>
+          <div><h2 style="margin-bottom:4px">최근 30일 이슈 변화</h2><div class="map-note" id="news-analysis-period">3일 주기 분석 자료를 불러오는 중입니다.</div></div>
+          <span class="asof" id="news-analysis-asof">3일마다 갱신</span>
         </div>
         <div id="news-analysis-content" aria-live="polite">「이슈 분석」을 열면 필요한 자료만 불러옵니다.</div>
       </div>
     </div>
 
     <div id="news-papers-panel" hidden>
-      <div id="news-paper-content" aria-live="polite">「이슈페이퍼」를 열면 프로토타입을 불러옵니다.</div>
+      <div id="news-paper-content" aria-live="polite">「이슈페이퍼」를 열면 3일 주기 발행 이력을 불러옵니다.</div>
     </div>
   </section>
 
@@ -3581,19 +3584,19 @@ body.map-maxed.home-wide #home-side{display:none}
     container.innerHTML = cards.join('');
   }
 
-  /* 쪽 넘기기 — 쪽이 하나뿐이면 아예 내보내지 않습니다.
-     쪽 수가 많아지면 가운데를 「…」로 접어 단추가 끝없이 늘어나지 않게 합니다. */
+  /* 쪽 넘기기 — 현재 쪽 주변을 최소 5개 보여 주고, 나머지는 「…」로 접습니다. */
   function renderNewsPager(pageCount) {
     const el = document.getElementById('news-pager');
     if (!el) return;
     if (pageCount <= 1) { el.hidden = true; el.innerHTML = ''; return; }
     el.hidden = false;
 
-    const nums = [];
-    for (let p = 1; p <= pageCount; p++) {
-      if (p === 1 || p === pageCount || Math.abs(p - newsPage) <= 1) nums.push(p);
-      else if (nums[nums.length - 1] !== '…') nums.push('…');
-    }
+    const nums = [], windowSize = Math.min(5, pageCount);
+    const start = Math.max(1, Math.min(newsPage - 2, pageCount - windowSize + 1));
+    const end = start + windowSize - 1;
+    if (start > 1) { nums.push(1); if (start > 2) nums.push('…'); }
+    for (let p = start; p <= end; p++) nums.push(p);
+    if (end < pageCount) { if (end < pageCount - 1) nums.push('…'); nums.push(pageCount); }
 
     el.innerHTML =
       `<button type="button" data-news-page="${newsPage - 1}"${newsPage === 1 ? ' disabled' : ''} aria-label="이전 쪽">‹</button>` +
@@ -3703,10 +3706,10 @@ body.map-maxed.home-wide #home-side{display:none}
 })();
 
 /* =========================================================
-   빅카인즈 이슈 분석 — 누를 때만 경량 집계 자료를 불러옵니다
+   3일 주기 이슈 분석 — 누를 때만 경량 집계·히스토리를 불러옵니다
    ---------------------------------------------------------
-   최신 뉴스(news-history.json)는 매일 자동수집하고, 이 자료는 과거 비교용
-   아카이브입니다. 출처와 갱신 주기가 달라 같은 배열로 합치지 않습니다.
+   최신 뉴스(news-history.json)는 매일 자동수집하고, 분석과 페이퍼는 3일마다
+   생성합니다. BIG Kinds 정밀 분석 이력과 네이버 자동 분석의 출처를 표시합니다.
    ========================================================= */
 (function(){
   if(typeof document === 'undefined') return;
@@ -3721,8 +3724,9 @@ body.map-maxed.home-wide #home-side{display:none}
     loaded=Promise.all([
       fetch('assets/news/manifest.json').then(function(r){if(!r.ok)throw new Error('manifest '+r.status);return r.json();}),
       fetch('assets/news/snapshot.json').then(function(r){if(!r.ok)throw new Error('snapshot '+r.status);return r.json();}),
-      fetch('assets/news/issues/index.json').then(function(r){if(!r.ok)throw new Error('issues '+r.status);return r.json();})
-    ]).then(function(v){return {manifest:v[0],snapshot:v[1],issues:v[2]};});
+      fetch('assets/news/issues/index.json').then(function(r){if(!r.ok)throw new Error('issues '+r.status);return r.json();}),
+      fetch('assets/news/snapshots/index.json').then(function(r){if(!r.ok)throw new Error('snapshots '+r.status);return r.json();})
+    ]).then(function(v){return {manifest:v[0],snapshot:v[1],issues:v[2],snapshots:v[3]};});
     return loaded;
   }
 
@@ -3812,32 +3816,37 @@ body.map-maxed.home-wide #home-side{display:none}
       '<div class="news-region-compare"><div class="news-region-head"><span>지역</span><span>최근 뉴스 언급 · 직전 대비</span><span>학생 수 장기 변화</span><span>두 신호</span></div>'+body+'</div>';
   }
 
-  function renderAnalysis(data){
-    var m=data.manifest,s=data.snapshot,box=document.getElementById('news-analysis-content');
+  function renderAnalysis(data,selectedId){
+    var m=data.manifest,history=(data.snapshots||[data.snapshot]).slice().sort(function(a,b){return String(b.anchorDate||'').localeCompare(String(a.anchorDate||''));});
+    var s=history.find(function(x){return x.id===selectedId;})||history[0]||data.snapshot,box=document.getElementById('news-analysis-content');
     var period=document.getElementById('news-analysis-period');
     var asof=document.getElementById('news-analysis-asof');
     if(period) period.textContent=s.currentPeriod.from+' ~ '+s.currentPeriod.to+'와 직전 30일을 비교합니다.';
-    if(asof) asof.textContent=s.anchorDate+' 기준 · BIG Kinds';
+    if(asof) asof.textContent=s.anchorDate+' 기준 · '+(s.source||'뉴스 분석');
     var topics=s.topics.map(function(t){
       var d=Number(t.changePp||0),cl=d>0?' up':(d<0?' down':'');
       return '<div class="news-topic-row"><b>'+esc(t.topic)+'</b><div class="news-topic-track"><div class="news-topic-fill" style="width:'+Math.min(100,t.currentShare)+'%"></div></div><span class="news-topic-delta'+cl+'">'+t.currentShare+'%<br><small>'+(d>0?'+':'')+d+'%p</small></span></div>';
     }).join('');
     var regions='<ol class="news-ranked">'+s.regions.slice(0,10).map(function(r){return '<li><span>'+esc(r.name)+'</span><b>'+fmt(r.value)+'건</b></li>';}).join('')+'</ol>';
+    var coverage=s.coverage||m.coverage||{},options=history.map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===s.id?' selected':'')+'>'+esc(x.anchorDate)+' · '+esc(x.source||'뉴스 분석')+'</option>';}).join('');
     box.innerHTML=
+      '<div class="analysis-history-toolbar"><label for="news-analysis-select">지난 이슈 분석</label><select id="news-analysis-select" class="select" aria-label="이슈 분석 이력">'+options+'</select><span>총 '+history.length+'회 보관 · 3일마다 갱신</span></div>'+
       '<div class="news-analysis-hero">'+
-        '<div class="box"><div class="k">분석 적합 기사</div><div class="v">'+fmt(m.counts.analysisReady||m.counts.curated)+'건</div></div>'+
+        '<div class="box"><div class="k">분석 적합 기사</div><div class="v">'+fmt(s.totalArticles||m.counts.analysisReady||m.counts.curated)+'건</div></div>'+
         '<div class="box"><div class="k">최근 30일</div><div class="v">'+fmt(s.currentPeriod.count)+'건</div></div>'+
         '<div class="box"><div class="k">직전 30일</div><div class="v">'+fmt(s.priorPeriod.count)+'건</div></div>'+
-        '<div class="box"><div class="k">자료 기간</div><div class="v" style="font-size:16px">'+esc(m.coverage.from.slice(0,4))+'–'+esc(m.coverage.to.slice(0,4))+'</div></div>'+
+        '<div class="box"><div class="k">자료 기간</div><div class="v" style="font-size:16px">'+esc(String(coverage.from||'').slice(0,4))+'–'+esc(String(coverage.to||'').slice(0,4))+'</div></div>'+
       '</div>'+
       '<div class="news-viz-stack">'+
         '<div class="news-analysis-panel"><div class="news-viz-head"><div><h3>최근 12주 보도 경향</h3><p>막대는 전체 기사량, 선은 최근 많이 다뤄진 세 주제입니다.</p></div><span class="asof">주 단위</span></div>'+trendChart(s)+'</div>'+
         '<div class="news-analysis-grid"><div class="news-analysis-panel"><div class="news-viz-head"><div><h3>핵심 키워드 워드클라우드</h3><p>글자가 클수록 최근 30일 기사에서 자주 나타났습니다.</p></div></div>'+wordCloud(s)+'</div><div class="news-analysis-panel"><h3>주제별 비중과 직전 기간 대비</h3>'+topics+'</div></div>'+
         '<div class="news-analysis-grid"><div class="news-analysis-panel"><div class="news-viz-head"><div><h3>다빈도 키워드</h3><p>오른쪽 작은 수는 직전 30일보다 늘거나 줄어든 건수입니다.</p></div></div>'+keywordBars(s)+'</div><div class="news-analysis-panel"><h3>언급이 많은 시군</h3>'+regions+'</div></div>'+
-        '<div class="news-analysis-panel"><div class="news-viz-head"><div><h3>벡터 유사도 기반 기사 군집</h3><p>제목과 빅카인즈 추출 키워드를 수치 벡터로 바꿔 반복·유사 보도를 묶었습니다.</p></div><span class="asof">TF-IDF · cosine</span></div>'+clusterCards(s)+'</div>'+
+        '<div class="news-analysis-panel"><div class="news-viz-head"><div><h3>벡터 유사도 기반 기사 군집</h3><p>기사 제목과 제공 키워드를 수치 벡터로 바꿔 반복·유사 보도를 묶었습니다.</p></div><span class="asof">TF-IDF · cosine</span></div>'+clusterCards(s)+'</div>'+
         '<div class="news-analysis-panel"><div class="news-viz-head"><div><h3>뉴스에서 많이 언급된 지역, 학생 수는 어떻게 변했나</h3><p>최근 뉴스의 지역별 관심 변화와 EDSS 학생 수 장기 변화를 서로 다른 두 칸에 나란히 표시합니다.</p></div><span class="asof">뉴스 최근 30일 · EDSS 2016–2025</span></div>'+regionSignalView(s)+'<div class="news-method"><b>이렇게 해석하세요</b> — 예를 들어 ‘관심↑ · 학생↓’는 최근 그 지역을 언급한 기사가 늘었고, 2016~2025 학생 수는 감소했다는 뜻입니다. 뉴스 증가가 학생 감소의 원인이라는 의미도, 앞으로의 학생 수 예측도 아닙니다.</div></div>'+
         '<div class="news-analysis-panel"><h3>분석 근거 기사</h3>'+evidence(s.evidence)+'</div>'+
       '</div><p class="src-note" style="padding-left:0">'+esc(s.basis)+' · 주제는 한 기사에 여러 개가 붙을 수 있어 비중의 합이 100%를 넘을 수 있습니다. 학생 수 전망은 뉴스량이 아니라 검증된 EDSS 코호트 모형을 사용합니다.</p>';
+    var select=document.getElementById('news-analysis-select');
+    if(select)select.addEventListener('change',function(){renderAnalysis(data,select.value);});
     wireTrendTooltips(box);
   }
 
@@ -3890,7 +3899,7 @@ body.map-maxed.home-wide #home-side{display:none}
     var clusterHtml=clusters.length?'<div class="news-cluster-grid">'+clusters.map(function(c){return '<div class="news-cluster"><div class="news-cluster-top"><div class="news-cluster-orb">'+c.size+'건</div><div><h4>'+esc(c.label)+'</h4><p>평균 유사도 '+Math.round(c.cohesion*100)+'/100</p></div></div></div>';}).join('')+'</div>':'<p class="map-note">이번 호에는 기준을 넘은 유사 보도 묶음이 없습니다.</p>';
     var regionHtml='<div class="news-keywords">'+regions.slice(0,8).map(function(r){return '<span>'+esc(r.name)+' <b>'+fmt(r.value)+'건</b></span>';}).join('')+'</div>';
     return '<article class="news-paper">'+
-      '<header class="paper-masthead"><div class="paper-brand">경북 학령인구 뉴스 브리프</div><div class="paper-edition">WEEKLY ISSUE PAPER<br>제 '+fmt(issueNo)+'호</div></header>'+
+      '<header class="paper-masthead"><div class="paper-brand">경북 학령인구 뉴스 브리프</div><div class="paper-edition">ISSUE PAPER · EVERY 3 DAYS<br>제 '+fmt(issueNo)+'호</div></header>'+
       '<div class="paper-hero"><div class="paper-kicker">이번 주의 데이터 브리핑 · '+esc(status)+'</div><h2 class="paper-headline">'+esc(p.title)+'</h2><p class="paper-deck">'+esc(p.lead)+'</p><div class="paper-meta"><span>발행 '+esc(p.publishedAt||p.period.to)+'</span><span>분석기간 '+esc(p.period.from)+' ~ '+esc(p.period.to)+'</span><span>출처 '+esc(source)+'</span></div></div>'+
       '<div class="paper-body paper-screen-body"><div class="paper-stat-grid">'+
         '<div class="paper-stat"><b>'+fmt(p.period.count)+'건</b><span>이번 호 분석 기사</span></div>'+
@@ -3920,8 +3929,8 @@ body.map-maxed.home-wide #home-side{display:none}
     if(print)print.addEventListener('click',function(){
       var pageStyle=document.getElementById('print-page-mode');
       var previousTitle=document.title;
-      document.title='경북 학령인구 주간 뉴스 이슈페이퍼';
-      document.getElementById('print-report-title').textContent='주간 학령인구 뉴스 이슈페이퍼';
+      document.title='경북 학령인구 뉴스 이슈페이퍼';
+      document.getElementById('print-report-title').textContent='학령인구 뉴스 이슈페이퍼';
       document.getElementById('print-report-subtitle').textContent=(p.publishedAt||p.period.to)+' · '+paperSource;
       if(pageStyle)pageStyle.textContent='@media print{@page{size:A4 portrait;margin:20mm 20mm 15mm 20mm}}';
       document.body.classList.add('print-news-paper');
@@ -3937,7 +3946,7 @@ body.map-maxed.home-wide #home-side{display:none}
     Array.prototype.forEach.call(document.querySelectorAll('[data-news-view]'),function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-news-view')===name));});
     if(name==='latest') return;
     var target=name==='analysis'?document.getElementById('news-analysis-content'):document.getElementById('news-paper-content');
-    if(target) target.textContent='빅카인즈 집계 자료를 불러오는 중입니다…';
+    if(target) target.textContent='뉴스 분석 이력을 불러오는 중입니다…';
     loadArchive().then(function(d){if(name==='analysis')renderAnalysis(d);else renderPapers(d);}).catch(function(e){if(target)target.innerHTML='<div class="card"><b>분석 자료를 불러오지 못했습니다.</b><br><span class="map-note">'+esc(e.message)+'</span></div>';});
   }
 
@@ -3948,7 +3957,7 @@ body.map-maxed.home-wide #home-side{display:none}
     var requested=match&&match[1];
     if(requested==='papers'&&/[?&]printPaper=1(?:&|$)/.test(query)){
       document.body.classList.add('print-news-paper');
-      document.title='경북 학령인구 주간 뉴스 이슈페이퍼';
+      document.title='경북 학령인구 뉴스 이슈페이퍼';
       var printStyle=document.getElementById('print-page-mode');
       if(printStyle)printStyle.textContent='@media print{@page{size:A4 portrait;margin:20mm 20mm 15mm 20mm}}';
     }
@@ -11508,7 +11517,7 @@ function renderProvenance(){
   srcTable(document.getElementById('src-news'), [
     ['기사 목록', nAsof ? nAsof + ' 까지' : '수집분', '네이버 뉴스 검색 API (자동 수집)'],
     ['주제 분류', '—', '기존 6개 주제로 분류 (새 주제가 저절로 늘지 않습니다)'],
-    ['주간 브리핑', nAsof || '—', '수집한 기사를 세어 만든 요약']
+    ['이슈 분석·이슈페이퍼', '3일마다', '수집한 기사를 세어 만든 최근 30일 분석·최근 7일 요약']
   ], '기사 하나가 여러 주제에 걸칠 수 있어 <b>주제별 합이 건수보다 클 수 있습니다.</b>');
 
   /* ── 폐교 ── */

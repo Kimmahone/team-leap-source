@@ -554,7 +554,8 @@ const fetchTargets = [...CODE_ONLY.matchAll(/\bfetch\s*\(\s*(['"])([^'"]+)\1/g)]
    끼면 빨개집니다. 〔2026. 9. 10. 위성 지도 키를 받는 자리가 늘었습니다〕 */
 const FETCH_OK = [
   '/api/ai-analysis', '/api/data-status', '/api/vworld-key',
-  'assets/news/manifest.json', 'assets/news/snapshot.json', 'assets/news/issues/index.json'
+  'assets/news/manifest.json', 'assets/news/snapshot.json',
+  'assets/news/snapshots/index.json', 'assets/news/issues/index.json'
 ];
 check('fetch 는 같은 출처의 «아는 주소»만 부른다',
   fetchTargets.length > 0 &&

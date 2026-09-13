@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
-    "weekly": "node build-weekly-issue.mjs --force",
+    "insights": "node build-news-insights.mjs",
+    "weekly": "node build-news-insights.mjs --force",
     "check": "node ../tests/news-archive.test.mjs"
   },
   "dependencies": {
