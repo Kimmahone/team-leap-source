@@ -33,7 +33,7 @@
 | 작업 | 주기 | 위치 |
 |---|---|---|
 | 관련 뉴스 갱신 | 매일 오전 7시 37분 | `.github/workflows/update-news.yml` |
-| 주간 이슈페이퍼 생성 | 매주 일요일 오전 | `.github/workflows/update-news.yml` |
+| 이슈 분석·이슈페이퍼 생성 | 마지막 생성일로부터 3일 후 | `.github/workflows/update-news.yml` |
 | KOSIS 개정 확인 | 매월 | `.github/workflows/refresh-public-data.yml` |
 | 학교·유치원·좌표 확인 | 분기 | `.github/workflows/refresh-public-data.yml` |
 | 전체 검사·배포 | `main` 변경 시 | `사이트 굽기.command`와 GitHub Actions |

@@ -64,7 +64,8 @@ JS  기능팀 구역       「8. 초기화」 바로 위      ← 기능팀 전�
 
 | 갱신 | 주기 | 무엇을 |
 |---|---|---|
-| 주간 뉴스 | 매주 월요일 아침 | `news-history.json`, `index.html` |
+| 최신 뉴스 | 매일 오전 7시 37분 | `news-history.json` |
+| 이슈 분석·이슈페이퍼 | 마지막 생성일로부터 3일 후 | `assets/news/snapshot.json`, `snapshots/index.json`, `issues/index.json` |
 | KOSIS 개정 | 매월 | `index.html` 데이터 줄 |
 | 학교·유치원·좌표 | 분기 | `index.html` 데이터 줄 |
 | 교육통계(EDSS) | 매년 9월 | `index.html` 데이터 줄 |

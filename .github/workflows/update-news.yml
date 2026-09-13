@@ -1,4 +1,4 @@
-name: 주간 뉴스 받아오기 및 자동 배포
+name: 뉴스 매일 수집·3일 분석 및 자동 배포
 
 # ★ 이 워크플로가 하는 일 〔2026. 8. 17.〕
 #
@@ -14,9 +14,12 @@ name: 주간 뉴스 받아오기 및 자동 배포
 on:
   push:
     branches: [main]
-    # 주간 작업이 news-history.json만 커밋한 경우 같은 작업이 연달아 다시 돌지 않게 합니다.
+    # 자동 생성 파일만 커밋한 경우 같은 작업이 연달아 다시 돌지 않게 합니다.
     paths-ignore:
       - news-history.json
+      - '06. 실행계획(1)/prototype/assets/news/snapshot.json'
+      - '06. 실행계획(1)/prototype/assets/news/snapshots/index.json'
+      - '06. 실행계획(1)/prototype/assets/news/issues/index.json'
   schedule:
     # 한국시간 **매일** 아침 7시 (UTC 22시).
     #
@@ -95,7 +98,7 @@ jobs:
       #   새 기사가 들어올 때마다 오래된 기사가 뒤로 밀려 사라졌기 때문입니다.
       #   밀려난 것은 아무 데도 남지 않아 커밋 기록에서 되살려야 했습니다.
       #
-      #   push 때 필요한 것은 «배포»이지 «수집»이 아닙니다. 주간 일정과
+      #   push 때 필요한 것은 «배포»이지 «수집»이 아닙니다. 매일 일정과
       #   손으로 돌릴 때만 받아옵니다. 아래 배포 단계는 그대로 매번 돕니다.
       - name: 뉴스 받아오기
         if: github.event_name != 'push'
@@ -104,26 +107,30 @@ jobs:
           NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
         run: node fetch-news.js
 
-      # 뉴스는 매일 모으지만 이슈페이퍼는 일요일 아침에만 1호를 만듭니다.
-      # workflow_dispatch로 손으로 돌리면 현재 자료로 동일 기준일 페이퍼를 갱신합니다.
-      - name: 주간 이슈페이퍼 생성
+      # 수집은 매일, 이슈 분석과 이슈페이퍼는 마지막 성공일로부터 3일 뒤 생성합니다.
+      # 매일 검사하므로 예약이 누락돼도 다음 날 보충하고 월말에도 간격이 깨지지 않습니다.
+      # workflow_dispatch는 현재 자료로 같은 기준일 결과를 강제로 갱신합니다.
+      - name: 3일 이슈 분석 및 이슈페이퍼 생성
         if: github.event_name != 'push'
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            node news-pipeline/build-weekly-issue.mjs --force
+            node news-pipeline/build-news-insights.mjs --force
           else
-            node news-pipeline/build-weekly-issue.mjs
+            node news-pipeline/build-news-insights.mjs
           fi
 
       - name: 변경된 뉴스 커밋 (team-leap-source)
         run: |
           git config --global user.name  "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add news-history.json "06. 실행계획(1)/prototype/assets/news/issues/index.json"
+          git add news-history.json \
+            "06. 실행계획(1)/prototype/assets/news/snapshot.json" \
+            "06. 실행계획(1)/prototype/assets/news/snapshots/index.json" \
+            "06. 실행계획(1)/prototype/assets/news/issues/index.json"
           if git diff --cached --quiet; then
             echo "새로운 뉴스가 없습니다."
           else
-            git commit -m "🤖 주간 뉴스 클리핑"
+            git commit -m "🤖 뉴스 수집 및 3일 이슈 분석"
             git push
             echo "::notice::최신 뉴스를 team-leap-source에 반영했습니다."
           fi
@@ -136,4 +143,4 @@ jobs:
       - name: 배포 저장소(team-leap)로 자동 푸시
         env:
           DEPLOY_PAT: ${{ secrets.DEPLOY_PAT }}
-        run: bash .github/deploy.sh "사이트 자동 배포 (주간 뉴스 및 업데이트)"
+        run: bash .github/deploy.sh "사이트 자동 배포 (뉴스 수집 및 3일 이슈 분석)"

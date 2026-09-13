@@ -108,6 +108,15 @@ check('요일·날짜를 좁히지 않았다 (좁히면 놓치는 기사가 생�
 check('정각을 피한다 (정각은 GitHub 이 예약을 가장 잘 버리는 시각이다)',
   !/cron:\s*'0 \d+ /.test(wf), cronLines.join(' / '));
 check('손으로도 돌릴 수 있다', /workflow_dispatch:/.test(wf));
+const insightStep = wf.slice(wf.indexOf('- name: 3일 이슈 분석'), wf.indexOf('- name: 변경된 뉴스 커밋'));
+check('일일 자동화가 3일 주기 생성기를 확인한다',
+  /build-news-insights\.mjs/.test(insightStep) && /github\.event_name != 'push'/.test(insightStep));
+check('수동 실행은 같은 기준일 결과를 강제로 갱신한다',
+  /workflow_dispatch/.test(insightStep) && /build-news-insights\.mjs --force/.test(insightStep));
+check('분석·페이퍼 히스토리를 자동 커밋한다',
+  /assets\/news\/snapshots\/index\.json/.test(wf) && /assets\/news\/issues\/index\.json/.test(wf));
+check('3일 주기를 월중 날짜 cron으로 흉내 내지 않는다',
+  !/cron:\s*'[^']*\*\/3/.test(wf));
 /* 막으려는 것은 «수집»이지 «배포»가 아닙니다. push 때 배포까지 멈추면
    고친 것이 라이브에 안 나갑니다. 단계 이름으로 자리를 잡습니다 —
    머리말 주석에도 「배포 저장소」라는 말이 있어서 그것으로 자르면 헛집습니다. */

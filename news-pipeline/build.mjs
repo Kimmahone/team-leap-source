@@ -315,8 +315,9 @@ function main() {
   const all = dedupe(parsed).sort((a,b) => b.publishedAt.localeCompare(a.publishedAt));
   const curated = all.filter(a => a.topics.length);
   const analysis = curated.filter(a=>a.analysisRelevant&&a.headlineTopics.length).map(({analysisRelevant,headlineTopics,...article})=>({...article,topics:headlineTopics}));
-  /* BIG Kinds 원본을 다시 분석해도 이미 발행한 주간 이슈페이퍼는 지우지 않습니다.
-     분석 산출물은 갈아 끼우되, 발행 이력은 최대 52호를 이어 갑니다. */
+  /* BIG Kinds 원본을 다시 분석해도 이미 발행한 3일 주기 결과는 지우지 않습니다.
+     이슈 분석은 최대 40회, 이슈페이퍼는 최대 52호의 이력을 이어 갑니다. */
+  const previousSnapshots = readJson(path.join(DEST,'snapshots','index.json'), []);
   const previousIssues = readJson(path.join(DEST,'issues','index.json'), []);
   fs.rmSync(DEST, {recursive:true,force:true}); ensure(DEST);
   fs.rmSync(WORK, {recursive:true,force:true}); ensure(WORK);
@@ -329,18 +330,34 @@ function main() {
        소수의 근거 기사만 두고, 연도별 목록은 gitignore 된 work에 남깁니다. */
     const file = path.join(WORK, 'archive', `${year}.json`); writeJson(file, rows);
   }
-  const snapshot = makeSnapshot(analysis); writeJson(path.join(DEST,'snapshot.json'),snapshot);
+  const bigKindsSnapshot = makeSnapshot(analysis);
+  const archivedSnapshot = {
+    ...bigKindsSnapshot,
+    id:`${bigKindsSnapshot.anchorDate}-bigkinds`,
+    sourceKind:'bigkinds',
+    source:'BIG Kinds 뉴스 검색·분석',
+    generatedAt:new Date().toISOString(),
+    cadenceDays:null,
+    totalArticles:analysis.length,
+    coverage:{from:analysis.at(-1)?.publishedAt || '',to:analysis[0]?.publishedAt || ''}
+  };
+  const snapshots=[archivedSnapshot,...previousSnapshots.filter(s=>s&&s.id!==archivedSnapshot.id)]
+    .sort((a,b)=>String(b.anchorDate||'').localeCompare(String(a.anchorDate||'')))
+    .slice(0,40);
+  snapshots.forEach((s,i)=>{s.historyNo=snapshots.length-i;});
+  writeJson(path.join(DEST,'snapshot.json'),snapshots[0]);
+  writeJson(path.join(DEST,'snapshots','index.json'),snapshots);
   const network = makeNetwork(analysis); writeJson(path.join(DEST,'network.json'),network);
   const issue = {
-    id:`${snapshot.anchorDate}-recent-30d`, status:'prototype',
-    source:'BIG Kinds 뉴스 검색·분석', publishedAt:snapshot.anchorDate,
+    id:`${bigKindsSnapshot.anchorDate}-recent-30d`, status:'prototype',
+    source:'BIG Kinds 뉴스 검색·분석', sourceKind:'bigkinds', publishedAt:bigKindsSnapshot.anchorDate,
     title:`최근 30일 경북 학령인구 뉴스 이슈 브리프`,
-    period:snapshot.currentPeriod,
-    lead:`최근 기사에서 ‘${snapshot.topics[0]?.topic || '학령인구'}’ 관련 보도가 가장 큰 비중을 보였습니다. 기사량은 정책 관심의 신호로만 읽고 학생 수 실적과는 구분해야 합니다.`,
-    topics:snapshot.topics.slice(0,3), keywords:snapshot.keywords.slice(0,8),
-    clusters:snapshot.similarity.clusters.slice(0,3),
-    evidence:snapshot.evidence.slice(0,5),
-    caveat:snapshot.basis,
+    period:bigKindsSnapshot.currentPeriod,
+    lead:`최근 기사에서 ‘${bigKindsSnapshot.topics[0]?.topic || '학령인구'}’ 관련 보도가 가장 큰 비중을 보였습니다. 기사량은 정책 관심의 신호로만 읽고 학생 수 실적과는 구분해야 합니다.`,
+    topics:bigKindsSnapshot.topics.slice(0,3), keywords:bigKindsSnapshot.keywords.slice(0,8),
+    clusters:bigKindsSnapshot.similarity.clusters.slice(0,3),
+    evidence:bigKindsSnapshot.evidence.slice(0,5),
+    caveat:bigKindsSnapshot.basis,
     review:'발행 전 담당자의 사실 확인과 문장 검토가 필요합니다.'
   };
   const issues=[issue,...previousIssues.filter(p=>p&&p.id!==issue.id)]
@@ -349,7 +366,7 @@ function main() {
   issues.forEach((p,i)=>{p.issueNo=issues.length-i;});
   writeJson(path.join(DEST,'issues','index.json'),issues);
 
-  for (const rel of ['snapshot.json','network.json','issues/index.json']) {
+  for (const rel of ['snapshot.json','snapshots/index.json','network.json','issues/index.json']) {
     const file=path.join(DEST,rel); outputFiles.push({path:rel,bytes:fs.statSync(file).size,sha256:sha(file)});
   }
   const manifest = {
