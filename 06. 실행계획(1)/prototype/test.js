@@ -354,12 +354,13 @@ check('인쇄물에 전용 표제와 A4 가로 쪽 설정이 있다',
 check('현재 화면·AI 인사이트·이슈페이퍼의 종이 여백을 상20·하15·좌우20mm로 통일한다',
   (html.match(/margin:20mm 20mm 15mm 20mm/g)||[]).length>=5 &&
   !/margin:(?:9mm|12mm 14mm 14mm|12mm 11mm 15mm)/.test(html));
-check('A4 세로 전용 출력물의 실제 내용 높이는 공통 여백을 뺀 262mm다',
+check('A4 세로 전용 출력물의 여백과 AI 보고서 쪽 나눔을 지킨다',
   /body\.print-news-paper \.news-paper\{[^}]*height:262mm/.test(html) &&
-  /body\.print-ai-only \.policy-report\{[^}]*width:100%;min-height:262mm/.test(html));
-check('AI 인사이트는 인쇄할 때 한 줄 흐름으로 풀어 마지막 해설이 다음 장으로 밀리지 않는다',
+  /body\.print-ai-only \.policy-report\{[^}]*width:100%;display:block/.test(html) &&
+  /\.policy-report \.ai-narrative\{break-before:page;page-break-before:always/.test(html));
+check('AI 인사이트의 해설은 별도 장에 읽기 좋은 크기로 나온다',
   /body\.print-ai-only \.policy-report \.ai-insight-board\{display:block\}/.test(html) &&
-  /body\.print-ai-only \.policy-report \.ai-narrative\{[^}]*break-inside:auto;page-break-inside:auto/.test(html));
+  /\.policy-report \.ai-narrative p,body\.print-ai-only \.policy-report \.ai-narrative li\{font-size:9\.5pt/.test(html));
 check('본문을 덮던 고정 인쇄 꼬리말을 제거했다',
   !html.includes('class="print-footer print-only"') && /\.print-footer\{display:none\s*!important\}/.test(html));
 check('긴 카드 전체를 한 쪽에 강제하지 않아 페이지 잘림을 막는다',
@@ -372,8 +373,10 @@ check('변화 요약은 보고서 HTML과 별도 인쇄 기능을 제공한다',
 check('인사이트 인쇄물에도 핵심 지표와 지역 비교 시각화가 들어간다',
   /function policyReportHtml[\s\S]*aiInsightBoardHtml\(text,source,\{\.\.\.meta,hideBadge:true\}\)/.test(js) &&
   /report-brand[\s\S]*symbol1\.jpg/.test(html) && /report-cover[\s\S]*linear-gradient/.test(html));
-check('변화 요약은 전용 인쇄 때만 나온다',
-  /#ai-print-report\{display:none !important\}/.test(html) && /body\.print-ai-only #ai-print-report\{display:block !important/.test(html));
+check('변화 요약과 지도는 각 전용 인쇄 때만 나온다',
+  /#ai-print-report,#map-print-report\{display:none !important\}/.test(html) &&
+  /body\.print-ai-only #ai-print-report\{display:block !important/.test(html) &&
+  /body\.print-map-only #map-print-report\{display:block !important/.test(html));
 check('AI가 응답한 실제 모델과 기본 요약 여부를 화면과 인쇄물에 표시한다',
   /function friendlyModelName/.test(js) && /ai-analysis-badge/.test(html) && /report-model-line/.test(html) &&
   /data\.model\|\|data\.requestedModel/.test(js));
@@ -1566,10 +1569,17 @@ check('시군 22곳이 단계구분도에서 빠지지 않는다', q(
   "(function(){var s={};mvRegionGeo().features.forEach(function(f){s[f.properties.s]=1;});" +
   "return Object.keys(s).length;})()") === 22);
 check('임의 위험계수 대신 2016년과 선택 연도 공개값을 직접 비교한다', q(
-  "(function(){var l=MV.level,y=MV.year;MV.level='전체';MV.year=2025;" +
+  "(function(){var l=MV.level,y=MV.year,b0=MV.choroBaseYear;MV.level='전체';MV.year=2025;MV.choroBaseYear=2016;" +
   "var m=mvRegionChange('포항'),a=regionTotalStudents('포항',2016).v,b=regionTotalStudents('포항',2025).v;" +
-  "MV.level=l;MV.year=y;return m.from===a&&m.to===b&&Math.abs(m.rate-(b-a)/a*100)<1e-9;})()") === true &&
+  "MV.level=l;MV.year=y;MV.choroBaseYear=b0;return m.from===a&&m.to===b&&Math.abs(m.rate-(b-a)/a*100)<1e-9;})()") === true &&
   !/ACCEL|effM/.test(js));
+check('시군 변화율은 2019→2026 등 다른 두 해도 정확하게 비교한다', q(
+  "(function(){var l=MV.level,y=MV.year,b0=MV.choroBaseYear;MV.level='전체';MV.choroBaseYear=2019;MV.year=2026;" +
+  "var m=mvRegionChange('포항'),a=regionTotalStudents('포항',2019).v,b=regionTotalStudents('포항',2026).v;" +
+  "MV.level=l;MV.year=y;MV.choroBaseYear=b0;return m.fromYear===2019&&m.toYear===2026&&m.from===a&&m.to===b&&Math.abs(m.rate-(b-a)/a*100)<1e-9;})()") === true);
+check('시군 변화율 시작연도 고르개와 비교연도 슬라이더가 함께 있다',
+  /id="mv-choro-base-year"/.test(html) && /function mvSyncChoroplethYears/.test(js) &&
+  /MV\.choroBaseYear \+ '\|' \+ MV\.year/.test(js));
 check('면 색은 감소 단계·증가·자료 없음을 글자 범례와 함께 구분한다',
   /20% 이상 감소/.test(js) && /10~20% 감소/.test(js) && /0~10% 감소·유지/.test(js) &&
   /label:'증가'/.test(js) && /label:'자료 없음'/.test(js));
@@ -2136,9 +2146,10 @@ check('모든 인쇄에 찍힌다 (이슈페이퍼·AI 인쇄 포함)',
 check('이슈페이퍼 워터마크도 다른 인쇄물과 같은 중앙·62mm 크기다',
   /body\.print-news-paper::after\{background-size:62mm auto;background-position:center 50%;opacity:\.06\}/.test(html) &&
   !/body\.print-news-paper::after\{[^}]*32mm|body\.print-news-paper::after\{[^}]*90%/.test(html));
-check('AI 보고서는 본문을 2쪽으로 밀지 않고 마지막 안내선을 내용 영역 하단에 맞춘다',
-  /\.policy-report \.report-body\{flex:0 0 auto\}/.test(html) &&
-  /\.policy-report \.report-note\{margin-top:auto;padding-top:2mm/.test(html));
+check('AI 보고서는 해설 쪽과 안내선을 따로 배치해 빈 둘째 장을 남기지 않는다',
+  /\.policy-report \.ai-narrative\{break-before:page/.test(html) &&
+  /\.policy-report \.report-note\{margin-top:6mm;padding-top:3mm/.test(html) &&
+  /ai-narrative-print-title/.test(html));
 check('화면에서는 워터마크를 얹지 않는다 (인쇄 규칙 안에만 있다)', q(
   "true") === true && /@media print\{[\s\S]*?body::after\{/.test(html));
 check('종이에서 갈래 단추는 감추고 보고 있는 곳은 남긴다',

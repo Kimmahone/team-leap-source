@@ -1,4 +1,4 @@
-import {onRequestPost,onRequest} from '../functions/api/ai-analysis.js';
+import {onRequestPost,onRequest,sanitizeAnalysisText} from '../functions/api/ai-analysis.js';
 
 let pass=0, fail=0;
 const check=(name,ok)=>{ if(ok){pass++;}else{fail++;console.error('✗ '+name);} };
@@ -34,14 +34,15 @@ globalThis.fetch=async (url,options)=>{
   check('시스템 지침이 실적·시나리오·학교 비교를 근거 중심으로 요구',
     requestBody.system_instruction.includes('actualTrend') &&
     requestBody.system_instruction.includes('comparison.type이 school') &&
-    requestBody.system_instruction.includes('[근거:') &&
+    requestBody.system_instruction.includes('절대로 출력하지 마세요') &&
     requestBody.system_instruction.includes('통폐합·위험 학교로 단정하지 말고'));
   return new Response(JSON.stringify({modelVersion:'gemini-3.8-flash',steps:[{type:'model_output',content:[{type:'text',text:completeText}]}]}),{status:200,headers:{'Content-Type':'application/json'}});
 };
 const ok=await onRequestPost({request:req({prompt:'집계값'}),env:{GEMINI_API_KEY:'server-secret'}});
 const data=await ok.json();
 check('Gemini 공식 Interactions API 호출', called.endsWith('/v1beta/interactions'));
-check('완성도 기준을 넘은 분석문과 실제 사용 모델 반환', ok.status===200 && data.text===completeText && data.quality==='complete' && data.model==='gemini-3.8-flash');
+check('완성도 기준을 넘은 자연어 분석문과 실제 사용 모델 반환', ok.status===200 && data.text===sanitizeAnalysisText(completeText) && data.quality==='complete' && data.model==='gemini-3.8-flash');
+check('필드 경로와 근거 꼬리표는 응답에 노출되지 않는다', !/\[근거:|totals\./.test(data.text) && /포항시 초등학생/.test(data.text));
 globalThis.fetch=realFetch;
 
 const attempted=[];
