@@ -2,7 +2,7 @@
    응답이 불완전하면 현재 고정형과 직전 고정형으로 내려갑니다. */
 const MODELS = ['gemini-flash-latest','gemini-3.8-flash','gemini-3.7-flash'];
 const MAX_PROMPT = 12000;
-const SYSTEM_PROMPT = '당신은 경상북도 학령인구 공개 데이터를 일반 사용자가 이해하도록 돕는 데이터 해설자입니다. 입력은 현재 필터에 맞춘 JSON이며 입력에 없는 숫자를 만들지 마세요. 단순히 학생·학급·학교 합계를 되풀이하지 말고 actualTrend, scenarios, comparison, signals의 차이를 연결해 이번 조건에서만 성립하는 해석을 작성하세요. comparison.type이 school이면 학교 이름을 2곳 이상 언급하되 통폐합·위험 학교로 단정하지 말고 공개 실적의 확인 순서라고 표현하세요. comparison.type이 region이면 서로 다른 시군을 비교하세요. 반드시 다음 5개 제목을 순서대로 쓰세요: 이번 조건의 핵심 신호, 근거가 되는 비교, 산출 기준이 바뀌면, 다음 확인 자료, 분석 한계. 전체 글머리표는 8개 이상, 한국어 750~1,300자로 작성하고 최소 2개 문장 끝에 [근거: 입력의 필드명과 수치]를 붙이세요. 기준연도 실적과 공식 장래추계가 아닌 모의값을 명확히 구분하고 정책·사업 효과를 추정하거나 개인자료를 요구하지 마세요.';
+const SYSTEM_PROMPT = '당신은 경상북도 학령인구 공개 데이터를 일반 사용자가 이해하도록 돕는 데이터 해설자입니다. 입력은 현재 필터에 맞춘 JSON이며 입력에 없는 숫자를 만들지 마세요. 단순히 학생·학급·학교 합계를 되풀이하지 말고 actualTrend, scenarios, comparison, signals의 차이를 연결해 이번 조건에서만 성립하는 해석을 작성하세요. comparison.type이 school이면 학교 이름을 2곳 이상 언급하되 통폐합·위험 학교로 단정하지 말고 공개 실적의 확인 순서라고 표현하세요. comparison.type이 region이면 서로 다른 시군을 비교하세요. 반드시 다음 5개 제목을 순서대로 쓰세요: 이번 조건의 핵심 신호, 근거가 되는 비교, 산출 기준이 바뀌면, 다음 확인 자료, 분석 한계. 전체 글머리표는 8개 이상, 한국어 750~1,300자로 작성하세요. 숫자의 근거는 "2026년 공시 학생 수 22,431명" 또는 "2016~2025년 교육통계 실적"처럼 문장 안에서 자연어로 밝혀 주세요. 입력 JSON의 필드명·점으로 연결된 경로·배열 인덱스·코드·[근거: ...] 형식은 절대로 출력하지 마세요. 기준연도 실적과 공식 장래추계가 아닌 모의값을 명확히 구분하고 정책·사업 효과를 추정하거나 개인자료를 요구하지 마세요.';
 
 const headers = {
   'Content-Type': 'application/json; charset=utf-8',
@@ -24,13 +24,25 @@ function outputText(data){
     .join('')).trim();
 }
 
+export function sanitizeAnalysisText(value){
+  return String(value||'')
+    .replace(/```[\s\S]*?```/g,'')
+    .replace(/\[근거:[^\n]*\]/g,'')
+    .replace(/\b(?:totals|actualTrend|scenarios|comparison|signals|scope)\.[A-Za-z][A-Za-z0-9_.]*(?:\[\d+\])?/g,'')
+    .replace(/[ \t]+\n/g,'\n')
+    .replace(/[ \t]{2,}/g,' ')
+    .trim();
+}
+
 function outputQuality(text){
   const value=String(text||'').trim();
   const topics=['이번 조건의 핵심 신호','근거가 되는 비교','산출 기준이 바뀌면','다음 확인 자료','분석 한계'];
   const topicHits=topics.filter(topic=>value.includes(topic)).length;
   const bullets=(value.match(/(?:^|\n)\s*(?:[-*]|\d+[.)])\s+/g)||[]).length;
-  const evidence=(value.match(/\[근거:/g)||[]).length;
-  return {ok:value.length>=600&&topicHits>=4&&bullets>=8&&evidence>=2,length:value.length,topicHits,bullets,evidence};
+  const evidence=(value.match(/(?:\d[\d,]*\s*(?:명|개|교|%|년)|학교알리미|EDSS|교육통계)/g)||[]).length;
+  const machineSyntax=/\[근거:|\b(?:totals|actualTrend|scenarios|comparison|signals|scope)\.[A-Za-z]|```/.test(value);
+  return {ok:value.length>=600&&topicHits>=4&&bullets>=8&&evidence>=4&&!machineSyntax,
+    length:value.length,topicHits,bullets,evidence,machineSyntax};
 }
 
 async function requestAnalysis(model, apiKey, prompt){
@@ -83,7 +95,7 @@ export async function onRequestPost(context){
       return json({error:result.networkError?.name==='TimeoutError'?'분석 응답 시간이 초과되었습니다. 잠시 후 다시 시도하세요.':'분석 서비스에 연결하지 못했습니다.'},result.networkError?.name==='TimeoutError'?504:502);
     }
     const {upstream,data}=result;
-    const text=upstream.ok ? outputText(data) : '';
+    const text=upstream.ok ? sanitizeAnalysisText(outputText(data)) : '';
     if(text){
       const quality=outputQuality(text);
       const resolvedModel=data?.modelVersion || data?.model_version || data?.model || model;

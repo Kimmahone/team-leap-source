@@ -1315,6 +1315,13 @@ table.data .hl{color:var(--brand);font-weight:800}
 .mv-card{background:var(--card-2);border:1px solid var(--line);border-radius:var(--radius);padding:10px}
 .mv-card h2{margin:0 0 8px;font-size:11.5px;font-weight:700;color:var(--ink-2);letter-spacing:.04em}
 .mv-row{display:flex;flex-wrap:wrap;gap:6px}
+.mv-choro-years{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  margin-top:10px;padding-top:9px;border-top:1px solid var(--line-2)}
+.mv-choro-years[hidden]{display:none}
+.mv-choro-years label{font-size:11.5px;font-weight:700;color:var(--ink-2)}
+.mv-choro-years select{min-width:98px;padding:7px 9px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--ink);font:inherit;font-size:12px}
+.mv-choro-years select:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
 
 /* ── 학교 찾기 ─────────────────────────────────────────────────────────
    input[type=search] 는 브라우저가 제 나름의 모양(각진 테두리·지우기 단추)을
@@ -1574,7 +1581,8 @@ table.data .hl{color:var(--brand);font-weight:800}
   justify-content:center;font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;
   background:var(--leap-amber-mark);color:var(--leap-on-fill);border:2px solid var(--card);
   box-shadow:0 1px 5px rgba(16,26,36,.4)}
-@media print{.mapview{display:none}}
+/* WebGL 지도는 브라우저 인쇄 시 캔버스가 빈 종이가 될 수 있습니다.
+   현재 화면 인쇄는 화면을 먼저 그림으로 고정한 전용 지도를 사용합니다. */
 
 @media print{
   :root{
@@ -1665,6 +1673,21 @@ table.data .hl{color:var(--brand);font-weight:800}
   .marker{min-width:0;padding:2mm}
   .mapbox,.detail-map-box,.online-map{max-height:105mm;break-inside:avoid;page-break-inside:avoid}
   .news-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  /* 화면 출력도 표·차트의 의미 단위에서 장을 넘깁니다. 첫 장에 모든
+     내용을 억지로 이어 붙이지 않고, 다음 장은 독립된 소제목으로 시작합니다. */
+  .view .card,.view .panel{border-color:#cbd7e4;box-shadow:none}
+  .view .card h2,.view .panel .ph{color:#164f9d}
+  #status-panel-how .print-trend-section,
+  #status-panel-who .card + .card,
+  #sim-panel-detail .panel.pred{break-before:page;page-break-before:always}
+  #status-panel-how .era-row,#status-panel-how .bars,
+  #status-panel-who .cohort-wrap,#status-panel-who svg,
+  #sim-panel-overview .sim-change,#sim-panel-detail .panel .ph,
+  #view-news .news-item{
+    break-inside:avoid;page-break-inside:avoid}
+  #sim-panel-detail .panel{border:0;margin-bottom:0}
+  #sim-panel-detail .panel .ph{border-bottom:.5mm solid #164f9d;padding:2mm 0 3mm}
+  #sim-panel-detail .panel.pred{border-top:0}
   .criteria-guide{break-inside:avoid}.criteria-guide-grid{grid-template-columns:1fr 1fr}
   /* 종합 대시보드는 의미 단위로 장을 나눠 지도·학교목록이 따로 떨어지지 않게 합니다. */
   #home-summary-card,#home-kpi-card{break-inside:avoid;page-break-inside:avoid;margin-bottom:4mm}
@@ -1696,9 +1719,30 @@ table.data .hl{color:var(--brand);font-weight:800}
   a[href^="http"]::after{content:" (" attr(href) ")";font-size:8pt;color:#333}
   .print-only{display:block !important}
   /* 변화 요약은 전용 인쇄를 누를 때만 다른 화면을 대신해 인쇄합니다. */
-  #ai-print-report{display:none !important}
+  #ai-print-report,#map-print-report{display:none !important}
   body.print-ai-only .shell{display:none !important}
   body.print-ai-only #ai-print-report{display:block !important;position:relative;z-index:1}
+  body.print-map-only .shell{display:none !important}
+  body.print-map-only #map-print-report{display:block !important;position:relative;z-index:1}
+  body.print-map-only{--brand:#1B4FA0;--ink:#102033;--ink-2:#34465a;--line:#cbd7e4}
+  .map-print-page{width:100%;height:175mm;box-sizing:border-box;display:flex;flex-direction:column;
+    gap:3.5mm;break-inside:avoid;page-break-inside:avoid;color:#102033}
+  .map-print-head{display:flex;align-items:end;justify-content:space-between;gap:8mm;
+    border-bottom:.7mm solid #1B4FA0;padding-bottom:3mm}
+  .map-print-head h1{margin:0;font-size:17pt;color:#102033}
+  .map-print-head p{margin:1mm 0 0;font-size:8.5pt;color:#53677b}
+  .map-print-brand{font-size:8pt;color:#1B4FA0;font-weight:800;white-space:nowrap}
+  .map-print-scope{display:flex;justify-content:space-between;gap:5mm;font-size:8.5pt;
+    padding:2mm 3mm;background:#edf4fb;border-radius:2mm}
+  .map-print-scope b{color:#164f9d}
+  .map-print-frame{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;
+    overflow:hidden;border:1px solid #cbd7e4;background:#f4f7fb;border-radius:2mm}
+  .map-print-frame img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
+  .map-print-bottom{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:4mm;
+    font-size:8pt;line-height:1.35}
+  .map-print-bottom>div{border-top:.4mm solid #cbd7e4;padding-top:2mm}
+  .map-print-bottom b{display:block;margin-bottom:1mm;color:#164f9d}
+  .map-print-bottom p{margin:0}
   /* ★ 두 갈래를 함께 살립니다 〔2026. 9. 11.〕
      시뮬레이터 쪽에서 AI 인쇄의 «색»을 따로 잡아 주었고(아래 토큰 한 줄),
      이쪽에서는 워터마크를 ::before 에서 ::after 로 «위로» 옮겼습니다.
@@ -1707,13 +1751,18 @@ table.data .hl{color:var(--brand);font-weight:800}
      위쪽에서 이미 display:none 이라 그대로 두면 워터마크가 사라집니다. */
   body.print-ai-only{--brand:#164f9d;--brand-pale:#edf4fd;--over:#b9322a;--leap-teal:#087968;--ink:#101c2b;--ink-2:#3d4a5b;--ink-3:#657184;--line:#bfcddd;--line-2:#d9e2ec;--card:#fff;--card-2:#f4f7fb;--leap-on-fill:#fff}
   body.print-ai-only::after{background-size:62mm auto;opacity:.06}
-  body.print-ai-only .policy-report{max-width:none;width:100%;min-height:262mm;display:flex;flex-direction:column;font-size:7.5pt}
-  /* 화면용 grid의 마지막 해설은 인쇄 엔진에서 통째로 다음 장으로 넘어갑니다.
-     인쇄할 때만 한 줄 흐름으로 풀어 A4 한 장 안에서 자연스럽게 이어지게 합니다. */
-  body.print-ai-only .policy-report .report-body{flex:0 0 auto}
+  /* 첫 장은 지표·시각화, 둘째 장은 사람이 읽을 해설과 확인 자료입니다.
+     지난 출력물처럼 해설만 다음 장에 삐져나오는 일을 막습니다. */
+  body.print-ai-only .policy-report{max-width:none;width:100%;display:block;font-size:9pt}
+  body.print-ai-only .policy-report .report-body{display:block}
   body.print-ai-only .policy-report .ai-insight-board{display:block}
   body.print-ai-only .policy-report .ai-insight-board>*+*{margin-top:1.3mm}
-  body.print-ai-only .policy-report .ai-narrative{break-inside:auto;page-break-inside:auto;margin-top:1.3mm;padding-top:.6mm}
+  body.print-ai-only .policy-report .ai-narrative{break-before:page;page-break-before:always;
+    break-inside:auto;page-break-inside:auto;margin-top:0;padding-top:0}
+  body.print-ai-only .policy-report .ai-narrative-print-title{display:block;
+    border-bottom:.6mm solid #164f9d;padding-bottom:3mm;margin-bottom:5mm}
+  body.print-ai-only .policy-report .ai-narrative-print-title h2{margin:0;font-size:17pt;color:#102033}
+  body.print-ai-only .policy-report .ai-narrative-print-title p{margin:1mm 0 0;font-size:8.5pt;color:#53677b}
   body.print-ai-only .policy-report .ai-narrative ul,body.print-ai-only .policy-report .ai-narrative ol{break-inside:auto;page-break-inside:auto}
   body.print-ai-only .policy-report .report-cover{padding:9px 11px;margin-bottom:6px}
   body.print-ai-only .policy-report .report-brand img{width:27px;height:27px}
@@ -1730,9 +1779,11 @@ table.data .hl{color:var(--brand);font-weight:800}
   body.print-ai-only .policy-report .ai-scenario-list{gap:3px}
   body.print-ai-only .policy-report .ai-compare-head{margin-bottom:4px}
   body.print-ai-only .policy-report .ai-compare-note{margin-top:4px}
-  body.print-ai-only .policy-report .ai-narrative h3{margin-top:7px;font-size:11px}
-  body.print-ai-only .policy-report .ai-narrative p,body.print-ai-only .policy-report .ai-narrative li{font-size:8px;line-height:1.35}
-  body.print-ai-only .policy-report .report-note{margin-top:auto;padding-top:2mm;font-size:8px}
+  body.print-ai-only .policy-report .ai-narrative h3{margin-top:5mm;font-size:11pt}
+  body.print-ai-only .policy-report .ai-narrative p,body.print-ai-only .policy-report .ai-narrative li{font-size:9.5pt;line-height:1.5}
+  body.print-ai-only .policy-report .ai-insight-board>.ai-empty-note:last-child{display:none}
+  body.print-ai-only .policy-report .report-note{margin-top:6mm;padding-top:3mm;
+    border-top:.4mm solid #bfcddd;font-size:8.5pt;line-height:1.45}
   body.print-ai-only .policy-report .report-cover{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   body.print-ai-only .policy-report .ai-insight-hero{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   body.print-ai-only .policy-report .ai-compare-row i::after,body.print-ai-only .policy-report .trend-fill,body.print-ai-only .policy-report .trend-line{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -2508,7 +2559,7 @@ body.map-maxed.home-wide #home-side{display:none}
             <button type="button" class="chip" id="mv-bound" aria-pressed="true">시군 경계</button>
             <button type="button" class="chip" id="mv-ruler" aria-pressed="false">거리 재기</button>
             <button type="button" class="chip" id="mv-choropleth" aria-pressed="false"
-                    title="2016년 대비 선택 연도의 시군별 학생 수 변화율을 면 색으로 봅니다">시군 변화율</button>
+                    title="선택한 두 연도의 시군별 학생 수 변화율을 면 색으로 봅니다">시군 변화율</button>
             <button type="button" class="chip" id="mv-small-focus" aria-pressed="false"
                     title="적정규모 참고선 미달 학교 이름만 남기고 일반 학교는 점으로 봅니다">소규모만 강조</button>
           </div>
@@ -2523,12 +2574,17 @@ body.map-maxed.home-wide #home-side{display:none}
           <h2>연도</h2>
           <div class="year-slider" style="margin:0">
             <div class="year-head">
-              <label for="mv-year">연도</label><b id="mv-year-label">2026년</b>
+              <label for="mv-year" id="mv-year-title">연도</label><b id="mv-year-label">2026년</b>
               <span class="year-kind" id="mv-year-kind"></span>
             </div>
             <input type="range" id="mv-year" min="2016" max="2036" step="1" value="2026">
             <div class="year-ends"><span>2016</span><span>2026 현재</span><span>2036</span></div>
           </div>
+          <div class="mv-choro-years" id="mv-choro-years" hidden>
+            <label for="mv-choro-base-year">비교 시작연도</label>
+            <select id="mv-choro-base-year" aria-describedby="mv-choro-year-note"></select>
+          </div>
+          <p class="mv-note" id="mv-choro-year-note" hidden>두 연도의 시군 학생 수를 비교합니다. 2027년 이후는 공식 추계가 아닌 전망입니다.</p>
         </div>
 
         <div class="mv-card">
@@ -2721,7 +2777,7 @@ body.map-maxed.home-wide #home-side{display:none}
       </div>
 
       <!-- 연도별 추이 선 그래프 -->
-      <div style="margin-top:24px;border-top:1px solid var(--line-2);padding-top:20px">
+      <div class="print-trend-section" style="margin-top:24px;border-top:1px solid var(--line-2);padding-top:20px">
         <h3 style="font-size:14px;color:var(--brand);margin-bottom:10px;display:flex;align-items:center;gap:6px">
           <span id="trend-title">연도별 학령인구 추이</span>
         </h3>
@@ -3457,6 +3513,7 @@ body.map-maxed.home-wide #home-side{display:none}
 </div>
 
 <article id="ai-print-report" class="standalone-report print-only" aria-hidden="true"></article>
+<article id="map-print-report" class="standalone-report print-only" aria-hidden="true"></article>
 
 <!-- 캐시된 MapLibre가 즉시 열려도 mvStart보다 먼저 고도 프로토콜을 준비합니다. -->
 <script src="./assets/terrain-protocol.js"></script>
@@ -9468,7 +9525,7 @@ function printStamp(){
   return new Intl.DateTimeFormat('ko-KR',{dateStyle:'long',timeStyle:'short'}).format(new Date());
 }
 function finishPrintMode(){
-  document.body.classList.remove('print-ai-only');
+  document.body.classList.remove('print-ai-only','print-map-only');
   document.getElementById('print-page-mode').textContent='';
 }
 function runPrint(mode){
@@ -9477,8 +9534,82 @@ function runPrint(mode){
     ? '@media print{@page{size:A4 portrait;margin:20mm 20mm 15mm 20mm}}'
     : '@media print{@page{size:A4 landscape;margin:20mm 20mm 15mm 20mm}}';
   document.body.classList.toggle('print-ai-only',mode==='ai');
+  document.body.classList.toggle('print-map-only',mode==='map');
   window.addEventListener('afterprint',finishPrintMode,{once:true});
   if(typeof window.print==='function') window.print();
+}
+/* WebGL 캔버스는 기본값으로 한 프레임을 그린 뒤 픽셀을 지웁니다.
+   인쇄 직전에 다시 그리게 하고, 현재 보이는 DOM 이름표도 같은 좌표에
+   2D 그림으로 합쳐 종이에 웹 지도의 실제 모습이 남도록 합니다. */
+async function captureMapForPrint(){
+  const map=MV.map;
+  if(!map || !MV.ready) throw new Error('지도가 아직 준비되지 않았습니다.');
+  await new Promise(resolve=>{
+    let finished=false;
+    const done=()=>{if(finished)return;finished=true;resolve();};
+    setTimeout(done,1800);
+    try{map.once('render',done);map.triggerRepaint();}catch(_e){done();}
+  });
+  const source=map.getCanvas();
+  if(!source || source.width<16 || source.height<16) throw new Error('지도 화면을 읽을 수 없습니다.');
+  const snapshot=document.createElement('canvas');
+  snapshot.width=source.width;snapshot.height=source.height;
+  const ctx=snapshot.getContext('2d');
+  ctx.drawImage(source,0,0,snapshot.width,snapshot.height);
+  const rect=source.getBoundingClientRect();
+  const scale=snapshot.width/rect.width;
+  ctx.setTransform(scale,0,0,scale,0,0);
+  const markers=Array.from(document.querySelectorAll('#mv-canvas .maplibregl-marker'));
+  markers.forEach(el=>{
+    const style=getComputedStyle(el);
+    if(style.display==='none'||style.visibility==='hidden'||Number(style.opacity)===0)return;
+    const box=el.getBoundingClientRect();
+    if(box.right<rect.left||box.left>rect.right||box.bottom<rect.top||box.top>rect.bottom)return;
+    const label=el.querySelector('.mv-lab,.mv-bub,.mv-region-rate,.mv-nearchip,.mv-legchip')||el;
+    const title=label.querySelector('b')?.textContent?.trim()||'';
+    const value=label.querySelector('span')?.textContent?.trim()||'';
+    if(!title&&!value)return;
+    const x=box.left-rect.left,y=box.top-rect.top;
+    const width=Math.min(Math.max(box.width,ctx.measureText(title).width+26),168);
+    const height=value?37:23;
+    ctx.fillStyle='rgba(255,255,255,.95)';
+    ctx.strokeStyle='rgba(44,68,92,.38)';
+    ctx.lineWidth=1;
+    ctx.beginPath();ctx.roundRect(x,y,width,height,5);ctx.fill();ctx.stroke();
+    ctx.font='700 12px sans-serif';ctx.fillStyle='#102033';
+    ctx.fillText(title,x+7,y+15,width-14);
+    if(value){ctx.font='700 11px sans-serif';ctx.fillStyle=MV.choropleth?'#a72920':'#1B4FA0';
+      ctx.fillText(value,x+7,y+30,width-14);}
+  });
+  ctx.setTransform(1,0,0,1,0,0);
+  const uri=snapshot.toDataURL('image/png');
+  if(uri.length<5000) throw new Error('지도 그림이 비어 있습니다.');
+  return uri;
+}
+async function buildMapPrintReport(uri){
+  const scope=printScopeText();
+  const stats=(document.getElementById('mv-stats')?.innerText||'').replace(/\s+/g,' ').trim();
+  const legend=(document.getElementById('mv-legend')?.innerText||'').replace(/\s+/g,' ').trim();
+  const note=(document.getElementById('mv-legend-note')?.innerText||'').replace(/\s+/g,' ').trim();
+  const report=document.getElementById('map-print-report');
+  report.innerHTML=`<section class="map-print-page">
+    <header class="map-print-head"><div><h1>경북 학교 지도</h1><p>현재 화면의 지도와 조회 조건을 한 장에 담았습니다.</p></div><div class="map-print-brand">TEAM LEAP · 경북교육 AI Lab</div></header>
+    <div class="map-print-scope"><b>${htmlEsc(scope)}</b><span>${htmlEsc(printStamp())}</span></div>
+    <div class="map-print-frame"><img id="map-print-image" alt="${htmlEsc(scope)} 학교 지도 인쇄 그림"></div>
+    <div class="map-print-bottom"><div><b>화면 안 학생·학교</b><p>${htmlEsc(stats||'현재 지도 범위의 학교를 표시했습니다.')}</p></div>
+    <div><b>지도 범례·해석</b><p>${htmlEsc(legend)}</p><p>${htmlEsc(note)}</p></div></div>
+    <div class="map-print-bottom"><div><b>자료</b><p>학교알리미 2026 공시 · EDSS 교육통계 · 브이월드 배경지도 · AWS 지형 타일</p></div><div><b>읽을 때 주의</b><p>2027년 이후 학생 수는 모의 전망입니다. 시군 경계와 지도 표시는 정책 판정이 아닙니다.</p></div></div>
+  </section>`;
+  const image=report.querySelector('#map-print-image');
+  image.src=uri;
+  /* Chromium의 인쇄 대화상자가 이미지 디코딩보다 먼저 열리면 캔버스
+     스냅샷도 빈 칸으로 나옵니다. 준비가 끝난 뒤에만 인쇄합니다. */
+  if(typeof image.decode==='function') await image.decode();
+  else await new Promise((resolve,reject)=>{
+    if(image.complete && image.naturalWidth) return resolve();
+    image.onload=resolve;image.onerror=reject;
+  });
+  if(!image.naturalWidth) throw new Error('지도 그림을 불러오지 못했습니다.');
 }
 /* 이 종이가 «무엇을 담고 있는지»를 한 줄로. 화면마다 고른 것이 다릅니다.
    종이만 남았을 때 조건을 되짚을 수 있어야 합니다. 〔2026. 9. 10.〕 */
@@ -9494,7 +9625,8 @@ function printScopeText(){
     if(activeView === 'map'){
       const where = (typeof MV === 'object' && MV && MV.level !== '전체')
         ? ((LEVEL_CFG[MV.level] || {}).full || MV.level) : '전체 학교급';
-      return [`${MV.year}년`, where, MV.is3d ? '3D 지형' : '2D'].join(' · ');
+      const years=MV.choropleth ? `${MV.choroBaseYear}→${MV.year}년 변화율` : `${MV.year}년`;
+      return [years, where, MV.is3d ? '3D 지형' : '2D'].join(' · ');
     }
     /* ★ 시뮬레이터도 조건을 적습니다 〔2026. 9. 11.〕
        여섯 화면 가운데 여기만 «현재 화면의 조회 조건»이라고만 찍혀 나왔습니다.
@@ -9515,7 +9647,17 @@ function printScopeText(){
   return '현재 화면의 조회 조건';
 }
 
-function printCurrentView(){
+async function printCurrentView(){
+  if(activeView==='map'){
+    try{
+      const uri=await captureMapForPrint();
+      await buildMapPrintReport(uri);
+      runPrint('map');
+    }catch(error){
+      alert('지도를 인쇄할 그림으로 준비하지 못했습니다. 지도가 모두 뜬 뒤 다시 시도해 주세요. ('+error.message+')');
+    }
+    return;
+  }
   document.getElementById('print-report-title').textContent=VIEW_PRINT_NAMES[activeView]||'경북 학령인구 데이터 플랫폼';
   document.getElementById('print-report-subtitle').textContent=
     '화면에 보이던 것을 그대로 옮긴 출력물입니다. 값의 출처와 한계는 각 표 아래에 함께 실었습니다.';
@@ -9533,8 +9675,19 @@ function inlinePolicyMarkdown(value){
     .replace(/__([^_]+)__/g,'<strong>$1</strong>')
     .replace(/`([^`]+)`/g,'<code>$1</code>');
 }
+/* 이전 응답이나 캐시에 남아 있는 기계식 근거 표기도 화면과 종이에서
+   걷어 냅니다. 새 응답은 서버에서도 같은 형식을 제거합니다. */
+function humanizeAiText(value){
+  return String(value||'')
+    .replace(/```[\s\S]*?```/g,'')
+    .replace(/\[근거:[^\n]*\]/g,'')
+    .replace(/\b(?:totals|actualTrend|scenarios|comparison|signals|scope)\.[A-Za-z][A-Za-z0-9_.]*(?:\[\d+\])?/g,'')
+    .replace(/[ \t]+\n/g,'\n')
+    .replace(/[ \t]{2,}/g,' ')
+    .trim();
+}
 function policyMarkdown(value){
-  const lines=String(value||'').replace(/\r/g,'').split('\n');
+  const lines=humanizeAiText(value).replace(/\r/g,'').split('\n');
   let html='',list='';
   const close=()=>{if(list){html+=`</${list}>`;list='';}};
   lines.forEach(raw=>{
@@ -9624,7 +9777,7 @@ function aiInsightBoardHtml(text='',source='',meta={}){
   if(!data) return '<div class="ai-empty-note">현재 조건의 집계값을 준비하는 중입니다.</div>';
   const total=data.totals,studentDelta=total.studentChange,studentPct=total.studentChangePct;
   const classDelta=total.simulatedClasses-total.baseClasses,schoolDelta=total.simulatedSchools-total.baseSchools;
-  const narrative=text?`<div class="ai-narrative">${policyMarkdown(text)}</div>`:
+  const narrative=text?`<div class="ai-narrative"><div class="ai-narrative-print-title print-only"><h2>${htmlEsc(data.scope.region)} · 해석과 확인 자료</h2><p>숫자 뒤의 의미를 읽고, 정책 판단 전에 필요한 자료를 확인합니다.</p></div>${policyMarkdown(text)}</div>`:
     '<div class="ai-empty-note"><b>AI 해설 만들기</b>를 누르면 위 실적·학교·시나리오 근거에서 이번 조건에만 나타나는 차이와 다음 확인 항목을 덧붙입니다.</div>';
   return `<div class="ai-insight-board">
     ${aiAnalysisMetaHtml(source,meta)}
@@ -9657,6 +9810,7 @@ function policyReportHtml(text,source='ai',meta={}){
   </article>`;
 }
 function renderPolicyReport(text,source='ai',meta={}){
+  text=humanizeAiText(text);
   aiReportState={text,source,meta:{...meta}};
   const html=policyReportHtml(text,source,meta);
   document.getElementById('ai-output').innerHTML=aiInsightBoardHtml(text,source,meta);
@@ -11637,7 +11791,7 @@ const MV_HOME_VIEW = { center:[128.75, 36.35], zoom:7.6 };
 const MV = {
   loading:false, ready:false, failed:false,
   map:null, key:null,
-  base:'Base', level:'전체', q:'', year:HOME_BASE_YEAR,
+  base:'Base', level:'전체', q:'', year:HOME_BASE_YEAR, choroBaseYear:HOME_YEAR_MIN,
   closed:false, bound:true, choropleth:false, smallFocus:false, choroKey:null,
   ruler:false, rulerPts:[], rulerMarks:[],
   near:null, nearMarks:[], chips:[],
@@ -11725,8 +11879,8 @@ function mvStu(sc){ const r = schoolStudentsAt(sc, MV.year); return r.v == null 
 
 /* ── 시군 단계구분도 ─────────────────────────────────────────────────────
    다른 팀 참고 화면의 «소멸 위험도»는 예시값과 임의 계수로 만든 값이었습니다.
-   그 판정을 가져오지 않고, 우리 앱에 이미 있는 공개 학생 수로 2016년 대비
-   선택 연도의 실제 증감률만 계산합니다. 미래 연도는 기존 화면과 똑같이
+   그 판정을 가져오지 않고, 우리 앱에 이미 있는 학생 수로 선택한 두 연도의
+   증감률만 계산합니다. 미래 연도는 기존 화면과 똑같이
    「전망」이라고 밝힙니다. */
 function mvRegionValue(sggKey, year){
   return MV.level === '전체'
@@ -11745,7 +11899,7 @@ function mvChangeBand(rate){
   return { key:'deep', label:'20% 이상 감소', color:mvCss('--over', '#B3261E') };
 }
 function mvRegionChange(sggKey){
-  const fromYear = HOME_YEAR_MIN, toYear = Number(MV.year);
+  const fromYear = Number(MV.choroBaseYear), toYear = Number(MV.year);
   const from = mvRegionValue(sggKey, fromYear);
   const to = mvRegionValue(sggKey, toYear);
   const valid = from && to && from.v != null && to.v != null && Number(from.v) > 0;
@@ -12279,7 +12433,7 @@ function mvRefreshChoropleth(force){
   if(!map || !map.getLayer || !map.getLayer('mv-region')) return;
   try{
     map.setLayoutProperty('mv-region', 'visibility', MV.choropleth ? 'visible' : 'none');
-    const key = MV.level + '|' + MV.year;
+    const key = MV.level + '|' + MV.choroBaseYear + '|' + MV.year;
     if(MV.choropleth && (force || MV.choroKey !== key)){
       const src = map.getSource('mv-region');
       if(src && src.setData) src.setData(mvRegionGeo());
@@ -12686,6 +12840,23 @@ function mvBuildChips(){
   mvRenderLegend();
 }
 
+function mvSyncChoroplethYears(){
+  const group=document.getElementById('mv-choro-years');
+  const note=document.getElementById('mv-choro-year-note');
+  const title=document.getElementById('mv-year-title');
+  const slider=document.getElementById('mv-year');
+  const base=document.getElementById('mv-choro-base-year');
+  if(group)group.hidden=!MV.choropleth;
+  if(note)note.hidden=!MV.choropleth;
+  if(title)title.textContent=MV.choropleth?'비교연도':'연도';
+  if(base)base.value=String(MV.choroBaseYear);
+  if(slider){
+    slider.min=String(MV.choropleth?MV.choroBaseYear+1:HOME_YEAR_MIN);
+    slider.max=String(HOME_YEAR_MAX);
+    slider.value=String(MV.year);
+  }
+}
+
 function mvRenderLegend(){
   const el = document.getElementById('mv-legend');
   const note = document.getElementById('mv-legend-note');
@@ -12695,7 +12866,7 @@ function mvRenderLegend(){
   if(MV.choropleth){
     const samples = [-25, -15, -5, 1, null];
     out += `<strong class="mv-legend-title">시군 ${htmlEsc(mvRegionLevelLabel())} 변화 · ` +
-      `${HOME_YEAR_MIN}→${MV.year}년</strong>`;
+      `${MV.choroBaseYear}→${MV.year}년</strong>`;
     out += samples.map(rate => {
       const band = mvChangeBand(rate);
       return `<span><i class="area" style="background:${band.color}"></i>${band.label}</span>`;
@@ -12713,7 +12884,8 @@ function mvRenderLegend(){
     if(MV.choropleth){
       const sample = SIGUNGU.length ? mvRegionChange(SIGUNGU[0].s) : {rate:null};
       if(sample.rate == null) msgs.push(`${mvRegionLevelLabel()}은 두 연도를 비교할 시군 자료가 없어 회색으로 표시합니다.`);
-      else if(Number(MV.year) > HOME_BASE_YEAR) msgs.push('면 색의 선택 연도 값은 기존 학생 수 전망이며 공식 장래추계가 아닙니다.');
+      else if(Number(MV.year) > HOME_BASE_YEAR || Number(MV.choroBaseYear) > HOME_BASE_YEAR)
+        msgs.push('면 색에 쓰인 미래 연도 학생 수는 모의 전망이며 공식 장래추계가 아닙니다.');
       else msgs.push('면 색은 소멸 판정이 아니라 공개 학생 수의 실제 증감률입니다. 시군을 누르면 정확한 수가 나옵니다.');
     }
     if(MV.smallFocus)
@@ -12823,6 +12995,7 @@ async function mvStart(){
   try{
   map = new maplibregl.Map({
     container:'mv-canvas',
+    preserveDrawingBuffer:true,
     style:{ version:8, sources, layers },
     center: MV_HOME_VIEW.center, zoom: MV_HOME_VIEW.zoom,
     minZoom:6, maxZoom:18, maxPitch:75,
@@ -13022,6 +13195,12 @@ function mvWireControls(){
   on('mv-choropleth', () => {
     MV.choropleth = !MV.choropleth;
     document.getElementById('mv-choropleth').setAttribute('aria-pressed', String(MV.choropleth));
+    if(MV.choropleth && MV.year<=MV.choroBaseYear){
+      MV.year=MV.choroBaseYear+1;
+      const slider=document.getElementById('mv-year');
+      if(slider){slider.value=String(MV.year);slider.dispatchEvent(new Event('input'));}
+    }
+    mvSyncChoroplethYears();
     MV.choroKey = null;
     mvRefreshChoropleth(true); mvRenderLegend(); mvDraw();
   });
@@ -13041,10 +13220,29 @@ function mvWireControls(){
   on('mv-ruler-clear', mvRulerClear);
 
   const yr = document.getElementById('mv-year');
+  const baseYear=document.getElementById('mv-choro-base-year');
+  if(baseYear){
+    baseYear.innerHTML=Array.from({length:HOME_YEAR_MAX-HOME_YEAR_MIN},(_v,i)=>HOME_YEAR_MIN+i)
+      .map(y=>`<option value="${y}">${y}년</option>`).join('');
+    baseYear.value=String(MV.choroBaseYear);
+    baseYear.addEventListener('change',()=>{
+      MV.choroBaseYear=Number(baseYear.value);
+      if(MV.year<=MV.choroBaseYear){
+        MV.year=MV.choroBaseYear+1;
+        if(yr){yr.value=String(MV.year);yr.dispatchEvent(new Event('input'));}
+      }
+      mvSyncChoroplethYears();
+      MV.choroKey=null;
+      mvRefreshChoropleth(true);mvRenderLegend();mvDraw();
+    });
+  }
   if(yr){
     yr.min = HOME_YEAR_MIN; yr.max = HOME_YEAR_MAX; yr.value = MV.year;
     yr.addEventListener('input', () => {
       MV.year = Number(yr.value);
+      if(MV.choropleth && MV.year<=MV.choroBaseYear){
+        MV.year=MV.choroBaseYear+1;yr.value=String(MV.year);
+      }
       const lab = document.getElementById('mv-year-label');
       const kind = document.getElementById('mv-year-kind');
       if(lab) lab.textContent = MV.year + '년';
@@ -13058,6 +13256,7 @@ function mvWireControls(){
     });
     yr.dispatchEvent(new Event('input'));
   }
+  mvSyncChoroplethYears();
 
   const q = document.getElementById('mv-search');
   if(q){
