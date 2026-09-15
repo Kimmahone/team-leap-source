@@ -1,6 +1,6 @@
 # API 키 보관 위치
 
-갱신: 2026-09-09
+갱신: 2026-09-15
 
 상세한 담당 역할·교체 순서·오류별 조치는 [API 키 갱신 매뉴얼](./06.%20실행계획(1)/00.%20운영문서/02_API키_갱신_매뉴얼.md)을 기준으로 합니다.
 
@@ -18,6 +18,7 @@
 | 서비스 | 환경변수 | 현재 용도 |
 |---|---|---|
 | Gemini | `GEMINI_API_KEY` | Cloudflare의 AI 분석 중계 |
+| 브이월드 | `VWORLD_API_KEY` | Cloudflare 지도 중계. ClassPlan/Google Cloud 키가 아니라 브이월드 발급 키 |
 | 학교알리미 | `SCHOOLINFO_API_KEY` | 학교·학생·교원 자료 갱신 |
 | EDSS 학교속성 | `EDSS_SCHOOL_ATTRIBUTE_API_KEY` | 학교코드·학교급·시군 기준정보 |
 | EDSS 학생·학급 등 | API별 `EDSS_…_API_KEY` | 학교·학년·연도별 학생·학급 시계열, 개황·위치정보 교차검증 |
@@ -30,13 +31,34 @@
 
 ## 지금 어디에 등록할지
 
-Cloudflare에는 화면 실행에 필요한 아래 세 묶음만 암호화된 Secret으로 등록한다.
+Cloudflare에는 화면 실행에 필요한 아래 키를 암호화된 Secret으로 등록한다.
 
 ```text
 GEMINI_API_KEY
+VWORLD_API_KEY
 SGIS_CONSUMER_KEY
 SGIS_CONSUMER_SECRET
 ```
+
+`SGIS_CONSUMER_SECRET`은 현재 지도 코드가 읽지 않는 선택 항목이다.
+
+**ClassPlan/Google Cloud API 키는 이 대시보드에서 `GEMINI_API_KEY` 한 종류만 사용한다.**
+ClassPlan에서 두 키를 새로 발급하더라도 두 번째 키의 사용 API를 확인하기 전에는
+`VWORLD_API_KEY`나 `SGIS_CONSUMER_KEY`에 넣지 않는다. 두 이름은 각각 다른 발급기관의 키다.
+Google Cloud 프로젝트 자체가 정지된 동안에는 키를 교체해도 Gemini 호출은 복구되지 않는다.
+
+새 Gemini 키를 운영에 넣을 때는 **Cloudflare Workers & Pages → `team-leap` →
+Settings → Variables and Secrets → Production → `GEMINI_API_KEY` → Edit/Replace(없으면 Add)
+→ Secret/Encrypt → Save** 순서다. PR 미리보기에서도 AI 해설을 확인하려면
+**`team-leap-source`의 Preview** 환경에 같은 이름으로 따로 등록한다.
+변경 후 해당 환경의 Deployments에서 **Retry deployment**로 새 배포를 만들어야 반영된다.
+지도 확인만 하려면 Gemini 키는 없어도 된다.
+
+로컬 Pages Functions 개발에서는 프로젝트 루트의 `.dev.vars`에
+`GEMINI_API_KEY=새로_발급한_키`를 넣는다. 이 파일은 Git에서 제외되어 있다.
+`file:///`로 HTML을 직접 열거나 단순 정적 HTTP 서버로만 열면 Pages Functions가
+실행되지 않으므로, `.dev.vars`에 키를 넣어도 지도 중계나 AI 중계는 동작하지 않는다.
+실제 키는 이 문서, `.dev.vars.example`, HTML, GitHub 커밋·PR에 적지 않는다.
 
 > **Cloudflare 쪽은 프로젝트도 둘, 환경도 둘이다.** 프로덕션에 넣은 값은 PR 미리보기에
 > 적용되지 않는다. 아래 [Cloudflare는 프로젝트가 둘, 환경이 둘이다](#cloudflare는-프로젝트가-둘-환경이-둘이다-2026-09-09-추가)를 먼저 읽는다.
@@ -160,6 +182,7 @@ SGIS Developers → 인증키발급센터 → 나의 인증키 표에서 가져�
 |---|---|---|---|
 | EDSS 7개 · 학교알리미 · KOSIS · 유치원알리미 · 네이버 · `DEPLOY_PAT` | **필요** | 불필요 | 불필요 |
 | `SGIS_CONSUMER_KEY` | 불필요 | **필요** | **미리보기에서 지도를 보려면 필요** |
+| `VWORLD_API_KEY` | 불필요 | **필요** | **미리보기에서 브이월드 지도를 보려면 필요** |
 | `GEMINI_API_KEY` | 불필요 | **필요** | 선택 |
 
 **굽는 키는 Actions, 화면이 실행 중에 읽는 키는 Cloudflare.** 이 한 줄이 기준이다.
