@@ -860,8 +860,15 @@ check('좌표가 없는 학교는 지도로 보내지 않고 그렇다고 말한
   /좌표가 없어 지도에 표시할 수 없습니다/.test(js));
 check('간편 지도 핀이 자기 화면좌표를 가지고 있다',
   /data-mx=/.test(js) && /detailMapPts\.set/.test(js));
+check('간편 지도도 같은 이름의 다른 시군 학교를 식별값으로 구분한다',
+  /detailMapPts\.set\(sid, \{ x: px, y: py \}\)/.test(js) &&
+  /const s = findSchoolByKey\(id\)/.test(js));
 check('실제 지도 마커를 이름으로 찾을 수 있다',
   /sgisMarkers\.set\(schoolKey\(s\), marker\)/.test(js) && /sgisMarkers\.clear\(\)/.test(js));
+check('이름과 학교급이 같아도 시군이 다르면 서로 다른 학교로 고른다', q(
+  "(function(){var a=SCHOOLS.find(function(s){return s.name==='용흥초등학교'&&s.s==='포항';});" +
+  "var b=SCHOOLS.find(function(s){return s.name==='용흥초등학교'&&s.s==='문경';});" +
+  "return !!a&&!!b&&schoolKey(a)!==schoolKey(b)&&findSchoolByKey(schoolKey(a))===a&&findSchoolByKey(schoolKey(b))===b;})()") === true);
 
 console.log('\n■ 지도가 배율에 따라 «세는 단위»를 바꾼다');
 /* ★ 〔2026. 9. 9.〕 예전에는 어느 배율에서나 학교를 낱개로 찍었습니다.
@@ -1470,6 +1477,9 @@ check('화면을 열 때만 MapLibre 를 부른다 (다른 화면에 800KB 를 �
   /name === 'map' && typeof mvOpen === 'function'/.test(js));
 check('라이브러리를 못 받으면 그렇다고 말한다 (조용히 빈 화면이 되지 않는다)',
   /지도 라이브러리를 불러오지 못했습니다/.test(js));
+check('캐시 재방문에서도 고도 프로토콜이 지도 시작보다 먼저 준비된다',
+  html.indexOf('<script src="./assets/terrain-protocol.js"></script>') <
+  html.indexOf("<script>\n'use strict';"));
 check('인증키는 HTML 에 없고 서버에서 받는다',
   /fetch\('\/api\/vworld-key'\)/.test(js) && !/VWORLD_API_KEY\s*=\s*'/.test(js));
 check('키가 없어도 학교와 경계는 그린다', /학교 위치와 시군 경계는 그대로입니다/.test(js));
@@ -1543,6 +1553,56 @@ check('시군 경계 — 간편 지도와 «같은 자료»를 쓴다',
 check('경계가 실제 위경도로 펴진다', q(
   "(function(){var f=mvBoundGeo().features;if(!f.length)return false;" +
   "var c=f[0].geometry.coordinates[0];return c[0]>124&&c[0]<132&&c[1]>34&&c[1]<38;})()") === true);
+
+console.log('\n■ 지도 — 실제 공개값으로 시군 단계구분도를 켠다');
+check('단계구분도는 선택 기능이며 기본은 꺼져 있다',
+  /id="mv-choropleth"[^>]*aria-pressed="false"/.test(html) &&
+  /choropleth:false/.test(js));
+check('경계 선과 같은 2018 통계경계를 면으로 닫아 쓴다', q(
+  "(function(){var g=mvRegionGeo(),f=g.features;if(!f.length)return false;" +
+  "return f.every(function(x){var r=x.geometry.coordinates[0],a=r[0],b=r[r.length-1];" +
+  "return x.geometry.type==='Polygon'&&a[0]===b[0]&&a[1]===b[1];});})()") === true);
+check('시군 22곳이 단계구분도에서 빠지지 않는다', q(
+  "(function(){var s={};mvRegionGeo().features.forEach(function(f){s[f.properties.s]=1;});" +
+  "return Object.keys(s).length;})()") === 22);
+check('임의 위험계수 대신 2016년과 선택 연도 공개값을 직접 비교한다', q(
+  "(function(){var l=MV.level,y=MV.year;MV.level='전체';MV.year=2025;" +
+  "var m=mvRegionChange('포항'),a=regionTotalStudents('포항',2016).v,b=regionTotalStudents('포항',2025).v;" +
+  "MV.level=l;MV.year=y;return m.from===a&&m.to===b&&Math.abs(m.rate-(b-a)/a*100)<1e-9;})()") === true &&
+  !/ACCEL|effM/.test(js));
+check('면 색은 감소 단계·증가·자료 없음을 글자 범례와 함께 구분한다',
+  /20% 이상 감소/.test(js) && /10~20% 감소/.test(js) && /0~10% 감소·유지/.test(js) &&
+  /label:'증가'/.test(js) && /label:'자료 없음'/.test(js));
+check('시군을 누르면 기준값·선택값·증감률을 정확한 수로 보여 준다',
+  /map\.on\('click', 'mv-region'/.test(js) && /function mvRegionPopupHtml/.test(js) &&
+  /\$\{m\.fromYear\}년 \$\{fmt\(m\.from\)\}명 → \$\{m\.toYear\}년 \$\{fmt\(m\.to\)\}명/.test(js));
+check('단계구분도는 별도 높이를 만들지 않고 기존 3D 지형 위에 면만 얹는다',
+  /id:'mv-region', type:'fill', source:'mv-region'/.test(js) &&
+  /평지·도로를 다시 부풀리는 왜곡을 추가하지 않습니다/.test(js));
+check('단계구분도를 켜면 시군 버블을 중복해서 얹지 않는다',
+  /if\(MV\.choropleth\)\{/.test(js) &&
+  /el\.className = 'mv-region-rate ' \+ metric\.band\.key/.test(js) &&
+  /\}else\{\s*Object\.keys\(by\)/.test(js) &&
+  /el\.className = 'mv-bub'/.test(js));
+
+console.log('\n■ 지도 — 기준 미달 소규모 학교만 이름을 고정한다');
+check('소규모 강조는 선택 기능이며 기본은 꺼져 있다',
+  /id="mv-small-focus"[^>]*aria-pressed="false"/.test(html) && /smallFocus:false/.test(js));
+check('새 임계값을 만들지 않고 기존 학교 규모 판정을 그대로 쓴다',
+  /function mvSmallStatus/.test(js) && /schoolSizeOf\(Object\.assign\(\{\}, sc, \{ stu:v \}\)\)/.test(js) &&
+  /status\.key === 'minimum' \|\| status\.key === 'small'/.test(js));
+check('기준 미달 학교는 경고 이름표, 일반 학교는 작은 점이다',
+  /'mv-lab' \+ \(smallStatus \? ' is-small' : ''\)/.test(js) &&
+  /class="mv-alert"/.test(js) && /el\.className = 'mv-dot'/.test(js) && /\.mv-dot\{/.test(html));
+check('강조 모드에서는 핀 배율에서도 작은 학교 이름을 유지한다',
+  /\(tier === 'label' && !MV\.smallFocus\) \|\| !!smallStatus \|\| !!picked/.test(js));
+check('고른 일반 학교는 점에서 이름표로 펴져 선택 결과를 확인할 수 있다',
+  /\|\| !!picked/.test(js) && /picked \? '800'/.test(js));
+check('렌더링 상한에서 작은 학교를 먼저 남긴다',
+  /if\(MV\.smallFocus\)[\s\S]{0,220}?mvSmallStatus\(a\)[\s\S]{0,220}?return cf - af/.test(js));
+check('소규모 강조 기준과 일반 학교 점 처리를 범례에서 설명한다',
+  /동 60명·읍면 30명 적정규모 참고선 미달 학교 이름만 고정/.test(js) &&
+  /일반 학교는 점으로 남깁니다/.test(js));
 check('거리 재기 — SGIS 가 주던 자를 새로 만들었다',
   /id="mv-ruler"/.test(html) && /function mvRulerAdd/.test(js) && /function mvRulerLegs/.test(js));
 /* 통학 길은 한 번에 곧게 가지 않습니다 — 꺾이는 자리마다 찍어야 실제에 가까워집니다. */
@@ -1583,7 +1643,7 @@ check('유치원·특수학교는 초·중·고에 더하지 않고 따로 적�
   /유치원 <b>\$\{fmt\(by\['유'\]\.stu\)\}<\/b>/.test(js) &&
   /특수학교 <b>\$\{fmt\(by\['특수'\]\.stu\)\}<\/b>/.test(js));
 check('큰 학교의 이름표가 작은 학교에 가리지 않는다',
-  /String\(Math\.min\(400, Math\.round\(\(mvStu\(sc\) \|\| 0\) \/ 5\)\)\)/.test(js));
+  /labelMode \? String\(Math\.min\(400, Math\.round\(\(v \|\| 0\) \/ 5\)\)\)/.test(js));
 /* 누른 것이 뒤에 가리면, 눌렀는데 아무 일도 안 일어난 것처럼 보입니다. */
 check('고른 학교는 무조건 맨 앞이다', /const picked = selectedSchoolKey && schoolKey\(sc\) === selectedSchoolKey/.test(js) &&
   /picked \? '800'/.test(js));
@@ -2116,9 +2176,9 @@ console.log('\n■ 같은 자리에 겹친 학교를 위로 쌓는다');
    고쳐서 8.6km 어긋나던 것을 바로잡았습니다. 그 대신 이름표가 정확히
    포개져 아래 것이 보이지 않게 되었습니다. */
 check('좌표를 흔들지 않고 그리는 자리만 올린다',
-  /좌표를 흔들어 놓지는 않습니다/.test(js) && /offset: \[0, \(tier === 'label' \? -6 : 0\) - idx \* step\]/.test(js));
+  /좌표를 흔들어 놓지는 않습니다/.test(js) && /offset: \[0, \(labelMode \? -6 : 0\) - idx \* step\]/.test(js));
 check('픽셀로 올려 아무리 확대해도 같은 만큼 떨어진다',
-  /const step = tier === 'label' \? 40 : 30/.test(js));
+  /const step = MV\.smallFocus \? 40 : \(tier === 'label' \? 40 : 30\)/.test(js));
 check('쌓는 차례를 학교급으로 고정한다 (움직일 때마다 바뀌면 어지럽다)',
   /const LV_ORDER = \{ 초:0, 중:1, 고:2, 특수:3, 유:4 \}/.test(js));
 check('병설은 본교와 같은 자리라고 말풍선이 적는다',
@@ -2256,7 +2316,7 @@ console.log('\n■ 말풍선이 맨 앞에 오고, 딱지를 덮지 않고, 밝�
    말풍선은 «누른 결과»이므로 무엇보다 앞이어야 합니다. */
 check('말풍선이 딱지보다 앞이다', /\.mv-map \.maplibregl-popup\{z-index:1200\}/.test(html));
 check('누른 딱지를 덮지 않게 위로 띄운다',
-  /const lift = \(tier === 'label' \? 34 : 32\) \+ idx \* step/.test(js) &&
+  /const lift = \(labelMode \? 34 : \(MV\.smallFocus \? 14 : 32\)\) \+ idx \* step/.test(js) &&
   /anchor: 'bottom', offset: \[0, -lift\]/.test(js));
 /* MapLibre 가 흰 바탕·검은 글씨를 제 스타일로 박아 넣어, 어두운 화면에서
    혼자 하얬습니다. 꼬리도 함께 물들여야 흰 삼각형만 남지 않습니다. */
@@ -2479,7 +2539,7 @@ check('조건 바꾸기는 해시를 함께 바꿔 지도 메뉴를 다시 누�
   /function goView\(name\)\{[\s\S]*?location\.hash=hash/.test(mapPolicy) &&
   /\$\('mp-go-sim'\)\.onclick=\(\)=>\{setPanel\(false\);goView\('sim'\);\}/.test(mapPolicy));
 check('병설유치원과 본교 이름표 간격은 상자 높이보다 크다',
-  /const step = tier === 'label' \? 40 : 30/.test(js));
+  /const step = MV\.smallFocus \? 40 : \(tier === 'label' \? 40 : 30\)/.test(js));
 
 check('지역 여건 모듈은 로드하지 않는다', !/assets\/map-context/.test(html));
 

@@ -1367,6 +1367,12 @@ table.data .hl{color:var(--brand);font-weight:800}
 .mv-legend span{display:flex;align-items:center;gap:6px;min-width:0}
 .mv-legend i{width:9px;height:9px;border-radius:50%;flex:none}
 .mv-legend i.sq{border-radius:2px;background:transparent;border:1.5px dashed var(--ink-3)}
+.mv-legend i.area{border-radius:2px;border:1px solid color-mix(in srgb,var(--ink) 22%,transparent)}
+.mv-legend-title{grid-column:1/-1;font-size:10.5px;color:var(--ink-3);font-weight:700;
+  letter-spacing:.03em;margin-top:1px}
+.mv-legend-wide{grid-column:1/-1}
+.mv-legend .warn-dot{display:grid;place-items:center;width:15px;height:15px;border-radius:50%;
+  background:var(--over);color:var(--leap-on-fill);font-size:10px;font-style:normal;font-weight:900}
 
 /* ── 글씨 ───────────────────────────────────────────────────────────── */
 .mv-note{margin:0;font-size:11.5px;color:var(--ink-3);line-height:1.65}
@@ -1453,6 +1459,12 @@ table.data .hl{color:var(--brand);font-weight:800}
 .mv-pin:hover svg,.mv-pin:focus-visible svg{transform:scale(1.28);transform-origin:50% 100%}
 .mv-pin.is-on{filter:drop-shadow(0 2px 5px rgba(16,26,36,.55))}
 .mv-pin.is-on svg{transform:scale(1.2);transform-origin:50% 100%}
+/* 소규모 강조를 켜면 일반 학교는 지도 위치만 남깁니다. 이름표를 모두 지우는
+   필터가 아니라, 검토할 학교만 읽히게 만드는 정보 밀도 조절입니다. */
+.mv-dot{width:10px;height:10px;border-radius:50%;background:var(--pin,var(--brand));
+  border:2px solid var(--card);box-shadow:0 1px 4px rgba(16,26,36,.42);cursor:pointer}
+.mv-dot:hover,.mv-dot:focus-visible,.mv-dot.is-on{z-index:700;transform:scale(1.45);
+  box-shadow:0 0 0 2px var(--brand),0 2px 6px rgba(16,26,36,.42)}
 /* 이름표 — 네이버 부동산처럼 «아래로 꼬리»가 있어야 어느 점을 가리키는지
    한눈에 보입니다. 꼬리가 없으면 그냥 떠 있는 상자로 읽힙니다. */
 .mv-lab{position:relative;display:flex;align-items:center;gap:5px;white-space:nowrap;cursor:pointer;
@@ -1475,6 +1487,10 @@ table.data .hl{color:var(--brand);font-weight:800}
 .mv-lab.is-on{border-color:var(--brand);box-shadow:0 0 0 2px var(--brand)}
 .mv-lab.is-on::after{border-top-color:var(--brand)}
 .mv-lab .sg{flex:none;display:block}
+.mv-lab.is-small{border-color:var(--over);box-shadow:0 2px 9px rgba(179,38,30,.24)}
+.mv-lab.is-small::after{border-top-color:var(--over)}
+.mv-lab .mv-alert{display:grid;place-items:center;width:15px;height:15px;border-radius:50%;
+  background:var(--over);color:var(--leap-on-fill);font-size:10px;font-style:normal;font-weight:900;flex:none}
 /* 시군 묶음도 같은 결로 */
 .mv-bub{transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease}
 .mv-bub:hover{border-color:var(--brand);transform:scale(1.06);
@@ -1490,6 +1506,14 @@ table.data .hl{color:var(--brand);font-weight:800}
   text-align:center;box-shadow:0 2px 10px rgba(16,26,36,.22);cursor:pointer;white-space:nowrap;color:var(--ink)}
 .mv-bub b{display:block;font-size:12px;font-weight:700}
 .mv-bub span{display:block;font-variant-numeric:tabular-nums;font-size:11.5px;color:var(--brand);font-weight:600}
+/* 단계구분도를 켰을 때는 시군 버블 대신 면 위에 숫자만 작게 둡니다.
+   지도 자체가 색을 말하므로 카드형 말풍선을 22개 더 얹지 않습니다. */
+.mv-region-rate{pointer-events:none;text-align:center;white-space:nowrap;color:var(--ink);
+  text-shadow:-1px -1px 0 var(--card),1px -1px 0 var(--card),-1px 1px 0 var(--card),
+    1px 1px 0 var(--card),0 0 5px var(--card);font-size:10.5px;line-height:1.2}
+.mv-region-rate b{display:block;font-size:11.5px;font-weight:800}
+.mv-region-rate span{display:block;font-weight:900;font-variant-numeric:tabular-nums}
+.mv-region-rate.missing span{color:var(--ink-3);font-weight:700}
 /* 폐교는 «비어 있는 네모»입니다 — 살아 있는 학교의 둥근 점과 한눈에 갈립니다.
    ※ transform 은 쓰지 않습니다. MapLibre 가 딱지를 놓을 때 같은 자리에
      transform:translate 를 적어 넣어 서로 덮어씁니다 (마름모가 되지 않습니다). */
@@ -2483,6 +2507,10 @@ body.map-maxed.home-wide #home-side{display:none}
             <button type="button" class="chip" id="mv-closed" aria-pressed="false">폐교 겹쳐 보기</button>
             <button type="button" class="chip" id="mv-bound" aria-pressed="true">시군 경계</button>
             <button type="button" class="chip" id="mv-ruler" aria-pressed="false">거리 재기</button>
+            <button type="button" class="chip" id="mv-choropleth" aria-pressed="false"
+                    title="2016년 대비 선택 연도의 시군별 학생 수 변화율을 면 색으로 봅니다">시군 변화율</button>
+            <button type="button" class="chip" id="mv-small-focus" aria-pressed="false"
+                    title="적정규모 참고선 미달 학교 이름만 남기고 일반 학교는 점으로 봅니다">소규모만 강조</button>
           </div>
           <div class="mv-row" style="margin-top:6px">
             <button type="button" class="chip" id="mv-ruler-undo" hidden>⌫ 한 점 지우기</button>
@@ -2529,7 +2557,7 @@ body.map-maxed.home-wide #home-side{display:none}
         <div class="mv-card">
           <h2>범례</h2>
           <div class="mv-legend" id="mv-legend"></div>
-          <p class="mv-note" style="margin-top:9px">멀리서는 시군으로 접히고, 확대하면
+          <p class="mv-note" id="mv-legend-note" style="margin-top:9px">멀리서는 시군으로 접히고, 확대하면
           학교마다 이름과 학생 수가 섭니다. 다섯 색은 명도가 비슷해 색만으로는
           갈리지 않으므로 이름을 함께 적습니다.</p>
         </div>
@@ -3430,6 +3458,8 @@ body.map-maxed.home-wide #home-side{display:none}
 
 <article id="ai-print-report" class="standalone-report print-only" aria-hidden="true"></article>
 
+<!-- 캐시된 MapLibre가 즉시 열려도 mvStart보다 먼저 고도 프로토콜을 준비합니다. -->
+<script src="./assets/terrain-protocol.js"></script>
 <script>
 'use strict';
 
@@ -7180,10 +7210,14 @@ let detailMapState = { zoom: 1, cx: 310, cy: 150 };
    그 학교가 어디 있는지는 지도를 눈으로 훑어 찾아야 했습니다.
    실제 위치 지도와 간편 지도 «양쪽» 모두에서 되어야 합니다 —
    한쪽만 되면 사람은 그 기능이 있는 줄 모릅니다. */
-const detailMapPts = new Map();   // 학교이름 → 간편 지도 안의 화면좌표
-const sgisMarkers  = new Map();   // 학교이름|급 → 실제 지도 마커
+const detailMapPts = new Map();   // 학교 식별값 → 간편 지도 안의 화면좌표
+const sgisMarkers  = new Map();   // 시군|급|학교|주소 → 실제 지도 마커
 
-function schoolKey(s){ return s.name + '|' + s.lv; }
+/* 같은 이름의 학교가 다른 시군에 실제로 있습니다(예: 포항·문경 용흥초).
+   이름과 급만 쓰면 다른 학교를 고른 뒤에도 먼저 나온 학교 상세가 열립니다. */
+function schoolKey(s){
+  return [s.s || '', s.lv || '', s.name || '', s.addr || ''].join('|');
+}
 
 /* ══ 학교로 간 «뒤», 보던 자리로 돌아오는 길 〔2026. 9. 7.〕 ═══════════════
    목록에서 학교를 누르면 지도가 그 학교로 확대해 들어갑니다. 그런데 나오는
@@ -7254,7 +7288,8 @@ function clearMapReturn(){ mapReturn = null; showMapBack(false); }
 
 /* 간편 지도(SVG)를 그 학교 자리로 옮기고 잠깐 표시합니다 */
 function focusOnDetailMap(s){
-  const pt = detailMapPts.get(s.name);
+  const key = schoolKey(s);
+  const pt = detailMapPts.get(key);
   const svgEl = document.querySelector('.detail-map-svg');
   if(!pt || !svgEl) return false;
   detailMapState.zoom = Math.max(detailMapState.zoom, 2.6);
@@ -7265,7 +7300,8 @@ function focusOnDetailMap(s){
   const inv = 1 / detailMapState.zoom;
   document.querySelectorAll('.sch-pin-inner').forEach(el => el.setAttribute('transform', `scale(${inv})`));
   document.querySelectorAll('.sch-pin-grp.pin-found').forEach(el => el.classList.remove('pin-found'));
-  const g = svgEl.querySelector(`.sch-pin-grp[data-sch-id="${(window.CSS && CSS.escape) ? CSS.escape(s.name) : s.name}"]`);
+  const g = Array.from(svgEl.querySelectorAll('.sch-pin-grp'))
+    .find(el => el.getAttribute('data-sch-id') === key);
   if(g){
     g.classList.add('pin-found');
     g.parentNode.appendChild(g);          // 다른 핀에 가리지 않게 맨 앞으로
@@ -7491,8 +7527,9 @@ function renderDetailMap(sg, lv, list){
       drawnBoxes.push(box);
     }
     
-    detailMapPts.set(s.name, { x: px, y: py });
-    svg += `<g class="sch-pin-grp" data-sch-id="${s.name}" data-mx="${px.toFixed(2)}" data-my="${py.toFixed(2)}">
+    const sid = schoolKey(s);
+    detailMapPts.set(sid, { x: px, y: py });
+    svg += `<g class="sch-pin-grp" data-sch-id="${htmlEsc(sid)}" data-mx="${px.toFixed(2)}" data-my="${py.toFixed(2)}">
               ${shapeAt(sLv, px, py, '', color, scale)}
               <g class="sch-lb-grp ${labelClass}" transform="translate(${px},${py})">
                 <g class="sch-pin-inner">
@@ -7527,7 +7564,7 @@ function renderDetailMap(sg, lv, list){
   // 핀 이벤트 툴팁 바인딩
   box.querySelectorAll('.sch-pin-grp').forEach(g => {
     const id = g.getAttribute('data-sch-id');
-    const s = pts.find(item => item.name === id);
+    const s = findSchoolByKey(id);
     if(s) bindSchoolTooltip(g, s);
   });
 
@@ -11601,7 +11638,8 @@ const MV = {
   loading:false, ready:false, failed:false,
   map:null, key:null,
   base:'Base', level:'전체', q:'', year:HOME_BASE_YEAR,
-  closed:false, bound:true, ruler:false, rulerPts:[], rulerMarks:[],
+  closed:false, bound:true, choropleth:false, smallFocus:false, choroKey:null,
+  ruler:false, rulerPts:[], rulerMarks:[],
   near:null, nearMarks:[], chips:[],
   is3d:false, marks:[], rows:[]
 };
@@ -11684,6 +11722,55 @@ function mvTier(z){ return z < 9.2 ? 'sgg' : (z < 10.6 ? 'pin' : 'label'); }
 
 /* 보고 있는 해의 학생 수. 2026 이면 공시값, 그 밖에는 실적이나 전망입니다. */
 function mvStu(sc){ const r = schoolStudentsAt(sc, MV.year); return r.v == null ? null : r.v; }
+
+/* ── 시군 단계구분도 ─────────────────────────────────────────────────────
+   다른 팀 참고 화면의 «소멸 위험도»는 예시값과 임의 계수로 만든 값이었습니다.
+   그 판정을 가져오지 않고, 우리 앱에 이미 있는 공개 학생 수로 2016년 대비
+   선택 연도의 실제 증감률만 계산합니다. 미래 연도는 기존 화면과 똑같이
+   「전망」이라고 밝힙니다. */
+function mvRegionValue(sggKey, year){
+  return MV.level === '전체'
+    ? regionTotalStudents(sggKey, year)
+    : regionStudents(sggKey, MV.level, year);
+}
+function mvChangeBand(rate){
+  if(rate == null || !isFinite(rate))
+    return { key:'missing', label:'자료 없음', color:mvCss('--ink-3', '#5A6672') };
+  if(rate > 0)
+    return { key:'increase', label:'증가', color:mvCss('--leap-teal', '#0D6E5C') };
+  if(rate >= -10)
+    return { key:'steady', label:'0~10% 감소·유지', color:mvCss('--brand', '#1B4FA0') };
+  if(rate >= -20)
+    return { key:'watch', label:'10~20% 감소', color:mvCss('--leap-amber-mark', '#CE6410') };
+  return { key:'deep', label:'20% 이상 감소', color:mvCss('--over', '#B3261E') };
+}
+function mvRegionChange(sggKey){
+  const fromYear = HOME_YEAR_MIN, toYear = Number(MV.year);
+  const from = mvRegionValue(sggKey, fromYear);
+  const to = mvRegionValue(sggKey, toYear);
+  const valid = from && to && from.v != null && to.v != null && Number(from.v) > 0;
+  const rate = valid ? (Number(to.v) - Number(from.v)) / Number(from.v) * 100 : null;
+  return {
+    s:sggKey, fromYear, toYear,
+    from:valid ? Number(from.v) : null,
+    to:valid ? Number(to.v) : null,
+    kind:to ? to.kind : '없음', rate,
+    band:mvChangeBand(rate)
+  };
+}
+function mvRegionLevelLabel(){
+  return MV.level === '전체' ? '초·중·고'
+    : ((LEVEL_CFG[MV.level] || {}).full || MV.level);
+}
+
+/* 소규모 강조는 별도 임계값을 만들지 않습니다. 앱의 학교 상세가 쓰는
+   적정규모 참고선(동 60명·읍면 30명)과 같은 schoolSizeOf 한 곳만 씁니다. */
+function mvSmallStatus(sc){
+  const v = mvStu(sc);
+  if(v == null) return null;
+  const status = schoolSizeOf(Object.assign({}, sc, { stu:v }));
+  return status.key === 'minimum' || status.key === 'small' ? status : null;
+}
 
 function mvPool(){
   const q = MV.q.trim();
@@ -11888,6 +11975,7 @@ function mvDraw(){
   const map = MV.map;
   if(!map) return;
   mvClearMarks();
+  mvRefreshChoropleth();
   const z = map.getZoom(), tier = mvTier(z), list = mvPool();
 
   if(tier === 'sgg'){
@@ -11897,17 +11985,32 @@ function mvDraw(){
       const v = mvStu(s);
       c.n++; if(v != null) c.stu += v; c.la += s.lat; c.lo += s.lon;
     });
-    Object.keys(by).forEach(k => {
-      const c = by[k];
-      const el = document.createElement('div');
-      el.className = 'mv-bub';
-      el.innerHTML = `<b>${htmlEsc(k)}</b><span>${c.n}곳 · ${mvCompact(c.stu)}명</span>`;
-      el.addEventListener('click', () => {
-        map.flyTo({ center:[c.lo/c.n, c.la/c.n], zoom:10.8, duration:900 });
+    if(MV.choropleth){
+      /* 면 색 위에는 카드형 버블을 다시 쌓지 않고 시군명과 정확한 변화율만 둡니다. */
+      SIGUNGU.forEach(sg => {
+        const metric = mvRegionChange(sg.s);
+        const el = document.createElement('div');
+        el.className = 'mv-region-rate ' + metric.band.key;
+        const value = metric.rate == null ? '자료 없음'
+          : (metric.rate > 0 ? '+' : '') + metric.rate.toFixed(1) + '%';
+        el.innerHTML = `<b>${htmlEsc(sg.s)}</b><span style="color:${metric.band.color}">${value}</span>`;
+        const mk = new maplibregl.Marker({ element:el, anchor:'center' })
+          .setLngLat([sg.lon, sg.lat]).addTo(map);
+        MV.marks.push(mk);
       });
-      const mk = new maplibregl.Marker({ element:el }).setLngLat([c.lo/c.n, c.la/c.n]).addTo(map);
-      MV.marks.push(mk);
-    });
+    }else{
+      Object.keys(by).forEach(k => {
+        const c = by[k];
+        const el = document.createElement('div');
+        el.className = 'mv-bub';
+        el.innerHTML = `<b>${htmlEsc(k)}</b><span>${c.n}곳 · ${mvCompact(c.stu)}명</span>`;
+        el.addEventListener('click', () => {
+          map.flyTo({ center:[c.lo/c.n, c.la/c.n], zoom:10.8, duration:900 });
+        });
+        const mk = new maplibregl.Marker({ element:el }).setLngLat([c.lo/c.n, c.la/c.n]).addTo(map);
+        MV.marks.push(mk);
+      });
+    }
     const bb = map.getBounds();
     mvRenderList(list.filter(s =>
       s.lon >= bb.getWest() && s.lon <= bb.getEast() &&
@@ -11921,8 +12024,16 @@ function mvDraw(){
   const b = map.getBounds();
   let vis = list.filter(s =>
     s.lon >= b.getWest() && s.lon <= b.getEast() && s.lat >= b.getSouth() && s.lat <= b.getNorth());
-  const cap = tier === 'label' ? 260 : 900;
-  if(vis.length > cap) vis = vis.slice().sort((a,c) => (mvStu(c)||0) - (mvStu(a)||0)).slice(0, cap);
+  const cap = MV.smallFocus ? 900 : (tier === 'label' ? 260 : 900);
+  if(vis.length > cap) vis = vis.slice().sort((a,c) => {
+    /* 강조 모드에서 작은 학교를 학생 많은 순으로 잘라 버리면 정작 검토 대상이
+       사라집니다. 기준 미달 학교를 먼저 남기고, 나머지만 학생 수로 정렬합니다. */
+    if(MV.smallFocus){
+      const af = mvSmallStatus(a) ? 1 : 0, cf = mvSmallStatus(c) ? 1 : 0;
+      if(af !== cf) return cf - af;
+    }
+    return (mvStu(c)||0) - (mvStu(a)||0);
+  }).slice(0, cap);
 
   /* ★ 같은 자리에 겹친 학교를 위로 쌓습니다 〔2026. 9. 11.〕
      병설유치원은 «본교 좌표»를 그대로 씁니다 — 실제로 같은 건물이기 때문이고,
@@ -11950,12 +12061,23 @@ function mvDraw(){
 
   vis.forEach(sc => {
     const el = document.createElement('div');
-    if(tier === 'label'){
-      el.className = 'mv-lab';
-      const v = mvStu(sc);
-      el.innerHTML = mvSchoolGlyph(sc.lv, 15) +
+    const picked = selectedSchoolKey && schoolKey(sc) === selectedSchoolKey;
+    const smallStatus = MV.smallFocus ? mvSmallStatus(sc) : null;
+    /* 강조 모드에서는 배율이 핀 단계여도 기준 미달 이름을 계속 세웁니다.
+       일반 학교는 점으로 남기되, 사용자가 고른 학교는 확인할 수 있게 이름을 폅니다. */
+    const labelMode = (tier === 'label' && !MV.smallFocus) || !!smallStatus || !!picked;
+    const v = mvStu(sc);
+    if(labelMode){
+      el.className = 'mv-lab' + (smallStatus ? ' is-small' : '');
+      el.innerHTML = (smallStatus ? '<i class="mv-alert" aria-hidden="true">!</i>' : '') +
+        mvSchoolGlyph(sc.lv, 15) +
         `<b>${htmlEsc(String(sc.name).replace(/(초등학교|중학교|고등학교|유치원|학교)$/, ''))}</b>` +
         `<span>${v == null ? '–' : fmt(v)}</span>`;
+      el.title = smallStatus ? `${sc.name} · ${smallStatus.label}` : sc.name;
+    }else if(MV.smallFocus){
+      el.className = 'mv-dot';
+      el.style.setProperty('--pin', mvLvColor(sc.lv));
+      el.title = sc.name + (v == null ? ' · 학생 수 자료 없음' : ' · 적정규모 참고선 이상');
     }else{
       el.className = 'mv-pin';
       el.innerHTML = mvSchoolPin(sc.lv);
@@ -11965,9 +12087,8 @@ function mvDraw(){
        위로 올립니다. 작은 학교가 큰 학교를 가리면 지도를 잘못 읽게 됩니다.
        ★ 다만 «고른 학교»는 무조건 맨 앞입니다 〔2026. 9. 11.〕 누른 것이 뒤에
          가리면, 눌렀는데 아무 일도 안 일어난 것처럼 보입니다. */
-    const picked = selectedSchoolKey && schoolKey(sc) === selectedSchoolKey;
     el.style.zIndex = picked ? '800'
-      : (tier === 'label' ? String(Math.min(400, Math.round((mvStu(sc) || 0) / 5))) : '');
+      : (labelMode ? String(Math.min(400, Math.round((v || 0) / 5))) : '');
     /* ★ 닻을 «아래»로 둡니다 — 꼬리 끝이 그 학교 자리를 가리켜야 합니다.
        가운데로 두면 상자가 학교 위에 얹혀 어디를 가리키는지 알 수 없습니다. */
     /* 같은 자리에 여럿이면 두 번째부터 위로 한 칸씩 올려 그립니다. */
@@ -11981,23 +12102,27 @@ function mvDraw(){
     }
     /* 이름표 한 장의 실제 높이(꼬리 포함)보다 넉넉히 띄웁니다.
        25px은 병설유치원과 본교 상자가 다시 포개지는 회귀가 있었습니다. */
-    const step = tier === 'label' ? 40 : 30;
+    const step = MV.smallFocus ? 40 : (tier === 'label' ? 40 : 30);
     const mk = new maplibregl.Marker({
       element: el, anchor: 'bottom',
-      offset: [0, (tier === 'label' ? -6 : 0) - idx * step]
+      offset: [0, (labelMode ? -6 : 0) - idx * step]
     }).setLngLat([sc.lon, sc.lat]);
     /* ★ 거리를 재는 동안에는 말풍선을 달지 않습니다 — 학교를 누르면 그 학교가
        재는 점이 됩니다. 통학 거리를 학교와 학교 사이로 재는 것이 이 화면의 쓸모입니다. */
     /* ★ 말풍선이 누른 딱지를 덮지 않게 «딱지 높이만큼» 위로 띄웁니다.
        딱지는 anchor:'bottom' 이라 점 위에 서 있고, 겹쳐 쌓인 것은 더 위에
        있습니다. 그 높이를 더해 그 위에 뜨게 합니다. */
-    const lift = (tier === 'label' ? 34 : 32) + idx * step;
+    const lift = (labelMode ? 34 : (MV.smallFocus ? 14 : 32)) + idx * step;
     if(!MV.ruler) mk.setPopup(new maplibregl.Popup({
       anchor: 'bottom', offset: [0, -lift], maxWidth: '280px'
     }).setHTML(mvPopupHtml(sc)));
     mk.addTo(map);
     mk._sc = sc; mk._el = el;
-    el.addEventListener('click', ev => {
+    el.tabIndex = 0;
+    el.setAttribute('role', 'button');
+    el.setAttribute('aria-label', sc.name + (v == null ? ' 학생 수 자료 없음' : ` 학생 ${fmt(v)}명`) +
+      (smallStatus ? ' · ' + smallStatus.label : ''));
+    const activate = ev => {
       if(MV.ruler){
         /* ★ 점이 두 번 찍히던 것을 고칩니다 〔2026. 9. 11.〕
            딱지는 지도 안에 있는 DOM 이라, 누르면 이 리스너가 «학교 자리»를
@@ -12009,6 +12134,11 @@ function mvDraw(){
         return;
       }
       selectSchool(sc); mvRenderDetail(true);
+    };
+    el.addEventListener('click', activate);
+    el.addEventListener('keydown', ev => {
+      if(ev.key !== 'Enter' && ev.key !== ' ') return;
+      ev.preventDefault(); activate(ev);
     });
     MV.marks.push(mk);
   });
@@ -12115,6 +12245,61 @@ function mvBoundGeo(){
     });
   }
   return { type:'FeatureCollection', features:feats };
+}
+
+/* 단계구분도는 같은 경계를 «면»으로 폅니다. 경계 압축 자료에는 마지막 점이
+   첫 점과 같은지 보장되지 않으므로 GeoJSON Polygon 규칙에 맞게 닫습니다. */
+function mvRegionGeo(){
+  const feats = [];
+  if(GB){
+    Object.keys(GB).forEach(k => {
+      const metric = mvRegionChange(k);
+      gbRings(GB[k]).forEach(r => {
+        if(!r || r.length < 3) return;
+        const ring = r.map(p => [Number(p[0]), Number(p[1])]);
+        const first = ring[0], last = ring[ring.length - 1];
+        if(first[0] !== last[0] || first[1] !== last[1]) ring.push(first.slice());
+        feats.push({
+          type:'Feature',
+          properties:{
+            s:k, from:metric.from, to:metric.to, rate:metric.rate,
+            fromYear:metric.fromYear, toYear:metric.toYear,
+            kind:metric.kind, band:metric.band.key, color:metric.band.color
+          },
+          geometry:{ type:'Polygon', coordinates:[ring] }
+        });
+      });
+    });
+  }
+  return { type:'FeatureCollection', features:feats };
+}
+
+function mvRefreshChoropleth(force){
+  const map = MV.map;
+  if(!map || !map.getLayer || !map.getLayer('mv-region')) return;
+  try{
+    map.setLayoutProperty('mv-region', 'visibility', MV.choropleth ? 'visible' : 'none');
+    const key = MV.level + '|' + MV.year;
+    if(MV.choropleth && (force || MV.choroKey !== key)){
+      const src = map.getSource('mv-region');
+      if(src && src.setData) src.setData(mvRegionGeo());
+      MV.choroKey = key;
+    }
+  }catch(_e){}
+}
+
+function mvRegionPopupHtml(sggKey){
+  const m = mvRegionChange(sggKey);
+  const scope = mvRegionLevelLabel();
+  if(m.rate == null){
+    return `<b>${htmlEsc(sggKey)} · ${htmlEsc(scope)}</b><br>` +
+      `${m.fromYear}년과 ${m.toYear}년을 함께 비교할 공개자료가 없습니다.`;
+  }
+  const sign = m.rate > 0 ? '+' : '';
+  const basis = m.kind === '전망' ? ' · 선택 연도는 전망' : '';
+  return `<b>${htmlEsc(sggKey)} · ${htmlEsc(scope)}</b><br>` +
+    `${m.fromYear}년 ${fmt(m.from)}명 → ${m.toYear}년 ${fmt(m.to)}명<br>` +
+    `<b>${sign}${m.rate.toFixed(1)}%</b> · ${htmlEsc(m.band.label)}${basis}`;
 }
 
 /* ── 거리 재기 ───────────────────────────────────────────────────────────
@@ -12459,6 +12644,7 @@ function mvSetBase(id){
 function mvWatchTheme(){
   const repaint = () => {
     MV_CSS_CACHE = {};        /* 쟁여 둔 색을 비웁니다 — 밝기가 바뀌었습니다 */
+    MV.choroKey = null;        /* 단계구분도 색도 새 화면 토큰으로 다시 만듭니다 */
     const map = MV.map;
     if(!map || !map.getLayer('mv-bound')) return;
     try{
@@ -12467,6 +12653,8 @@ function mvWatchTheme(){
       map.setPaintProperty('mv-ruler-dot', 'circle-color', mvCss('--leap-amber-mark', '#CE6410'));
       map.setPaintProperty('mv-ruler-dot', 'circle-stroke-color', mvCss('--card', '#fff'));
     }catch(_e){}
+    mvRefreshChoropleth(true);
+    mvRenderLegend();
     mvDraw();
   };
   try{ new MutationObserver(repaint).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] }); }catch(_e){}
@@ -12491,7 +12679,8 @@ function mvBuildChips(){
       MV.level = c.dataset.lv;
       Array.prototype.forEach.call(lw.querySelectorAll('.chip'), x =>
         x.setAttribute('aria-pressed', String(x.dataset.lv === MV.level)));
-      mvRenderStats(); mvDraw();
+      MV.choroKey = null;
+      mvRefreshChoropleth(true); mvRenderLegend(); mvRenderStats(); mvDraw();
     });
   });
   mvRenderLegend();
@@ -12499,11 +12688,40 @@ function mvBuildChips(){
 
 function mvRenderLegend(){
   const el = document.getElementById('mv-legend');
+  const note = document.getElementById('mv-legend-note');
   if(!el) return;
   el.className = 'mv-legend';
-  el.innerHTML = LEVELS.map(l =>
-    `<span><i style="background:${mvLvColor(l)}"></i>${(LEVEL_CFG[l] || {}).full || l}</span>`).join('') +
-    (MV.closed ? '<span><i class="sq"></i>폐교</span>' : '');
+  let out = '';
+  if(MV.choropleth){
+    const samples = [-25, -15, -5, 1, null];
+    out += `<strong class="mv-legend-title">시군 ${htmlEsc(mvRegionLevelLabel())} 변화 · ` +
+      `${HOME_YEAR_MIN}→${MV.year}년</strong>`;
+    out += samples.map(rate => {
+      const band = mvChangeBand(rate);
+      return `<span><i class="area" style="background:${band.color}"></i>${band.label}</span>`;
+    }).join('');
+  }
+  out += '<strong class="mv-legend-title">학교급</strong>' + LEVELS.map(l =>
+    `<span><i style="background:${mvLvColor(l)}"></i>${(LEVEL_CFG[l] || {}).full || l}</span>`).join('');
+  if(MV.smallFocus)
+    out += '<span class="mv-legend-wide"><i class="warn-dot">!</i>적정규모 참고선 미달</span>';
+  if(MV.closed) out += '<span><i class="sq"></i>폐교</span>';
+  el.innerHTML = out;
+
+  if(note){
+    const msgs = [];
+    if(MV.choropleth){
+      const sample = SIGUNGU.length ? mvRegionChange(SIGUNGU[0].s) : {rate:null};
+      if(sample.rate == null) msgs.push(`${mvRegionLevelLabel()}은 두 연도를 비교할 시군 자료가 없어 회색으로 표시합니다.`);
+      else if(Number(MV.year) > HOME_BASE_YEAR) msgs.push('면 색의 선택 연도 값은 기존 학생 수 전망이며 공식 장래추계가 아닙니다.');
+      else msgs.push('면 색은 소멸 판정이 아니라 공개 학생 수의 실제 증감률입니다. 시군을 누르면 정확한 수가 나옵니다.');
+    }
+    if(MV.smallFocus)
+      msgs.push('동 60명·읍면 30명 적정규모 참고선 미달 학교 이름만 고정하고, 일반 학교는 점으로 남깁니다.');
+    if(!msgs.length)
+      msgs.push('멀리서는 시군으로 접히고, 확대하면 학교마다 이름과 학생 수가 섭니다. 다섯 색은 학교급을 뜻합니다.');
+    note.textContent = msgs.join(' ');
+  }
 }
 
 /* ── MapLibre 를 «열 때만» 불러옵니다 ───────────────────────────────────── */
@@ -12548,6 +12766,7 @@ async function mvStart(){
   const b = mvBaseOf(MV.base);
   const sources = {
     'mv-bound': { type:'geojson', data: mvBoundGeo() },
+    'mv-region': { type:'geojson', data: mvRegionGeo() },
     'mv-ruler': { type:'geojson', data: { type:'FeatureCollection', features:[] } },
     'mv-dem':   { type:'raster-dem', tiles:[MV_DEM], tileSize:256, minzoom:0, maxzoom:14,
                   encoding:'terrarium',
@@ -12568,6 +12787,15 @@ async function mvStart(){
   layers.push({ id:'mv-hills', type:'hillshade', source:'mv-dem',
     paint:{ 'hillshade-exaggeration':0.45, 'hillshade-shadow-color':'#2b3a46' },
     layout:{ visibility:'none' } });
+  /* 단계구분 면은 지형 위에 그대로 드레이프됩니다. 별도 3D 표면이나 건물을
+     만들지 않아 평지·도로를 다시 부풀리는 왜곡을 추가하지 않습니다. */
+  layers.push({ id:'mv-region', type:'fill', source:'mv-region',
+    layout:{ visibility: MV.choropleth ? 'visible' : 'none' },
+    paint:{
+      'fill-color':['get','color'],
+      'fill-opacity':0.34,
+      'fill-outline-color':mvCss('--card', '#FFFFFF')
+    } });
   layers.push({ id:'mv-bound', type:'line', source:'mv-bound',
     layout:{ visibility: MV.bound ? 'visible' : 'none' },
     paint:{ 'line-color': mvCss('--brand', '#1B4FA0'), 'line-width':1.4, 'line-opacity':0.75 } });
@@ -12641,6 +12869,19 @@ async function mvStart(){
     /* 타일이 안 오면 조용히 흰 화면이 됩니다 — 그렇다고 말합니다. */
     const msg = (e && e.error && e.error.message) || '응답 없음';
     if(/vworld|api\.vworld/i.test(String(msg))) mvSay('배경지도를 받지 못했습니다 — 학교 위치는 그대로입니다. (' + msg + ')');
+  });
+  map.on('mouseenter', 'mv-region', () => {
+    if(MV.choropleth && !MV.ruler) map.getCanvas().style.cursor = 'pointer';
+  });
+  map.on('mouseleave', 'mv-region', () => {
+    if(!MV.ruler) map.getCanvas().style.cursor = '';
+  });
+  map.on('click', 'mv-region', e => {
+    if(!MV.choropleth || MV.ruler || !e.features || !e.features.length) return;
+    const sggKey = e.features[0].properties && e.features[0].properties.s;
+    if(!sggKey) return;
+    new maplibregl.Popup({ maxWidth:'290px' })
+      .setLngLat(e.lngLat).setHTML(mvRegionPopupHtml(sggKey)).addTo(map);
   });
   /* 빈 곳을 누르면 거리를 잽니다. 딱지는 캔버스 밖의 DOM 이라 여기로 오지 않습니다. */
   map.on('click', e => { if(MV.ruler) mvRulerAdd(e.lngLat.lng, e.lngLat.lat, null); });
@@ -12778,6 +13019,17 @@ function mvWireControls(){
     document.getElementById('mv-bound').setAttribute('aria-pressed', String(MV.bound));
     try{ MV.map.setLayoutProperty('mv-bound','visibility', MV.bound ? 'visible' : 'none'); }catch(_e){}
   });
+  on('mv-choropleth', () => {
+    MV.choropleth = !MV.choropleth;
+    document.getElementById('mv-choropleth').setAttribute('aria-pressed', String(MV.choropleth));
+    MV.choroKey = null;
+    mvRefreshChoropleth(true); mvRenderLegend(); mvDraw();
+  });
+  on('mv-small-focus', () => {
+    MV.smallFocus = !MV.smallFocus;
+    document.getElementById('mv-small-focus').setAttribute('aria-pressed', String(MV.smallFocus));
+    mvRenderLegend(); mvDraw();
+  });
   on('mv-ruler', () => {
     MV.ruler = !MV.ruler;
     document.getElementById('mv-ruler').setAttribute('aria-pressed', String(MV.ruler));
@@ -12801,7 +13053,8 @@ function mvWireControls(){
         kind.textContent = MV.year === HOME_BASE_YEAR ? '2026년 공시' : (proj ? '전망' : '실적');
         kind.classList.toggle('is-proj', proj);
       }
-      mvRenderStats(); mvRenderDetail(); mvDraw();
+      MV.choroKey = null;
+      mvRefreshChoropleth(true); mvRenderLegend(); mvRenderStats(); mvRenderDetail(); mvDraw();
     });
     yr.dispatchEvent(new Event('input'));
   }
@@ -12895,6 +13148,5 @@ if(HOME_TAB_ON){
 
 <link rel="stylesheet" href="./assets/map-policy.css">
 <script src="./assets/map-policy.js"></script>
-<script src="./assets/terrain-protocol.js"></script>
 </body>
 </html>
