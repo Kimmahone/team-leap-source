@@ -1,5 +1,279 @@
 [
   {
+    "id": "2026-09-16-three-day",
+    "status": "자동 발행",
+    "source": "네이버 뉴스 검색 API",
+    "sourceKind": "naver-three-day",
+    "cadenceDays": 3,
+    "publishedAt": "2026-09-16",
+    "period": {
+      "from": "2026-09-10",
+      "to": "2026-09-16",
+      "count": 18
+    },
+    "title": "통폐합·적정규모 보도가 이끈 최근 7일, 경북 교육의 다음 질문",
+    "lead": "최근 7일 경북 학령인구 대응 관련 기사는 18건입니다. 가장 비중이 큰 주제는 ‘통폐합·적정규모’이며, 영천시의 언급이 두드러졌습니다.",
+    "highlights": [
+      "최근 7일 18건으로 직전 7일 13건보다 +5건 변화했습니다.",
+      "‘통폐합·적정규모’ 주제가 61.1%로 가장 큰 비중을 차지했습니다.",
+      "영천시 언급이 10건으로 가장 많았습니다."
+    ],
+    "topics": [
+      {
+        "topic": "통폐합·적정규모",
+        "current": 11,
+        "prior": 1,
+        "currentShare": 61.1,
+        "priorShare": 7.7,
+        "changePp": 53.4
+      },
+      {
+        "topic": "교육재정",
+        "current": 6,
+        "prior": 9,
+        "currentShare": 33.3,
+        "priorShare": 69.2,
+        "changePp": -35.9
+      },
+      {
+        "topic": "지역소멸·인구",
+        "current": 1,
+        "prior": 2,
+        "currentShare": 5.6,
+        "priorShare": 15.4,
+        "changePp": -9.8
+      },
+      {
+        "topic": "교원·정원",
+        "current": 0,
+        "prior": 0,
+        "currentShare": 0,
+        "priorShare": 0,
+        "changePp": 0
+      },
+      {
+        "topic": "통학·돌봄",
+        "current": 0,
+        "prior": 0,
+        "currentShare": 0,
+        "priorShare": 0,
+        "changePp": 0
+      },
+      {
+        "topic": "교육혁신·특구",
+        "current": 0,
+        "prior": 2,
+        "currentShare": 0,
+        "priorShare": 15.4,
+        "changePp": -15.4
+      }
+    ],
+    "keywords": [
+      {
+        "name": "폐교",
+        "value": 9,
+        "prior": 0,
+        "change": 9
+      },
+      {
+        "name": "개편",
+        "value": 4,
+        "prior": 1,
+        "change": 3
+      },
+      {
+        "name": "120억",
+        "value": 3,
+        "prior": 0,
+        "change": 3
+      },
+      {
+        "name": "정부",
+        "value": 3,
+        "prior": 0,
+        "change": 3
+      },
+      {
+        "name": "활력",
+        "value": 3,
+        "prior": 0,
+        "change": 3
+      },
+      {
+        "name": "7곳",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "7곳에",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "거점",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "거점으로",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "교육재정",
+        "value": 2,
+        "prior": 2,
+        "change": 0
+      },
+      {
+        "name": "국회",
+        "value": 2,
+        "prior": 1,
+        "change": 1
+      },
+      {
+        "name": "놀이터",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "반대",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "선정",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "우려",
+        "value": 2,
+        "prior": 1,
+        "change": 1
+      },
+      {
+        "name": "지방교육재정교부금",
+        "value": 2,
+        "prior": 1,
+        "change": 1
+      },
+      {
+        "name": "축소",
+        "value": 2,
+        "prior": 1,
+        "change": 1
+      },
+      {
+        "name": "투입",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      }
+    ],
+    "regions": [
+      {
+        "name": "영천시",
+        "value": 10
+      },
+      {
+        "name": "상주시",
+        "value": 1
+      }
+    ],
+    "dailyTrend": [
+      {
+        "date": "2026-09-10",
+        "total": 3
+      },
+      {
+        "date": "2026-09-11",
+        "total": 2
+      },
+      {
+        "date": "2026-09-12",
+        "total": 0
+      },
+      {
+        "date": "2026-09-13",
+        "total": 0
+      },
+      {
+        "date": "2026-09-14",
+        "total": 9
+      },
+      {
+        "date": "2026-09-15",
+        "total": 4
+      },
+      {
+        "date": "2026-09-16",
+        "total": 0
+      }
+    ],
+    "clusters": [],
+    "evidence": [
+      {
+        "title": "경북교육청, 폐교활용 '온자람교육센터'로 탈바꿈",
+        "link": "https://www.dkilbo.com/news/articleView.html?idxno=554386",
+        "publishedAt": "2026-09-15",
+        "press": "dkilbo.com"
+      },
+      {
+        "title": "“학생 없어 문 닫았는데 다시 사람 모인다”…경북교육청, 영천 폐교 ...",
+        "link": "http://www.inews24.com/view/2005847",
+        "publishedAt": "2026-09-15",
+        "press": "inews24.com"
+      },
+      {
+        "title": "교육부·행안부, 폐교 7곳 지역 활력 거점으로 재탄생시킨다",
+        "link": "https://www.lecturernews.com/news/articleView.html?idxno=210611",
+        "publishedAt": "2026-09-15",
+        "press": "lecturernews.com"
+      },
+      {
+        "title": "방치된 폐교, 지역 활력소로 만든다",
+        "link": "https://www.segye.com/newsView/20260914519137?OutUrl=naver",
+        "publishedAt": "2026-09-15",
+        "press": "segye.com"
+      },
+      {
+        "title": "폐교를 지역 활력 거점으로… 충남 예산·충북 괴산 선정",
+        "link": "https://www.ggilbo.com/news/articleView.html?idxno=1181648",
+        "publishedAt": "2026-09-14",
+        "press": "ggilbo.com"
+      },
+      {
+        "title": "폐교 7곳에 '120억원'…충청·호남·경북 생활거점 전환",
+        "link": "https://www.bzeronews.com/news/articleView.html?idxno=822659",
+        "publishedAt": "2026-09-14",
+        "press": "bzeronews.com"
+      },
+      {
+        "title": "아이들 떠난 학교 ‘지역 활력 거점’ 육성…120억 지원받는 농촌 폐교...",
+        "link": "https://www.nongmin.com/article/20260914500312",
+        "publishedAt": "2026-09-14",
+        "press": "nongmin.com"
+      },
+      {
+        "title": "[기획 취재] 저출생 문제 해법 찾기 현장 진단, 1회 \"아이 울음소리가 사...",
+        "link": "https://www.ngonews.kr/news/articleView.html?idxno=238007",
+        "publishedAt": "2026-09-14",
+        "press": "ngonews.kr"
+      }
+    ],
+    "caveat": "기사량은 사회적 관심의 신호이며 실제 학생 수·학교 수의 증감을 뜻하지 않습니다.",
+    "review": "자동 집계된 초안으로, 대외 배포 전 담당자의 사실 확인이 필요합니다.",
+    "issueNo": 4
+  },
+  {
     "id": "2026-09-13-three-day",
     "status": "자동 발행",
     "source": "네이버 뉴스 검색 API",
