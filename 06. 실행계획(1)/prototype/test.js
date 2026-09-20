@@ -1756,12 +1756,8 @@ check('고도 자료를 쓴다 (브이월드에는 없어 AWS Terrain Tiles 를 
   /terrarium/.test(js) && /encoding:'terrarium'/.test(js));
 check('setTerrain 으로 땅을 솟게 한다', /setTerrain\(\{source:'mv-dem',exaggeration:amount\}\)/.test(js));
 check('확대해도 산 높이와 기울기를 유지한다 (배율에 따라 흔들리지 않는다)',
-  /function mvTerrainExaggeration\(\)\{return mvIsDrone\(\) \? 2\.4 : 1\.5;\}/.test(js) &&
+  /function mvTerrainExaggeration\(\)\{return 1\.5;\}/.test(js) &&
   /function mvTerrainPitch\(\)\{return mvIsDrone\(\) \? MV_DRONE_PITCH : 62;\}/.test(js));
-/* 1.5 로는 3D 지형과 구분이 안 됐습니다 — 「둘이 무슨 차이인지 모르겠다」는
-   말을 들었습니다. 드론뷰는 산을 더 세워 지형을 몸으로 느끼게 합니다. */
-check('드론뷰는 산을 더 세운다 (3D 지형과 눈에 띄게 달라야 한다)',
-  /mvIsDrone\(\) \? 2\.4 : 1\.5/.test(js));
 /* 〔2026. 9. 20.〕 zoomend 가 mvTerrainPitch 로 기울기를 도로 끌어내립니다.
    드론뷰에서 62 를 돌려주면 확대하는 순간 화면이 3D 지형으로 주저앉습니다. */
 check('드론뷰에서 확대해도 기울기가 주저앉지 않는다',
@@ -1776,7 +1772,7 @@ check('2D 로 되돌리면 지형을 끈다', /setTerrain\(null\)/.test(js));
 console.log('\n■ 배경 타일은 레이어마다 확장자가 다르다');
 /* 틀린 확장자는 200 으로 «오류 XML» 을 돌려줍니다 — 조용히 빈 화면이 됩니다. */
 check('위성만 jpeg 이고 나머지는 png 다', q(
-  "MV_BASES.map(function(b){return b.id+':'+b.ext}).join()") === 'Base:png,Satellite:jpeg,Hybrid:jpeg,gray:png');
+  "MV_BASES.map(function(b){return b.id+':'+b.ext}).join()") === 'Hybrid:jpeg,Satellite:jpeg,gray:png,Base:png');
 check('「위성+지명」은 위성 «위에» 얹는다 (하이브리드만 깔면 허전하다)', q(
   "(function(){var h=MV_BASES.filter(function(b){return b.id==='Hybrid'})[0];" +
   "return h.base==='Satellite'&&h.over==='Hybrid'&&h.overExt==='png';})()") === true);
@@ -2657,31 +2653,45 @@ check('평면에서 돌리면 뜻이 없으므로 드론뷰로 올린다',
 check('보기 모드는 한 자리에서 정한다 (세 단추의 표시가 어긋나지 않는다)',
   /\[\['mv-2d','2d'\],\['mv-3d','3d'\],\['mv-drone','drone'\]\]\.forEach/.test(js));
 /* ★ 「드론뷰와 3D 지형이 무슨 차이인지 모르겠다」에 대한 답 〔2026. 9. 20.〕
-   기울기만 달라서는 차이가 안 납니다. 드론뷰의 일은 «학교를 하나씩 찾아가며
-   그 자리를 보여 주는 것»입니다 — 지도를 손으로 끄는 것과 다른 점이 여기 있습니다. */
-check('드론 비행 단추가 있다', /id="mv-fly" aria-pressed="false"/.test(html));
-check('비행은 화면 안 학교를 학생 수 차례로 훑는다',
-  /const stops = \(MV\.rows \|\| \[\]\)\.filter/.test(js) && /slice\(0, MV_FLIGHT_MAX\)/.test(js));
-check('학교가 둘도 없으면 날지 않고 까닭을 말한다',
-  /if\(stops\.length < 2\)\{ mvSay\('비행할 학교가 화면 안에 둘 이상/.test(js));
-check('닿은 학교를 골라 왼쪽 상세가 따라간다',
-  /selectSchool\(s\); mvRenderDetail\(true\);[\s\S]{0,120}MV\.map\.flyTo/.test(js));
-check('늘 같은 쪽에서 보지 않는다 (방위를 틀어 간다)',
-  /bearing:\(-24 \+ i \* 37\) % 360/.test(js));
-/* 화면이 저절로 움직이는데 까닭을 모르면 고장으로 보입니다. */
-check('지금 어디를 보는지 띠로 알린다',
-  /id="mv-fly-pill"/.test(html) && /function mvFlightPill/.test(js));
-check('돌기와 날기는 함께 하지 않는다 (어디를 보는지 알 수 없다)',
-  /mvFlightStop\(true\);\s*\/\* 날면서 돌면/.test(js) && /mvStopSpin\(\);\s*\/\* 돌면서 날면/.test(js));
-check('손을 대면 비행도 사람에게 넘긴다',
-  /if\(MV\.flying\) mvFlightStop\(\);/.test(js));
-/* 땅만 기울이면 «위성사진을 비스듬히 본 것»에 그칩니다. */
-check('드론뷰에는 하늘과 안개가 있다 (3D 지형에서는 걷어 낸다)',
-  /function mvApplySky/.test(js) && /if\(mvIsDrone\(\)\)\{\s*map\.setSky/.test(js) &&
-  /else\{\s*map\.setSky\(null\);/.test(js));
+   기울기만 달라서는 차이가 안 납니다. 역할로 가릅니다 —
+   3D 지형은 «땅의 높낮이», 드론뷰는 거기에 «건물의 높이»를 얹습니다.
+   산의 과장값은 둘이 같습니다. 모드에 따라 같은 산이 다른 높이로 보이면
+   어느 쪽이 참인지 알 수 없어집니다. 지형은 하나의 사실이어야 합니다.
 
-check('평면으로 돌아가면 회전도 비행도 멈춘다',
-  /if\(mode !== 'drone'\)\{ mvStopSpin\(\); mvFlightStop\(true\); \}/.test(js));
+   〔한때 드론 비행(학교를 차례로 찾아가는 자동 항로)을 넣었다가 뺐습니다 —
+    화면 안 학생 수 차례로 도는 것이라 «왜 거기부터인지»를 말해 주지 못했습니다.〕 */
+/* ★ 성격이 다른 단추를 섞지 않습니다 〔2026. 9. 20.〕
+   셋을 한 줄에 흘려 놓았더니 줄바꿈이 제멋대로 나고, 무엇이 «하나만 고르는 것»
+   이고 무엇이 «켜고 끄는 것»인지 눈으로 구분되지 않았습니다. */
+check('보는 방식 셋은 이어 붙인 한 덩이다 (하나만 고르는 것)',
+  /<div class="mv-seg" role="group" aria-label="보는 방식">/.test(html) &&
+  /\.mv-seg\{display:grid;grid-template-columns:repeat\(3,1fr\)/.test(html));
+check('켜고 끄는 단추는 두 칸씩 나란하다 (글자 길이가 달라도 흐트러지지 않는다)',
+  /\.mv-grid2\{display:grid;grid-template-columns:1fr 1fr;gap:6px\}/.test(html));
+check('자동 회전과 경북 전체로는 보는 방식과 섞이지 않는다',
+  /<div class="mv-grid2" style="margin-top:8px">\s*<button type="button" class="chip" id="mv-spin"/.test(html));
+/* 처음 보이는 배경이 맨 왼쪽에 있어야 눈이 가는 자리와 눌리는 자리가 맞습니다. */
+check('배경 차례는 많이 쓰는 것부터다 (기본값이 맨 앞)',
+  /base:'Hybrid', level:'전체'/.test(js) &&
+  /\{ id:'Hybrid',    name:'위성\+지명'/.test(js) &&
+  js.indexOf("id:'Hybrid'") < js.indexOf("id:'Satellite'") &&
+  js.indexOf("id:'Satellite'") < js.indexOf("id:'gray'") &&
+  js.indexOf("id:'gray'") < js.indexOf("id:'Base',      name:'일반'"));
+
+check('산의 과장은 두 모드가 같다 (지형은 하나의 사실이다)',
+  /function mvTerrainExaggeration\(\)\{return 1\.5;\}/.test(js));
+check('드론뷰만 건물을 세운다 (그것이 3D 지형과의 차이다)',
+  /map\.setLayoutProperty\('mv-bld','visibility', mvIsDrone\(\) \? 'visible' : 'none'\)/.test(js));
+/* 경북 전체를 보다가 누르면 지도 한가운데 들판으로 내려가 「이게 무슨
+   의미인가」가 됐습니다. 보고 있는 곳으로 내려가야 합니다. */
+check('드론뷰는 고른 학교나 화면에서 가장 큰 학교로 내려간다',
+  /const picked = selectedSchoolKey \? findSchoolByKey\(selectedSchoolKey\) : null;/.test(js) &&
+  /const target = \(picked && isFinite\(picked\.lat\)\) \? picked : \(\(MV\.rows \|\| \[\]\)\[0\] \|\| null\);/.test(js));
+check('갈 곳이 없으면 그렇게 말한다',
+  /mvSay\('드론뷰 — 학교를 고르거나 한 곳을 확대하면/.test(js));
+check('드론 비행은 넣지 않는다 (왜 거기부터인지를 말하지 못했다)',
+  !/mvFlightStart|mv-fly/.test(js) && !/id="mv-fly"/.test(html));
+
 
 console.log(`\n${fail ? '✗' : '✓'}  통과 ${pass} · 실패 ${fail}\n`);
 process.exit(fail ? 1 : 0);
