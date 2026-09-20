@@ -139,7 +139,40 @@ function readFromDashboard() {
              + `const SIGUNGU=REGION_GEO.map(r=>({name:r.n,s:r.s,rc:r.c,lon:r.lon,lat:r.lat}));`
              + `({SCHOOLS,SIGUNGU,SPECIAL_SCHOOLS})`;
   // eslint-disable-next-line no-eval
-  return eval(code);
+  const out = eval(code);
+
+  /* ★ 초·중·고 917곳은 «배열에 없습니다» 〔2026. 9. 20.〕
+     SCHOOLS 는 유치원과 특수학교만 담은 리터럴이고, 초·중·고는 화면이 뜰 때
+     SCHOOL_RAW 를 풀어서 밀어 넣습니다. 그것을 모르고 구웠더니 622곳만
+     잡혔습니다. 같은 방식으로 여기서도 풉니다.
+       기록 꼴:  이름*|급|주소|위도|경도     (`*` 자리에 「초등학교」 따위가 들어갑니다) */
+  const rawTxt = (() => {
+    const m = /var SCHOOL_RAW = \{/.exec(html);
+    if (!m) throw new Error('SCHOOL_RAW 를 찾지 못했습니다.');
+    let d = 0, st = html.indexOf('{', m.index), j = st;
+    for (; j < html.length; j++) {
+      if (html[j] === '{') d++;
+      else if (html[j] === '}') { d--; if (!d) break; }
+    }
+    return html.slice(st, j + 1);
+  })();
+  // eslint-disable-next-line no-eval
+  const RAW = eval('(' + rawTxt + ')');
+  const FULL = { e: '초등학교', m: '중학교', h: '고등학교' };
+  const KIND = { e: '초', m: '중', h: '고' };
+  const byCode = {}; out.SIGUNGU.forEach(sg => { byCode[sg.rc] = sg; });
+  for (const rc of Object.keys(RAW)) {
+    const sg = byCode[rc];
+    for (const rec of String(RAW[rc]).split(';')) {
+      if (!rec.trim()) continue;
+      const f = rec.split('|');
+      out.SCHOOLS.push({
+        name: f[0].replace('*', FULL[f[1]]), lv: KIND[f[1]], s: sg ? sg.s : '',
+        lat: f[3] ? +f[3] : null, lon: f[4] ? +f[4] : null
+      });
+    }
+  }
+  return out;
 }
 
 function fmtMin(m) {
@@ -188,8 +221,15 @@ async function main() {
     console.log(`\n② 학교 → 같은 급 가까운 3곳 (${pool.length}곳 × 6 후보)`);
     let n = 0;
     for (const sc of pool) {
+      /* ★ 바다를 건너는 짝은 묻지 않습니다 〔2026. 9. 21.〕
+         울릉중학교는 섬에 같은 급 학교가 하나뿐이라 본토 학교가 후보로 올라왔고,
+         길찾기가 「214km · 3시간 32분」을 성공으로 돌려주었습니다. 시군 단위에서
+         겪은 것과 같은 일입니다 — 바다 위를 이은 값입니다.
+         섬과 뭍은 짝지우지 않습니다. 남는 것이 없으면 그대로 비워 두고,
+         화면이 「바다 건너」라고 적습니다. */
+      const onIsland = ISLANDS.has(sc.s);
       const cands = pool
-        .filter(x => x !== sc && x.lv === sc.lv)
+        .filter(x => x !== sc && x.lv === sc.lv && ISLANDS.has(x.s) === onIsland)
         .map(x => ({ x, d: hav(sc.lat, sc.lon, x.lat, x.lon) }))
         .sort((a, b) => a.d - b.d).slice(0, 6);
       const got = [];
