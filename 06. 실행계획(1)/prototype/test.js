@@ -1662,15 +1662,21 @@ check('다시 그리지 않고 차례만 바꾼다 (다시 만들면 말풍선�
 check('재는 동안에는 말풍선을 떼어 둔다 (누르면 재는 점이 된다)',
   /if\(!MV\.ruler\) mk\.setPopup/.test(js));
 
-console.log('\n■ 왼쪽 칸을 접으면 지도가 넓어진다');
+console.log('\n■ 요약은 지도 위에 떠 있고, 접으면 지도가 온전히 드러난다');
 /* ★ 처음에는 카드를 하나씩 접게 했습니다. 그런데 다 접어도 지도가 넓어지지
    않았습니다 — 칸의 너비가 그대로였기 때문입니다. 접는 뜻은 자리를 아끼는 것이
    아니라 «지도를 넓게 보는 것»이었습니다. */
 /* ★ 칸을 숨기면 지도가 «첫 칸»이 됩니다. `0 minmax(0,1fr)` 로 두면 지도가
    그 0 짜리 칸에 들어가 손톱만 해집니다 — 접었을 때는 칸이 하나입니다. */
-check('접으면 칸이 차지하던 너비를 지도가 가져간다',
-  /\.mapview\.side-off\{grid-template-columns:minmax\(0,1fr\)\}/.test(html) &&
+/* 〔2026. 9. 20.〕 격자 한 칸을 차지하던 요약을 «떠 있는 패널»로 바꿨습니다.
+   지도는 늘 폭을 다 쓰고, 접기는 덮인 자리를 드러내는 일이 됩니다. */
+check('요약은 지도 위에 떠 있다 (칸을 차지하지 않는다)',
+  /\.mapview\{display:grid;grid-template-columns:minmax\(0,1fr\);position:relative/.test(html) &&
+  /\.mv-side\{position:absolute;right:12px/.test(html));
+check('접으면 덮여 있던 지도가 드러난다',
   /\.mapview\.side-off \.mv-side\{display:none\}/.test(html));
+check('좁은 화면에서는 떠 있지 않고 위아래로 나뉜다 (패널이 지도를 통째로 덮는다)',
+  /\.mv-side\{position:static;width:auto/.test(html));
 check('단추는 지도 «위»에 둔다 (칸 안에 두면 접은 뒤 함께 사라진다)',
   /\.mv-fold-side\{position:absolute/.test(html) &&
   /<button type="button" class="mv-fold-side" id="mv-side-toggle"/.test(html));
@@ -1728,7 +1734,14 @@ console.log('\n■ 3D 는 기울이는 것이 아니라 «땅이 솟는» 것이
 check('고도 자료를 쓴다 (브이월드에는 없어 AWS Terrain Tiles 를 쓴다)',
   /terrarium/.test(js) && /encoding:'terrarium'/.test(js));
 check('setTerrain 으로 땅을 솟게 한다', /setTerrain\(\{source:'mv-dem',exaggeration:amount\}\)/.test(js));
-check('확대해도 산 높이와 기울기를 유지한다', /function mvTerrainExaggeration\(\)\{return 1\.5;\}/.test(js) && /function mvTerrainPitch\(\)\{return 62;\}/.test(js));
+check('확대해도 산 높이와 기울기를 유지한다', /function mvTerrainExaggeration\(\)\{return 1\.5;\}/.test(js) && /function mvTerrainPitch\(\)\{return mvIsDrone\(\) \? MV_DRONE_PITCH : 62;\}/.test(js));
+/* 〔2026. 9. 20.〕 zoomend 가 mvTerrainPitch 로 기울기를 도로 끌어내립니다.
+   드론뷰에서 62 를 돌려주면 확대하는 순간 화면이 3D 지형으로 주저앉습니다. */
+check('드론뷰에서 확대해도 기울기가 주저앉지 않는다',
+  /function mvTerrainPitch\(\)\{return mvIsDrone\(\) \? MV_DRONE_PITCH : 62;\}/.test(js) &&
+  /const MV_DRONE_PITCH = 74;/.test(js));
+check('드론 기울기는 지도의 maxPitch 안에 있다 (조용히 깎이지 않는다)',
+  /maxPitch:75/.test(js) && /const MV_DRONE_PITCH = 74;/.test(js));
 check('음영도 함께 켠다 (기울이지 않아도 산줄기가 보인다)',
   /setLayoutProperty\('mv-hills','visibility','visible'\)/.test(js));
 check('2D 로 되돌리면 지형을 끈다', /setTerrain\(null\)/.test(js));
@@ -2208,12 +2221,19 @@ check('무엇을 여는 단추인지 이름으로 적는다', /id="mv-turn-help"
 /* 「보기」 칸에 넣었더니 단추 줄이 넘쳐 줄바꿈이 나고 못생겨졌습니다. */
 check('세로 칸이 아니라 지도 위에 둔다',
   /<button type="button" class="mv-fold-side mv-help" id="mv-turn-help"/.test(html) &&
-  /\.mv-help\{left:auto;right:12px;top:10px\}/.test(html));
+  /\.mv-help\{right:auto;left:12px;top:12px\}/.test(html));
 check('확대·축소 단추와 겹치지 않는다', /\.mv-map \.maplibregl-ctrl-top-right\{top:52px\}/.test(html));
 /* 접기 단추와 같은 꼴을 쓰므로, 자리를 덮어쓰는 규칙은 반드시 그 뒤에 와야
    합니다. 앞에 두었더니 둘이 겹쳐 「요약 접기」가 통째로 가려졌습니다. */
-check('요약 접기를 덮지 않는다 (규칙이 뒤에 온다)',
-  html.indexOf('.mv-fold-side{position:absolute') < html.indexOf('.mv-help{left:auto;right:12px'));
+/* 〔2026. 9. 20.〕 이제 둘은 좌우로 갈라섰습니다 — 접기는 패널 옆(오른쪽),
+   사용법은 왼쪽. 그래도 같은 꼴(.mv-fold-side)을 쓰므로 자리를 덮어쓰는
+   규칙이 «뒤»에 와야 이깁니다. 앞에 두면 사용법이 오른쪽으로 끌려가 겹칩니다. */
+check('요약 접기와 사용법이 좌우로 갈라서 겹치지 않는다',
+  /\.mv-fold-side\{position:absolute;right:324px/.test(html) &&
+  /\.mv-help\{right:auto;left:12px/.test(html) &&
+  html.indexOf('.mv-fold-side{position:absolute') < html.indexOf('.mv-help{right:auto;left:12px'));
+check('접으면 접기 단추가 패널 자리로 옮겨 온다',
+  /\.mapview\.side-off \.mv-fold-side\{right:12px\}/.test(html));
 check('접어 둘 자리가 있다', /id="mv-turn-tip"/.test(html));
 check('처음에는 접혀 있다', /id="mv-turn-tip" hidden/.test(html));
 check('마우스·터치·자판 세 갈래를 다 적는다',
@@ -2545,7 +2565,13 @@ check('비교 보조 지도도 같은 적응형 3D 높이를 쓴다',
   /typeof mvApplyTerrain==='function'\)mvApplyTerrain\(s\)/.test(mapPolicy));
 check('비교 패널은 작고 가장 앞에 있으며 요약 버튼 가까이에 있다',
   /\.mp-panel\{[^}]*z-index:1600[^}]*width:min\(304px/.test(mapPolicyCss) &&
-  /\.mp-tools-toggle\{left:104px!important;z-index:1501!important\}/.test(mapPolicyCss));
+  /\.mp-tools-toggle\{left:104px!important;right:auto!important;z-index:1501!important\}/.test(mapPolicyCss));
+/* 〔2026. 9. 20.〕 요약이 오른쪽으로 가면서 .mv-fold-side 가 right 를 갖게 됐습니다.
+   여기서 left 만 덮어쓰면 left·right 가 동시에 걸려 단추가 가로로 늘어나고,
+   그 투명한 몸통이 「요약 접기」의 누름을 가로막습니다. 실제로 그렇게 막혔습니다. */
+check('비교 단추는 right 를 풀어 가로로 늘어나지 않는다',
+  /\.mp-tools-toggle\{[^}]*right:auto!important/.test(mapPolicyCss) &&
+  /@media\(max-width:700px\)\{\.mp-tools-toggle\{left:104px!important;right:auto!important\}/.test(mapPolicyCss));
 check('조건 바꾸기는 해시를 함께 바꿔 지도 메뉴를 다시 누를 수 있다',
   /function goView\(name\)\{[\s\S]*?location\.hash=hash/.test(mapPolicy) &&
   /\$\('mp-go-sim'\)\.onclick=\(\)=>\{setPanel\(false\);goView\('sim'\);\}/.test(mapPolicy));
@@ -2553,6 +2579,52 @@ check('병설유치원과 본교 이름표 간격은 상자 높이보다 크다'
   /const step = MV\.smallFocus \? 40 : \(tier === 'label' \? 40 : 30\)/.test(js));
 
 check('지역 여건 모듈은 로드하지 않는다', !/assets\/map-context/.test(html));
+
+
+console.log('\n■ 〔드론뷰〕 학교가 앉은 자리를 건물째로 본다');
+/* 3D 지형이 «산»을 보는 눈이라면 드론뷰는 «학교가 앉은 자리»를 보는 눈입니다.
+   더 눕히고 건물을 세웁니다. */
+check('드론뷰 단추가 있다', /id="mv-drone" aria-pressed="false">드론뷰</.test(html));
+check('자동 회전 단추가 있다', /id="mv-spin" aria-pressed="false">자동 회전</.test(html));
+check('드론뷰는 3D 지형보다 더 눕힌다 (74 > 62)',
+  /const MV_DRONE_PITCH = 74;/.test(js) && /mvIsDrone\(\) \? MV_DRONE_PITCH : 62/.test(js));
+check('드론뷰는 가까이 간다 (멀리서 눕히면 땅만 늘어난다)',
+  /const MV_DRONE_ZOOM = 15\.2;/.test(js) &&
+  /Math\.max\(MV\.map\.getZoom\(\), MV_DRONE_ZOOM\)/.test(js));
+
+/* 브이월드에도 건물(lt_c_bldginfo·height)이 있지만 WFS 응답에 CORS 헤더가 없어
+   브라우저에서 못 받습니다. 미리 구워 두는 길은 학교 917곳 둘레만 모아도
+   gzip 33MB 였습니다. OpenFreeMap 은 키가 없고 CORS 를 열어 두었습니다. */
+check('건물은 OpenFreeMap 벡터 타일에서 빌린다 (브이월드 WFS 는 CORS 가 없다)',
+  /'mv-bld'\] = \{ type:'vector', url:'https:\/\/tiles\.openfreemap\.org\/planet'/.test(js));
+check('건물 출처를 밝힌다', /OpenFreeMap<\/a>.*OpenStreetMap<\/a>/.test(js));
+check('건물은 드론뷰에서만 세운다 (산을 보는 화면에 끼어들지 않는다)',
+  /map\.setLayoutProperty\('mv-bld','visibility', mvIsDrone\(\) \? 'visible' : 'none'\)/.test(js));
+check('높이가 없는 건물도 바닥에 눌러붙지 않는다',
+  /'fill-extrusion-height':\['coalesce',\['get','render_height'\],5\]/.test(js));
+/* render_min_height 는 «바닥 높이»지 층수가 아닙니다. 곱했더니 0 이 나와
+   건물이 통째로 납작해졌습니다. */
+check('바닥 높이를 층수처럼 곱하지 않는다',
+  !/\['\*',\['coalesce',\['get','render_min_height'\]/.test(js));
+check('흰 건물이 밝은 배경에 묻히지 않게 회색을 섞는다',
+  /'fill-extrusion-color':'hsl\(210,12%,88%\)'/.test(js));
+
+/* 돌고 있는데 사람이 끌면 서로 방위를 다투어 덜컥거립니다. 사람이 이깁니다.
+   MapLibre 의 dragstart 는 돌고 있는 동안 제 움직임과 사람 움직임을 못 가려
+   믿을 수 없었습니다 — 캔버스의 날 입력을 듣습니다. */
+check('손을 대면 자동 회전이 멈춘다 (캔버스 날 입력을 듣는다)',
+  /\['mousedown','touchstart','wheel','keydown'\]\.forEach/.test(js) &&
+  /if\(MV\.spin\) mvStopSpin\(\)/.test(js));
+check('탭을 떠났다 오면 한 번에 뛰지 않는다 (dt 를 자른다)',
+  /Math\.min\(now - last, 120\) \/ 1000/.test(js));
+check('평면에서 돌리면 뜻이 없으므로 드론뷰로 올린다',
+  /if\(!mvIsDrone\(\)\) setView\('drone'\)/.test(js));
+/* 2D·3D 가 각자 제 단추의 aria 를 만지고 있었습니다. 셋이 되자 서로의 표시를
+   지우지 못해 두 단추가 함께 눌린 것처럼 보였습니다. */
+check('보기 모드는 한 자리에서 정한다 (세 단추의 표시가 어긋나지 않는다)',
+  /\[\['mv-2d','2d'\],\['mv-3d','3d'\],\['mv-drone','drone'\]\]\.forEach/.test(js));
+check('평면으로 돌아가면 회전도 멈춘다',
+  /if\(mode !== 'drone'\) mvStopSpin\(\)/.test(js));
 
 console.log(`\n${fail ? '✗' : '✓'}  통과 ${pass} · 실패 ${fail}\n`);
 process.exit(fail ? 1 : 0);
