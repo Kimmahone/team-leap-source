@@ -13,7 +13,12 @@
 .mp-tray{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:9px 0}.mp-tray summary{cursor:pointer;font-size:12px;font-weight:700;color:var(--ink-2)}.mp-tray[open] summary{margin-bottom:6px}
 .mp-map.analysis-mode #mv-canvas .mv-lab,.mp-map.analysis-mode #mv-canvas .mv-pin,.mp-map.analysis-mode #mv-canvas .mv-bub{display:none}
 #mp-second{position:absolute;inset:0;pointer-events:none;z-index:1}#mp-second[hidden]{display:none}
-.mp-map .mv-fold-side,.mp-map .mv-tip,.mp-map .mv-scale{z-index:6}
+/* 〔2026. 9. 20.〕 요약이 지도 위에 떠 있는 판(z-index 900)이 되면서,
+   여기서 6 으로 눌러 버리면 비교 모드에서 접기 단추와 안내가 요약 «아래»로
+   숨습니다. 비교 패널(1600)보다는 낮고 요약보다는 높게 둡니다. */
+.mp-map .mv-scale{z-index:6}
+.mp-map .mv-fold-side{z-index:901}
+.mp-map .mv-tip{z-index:902}
 #mp-swipe{position:absolute;left:15%;bottom:42px;width:70%;z-index:5;background:var(--card);padding:8px 12px;border:1px solid var(--line);border-radius:12px;box-shadow:0 2px 12px #0002}
 #mp-swipe label{display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:700}#mp-swipe input{width:100%;accent-color:#1b4fa0}
 #mp-divider{position:absolute;top:0;bottom:0;width:2px;background:#1b4fa0;z-index:2;pointer-events:none}
