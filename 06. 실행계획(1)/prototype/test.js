@@ -1662,15 +1662,42 @@ check('다시 그리지 않고 차례만 바꾼다 (다시 만들면 말풍선�
 check('재는 동안에는 말풍선을 떼어 둔다 (누르면 재는 점이 된다)',
   /if\(!MV\.ruler\) mk\.setPopup/.test(js));
 
-console.log('\n■ 왼쪽 칸을 접으면 지도가 넓어진다');
+console.log('\n■ 요약은 지도 위에 떠 있고, 접으면 지도가 온전히 드러난다');
 /* ★ 처음에는 카드를 하나씩 접게 했습니다. 그런데 다 접어도 지도가 넓어지지
    않았습니다 — 칸의 너비가 그대로였기 때문입니다. 접는 뜻은 자리를 아끼는 것이
    아니라 «지도를 넓게 보는 것»이었습니다. */
 /* ★ 칸을 숨기면 지도가 «첫 칸»이 됩니다. `0 minmax(0,1fr)` 로 두면 지도가
    그 0 짜리 칸에 들어가 손톱만 해집니다 — 접었을 때는 칸이 하나입니다. */
-check('접으면 칸이 차지하던 너비를 지도가 가져간다',
-  /\.mapview\.side-off\{grid-template-columns:minmax\(0,1fr\)\}/.test(html) &&
+/* 〔2026. 9. 20.〕 격자 한 칸을 차지하던 요약을 «떠 있는 패널»로 바꿨습니다.
+   지도는 늘 폭을 다 쓰고, 접기는 덮인 자리를 드러내는 일이 됩니다. */
+check('요약은 지도 위에 떠 있다 (칸을 차지하지 않는다)',
+  /\.mapview\{display:grid;grid-template-columns:minmax\(0,1fr\);position:relative/.test(html) &&
+  /\.mv-side\{position:absolute;right:12px/.test(html));
+check('접으면 덮여 있던 지도가 드러난다',
   /\.mapview\.side-off \.mv-side\{display:none\}/.test(html));
+/* 〔2026. 9. 20.〕 처음에는 위아래로 반씩 나눴는데 폰에서 지도가 240px 밖에
+   안 돼 «지도를 보는 화면»이 못 됐습니다. 지도가 화면을 다 쓰고 요약은
+   아래에 걸터앉습니다. */
+check('폰에서는 지도가 화면을 다 쓰고 요약이 아래에 걸터앉는다',
+  /\.mv-side\{position:absolute;left:0;right:0;bottom:0;top:auto/.test(html) &&
+  /max-height:46%/.test(html) &&
+  /\.mapview\{grid-template-rows:minmax\(0,1fr\);height:min\(82vh, 900px\)\}/.test(html));
+/* 아래에서 올라오는 칸으로 바꿨더니 지도가 692px 로 커졌는데 그 칸이 아래
+   318px 를 덮어 보이는 지도는 374px 뿐이었습니다 — 고치기 전보다 좁습니다. */
+check('폰에서는 요약이 접힌 채 시작한다 (지도가 먼저 온전히 보인다)',
+  /const narrow = !!\(window\.matchMedia && window\.matchMedia\('\(max-width:900px\)'\)\.matches\);/.test(js) &&
+  /let open = !narrow;/.test(js));
+check('한 번 펴 두면 그 뜻을 기억한다',
+  /if\(saved !== null\) open = saved !== '0';/.test(js));
+/* 폰에서는 왼쪽 메뉴가 화면 윗부분을 차지해 남는 자리가 420px 뿐이었습니다. */
+check('폰에서는 지도를 화면 맨 위로 끌어올린 뒤에 잰다 (순서가 중요하다)',
+  /function mvScrollIntoViewIfNarrow/.test(js) &&
+  /mvScrollIntoViewIfNarrow\(\);\s*\n\s*mvFit\(\);/.test(js) &&
+  /behavior:'auto'/.test(js));
+
+check('폰에서 접기 단추는 요약 위에 얹힌다 (가리지 않는다)',
+  /#mv-side-toggle\{right:12px;top:auto;bottom:calc\(46% \+ 10px\)\}/.test(html) &&
+  /\.mapview\.side-off #mv-side-toggle\{bottom:12px\}/.test(html));
 check('단추는 지도 «위»에 둔다 (칸 안에 두면 접은 뒤 함께 사라진다)',
   /\.mv-fold-side\{position:absolute/.test(html) &&
   /<button type="button" class="mv-fold-side" id="mv-side-toggle"/.test(html));
@@ -1728,7 +1755,9 @@ console.log('\n■ 3D 는 기울이는 것이 아니라 «땅이 솟는» 것이
 check('고도 자료를 쓴다 (브이월드에는 없어 AWS Terrain Tiles 를 쓴다)',
   /terrarium/.test(js) && /encoding:'terrarium'/.test(js));
 check('setTerrain 으로 땅을 솟게 한다', /setTerrain\(\{source:'mv-dem',exaggeration:amount\}\)/.test(js));
-check('확대해도 산 높이와 기울기를 유지한다', /function mvTerrainExaggeration\(\)\{return 1\.5;\}/.test(js) && /function mvTerrainPitch\(\)\{return 62;\}/.test(js));
+check('확대해도 산 높이와 기울기를 유지한다 (배율에 따라 흔들리지 않는다)',
+  /function mvTerrainExaggeration\(\)\{return 1\.5;\}/.test(js) &&
+  /function mvTerrainPitch\(\)\{return 62;\}/.test(js));
 check('음영도 함께 켠다 (기울이지 않아도 산줄기가 보인다)',
   /setLayoutProperty\('mv-hills','visibility','visible'\)/.test(js));
 check('2D 로 되돌리면 지형을 끈다', /setTerrain\(null\)/.test(js));
@@ -1736,7 +1765,7 @@ check('2D 로 되돌리면 지형을 끈다', /setTerrain\(null\)/.test(js));
 console.log('\n■ 배경 타일은 레이어마다 확장자가 다르다');
 /* 틀린 확장자는 200 으로 «오류 XML» 을 돌려줍니다 — 조용히 빈 화면이 됩니다. */
 check('위성만 jpeg 이고 나머지는 png 다', q(
-  "MV_BASES.map(function(b){return b.id+':'+b.ext}).join()") === 'Base:png,Satellite:jpeg,Hybrid:jpeg,midnight:png,gray:png');
+  "MV_BASES.map(function(b){return b.id+':'+b.ext}).join()") === 'Hybrid:jpeg,Satellite:jpeg,gray:png,Base:png');
 check('「위성+지명」은 위성 «위에» 얹는다 (하이브리드만 깔면 허전하다)', q(
   "(function(){var h=MV_BASES.filter(function(b){return b.id==='Hybrid'})[0];" +
   "return h.base==='Satellite'&&h.over==='Hybrid'&&h.overExt==='png';})()") === true);
@@ -2208,12 +2237,25 @@ check('무엇을 여는 단추인지 이름으로 적는다', /id="mv-turn-help"
 /* 「보기」 칸에 넣었더니 단추 줄이 넘쳐 줄바꿈이 나고 못생겨졌습니다. */
 check('세로 칸이 아니라 지도 위에 둔다',
   /<button type="button" class="mv-fold-side mv-help" id="mv-turn-help"/.test(html) &&
-  /\.mv-help\{left:auto;right:12px;top:10px\}/.test(html));
+  /\.mv-help\{left:12px;top:12px\}/.test(html));
 check('확대·축소 단추와 겹치지 않는다', /\.mv-map \.maplibregl-ctrl-top-right\{top:52px\}/.test(html));
 /* 접기 단추와 같은 꼴을 쓰므로, 자리를 덮어쓰는 규칙은 반드시 그 뒤에 와야
    합니다. 앞에 두었더니 둘이 겹쳐 「요약 접기」가 통째로 가려졌습니다. */
-check('요약 접기를 덮지 않는다 (규칙이 뒤에 온다)',
-  html.indexOf('.mv-fold-side{position:absolute') < html.indexOf('.mv-help{left:auto;right:12px'));
+/* 〔2026. 9. 20.〕 이제 둘은 좌우로 갈라섰습니다 — 접기는 패널 옆(오른쪽),
+   사용법은 왼쪽. 그래도 같은 꼴(.mv-fold-side)을 쓰므로 자리를 덮어쓰는
+   규칙이 «뒤»에 와야 이깁니다. 앞에 두면 사용법이 오른쪽으로 끌려가 겹칩니다. */
+/* ★ 〔2026. 9. 20.〕 자리는 «단추마다 따로» 정합니다.
+   .mv-fold-side 는 세 단추가 함께 쓰는 «생김새»입니다. 여기에 left 나 right 를
+   적으면 다른 단추까지 끌려갑니다. 두 번 당했습니다 — right 를 적었더니
+   「비교」가 좌우로 늘어났고, 접을 때 쓰는 규칙이 「지도 사용법」에도 걸려
+   1,258px 막대가 됐습니다. left 와 right 를 동시에 가지면 늘어납니다. */
+check('공통 생김새 규칙에는 자리를 적지 않는다 (다른 단추가 끌려간다)',
+  /\.mv-fold-side\{position:absolute;top:12px;z-index:901;/.test(html) &&
+  !/\.mv-fold-side\{[^}]*(left|right):/.test(html));
+check('요약 접기와 사용법이 좌우로 갈라서 겹치지 않는다',
+  /#mv-side-toggle\{right:324px\}/.test(html) && /\.mv-help\{left:12px/.test(html));
+check('접으면 접기 단추가 패널 자리로 옮겨 온다 (그 단추만)',
+  /\.mapview\.side-off #mv-side-toggle\{right:12px\}/.test(html));
 check('접어 둘 자리가 있다', /id="mv-turn-tip"/.test(html));
 check('처음에는 접혀 있다', /id="mv-turn-tip" hidden/.test(html));
 check('마우스·터치·자판 세 갈래를 다 적는다',
@@ -2545,7 +2587,13 @@ check('비교 보조 지도도 같은 적응형 3D 높이를 쓴다',
   /typeof mvApplyTerrain==='function'\)mvApplyTerrain\(s\)/.test(mapPolicy));
 check('비교 패널은 작고 가장 앞에 있으며 요약 버튼 가까이에 있다',
   /\.mp-panel\{[^}]*z-index:1600[^}]*width:min\(304px/.test(mapPolicyCss) &&
-  /\.mp-tools-toggle\{left:104px!important;z-index:1501!important\}/.test(mapPolicyCss));
+  /\.mp-tools-toggle\{left:104px!important;right:auto!important;z-index:1501!important\}/.test(mapPolicyCss));
+/* 〔2026. 9. 20.〕 요약이 오른쪽으로 가면서 .mv-fold-side 가 right 를 갖게 됐습니다.
+   여기서 left 만 덮어쓰면 left·right 가 동시에 걸려 단추가 가로로 늘어나고,
+   그 투명한 몸통이 「요약 접기」의 누름을 가로막습니다. 실제로 그렇게 막혔습니다. */
+check('비교 단추는 right 를 풀어 가로로 늘어나지 않는다',
+  /\.mp-tools-toggle\{[^}]*right:auto!important/.test(mapPolicyCss) &&
+  /@media\(max-width:700px\)\{\.mp-tools-toggle\{left:104px!important;right:auto!important\}/.test(mapPolicyCss));
 check('조건 바꾸기는 해시를 함께 바꿔 지도 메뉴를 다시 누를 수 있다',
   /function goView\(name\)\{[\s\S]*?location\.hash=hash/.test(mapPolicy) &&
   /\$\('mp-go-sim'\)\.onclick=\(\)=>\{setPanel\(false\);goView\('sim'\);\}/.test(mapPolicy));
@@ -2553,6 +2601,94 @@ check('병설유치원과 본교 이름표 간격은 상자 높이보다 크다'
   /const step = MV\.smallFocus \? 40 : \(tier === 'label' \? 40 : 30\)/.test(js));
 
 check('지역 여건 모듈은 로드하지 않는다', !/assets\/map-context/.test(html));
+
+
+console.log('\n■ 〔요약 패널〕 단추를 성격으로 묶고 칸 너비를 맞춘다');
+/* 다섯을 한 묶음에 넣었더니 「소규모만 강조」가 혼자 남아 줄 끝이 비었습니다.
+   그리고 «얹는 것»과 «하는 일»이 뒤섞여 있었습니다. */
+check('겹쳐 보기는 넷이라 두 줄이 꽉 찬다 (혼자 남는 단추가 없다)',
+  /<p class="mv-sub">겹쳐 보기<\/p>\s*<div class="mv-grid2">/.test(html) &&
+  /id="mv-bound"[\s\S]{0,400}id="mv-closed"[\s\S]{0,400}id="mv-choropleth"[\s\S]{0,400}id="mv-small-focus"/.test(html));
+check('도구는 따로 묶는다 (얹는 것이 아니라 하는 일이다)',
+  /<p class="mv-sub">도구<\/p>\s*<div class="mv-grid2">\s*<button[^>]*id="mv-ruler"/.test(html));
+/* 되돌리기에 짝을 두면 둘 다 같은 무게로 읽힙니다. */
+check('되돌리기는 한 칸을 다 쓴다',
+  /<button type="button" class="chip mv-wide" id="mv-reset">경북 전체로 돌아가기<\/button>/.test(html) &&
+  /\.mv-wide\{width:100%/.test(html));
+/* 네 칸까지 좁히면 「위성+지명」이 두 줄로 쪼개집니다. */
+check('배경은 두 칸이라 「위성+지명」이 한 줄에 들어간다',
+  /<div class="mv-grid2" id="mv-bases">/.test(html));
+check('학교급 여섯은 세 칸 두 줄로 세로줄이 선다',
+  /<div class="mv-grid3" id="mv-levels"/.test(html) &&
+  /\.mv-grid3\{display:grid;grid-template-columns:repeat\(3,1fr\)/.test(html));
+/* 떠 있는 판 «안»의 카드에 테를 두르면 상자 속 상자가 됩니다. */
+check('패널 안 카드는 테 대신 바탕 차이로 나눈다',
+  /\.mv-side \.mv-card\{border-color:transparent;background:var\(--card-2\)\}/.test(html));
+check('패널 스크롤 막대는 가늘게 둔다 (떠 있는 판의 결이 깨진다)',
+  /\.mv-side\{scrollbar-width:thin/.test(html));
+
+console.log('\n■ 〔요약 패널〕 가장 위에 있고, 덮는 것은 지도의 자식이다');
+/* 학교 이름표는 고르면 z-index 800 까지 올라갑니다. 요약이 8 이었으므로
+   이름표가 패널을 뚫고 올라왔습니다. */
+check('요약은 학교 이름표보다 위에 있다',
+  /\.mv-side\{position:absolute;right:12px;top:12px;bottom:12px;width:300px;z-index:900;/.test(html));
+check('접기 단추와 안내도 요약 위에 있다',
+  /\.mv-fold-side\{position:absolute;top:12px;z-index:901;/.test(html) &&
+  /\.mv-tip\{position:absolute;left:12px;right:auto;top:54px;z-index:902;/.test(html));
+/* 비교 모드가 이것들을 6 으로 눌러 요약 아래로 숨기고 있었습니다. */
+check('비교 모드에서도 요약 아래로 숨지 않는다',
+  /\.mp-map \.mv-fold-side\{z-index:901\}/.test(mapPolicyCss) &&
+  /\.mp-map \.mv-tip\{z-index:902\}/.test(mapPolicyCss));
+/* 「보기」 칸 안에 두었더니 position:absolute 의 기준이 요약 패널이 되어,
+   left:12px 라고 적었는데도 오른쪽 패널 위에 떴습니다. */
+check('안내 상자는 요약 패널 밖(지도 위)에 있다',
+  html.indexOf('id="mv-turn-tip"') > html.indexOf('</aside>'));
+/* 패널이 오른쪽이므로 접기는 오른쪽을 가리켜야 합니다. */
+check('접기 화살표는 패널이 있는 쪽을 가리킨다',
+  /<span class="ic" aria-hidden="true">›<\/span><span class="lb">요약 접기<\/span>/.test(html));
+check('뒤집기는 접기 단추 하나에만 건다 (비교·사용법 아이콘까지 뒤집혔다)',
+  /\.mapview\.side-off #mv-side-toggle \.ic\{transform:scaleX\(-1\)\}/.test(html));
+
+console.log('\n■ 〔폐교〕 점만 찍지 않고 이름을 단다');
+/* 12px 점선 네모만 찍어 두었더니 무엇이 무엇인지 눌러 봐야 알았습니다. */
+check('이름표 배율에서는 폐교도 이름을 단다',
+  /const named = mvTier\(map\.getZoom\(\)\) === 'label';/.test(js) &&
+  /el\.className = named \? 'mv-clab' : 'mv-closed';/.test(js));
+check('문 닫은 해까지 함께 적는다', /<span>' \+ htmlEsc\(String\(r\.year\)\)/.test(js));
+check('살아 있는 학교와 꼴로 구분한다 (점선 테 · 흐린 글자)',
+  /\.mv-clab\{[^}]*border:1px dashed var\(--ink-3\)/.test(html));
+check('멀리서는 점만 찍는다 (이름을 다 적으면 글자로 덮인다)',
+  /\.mv-closed\{width:11px;height:11px;border-radius:50%/.test(html));
+
+console.log('\n■ 〔보기 모드〕 2D 와 3D 지형, 그리고 정렬');
+/* ★ 드론뷰를 만들었다가 걷어냈습니다 〔2026. 9. 20.〕
+   드론뷰의 값어치는 «실제 건물이 솟아 보이는 것»에 있었는데, 경북에서는
+   그 건물을 구할 길이 없었습니다.
+     · 브이월드 lt_c_bldginfo 에는 실측 높이가 전국으로 있지만 WFS 응답에
+       CORS 헤더가 없어 브라우저가 못 받습니다.
+     · Cloudflare 함수로 중계해 봤더니 520 — 브이월드 응답이 비표준이라
+       Workers 의 fetch 가 거절합니다(vworld-key.js 에 적힌 그대로였습니다).
+     · 미리 구워 두기: 학교 917곳 둘레만 gzip 33MB.
+     · OSM(OpenFreeMap): 구미 신도시 한 화면에 29개, 강남은 1,304개 —
+       경북에서는 아파트가 거의 없습니다.
+   건물이 안 서면 드론뷰는 «각도만 다른 3D 지형»입니다. 기능을 지웠습니다.
+   나중에 건물 자료를 구하면 그때 되살립니다. */
+check('드론뷰는 두지 않는다 (건물 자료를 구할 길이 없었다)',
+  !/mv-drone|mvIsDrone|MV_DRONE/.test(js) && !/id="mv-drone"/.test(html));
+check('보는 방식은 둘이고 이어 붙인 한 덩이다',
+  /<div class="mv-seg mv-seg-2" role="group" aria-label="보는 방식">/.test(html) &&
+  /\.mv-seg\{display:grid;grid-template-columns:repeat\(2,1fr\)/.test(html));
+check('켜고 끄는 단추는 두 칸씩 나란하다',
+  /\.mv-grid2\{display:grid;grid-template-columns:1fr 1fr;gap:6px\}/.test(html));
+check('자동 회전은 평면에서 누르면 3D 로 올린다',
+  /if\(MV\.view !== '3d'\) setView\('3d'\)/.test(js));
+check('보기 모드는 한 자리에서 정한다 (두 단추의 표시가 어긋나지 않는다)',
+  /\[\['mv-2d','2d'\],\['mv-3d','3d'\]\]\.forEach/.test(js));
+check('배경 차례는 많이 쓰는 것부터다 (기본값이 맨 앞)',
+  /base:'Hybrid', level:'전체'/.test(js) &&
+  js.indexOf("id:'Hybrid'") < js.indexOf("id:'Satellite'") &&
+  js.indexOf("id:'Satellite'") < js.indexOf("id:'gray'") &&
+  js.indexOf("id:'gray'") < js.indexOf("id:'Base',      name:'일반'"));
 
 console.log(`\n${fail ? '✗' : '✓'}  통과 ${pass} · 실패 ${fail}\n`);
 process.exit(fail ? 1 : 0);

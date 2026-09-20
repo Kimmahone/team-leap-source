@@ -1304,17 +1304,73 @@ table.data .hl{color:var(--brand);font-weight:800}
 /* 좌우로만 물립니다. 위쪽에는 「사용 안내·인쇄」 줄이 있어 덮으면 안 됩니다.
    높이는 화면에 드러난 뒤 mvFit 이 «실제로 재서» 넣습니다 — 머리글 높이가
    글자 크기나 창 너비에 따라 달라지므로 계산식으로는 어긋납니다. */
-.mapview{display:grid;grid-template-columns:296px minmax(0,1fr);
+/* ★ 요약을 지도 «위»로 띄웁니다 〔2026. 9. 20.〕
+   격자 한 칸으로 두면 296px 만큼 지도가 좁아집니다. 지도를 보러 온 화면에서는
+   지도가 가장 커야 합니다. 떠 있는 패널로 바꾸면 지도가 폭을 다 쓰고 요약은
+   그 위에 얹힙니다 — 부동산 앱들이 쓰는 배치입니다.
+   `position:relative` 가 있어야 패널이 이 상자를 기준으로 섭니다. */
+.mapview{display:grid;grid-template-columns:minmax(0,1fr);position:relative;
   margin:0 -24px;height:min(76vh, 900px);min-height:420px}
 .main.is-map{padding-bottom:0}
+/* ★ 요약은 «가장 위» 입니다 〔2026. 9. 20.〕
+   학교 이름표는 고르면 z-index 800 까지 올라갑니다. 요약이 8 이었으므로
+   이름표가 패널을 뚫고 올라왔습니다. 패널은 지도 위에 떠 있는 판이므로
+   지도의 어떤 것보다도 위에 있어야 합니다. */
+/* 패널 안을 굴릴 때 막대가 굵게 튀어나오면 떠 있는 판의 결이 깨집니다.
+   가늘게, 손이 얹혔을 때만 또렷하게. */
+.mv-side{scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.mv-side::-webkit-scrollbar{width:8px}
+.mv-side::-webkit-scrollbar-track{background:transparent}
+.mv-side::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px;
+  border:2px solid transparent;background-clip:content-box}
+.mv-side:hover::-webkit-scrollbar-thumb{background:var(--ink-3);background-clip:content-box}
+.mv-side{position:absolute;right:12px;top:12px;bottom:12px;width:300px;z-index:900;
+  background:color-mix(in srgb, var(--card) 93%, transparent);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(16,26,36,.18);
+  overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:10px 10px 18px;min-width:0}
+/* ★ 좁은 화면에서는 «아래에서 올라오는 칸»입니다 〔2026. 9. 20.〕
+   처음에는 위아래로 반씩 나눴는데, 폰에서 지도가 240px 밖에 안 돼
+   «지도를 보는 화면»이라고 하기 어려웠습니다. 지도가 화면을 다 쓰고,
+   요약은 아래에 걸터앉아 필요할 때만 올라옵니다.
+   접으면(side-off) 통째로 사라지므로 지도가 온전히 드러납니다. */
 @media (max-width:900px){
-  .mapview{grid-template-columns:1fr;grid-template-rows:minmax(220px,42%) minmax(240px,58%)}
+  .mapview{grid-template-rows:minmax(0,1fr);height:min(82vh, 900px)}
+  .mv-side{position:absolute;left:0;right:0;bottom:0;top:auto;width:auto;
+    max-height:46%;border:0;border-top:1px solid var(--line);
+    border-radius:14px 14px 0 0;box-shadow:0 -8px 24px rgba(16,26,36,.16);
+    background:color-mix(in srgb, var(--card) 96%, transparent);
+    padding:14px 12px 18px}
+  /* 손잡이 — 여기를 잡아 올리고 내린다는 것을 몸으로 알립니다 */
+  .mv-side::before{content:'';position:sticky;top:-6px;align-self:center;
+    width:38px;height:4px;border-radius:99px;background:var(--line);margin:-6px 0 6px}
+  #mv-side-toggle{right:12px;top:auto;bottom:calc(46% + 10px)}
+  .mapview.side-off #mv-side-toggle{bottom:12px}
 }
-.mv-side{background:var(--card);border-right:1px solid var(--line);overflow-y:auto;
-  display:flex;flex-direction:column;gap:8px;padding:10px 10px 18px;min-width:0}
 .mv-card{background:var(--card-2);border:1px solid var(--line);border-radius:var(--radius);padding:10px}
-.mv-card h2{margin:0 0 8px;font-size:11.5px;font-weight:700;color:var(--ink-2);letter-spacing:.04em}
+.mv-card h2{margin:0 0 9px;font-size:11.5px;font-weight:800;color:var(--ink-2);letter-spacing:.04em}
+/* 떠 있는 판 «안»의 카드라 테두리를 한 겹 더 두르면 상자 속 상자가 됩니다.
+   테 대신 바탕 차이만으로 나눕니다 — 훨씬 가볍게 읽힙니다. */
+.mv-side .mv-card{border-color:transparent;background:var(--card-2)}
 .mv-row{display:flex;flex-wrap:wrap;gap:6px}
+/* 하나만 고르는 것 — 이어 붙여 «한 덩이»로 보이게 합니다. */
+.mv-seg{display:grid;grid-template-columns:repeat(2,1fr);gap:0;
+  border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--card)}
+.mv-seg .chip{border:0;border-radius:0;justify-content:center;min-width:0;
+  border-right:1px solid var(--line)}
+.mv-seg .chip:last-child{border-right:0}
+/* 켜고 끄는 것 — 두 칸씩 나란히. 글자 길이가 달라도 줄이 흐트러지지 않습니다. */
+.mv-grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mv-grid2 .chip{justify-content:center;min-width:0}
+/* 한 칸 안에서 무리를 나누는 아주 작은 이름표. 카드를 더 쪼개면 칸만 늘어납니다. */
+.mv-sub{margin:10px 0 5px;font-size:10.5px;font-weight:700;color:var(--ink-3);letter-spacing:.03em}
+.mv-sub:first-of-type{margin-top:12px}
+.mv-wide{width:100%;justify-content:center;margin-top:8px}
+/* 배경·학교급처럼 여럿을 고르는 줄은 칸 너비를 맞춰 세로줄이 서게 합니다.
+   글자 길이가 제각각이라 그냥 흘려 두면 들쭉날쭉해 보입니다.
+   네 칸까지 좁히면 「위성+지명」이 두 줄로 쪼개져, 배경은 두 칸으로 둡니다. */
+.mv-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.mv-grid3 .chip{justify-content:center;min-width:0;padding-left:6px;padding-right:6px}
 .mv-choro-years{display:flex;align-items:center;justify-content:space-between;gap:8px;
   margin-top:10px;padding-top:9px;border-top:1px solid var(--line-2)}
 .mv-choro-years[hidden]{display:none}
@@ -1397,24 +1453,35 @@ table.data .hl{color:var(--brand);font-weight:800}
      처음에 `0 minmax(0,1fr)` 로 두었더니 지도가 그 0 짜리 첫 칸에 들어가
      손톱만 해졌습니다. display:none 인 것은 격자에서 아예 빠지기 때문입니다.
      접었을 때는 «칸이 하나»라고 적어야 맞습니다. */
-.mapview.side-off{grid-template-columns:minmax(0,1fr)}
 .mapview.side-off .mv-side{display:none}
 /* 접기 단추는 지도 «위»에 둡니다. 칸 안에 두면 접은 뒤 함께 사라져
    돌아올 길이 없어집니다. */
 .mv-map .maplibregl-ctrl-top-right{top:52px}
-.mv-fold-side{position:absolute;left:10px;top:10px;z-index:6;
+/* ★ 자리는 «단추마다 따로» 정합니다 〔2026. 9. 20.〕
+   .mv-fold-side 는 세 단추(요약 접기·지도 사용법·비교)가 함께 쓰는 «생김새»입니다.
+   여기에 left 나 right 를 적으면 다른 단추까지 끌려갑니다. 실제로 두 번 당했습니다 —
+   right 를 적었더니 「비교」가 좌우로 늘어났고, 접을 때 쓰는 규칙이 「지도 사용법」에도
+   걸려 1,258px 짜리 막대가 됐습니다(left 와 right 를 동시에 가지면 늘어납니다).
+   그래서 이 규칙에는 자리를 적지 않고, 아래에서 각 단추의 id 로만 정합니다. */
+.mv-fold-side{position:absolute;top:12px;z-index:901;
   display:flex;align-items:center;gap:6px;font:inherit;font-size:12.5px;font-weight:600;
   min-height:34px;padding:0 12px 0 9px;border:1px solid var(--line);border-radius:999px;
   background:var(--card);color:var(--ink-2);cursor:pointer;box-shadow:var(--leap-shadow)}
 .mv-fold-side:hover{border-color:var(--brand);color:var(--brand)}
 .mv-fold-side:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
 .mv-fold-side .ic{font-size:15px;line-height:1}
-.mapview.side-off .mv-fold-side .ic{transform:scaleX(-1)}
+/* 접기 단추는 패널 옆에 섭니다. 접으면 패널이 사라진 자리로 옮겨 옵니다. */
+#mv-side-toggle{right:324px}
+.mapview.side-off #mv-side-toggle{right:12px}
+/* 뒤집기는 접기 단추 «하나»에만. 공통 클래스에 걸면 「비교」·「사용법」의
+   아이콘까지 좌우가 뒤집힙니다. */
+.mapview.side-off #mv-side-toggle .ic{transform:scaleX(-1)}
 /* ── 돌리는 법 안내 ── 묻는 사람에게만. 지도 위 «오른쪽»에 둡니다.
    ★ 접기 단추와 같은 꼴(.mv-fold-side)을 쓰므로, 자리를 덮어쓰는 규칙은
      반드시 그 «뒤»에 와야 합니다. 앞에 두었더니 둘이 같은 자리에 겹쳐
      「요약 접기」가 통째로 가려졌습니다. */
-.mv-help{left:auto;right:12px;top:10px}
+/* 접기 단추가 오른쪽으로 갔으므로 사용법은 «왼쪽»으로 비켜섭니다. */
+.mv-help{left:12px;top:12px}
 .mv-help .ic{display:inline-flex;align-items:center;justify-content:center;
   width:15px;height:15px;border-radius:50%;background:var(--ink-3);color:var(--card);
   font-size:10px;font-weight:800}
@@ -1422,7 +1489,7 @@ table.data .hl{color:var(--brand);font-weight:800}
 .mv-help[aria-expanded="true"] .ic{background:var(--leap-on-fill);color:var(--brand)}
 .mapview.side-off .mv-help .ic{transform:none}
 @media (max-width:900px){ .mv-help .lb{display:none} .mv-help{padding:0 9px} }
-.mv-tip{position:absolute;right:12px;top:52px;z-index:7;width:min(320px,calc(100% - 24px));
+.mv-tip{position:absolute;left:12px;right:auto;top:54px;z-index:902;width:min(320px,calc(100% - 24px));
   border:1px solid var(--line);border-radius:10px;background:var(--card);
   padding:12px 13px;font-size:11.5px;line-height:1.6;color:var(--ink-2);
   box-shadow:0 8px 22px rgba(16,26,36,.2)}
@@ -1433,7 +1500,8 @@ table.data .hl{color:var(--brand);font-weight:800}
 .mv-tip-close:focus-visible{outline:3px solid var(--brand);outline-offset:1px}
 .mv-tip > b{padding-right:26px}
 @media (max-width:900px){
-  .mapview.side-off{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr)}
+  .mapview.side-off{grid-template-rows:minmax(0,1fr)}
+  #mv-side-toggle{right:12px}
 }
 #mv-canvas{position:absolute;inset:0;background:var(--card-2)}
 /* ── 축척 ── 자와 비율을 함께. 종이 지도를 읽어 온 사람에게는 비율이 빠릅니다 */
@@ -1524,8 +1592,25 @@ table.data .hl{color:var(--brand);font-weight:800}
 /* 폐교는 «비어 있는 네모»입니다 — 살아 있는 학교의 둥근 점과 한눈에 갈립니다.
    ※ transform 은 쓰지 않습니다. MapLibre 가 딱지를 놓을 때 같은 자리에
      transform:translate 를 적어 넣어 서로 덮어씁니다 (마름모가 되지 않습니다). */
-.mv-closed{width:12px;height:12px;border:2px dashed var(--ink-3);background:var(--card);
-  opacity:.9;cursor:pointer}
+/* 멀리서 — 점 하나. 살아 있는 학교 딱지와 헷갈리지 않도록 «비었다»는 느낌으로
+   속을 비우고 테만 둡니다. 점선은 작게 그리면 지저분해 실선으로 바꿨습니다. */
+.mv-closed{width:11px;height:11px;border-radius:50%;
+  border:2px solid var(--ink-3);background:var(--card);
+  box-shadow:0 1px 3px rgba(16,26,36,.28);opacity:.92;cursor:pointer}
+.mv-closed:hover{border-color:var(--wrong);opacity:1;transform:scale(1.25)}
+/* 가까이 — 이름을 답니다. 지금 학교(흰 바탕·진한 글자)와 달리 흐린 바탕에
+   점선 테를 둘러 «문 닫은 곳»임을 색과 꼴로 함께 말합니다. */
+.mv-clab{display:flex;align-items:center;gap:4px;white-space:nowrap;cursor:pointer;
+  padding:2px 7px 2px 4px;border-radius:999px;font-size:11px;line-height:1.5;
+  color:var(--ink-3);background:color-mix(in srgb, var(--card) 86%, transparent);
+  border:1px dashed var(--ink-3);box-shadow:0 1px 4px rgba(16,26,36,.18)}
+.mv-clab i{font-style:normal;font-size:9.5px;font-weight:800;color:var(--card);
+  background:var(--ink-3);border-radius:50%;width:14px;height:14px;
+  display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+.mv-clab b{font-weight:600;color:var(--ink-2)}
+.mv-clab span{font-size:10px;color:var(--ink-3)}
+.mv-clab:hover{border-color:var(--wrong);color:var(--wrong);z-index:700}
+.mv-clab:hover i{background:var(--wrong)}
 /* ══ 학교 말풍선 〔2026. 9. 11.〕 ═════════════════════════════════════════
    ★ 세 가지가 어긋나 있었습니다.
      ① 딱지를 맨 앞(z-index 800)으로 올리자 말풍선이 그 뒤로 갔습니다.
@@ -2526,43 +2611,42 @@ body.map-maxed.home-wide #home-side{display:none}
       <aside class="mv-side" id="mv-side">
         <div class="mv-card">
           <h2>배경</h2>
-          <div class="mv-row" id="mv-bases"></div>
+          <div class="mv-grid2" id="mv-bases"></div>
         </div>
         <div class="mv-card">
           <h2>보기</h2>
-          <div class="mv-row">
+          <!-- ★ 성격이 다른 단추를 섞지 않습니다 〔2026. 9. 20.〕
+               셋을 한 줄에 흘려 놓았더니 줄바꿈이 제멋대로 나고, 무엇이
+               «하나만 고르는 것»이고 무엇이 «켜고 끄는 것»인지 눈으로
+               구분되지 않았습니다. 세 무리로 갈라 놓습니다.
+                 ① 보는 방식 — 셋 중 하나 (이어 붙인 한 덩이)
+                 ② 겹쳐 보기 — 각각 켜고 끄기 (두 칸씩 나란히)
+                 ③ 움직임·되돌리기 -->
+          <div class="mv-seg mv-seg-2" role="group" aria-label="보는 방식">
             <button type="button" class="chip" id="mv-2d" aria-pressed="true">2D</button>
             <button type="button" class="chip" id="mv-3d" aria-pressed="false">3D 지형</button>
-            <button type="button" class="chip" id="mv-reset">경북 전체로</button>
-            <!-- 안내는 «묻는 사람에게만» 보여 줍니다. 늘 펴 두면 세 줄이 자리를
-                 차지하고, 아주 없으면 돌리는 법을 알 길이 없습니다. -->
           </div>
-          <div class="mv-tip" id="mv-turn-tip" hidden>
-            <!-- ★ 닫는 길을 냅니다 〔2026. 9. 11.〕 여는 단추를 다시 누르면
-                 닫히긴 했지만, 그 단추가 상자 «밖 위쪽»에 있어 닫는 길로 보이지
-                 않았습니다. 상자 안에 ×를 두고, 지도를 누르거나 Esc 를 눌러도
-                 닫힙니다. -->
-            <button type="button" class="mv-tip-close" id="mv-tip-close"
-                    aria-label="지도 사용법 닫기">×</button>
-            <b>지도를 돌리고 기울이려면</b>
-            <dl>
-              <div><dt>마우스</dt><dd><b>Shift</b> 를 누른 채 끌기 · 오른쪽 단추로 끌기 ·
-                오른쪽 위 <b>나침반</b>을 끌기</dd></div>
-              <div><dt>터치</dt><dd><b>두 손가락을 비틀면</b> 돌아가고,
-                <b>두 손가락을 위아래로 밀면</b> 기울어집니다</dd></div>
-              <div><dt>자판</dt><dd>지도를 한 번 누른 뒤 <b>Shift + 화살표</b></dd></div>
-            </dl>
-            <p>좌우가 방위, 위아래가 기울기입니다. 산 너머를 보려면 둘 다 씁니다.</p>
-          </div>
-          <div class="mv-row" style="margin-top:6px">
-            <button type="button" class="chip" id="mv-closed" aria-pressed="false">폐교 겹쳐 보기</button>
+          <!-- ② 겹쳐 보기 — 지도 «위에 무엇을 더 얹을까». 넷이라 두 줄이 꽉 찹니다.
+               앞서 다섯을 한 묶음에 넣었더니 「소규모만 강조」가 혼자 남아
+               줄 끝이 비었습니다. 짝수로 맞춥니다. -->
+          <p class="mv-sub">겹쳐 보기</p>
+          <div class="mv-grid2">
             <button type="button" class="chip" id="mv-bound" aria-pressed="true">시군 경계</button>
-            <button type="button" class="chip" id="mv-ruler" aria-pressed="false">거리 재기</button>
+            <button type="button" class="chip" id="mv-closed" aria-pressed="false">폐교</button>
             <button type="button" class="chip" id="mv-choropleth" aria-pressed="false"
                     title="선택한 두 연도의 시군별 학생 수 변화율을 면 색으로 봅니다">시군 변화율</button>
             <button type="button" class="chip" id="mv-small-focus" aria-pressed="false"
-                    title="적정규모 참고선 미달 학교 이름만 남기고 일반 학교는 점으로 봅니다">소규모만 강조</button>
+                    title="적정규모 참고선 미달 학교 이름만 남기고 일반 학교는 점으로 봅니다">소규모 강조</button>
           </div>
+          <!-- ③ 도구와 되돌리기 — 얹는 것이 아니라 «하는 일»입니다. -->
+          <p class="mv-sub">도구</p>
+          <div class="mv-grid2">
+            <button type="button" class="chip" id="mv-ruler" aria-pressed="false">거리 재기</button>
+            <button type="button" class="chip" id="mv-spin" aria-pressed="false">자동 회전</button>
+          </div>
+          <!-- 되돌리기는 한 칸을 다 씁니다 — 다른 것과 성격이 달라 옆에 짝을
+               두면 둘 다 같은 무게로 읽힙니다. -->
+          <button type="button" class="chip mv-wide" id="mv-reset">경북 전체로 돌아가기</button>
           <div class="mv-row" style="margin-top:6px">
             <button type="button" class="chip" id="mv-ruler-undo" hidden>⌫ 한 점 지우기</button>
             <button type="button" class="chip" id="mv-ruler-clear" hidden>모두 지우기</button>
@@ -2599,7 +2683,7 @@ body.map-maxed.home-wide #home-side{display:none}
             <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="M10.4 10.4 L14 14"/></svg>
             <input type="search" id="mv-search" placeholder="학교 이름으로 찾기" autocomplete="off">
           </div>
-          <div class="mv-row" id="mv-levels" style="margin-top:9px"></div>
+          <div class="mv-grid3" id="mv-levels" style="margin-top:9px"></div>
         </div>
 
         <div class="mv-card" id="mv-detail-card" hidden></div>
@@ -2633,7 +2717,7 @@ body.map-maxed.home-wide #home-side{display:none}
              돌아올 길이 남습니다. -->
         <button type="button" class="mv-fold-side" id="mv-side-toggle"
                 aria-expanded="true" aria-controls="mv-side">
-          <span class="ic" aria-hidden="true">‹</span><span class="lb">요약 접기</span>
+          <span class="ic" aria-hidden="true">›</span><span class="lb">요약 접기</span>
         </button>
         <!-- ★ 「지도 사용법」을 칸 밖으로 냈습니다 〔2026. 9. 11.〕
              「보기」 칸에 넣었더니 단추 줄이 넘쳐 줄바꿈이 나고 못생겨졌습니다.
@@ -2643,6 +2727,27 @@ body.map-maxed.home-wide #home-side{display:none}
                 aria-expanded="false" aria-controls="mv-turn-tip">
           <span class="ic" aria-hidden="true">?</span><span class="lb">지도 사용법</span>
         </button>
+        <!-- ★ 안내는 요약 패널 «밖»에 둡니다 〔2026. 9. 20.〕
+             「보기」 칸 안에 두었더니 position:absolute 의 기준이 요약 패널이
+             되어, left:12px 라고 적었는데도 오른쪽 패널 위에 떴습니다.
+             지도를 덮는 것은 지도의 자식이어야 합니다. -->
+          <div class="mv-tip" id="mv-turn-tip" hidden>
+          <!-- ★ 닫는 길을 냅니다 〔2026. 9. 11.〕 여는 단추를 다시 누르면
+               닫히긴 했지만, 그 단추가 상자 «밖 위쪽»에 있어 닫는 길로 보이지
+               않았습니다. 상자 안에 ×를 두고, 지도를 누르거나 Esc 를 눌러도
+               닫힙니다. -->
+          <button type="button" class="mv-tip-close" id="mv-tip-close"
+                  aria-label="지도 사용법 닫기">×</button>
+          <b>지도를 돌리고 기울이려면</b>
+          <dl>
+            <div><dt>마우스</dt><dd><b>Shift</b> 를 누른 채 끌기 · 오른쪽 단추로 끌기 ·
+              오른쪽 위 <b>나침반</b>을 끌기</dd></div>
+            <div><dt>터치</dt><dd><b>두 손가락을 비틀면</b> 돌아가고,
+              <b>두 손가락을 위아래로 밀면</b> 기울어집니다</dd></div>
+            <div><dt>자판</dt><dd>지도를 한 번 누른 뒤 <b>Shift + 화살표</b></dd></div>
+          </dl>
+          <p>좌우가 방위, 위아래가 기울기입니다. 산 너머를 보려면 둘 다 씁니다.</p>
+        </div>
         <div class="mv-status" id="mv-status">지도를 준비하는 중입니다…</div>
       </div>
     </div>
@@ -11774,14 +11879,20 @@ renderPaxPyramid();
    ★ 하이브리드는 단독 배경이 아니라 «덮개»입니다. 받아서 재어 보니 Base 는
      39.9KB, Hybrid 는 9.6KB — 길과 지명만 든 투명 그림입니다. 위성 위에
      얹어야 「위성+지명」이 됩니다. */
+/* 차례는 «많이 쓰는 것부터»입니다. 처음 보이는 것이 맨 왼쪽에 있어야
+   눈이 가는 자리와 눌리는 자리가 어긋나지 않습니다. */
 const MV_BASES = [
-  { id:'Base',      name:'일반',      ext:'png',  base:'Base' },
-  { id:'Satellite', name:'위성',      ext:'jpeg', base:'Satellite' },
   { id:'Hybrid',    name:'위성+지명', ext:'jpeg', base:'Satellite', over:'Hybrid', overExt:'png' },
-  { id:'midnight',  name:'야간',      ext:'png',  base:'midnight' },
+  { id:'Satellite', name:'위성',      ext:'jpeg', base:'Satellite' },
   /* 현재 WMTS는 gray를 거절하므로 Base를 저채도로 렌더링합니다. */
-  { id:'gray',      name:'회색',      ext:'png',  base:'Base', saturation:-1 }
+  { id:'gray',      name:'회색',      ext:'png',  base:'Base', saturation:-1 },
+  { id:'Base',      name:'일반',      ext:'png',  base:'Base' }
 ];
+/* ★ 야간 배경을 뺐습니다 〔2026. 9. 20.〕
+   색만 어두울 뿐 «밤에 무엇이 다른지»를 말해 주지 않았습니다. 불빛이 켜진 곳도,
+   밤에 문을 여는 곳도 보여 주지 못하니 고를 까닭이 없는 칸이었습니다.
+   어두운 화면이 필요하면 머리글의 「어두운 화면으로」가 그 일을 합니다.
+   밤에 뜻이 생기는 자료(야간 돌봄·통학버스 시간 등)가 붙으면 그때 되살립니다. */
 /* 고도 — 브이월드에는 없습니다(hillshade·terrain·dem 모두 500 을 돌려줍니다).
    AWS Terrain Tiles 는 키 없이 열려 있고 타일 번호가 같아 그대로 맞습니다.
    산과 골짜기가 드러나야 통학 거리를 눈으로 가늠할 수 있습니다. */
@@ -11791,19 +11902,34 @@ const MV_HOME_VIEW = { center:[128.75, 36.35], zoom:7.6 };
 const MV = {
   loading:false, ready:false, failed:false,
   map:null, key:null,
-  base:'Base', level:'전체', q:'', year:HOME_BASE_YEAR, choroBaseYear:HOME_YEAR_MIN,
+  /* ★ 처음 보이는 배경은 «위성+지명» 입니다 〔2026. 9. 20.〕
+     학교가 어떤 자리에 앉아 있는지 — 산인지 논밭인지 시가지인지 — 를 먼저
+     보여 주는 것이 이 지도의 일입니다. 선으로 그린 일반 지도로는 그게 안 보입니다. */
+  base:'Hybrid', level:'전체', q:'', year:HOME_BASE_YEAR, choroBaseYear:HOME_YEAR_MIN,
   closed:false, bound:true, choropleth:false, smallFocus:false, choroKey:null,
   ruler:false, rulerPts:[], rulerMarks:[],
   near:null, nearMarks:[], chips:[],
+  /* view 는 '2d' | '3d'. is3d 는 «기울어져 있는가»를 뜻합니다. */
+  view:'2d', spin:false, spinRaf:0,
   is3d:false, marks:[], rows:[]
 };
 
 /* 산세의 과장값은 배율에 관계없이 유지합니다. 완만한 지형의 작은 요철은
    terrain-worker에서 미터 단위 고도를 보정하며, 산 능선은 원자료를 유지합니다. */
+/* 산의 과장. 실제 높이가 아니라 «읽히는 높이»입니다. */
 function mvTerrainExaggeration(){return 1.5;}
+/* 기울기의 기준은 여기 하나뿐입니다 — zoomend 가 이 값으로 되돌립니다. */
 function mvTerrainPitch(){return 62;}
+
+/* 도는 속도 — 한 바퀴에 약 70초. 더 빠르면 멀미가 나고, 더 느리면 멈춘 듯합니다. */
+const MV_SPIN_DEG = 5.2;
+/* ★ isStyleLoaded() 를 문지기로 쓰지 않습니다 〔2026. 9. 20.〕
+   건물 타일 소스를 더했더니 3D 지형이 통째로 죽었습니다. CSP 가 그 소스를
+   막자 스타일이 영영 «다 읽음»이 되지 않았고, 여기서 매번 일찍 빠져나갔습니다.
+   지형에 필요한 것은 «DEM 소스가 있는가» 뿐입니다 — 곁다리 소스 하나가
+   못 온다고 산이 사라져서는 안 됩니다. */
 function mvApplyTerrain(map){
-  if(!map||!map.isStyleLoaded?.()||!map.getSource('mv-dem'))return;
+  if(!map||!map.getSource?.('mv-dem'))return;
   try{
     if(!MV.is3d){
       if(map.getTerrain?.())map.setTerrain(null);
@@ -11816,6 +11942,30 @@ function mvApplyTerrain(map){
       map.setTerrain({source:'mv-dem',exaggeration:amount});
     map.setLayoutProperty('mv-hills','visibility','visible');
   }catch(_e){}
+}
+
+/* 자동 회전. requestAnimationFrame 으로 방위만 조금씩 더합니다.
+   easeTo 를 되풀이하면 애니메이션이 서로 겹쳐 덜컥거립니다. */
+function mvStopSpin(){
+  if(MV.spinRaf){ cancelAnimationFrame(MV.spinRaf); MV.spinRaf = 0; }
+  MV.spin = false;
+  const b = document.getElementById('mv-spin');
+  if(b) b.setAttribute('aria-pressed','false');
+}
+function mvStartSpin(){
+  if(!MV.map || MV.spin) return;
+  MV.spin = true;
+  const b = document.getElementById('mv-spin');
+  if(b) b.setAttribute('aria-pressed','true');
+  let last = performance.now();
+  const step = (now) => {
+    if(!MV.spin || !MV.map){ MV.spinRaf = 0; return; }
+    const dt = Math.min(now - last, 120) / 1000;   /* 탭을 떠났다 오면 건너뜁니다 */
+    last = now;
+    try{ MV.map.setBearing(MV.map.getBearing() + MV_SPIN_DEG * dt); }catch(_e){}
+    MV.spinRaf = requestAnimationFrame(step);
+  };
+  MV.spinRaf = requestAnimationFrame(step);
 }
 
 function mvSay(t){
@@ -12317,9 +12467,17 @@ function mvDrawClosed(){
                    r.lat >= b.getSouth() && r.lat <= b.getNorth())
       .slice(0, 400)
       .forEach(r => {
+    /* ★ 폐교도 «이름이 보여야» 합니다 〔2026. 9. 20.〕
+       12px 점선 네모만 찍어 두었더니 무엇이 무엇인지 눌러 봐야 알았습니다.
+       학교 이름표가 나오는 배율에서는 폐교도 이름을 답니다 — 다만 지금
+       학교와 구분되도록 흐린 바탕에 점선 테를 두르고 「폐」를 붙입니다.
+       멀리서는 점만 찍습니다. 이름을 다 적으면 화면이 글자로 덮입니다. */
+    const named = mvTier(map.getZoom()) === 'label';
     const el = document.createElement('div');
-    el.className = 'mv-closed';
+    el.className = named ? 'mv-clab' : 'mv-closed';
     el.title = r.name + ' (폐교)';
+    if(named) el.innerHTML = '<i aria-hidden="true">폐</i><b>' + htmlEsc(shortSchoolName(r)) + '</b>' +
+      '<span>' + htmlEsc(String(r.year)) + '</span>';
     const mk = new maplibregl.Marker({ element:el })
       .setLngLat([+r.lon, +r.lat])
       .setPopup(new maplibregl.Popup({ anchor:'bottom', offset:[0, -16], maxWidth:'280px' }).setHTML(
@@ -13023,8 +13181,20 @@ async function mvStart(){
   map.on('load', mvDraw);
   // A fast 2D → 3D toggle can happen while the style is still updating.
   // Restore the requested terrain once ready, without resetting an active terrain.
-  map.on('idle', () => {
-    if(MV.is3d && !map.getTerrain()) mvApplyTerrain(map);
+  /* idle 도 스타일이 다 읽혀야 옵니다. 못 오는 소스가 하나라도 있으면
+     영영 안 오므로, 실제로 오는 사건(sourcedata)으로도 한 번 더 겁니다. */
+  const reapply = () => { if(MV.is3d && !map.getTerrain()) mvApplyTerrain(map); };
+  map.on('idle', reapply);
+  map.on('sourcedata', e => { if(e && e.sourceId === 'mv-dem' && e.isSourceLoaded) reapply(); });
+  /* ★ 손을 대면 자동 회전을 멈춥니다 〔2026. 9. 20.〕
+     돌고 있는데 사람이 끌면 서로 방위를 다투어 지도가 덜컥거립니다. 사람이 이깁니다.
+
+     MapLibre 의 dragstart·rotatestart 를 들어 봤지만 «돌고 있는 동안»에는
+     믿을 수 없었습니다 — setBearing 이 만든 움직임과 사람의 움직임을 가려내지
+     못해 그냥 안 멈췄습니다. 캔버스의 «날 입력»을 직접 듣는 쪽이 확실합니다. */
+  const canvas = map.getCanvas();
+  if(canvas) ['mousedown','touchstart','wheel','keydown'].forEach(ev => {
+    canvas.addEventListener(ev, () => { if(MV.spin) mvStopSpin(); }, { passive:true });
   });
   /* ★ 「불러오는 중입니다」를 지웁니다 〔2026. 9. 10.〕 배율 안내를 뺀 뒤로
      이 말을 지우는 사람이 없어져, 지도가 다 떴는데도 띠가 남아 있었습니다.
@@ -13116,7 +13286,7 @@ function mvSetSide(open){
   btn.setAttribute('aria-expanded', String(!!open));
   const lb = btn.querySelector('.lb');
   if(lb) lb.textContent = open ? '요약 접기' : '요약 펴기';
-  btn.title = open ? '왼쪽 요약을 접고 지도를 넓게 씁니다' : '왼쪽 요약을 다시 폅니다';
+  btn.title = open ? '요약을 접고 지도를 넓게 씁니다' : '요약을 다시 폅니다';
   try{ localStorage.setItem(MV_SIDE_KEY, open ? '1' : '0'); }catch(_e){}
   /* 칸이 사라지면 지도의 너비가 바뀝니다 — 다시 재라고 말해 줍니다. */
   if(MV.map){ try{ MV.map.resize(); }catch(_e){} }
@@ -13128,8 +13298,17 @@ function mvWireSide(){
   mvSideWired = true;
   const btn = document.getElementById('mv-side-toggle');
   if(!btn) return;
-  let open = true;
-  try{ open = localStorage.getItem(MV_SIDE_KEY) !== '0'; }catch(_e){}
+  /* ★ 폰에서는 «접힌 채» 시작합니다 〔2026. 9. 20.〕
+     요약을 아래에서 올라오는 칸으로 바꿨더니 지도가 692px 로 커졌는데, 그 칸이
+     아래 318px 를 덮어 실제로 보이는 지도는 374px 뿐이었습니다 — 고치기 전보다
+     좁습니다. 지도를 보러 온 화면이므로 지도가 먼저 온전히 보여야 합니다.
+     한 번이라도 펴 두었다면 그 뜻을 기억합니다(localStorage). */
+  const narrow = !!(window.matchMedia && window.matchMedia('(max-width:900px)').matches);
+  let open = !narrow;
+  try{
+    const saved = localStorage.getItem(MV_SIDE_KEY);
+    if(saved !== null) open = saved !== '0';
+  }catch(_e){}
   mvSetSide(open);
   btn.addEventListener('click', () => {
     mvSetSide(btn.getAttribute('aria-expanded') !== 'true');
@@ -13139,23 +13318,39 @@ function mvWireSide(){
 function mvWireControls(){
   const on = (id, fn) => { const el = document.getElementById(id); if(el) el.addEventListener('click', fn); };
 
-  on('mv-2d', () => {
-    MV.is3d = false;
-    try{ MV.map.setTerrain(null); MV.map.setLayoutProperty('mv-hills','visibility','none'); }catch(_e){}
-    MV.map.easeTo({ pitch:0, bearing:0, duration:700 });
-    document.getElementById('mv-2d').setAttribute('aria-pressed','true');
-    document.getElementById('mv-3d').setAttribute('aria-pressed','false');
-  });
-  on('mv-3d', () => {
-    /* ★ 기울이기만 하는 것이 아니라 «땅을 솟게» 합니다. 고도 자료가 있어야
-       산과 골짜기가 드러나고, 그래야 통학 거리를 눈으로 가늠할 수 있습니다. */
-    MV.is3d = true;
+  /* ★ 보기 모드는 «한 자리»에서 정합니다 〔2026. 9. 20.〕
+     2D·3D 가 각자 제 단추의 aria 를 만지고 있었습니다. 드론뷰를 더하는 순간
+     셋이 서로의 표시를 지우지 못해, 두 단추가 함께 눌린 것처럼 보였습니다.
+     어느 모드로 가든 이 함수 하나만 부르게 합니다. */
+  const setView = (mode) => {
+    if(!MV.map) return;
+    MV.view = mode;
+    MV.is3d = mode !== '2d';
+    if(mode === '2d') mvStopSpin();   /* 평면으로 돌아가며 계속 돌면 어지럽습니다 */
     try{
-      mvApplyTerrain(MV.map);
+      if(mode === '2d'){
+        MV.map.setTerrain(null);
+        MV.map.setLayoutProperty('mv-hills','visibility','none');
+      }else{
+        mvApplyTerrain(MV.map);
+      }
     }catch(_e){ mvSay('고도 자료를 받지 못해 기울여 보기만 합니다.'); }
-    MV.map.easeTo({ pitch:mvTerrainPitch(MV.map.getZoom()), bearing:-15, duration:900 });
-    document.getElementById('mv-2d').setAttribute('aria-pressed','false');
-    document.getElementById('mv-3d').setAttribute('aria-pressed','true');
+    if(mode === '2d') MV.map.easeTo({ pitch:0, bearing:0, duration:700 });
+    else MV.map.easeTo({ pitch:mvTerrainPitch(MV.map.getZoom()), bearing:-15, duration:900 });
+    [['mv-2d','2d'],['mv-3d','3d']].forEach(([id, m]) => {
+      const el = document.getElementById(id);
+      if(el) el.setAttribute('aria-pressed', String(mode === m));
+    });
+  };
+  on('mv-2d', () => setView('2d'));
+  /* ★ 기울이기만 하는 것이 아니라 «땅을 솟게» 합니다. 고도 자료가 있어야
+     산과 골짜기가 드러나고, 그래야 통학 거리를 눈으로 가늠할 수 있습니다. */
+  on('mv-3d', () => setView('3d'));
+  on('mv-spin', () => {
+    if(MV.spin){ mvStopSpin(); return; }
+    /* 평면에서 돌리면 그림이 도는 것뿐이라 뜻이 없습니다. 3D 로 올려 둡니다. */
+    if(MV.view !== '3d') setView('3d');
+    mvStartSpin();
   });
   /* 여는 길과 닫는 길을 한 자리에 모읍니다 — 어디서 닫든 같은 일이 일어나야
      합니다. 지도를 누르거나 Esc 를 눌러도 닫힙니다. */
@@ -13295,14 +13490,33 @@ function mvFit(){
     box.style.marginTop = Math.max(0, gap) + 'px';
   }
   const top = box.getBoundingClientRect().top;
+  /* 바닥 값 420 은 «지도가 아주 사라지지 않게» 하는 최소치입니다. 좁은 화면에서
+     여기에 걸린다는 것은 지도가 화면 밖으로 밀렸다는 뜻이므로, 그 전에
+     mvScrollIntoViewIfNarrow 가 끌어올려 둡니다. */
   const h = Math.max(420, Math.round(window.innerHeight - top));
   box.style.height = h + 'px';
   if(MV.map){ try{ MV.map.resize(); }catch(_e){} }
 }
 try{ window.addEventListener('resize', () => { if(activeView === 'map') mvFit(); }); }catch(_e){}
 
+/* ★ 좁은 화면에서는 지도를 «화면 맨 위»로 끌어올립니다 〔2026. 9. 20.〕
+   폰에서는 왼쪽 메뉴가 세로로 쌓여 화면 윗부분을 통째로 차지합니다. 그 상태로
+   재면 남는 자리가 420px 뿐이라, 지도를 보러 온 화면에서 지도가 가장 작아집니다.
+   실제로 「폰에서 지도가 너무 작다」는 말을 들었습니다.
+   끌어올린 «뒤에» 재야 mvFit 의 「남은 높이」가 화면 전체가 됩니다 — 순서가 중요합니다. */
+function mvScrollIntoViewIfNarrow(){
+  try{
+    if(!(window.matchMedia && window.matchMedia('(max-width:900px)').matches)) return;
+    const box = document.querySelector('.mapview');
+    if(!box) return;
+    /* 부드럽게 굴리면 다 구르기 «전에» 높이를 재어 옛 값이 잡힙니다. 즉시 옮깁니다. */
+    if(box.scrollIntoView) box.scrollIntoView({ block:'start', behavior:'auto' });
+  }catch(_e){}
+}
+
 /* 화면이 드러난 뒤에 크기를 다시 잽니다 — 숨어 있을 때 잰 값은 0 입니다. */
 function mvOpen(){
+  mvScrollIntoViewIfNarrow();
   mvFit();
   if(!MV.ready && !MV.loading){ mvStart(); return; }
   if(MV.map){
