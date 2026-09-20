@@ -10406,8 +10406,13 @@ function renderSpedAccessNote(){
   const byRoad = far.some(x => x.road);
   el.innerHTML =
     `경북 <b>22개 시군 가운데 ${none.length}곳에 특수학교가 없습니다.</b> ` +
+    /* ★ 항목마다 «무엇으로 잰 값인지» 붙입니다 〔2026. 9. 20.〕
+       울릉만 직선인데 문장 끝에서 「실제 도로를 따라 잰 거리」라고 하니
+       210km 도 도로 거리처럼 읽혔습니다. 섞인 목록에서는 한 줄 끝의 단서가
+       앞의 모든 항목을 덮어씌웁니다 — 값 옆에 바로 적어야 합니다. */
     far.map(x => `${htmlEsc(x.s)} <b>${Math.round(x.km)}km</b>` +
-      (x.min != null ? ` <span style="color:var(--ink-3)">(차로 ${fmtMinutes(x.min)})</span>` : '')).join(' · ') + '. ' +
+      (x.min != null ? ` <span style="color:var(--ink-3)">(차로 ${fmtMinutes(x.min)})</span>`
+                     : ' <span style="color:var(--ink-3)">(직선·육로 없음)</span>')).join(' · ') + '. ' +
     (byRoad
       ? '<b>실제 도로를 따라 잰 거리</b>이고 승용차·평시 기준입니다. 통학버스와 대중교통은 이보다 오래 걸립니다. '
       : '<b>직선거리</b>이고 산을 넘는 길은 이보다 멉니다. ') +
