@@ -2645,6 +2645,31 @@ check('Excel 에도 시간 칸과 기준을 함께 내보낸다',
 /* 다시 구울 때마다 결과가 달라지면 안 됩니다. */
 check('받은 값을 캐시에 적어 둔다', /road-cache\.json/.test(bakeRoad) && /if \(k in cache\)/.test(bakeRoad));
 
+/* ── 학교 → 가까운 학교 ── */
+/* 초·중·고 917곳은 SCHOOLS 배열에 «없습니다» — 화면이 뜰 때 SCHOOL_RAW 를
+   풀어서 밀어 넣습니다. 그것을 모르고 구웠더니 622곳만 잡혔습니다. */
+check('굽는 쪽도 초·중·고를 SCHOOL_RAW 에서 푼다 (배열에는 없다)',
+  /var SCHOOL_RAW = \\\{/.test(bakeRoad) && /const FULL = \{ e: '초등학교'/.test(bakeRoad));
+check('가까운 학교도 길을 따라 다시 고른다',
+  /const R = \(typeof ROAD_NEAR !== 'undefined' && ROAD_NEAR\) \? ROAD_NEAR\[sc\.name\] : null;/.test(js) &&
+  /road: true/.test(js));
+check('도로 값이 없으면 직선으로 물러선다', /min: null, road: false/.test(js));
+check('이름표에 걸리는 시간도 적는다',
+  /o\.min != null \? `<span>\$\{fmtMinutes\(o\.min\)\}<\/span>` : ''/.test(js));
+/* 선은 곧게 긋는데 수는 길을 따라간 값입니다. 말해 주지 않으면 짧은 선 옆의
+   큰 숫자가 틀린 것처럼 보입니다. */
+check('선과 수가 다른 기준임을 밝힌다',
+  /선은 곧게 그었지만 수는 실제 도로 기준입니다/.test(js));
+check('직선으로 물러섰을 때는 예전 문구를 쓴다',
+  /까지 직선거리를 그렸습니다 · 산을 넘는 길은 이보다 멉니다/.test(js));
+/* 울릉중·고는 섬에 같은 급 학교가 하나뿐이라 짝이 본토가 됩니다.
+   그 사이에는 산이 아니라 바다가 있습니다. */
+check('섬에서는 「산을 넘는 길」이라 하지 않는다',
+  /섬 안에 같은 급 학교가 없어 «바다 건너»이고, 차로 갈 수 없습니다/.test(js));
+/* 울릉중학교에 「214km · 3시간 32분」이 성공으로 돌아왔습니다. */
+check('굽는 쪽이 섬과 뭍을 짝지우지 않는다',
+  /ISLANDS\.has\(x\.s\) === onIsland/.test(bakeRoad));
+
 console.log('\n■ 〔요약 패널〕 단추를 성격으로 묶고 칸 너비를 맞춘다');
 /* 다섯을 한 묶음에 넣었더니 「소규모만 강조」가 혼자 남아 줄 끝이 비었습니다.
    그리고 «얹는 것»과 «하는 일»이 뒤섞여 있었습니다. */
