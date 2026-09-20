@@ -23,6 +23,9 @@ const MAP_POLICY = path.join(__dirname, 'assets', 'map-policy.js');
 const mapPolicy = fs.existsSync(MAP_POLICY) ? fs.readFileSync(MAP_POLICY, 'utf8') : '';
 const MAP_POLICY_CSS = path.join(__dirname, 'assets', 'map-policy.css');
 const mapPolicyCss = fs.existsSync(MAP_POLICY_CSS) ? fs.readFileSync(MAP_POLICY_CSS, 'utf8') : '';
+/* 굽는 스크립트도 검사합니다 — 「섬은 묻지 않는다」 같은 판단이 여기 있습니다. */
+const BAKE_ROAD = path.resolve(__dirname, '../../open api/bake-road-distance.mjs');
+const bakeRoad = fs.existsSync(BAKE_ROAD) ? fs.readFileSync(BAKE_ROAD, 'utf8') : '';
 
 let pass = 0, fail = 0;
 const check = (n, c, extra) => {
@@ -2602,6 +2605,41 @@ check('병설유치원과 본교 이름표 간격은 상자 높이보다 크다'
 
 check('지역 여건 모듈은 로드하지 않는다', !/assets\/map-context/.test(html));
 
+
+console.log('\n■ 〔통학거리〕 직선이 아니라 길을 따라간 거리');
+/* ★ 경북은 산이 많아 직선거리가 실제와 크게 어긋납니다 〔2026. 9. 20.〕
+   영양은 직선 36km 인데 도로로는 58km(1.6배)·1시간 11분이었습니다.
+   「36km」는 멀다는 느낌만 주지만 「1시간 11분」은 통학이 되는지 안 되는지를
+   바로 말해 줍니다. 숫자가 아니라 이야기가 달라집니다. */
+check('도로 거리·시간을 미리 구워 심는다 (화면에서 API 를 부르지 않는다)',
+  /var ROAD_META = \{"만든때"/.test(js) && /var ROAD_SPED = \{/.test(js));
+check('무엇으로 잰 값인지 밝힌다', /"출처":"카카오모빌리티 길찾기 API"/.test(js) && /"기준":"승용차·평시·권장 경로"/.test(js));
+check('도로 값이 있으면 그것을 쓰고, 없으면 직선으로 물러선다',
+  /const R = \(typeof ROAD_SPED !== 'undefined' && ROAD_SPED\) \? ROAD_SPED : null;/.test(js) &&
+  /if\(r && r\.km != null\)/.test(js));
+check('어느 쪽으로 잰 값인지 화면이 알 수 있다 (road 표시)',
+  /road: true, straightKm: km/.test(js) && /road: false, straightKm: km/.test(js));
+/* 울릉은 섬입니다. 길찾기 API 는 «260km·4시간»을 성공으로 돌려주지만
+   바다 위를 이은 값입니다. 그대로 쓰면 「배로 가야 하는 곳」이
+   「차로 갈 수 있는 곳」이 됩니다. */
+check('섬은 길찾기에 묻지 않는다 (API 가 성공이라 답해도)',
+  /const ISLANDS = new Set\(\['울릉'\]\);/.test(bakeRoad) &&
+  /if \(ISLANDS\.has\(sg\.s\)\) \{/.test(bakeRoad));
+check('섬의 거리는 직선으로 메우지 않고 시간을 비워 둔다',
+  /min: null/.test(js));
+/* 「1시간 6분」이 「63km」보다 빨리 읽힙니다. */
+check('거리 옆에 걸리는 시간을 적는다',
+  /function fmtMinutes\(m\)/.test(js) &&
+  /차로 \$\{fmtMinutes\(x\.min\)\}/.test(js));
+check('무엇으로 잰 값인지 화면 문구가 따라 바뀐다',
+  /byRoad\s*\n?\s*\? '<b>실제 도로를 따라 잰 거리<\/b>/.test(js));
+check('통학버스·대중교통은 다르다고 적는다',
+  /통학버스와 대중교통은 이보다 오래 걸립니다/.test(js));
+check('Excel 에도 시간 칸과 기준을 함께 내보낸다',
+  /'가장 가까운 특수학교\(도로 km\)','차로\(분\)'/.test(js) &&
+  /울릉은 육로가 없어 비어 있습니다/.test(js));
+/* 다시 구울 때마다 결과가 달라지면 안 됩니다. */
+check('받은 값을 캐시에 적어 둔다', /road-cache\.json/.test(bakeRoad) && /if \(k in cache\)/.test(bakeRoad));
 
 console.log('\n■ 〔요약 패널〕 단추를 성격으로 묶고 칸 너비를 맞춘다');
 /* 다섯을 한 묶음에 넣었더니 「소규모만 강조」가 혼자 남아 줄 끝이 비었습니다.

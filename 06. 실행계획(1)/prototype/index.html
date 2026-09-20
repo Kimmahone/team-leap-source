@@ -4222,6 +4222,9 @@ const REGION_GEO = [
   };
 
   /* ↓ `bake-edss.mjs` 가 심습니다. 손으로 고치지 마세요 — 다음 수집 때 덮어씁니다. */
+  var ROAD_META = {"만든때":"2026-09-20","출처":"카카오모빌리티 길찾기 API","기준":"승용차·평시·권장 경로"};
+  var ROAD_SPED = {"울진":{"km":104.6,"min":100,"at":"안동영명학교"},"봉화":{"km":35.5,"min":43,"at":"안동영명학교"},"영주":{"km":26.8,"min":27,"at":"안동영명학교"},"영양":{"km":57.9,"min":71,"at":"안동진명학교"},"예천":{"km":31.5,"min":36,"at":"안동진명학교"},"문경":{"km":23,"min":26,"at":"상희학교"},"안동":{"km":1.6,"min":5,"at":"안동진명학교"},"청송":{"km":43.3,"min":46,"at":"안동진명학교"},"영덕":{"km":45.8,"min":37,"at":"포항명도학교"},"상주":{"km":0.8,"min":2,"at":"상희학교"},"의성":{"km":30.7,"min":37,"at":"안동진명학교"},"김천":{"km":26.3,"min":33,"at":"구미혜당학교"},"구미":{"km":3.4,"min":7,"at":"구미혜당학교"},"포항":{"km":9.5,"min":12,"at":"포항명도학교"},"칠곡":{"km":22.1,"min":28,"at":"구미혜당학교"},"영천":{"km":15.8,"min":23,"at":"경북영광학교"},"성주":{"km":36,"min":39,"at":"구미혜당학교"},"경주":{"km":2,"min":5,"at":"경희학교"},"경산":{"km":8.6,"min":14,"at":"경산자인학교"},"고령":{"km":57.6,"min":73,"at":"경산자인학교"},"청도":{"km":31.5,"min":35,"at":"경산자인학교"},"울릉":null};
+  var ROAD_NEAR = {};
   var EDSS_META  = {"만든때":"2026-09-09","출처":"EDSS(교육통계) 유초중등학생현황[교육통계][EDSS] · 유초중등학급현황[교육통계][EDSS]","연도":"2016~2025","행수":97134};
   var EDSS_YEARS = [2016,2017,2018,2019,2020,2021,2022,2023,2024,2025];
   var EDSS_TOTAL = {"초":[127308,127113,128776,130875,128585,127461,126945,123644,117023,108628],"중":[70128,65643,63295,61135,62235,63461,63544,62246,62628,64338],"고":[87997,84549,77601,70957,66610,64703,62729,63205,64158,64076]};
@@ -9469,11 +9472,11 @@ function multiExportSheets(){
     const cls=here.filter(s=>['초','중','고'].includes(s.lv)).reduce((a,s)=>a+(s.sped||0),0);
     const sch=here.filter(s=>s.lv==='특수').reduce((a,s)=>a+(s.stu||0),0);
     const a=access.find(x=>x.s===sg.s);
-    return [sg.s,cls,sch,cls+sch,a?Math.round(a.km):'',a?(a.here?'있음':'없음'):''];
+    return [sg.s,cls,sch,cls+sch,a?Math.round(a.km):'',a&&a.min!=null?a.min:'',a?(a.here?'있음':'없음'):''];
   });
   sheets.push({name:'시군별현황',title:'시군별 특수교육 · '+ALLIMI,
-    note:'완전통합 학생은 시군별로 나눌 수 없어 빠져 있습니다. 거리는 시군 중심에서 잰 직선거리입니다.',
-    rows:[['시군','일반학교 특수학급','특수학교','합계','가장 가까운 특수학교(km)','관내 특수학교']].concat(regions)});
+    note:'완전통합 학생은 시군별로 나눌 수 없어 빠져 있습니다. 거리·시간은 시군 중심에서 실제 도로를 따라 잰 값(승용차·평시)입니다. 울릉은 육로가 없어 비어 있습니다.',
+    rows:[['시군','일반학교 특수학급','특수학교','합계','가장 가까운 특수학교(도로 km)','차로(분)','관내 특수학교']].concat(regions)});
 
   /* ★ 다문화 — 예전에는 「미확보」라고만 적고 수를 안 내보냈습니다.
      화면에는 13,158명이 표까지 붙어 나오고 있었습니다. */
@@ -10188,19 +10191,43 @@ function haversineKm(lat1, lon1, lat2, lon2){
 
 /* 시군 중심에서 가장 가까운 특수학교까지의 거리.
    특수학교를 «가진» 시군은 0km 가 아니라 그 학교까지의 거리로 둡니다
-   (같은 시군이라도 넓으면 멀 수 있습니다 — 다만 여기서는 시군 중심 기준입니다). */
+   (같은 시군이라도 넓으면 멀 수 있습니다 — 다만 여기서는 시군 중심 기준입니다).
+
+   ★ 길을 따라간 거리를 씁니다 〔2026. 9. 20.〕
+     여태 직선거리(하버사인)를 썼습니다. 경북은 산이 많아 그 값이 실제와
+     크게 어긋납니다 — 영양은 직선 36km 인데 도로로는 58km 였습니다(1.6배).
+     `ROAD_SPED` 에 미리 구워 둔 도로 거리·시간이 있으면 그것을 쓰고,
+     없으면 직선으로 물러섭니다. 어느 쪽을 쓰고 있는지 `road` 로 밝힙니다.
+
+     울릉은 섬이라 값이 없습니다. 직선으로 메우지 않습니다 —
+     「배로 가야 하는 곳」이 「차로 갈 수 있는 곳」이 되어서는 안 됩니다. */
 function spedAccess(){
   const sp = SCHOOLS.filter(s => s.lv === '특수' && s.lat && s.lon);
   if(!sp.length) return [];
+  const R = (typeof ROAD_SPED !== 'undefined' && ROAD_SPED) ? ROAD_SPED : null;
   return SIGUNGU.map(sg => {
     let best = null, km = Infinity;
     sp.forEach(s => {
       const d = haversineKm(sg.lat, sg.lon, s.lat, s.lon);
       if(d < km){ km = d; best = s; }
     });
-    return { s: sg.s, name: sg.name, km, at: best ? best.name : '', here: best ? best.s === sg.s : false,
-             island: sg.s === '울릉' };
+    const island = sg.s === '울릉';
+    const r = R ? R[sg.s] : undefined;
+    /* 도로 값이 있으면 그것이 «이 시군의 거리»입니다. 가장 가까운 학교도
+       직선이 아니라 길로 다시 고른 결과입니다(구울 때 여덟 곳을 다 쟀습니다). */
+    if(r && r.km != null)
+      return { s: sg.s, name: sg.name, km: r.km, min: r.min, at: r.at,
+               here: sp.some(x => x.name === r.at && x.s === sg.s), island, road: true, straightKm: km };
+    return { s: sg.s, name: sg.name, km, min: null, at: best ? best.name : '',
+             here: best ? best.s === sg.s : false, island, road: false, straightKm: km };
   }).sort((a, b) => b.km - a.km);
+}
+
+/* 「1시간 6분」이 「63km」보다 빨리 읽힙니다 — 통학이 되는지 안 되는지를
+   바로 말해 주기 때문입니다. */
+function fmtMinutes(m){
+  if(m == null) return '';
+  return m >= 60 ? Math.floor(m / 60) + '시간 ' + (m % 60) + '분' : m + '분';
 }
 
 /* ══ 여섯 명 가운데 한 명 〔2026. 9. 11.〕 ═══════════════════════════════════
@@ -10376,10 +10403,14 @@ function renderSpedAccessNote(){
   const none = a.filter(x => !x.here);
   if(!none.length) return;
   const far = none.slice().sort((x, y) => y.km - x.km).slice(0, 3);
+  const byRoad = far.some(x => x.road);
   el.innerHTML =
     `경북 <b>22개 시군 가운데 ${none.length}곳에 특수학교가 없습니다.</b> ` +
-    far.map(x => `${htmlEsc(x.s)} <b>${Math.round(x.km)}km</b>`).join(' · ') + '. ' +
-    '<b>직선거리</b>이고 산을 넘는 길은 이보다 멉니다. ' +
+    far.map(x => `${htmlEsc(x.s)} <b>${Math.round(x.km)}km</b>` +
+      (x.min != null ? ` <span style="color:var(--ink-3)">(차로 ${fmtMinutes(x.min)})</span>` : '')).join(' · ') + '. ' +
+    (byRoad
+      ? '<b>실제 도로를 따라 잰 거리</b>이고 승용차·평시 기준입니다. 통학버스와 대중교통은 이보다 오래 걸립니다. '
+      : '<b>직선거리</b>이고 산을 넘는 길은 이보다 멉니다. ') +
     '<b>울릉은 바다 건너</b>라 배나 비행기를 타야 합니다.';
 }
 
@@ -10534,7 +10565,7 @@ function renderMulti() {
     `<div class="box"><div class="k">특수학급을 둔 학교</div><div class="v">${fmt(st.withClass)}<span style="font-size:14px"> / ${fmt(st.k12n)}곳</span></div></div>` +
     `<div class="box"><div class="k">특수학교</div><div class="v">${st.schools}<span style="font-size:14px">곳 · 교원 ${fmt(st.teach)}명</span></div></div>` +
     `<div class="box"><div class="k">특수학교가 없는 시군</div><div class="v">${noSchool}<span style="font-size:14px"> / ${SIGUNGU.length}곳</span></div></div>` +
-    (far ? `<div class="box"><div class="k">특수학교가 가장 먼 시군</div><div class="v">${far.s}<span style="font-size:14px"> 약 ${Math.round(far.km)}km</span></div></div>` : '');
+    (far ? `<div class="box"><div class="k">특수학교가 가장 먼 시군</div><div class="v">${far.s}<span style="font-size:14px"> ${far.road ? '도로' : '직선'} ${Math.round(far.km)}km${far.min != null ? ' · 차로 ' + fmtMinutes(far.min) : ''}</span></div></div>` : '');
 
   /* ── 이 화면의 자료 ────────────────────────────────────────
      화면에는 그림과 수만 두고, 「무엇을 어디서 언제」는 접어 둡니다.
@@ -10762,6 +10793,7 @@ function renderMulti() {
             `<span style="display:block;height:100%;width:${(a.km / max * 100).toFixed(1)}%;background:${a.island ? 'var(--leap-amber-mark)' : 'var(--brand)'}"></span>` +
           '</span>' +
           `<b style="width:46px;text-align:right">${Math.round(a.km)}km</b>` +
+          (a.min != null ? `<span style="width:64px;text-align:right;color:var(--ink-3);font-size:11px">${fmtMinutes(a.min)}</span>` : '') +
           `<span style="width:74px;color:var(--ink-3);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${htmlEsc(a.at)}">${htmlEsc(String(a.at).replace(/학교$/, ''))}</span>` +
         '</div>').join('') +
       '<div class="spec" style="margin-top:11px">시군 <b>중심</b>에서 잰 <b>직선거리</b>입니다 — 길을 따라간 거리도, 통학 시간도 아닙니다.' +
