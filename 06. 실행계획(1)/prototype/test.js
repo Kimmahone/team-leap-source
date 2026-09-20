@@ -2603,6 +2603,30 @@ check('병설유치원과 본교 이름표 간격은 상자 높이보다 크다'
 check('지역 여건 모듈은 로드하지 않는다', !/assets\/map-context/.test(html));
 
 
+console.log('\n■ 〔요약 패널〕 단추를 성격으로 묶고 칸 너비를 맞춘다');
+/* 다섯을 한 묶음에 넣었더니 「소규모만 강조」가 혼자 남아 줄 끝이 비었습니다.
+   그리고 «얹는 것»과 «하는 일»이 뒤섞여 있었습니다. */
+check('겹쳐 보기는 넷이라 두 줄이 꽉 찬다 (혼자 남는 단추가 없다)',
+  /<p class="mv-sub">겹쳐 보기<\/p>\s*<div class="mv-grid2">/.test(html) &&
+  /id="mv-bound"[\s\S]{0,400}id="mv-closed"[\s\S]{0,400}id="mv-choropleth"[\s\S]{0,400}id="mv-small-focus"/.test(html));
+check('도구는 따로 묶는다 (얹는 것이 아니라 하는 일이다)',
+  /<p class="mv-sub">도구<\/p>\s*<div class="mv-grid2">\s*<button[^>]*id="mv-ruler"/.test(html));
+/* 되돌리기에 짝을 두면 둘 다 같은 무게로 읽힙니다. */
+check('되돌리기는 한 칸을 다 쓴다',
+  /<button type="button" class="chip mv-wide" id="mv-reset">경북 전체로 돌아가기<\/button>/.test(html) &&
+  /\.mv-wide\{width:100%/.test(html));
+/* 네 칸까지 좁히면 「위성+지명」이 두 줄로 쪼개집니다. */
+check('배경은 두 칸이라 「위성+지명」이 한 줄에 들어간다',
+  /<div class="mv-grid2" id="mv-bases">/.test(html));
+check('학교급 여섯은 세 칸 두 줄로 세로줄이 선다',
+  /<div class="mv-grid3" id="mv-levels"/.test(html) &&
+  /\.mv-grid3\{display:grid;grid-template-columns:repeat\(3,1fr\)/.test(html));
+/* 떠 있는 판 «안»의 카드에 테를 두르면 상자 속 상자가 됩니다. */
+check('패널 안 카드는 테 대신 바탕 차이로 나눈다',
+  /\.mv-side \.mv-card\{border-color:transparent;background:var\(--card-2\)\}/.test(html));
+check('패널 스크롤 막대는 가늘게 둔다 (떠 있는 판의 결이 깨진다)',
+  /\.mv-side\{scrollbar-width:thin/.test(html));
+
 console.log('\n■ 〔요약 패널〕 가장 위에 있고, 덮는 것은 지도의 자식이다');
 /* 학교 이름표는 고르면 z-index 800 까지 올라갑니다. 요약이 8 이었으므로
    이름표가 패널을 뚫고 올라왔습니다. */
