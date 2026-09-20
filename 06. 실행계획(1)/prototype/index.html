@@ -1317,14 +1317,23 @@ table.data .hl{color:var(--brand);font-weight:800}
   -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
   border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(16,26,36,.18);
   overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:10px 10px 18px;min-width:0}
-/* ★ 좁은 화면에서는 «떠 있지 않습니다» 〔2026. 9. 20.〕
-   300px 패널이 지도를 통째로 덮습니다. 좁을 때는 예전처럼 위아래로 나눕니다.
-   position 을 static 으로 되돌리면 격자 흐름에 다시 들어갑니다. */
+/* ★ 좁은 화면에서는 «아래에서 올라오는 칸»입니다 〔2026. 9. 20.〕
+   처음에는 위아래로 반씩 나눴는데, 폰에서 지도가 240px 밖에 안 돼
+   «지도를 보는 화면»이라고 하기 어려웠습니다. 지도가 화면을 다 쓰고,
+   요약은 아래에 걸터앉아 필요할 때만 올라옵니다.
+   접으면(side-off) 통째로 사라지므로 지도가 온전히 드러납니다. */
 @media (max-width:900px){
-  .mapview{grid-template-rows:minmax(220px,42%) minmax(240px,58%)}
-  .mv-side{position:static;width:auto;border:0;border-bottom:1px solid var(--line);
-    border-radius:0;box-shadow:none;background:var(--card);
-    -webkit-backdrop-filter:none;backdrop-filter:none}
+  .mapview{grid-template-rows:minmax(0,1fr);height:min(82vh, 900px)}
+  .mv-side{position:absolute;left:0;right:0;bottom:0;top:auto;width:auto;
+    max-height:46%;border:0;border-top:1px solid var(--line);
+    border-radius:14px 14px 0 0;box-shadow:0 -8px 24px rgba(16,26,36,.16);
+    background:color-mix(in srgb, var(--card) 96%, transparent);
+    padding:14px 12px 18px}
+  /* 손잡이 — 여기를 잡아 올리고 내린다는 것을 몸으로 알립니다 */
+  .mv-side::before{content:'';position:sticky;top:-6px;align-self:center;
+    width:38px;height:4px;border-radius:99px;background:var(--line);margin:-6px 0 6px}
+  #mv-side-toggle{right:12px;top:auto;bottom:calc(46% + 10px)}
+  .mapview.side-off #mv-side-toggle{bottom:12px}
 }
 .mv-card{background:var(--card-2);border:1px solid var(--line);border-radius:var(--radius);padding:10px}
 .mv-card h2{margin:0 0 8px;font-size:11.5px;font-weight:700;color:var(--ink-2);letter-spacing:.04em}
@@ -1415,24 +1424,29 @@ table.data .hl{color:var(--brand);font-weight:800}
 /* 접기 단추는 지도 «위»에 둡니다. 칸 안에 두면 접은 뒤 함께 사라져
    돌아올 길이 없어집니다. */
 .mv-map .maplibregl-ctrl-top-right{top:52px}
-/* ★ 접기 단추는 패널을 따라 «오른쪽»으로 갔습니다 〔2026. 9. 20.〕
-   패널이 오른쪽에 떠 있는데 단추가 왼쪽에 남으면, 무엇을 접는 단추인지
-   눈으로 이어지지 않습니다. 패널 바로 옆에 둡니다. */
-.mv-fold-side{position:absolute;right:324px;top:12px;z-index:9;
+/* ★ 자리는 «단추마다 따로» 정합니다 〔2026. 9. 20.〕
+   .mv-fold-side 는 세 단추(요약 접기·지도 사용법·비교)가 함께 쓰는 «생김새»입니다.
+   여기에 left 나 right 를 적으면 다른 단추까지 끌려갑니다. 실제로 두 번 당했습니다 —
+   right 를 적었더니 「비교」가 좌우로 늘어났고, 접을 때 쓰는 규칙이 「지도 사용법」에도
+   걸려 1,258px 짜리 막대가 됐습니다(left 와 right 를 동시에 가지면 늘어납니다).
+   그래서 이 규칙에는 자리를 적지 않고, 아래에서 각 단추의 id 로만 정합니다. */
+.mv-fold-side{position:absolute;top:12px;z-index:9;
   display:flex;align-items:center;gap:6px;font:inherit;font-size:12.5px;font-weight:600;
   min-height:34px;padding:0 12px 0 9px;border:1px solid var(--line);border-radius:999px;
   background:var(--card);color:var(--ink-2);cursor:pointer;box-shadow:var(--leap-shadow)}
 .mv-fold-side:hover{border-color:var(--brand);color:var(--brand)}
 .mv-fold-side:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
 .mv-fold-side .ic{font-size:15px;line-height:1}
-.mapview.side-off .mv-fold-side{right:12px}
+/* 접기 단추는 패널 옆에 섭니다. 접으면 패널이 사라진 자리로 옮겨 옵니다. */
+#mv-side-toggle{right:324px}
+.mapview.side-off #mv-side-toggle{right:12px}
 .mapview.side-off .mv-fold-side .ic{transform:scaleX(-1)}
 /* ── 돌리는 법 안내 ── 묻는 사람에게만. 지도 위 «오른쪽»에 둡니다.
    ★ 접기 단추와 같은 꼴(.mv-fold-side)을 쓰므로, 자리를 덮어쓰는 규칙은
      반드시 그 «뒤»에 와야 합니다. 앞에 두었더니 둘이 같은 자리에 겹쳐
      「요약 접기」가 통째로 가려졌습니다. */
 /* 접기 단추가 오른쪽으로 갔으므로 사용법은 «왼쪽»으로 비켜섭니다. */
-.mv-help{right:auto;left:12px;top:12px}
+.mv-help{left:12px;top:12px}
 .mv-help .ic{display:inline-flex;align-items:center;justify-content:center;
   width:15px;height:15px;border-radius:50%;background:var(--ink-3);color:var(--card);
   font-size:10px;font-weight:800}
@@ -1440,6 +1454,15 @@ table.data .hl{color:var(--brand);font-weight:800}
 .mv-help[aria-expanded="true"] .ic{background:var(--leap-on-fill);color:var(--brand)}
 .mapview.side-off .mv-help .ic{transform:none}
 @media (max-width:900px){ .mv-help .lb{display:none} .mv-help{padding:0 9px} }
+.mv-fly-pill{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:9;
+  max-width:min(420px, calc(100% - 24px));padding:7px 14px;border-radius:999px;
+  border:1px solid var(--line);background:color-mix(in srgb, var(--card) 94%, transparent);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  box-shadow:var(--leap-shadow);font-size:12.5px;color:var(--ink-2);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mv-fly-pill[hidden]{display:none}
+.mv-fly-pill b{color:var(--brand);font-weight:700}
+.mv-fly-pill span{color:var(--ink-3)}
 .mv-tip{position:absolute;left:12px;right:auto;top:54px;z-index:7;width:min(320px,calc(100% - 24px));
   border:1px solid var(--line);border-radius:10px;background:var(--card);
   padding:12px 13px;font-size:11.5px;line-height:1.6;color:var(--ink-2);
@@ -1452,7 +1475,7 @@ table.data .hl{color:var(--brand);font-weight:800}
 .mv-tip > b{padding-right:26px}
 @media (max-width:900px){
   .mapview.side-off{grid-template-rows:minmax(0,1fr)}
-  .mv-fold-side{right:12px}
+  #mv-side-toggle{right:12px}
 }
 #mv-canvas{position:absolute;inset:0;background:var(--card-2)}
 /* ── 축척 ── 자와 비율을 함께. 종이 지도를 읽어 온 사람에게는 비율이 빠릅니다 */
@@ -2556,6 +2579,9 @@ body.map-maxed.home-wide #home-side{display:none}
                  보는 눈이라면 이쪽은 더 눕히고 건물을 세웁니다. -->
             <button type="button" class="chip" id="mv-drone" aria-pressed="false">드론뷰</button>
             <button type="button" class="chip" id="mv-spin" aria-pressed="false">자동 회전</button>
+            <!-- 드론 비행 — 화면 안 학교를 하나씩 찾아갑니다. 지도를 손으로
+                 끄는 것과 다른 점이 여기에 있습니다. -->
+            <button type="button" class="chip" id="mv-fly" aria-pressed="false"><span class="lb">드론 비행</span></button>
             <button type="button" class="chip" id="mv-reset">경북 전체로</button>
             <!-- 안내는 «묻는 사람에게만» 보여 줍니다. 늘 펴 두면 세 줄이 자리를
                  차지하고, 아주 없으면 돌리는 법을 알 길이 없습니다. -->
@@ -2666,6 +2692,9 @@ body.map-maxed.home-wide #home-side{display:none}
                 aria-expanded="false" aria-controls="mv-turn-tip">
           <span class="ic" aria-hidden="true">?</span><span class="lb">지도 사용법</span>
         </button>
+        <!-- 비행 중에 «지금 어디를 보고 있는지»를 알려 줍니다. 없으면 화면이
+             저절로 움직이는 까닭을 알 수 없습니다. -->
+        <div class="mv-fly-pill" id="mv-fly-pill" hidden></div>
         <div class="mv-status" id="mv-status">지도를 준비하는 중입니다…</div>
       </div>
     </div>
@@ -11801,10 +11830,14 @@ const MV_BASES = [
   { id:'Base',      name:'일반',      ext:'png',  base:'Base' },
   { id:'Satellite', name:'위성',      ext:'jpeg', base:'Satellite' },
   { id:'Hybrid',    name:'위성+지명', ext:'jpeg', base:'Satellite', over:'Hybrid', overExt:'png' },
-  { id:'midnight',  name:'야간',      ext:'png',  base:'midnight' },
   /* 현재 WMTS는 gray를 거절하므로 Base를 저채도로 렌더링합니다. */
   { id:'gray',      name:'회색',      ext:'png',  base:'Base', saturation:-1 }
 ];
+/* ★ 야간 배경을 뺐습니다 〔2026. 9. 20.〕
+   색만 어두울 뿐 «밤에 무엇이 다른지»를 말해 주지 않았습니다. 불빛이 켜진 곳도,
+   밤에 문을 여는 곳도 보여 주지 못하니 고를 까닭이 없는 칸이었습니다.
+   어두운 화면이 필요하면 머리글의 「어두운 화면으로」가 그 일을 합니다.
+   밤에 뜻이 생기는 자료(야간 돌봄·통학버스 시간 등)가 붙으면 그때 되살립니다. */
 /* 고도 — 브이월드에는 없습니다(hillshade·terrain·dem 모두 500 을 돌려줍니다).
    AWS Terrain Tiles 는 키 없이 열려 있고 타일 번호가 같아 그대로 맞습니다.
    산과 골짜기가 드러나야 통학 거리를 눈으로 가늠할 수 있습니다. */
@@ -11814,19 +11847,27 @@ const MV_HOME_VIEW = { center:[128.75, 36.35], zoom:7.6 };
 const MV = {
   loading:false, ready:false, failed:false,
   map:null, key:null,
-  base:'Base', level:'전체', q:'', year:HOME_BASE_YEAR, choroBaseYear:HOME_YEAR_MIN,
+  /* ★ 처음 보이는 배경은 «위성+지명» 입니다 〔2026. 9. 20.〕
+     학교가 어떤 자리에 앉아 있는지 — 산인지 논밭인지 시가지인지 — 를 먼저
+     보여 주는 것이 이 지도의 일입니다. 선으로 그린 일반 지도로는 그게 안 보입니다. */
+  base:'Hybrid', level:'전체', q:'', year:HOME_BASE_YEAR, choroBaseYear:HOME_YEAR_MIN,
   closed:false, bound:true, choropleth:false, smallFocus:false, choroKey:null,
   ruler:false, rulerPts:[], rulerMarks:[],
   near:null, nearMarks:[], chips:[],
   /* view 는 '2d' | '3d' | 'drone'. is3d 는 «기울어져 있는가»만 뜻하므로
      드론뷰에서도 참입니다 — 지형·음영을 켜는 판단에 그대로 쓰입니다. */
-  view:'2d', spin:false, spinRaf:0,
+  view:'2d', spin:false, spinRaf:0, flying:false, flightTimer:0,
   is3d:false, marks:[], rows:[]
 };
 
 /* 산세의 과장값은 배율에 관계없이 유지합니다. 완만한 지형의 작은 요철은
    terrain-worker에서 미터 단위 고도를 보정하며, 산 능선은 원자료를 유지합니다. */
-function mvTerrainExaggeration(){return 1.5;}
+/* ★ 드론뷰는 산을 «더» 세웁니다 〔2026. 9. 20.〕
+   1.5 로는 3D 지형과 구분이 안 됐습니다 — 「둘이 무슨 차이인지 모르겠다」는
+   말을 들었습니다. 드론뷰의 일은 «학교가 어떤 지형에 앉아 있는지»를 몸으로
+   느끼게 하는 것이므로 2.4 로 올립니다. 실제 높이가 아니라 «읽히는 높이»입니다.
+   그래서 화면에도 몇 배로 부풀렸는지 적습니다. */
+function mvTerrainExaggeration(){return mvIsDrone() ? 2.4 : 1.5;}
 /* ★ 모드마다 «원하는 기울기»가 다릅니다 〔2026. 9. 20.〕
    zoomend 가 이 값으로 기울기를 도로 끌어내립니다. 드론뷰에서 62 를 돌려주면
    확대하는 순간 애써 눕힌 화면이 3D 지형으로 주저앉습니다 — 실제로 그랬습니다.
@@ -11860,6 +11901,25 @@ function mvApplyTerrain(map){
   }catch(_e){}
 }
 
+/* ★ 하늘과 안개 〔2026. 9. 20.〕
+   드론뷰에서 땅만 기울이면 «위성사진을 비스듬히 본 것»에 그칩니다. 먼 곳이
+   옅어지고 지평선 위에 하늘이 있어야 «떠 있다»는 느낌이 납니다.
+   3D 지형에서는 걷어 냅니다 — 산줄기를 또렷이 보려는 화면이라 안개가 방해입니다. */
+function mvApplySky(map){
+  if(!map || !map.setSky) return;
+  try{
+    if(mvIsDrone()){
+      map.setSky({
+        'sky-color':'#9fc4e8', 'sky-horizon-blend':0.6,
+        'horizon-color':'#e6eef7', 'horizon-fog-blend':0.75,
+        'fog-color':'#dfe8f2', 'fog-ground-blend':0.62
+      });
+    }else{
+      map.setSky(null);
+    }
+  }catch(_e){}
+}
+
 /* 건물은 드론뷰에서만 세웁니다. 「3D 지형」에서까지 세우면 산을 보려는
    화면에 건물이 끼어들고, 타일을 한 겹 더 받느라 느려집니다. */
 function mvApplyBuildings(map){
@@ -11889,6 +11949,58 @@ function mvStartSpin(){
     MV.spinRaf = requestAnimationFrame(step);
   };
   MV.spinRaf = requestAnimationFrame(step);
+}
+
+/* ★ 드론 비행 〔2026. 9. 20.〕
+   「드론뷰와 3D 지형이 무슨 차이인지 모르겠다」는 말을 들었습니다. 기울기만
+   달라서는 차이가 안 납니다. 드론뷰의 일은 «학교를 하나씩 찾아가며 그 자리를
+   보여 주는 것»이어야 합니다 — 그것이 지도를 손으로 끄는 것과 다른 점입니다.
+
+   화면 안 학교(MV.rows)를 학생 수 많은 차례로 훑습니다. 한 곳에 닿으면 잠깐
+   머무르며 그 학교를 고르고(왼쪽 상세가 따라 바뀝니다), 다음으로 떠납니다. */
+const MV_FLIGHT_MAX = 8;      /* 너무 길면 지겹습니다. 여덟 곳이면 한 바퀴 느낌이 납니다 */
+const MV_FLIGHT_HOLD = 2600;  /* 한 곳에 머무는 시간(ms) */
+function mvFlightStop(quiet){
+  if(MV.flightTimer){ clearTimeout(MV.flightTimer); MV.flightTimer = 0; }
+  MV.flying = false;
+  const b = document.getElementById('mv-fly');
+  if(b){ b.setAttribute('aria-pressed','false'); const l = b.querySelector('.lb'); if(l) l.textContent = '드론 비행'; }
+  const pill = document.getElementById('mv-fly-pill');
+  if(pill) pill.hidden = true;
+  if(!quiet) mvSay('');
+}
+function mvFlightPill(i, n, school){
+  const pill = document.getElementById('mv-fly-pill');
+  if(!pill) return;
+  pill.hidden = false;
+  pill.innerHTML = '<b>드론 비행</b> <span>' + (i + 1) + ' / ' + n + '</span> · ' +
+    htmlEsc(school.name) + (mvStu(school) ? ' <span>' + fmt(mvStu(school)) + '명</span>' : '');
+}
+function mvFlightStart(){
+  if(!MV.map) return;
+  const stops = (MV.rows || []).filter(s => s && isFinite(s.lat) && isFinite(s.lon)).slice(0, MV_FLIGHT_MAX);
+  if(stops.length < 2){ mvSay('비행할 학교가 화면 안에 둘 이상 있어야 합니다. 지도를 조금 넓혀 주세요.'); return; }
+  mvStopSpin();                     /* 돌면서 날면 어디를 보는지 알 수 없습니다 */
+  MV.flying = true;
+  const b = document.getElementById('mv-fly');
+  if(b){ b.setAttribute('aria-pressed','true'); const l = b.querySelector('.lb'); if(l) l.textContent = '비행 멈춤'; }
+  let i = 0;
+  const hop = () => {
+    if(!MV.flying || !MV.map) return;
+    const s = stops[i % stops.length];
+    mvFlightPill(i % stops.length, stops.length, s);
+    try{
+      selectSchool(s); mvRenderDetail(true);
+      /* 방위를 조금씩 틀어 가며 갑니다. 늘 같은 쪽에서 보면 항공사진 넘기기와
+         다를 바 없습니다. */
+      MV.map.flyTo({ center:[s.lon, s.lat], zoom:MV_DRONE_ZOOM + 0.6,
+        pitch:MV_DRONE_PITCH, bearing:(-24 + i * 37) % 360,
+        speed:0.55, curve:1.5, essential:true });
+    }catch(_e){}
+    i++;
+    MV.flightTimer = setTimeout(hop, MV_FLIGHT_HOLD + 1800);
+  };
+  hop();
 }
 
 function mvSay(t){
@@ -13133,7 +13245,10 @@ async function mvStart(){
      못해 그냥 안 멈췄습니다. 캔버스의 «날 입력»을 직접 듣는 쪽이 확실합니다. */
   const canvas = map.getCanvas();
   if(canvas) ['mousedown','touchstart','wheel','keydown'].forEach(ev => {
-    canvas.addEventListener(ev, () => { if(MV.spin) mvStopSpin(); }, { passive:true });
+    canvas.addEventListener(ev, () => {
+      if(MV.spin) mvStopSpin();
+      if(MV.flying) mvFlightStop();   /* 사람이 끌기 시작하면 비행도 사람에게 넘깁니다 */
+    }, { passive:true });
   });
   /* ★ 「불러오는 중입니다」를 지웁니다 〔2026. 9. 10.〕 배율 안내를 뺀 뒤로
      이 말을 지우는 사람이 없어져, 지도가 다 떴는데도 띠가 남아 있었습니다.
@@ -13237,8 +13352,17 @@ function mvWireSide(){
   mvSideWired = true;
   const btn = document.getElementById('mv-side-toggle');
   if(!btn) return;
-  let open = true;
-  try{ open = localStorage.getItem(MV_SIDE_KEY) !== '0'; }catch(_e){}
+  /* ★ 폰에서는 «접힌 채» 시작합니다 〔2026. 9. 20.〕
+     요약을 아래에서 올라오는 칸으로 바꿨더니 지도가 692px 로 커졌는데, 그 칸이
+     아래 318px 를 덮어 실제로 보이는 지도는 374px 뿐이었습니다 — 고치기 전보다
+     좁습니다. 지도를 보러 온 화면이므로 지도가 먼저 온전히 보여야 합니다.
+     한 번이라도 펴 두었다면 그 뜻을 기억합니다(localStorage). */
+  const narrow = !!(window.matchMedia && window.matchMedia('(max-width:900px)').matches);
+  let open = !narrow;
+  try{
+    const saved = localStorage.getItem(MV_SIDE_KEY);
+    if(saved !== null) open = saved !== '0';
+  }catch(_e){}
   mvSetSide(open);
   btn.addEventListener('click', () => {
     mvSetSide(btn.getAttribute('aria-expanded') !== 'true');
@@ -13256,7 +13380,7 @@ function mvWireControls(){
     if(!MV.map) return;
     MV.view = mode;
     MV.is3d = mode !== '2d';
-    if(mode !== 'drone') mvStopSpin();   /* 평면으로 돌아가며 계속 돌면 어지럽습니다 */
+    if(mode !== 'drone'){ mvStopSpin(); mvFlightStop(true); }  /* 평면으로 돌아가며 계속 돌거나 날면 어지럽습니다 */
     try{
       if(mode === '2d'){
         MV.map.setTerrain(null);
@@ -13265,6 +13389,7 @@ function mvWireControls(){
         mvApplyTerrain(MV.map);
       }
       mvApplyBuildings(MV.map);
+      mvApplySky(MV.map);
     }catch(_e){ mvSay('고도 자료를 받지 못해 기울여 보기만 합니다.'); }
     if(mode === '2d') MV.map.easeTo({ pitch:0, bearing:0, duration:700 });
     else if(mode === '3d') MV.map.easeTo({ pitch:mvTerrainPitch(MV.map.getZoom()), bearing:-15, duration:900 });
@@ -13288,7 +13413,13 @@ function mvWireControls(){
     if(MV.spin){ mvStopSpin(); return; }
     /* 평면에서 돌리면 그림이 도는 것뿐이라 뜻이 없습니다. 드론뷰로 올려 둡니다. */
     if(!mvIsDrone()) setView('drone');
+    mvFlightStop(true);              /* 날면서 돌면 어디를 보는지 알 수 없습니다 */
     mvStartSpin();
+  });
+  on('mv-fly', () => {
+    if(MV.flying){ mvFlightStop(); return; }
+    if(!mvIsDrone()) setView('drone');
+    mvFlightStart();
   });
   /* 여는 길과 닫는 길을 한 자리에 모읍니다 — 어디서 닫든 같은 일이 일어나야
      합니다. 지도를 누르거나 Esc 를 눌러도 닫힙니다. */
@@ -13428,14 +13559,33 @@ function mvFit(){
     box.style.marginTop = Math.max(0, gap) + 'px';
   }
   const top = box.getBoundingClientRect().top;
+  /* 바닥 값 420 은 «지도가 아주 사라지지 않게» 하는 최소치입니다. 좁은 화면에서
+     여기에 걸린다는 것은 지도가 화면 밖으로 밀렸다는 뜻이므로, 그 전에
+     mvScrollIntoViewIfNarrow 가 끌어올려 둡니다. */
   const h = Math.max(420, Math.round(window.innerHeight - top));
   box.style.height = h + 'px';
   if(MV.map){ try{ MV.map.resize(); }catch(_e){} }
 }
 try{ window.addEventListener('resize', () => { if(activeView === 'map') mvFit(); }); }catch(_e){}
 
+/* ★ 좁은 화면에서는 지도를 «화면 맨 위»로 끌어올립니다 〔2026. 9. 20.〕
+   폰에서는 왼쪽 메뉴가 세로로 쌓여 화면 윗부분을 통째로 차지합니다. 그 상태로
+   재면 남는 자리가 420px 뿐이라, 지도를 보러 온 화면에서 지도가 가장 작아집니다.
+   실제로 「폰에서 지도가 너무 작다」는 말을 들었습니다.
+   끌어올린 «뒤에» 재야 mvFit 의 「남은 높이」가 화면 전체가 됩니다 — 순서가 중요합니다. */
+function mvScrollIntoViewIfNarrow(){
+  try{
+    if(!(window.matchMedia && window.matchMedia('(max-width:900px)').matches)) return;
+    const box = document.querySelector('.mapview');
+    if(!box) return;
+    /* 부드럽게 굴리면 다 구르기 «전에» 높이를 재어 옛 값이 잡힙니다. 즉시 옮깁니다. */
+    if(box.scrollIntoView) box.scrollIntoView({ block:'start', behavior:'auto' });
+  }catch(_e){}
+}
+
 /* 화면이 드러난 뒤에 크기를 다시 잽니다 — 숨어 있을 때 잰 값은 0 입니다. */
 function mvOpen(){
+  mvScrollIntoViewIfNarrow();
   mvFit();
   if(!MV.ready && !MV.loading){ mvStart(); return; }
   if(MV.map){
