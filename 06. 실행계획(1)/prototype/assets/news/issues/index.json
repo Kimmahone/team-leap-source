@@ -1,5 +1,382 @@
 [
   {
+    "id": "2026-09-22-three-day",
+    "status": "자동 발행",
+    "source": "네이버 뉴스 검색 API",
+    "sourceKind": "naver-three-day",
+    "cadenceDays": 3,
+    "publishedAt": "2026-09-22",
+    "period": {
+      "from": "2026-09-16",
+      "to": "2026-09-22",
+      "count": 13
+    },
+    "title": "교육재정 보도가 이끈 최근 7일, 경북 교육의 다음 질문",
+    "lead": "최근 7일 경북 학령인구 대응 관련 기사는 13건입니다. 가장 비중이 큰 주제는 ‘교육재정’이며, 김천시의 언급이 두드러졌습니다.",
+    "highlights": [
+      "최근 7일 13건으로 직전 7일 22건보다 -9건 변화했습니다.",
+      "‘교육재정’ 주제가 61.5%로 가장 큰 비중을 차지했습니다.",
+      "김천시 언급이 1건으로 가장 많았습니다."
+    ],
+    "topics": [
+      {
+        "topic": "교육재정",
+        "current": 8,
+        "prior": 9,
+        "currentShare": 61.5,
+        "priorShare": 40.9,
+        "changePp": 20.6
+      },
+      {
+        "topic": "통폐합·적정규모",
+        "current": 4,
+        "prior": 9,
+        "currentShare": 30.8,
+        "priorShare": 40.9,
+        "changePp": -10.1
+      },
+      {
+        "topic": "교육혁신·특구",
+        "current": 1,
+        "prior": 1,
+        "currentShare": 7.7,
+        "priorShare": 4.5,
+        "changePp": 3.1
+      },
+      {
+        "topic": "교원·정원",
+        "current": 0,
+        "prior": 0,
+        "currentShare": 0,
+        "priorShare": 0,
+        "changePp": 0
+      },
+      {
+        "topic": "통학·돌봄",
+        "current": 0,
+        "prior": 0,
+        "currentShare": 0,
+        "priorShare": 0,
+        "changePp": 0
+      },
+      {
+        "topic": "지역소멸·인구",
+        "current": 0,
+        "prior": 3,
+        "currentShare": 0,
+        "priorShare": 13.6,
+        "changePp": -13.6
+      }
+    ],
+    "keywords": [
+      {
+        "name": "개편",
+        "value": 3,
+        "prior": 4,
+        "change": -1
+      },
+      {
+        "name": "정부",
+        "value": 3,
+        "prior": 3,
+        "change": 0
+      },
+      {
+        "name": "지방교육재정교부금",
+        "value": 3,
+        "prior": 2,
+        "change": 1
+      },
+      {
+        "name": "촉구",
+        "value": 3,
+        "prior": 0,
+        "change": 3
+      },
+      {
+        "name": "폐교",
+        "value": 3,
+        "prior": 7,
+        "change": -4
+      },
+      {
+        "name": "개편안",
+        "value": 2,
+        "prior": 1,
+        "change": 1
+      },
+      {
+        "name": "경북교육연대",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "고사",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "교부금",
+        "value": 2,
+        "prior": 1,
+        "change": 1
+      },
+      {
+        "name": "국회",
+        "value": 2,
+        "prior": 3,
+        "change": -1
+      },
+      {
+        "name": "국회가",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "문화",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "재탄생",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "중단",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "100억원",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "120억",
+        "value": 1,
+        "prior": 1,
+        "change": 0
+      },
+      {
+        "name": "1인",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "개편에",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      }
+    ],
+    "regions": [
+      {
+        "name": "김천시",
+        "value": 1
+      },
+      {
+        "name": "영천시",
+        "value": 1
+      },
+      {
+        "name": "포항시",
+        "value": 1
+      }
+    ],
+    "dailyTrend": [
+      {
+        "date": "2026-09-16",
+        "total": 7
+      },
+      {
+        "date": "2026-09-17",
+        "total": 3
+      },
+      {
+        "date": "2026-09-18",
+        "total": 0
+      },
+      {
+        "date": "2026-09-19",
+        "total": 0
+      },
+      {
+        "date": "2026-09-20",
+        "total": 0
+      },
+      {
+        "date": "2026-09-21",
+        "total": 2
+      },
+      {
+        "date": "2026-09-22",
+        "total": 1
+      }
+    ],
+    "clusters": [
+      {
+        "id": "rolling-2",
+        "label": "교육재정 · 촉구 · 경북교육연대",
+        "keywords": [
+          "촉구",
+          "경북교육연대",
+          "개편"
+        ],
+        "size": 3,
+        "share": 6,
+        "cohesion": 0.73,
+        "samples": [
+          {
+            "id": "http://andongmbc.co.kr/adboard/NewsView84807",
+            "title": "경북교육연대 '지방교육교부금 개편 중단 대응 촉구' 기자회견",
+            "link": "http://andongmbc.co.kr/adboard/NewsView84807",
+            "publishedAt": "2026-09-16",
+            "press": "andongmbc.co.kr",
+            "similarity": 0.75
+          },
+          {
+            "id": "https://www.idaegu.com/news/articleView.html?idxno=665721",
+            "title": "경북교육연대, 경북도의회서 지방교육재정교부금 개편 반개 철회 촉구",
+            "link": "https://www.idaegu.com/news/articleView.html?idxno=665721",
+            "publishedAt": "2026-09-16",
+            "press": "idaegu.com",
+            "similarity": 0.73
+          },
+          {
+            "id": "https://www.kbsm.net/news/view.php?idx=534679",
+            "title": "경북교사노조, 국회 앞서 지방교육재정교부금 개편 중단 촉구 1인 시위",
+            "link": "https://www.kbsm.net/news/view.php?idx=534679",
+            "publishedAt": "2026-09-17",
+            "press": "kbsm.net",
+            "similarity": 0.7
+          }
+        ]
+      },
+      {
+        "id": "rolling-1",
+        "label": "교육혁신·특구 · 교육혁신선도지역 · 도전",
+        "keywords": [
+          "교육혁신선도지역",
+          "도전",
+          "본격화"
+        ],
+        "size": 2,
+        "share": 4,
+        "cohesion": 0.82,
+        "samples": [
+          {
+            "id": "https://www.ksmnews.co.kr/news/view.php?idx=622970",
+            "title": "포항시, 교육혁신선도지역 도전 본격화…최대 100억원 확보 나서",
+            "link": "https://www.ksmnews.co.kr/news/view.php?idx=622970",
+            "publishedAt": "2026-09-21",
+            "press": "ksmnews.co.kr",
+            "similarity": 0.82
+          },
+          {
+            "id": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4083699",
+            "title": "경산시, 교육혁신선도지역 도전 본격화…12개 기관 손잡았다",
+            "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4083699",
+            "publishedAt": "2026-09-09",
+            "press": "kyongbuk.co.kr",
+            "similarity": 0.82
+          }
+        ]
+      },
+      {
+        "id": "rolling-3",
+        "label": "통폐합·적정규모 · 120억 · 정부",
+        "keywords": [
+          "120억",
+          "정부",
+          "폐교"
+        ],
+        "size": 2,
+        "share": 4,
+        "cohesion": 0.8,
+        "samples": [
+          {
+            "id": "https://www.ibabynews.com/news/articleView.html?idxno=154582",
+            "title": "늘어나는 폐교, 교육·문화·산업 거점으로 재탄생… 정부 120억 지원",
+            "link": "https://www.ibabynews.com/news/articleView.html?idxno=154582",
+            "publishedAt": "2026-09-16",
+            "press": "ibabynews.com",
+            "similarity": 0.8
+          },
+          {
+            "id": "https://www.hankyung.com/article/202609142492i",
+            "title": "'애물단지' 폐교 파크골프장·생태체험시설로…정부 120억 투입",
+            "link": "https://www.hankyung.com/article/202609142492i",
+            "publishedAt": "2026-09-14",
+            "press": "hankyung.com",
+            "similarity": 0.8
+          }
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "title": "지방교부세·교육교부금 개편에 경북도의회 \"즉각 중단하라\"",
+        "link": "https://srn.hcn.co.kr/user/news/BD_newsView.do?news_category=01&story_id=NS2026092100005&story_seq=0&soCode=114&socttSn=NS2026092100005&socttSeq=0",
+        "publishedAt": "2026-09-22",
+        "press": "srn.hcn.co.kr"
+      },
+      {
+        "title": "포항시, 교육혁신선도지역 도전 본격화…최대 100억원 확보 나서",
+        "link": "https://www.ksmnews.co.kr/news/view.php?idx=622970",
+        "publishedAt": "2026-09-21",
+        "press": "ksmnews.co.kr"
+      },
+      {
+        "title": "문 닫은 학교가 다시 열렸다…경북 폐교, 교육·문화·지역공동체 공간...",
+        "link": "https://www.imaeil.com/page/view/2026091716013415216",
+        "publishedAt": "2026-09-21",
+        "press": "imaeil.com"
+      },
+      {
+        "title": "김천교육지원청, 폐교 활용·도서관·학교복합시설 추진",
+        "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4084704",
+        "publishedAt": "2026-09-17",
+        "press": "kyongbuk.co.kr"
+      },
+      {
+        "title": "경북교사노조, 국회 앞서 지방교육재정교부금 개편 중단 촉구 1인 시위",
+        "link": "https://www.kbsm.net/news/view.php?idx=534679",
+        "publishedAt": "2026-09-17",
+        "press": "kbsm.net"
+      },
+      {
+        "title": "신산초 영장분교 친환경 재탄생…파주시·파주교육지원청, 공모 최종 선...",
+        "link": "http://www.inews24.com/view/2006498",
+        "publishedAt": "2026-09-17",
+        "press": "inews24.com"
+      },
+      {
+        "title": "경북교육연대 '지방교육교부금 개편 중단 대응 촉구' 기자회견",
+        "link": "http://andongmbc.co.kr/adboard/NewsView84807",
+        "publishedAt": "2026-09-16",
+        "press": "andongmbc.co.kr"
+      },
+      {
+        "title": "전국교육감협의회 “정부 교부금 개편안, 교육 고사 초래”…대구경북...",
+        "link": "https://www.kbmaeil.com/article/20260916500592",
+        "publishedAt": "2026-09-16",
+        "press": "kbmaeil.com"
+      }
+    ],
+    "caveat": "기사량은 사회적 관심의 신호이며 실제 학생 수·학교 수의 증감을 뜻하지 않습니다.",
+    "review": "자동 집계된 초안으로, 대외 배포 전 담당자의 사실 확인이 필요합니다.",
+    "issueNo": 6
+  },
+  {
     "id": "2026-09-19-three-day",
     "status": "자동 발행",
     "source": "네이버 뉴스 검색 API",
