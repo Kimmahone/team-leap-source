@@ -93,29 +93,44 @@ ${factLines}
 ${artLines}`;
 }
 
+/* 모델이 «잠깐 바쁨»(429·500·503)이면 조금 쉬었다 다시 부릅니다 — 9. 27. 시험에서 503 으로 규칙 초안이 됐습니다.
+   모델마다 무슨 일이 있었는지 모두 남깁니다(마지막 모델 오류만 남기면 앞 모델이 왜 안 됐는지 모릅니다). */
+const RETRY_WAIT = (process.env.GEMINI_RETRY_WAIT || '8,20').split(',').map((x) => Number(x) * 1000);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 async function geminiDraft(key, ctx) {
   const prompt = promptFor(ctx);
-  let lastErr = '';
+  const errs = [];
   for (const model of MODELS) {
-    try {
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-        signal: AbortSignal.timeout(90000),
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: SYSTEM }] },
-          contents: [{ role: 'user', parts: [{ text: prompt }] }],
-          generationConfig: { responseMimeType: 'application/json', temperature: 0.4, maxOutputTokens: 8192 }
-        })
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) { lastErr = `${model}: ${res.status} ${(data.error && data.error.message) || ''}`; continue; }
-      const text = ((data.candidates || [])[0]?.content?.parts || []).map((p) => p.text || '').join('');
-      const json = JSON.parse(text.replace(/^```json\s*|\s*```$/g, ''));
-      return { draft: json, model };
-    } catch (e) { lastErr = `${model}: ${e.message}`; }
+    for (let attempt = 0; attempt <= RETRY_WAIT.length; attempt++) {
+      if (attempt) await sleep(RETRY_WAIT[attempt - 1]);
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+          signal: AbortSignal.timeout(120000),
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: SYSTEM }] },
+            contents: [{ role: 'user', parts: [{ text: prompt }] }],
+            generationConfig: { responseMimeType: 'application/json', temperature: 0.4, maxOutputTokens: 8192 }
+          })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          const msg = `${model}: ${res.status} ${((data.error && data.error.message) || '').slice(0, 120)}`;
+          if ([429, 500, 503].includes(res.status) && attempt < RETRY_WAIT.length) { console.log(`  · ${msg} — 잠시 뒤 다시`); continue; }
+          errs.push(msg); break;
+        }
+        const text = ((data.candidates || [])[0]?.content?.parts || []).map((p) => p.text || '').join('');
+        const json = JSON.parse(text.replace(/^```json\s*|\s*```$/g, ''));
+        return { draft: json, model };
+      } catch (e) {
+        if (e.name === 'TimeoutError' && attempt < RETRY_WAIT.length) { console.log(`  · ${model}: 시간 초과 — 다시`); continue; }
+        errs.push(`${model}: ${e.message}`); break;
+      }
+    }
   }
-  throw new Error('AI 초안을 받지 못했습니다 — ' + lastErr);
+  throw new Error('AI 초안을 받지 못했습니다 — ' + errs.join(' | '));
 }
 
 /* ── 한 호 만들기 ─────────────────────────────────────────────────────── */
