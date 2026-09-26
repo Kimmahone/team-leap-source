@@ -52,7 +52,9 @@ function readKey() {
 
 /* ── AI 초안 ──────────────────────────────────────────────────────────── */
 const MODELS = (process.env.GEMINI_MODEL ? [process.env.GEMINI_MODEL] : [])
-  .concat(['gemini-flash-latest', 'gemini-3.8-flash', 'gemini-3.7-flash']);
+  /* 9. 27. 점검: flash-latest·3.8·3.7 이 한꺼번에 503(붐빔)인 때가 있었고, 3.6-flash·flash-lite 는 답했습니다.
+     뒤의 둘은 «앞이 모두 막혔을 때»만 씁니다 — 결과는 똑같이 검증을 거칩니다. */
+  .concat(['gemini-flash-latest', 'gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash', 'gemini-flash-lite-latest']);
 
 const SYSTEM = `당신은 경상북도교육청 정책 담당자에게 매주 월요일 올리는 「학령인구 감소 대응 주간 브리프」의 편집자입니다.
 기사를 나열하지 말고, 한 주의 기사를 읽고 «무엇이 일어났고, 왜 중요하며, 경북 자료로 보면 어떻고, 경북이 무엇을 물어야 하는지»를 정리합니다.
