@@ -151,6 +151,11 @@ console.log('\n■ 배포 길 — 새 판은 기존 사이트를 덮지 않는�
   check('새 판은 team-leap-v2 로만 올린다', /--project-name=team-leap-v2/.test(v2) && !/--project-name=team-leap(?!-v2)/.test(v2));
   check('기존 배포 스크립트는 main 이 아니면 멈춘다', /"\$\{GITHUB_REF\}" != "refs\/heads\/main"/.test(dep));
   check('기존 사이트로 새 판을 올리던 옛 주간 워크플로가 없다', read('.github/workflows/weekly-brief.yml') === '');
+  check('브리프 시험(brief-test)은 커밋·굽기·배포를 하지 않는다',
+    /- name: 바뀐 자료 커밋 \(v2\)\n\s+if: env\.JOB == 'daily' \|\| env\.JOB == 'weekly'\n/.test(v2) &&
+    /- name: 사이트 굽기[^\n]*\n\s+if: env\.JOB != 'brief-test'/.test(v2) &&
+    /- name: team-leap-v2 로 배포\n\s+if: [^\n]*env\.JOB != 'brief-test'/.test(v2) &&
+    /build-weekly-brief\.mjs --dry --force --out/.test(v2));
 }
 
 console.log(`\n${fail ? '✗' : '✓'}  통과 ${pass} · 실패 ${fail}\n`);

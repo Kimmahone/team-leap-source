@@ -14,6 +14,7 @@ name: 새 판(v2) — 검사·굽기·배포 (team-leap-v2)
 #       deploy  그대로 다시 배포
 #       daily   뉴스를 새로 받고 3일 이슈 분석 → 배포
 #       weekly  뉴스를 새로 받고 주간 브리프 한 호 → 배포
+#       brief-test  주간 브리프 AI 초안을 «시험으로만» — 커밋·배포 없이 결과를 실행 기록과 첨부 파일로
 #   · 예약 — 매일 07:47(뉴스) · 월요일 05:17(주간 브리프, 한국시간)
 #     GitHub 은 예약(cron)과 「Run workflow」 단추를 «기본 가지(main)에 있는 파일»로만 돌립니다.
 #     그래서 «똑같은 이 파일»을 main 에도 둡니다. main 에서 예약이 돌면 아래 kick 이
@@ -36,13 +37,13 @@ on:
   workflow_dispatch:
     inputs:
       job:
-        description: 'deploy(그대로 배포) · daily(뉴스 받고 배포) · weekly(뉴스 받고 주간 브리프 만들고 배포)'
+        description: 'deploy(그대로 배포) · daily(뉴스 받고 배포) · weekly(뉴스 받고 주간 브리프 만들고 배포) · brief-test(브리프 시험 — 배포 안 함)'
         required: true
         default: deploy
         type: choice
-        options: [deploy, daily, weekly]
+        options: [deploy, daily, weekly, brief-test]
       week:
-        description: 'weekly 일 때 만들 주의 월요일(예: 2026-09-21). 비우면 지난주'
+        description: 'weekly · brief-test 일 때 만들 주의 월요일(예: 2026-09-21). 비우면 지난주'
         required: false
         default: ''
 
@@ -87,8 +88,8 @@ jobs:
         with:
           node-version: '24'
 
-      - name: 뉴스 받아오기 (daily · weekly)
-        if: env.JOB == 'daily' || env.JOB == 'weekly'
+      - name: 뉴스 받아오기 (daily · weekly · brief-test)
+        if: env.JOB == 'daily' || env.JOB == 'weekly' || env.JOB == 'brief-test'
         env:
           NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
           NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
@@ -107,6 +108,23 @@ jobs:
           if [ -n "$WEEK" ]; then node news-pipeline/build-weekly-brief.mjs --week "$WEEK"
           else node news-pipeline/build-weekly-brief.mjs; fi
 
+      # 시험: 사이트 자료(assets/brief)는 건드리지 않고, 검토를 마친 호도 새로 받아 봅니다(--force).
+      - name: 주간 브리프 시험 (brief-test — 커밋·배포 없음)
+        if: env.JOB == 'brief-test'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          WEEK: ${{ github.event.inputs.week }}
+        run: |
+          node news-pipeline/build-weekly-brief.mjs --dry --force --out brief-test.json ${WEEK:+--week "$WEEK"}
+
+      - name: 시험 결과 첨부 (brief-test)
+        if: env.JOB == 'brief-test'
+        uses: actions/upload-artifact@v4
+        with:
+          name: brief-test
+          path: brief-test.json
+          retention-days: 3
+
       - name: 바뀐 자료 커밋 (v2)
         if: env.JOB == 'daily' || env.JOB == 'weekly'
         run: |
@@ -121,14 +139,15 @@ jobs:
           fi
 
       - name: 사이트 굽기 (검사 · 인증키 · 외부 CDN · 링크)
+        if: env.JOB != 'brief-test'
         run: bash "./사이트 굽기.command"
 
       - name: team-leap-v2 로 배포
-        if: env.CLOUDFLARE_API_TOKEN != ''
+        if: env.CLOUDFLARE_API_TOKEN != '' && env.JOB != 'brief-test'
         run: |
           npx --yes wrangler@4 pages deploy "배포/site" --project-name=team-leap-v2 --branch=main \
             --commit-hash="$(git rev-parse HEAD)" --commit-message="v2 ${JOB} · $(git log -1 --pretty=%s | head -c 80)"
 
       - name: 배포 토큰이 없을 때
-        if: env.CLOUDFLARE_API_TOKEN == ''
+        if: env.CLOUDFLARE_API_TOKEN == '' && env.JOB != 'brief-test'
         run: echo "::warning::CLOUDFLARE_API_TOKEN 시크릿이 없어 배포를 건너뜁니다. 저장소 Settings → Secrets and variables → Actions 에 넣어 주세요."

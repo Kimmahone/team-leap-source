@@ -8,6 +8,7 @@
                                                      사람이 쓴 초안을 «같은 검증»에 통과시켜 싣기
      node build-weekly-brief.mjs --rule              AI 열쇠가 있어도 규칙 초안으로
      node build-weekly-brief.mjs --dry               파일을 쓰지 않고 결과만 봅니다
+     node build-weekly-brief.mjs --dry --out a.json  〃 결과 한 호를 a.json 에만 적습니다(시험용)
      node build-weekly-brief.mjs --force             검토를 마친 호도 덮어씁니다
 
    무엇을 하나
@@ -226,7 +227,21 @@ async function main() {
 
   const out = [];
   for (const w of weeks) out.push(await buildWeek(w, { history, F, digest, key, draftFile: opt('--draft') && weeks.length === 1 ? String(opt('--draft')) : null }));
-  if (DRY) { process.stdout.write(JSON.stringify(out.filter(Boolean)[0] || null, null, 1).slice(0, 4000) + '\n'); return; }
+  if (DRY) {
+    const iss = out.filter(Boolean)[0] || null;
+    if (iss) {
+      const n = (a) => (a || []).length;
+      console.log('\n── 미리 보기(사이트 자료는 쓰지 않음) ──');
+      console.log(`만든 방법: ${iss.generator.label}${iss.generator.model ? ' · ' + iss.generator.model : ''}`);
+      console.log(`제목: ${iss.title}`);
+      console.log(`요약: ${iss.lead}`);
+      console.log(`항목: 숫자 ${n(iss.numbers)} · 깊이 읽기 ${n(iss.issues)} · 다른 시·도 ${n(iss.regions)} · 수치 맞춰 보기 ${n(iss.factchecks)} · 다음 주 ${n(iss.watch)} · 인용 기사 ${iss.checks.citedArticles}`);
+      iss.checks.dropped.forEach((d) => console.log('  뺀 항목: ' + d));
+    }
+    if (opt('--out')) { fs.writeFileSync(path.resolve(String(opt('--out'))), JSON.stringify(iss, null, 1) + '\n'); console.log(`  → ${opt('--out')}`); }
+    else process.stdout.write(JSON.stringify(iss, null, 1).slice(0, 4000) + '\n');
+    return;
+  }
   writeAll(out);
 }
 
