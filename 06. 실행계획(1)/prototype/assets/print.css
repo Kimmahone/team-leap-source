@@ -1,0 +1,188 @@
+/* ==========================================================================
+   인쇄 〔새 판 · 2026. 9. 26.〕 — 모든 스타일의 «맨 뒤»에 붙습니다
+   ──────────────────────────────────────────────────────────────────────────
+   「인쇄가 다 깨져 있다」는 말을 듣고 화면 열다섯 곳을 PDF 로 뽑아 보았습니다.
+   깨진 까닭은 넷이었습니다.
+
+     ① 새 틀(frame.css)의 색 토큰이 인쇄용 흰 바탕 토큰을 덮어,
+        모든 쪽에 회색 바탕과 그림자가 깔렸습니다.
+     ② 예전 인쇄 토큰이 강조색을 검정(--brand:#000)으로, 그 위 글자도
+        검정(--leap-on-fill:#000)으로 두어 «고른 칩»이 까만 상자가 되고,
+        막대그래프가 전부 검게 칠해졌습니다.
+     ③ 필터 칩·검색창·쪽 넘김 같은 조작 도구가 그대로 종이에 나갔습니다.
+     ④ 종이 폭(가로 A4 ≈ 970px · 세로 A4 ≈ 640px)에서는 «좁은 화면» 규칙이
+        켜져, 지도와 설명 칸이 다른 쪽으로 흩어졌습니다.
+
+   그래서 — 색은 밝은 판으로 «고정»하고 브랜드 색은 살려 컬러로 인쇄합니다.
+   조작 도구는 숨기고, 무엇을 골랐는지는 인쇄 머리글의 「조회 조건」이 말합니다.
+   화면마다 종이 폭에 맞는 배치를 여기서 따로 정합니다.
+
+   ★ 선택자에 :root:root:root 를 쓴 까닭 — 어두운 화면(:root[data-theme="dark"])
+     에서 인쇄를 눌러도 종이는 밝아야 합니다. 그 규칙보다 구체적이어야 이깁니다.
+   ========================================================================== */
+@media print{
+  :root:root:root{
+    --leap-ink:#101B2B; --leap-blue:#1D4ED8; --leap-amber:#A8560A; --leap-amber-mark:#CE6410;
+    --leap-teal:#0D6E5C; --leap-gray:#44546A;
+    --leap-bg:#FFFFFF; --leap-surface:#FFFFFF; --leap-border:#CBD5E1; --leap-hairline:#E2E8F0;
+    --leap-on-fill:#FFFFFF; --leap-shadow:none;
+    --ink:#101B2B; --ink-2:#34465A; --ink-3:#556476; --line:#CBD5E1; --line-2:#E2E8F0;
+    --bg:#FFFFFF; --card:#FFFFFF; --card-2:#F4F7FB;
+    --brand:#1D4ED8; --brand-pale:#EEF4FF;
+    --frame-seg:#EEF2F7; --frame-kicker:#1D4ED8;
+    --lv-유:#6B3FA0; --lv-유-mark:#7B4BB8; --lv-초:#0D6E5C; --lv-초-mark:#0F8570;
+    --lv-중:#1B4FA0; --lv-중-mark:#1B4FA0; --lv-고:#A8560A; --lv-고-mark:#CE6410;
+    --lv-특수:#5A6672; --lv-특수-mark:#5A6672;
+    --over:#B3261E; --over-bg:#FDECEA; --fit:#146C43; --fit-bg:#E8F5EC; --under:#8A5A00; --under-bg:#FBF3E0;
+    --seg-초:#D3EDE6; --seg-중:#D6E4F7; --seg-고:#F7DFC4;
+    --use-own:#0E8A70; --use-lease:#1B4FA0; --use-idle:#CE6410; --use-sold:#9AA6B4;
+    /* 한눈에 보기 · 주간 브리프 — 라이트 값 */
+    --ov-초:#0F8570; --ov-중:#1B4FA0; --ov-고:#CE6410;
+    --ov-s0:#DBEAFE; --ov-s1:#93C5FD; --ov-s2:#60A5FA; --ov-s3:#2563EB; --ov-s4:#1E3A8A;
+    --ov-a0:#FEF3C7; --ov-a1:#FDE68A; --ov-a2:#FBBF24; --ov-a3:#D97706; --ov-a4:#92400E;
+    --ov-up:#60A5FA; --ov-d0:#FECDD3; --ov-d1:#FDA4AF; --ov-d2:#F43F5E; --ov-d3:#BE123C;
+    --ov-na:#E2E8F0; --ov-bar:#94A3B8; --ov-bar-gun:#CBD5E1;
+    --ov-sz-appropriate:#CBD5E1; --ov-sz-small:#FB7185; --ov-sz-minimum:#BE123C;
+    --ov-pj:rgba(37,99,235,.06); --ov-warn:#B45309; --ov-danger:#BE123C;
+    --ov-lb-hi:#FFFFFF; --ov-lb-hi-stroke:rgba(15,23,42,.35);
+    --br-accent:#E11D48; --br-bar:#94A3B8; --br-bar-hl:#2563EB;
+    --br-ok:#15803D; --br-ok-bg:#F0FDF4; --br-mid:#B45309; --br-mid-bg:#FFFBEB; --br-bad:#BE123C; --br-bad-bg:#FFF1F2;
+  }
+  html,body,.shell,.main,.view{background:#FFFFFF !important}
+
+  /* ── 인쇄 머리글 — 한 줄(상징 · 제목 · 언제/무엇) ───────────────────
+     ★ 예전부터 세로로 쌓여 첫 쪽의 3분의 1을 차지했습니다. 같은 인쇄 블록 안에서
+       뒤에 오는 «.print-only{display:block !important}» 가 머리글의 grid 를 이겼기
+       때문입니다(둘 다 !important · 같은 구체성 → 뒤가 이김). 선택자를 하나 더 붙여 이깁니다. */
+  .print-letterhead.print-only{display:grid !important;grid-template-columns:auto minmax(0,1fr) auto;
+    align-items:end;column-gap:6mm;margin-bottom:4mm;padding-bottom:2.4mm}
+  .print-letterhead .lh-body h1{font-size:15pt}
+  body{color:var(--ink);word-break:keep-all;overflow-wrap:break-word;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .main{max-width:none !important;margin:0 !important;padding:0 !important}
+
+  /* ── ② 링크 주소를 글 뒤에 붙이지 않습니다 ──────────────────────────
+     예전 규칙은 모든 바깥 링크 뒤에 전체 주소를 붙였습니다. 주간 브리프의
+     근거 칩 서른 개 뒤에 긴 주소가 줄줄이 달려 글이 묻혔습니다.
+     주소가 필요한 곳(뉴스 목록·브리프 부록)은 따로 적습니다. */
+  a[href^="http"]::after{content:none !important}
+
+  /* ── ③ 조작 도구 ── 누를 수 없는 종이에서는 뜻이 없습니다 ─────────── */
+  .chip,.map-toolbar,.news-filter-panel,.news-pager,[role="tablist"],
+  .sim-side-card,.sim-view-nav,.sim-advanced,.sim-year-control,.sim-table-tools,.ai-action-row,
+  .risk-tools,#closed-list-box,.sim-question-head p,
+  .ov-controls,.ov-dots,.ov-seg,.ov-panel-act,.ov-links,.ov-tip,#ov-s6,
+  .br-tools,.br-list,.br-all .br-note,
+  .mv-help,.map-back,.side-toggle{display:none !important}
+  /* 고른 값을 보여 주는 드롭다운은 «글자»로 남깁니다(연도 등) */
+  select{appearance:none;-webkit-appearance:none;border:0 !important;background:none !important;
+    padding:0 !important;font:inherit;color:inherit}
+  details{display:block}
+  details > summary::-webkit-details-marker{display:none}
+
+  /* ── 카드 — 선 한 줄, 그림자 없음 ─────────────────────────────────── */
+  .card,.panel,.ov-block,#ov-s1,.br-sec,.br-lead-card,.br-num,.br-region,.br-fc,.ov-kpi,.ov-mini,.ov-phase,
+  .news-card,.sim-question,.status-bar{box-shadow:none !important}
+  .card,.ov-block,#ov-s1,.br-sec,.br-lead-card{border:1px solid #D5DDE8 !important;border-radius:3mm !important}
+  .card{padding:4mm 5mm !important;margin-bottom:4mm !important}
+
+  /* ── ④ 쪽 나눔 ── 작은 덩어리는 자르지 않고, 긴 카드는 자연스럽게 넘깁니다 ── */
+  h1,h2,h3,.ov-scene-head,.br-sec h2{break-after:avoid;page-break-after:avoid}
+  figure,svg,table tr,.ov-kpi,.ov-mini,.ov-phase,.ov-hbar,.br-num,.br-issue,.br-region,.br-fc,
+  .br-takes li,.sgg-cell,.news-card,.era-row,.bars,.cohort-row,.risk-row,.ai-evidence-card{
+    break-inside:avoid;page-break-inside:avoid}
+
+  /* ═════════ 한눈에 보기 (가로 A4) ═════════
+     1쪽 머리글·한 줄 결론·지도 → 2쪽 네 지표 → 3쪽 학년별 → 4쪽 추이 → 5쪽 시군 비교 */
+  #view-overview .ov-root{display:block}
+  #view-overview .ov-hero{text-align:left;padding:0 0 3mm}
+  #view-overview .ov-kicker{display:none}
+  #view-overview .ov-hero h1{font-size:17pt;margin:0 0 1.2mm}
+  #view-overview .ov-lede{max-width:none;margin:0;font-size:9pt;line-height:1.55}
+  #view-overview .ov-scene{break-before:page;page-break-before:always;margin:0 0 4mm}
+  #view-overview #ov-s1{break-before:auto;page-break-before:auto;grid-template-columns:minmax(0,1fr) 76mm}
+  #view-overview .ov-map-card{padding:3mm 4mm 2mm}
+  #view-overview .ov-map svg{max-height:94mm;margin:0 auto}
+  #view-overview .ov-legend{padding-top:2mm;margin-top:1mm}
+  #view-overview .ov-panel{border-left:1px solid #E2E8F0;border-top:0;padding:3mm 4mm;gap:2mm}
+  #view-overview .ov-panel h3{font-size:12pt}
+  #view-overview .ov-panel-kpis b{font-size:13pt;margin-top:1mm}
+  #view-overview .ov-diag{font-size:8.5pt;padding:2mm 3mm}
+  /* 첫 쪽에 지도와 설명 칸이 함께 들어가도록 칸을 줄입니다(작은 추이선은 4쪽 추이에 있습니다) */
+  #view-overview .ov-spark{display:none}
+  #view-overview .ov-panel-kpis{gap:2mm}
+  #view-overview .ov-panel-kpis .k{padding:2mm 2.5mm}
+  #view-overview .ov-sub,#view-overview .ov-stack-lg{font-size:7.5pt}
+  #view-overview .ov-block{padding:5mm 6mm}
+  #view-overview .ov-scene-head h2{font-size:14pt}
+  #view-overview .ov-kpis{grid-template-columns:repeat(4,minmax(0,1fr));gap:3mm}
+  /* 네 지표와 학년별은 한 쪽에 함께 — 둘 다 «지금» 의 모습입니다 */
+  #view-overview #ov-s3{break-before:auto;page-break-before:auto}
+  #view-overview #ov-s2 .ov-kpi{padding:3mm 3.5mm}
+  #view-overview #ov-s2 .ov-kpi p{margin-top:2mm;padding-top:2mm}
+  #view-overview .ov-callout{margin-top:3mm;padding:2.5mm 4mm;font-size:8.5pt}
+  #view-overview .ov-kpi b{font-size:22pt}
+  #view-overview .ov-cohort{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
+  #view-overview .ov-hbar{gap:2mm;font-size:8pt}
+  #view-overview .ov-hbar .tr{height:3.2mm}
+  #view-overview .ov-hbars{gap:1mm}
+  #view-overview .ov-trend svg{max-height:112mm}
+  #view-overview .ov-phases{grid-template-columns:repeat(3,minmax(0,1fr))}
+  #view-overview .ov-s5-grid{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}
+  #view-overview .ov-size{border-left:1px solid #E2E8F0;border-top:0;padding:0 0 0 5mm}
+  #view-overview .ov-bars svg{max-height:92mm}
+  #view-overview .ov-foot{break-inside:avoid;font-size:8pt;margin-top:3mm}
+
+  /* ═════════ 경북 학령인구 현황 ═════════
+     「누가 올라오나」의 긴 막대 목록을 통째로 다음 쪽으로 넘기지 않습니다
+     (첫 쪽이 제목 한 줄만 남고 비었습니다). 한 줄씩만 자르지 않게 둡니다. */
+  #status-panel-who .cohort-wrap{break-inside:auto;page-break-inside:auto}
+  #status-panel-who .cohort-row{break-inside:avoid;page-break-inside:avoid}
+
+  /* ═════════ 주간 브리프 (세로 A4) ═════════ */
+  #view-brief .br-root{max-width:none}
+  #view-brief .br-paper{display:block}
+  #view-brief .br-paper > *{margin-bottom:4mm}
+  #view-brief .br-head{padding:0}
+  #view-brief .br-head h1{font-size:18pt;margin:1mm 0 2mm}
+  #view-brief .br-meta{font-size:8.5pt}
+  #view-brief .br-lead-card,#view-brief .br-sec{padding:4mm 5mm}
+  #view-brief .br-lead{font-size:10.5pt;line-height:1.7}
+  #view-brief .br-takes{grid-template-columns:repeat(3,minmax(0,1fr));gap:2.5mm}
+  #view-brief .br-takes li{font-size:8.5pt;padding:2.5mm 3mm 2.5mm 9mm}
+  #view-brief .br-sec h2{font-size:13pt}
+  /* 숫자 카드 — 종이에서는 한 줄에 하나, 글은 왼쪽·그림은 오른쪽 */
+  #view-brief .br-nums{display:block}
+  #view-brief .br-num{display:grid;grid-template-columns:minmax(0,1fr) 68mm;column-gap:5mm;margin-bottom:3mm;padding:3.5mm 4mm}
+  #view-brief .br-num > *{grid-column:1}
+  #view-brief .br-num > .br-chart{grid-column:2;grid-row:1 / span 6;align-self:start}
+  #view-brief .br-num h3{font-size:12.5pt}
+  #view-brief .br-num .body{font-size:9pt}
+  #view-brief .br-issue h3{font-size:12pt}
+  #view-brief .br-issue-grid{grid-template-columns:1fr 1fr;gap:4mm}
+  #view-brief .br-issue-grid p:not(.lb){font-size:9pt;line-height:1.65}
+  #view-brief .br-regions{grid-template-columns:1fr 1fr;gap:3mm}
+  #view-brief .br-region{padding:3mm;grid-template-columns:11mm minmax(0,1fr);gap:3mm}
+  #view-brief .br-region .rg{width:11mm;height:11mm;font-size:9pt;border-radius:2.5mm}
+  #view-brief .br-region h3{font-size:10pt}
+  #view-brief .br-region p{font-size:8.5pt}
+  #view-brief .br-stat{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
+  #view-brief .br-method{font-size:8.5pt;padding:4mm 5mm;break-inside:avoid}
+  #view-brief .br-refs{display:block !important;break-before:page;page-break-before:always}
+
+  /* ═════════ 뉴스 — 표지 그림 대신 목록으로 ═════════ */
+  .news-grid{grid-template-columns:1fr 1fr !important;gap:3mm !important}
+  .news-card-feature{grid-column:span 2 !important;display:block !important}
+  .news-card-cover{display:none !important}
+  .news-card{border:1px solid #D5DDE8 !important;border-radius:2mm !important}
+  .news-card-body{padding:3mm 3.5mm !important}
+  .news-card-link{display:block !important;border:0 !important;padding:0 !important;margin-top:1.5mm !important;
+    background:none !important;font-size:0 !important;text-align:left !important;color:#556476 !important}
+  .news-card-link::after{content:attr(href) !important;font-size:7pt !important;word-break:break-all}
+
+  /* ═════════ 시뮬레이터 — 고른 시나리오만 남깁니다 ═════════ */
+  .sim-wrap{display:block !important}
+  .sim-scenario[aria-pressed="false"]{display:none !important}
+  .sim-scenario-grid{display:block !important}
+  .sim-scenario{border:1px solid #D5DDE8 !important;background:#F4F7FB !important;color:var(--ink) !important;width:100%}
+}

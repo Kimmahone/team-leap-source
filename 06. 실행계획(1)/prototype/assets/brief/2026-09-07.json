@@ -1,0 +1,993 @@
+{
+ "id": "2026-09-07",
+ "no": 2,
+ "from": "2026-09-07",
+ "to": "2026-09-13",
+ "period": "9. 7.(월) ~ 9. 13.(일)",
+ "title": "이번 주는 「통폐합·적정규모」 — 교육재정·교부금·교육혁신선도지역",
+ "lead": "9. 7.(월) ~ 9. 13.(일) 학령인구 관련 기사는 55건입니다(지난주 23건). 가장 많이 다룬 주제는 「통폐합·적정규모」이고, 경북 기사 22건·다른 시·도 기사 23건입니다.",
+ "leadArticles": [
+  "a1kwsx78",
+  "arzrpw8",
+  "a14eyvzy"
+ ],
+ "takeaways": [
+  "통폐합·적정규모 18건",
+  "교육재정·교부금 15건",
+  "교육혁신선도지역 7건"
+ ],
+ "status": "자동 생성 · 검토 전",
+ "generator": {
+  "kind": "rule",
+  "label": "규칙 초안(AI 열쇠 없음)"
+ },
+ "builtAt": "2026-09-26T11:06:57.328Z",
+ "stats": {
+  "articles": 55,
+  "inScope": 50,
+  "gyeongbuk": 22,
+  "otherSido": 23,
+  "national": 4,
+  "prevArticles": 23,
+  "topics": [
+   {
+    "topic": "통폐합·적정규모",
+    "n": 18,
+    "prev": 8
+   },
+   {
+    "topic": "교육재정·교부금",
+    "n": 15,
+    "prev": 3
+   },
+   {
+    "topic": "교육혁신선도지역",
+    "n": 7,
+    "prev": 4
+   },
+   {
+    "topic": "지역소멸·인구",
+    "n": 3,
+    "prev": 0
+   },
+   {
+    "topic": "기타",
+    "n": 3,
+    "prev": 1
+   },
+   {
+    "topic": "작은학교 살리기",
+    "n": 2,
+    "prev": 1
+   },
+   {
+    "topic": "교원·정원",
+    "n": 1,
+    "prev": 0
+   },
+   {
+    "topic": "폐교 활용",
+    "n": 1,
+    "prev": 3
+   }
+  ],
+  "regions": [
+   {
+    "region": "경북",
+    "n": 22
+   },
+   {
+    "region": "기타",
+    "n": 6
+   },
+   {
+    "region": "강원",
+    "n": 5
+   },
+   {
+    "region": "경남",
+    "n": 4
+   },
+   {
+    "region": "전국",
+    "n": 4
+   },
+   {
+    "region": "부산",
+    "n": 2
+   },
+   {
+    "region": "세종",
+    "n": 2
+   },
+   {
+    "region": "전북",
+    "n": 2
+   },
+   {
+    "region": "서울",
+    "n": 2
+   },
+   {
+    "region": "경기",
+    "n": 1
+   },
+   {
+    "region": "제주",
+    "n": 1
+   },
+   {
+    "region": "울산",
+    "n": 1
+   },
+   {
+    "region": "충남",
+    "n": 1
+   },
+   {
+    "region": "인천",
+    "n": 1
+   },
+   {
+    "region": "광주",
+    "n": 1
+   }
+  ]
+ },
+ "numbers": [
+  {
+   "metric": "small_share_top",
+   "topic": "통폐합·적정규모",
+   "headline": "적정규모 미달 학교 비율 상위 8개 시군",
+   "sub": "이번 주 「통폐합·적정규모」 기사 18건과 함께 볼 자료",
+   "body": "",
+   "articles": [
+    "a1e56elc",
+    "a1gbqzbe"
+   ],
+   "chart": {
+    "type": "bars",
+    "unit": "%",
+    "caption": "적정규모 미달 학교 비율 상위 8개 시군",
+    "source": "학교알리미 2026 공시",
+    "rows": [
+     {
+      "label": "고령",
+      "value": 58.8
+     },
+     {
+      "label": "예천",
+      "value": 54.2
+     },
+     {
+      "label": "성주",
+      "value": 52.2
+     },
+     {
+      "label": "봉화",
+      "value": 50
+     },
+     {
+      "label": "영양",
+      "value": 50
+     },
+     {
+      "label": "영덕",
+      "value": 50
+     },
+     {
+      "label": "의성",
+      "value": 45.2
+     },
+     {
+      "label": "울진",
+      "value": 42.3
+     }
+    ]
+   }
+  },
+  {
+   "metric": "students_vs_classes",
+   "topic": "교육재정·교부금",
+   "headline": "2016→2025년 경북 초·중·고",
+   "sub": "이번 주 「교육재정·교부금」 기사 15건과 함께 볼 자료",
+   "body": "",
+   "articles": [
+    "a14eyvzy",
+    "azw6v5j"
+   ],
+   "chart": {
+    "type": "bars",
+    "unit": "2016년 = 100",
+    "caption": "2016→2025년 경북 초·중·고",
+    "source": "EDSS 교육통계 유초중등학급현황 2016~2025",
+    "rows": [
+     {
+      "label": "학생 285,433→237,042명",
+      "value": 83
+     },
+     {
+      "label": "학급 12,337→12,148학급",
+      "value": 98.5,
+      "hl": true
+     }
+    ]
+   }
+  }
+ ],
+ "issues": [
+  {
+   "kicker": "통폐합·적정규모",
+   "title": "통폐합·적정규모 — 이번 주 18건(지난주 8건)",
+   "what": "이번 주 이 주제로 18건이 나왔고, 그 가운데 경북 기사는 0건입니다. 대표 기사: 「‘1명 유치원’ 10년 새 9→108곳…저출생에 초소형 유치원 급증」.",
+   "why": "통폐합은 학부모 동의에서 막히는 일이 많아, 절차와 지원책이 결과를 가릅니다.",
+   "ask": [
+    "경북에서 다음에 통폐합 논의가 시작될 학교는 어디이고, 통학 대책은 준비되어 있는가?"
+   ],
+   "facts": [
+    {
+     "key": "schools_under",
+     "label": "적정규모 참고선 미달 학교(동 60명·읍면 30명)",
+     "value": 229,
+     "unit": "곳",
+     "src": "학교알리미 2026 공시"
+    },
+    {
+     "key": "schools_minimum",
+     "label": "최소규모 학교(15명 이하)",
+     "value": 91,
+     "unit": "곳",
+     "src": "학교알리미 2026 공시"
+    }
+   ],
+   "articles": [
+    "a1e56elc",
+    "a1gbqzbe",
+    "a1fema2q",
+    "a130umkb"
+   ]
+  },
+  {
+   "kicker": "교육재정·교부금",
+   "title": "교육재정·교부금 — 이번 주 15건(지난주 3건)",
+   "what": "이번 주 이 주제로 15건이 나왔고, 그 가운데 경북 기사는 12건입니다. 대표 기사: 「국민의힘 이인선 의원, “지방교육재정교부금 개편안 원점 재검토해야...」.",
+   "why": "학생 수로 재정을 나누면, 학생은 줄어도 학급·학교 운영비는 덜 줄어드는 지역이 먼저 부담을 집니다.",
+   "ask": [
+    "학생 수 대신 학급·학교 수를 반영하면 경북 몫은 어떻게 달라지는가?"
+   ],
+   "facts": [
+    {
+     "key": "students_change_edss",
+     "label": "경북 학생 변화율 2016→2025(같은 자료)",
+     "value": -17,
+     "unit": "%",
+     "src": "EDSS 교육통계 유초중등학급현황 2016~2025"
+    },
+    {
+     "key": "classes_change",
+     "label": "경북 학급 변화율 2016→2025",
+     "value": -1.5,
+     "unit": "%",
+     "src": "EDSS 교육통계 유초중등학급현황 2016~2025"
+    }
+   ],
+   "articles": [
+    "a14eyvzy",
+    "azw6v5j",
+    "a9konoc",
+    "a1xpifl8"
+   ]
+  },
+  {
+   "kicker": "교육혁신선도지역",
+   "title": "교육혁신선도지역 — 이번 주 7건(지난주 4건)",
+   "what": "이번 주 이 주제로 7건이 나왔고, 그 가운데 경북 기사는 1건입니다. 대표 기사: 「포천시, 교육혁신선도지역 지정 추진…'소규모학교 혁신모델' 구체화」.",
+   "why": "지자체·교육청이 함께 내는 공모라, 어떤 학교 모델을 내세우느냐가 앞으로의 학교 배치를 정합니다.",
+   "ask": [
+    "경북 시군은 어떤 모델로 응모하며, 소규모 학교를 «통합»과 «거점» 가운데 어느 쪽으로 보는가?"
+   ],
+   "facts": [
+    {
+     "key": "schools_under",
+     "label": "적정규모 참고선 미달 학교(동 60명·읍면 30명)",
+     "value": 229,
+     "unit": "곳",
+     "src": "학교알리미 2026 공시"
+    },
+    {
+     "key": "schools_under_share",
+     "label": "적정규모 미달 비율",
+     "value": 25,
+     "unit": "%",
+     "src": "학교알리미 2026 공시"
+    }
+   ],
+   "articles": [
+    "a1kwsx78",
+    "arzrpw8",
+    "ae0nehc",
+    "ali6fz1"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "region": "경남",
+   "what": "통영교육지원청 교육혁신선도지역 공청회 개최",
+   "detail": "같은 주 경남 관련 기사 3건",
+   "compare": "",
+   "facts": [],
+   "articles": [
+    "arzrpw8",
+    "a4isyjz",
+    "a1sqq3nz"
+   ]
+  },
+  {
+   "region": "강원",
+   "what": "양구군, 강원도교육청 등과 ‘교육혁신선도지역 지정’ 업무협약 체결",
+   "detail": "같은 주 강원 관련 기사 3건",
+   "compare": "",
+   "facts": [],
+   "articles": [
+    "ae0nehc",
+    "alos1fo",
+    "a3jddyb"
+   ]
+  },
+  {
+   "region": "부산",
+   "what": "김석준 부산교육감 \"4선 임기 핵심은 AI 미래교육\"…부산형 공교육 전환...",
+   "detail": "같은 주 부산 관련 기사 2건",
+   "compare": "",
+   "facts": [],
+   "articles": [
+    "a1fema2q",
+    "ax9ud8"
+   ]
+  },
+  {
+   "region": "경기",
+   "what": "포천시, 교육혁신선도지역 지정 추진…'소규모학교 혁신모델' 구체화",
+   "detail": "",
+   "compare": "",
+   "facts": [],
+   "articles": [
+    "a1kwsx78"
+   ]
+  },
+  {
+   "region": "울산",
+   "what": "울산교육청, 동백초·동평초 통폐합 지원책 마련 나선다",
+   "detail": "",
+   "compare": "",
+   "facts": [],
+   "articles": [
+    "a10bnops"
+   ]
+  },
+  {
+   "region": "전북",
+   "what": "전북 학령인구 절벽 특단의 대책 세워야",
+   "detail": "",
+   "compare": "",
+   "facts": [],
+   "articles": [
+    "a1kx93pl"
+   ]
+  }
+ ],
+ "factchecks": [],
+ "watch": [],
+ "articles": [
+  {
+   "id": "a1kwsx78",
+   "title": "포천시, 교육혁신선도지역 지정 추진…'소규모학교 혁신모델' 구체화",
+   "outlet": "CNB뉴스",
+   "date": "2026-09-07",
+   "link": "https://www.cnbnews.com/news/articleView.html?idxno=1014685",
+   "region": "경기",
+   "topic": "교육혁신선도지역",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "arzrpw8",
+   "title": "통영교육지원청 교육혁신선도지역 공청회 개최",
+   "outlet": "경남도민신문",
+   "date": "2026-09-07",
+   "link": "http://www.gndomin.com/news/articleView.html?idxno=488251",
+   "region": "경남",
+   "topic": "교육혁신선도지역",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a14eyvzy",
+   "title": "국민의힘 이인선 의원, “지방교육재정교부금 개편안 원점 재검토해야...",
+   "outlet": "브레이크뉴스",
+   "date": "2026-09-07",
+   "link": "http://www.breaknews.com/1234639",
+   "region": "경북",
+   "topic": "교육재정·교부금",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1e56elc",
+   "title": "‘1명 유치원’ 10년 새 9→108곳…저출생에 초소형 유치원 급증",
+   "outlet": "hani.co.kr",
+   "date": "2026-09-07",
+   "link": "https://www.hani.co.kr/arti/society/rights/1276604.html",
+   "region": "기타",
+   "topic": "통폐합·적정규모",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1gbqzbe",
+   "title": "[사설] 공공기관 이전·통폐합 졸속 추진 안 된다",
+   "outlet": "incheonilbo.com",
+   "date": "2026-09-07",
+   "link": "https://www.incheonilbo.com/news/articleView.html?idxno=1331407",
+   "region": "기타",
+   "topic": "통폐합·적정규모",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1fema2q",
+   "title": "김석준 부산교육감 \"4선 임기 핵심은 AI 미래교육\"…부산형 공교육 전환...",
+   "outlet": "shinailbo.co.kr",
+   "date": "2026-09-07",
+   "link": "https://www.shinailbo.co.kr/news/articleView.html?idxno=5059186",
+   "region": "부산",
+   "topic": "통폐합·적정규모",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "azw6v5j",
+   "title": "[인터뷰] 교육교부금 개편 땐 경북 2조 감소…“일부 정책·시설사업 축...",
+   "outlet": "yeongnam.com",
+   "date": "2026-09-07",
+   "link": "https://www.yeongnam.com/web/view.php?key=20260907021076654",
+   "region": "경북",
+   "topic": "교육재정·교부금",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "ae0nehc",
+   "title": "양구군, 강원도교육청 등과 ‘교육혁신선도지역 지정’ 업무협약 체결",
+   "outlet": "브레이크뉴스",
+   "date": "2026-09-07",
+   "link": "http://www.breaknews.com/1234448",
+   "region": "강원",
+   "topic": "교육혁신선도지역",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a9konoc",
+   "title": "신효광 경북도의원, '미래대응기금' 지방재정 자율성 훼손 우려",
+   "outlet": "국제뉴스",
+   "date": "2026-09-07",
+   "link": "https://www.gukjenews.com/news/articleView.html?idxno=3686432",
+   "region": "경북",
+   "topic": "교육재정·교부금",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "ali6fz1",
+   "title": "세종시-세종교육청, '교육혁신 선도지역' 손잡아",
+   "outlet": "ccnnews.co.kr",
+   "date": "2026-09-08",
+   "link": "http://www.ccnnews.co.kr/news/articleView.html?idxno=414647",
+   "region": "세종",
+   "topic": "교육혁신선도지역",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a130umkb",
+   "title": "조용식 교육감, 동백초 통폐합 문제해결 본격화",
+   "outlet": "ujeil.com",
+   "date": "2026-09-08",
+   "link": "http://www.ujeil.com/news/articleView.html?idxno=391764",
+   "region": "기타",
+   "topic": "통폐합·적정규모",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1y9fdl",
+   "title": "제주대 교육대학 학생들 \"초등학교 교사 선발 규모 감축 전면 재검토하...",
+   "outlet": "헤드라인제주",
+   "date": "2026-09-08",
+   "link": "https://www.headlinejeju.co.kr/news/articleView.html?idxno=598699",
+   "region": "제주",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "a10bnops",
+   "title": "울산교육청, 동백초·동평초 통폐합 지원책 마련 나선다",
+   "outlet": "pressian.com",
+   "date": "2026-09-08",
+   "link": "https://www.pressian.com/pages/articles/2026090810403449936?utm_source=naver&utm_medium=search",
+   "region": "울산",
+   "topic": "통폐합·적정규모",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "alos1fo",
+   "title": "더존비즈온, '레드하트 프로젝트' 18년간 운영…지역 교육 격차 해소",
+   "outlet": "etnews.com",
+   "date": "2026-09-08",
+   "link": "https://www.etnews.com/20260908000282",
+   "region": "강원",
+   "topic": "통폐합·적정규모",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1pku0s",
+   "title": "더존비즈온, 18년째 교육 나눔…지역 청소년 2400명 지원",
+   "outlet": "datanews.co.kr",
+   "date": "2026-09-08",
+   "link": "http://www.datanews.co.kr/news/article.html?no=146369",
+   "region": "기타",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a16zpym7",
+   "title": "교육혁신선도지역사업 쟁점·대안 모색… 9일 국회서 토론회",
+   "outlet": "한국대학신문",
+   "date": "2026-09-08",
+   "link": "https://news.unn.net/news/articleView.html?idxno=597071",
+   "region": "전국",
+   "topic": "교육혁신선도지역",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1xpifl8",
+   "title": "교육감협의회, 교육부 설명 반박... “교부금 10.1% 증가? 현실과 달라”",
+   "outlet": "브레이크뉴스",
+   "date": "2026-09-08",
+   "link": "http://www.breaknews.com/1234772",
+   "region": "경북",
+   "topic": "교육재정·교부금",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "ax9ud8",
+   "title": "[인터뷰] 김석준 부산교육감, AI로 교육격차 줄이는 공교육 모델 만든다",
+   "outlet": "아시아투데이",
+   "date": "2026-09-08",
+   "link": "https://www.asiatoday.co.kr/kn/view.php?key=20260907010002315",
+   "region": "부산",
+   "topic": "통폐합·적정규모",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1o4xftm",
+   "title": "경산시, 교육혁신선도지역 도전 본격화…12개 기관 손잡았다",
+   "outlet": "경북일보",
+   "date": "2026-09-09",
+   "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4083699",
+   "region": "경북",
+   "topic": "교육혁신선도지역",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1gid8uj",
+   "title": "국회미래연구원 “학령인구 급감, 교원감축 불가피”",
+   "outlet": "한국교육신문",
+   "date": "2026-09-09",
+   "link": "https://www.hangyo.com/news/article.html?no=109222",
+   "region": "전국",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "alrm35d",
+   "title": "영주시,영주교육지원청, '2026 교육행정협의회' 가동...'지역 현안 지자...",
+   "outlet": "이로운넷",
+   "date": "2026-09-09",
+   "link": "https://www.eroun.net/news/articleView.html?idxno=89701",
+   "region": "경북",
+   "topic": "지역소멸·인구",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "avlshil",
+   "title": "강미애 교육감, 교육재정 축소 우려 안고 다시 국회행",
+   "outlet": "충청일보",
+   "date": "2026-09-09",
+   "link": "https://www.ccdailynews.com/news/articleView.html?idxno=2439714",
+   "region": "경북",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "ake081m",
+   "title": "세종시교육청 강미애 교육감, 국회 찾아 지방교육재정교부금법 개정안...",
+   "outlet": "newsworker.co.kr",
+   "date": "2026-09-09",
+   "link": "https://www.newsworker.co.kr/news/articleView.html?idxno=503534",
+   "region": "세종",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1lx0m9u",
+   "title": "김천시, 학교·대학·기업 잇는 '지역인재 정주 생태계' 구축",
+   "outlet": "경북일보",
+   "date": "2026-09-09",
+   "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4083691",
+   "region": "경북",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "aa087wj",
+   "title": "\"교육교부금 개편안 객관적·실증적 근거 부족\"",
+   "outlet": "충북일보",
+   "date": "2026-09-09",
+   "link": "https://www.inews365.com/news/article.html?no=935126",
+   "region": "경북",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "art8g9",
+   "title": "학령인구 절벽 직격탄…공립 초등교사 선발 또 줄어든다",
+   "outlet": "00news.co.kr",
+   "date": "2026-09-09",
+   "link": "http://www.00news.co.kr/news/articleView.html?idxno=106449",
+   "region": "경북",
+   "topic": "교원·정원",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a23plx9",
+   "title": "경북교육청, 유·초등 교사 287명 선발...82명 줄어",
+   "outlet": "경북도민일보",
+   "date": "2026-09-09",
+   "link": "https://www.hidomin.com/news/articleView.html?idxno=720409",
+   "region": "경북",
+   "topic": "지역소멸·인구",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1d3r2k1",
+   "title": "경북 영주시, 교육 경쟁력 강화로 지역소멸 위기 대응",
+   "outlet": "viva100.com",
+   "date": "2026-09-09",
+   "link": "https://www.viva100.com/article/20260909500511",
+   "region": "경북",
+   "topic": "지역소멸·인구",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a3jddyb",
+   "title": "학령인구 감소로 위기 맞은 태백, 학교와 지역 손잡고 교육 혁신 가동",
+   "outlet": "강원일보",
+   "date": "2026-09-09",
+   "link": "https://www.kwnews.co.kr/article/20260908500691",
+   "region": "강원",
+   "topic": "작은학교 살리기",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a74y4tq",
+   "title": "경북교육청, 교부금 축소 우려…\"학생 수보다 교육 수요 반영해야\"",
+   "outlet": "경북일보",
+   "date": "2026-09-10",
+   "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4083897",
+   "region": "경북",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1kx93pl",
+   "title": "전북 학령인구 절벽 특단의 대책 세워야",
+   "outlet": "domin.co.kr",
+   "date": "2026-09-10",
+   "link": "http://www.domin.co.kr/news/articleView.html?idxno=1568477",
+   "region": "전북",
+   "topic": "통폐합·적정규모",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1rblqkl",
+   "title": "임종식 경북교육감, '교육재정 축소 반대' 국회 건의",
+   "outlet": "sisafocus.co.kr",
+   "date": "2026-09-10",
+   "link": "http://www.sisafocus.co.kr/news/articleView.html?idxno=364813",
+   "region": "경북",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1q16svc",
+   "title": "사립-국공립 교육비 격차 2.4배…외국인 유학생 4년 새 56.8% 급증",
+   "outlet": "kyosu.net",
+   "date": "2026-09-10",
+   "link": "https://www.kyosu.net/news/articleView.html?idxno=210111",
+   "region": "경북",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "astcd5d",
+   "title": "“아이 줄었다고 교육비도 줄이나”…임종식 등 교육감 9명, 국회서 ‘교...",
+   "outlet": "아이뉴스24",
+   "date": "2026-09-10",
+   "link": "http://www.inews24.com/view/2004315",
+   "region": "전국",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a4bpwd9",
+   "title": "강미애 세종교육감, 국회 교육위원장 만나 지방교육재정교부금 개편 반...",
+   "outlet": "cctimes.kr",
+   "date": "2026-09-10",
+   "link": "http://www.cctimes.kr/news/articleView.html?idxno=926570",
+   "region": "경북",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1w5iqk1",
+   "title": "\"작은학교 통폐합이 교육혁신인가?\"…교육부에 쏟아진 질문들",
+   "outlet": "ohmynews.com",
+   "date": "2026-09-10",
+   "link": "https://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0003266130&CMPT_CD=P0010&utm_source=naver&utm_medium=newsearch&utm_campaign=naver_news",
+   "region": "전국",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a21fz1h",
+   "title": "강릉 포함 도내 16개 시·군 '교육혁신선도지역' 도전!",
+   "outlet": "mbceg.co.kr",
+   "date": "2026-09-11",
+   "link": "https://www.mbceg.co.kr/post/140093",
+   "region": "강원",
+   "topic": "교육혁신선도지역",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1tpbxfn",
+   "title": "영어·AI 특화했더니…춘천 원도심 작은학교의 반전",
+   "outlet": "pressian.com",
+   "date": "2026-09-11",
+   "link": "https://www.pressian.com/pages/articles/2026091115230566097?utm_source=naver&utm_medium=search",
+   "region": "강원",
+   "topic": "작은학교 살리기",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1149r24",
+   "title": "[40] 폐광,한천초등학교 그리고 묵곡분교장 (상) [남도 학교 기행]",
+   "outlet": "namdonews.com",
+   "date": "2026-09-11",
+   "link": "https://www.namdonews.com/news/articleView.html?idxno=923089",
+   "region": "기타",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a11vedub",
+   "title": "\"교육재정교부금 개편, 모든 교육단체·교육감 반대에도 일방 추진 우려...",
+   "outlet": "nocutnews.co.kr",
+   "date": "2026-09-11",
+   "link": "https://www.nocutnews.co.kr/news/6576753?utm_source=naver&utm_medium=article&utm_campaign=20260911012419",
+   "region": "경북",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "ajp2lx9",
+   "title": "서울시의회 이인식 의원, 학교의 지속가능성을 높이기 위한 '이음학교'...",
+   "outlet": "cnbizm.com",
+   "date": "2026-09-11",
+   "link": "https://www.cnbizm.com/news/articleView.html?idxno=314818",
+   "region": "서울",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "aemqr5b",
+   "title": "\"학생 줄었다고 예산 깎나\"… 경북 등 시도교육감 9명, 국회 찾아 교부...",
+   "outlet": "이로운넷",
+   "date": "2026-09-11",
+   "link": "https://www.eroun.net/news/articleView.html?idxno=89901",
+   "region": "경북",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "afsldys",
+   "title": "경북교육청, '2030 대전환' 현장 실행력 담금질… 교육지도자회의 총력...",
+   "outlet": "enewstoday.co.kr",
+   "date": "2026-09-11",
+   "link": "http://www.enewstoday.co.kr/news/articleView.html?idxno=2469372",
+   "region": "경북",
+   "topic": "기타",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "amg6avb",
+   "title": "이인식 시의원, 학령인구 변화에 대응한 '이음학교' 필요성 강조",
+   "outlet": "newspim.com",
+   "date": "2026-09-11",
+   "link": "https://www.newspim.com/news/view/20260911000626",
+   "region": "기타",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1v9kokc",
+   "title": "울릉군의회, 재정·도로·관광·교육 현안 집중 추궁",
+   "outlet": "더팩트",
+   "date": "2026-09-11",
+   "link": "https://news.tf.co.kr/read/national/2364771.htm",
+   "region": "경북",
+   "topic": "기타",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1169h1v",
+   "title": "이인식 서울시의원 “학교의 미래, 줄이는 것이 아니라 잇는 데서 찾아...",
+   "outlet": "seoul.co.kr",
+   "date": "2026-09-11",
+   "link": "https://www.seoul.co.kr/news/publicnews/local_govern/smc_movement/2026/09/11/20260911500022?wlog_tag3=naver",
+   "region": "서울",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a893po5",
+   "title": "경북교육청, 지방교육재정교부금 개편 반대…국회에 안정적 재정 확보 ...",
+   "outlet": "metroseoul.co.kr",
+   "date": "2026-09-11",
+   "link": "http://www.metroseoul.co.kr/article/20260910500635",
+   "region": "경북",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1g55b0w",
+   "title": "국힘, 사관학교 통폐합 저지 여론전…장동혁, 공사 이어 해사 방문해 반...",
+   "outlet": "newsis.com",
+   "date": "2026-09-11",
+   "link": "https://www.newsis.com/view/NISX20260910_0003784876",
+   "region": "경남",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "aprpyvt",
+   "title": "이병도 충남교육감 \"학생 없다고 재정 줄이면 농어촌 교육 기반 무너져...",
+   "outlet": "hankookilbo.com",
+   "date": "2026-09-11",
+   "link": "https://www.hankookilbo.com/news/article/A2026083111430000884?did=NA",
+   "region": "충남",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a4isyjz",
+   "title": "경남교육청 결산 심사 직격탄…칠원중 미래학교 '통폐합 연계 논란'에 ...",
+   "outlet": "pointe.co.kr",
+   "date": "2026-09-12",
+   "link": "https://www.pointe.co.kr/news/articleView.html?idxno=84625",
+   "region": "경남",
+   "topic": "통폐합·적정규모",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1sqq3nz",
+   "title": "김수봉 도의원 \"학교 통폐합보다 학생 교육권·안전이 먼저\"",
+   "outlet": "mhns.co.kr",
+   "date": "2026-09-12",
+   "link": "https://www.mhns.co.kr/news/articleView.html?idxno=760081",
+   "region": "경남",
+   "topic": "통폐합·적정규모",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1t9zhtq",
+   "title": "활용 더딘 인천 폐교…교육·문화·체육공간 전환 필요 목소리",
+   "outlet": "joongboo.com",
+   "date": "2026-09-12",
+   "link": "https://www.joongboo.com/news/articleView.html?idxno=363736480",
+   "region": "인천",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1gfyd5v",
+   "title": "[사설] ‘교육 인프라’ 확충이 성패 갈라",
+   "outlet": "새전북신문",
+   "date": "2026-09-13",
+   "link": "https://sjbnews.com/news/news.php?number=887554",
+   "region": "전북",
+   "topic": "기타",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a14sazzt",
+   "title": "[장교수의 경영MBTI] 경북대학교라는 대학도시, ISTJ형 지성 공동체의 도...",
+   "outlet": "경북일보",
+   "date": "2026-09-13",
+   "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4084000",
+   "region": "경북",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "a1orh7jv",
+   "title": "통합교육청 광주 신청사 재시동…반도체 인재 육성 거점",
+   "outlet": "newsis.com",
+   "date": "2026-09-13",
+   "link": "https://www.newsis.com/view/NISX20260911_0003786191",
+   "region": "광주",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  }
+ ],
+ "checks": {
+  "dropped": [],
+  "citedArticles": 19
+ }
+}

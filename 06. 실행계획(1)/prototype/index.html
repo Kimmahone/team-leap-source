@@ -2129,6 +2129,12 @@ body.map-maxed.home-wide #home-side{display:none}
 /* ── 디자인팀 구역 끝 ── */
 </style>
 <style id="print-page-mode"></style>
+<!-- ══ 디자인 팀 틀 〔로컬 실험 · 2026. 9. 26.〕 ════════════════════════════
+     인라인 스타일 «뒤»에 둡니다 — 같은 선택자면 뒤에 온 것이 이깁니다.
+     이 세 줄을 지우면 예전 모습(왼쪽 세로 메뉴)으로 돌아갑니다. -->
+<link rel="stylesheet" href="./assets/frame.css">
+<link rel="stylesheet" href="./assets/overview.css">
+<link rel="stylesheet" href="./assets/brief.css">
 </head>
 <body>
 <div id="custom-school-tooltip" class="custom-school-tooltip"></div>
@@ -2169,6 +2175,11 @@ body.map-maxed.home-wide #home-side{display:none}
        읽는 사람이 자기가 잘못 보고 있다고 여깁니다. -->
   <p class="glossary-intro">메뉴마다 무엇을 보고 무엇을 저장할 수 있는지 적었습니다. 오른쪽 위의 <b>인쇄</b>와 <b>Excel</b>은 <b>지금 보고 있는 화면과 고른 조건을 그대로</b> 씁니다.</p>
   <div class="glossary-list">
+    <details><summary>한눈에 보기</summary><div>경북 학령인구를 <b>다섯 장면</b>으로 봅니다 — 어디가(지도) ·
+      얼마나(네 지표) · 누가(학년별) · 언제(2016~2036 추이) · 어느 시군이(비교).
+      <ul><li>위의 <b>연도 단추</b>를 누르면 지도와 지표가 그 해로 바뀝니다. <b>자동 재생</b>은 2016→2036 을 차례로 넘깁니다</li>
+      <li>지도나 막대에서 <b>시군을 누르면</b> 오른쪽 칸이 그 시군 이야기로 바뀝니다</li>
+      <li>장면마다 맨 위 한 줄이 <b>그 장면이 말하는 것</b>입니다. 숫자는 다른 화면과 같은 셈에서 나옵니다</li></ul></div></details>
     <details><summary>지도로 보기</summary><div>학교 1,539곳을 실제 자리에 놓고 봅니다.
       <ul><li><b>배경</b> 일반·위성·위성+지명·야간</li>
       <li><b>3D 지형</b> 땅이 솟습니다. 산 너머 통학 거리를 눈으로 가늠하는 자리입니다</li>
@@ -2189,6 +2200,12 @@ body.map-maxed.home-wide #home-side{display:none}
       지키면 학급당 인원이 줄고, 학급당 인원을 지키면 학급·학교가 줄어듭니다.
       <b>「몇 명이 될 것이다」로 읽으면 안 됩니다.</b> 공식 장래 학생수 추계가 아니며
       지역 간 이동도 반영하지 않습니다.</div></details>
+    <details><summary>주간 브리프</summary><div>한 주의 기사를 <b>읽고 정리한 보고서</b>입니다. 기사를 나열하지 않고
+      <ul><li><b>숫자로 읽는 이번 주</b> — 기사의 쟁점을 우리 자료의 숫자 하나로 받칩니다</li>
+      <li><b>깊이 읽기</b> — 무슨 일이·왜 중요한가·경북 자료로 보면·경북이 물을 것</li>
+      <li><b>다른 시·도는 지금</b> — 다른 교육청의 정책을 경북과 견줍니다</li>
+      <li><b>기사 수치 맞춰 보기</b> — 기사가 든 숫자를 우리 자료로 되짚습니다</li></ul>
+      문장마다 근거 기사를 달았습니다. 매주 월요일 새벽에 새 호가 만들어집니다.</div></details>
     <details><summary>주간 뉴스 클리핑</summary><div>최신 뉴스·이슈 분석·이슈페이퍼 세 갈래입니다.
       기사는 고정 주제로 분류하므로 주제 목록이 매주 늘어나지 않습니다.
       저작권 때문에 <b>제목·언론사·발행일·원문 링크와 자체 요약</b>만 담습니다.</div></details>
@@ -2239,11 +2256,21 @@ body.map-maxed.home-wide #home-side{display:none}
           <path d="M39 36 H57" stroke="#F2A65A" stroke-width="6.5"/>
           <path d="M16 46 Q32 -10 48 30" stroke="#7FB3F7" stroke-width="7"/>
         </svg>
-        <span class="nm">TEAM LEAP<span>경북교육 AI Lab · AI 활용 분과</span></span>
+        <img class="frame-logo" src="symbol1.jpg" alt="">
+        <span class="nm"><span class="frame-org">경상북도교육청 <span class="frame-badge">교육정책 데이터 포털</span></span>경북 학령인구 데이터 플랫폼<span class="frame-sub">GBE-AI Lab · TEAM LEAP</span></span>
       </div>
       <div class="ver">경북교육 AI Lab · TEAM LEAP</div>
     </div>
 
+    <!-- 도구 단추는 머리띠 오른쪽에 둡니다 〔로컬 실험 · 9. 26.〕 -->
+    <div class="top-tools no-print">
+      <button type="button" class="guide-btn" id="guide-toggle" aria-expanded="false" aria-controls="guide-drawer">사용 안내</button>
+      <button type="button" class="glossary-btn" id="glossary-toggle" aria-expanded="false" aria-controls="glossary-drawer">용어 도움말</button>
+      <button type="button" class="guide-btn" id="nav-order-toggle" aria-expanded="false" aria-controls="nav-order-drawer">메뉴 순서</button>
+      <button type="button" class="export-btn" id="export-current">현재 메뉴 Excel</button>
+      <button type="button" class="print-btn" id="print-current">현재 화면 인쇄</button>
+      <button type="button" class="theme-btn" id="theme-toggle">화면 밝기 전환</button>
+    </div>
     <button type="button" class="side-toggle no-print" id="nav-collapse"
             aria-expanded="true" title="왼쪽 메뉴를 접어 화면을 넓게 씁니다 (단축키: [ )">
       <span class="ico" aria-hidden="true">‹</span><span class="sr-only side-toggle-lb">메뉴 접기</span>
@@ -2252,7 +2279,7 @@ body.map-maxed.home-wide #home-side{display:none}
     <a class="home-link no-print" href="../../index.html"
        title="TEAM LEAP 메인 페이지로 나갑니다. 이 앱에 적은 것은 그대로 남습니다."
        aria-label="TEAM LEAP 메인 페이지로 나가기">
-      <span class="ico" aria-hidden="true">←</span>TEAM LEAP 메인으로
+      <span class="ico" aria-hidden="true">←</span><span class="frame-home-lb">TEAM LEAP 메인으로</span>
     </a>
     <div class="nav">
       <!-- ★ 종합 대시보드는 «치워 두었습니다» 〔2026. 9. 10.〕 지도가 제 화면을 갖게
@@ -2261,9 +2288,12 @@ body.map-maxed.home-wide #home-side{display:none}
            꺼내고, 초기화의 HOME_TAB_ON 을 true 로 바꾸면 됩니다.
       <button type="button" data-view="home" aria-current="page"><span class="ico" aria-hidden="true">⌂</span>종합 대시보드</button>
       -->
+      <!-- ★ 첫 단추가 첫 화면입니다(DEFAULT_VIEW). 디자인 팀 틀의 «총괄 현황»이 맨 앞입니다. -->
+      <button type="button" data-view="overview"><span class="ico" aria-hidden="true">◎</span>한눈에 보기<span class="frame-new" aria-hidden="true">새</span></button>
       <button type="button" data-view="map"><span class="ico" aria-hidden="true">◈</span>지도로 보기</button>
       <button type="button" data-view="status"><span class="ico" aria-hidden="true">◔</span>경북 학령인구 현황</button>
       <button type="button" data-view="sim"><span class="ico" aria-hidden="true">⊞</span>학생수 시뮬레이터</button>
+      <button type="button" data-view="brief"><span class="ico" aria-hidden="true">✎</span>주간 브리프<span class="frame-new" aria-hidden="true">새</span></button>
       <button type="button" data-view="news"><span class="ico" aria-hidden="true">▣</span>주간 뉴스 클리핑</button>
       <button type="button" data-view="multi"><span class="ico" aria-hidden="true">◐</span>다문화 및 특수교육 모니터링</button>
       <button type="button" data-view="closed"><span class="ico" aria-hidden="true">★</span>폐교 활용 현황</button>
@@ -2293,14 +2323,18 @@ body.map-maxed.home-wide #home-side{display:none}
         <div><dt>조회 조건</dt><dd id="print-report-scope">–</dd></div>
       </dl>
     </header>
-    <div class="top-tools no-print">
-      <button type="button" class="guide-btn" id="guide-toggle" aria-expanded="false" aria-controls="guide-drawer">사용 안내</button>
-      <button type="button" class="glossary-btn" id="glossary-toggle" aria-expanded="false" aria-controls="glossary-drawer">용어 도움말</button>
-      <button type="button" class="guide-btn" id="nav-order-toggle" aria-expanded="false" aria-controls="nav-order-drawer">메뉴 순서</button>
-      <button type="button" class="export-btn" id="export-current">현재 메뉴 Excel</button>
-      <button type="button" class="print-btn" id="print-current">현재 화면 인쇄</button>
-      <button type="button" class="theme-btn" id="theme-toggle">화면 밝기 전환</button>
-    </div>
+
+  <!-- ================= 0. 한눈에 보기 〔로컬 실험 · 9. 26.〕 ================= -->
+  <!-- 디자인 팀 틀의 «총괄 정책 현황»을 실제 자료로 다시 세웁니다. 그림은 assets/overview.js. -->
+  <section id="view-overview" class="view" hidden aria-labelledby="ov-title">
+    <div id="ov-root" class="ov-root"><p class="ov-loading">한눈에 보기를 준비하고 있습니다…</p></div>
+  </section>
+
+  <!-- ================= 0-1. 주간 브리프 〔로컬 실험 · 9. 26.〕 ================= -->
+  <!-- 기사 나열이 아니라 «읽고 정리한» 주간 보고서. 그림은 assets/brief.js, 자료는 assets/brief/. -->
+  <section id="view-brief" class="view" hidden aria-labelledby="br-title">
+    <div id="br-root" class="br-root"><p class="ov-loading">주간 브리프를 불러오고 있습니다…</p></div>
+  </section>
 
   <!-- ================= 1. 홈 ================= -->
   <!-- ══ 치워 둔 화면 — 종합 대시보드 〔2026. 9. 10.〕 ═══════════════════════
@@ -3259,7 +3293,7 @@ body.map-maxed.home-wide #home-side{display:none}
               </table>
             </div>
             <div class="panel-note" id="pred-basis-note">
-              기준자료: 학교알리미 2026 공시 (학교 917곳 실적)<br>모의전망: 시군·학교급별 가정한 감소율 적용<br>* 공식 장래 학생수 추계가 아니며 지역 간 이동을 반영하지 않음
+              기준자료: 학교알리미 2026 공시 (학교 917곳 실적)<br>모의전망: 코호트 진급법 · 시군별 실측 감소율 반영<br>* 공식 장래 학생수 추계가 아니며 지역 간 이동을 반영하지 않음
             </div>
           </div>
         </div>
@@ -3585,8 +3619,10 @@ body.map-maxed.home-wide #home-side{display:none}
             <button type="button" class="chip" id="closed-to-map" style="width:100%">지도에서 폐교 보기</button>
             <p style="margin:10px 0 0; font-size:11.5px; line-height:1.7; color:var(--ink-3)">
               이 자료에는 주소만 있고 위경도가 없어 <b>주소로 좌표를 찾았습니다.</b>
-              활용 대상 255곳 가운데 <b>249곳(98%)</b>에서 찾았고, 비어 있는 <b>미활용 70곳은
-              모두</b> 찾았습니다. 못 찾은 6곳은 «외 6필지»처럼 번지에 군더더기가 붙었거나
+              <!-- ★ 〔새 판 · 9. 26.〕 여기 숫자는 손으로 적혀 있었습니다(249곳·6곳). 자료가
+                   다시 구워진 뒤 실제는 250곳·5곳이 되어 글과 지도가 어긋났습니다. 이제 자료에서 셉니다. -->
+              활용 대상 <span id="closed-geo-target">–</span>곳 가운데 <b id="closed-geo-found">–</b>에서 찾았고, 비어 있는 <b id="closed-geo-idle">미활용 곳은
+              모두</b> 찾았습니다. 못 찾은 <span id="closed-geo-miss">–</span>곳은 «외 6필지»처럼 번지에 군더더기가 붙었거나
               없어진 리 지번입니다. <b>없는 좌표를 시군 중심으로 대신하지 않습니다</b> —
               그러면 «그 자리에 있는 것»처럼 보입니다.
             </p>
@@ -4028,7 +4064,9 @@ body.map-maxed.home-wide #home-side{display:none}
         '<div class="box"><div class="k">분석 적합 기사</div><div class="v">'+fmt(s.totalArticles||m.counts.analysisReady||m.counts.curated)+'건</div></div>'+
         '<div class="box"><div class="k">최근 30일</div><div class="v">'+fmt(s.currentPeriod.count)+'건</div></div>'+
         '<div class="box"><div class="k">직전 30일</div><div class="v">'+fmt(s.priorPeriod.count)+'건</div></div>'+
-        '<div class="box"><div class="k">자료 기간</div><div class="v" style="font-size:16px">'+esc(String(coverage.from||'').slice(0,4))+'–'+esc(String(coverage.to||'').slice(0,4))+'</div></div>'+
+        /* 〔새 판 · 9. 26.〕 연도만 적으면 네이버 수집분(한 해 안)은 «2026–2026»이 됩니다.
+           앞뒤 해가 같으면 월·일까지 적습니다. 빅카인즈처럼 여러 해면 해만 적습니다. */
+        '<div class="box"><div class="k">자료 기간</div><div class="v" style="font-size:16px">'+(function(){var f=String(coverage.from||''),t=String(coverage.to||'');if(f.slice(0,4)&&f.slice(0,4)===t.slice(0,4)&&f.length>=10&&t.length>=10){return esc(f.slice(0,4)+'. '+(+f.slice(5,7))+'. '+(+f.slice(8,10))+'. ~ '+(+t.slice(5,7))+'. '+(+t.slice(8,10))+'.');}return esc(f.slice(0,4))+'–'+esc(t.slice(0,4));})()+'</div></div>'+
       '</div>'+
       '<div class="news-viz-stack">'+
         '<div class="news-analysis-panel"><div class="news-viz-head"><div><h3>최근 12주 보도 경향</h3><p>막대는 전체 기사량, 선은 최근 많이 다뤄진 세 주제입니다.</p></div><span class="asof">주 단위</span></div>'+trendChart(s)+'</div>'+
@@ -6648,9 +6686,9 @@ function baseStudents(sggKey, lv){
      · 시군을 다 더하면 도 전체가 됩니다
      · 시군 사이의 차이는 그 시군의 실측 감소율을 그대로 따릅니다
 
-   ⚠ 「학생수 시뮬레이터」는 아직 감소율 곱셈을 씁니다. 같은 51% 차이가
-     그 화면에도 있습니다. 그것은 이미 발표에 쓰인 수라 함께 바꿀지는
-     팀이 정해야 합니다 — 여기서 조용히 바꾸지 않았습니다. */
+   ※ 〔새 판 · 9. 26.〕 시뮬레이터도 이제 simForward → forwardStudents 로 같은
+     셈을 씁니다(예전 메모 「시뮬레이터는 아직 감소율 곱셈」은 지난 이야기입니다).
+     시군 몫은 forwardSplit 이 합이 도 전체와 정확히 같도록 반올림합니다. */
 function forwardShare(sggKey, lv, year){
   const yrs = year - HOME_BASE_YEAR;
   const w = sg => (BASE[lv][sg.s] ? BASE[lv][sg.s].stu * Math.pow(1 - BASE[lv][sg.s].rate, yrs) : 0);
@@ -6674,7 +6712,26 @@ function forwardStudents(sggKey, lv, year){
       a + (BASE[lv][sg.s] ? BASE[lv][sg.s].stu * Math.pow(1 - BASE[lv][sg.s].rate, yrs) : 0), 0);
   }
   if(!sggKey) return Math.round(province);
-  return Math.round(province * forwardShare(sggKey, lv, year));
+  return forwardSplit(lv, year, province)[sggKey] || 0;
+}
+
+/* ★ 시군 몫을 «남는 수 큰 순서»로 반올림합니다 〔새 판 · 2026. 9. 26.〕
+   시군마다 따로 반올림하면 22곳의 합이 도 전체와 몇 명씩 어긋났습니다.
+   실제로 2030년 초등학생이 「한눈에 보기」(도 전체)는 68,757명, 시뮬레이터
+   (시군 합)는 68,755명이었습니다. 같은 셈에서 나온 수가 화면마다 2명 다르면
+   읽는 사람은 어느 쪽이 맞는지 묻게 됩니다. 버림한 뒤 모자란 몇 명을 소수점
+   아래가 큰 시군부터 1명씩 채우면(해밀턴 방식) 합이 도 전체와 «정확히» 같습니다. */
+const FWD_SPLIT = {};
+function forwardSplit(lv, year, province){
+  const key = lv + '|' + year;
+  if(FWD_SPLIT[key]) return FWD_SPLIT[key];
+  const total = Math.round(province);
+  const rows = SIGUNGU.map(sg => { const x = total * forwardShare(sg.s, lv, year); return { s: sg.s, v: Math.floor(x), f: x - Math.floor(x) }; });
+  let rest = total - rows.reduce((a, r) => a + r.v, 0);
+  rows.slice().sort((a, b) => b.f - a.f).forEach(r => { if(rest > 0){ r.v++; rest--; } });
+  const out = {}; rows.forEach(r => { out[r.s] = r.v; });
+  FWD_SPLIT[key] = out;
+  return out;
 }
 
 function regionStudents(sggKey, lv, year){
@@ -9244,7 +9301,9 @@ function renderSim(){
     txt = `<b>학급당 학생 수 기준</b> — ${how} → <b>필요 학급수·학교수</b>가 결과로 산출됩니다.`;
   }
   document.getElementById('assump').innerHTML =
-    `${txt}<br>모의전망: 시군·학교급별 ${RATE_WORD}을 ${yrs}년 적용 (지역 간 유입·유출 미반영)
+    /* ★ 〔새 판 · 9. 26.〕 계산은 이미 코호트 진급법(도 전체) + 시군 몫으로 바뀌었는데
+       이 한 줄만 «감소율을 N년 적용»으로 남아 있었습니다. 셈과 같은 말을 적습니다. */
+    `${txt}<br>모의전망: ${EDSS ? `도 전체는 ${PROJ_WORD}로 굴리고, 시군에는 ${RATE_WORD}에 따른 몫으로 나눔` : `시군·학교급별 ${RATE_WORD}을 ${yrs}년 적용`} (지역 간 유입·유출 미반영)
      <br>※ 공개자료만 사용하며 학교별 미래 학생수는 제공하지 않습니다.`;
 }
 
@@ -9616,9 +9675,13 @@ function mapExportSheets(){
 }
 
 function currentViewExport(){
-  const names={map:'지도',home:'종합대시보드',status:'학령인구현황',sim:'학생수시뮬레이터',news:'뉴스클리핑',multi:'특수교육모니터링',closed:'폐교활용현황'};
+  const names={overview:'한눈에보기',brief:'주간브리프',map:'지도',home:'종합대시보드',status:'학령인구현황',sim:'학생수시뮬레이터',news:'뉴스클리핑',multi:'특수교육모니터링',closed:'폐교활용현황'};
   let sheets;
-  if(activeView==='map') sheets=mapExportSheets();
+  /* 한눈에 보기·주간 브리프는 뒤에 붙는 파일(assets/overview.js·brief.js)이 시트를 만듭니다.
+     그 파일이 없으면 아래 «모르는 화면»으로 떨어져 아무것도 내보내지 않습니다. */
+  if(activeView==='overview' && typeof overviewExportSheets==='function') sheets=overviewExportSheets();
+  else if(activeView==='brief' && typeof briefExportSheets==='function') sheets=briefExportSheets();
+  else if(activeView==='map') sheets=mapExportSheets();
   else if(activeView==='home') sheets=homeExportSheets();
   else if(activeView==='status') sheets=statusExportSheets();
   else if(activeView==='sim') sheets=simulatorSheets();
@@ -9630,7 +9693,7 @@ function currentViewExport(){
   else { alert('이 화면은 아직 Excel 로 내보낼 수 없습니다.'); return; }
   downloadSpreadsheet(sheets,`경북_${names[activeView]||'대시보드'}_${new Date().toISOString().slice(0,10)}.xls`);
 }
-const VIEW_PRINT_NAMES={map:'경북 학교 지도',home:'종합 대시보드',status:'경북 학령인구 현황',sim:'학생수 시뮬레이터',news:'뉴스 클리핑',multi:'다문화 및 특수교육 모니터링',closed:'폐교 활용 현황'};
+const VIEW_PRINT_NAMES={map:'경북 학교 지도',home:'종합 대시보드',status:'경북 학령인구 현황',sim:'학생수 시뮬레이터',news:'뉴스 클리핑',multi:'다문화 및 특수교육 모니터링',closed:'폐교 활용 현황',overview:'경북 학령인구 한눈에 보기',brief:'학령인구 감소 대응 주간 브리프'};
 function printStamp(){
   return new Intl.DateTimeFormat('ko-KR',{dateStyle:'long',timeStyle:'short'}).format(new Date());
 }
@@ -9640,7 +9703,8 @@ function finishPrintMode(){
 }
 function runPrint(mode){
   const pageStyle=document.getElementById('print-page-mode');
-  pageStyle.textContent=mode==='ai'
+  /* 주간 브리프는 «읽는 문서»라 세로로 뽑습니다. 나머지 화면은 표·그림이 넓어 가로입니다. */
+  pageStyle.textContent=(mode==='ai' || (mode==='view' && activeView==='brief'))
     ? '@media print{@page{size:A4 portrait;margin:20mm 20mm 15mm 20mm}}'
     : '@media print{@page{size:A4 landscape;margin:20mm 20mm 15mm 20mm}}';
   document.body.classList.toggle('print-ai-only',mode==='ai');
@@ -9753,6 +9817,8 @@ function printScopeText(){
     if(activeView === 'multi') return `특수교육 ${SPED_PLACE.year}년 · 다문화 ${MULTI_STU.year}년`;
     if(activeView === 'closed') return typeof CLOSED !== 'undefined' && CLOSED ? CLOSED.basis : '폐교 활용 현황';
     if(activeView === 'news') return '주간 뉴스 클리핑';
+    if(activeView === 'overview' && typeof overviewScopeText === 'function') return overviewScopeText();
+    if(activeView === 'brief' && typeof briefScopeText === 'function') return briefScopeText();
   }catch(_e){}
   return '현재 화면의 조회 조건';
 }
@@ -10434,7 +10500,10 @@ function renderSpedRisk(){
   if(lede){
     lede.innerHTML =
       `특수학급을 둔 학교는 <b>${fmt(holders.length)}곳</b>입니다. 그 가운데 ` +
-      `<b>${fmt(all.length)}곳이 소규모</b>(학생 100명 이하)이고, 거기에 ` +
+      /* 「소규모」는 다른 화면에서 «적정규모 참고선 아래»(용어 도움말)를 뜻합니다.
+         여기는 참고선과 상관없이 100명 이하를 셉니다 — 같은 말이 다른 집합을
+         가리키지 않게 기준을 말로 적습니다. 〔새 판 · 9. 26.〕 */
+      `<b>${fmt(all.length)}곳이 학생 100명 이하</b>이고, 거기에 ` +
       `<b>특수학급 학생 ${fmt(kids)}명</b>이 있습니다. ` +
       '그 학교가 통합되면 <b>이 아이들이 먼저 옮겨야 합니다.</b> ' +
       '적정규모 논의에서 <b>가장 늦게 검토되는 자리</b>입니다.';
@@ -11523,6 +11592,19 @@ function renderClosedInsight(){
   if(g && typeof closedMapRows === 'function'){
     try{ g.textContent = fmt(closedMapRows().length); }catch(_e){}
   }
+  /* 좌표를 찾은 수도 자료에서 셉니다 — 손으로 적은 249곳이 자료(250곳)와 어긋났습니다. */
+  try{
+    const all = closedRows().filter(r => r.use !== '매각');
+    const found = all.filter(r => r.lat != null && r.lon != null);
+    const idle = all.filter(r => r.use === '미활용'), idleFound = idle.filter(r => r.lat != null && r.lon != null);
+    const set = (id, v) => { const el = document.getElementById(id); if(el) el.textContent = v; };
+    set('closed-geo-target', fmt(all.length));
+    set('closed-geo-found', `${fmt(found.length)}곳(${all.length ? Math.round(found.length / all.length * 100) : 0}%)`);
+    set('closed-geo-miss', fmt(all.length - found.length));
+    set('closed-geo-idle', idleFound.length === idle.length
+      ? `미활용 ${fmt(idle.length)}곳은 모두`
+      : `미활용 ${fmt(idle.length)}곳 가운데 ${fmt(idleFound.length)}곳을`);
+  }catch(_e){}
   const box = document.getElementById('closed-facts');
   if(!box || typeof closedRows !== 'function') return;
   let f; try{ f = closedFacts(); }catch(_e){ return; }
@@ -12007,6 +12089,54 @@ function mvStartSpin(){
   MV.spinRaf = requestAnimationFrame(step);
 }
 
+/* ★ 경북 전체를 «보이는 칸»에 맞춥니다 〔새 판 · 2026. 9. 26.〕
+   예전에는 가운데·배율을 고정(7.6)했습니다. 넓은 화면에서는 맞았지만 폰(390px)에서는
+   경북의 절반이 화면 밖이었습니다. 지도 위에 떠 있는 요약 칸(넓은 화면은 오른쪽 300px,
+   좁은 화면은 아래쪽 절반)을 비켜서, 본토 시군 경계(BOUND)가 다 들어오게 맞춥니다.
+   울릉은 오른쪽 위 작은 상자로 따로 보여 주므로 넣지 않습니다. */
+function mvHomeFit(map, animate){
+  if(!map) return;
+  try{
+    const narrow = !!(window.matchMedia && window.matchMedia('(max-width:900px)').matches);
+    const box = document.querySelector('.mapview');
+    const H = (box && box.clientHeight) || 600;
+    const sideOff = !!(box && box.classList && box.classList.contains('side-off'));   /* 요약 칸을 접었나 */
+    const padding = narrow
+      ? { top:24, left:12, right:12, bottom: sideOff ? 24 : Math.round(H * .46) + 12 }
+      : { top:36, left:36, bottom:72, right: sideOff ? 36 : 340 };   /* 아래 72 — 지도 아래쪽 안내 띠 자리 */
+    map.fitBounds([[BOUND.w, BOUND.s], [BOUND.e, BOUND.n]],
+      { padding, pitch:0, bearing:0, duration: animate ? 900 : 0, maxZoom: 9 });
+  }catch(_e){
+    try{ map.jumpTo({ center:MV_HOME_VIEW.center, zoom:MV_HOME_VIEW.zoom }); }catch(_e2){}
+  }
+}
+
+/* ★ 시군 딱지가 서로 덮지 않게 비켜 둡니다 〔새 판 · 2026. 9. 26.〕
+   경북 전체 배율에서 문경·예천, 김천·구미·칠곡·성주 딱지가 겹쳐 수가 가려졌습니다.
+   화면 위에서 차례로 놓으며, 이미 놓인 딱지와 겹치면 위·아래로 한 칸씩 옮겨 봅니다.
+   딱지의 «자리»(시군 중심)는 그대로이고 보이는 위치만 몇 px 옮깁니다. */
+function mvDeclutter(map, marks){
+  try{
+    const items = marks.map(mk => {
+      const el = mk.getElement(); const p = map.project(mk.getLngLat());
+      return { mk, x:p.x, y:p.y, w:(el.offsetWidth || 90) + 4, h:(el.offsetHeight || 36) + 4 };
+    }).sort((a, b) => a.y - b.y);
+    const placed = [];
+    const hit = (a, b) => Math.abs(a.x - b.x) * 2 < (a.w + b.w) && Math.abs(a.y - b.y) * 2 < (a.h + b.h);
+    items.forEach(it => {
+      const tries = [0, -1, 1, -2, 2, -3, 3];
+      let best = null;
+      for(const k of tries){
+        const cand = { x: it.x, y: it.y + k * it.h * .55, w: it.w, h: it.h };
+        if(!placed.some(p => hit(p, cand))){ best = { cand, dy: k * it.h * .55 }; break; }
+      }
+      if(!best) best = { cand:{ x:it.x, y:it.y, w:it.w, h:it.h }, dy:0 };
+      it.mk.setOffset([0, Math.round(best.dy)]);
+      placed.push(best.cand);
+    });
+  }catch(_e){}
+}
+
 function mvSay(t){
   const el = document.getElementById('mv-status');
   if(!el) return;
@@ -12354,6 +12484,7 @@ function mvDraw(){
         const mk = new maplibregl.Marker({ element:el }).setLngLat([c.lo/c.n, c.la/c.n]).addTo(map);
         MV.marks.push(mk);
       });
+      mvDeclutter(map, MV.marks.filter(mk => mk.getElement().classList.contains('mv-bub')));
     }
     const bb = map.getBounds();
     mvRenderList(list.filter(s =>
@@ -13244,6 +13375,8 @@ async function mvStart(){
      1:25,000 같은 비율이 더 빨리 읽히고, 인쇄물에 옮겨 적을 때도 비율이
      있어야 합니다. 둘 다 적습니다. */
   mvMountScale(map);
+  /* 처음 열 때 경북 전체가 «보이는 칸 안»에 들어오게 맞춥니다 〔새 판 · 9. 26.〕 */
+  mvHomeFit(map, false);
 
   map.on('load', mvDraw);
   // A fast 2D → 3D toggle can happen while the style is still updating.
@@ -13269,6 +13402,11 @@ async function mvStart(){
   mvSay('');
   map.on('moveend', mvDraw);
   map.on('zoomend', mvDraw);
+  /* 딱지 크기는 글꼴이 늦게 도착하면 커집니다(배포본에서 칠곡이 의성·구미를 덮음).
+     글꼴이 다 온 뒤와 지도 칸 크기가 바뀐 뒤에 한 번 더 비켜 세웁니다. 〔새 판 · 9. 26.〕 */
+  const reDeclutter = () => mvDeclutter(map, (MV.marks || []).filter(mk => mk.getElement().classList.contains('mv-bub')));
+  map.on('resize', reDeclutter);
+  try{ if(document.fonts && document.fonts.ready) document.fonts.ready.then(reDeclutter); }catch(_e){}
   map.on('zoomend', () => {
     if(!MV.is3d)return;
     mvApplyTerrain(map);
@@ -13441,9 +13579,7 @@ function mvWireControls(){
   try{
     window.addEventListener('keydown', e => { if(e.key === 'Escape') turnTip(false); });
   }catch(_e){}
-  on('mv-reset', () => {
-    MV.map.flyTo({ center:MV_HOME_VIEW.center, zoom:MV_HOME_VIEW.zoom, pitch:0, bearing:0, duration:900 });
-  });
+  on('mv-reset', () => { mvHomeFit(MV.map, true); });
   on('mv-closed', () => {
     MV.closed = !MV.closed;
     document.getElementById('mv-closed').setAttribute('aria-pressed', String(MV.closed));
@@ -13628,5 +13764,11 @@ if(HOME_TAB_ON){
 
 <link rel="stylesheet" href="./assets/map-policy.css">
 <script src="./assets/map-policy.js"></script>
+<!-- 한눈에 보기 · 주간 브리프 〔로컬 실험 · 9. 26.〕 — 본체 스크립트 «뒤»여야 합니다 -->
+<script src="./assets/overview.js"></script>
+<script src="./assets/brief.js"></script>
+<!-- ★ 인쇄 규칙은 «맨 마지막»입니다 〔새 판 · 9. 26.〕 — 다른 모든 스타일(지도 정책 CSS 포함)
+     뒤에 와야 같은 선택자에서 이깁니다. 까닭은 assets/print.css 머리 주석에. -->
+<link rel="stylesheet" href="./assets/print.css">
 </body>
 </html>

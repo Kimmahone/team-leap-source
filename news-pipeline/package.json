@@ -8,7 +8,9 @@
     "build": "node build.mjs",
     "insights": "node build-news-insights.mjs",
     "weekly": "node build-news-insights.mjs --force",
-    "check": "node ../tests/news-archive.test.mjs"
+    "check": "node ../tests/news-archive.test.mjs",
+    "brief": "node build-weekly-brief.mjs",
+    "brief:check": "node ../tests/weekly-brief.test.mjs"
   },
   "dependencies": {
     "xlsx": "0.18.5"

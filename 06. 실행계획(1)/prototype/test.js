@@ -2757,5 +2757,128 @@ check('배경 차례는 많이 쓰는 것부터다 (기본값이 맨 앞)',
   js.indexOf("id:'Satellite'") < js.indexOf("id:'gray'") &&
   js.indexOf("id:'gray'") < js.indexOf("id:'Base',      name:'일반'"));
 
+
+console.log('\n■ 디자인 팀 틀 · 한눈에 보기 · 주간 브리프 〔로컬 실험 · 2026. 9. 26.〕');
+/* 디자인 팀 웹페이지를 «틀»로 삼고(위쪽 머리띠·카드), 새 화면 둘을 붙였습니다.
+   겉모습은 뒤에 붙는 CSS 세 장, 그림은 뒤에 붙는 JS 두 장이 맡습니다.
+   본체 스크립트는 거의 건드리지 않았으므로, 여기서는 «이어 붙인 자리»를 봅니다. */
+const FRAME_CSS = path.join(__dirname, 'assets', 'frame.css');
+const OV_JS = path.join(__dirname, 'assets', 'overview.js');
+const BR_JS = path.join(__dirname, 'assets', 'brief.js');
+const frameCss = fs.existsSync(FRAME_CSS) ? fs.readFileSync(FRAME_CSS, 'utf8') : '';
+const ovJs = fs.existsSync(OV_JS) ? fs.readFileSync(OV_JS, 'utf8') : '';
+const brJs = fs.existsSync(BR_JS) ? fs.readFileSync(BR_JS, 'utf8') : '';
+check('틀 CSS 는 인라인 스타일 «뒤»에 붙는다 (같은 선택자면 뒤가 이긴다)',
+  html.indexOf('</style>') < html.indexOf('href="./assets/frame.css"') &&
+  html.indexOf('href="./assets/frame.css"') < html.indexOf('</head>'));
+check('새 화면 스크립트는 본체 «뒤»에 붙는다 (본체 함수를 부른다)',
+  html.lastIndexOf('<script>') < html.indexOf('src="./assets/overview.js"') &&
+  html.indexOf('src="./assets/overview.js"') < html.indexOf('src="./assets/brief.js"'));
+/* ★ 배포본 CSP 는 font-src 'self' · style-src 'self' 입니다. CDN 글꼴은 로컬(CSP 없음)에서만
+   멀쩡하고 배포본에서는 «조용히» 빠집니다 — 메모리의 함정(OpenFreeMap)과 같은 모양입니다. */
+check('글꼴은 저장소 안에서 온다 (외부 주소 없음)',
+  /@import url\("\.\.\/vendor\/pretendard\/pretendardvariable-dynamic-subset\.css"\)/.test(frameCss) &&
+  !/https?:\/\//.test(frameCss.replace(/\/\*[\s\S]*?\*\//g, '')) &&
+  fs.existsSync(path.join(__dirname, 'vendor', 'pretendard', 'pretendardvariable-dynamic-subset.css')) &&
+  fs.existsSync(path.join(__dirname, 'vendor', 'pretendard', 'LICENSE.txt')));
+check('새 화면 스크립트도 외부를 부르지 않는다 (같은 출처의 assets/brief 만)',
+  !/https?:\/\//.test((ovJs + brJs).replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '')) &&
+  /const BASE = 'assets\/brief\/'/.test(brJs));
+check('첫 화면은 한눈에 보기다 (메뉴 첫 단추)', (() => {
+  const live = html.replace(/<!--[\s\S]*?-->/g, '');
+  const m = live.match(/data-view="([a-z]+)"/);
+  return m && m[1] === 'overview';
+})());
+check('두 화면이 메뉴·화면 칸에 모두 있다',
+  /data-view="overview"/.test(html) && /id="view-overview" class="view"/.test(html) &&
+  /data-view="brief"/.test(html) && /id="view-brief" class="view"/.test(html));
+check('치워 둔 «종합 대시보드»(home)와 이름이 겹치지 않는다', !/data-view="home"/.test(html.replace(/<!--[\s\S]*?-->/g, '')));
+/* 「지도 화면이 else 로 떨어져 폐교 자료를 내보냈다」는 함정의 되풀이를 막습니다. */
+check('Excel 은 두 화면을 이름으로 받는다 (모르는 화면으로 떨어지지 않는다)',
+  /activeView==='overview' && typeof overviewExportSheets==='function'/.test(js) &&
+  /activeView==='brief' && typeof briefExportSheets==='function'/.test(js) &&
+  /window\.overviewExportSheets = function/.test(ovJs) && /window\.briefExportSheets = function/.test(brJs));
+check('인쇄 머리글도 두 화면의 조건을 적는다',
+  /overview:'경북 학령인구 한눈에 보기'/.test(js) && /brief:'학령인구 감소 대응 주간 브리프'/.test(js) &&
+  /window\.overviewScopeText = function/.test(ovJs) && /window\.briefScopeText = function/.test(brJs));
+check('예전에 «메뉴 접기»를 눌러 둔 사람도 글자가 사라지지 않는다',
+  /body\.nav-collapsed \.sidebar \.nav button/.test(frameCss) && /\.side-toggle,body\.nav-collapsed \.side-toggle\{display:none !important\}/.test(frameCss));
+check('머리띠는 가로로 눕는다 (예전 column 을 되돌린다)', /flex-direction:row/.test(frameCss));
+check('디자인 팀 시안의 확인할 수 없는 정책 수치를 옮기지 않았다',
+  !/180억|연계율 98|늘봄 거점센터 22|AI 선도교 120/.test(ovJs.replace(/\/\*[\s\S]*?\*\//g, '')));
+
+/* 한눈에 보기를 실제로 돌려 봅니다 — 본체와 «같은 맥락»에서 이어 실행합니다. */
+let ovThrew = null;
+try { vm.runInContext(ovJs, sandbox, { timeout: 8000 }); } catch (e) { ovThrew = e; }
+check('한눈에 보기 스크립트가 예외 없이 돈다', !ovThrew, ovThrew && ovThrew.message);
+if (!ovThrew && typeof sandbox.overviewExportSheets === 'function') {
+  const sh = sandbox.overviewExportSheets();
+  const sgg = sh[0].rows.slice(1), yrs = sh[1].rows.slice(1);
+  /* 값이 아니라 «관계»를 봅니다 — 실제 자료의 숫자를 박지 않습니다(마스터 5장). */
+  const sumCol = (i) => sgg.reduce((a, r) => a + (Number(r[i]) || 0), 0);
+  const prov = (y) => (yrs.find(r => r[0] === y) || [])[5];
+  check('한눈에 보기: 시군 22곳을 다 싣는다', sgg.length === 22);
+  check('한눈에 보기: 시군 2026 합 = 도 2026 (같은 셈)', sumCol(3) === prov(2026), `${sumCol(3)} vs ${prov(2026)}`);
+  check('한눈에 보기: 시군 2036 합 = 도 2036 (남는 수 큰 순서 반올림)', sumCol(4) === prov(2036), `${sumCol(4)} vs ${prov(2036)}`);
+  /* 시뮬레이터는 시군을 더해 도 전체를 냅니다. 몫을 따로 반올림하던 때는 2030년
+     초등이 한눈에 보기 68,757명 · 시뮬레이터 68,755명으로 어긋났습니다. */
+  check('전망 해마다·학교급마다 시군 합 = 도 전체 (화면끼리 같은 수)', (() => {
+    for (let y = 2027; y <= 2036; y++) for (const l of ['초', '중', '고']) {
+      const pv = q(`regionStudents(null, ${JSON.stringify(l)}, ${y}).v`);
+      const sv = q(`SIGUNGU.reduce((a, sg) => a + regionStudents(sg.s, ${JSON.stringify(l)}, ${y}).v, 0)`);
+      if (pv !== sv) return false;
+    }
+    return true;
+  })());
+  check('한눈에 보기: 시군 2016 합 = 도 2016 (실적)', sumCol(2) === prov(2016), `${sumCol(2)} vs ${prov(2016)}`);
+  check('한눈에 보기: 도 값이 현황 탭 함수와 같다', prov(2036) === q('regionTotalStudents(null, 2036).v'));
+  check('한눈에 보기: 적정규모 미달 합 ≤ 학교 수', sumCol(9) <= sumCol(8) && sumCol(9) > 0);
+  check('한눈에 보기: 연도 표는 2016~2036 스물한 해', yrs.length === 21 && yrs[0][0] === 2016 && yrs[20][0] === 2036);
+  check('한눈에 보기: 인쇄 조건 한 줄이 있다', /경북 전체 · 2026년/.test(sandbox.overviewScopeText()));
+}
+
+/* 주간 브리프 자료 — 실린 호가 스스로 맞는가(값이 아니라 짜임새) */
+const BRIEF_DIR = path.join(__dirname, 'assets', 'brief');
+const briefIdx = fs.existsSync(path.join(BRIEF_DIR, 'index.json')) ? JSON.parse(fs.readFileSync(path.join(BRIEF_DIR, 'index.json'), 'utf8')) : { issues: [] };
+check('주간 브리프: 목록이 있고 최신 호가 맨 앞이다',
+  briefIdx.issues.length > 0 && briefIdx.issues.every((x, i, a) => !i || a[i - 1].from > x.from));
+briefIdx.issues.forEach(x => {
+  const I = JSON.parse(fs.readFileSync(path.join(BRIEF_DIR, x.id + '.json'), 'utf8'));
+  const ids = new Set(I.articles.map(a => a.id));
+  const cited = [].concat(I.leadArticles || [], ...(I.numbers || []).map(n => n.articles), ...(I.issues || []).map(n => n.articles),
+    ...(I.regions || []).map(n => n.articles), (I.factchecks || []).map(c => c.article));
+  check(`주간 브리프 제${x.no}호: 인용한 기사는 모두 그 주 목록에 있다`, cited.length > 0 && cited.every(id => ids.has(id)));
+  check(`주간 브리프 제${x.no}호: 숫자 카드마다 그림이 있다`, (I.numbers || []).every(n => n.chart && n.chart.rows && n.chart.rows.length));
+  check(`주간 브리프 제${x.no}호: 기사 본문을 싣지 않는다 (제목·매체·날짜·링크만)`, I.articles.every(a => a.description === undefined));
+  check(`주간 브리프 제${x.no}호: 수치 대조 판정이 차이와 맞는다`, (I.factchecks || []).every(c =>
+    c.gapPct == null || (Math.abs(c.gapPct) <= 2 ? c.verdict === '맞음' : Math.abs(c.gapPct) <= 10 ? c.verdict === '비슷함' : c.verdict === '차이 큼')));
+  check(`주간 브리프 제${x.no}호: 누가 썼는지·검토 상태를 밝힌다`, !!(I.generator && I.generator.label) && /검토/.test(I.status || ''));
+});
+
+
+console.log('\n■ 새 판 점검 — 인쇄 · 자료 · 배치 〔2026. 9. 26.〕');
+const PRINT_CSS = path.join(__dirname, 'assets', 'print.css');
+const printCss = fs.existsSync(PRINT_CSS) ? fs.readFileSync(PRINT_CSS, 'utf8') : '';
+/* 인쇄 규칙은 다른 모든 스타일 «뒤»여야 이깁니다(지도 정책 CSS 는 body 끝에 있습니다). */
+check('인쇄 규칙은 맨 마지막 스타일이다', html.lastIndexOf('<link rel="stylesheet" href="') === html.indexOf('<link rel="stylesheet" href="./assets/print.css">'));
+/* 예전 인쇄 토큰은 강조색·그 위 글자를 모두 검정으로 두어 «고른 칩»이 까만 상자가 되었습니다. */
+check('인쇄에서 강조색 위 글자는 흰색이다 (까만 상자 방지)', /--leap-on-fill:#FFFFFF/.test(printCss) && /--brand:#1D4ED8/.test(printCss));
+check('인쇄 색은 어두운 화면에서도 밝은 판으로 고정한다', /:root:root:root\{/.test(printCss));
+check('인쇄 머리글은 한 줄 격자다 (print-only 에 지지 않는다)', /\.print-letterhead\.print-only\{display:grid !important/.test(printCss));
+check('인쇄에서 링크 주소를 글 뒤에 줄줄이 붙이지 않는다', /a\[href\^="http"\]::after\{content:none !important\}/.test(printCss));
+check('인쇄에서 조작 도구(칩·필터·쪽 넘김)를 숨긴다', /\.chip,\.map-toolbar,\.news-filter-panel,\.news-pager/.test(printCss));
+check('주간 브리프는 세로로 인쇄한다', /activeView==='brief'\)\)\s*\n?\s*\? '@media print\{@page\{size:A4 portrait/.test(js));
+check('주간 브리프 인쇄본에 근거 기사 부록이 붙는다', /function refsHtml\(I\)/.test(brJs) && /br-refs print-only/.test(brJs));
+check('폐교 좌표 설명은 자료에서 센다 (손으로 적은 249곳 없음)',
+  !/249곳\(98%\)/.test(html.replace(/<!--[\s\S]*?-->/g, '')) && /closed-geo-found/.test(html) && /set\('closed-geo-found'/.test(js));
+check('시뮬레이터 가정 설명이 지금 셈(코호트 + 시군 몫)과 같다', /도 전체는 \$\{PROJ_WORD\}로 굴리고, 시군에는 \$\{RATE_WORD\}에 따른 몫으로 나눔/.test(js));
+check('«소규모»가 화면마다 다른 집합을 가리키지 않는다 (특수교육 화면은 «100명 이하»로 적는다)',
+  /곳이 학생 100명 이하<\/b>/.test(js) && !/곳이 소규모<\/b>\(학생 100명 이하\)/.test(js));
+check('지도는 경북 전체가 보이는 칸에 맞춰 열린다', /function mvHomeFit\(map, animate\)/.test(js) && /mvHomeFit\(map, false\)/.test(js) && /on\('mv-reset', \(\) => \{ mvHomeFit\(MV\.map, true\); \}\)/.test(js));
+check('지도 시군 딱지는 서로 덮지 않게 비켜 선다', /function mvDeclutter\(map, marks\)/.test(js) && /mvDeclutter\(map, MV\.marks\.filter/.test(js));
+check('한국어는 낱말 단위로 줄을 바꾼다', /word-break:keep-all/.test(frameCss));
+check('닫힌 서랍 그림자가 화면 끝에 비치지 않는다', /\.glossary-drawer:not\(\.open\)\{box-shadow:none;visibility:hidden\}/.test(frameCss));
+check('폰에서 도구 줄 앞쪽 단추가 화면 밖으로 밀리지 않는다', /justify-content:flex-start/.test(frameCss));
+
 console.log(`\n${fail ? '✗' : '✓'}  통과 ${pass} · 실패 ${fail}\n`);
 process.exit(fail ? 1 : 0);

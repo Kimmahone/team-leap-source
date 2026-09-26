@@ -12,6 +12,15 @@
 # 앞선 단계에서 `사이트 굽기.command` 가 이미 돌아 배포/site 가 있어야 합니다.
 set -euo pipefail
 
+# ★ 〔새 판 · 2026. 9. 26.〕 기존 사이트(team-leap)에는 «main» 만 올립니다.
+#   새 판은 v2 가지에서 자라고 team-leap-v2 로 따로 나갑니다(v2-deploy.yml).
+#   누가 v2 가지를 골라 뉴스·공공데이터 워크플로를 손으로 돌려도, 여기서 멈춰
+#   기존 사이트가 새 판으로 덮이지 않습니다. main 에 합친 뒤에는 그대로 지나갑니다.
+if [ -n "${GITHUB_REF:-}" ] && [ "${GITHUB_REF}" != "refs/heads/main" ]; then
+  echo "::warning::main 이 아닌 가지(${GITHUB_REF})에서는 기존 사이트(team-leap)로 배포하지 않습니다."
+  exit 0
+fi
+
 if [ -z "${DEPLOY_PAT:-}" ]; then
   echo "::warning::DEPLOY_PAT 시크릿이 없어 team-leap 배포 푸시를 건너뜁니다."
   exit 0

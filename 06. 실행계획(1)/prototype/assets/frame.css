@@ -1,0 +1,198 @@
+/* ==========================================================================
+   디자인 팀 틀 〔로컬 실험 · 2026. 9. 26.〕
+   ──────────────────────────────────────────────────────────────────────────
+   디자인 팀 웹페이지(gbe-school-population.netlify.app)의 «틀»을 이 대시보드에
+   입힙니다. 가져온 것은 세 가지입니다.
+
+     ① 위쪽 머리띠 + 가로 메뉴  — 왼쪽 세로 메뉴 대신. 화면 폭을 본문이 다 씁니다.
+     ② 색과 글꼴               — Pretendard · 옅은 슬레이트 바탕 · 파랑 강조 · 둥근 카드
+     ③ «한 화면 한 메시지»     — 한눈에 보기(overview.css)가 그 틀을 따릅니다.
+
+   ★ 구조(DOM)는 건드리지 않고 겉모습만 바꿉니다.
+     메뉴 단추·순서 바꾸기·화면 전환 코드는 그대로 돕니다. 이 파일을 빼면
+     예전 모습으로 돌아갑니다 — 되돌릴 자리가 이 한 줄(<link>)입니다.
+
+   ★ 글꼴은 저장소 안(vendor/pretendard)에서 옵니다.
+     배포본의 CSP 는 font-src 'self' 라 CDN 글꼴은 «조용히» 막힙니다.
+     로컬(python 서버)에는 CSP 가 없어 멀쩡해 보이므로 더 조심해야 합니다.
+   ========================================================================== */
+@import url("../vendor/pretendard/pretendardvariable-dynamic-subset.css");
+
+/* ── ② 색·글꼴 토큰 ─────────────────────────────────────────────────────
+   대비는 흰 카드 위에서 잽니다.  글자 #0F172A 17.9 · 곁글자 #475569 7.6 ·
+   파랑 #2563EB 5.2(흰 글자를 얹어도 5.2) — 모두 4.5 를 넘습니다. */
+:root{
+  --leap-font: "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Noto Sans KR",
+               "Malgun Gothic", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --leap-ink:#0F172A; --leap-blue:#2563EB; --leap-gray:#475569;
+  --leap-bg:#F3F6FA; --leap-surface:#FFFFFF;
+  --leap-border:#E2E8F0; --leap-hairline:#EEF2F7;
+  --brand-pale:#EFF6FF;
+  --leap-radius:16px; --leap-radius-sm:10px;
+  --leap-shadow:0 1px 2px rgba(15,23,42,.04), 0 8px 24px rgba(15,23,42,.06);
+  --frame-seg:#EEF2F7;          /* 가로 메뉴·탭의 바탕 */
+  --frame-kicker:#2563EB;       /* 제목 위 작은 머리말 */
+  --frame-head-h:118px;         /* 머리띠 높이 — 지도 화면 높이 셈에 씁니다 */
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --leap-ink:#E8EDF3; --leap-blue:#7FB3F7; --leap-gray:#B4BFCB;
+    --leap-bg:#0B1220; --leap-surface:#141D2C;
+    --leap-border:#253247; --leap-hairline:#1B2637;
+    --brand-pale:#1C2E4A;
+    --leap-shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    --frame-seg:#1B2637; --frame-kicker:#7FB3F7;
+  }
+}
+:root[data-theme="light"]{
+  --leap-ink:#0F172A; --leap-blue:#2563EB; --leap-gray:#475569;
+  --leap-bg:#F3F6FA; --leap-surface:#FFFFFF;
+  --leap-border:#E2E8F0; --leap-hairline:#EEF2F7; --brand-pale:#EFF6FF;
+  --leap-shadow:0 1px 2px rgba(15,23,42,.04), 0 8px 24px rgba(15,23,42,.06);
+  --frame-seg:#EEF2F7; --frame-kicker:#2563EB;
+}
+:root[data-theme="dark"]{
+  --leap-ink:#E8EDF3; --leap-blue:#7FB3F7; --leap-gray:#B4BFCB;
+  --leap-bg:#0B1220; --leap-surface:#141D2C;
+  --leap-border:#253247; --leap-hairline:#1B2637; --brand-pale:#1C2E4A;
+  --leap-shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  --frame-seg:#1B2637; --frame-kicker:#7FB3F7;
+}
+body{background:var(--bg);letter-spacing:-.01em;-webkit-font-smoothing:antialiased;
+  /* 한국어는 «낱말» 단위로 줄을 바꿉니다 〔새 판 · 9. 26.〕 — 기본값은 글자 단위라
+     「어디가 · 얼마나 · 누가 · 언제 · 어느 시군이로」 가 「시군이/로」처럼 끊겼습니다.
+     아주 긴 낱말(주소 등)만은 넘치기 전에 끊습니다. */
+  word-break:keep-all;overflow-wrap:break-word}
+
+/* ── ① 머리띠 ───────────────────────────────────────────────────────────
+   .sidebar 를 그대로 쓰되 «위쪽 띠»로 눕힙니다. 줄 하나에는 기관·이름과 도구,
+   다음 줄에는 가로 메뉴가 놓입니다. 스크롤해도 따라옵니다(sticky). */
+.shell{display:block;min-height:0}
+.sidebar,
+body.nav-collapsed .sidebar{
+  position:sticky;top:0;z-index:950;
+  width:auto;flex:none;min-height:0;
+  /* 예전 규칙이 flex-direction:column 입니다 — 가로로 눕히려면 되돌려야 합니다 */
+  display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px 16px;
+  padding:10px 24px 10px;
+  background:color-mix(in srgb, var(--card) 90%, transparent);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-right:0;border-bottom:1px solid var(--line);
+}
+/* 세로 메뉴를 접는 단추는 뜻이 없어졌습니다. 예전에 접어 둔 사람의 설정
+   (leap-nav-collapsed-v1)이 남아 있어도 글자가 사라지지 않게 모두 되돌립니다. */
+.side-toggle,body.nav-collapsed .side-toggle{display:none !important}
+
+.brand,body.nav-collapsed .brand{padding:0;border:0;margin-right:auto;min-width:0}
+.brand .brand-header,body.nav-collapsed .brand .brand-header{margin:0;gap:12px;justify-content:flex-start}
+.brand .ver{display:none}
+.brand .frame-logo{width:40px;height:40px;flex:none;border-radius:12px;background:#fff;
+  border:1px solid var(--line);padding:5px;object-fit:contain}
+.brand .mk{display:none}
+.brand .nm,body.nav-collapsed .sidebar .nm{display:flex;flex-direction:column;gap:3px;
+  font-size:18px;font-weight:800;letter-spacing:-.03em;line-height:1.15;color:var(--ink)}
+.brand .nm .frame-org{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;
+  letter-spacing:0;color:var(--frame-kicker)}
+.brand .nm .frame-badge{font-size:10.5px;font-weight:700;color:var(--frame-kicker);
+  background:var(--brand-pale);border:1px solid color-mix(in srgb, var(--frame-kicker) 25%, transparent);
+  border-radius:999px;padding:1px 8px}
+.brand .nm .frame-sub{font-size:11px;font-weight:500;color:var(--ink-3);letter-spacing:0}
+
+/* 도구 단추 — 머리띠 오른쪽에 작게 모읍니다 */
+.sidebar .top-tools{position:static;order:2;display:flex;flex-wrap:wrap;gap:6px;margin:0}
+.sidebar .top-tools button{min-height:34px;padding:0 11px;border-radius:10px;font-size:12px;
+  background:var(--card);border:1px solid var(--line);color:var(--ink-2);font-weight:600}
+.sidebar .top-tools button:hover{background:var(--brand-pale);color:var(--brand);border-color:color-mix(in srgb, var(--brand) 30%, var(--line))}
+
+.home-link,body.nav-collapsed .home-link{order:3;display:flex;border:0;padding:0 12px;min-height:34px;
+  font-size:12px;border-radius:10px;gap:6px;color:var(--ink-3);white-space:nowrap}
+
+/* 가로 메뉴 — 디자인 팀의 «알약 묶음». 넘치면 옆으로 밉니다(줄바꿈하지 않음). */
+.sidebar .nav,
+body.nav-collapsed .sidebar .nav{
+  order:4;flex:1 1 100%;display:flex;flex-wrap:nowrap;gap:3px;padding:4px;margin:0;
+  background:var(--frame-seg);border-radius:14px;overflow-x:auto;scrollbar-width:none;
+  -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);
+          mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)
+}
+.sidebar .nav::-webkit-scrollbar{display:none}
+.sidebar .nav button,.sidebar .nav a,
+body.nav-collapsed .sidebar .nav button,body.nav-collapsed .sidebar .nav a{
+  flex:0 0 auto;width:auto;min-height:40px;margin:0;padding:0 14px;gap:6px;
+  border-radius:10px;font-size:13.5px;font-weight:600;color:var(--ink-2);
+  justify-content:center;white-space:nowrap}
+.sidebar .nav .ico{display:none}
+.sidebar .nav button:hover,.sidebar .nav a:hover{background:color-mix(in srgb, var(--card) 70%, transparent);color:var(--brand)}
+.sidebar .nav button[aria-current="page"]{background:var(--card);color:var(--brand);font-weight:800;
+  box-shadow:0 1px 2px rgba(15,23,42,.06),0 2px 8px rgba(15,23,42,.08)}
+.sidebar .nav .ext{margin-left:2px;font-size:10.5px}
+/* 새로 넣은 두 화면에 작은 «새» 표시 — 무엇이 달라졌는지 메뉴가 먼저 말합니다 */
+.sidebar .nav .frame-new{font-size:10px;font-weight:800;color:#fff;background:#E11D48;border-radius:999px;padding:1px 6px;margin-left:2px}
+
+/* 닫힌 서랍(용어 도움말·사용 안내·메뉴 순서)의 그림자가 화면 오른쪽 끝에 회색 띠로 늘 비쳤습니다.
+   닫혀 있을 때는 그림자를 걷습니다. 〔새 판 · 9. 26.〕 */
+.glossary-drawer{transition:transform .22s ease,visibility 0s linear .22s}
+.glossary-drawer.open{transition:transform .22s ease,visibility 0s}
+.glossary-drawer:not(.open){box-shadow:none;visibility:hidden}
+
+/* 본문 */
+.main{padding:22px 24px 64px;max-width:1440px;margin:0 auto}
+.page-head{align-items:center;gap:10px 14px;margin-bottom:18px}
+.page-head h1{font-size:24px;font-weight:800;letter-spacing:-.03em}
+.page-head .desc{font-size:13.5px;color:var(--ink-3)}
+
+/* 카드·칩·탭 — 디자인 팀의 결(둥글고, 얇은 선, 옅은 그림자) */
+.card{border-radius:var(--leap-radius);border-color:var(--line);padding:20px 22px}
+.card h2{font-size:16px;font-weight:800;letter-spacing:-.02em}
+.card h2::before{width:4px;height:16px;border-radius:4px}
+.chip{border-radius:999px;font-weight:600}
+.chip:hover{border-color:color-mix(in srgb, var(--brand) 35%, var(--line));color:var(--brand)}
+.chip[aria-pressed="true"]:hover{color:var(--leap-on-fill)}
+.news-view-tabs{border:0;border-radius:14px;background:var(--frame-seg);padding:4px;gap:3px}
+.news-view-tabs button{border-radius:10px;font-weight:700}
+.news-view-tabs button[aria-pressed="true"]{box-shadow:0 1px 2px rgba(15,23,42,.06),0 2px 8px rgba(15,23,42,.08)}
+.src-box{border-radius:12px}
+.select,select,input[type="number"]{border-radius:10px}
+
+/* 지도 화면 — 머리띠만큼 키를 줄여 한 화면에 들어오게 합니다 */
+.mapview{height:min(calc(100vh - var(--frame-head-h) - 40px), 900px)}
+
+/* ── 좁은 화면 ─────────────────────────────────────────────────────────
+   예전 규칙(720px 아래 «메뉴 두 줄 격자»)을 이깁니다 — 선택자가 더 구체적입니다. */
+@media (max-width:900px){
+  .sidebar,body.nav-collapsed .sidebar{padding:8px 12px;gap:6px 10px}
+  .brand .frame-logo{width:34px;height:34px;border-radius:10px}
+  .brand .nm,body.nav-collapsed .sidebar .nm{font-size:15.5px}
+  .brand .nm .frame-sub{display:none}
+  /* justify-content 를 되돌립니다 — 예전 폰 규칙(flex-end)이 남아 앞쪽 단추(사용 안내·용어 도움말)가
+     왼쪽 밖으로 밀려 «굴려도 닿지 않는» 자리에 있었습니다(넘친 쪽이 시작 쪽이면 스크롤로 못 갑니다). */
+  .sidebar .top-tools{order:4;flex:1 1 100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;justify-content:flex-start}
+  .status-where{display:block;line-height:1.6}
+  .sidebar .top-tools::-webkit-scrollbar{display:none}
+  .sidebar .top-tools button{flex:0 0 auto;min-height:32px;font-size:11.5px;padding:0 9px}
+  .home-link,body.nav-collapsed .home-link{order:2;padding:0 8px}
+  .home-link .frame-home-lb{display:none}
+  .sidebar .nav,body.nav-collapsed .sidebar .nav{order:3;display:flex;grid-template-columns:none}
+  .sidebar .nav button,.sidebar .nav a,
+  body.nav-collapsed .sidebar .nav button,body.nav-collapsed .sidebar .nav a{min-height:40px;padding:0 12px;font-size:13px}
+  .main{padding:16px 12px 40px}
+  .page-head{padding-right:0}
+  .page-head h1{font-size:20px}
+  /* 폰 폭에서 옆으로 넘치던 세 곳 〔새 판 · 9. 26. · 390px 에서 재어 찾음〕 */
+  .mapview{margin:0 -12px}                                   /* 본문 여백(12px)과 맞춤 — 예전 값 −24px 는 세로 메뉴 시절 여백 */
+  /* 폰에서 경북 전체를 담으면 시군 딱지 22개가 빽빽해 서로 덮습니다. 이름만 작게 두고
+     학교 수·학생 수는 딱지를 누르거나 확대하면 보입니다(요약 칸에도 있습니다). */
+  .mv-bub{padding:2px 7px;border-radius:7px}
+  .mv-bub b{font-size:11px}
+  .mv-bub span{display:none}
+  .gaptbl th,.gaptbl td{padding:5px 4px}
+  .gaptbl{font-size:11px}
+  .news-analysis-grid > *,.news-analysis-panel{min-width:0}
+  .news-analysis-panel{overflow-x:auto}
+}
+
+/* 인쇄 — 머리띠는 종이에 나가지 않습니다(인쇄 머리글이 따로 있습니다) */
+@media print{
+  .sidebar{display:none !important}
+  .main{max-width:none;padding:0}
+}

@@ -1,0 +1,134 @@
+name: 새 판(v2) — 검사·굽기·배포 (team-leap-v2)
+
+# 〔2026. 9. 26.〕 새 판은 기존 사이트와 «따로» 나갑니다.
+#
+#   v2 가지  ──▶  이 워크플로  ──▶  Cloudflare Pages 「team-leap-v2」  (https://team-leap-v2.pages.dev)
+#   main     ──▶  update-news.yml · deploy.sh ──▶ 저장소 team-leap ──▶ 「team-leap」(기존 사이트)
+#
+#   저장소를 하나 더 만들지 않습니다. 굽기까지는 기존과 같고, 마지막에 배포 저장소로
+#   밀어 넣는 대신 wrangler 로 team-leap-v2 에 «바로» 올립니다.
+#
+# ★ 언제 도나
+#   · v2 가지에 푸시할 때            → 검사·굽기·배포
+#   · 손으로(Actions → Run workflow) → job 을 고릅니다
+#       deploy  그대로 다시 배포
+#       daily   뉴스를 새로 받고 3일 이슈 분석 → 배포
+#       weekly  뉴스를 새로 받고 주간 브리프 한 호 → 배포
+#   · 예약 — 매일 07:47(뉴스) · 월요일 05:17(주간 브리프, 한국시간)
+#     GitHub 은 예약(cron)과 「Run workflow」 단추를 «기본 가지(main)에 있는 파일»로만 돌립니다.
+#     그래서 «똑같은 이 파일»을 main 에도 둡니다. main 에서 예약이 돌면 아래 kick 이
+#     v2 가지의 이 워크플로를 다시 불러 줄 뿐, main 의 내용은 어디에도 배포하지 않습니다.
+#
+# ★ 필요한 시크릿
+#   CLOUDFLARE_API_TOKEN  Cloudflare 「Pages 편집」 권한 토큰  — 없으면 배포만 건너뜁니다(경고)
+#   CLOUDFLARE_ACCOUNT_ID Cloudflare 계정 ID
+#   NAVER_CLIENT_ID · NAVER_CLIENT_SECRET  뉴스(이미 있음)
+#   GEMINI_API_KEY        주간 브리프 AI 초안 — 없으면 규칙 초안
+#
+# ★ 기존 사이트는 건드리지 않습니다 — deploy.sh 를 부르지 않고, 불려도 main 이 아니면 멈춥니다.
+
+on:
+  push:
+    branches: [v2]
+  schedule:
+    - cron: '47 22 * * *'   # 한국 매일 07:47 — main 의 뉴스 수집(07:37) 뒤
+    - cron: '17 20 * * 0'   # 한국 월요일 05:17 — 지난주 주간 브리프
+  workflow_dispatch:
+    inputs:
+      job:
+        description: 'deploy(그대로 배포) · daily(뉴스 받고 배포) · weekly(뉴스 받고 주간 브리프 만들고 배포)'
+        required: true
+        default: deploy
+        type: choice
+        options: [deploy, daily, weekly]
+      week:
+        description: 'weekly 일 때 만들 주의 월요일(예: 2026-09-21). 비우면 지난주'
+        required: false
+        default: ''
+
+# 매일·매주·푸시가 겹쳐도 하나씩 차례로 — 같은 가지에 동시에 커밋하면 한쪽이 밀립니다.
+concurrency:
+  group: v2-deploy
+  cancel-in-progress: false
+
+jobs:
+  # 예약은 main 에서 돕니다 → v2 가지의 이 워크플로를 불러 줍니다(배포는 하지 않음).
+  kick:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: v2 가지로 넘기기
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CRON: ${{ github.event.schedule }}
+        run: |
+          if [ "$CRON" = "17 20 * * 0" ]; then JOB=weekly; else JOB=daily; fi
+          gh workflow run v2-deploy.yml --repo "${{ github.repository }}" --ref v2 -f job="$JOB"
+          echo "v2 가지에 job=$JOB 를 걸었습니다."
+
+  v2:
+    # v2 가지에서만 — main 을 골라 손으로 돌려도 새 판이 나가지 않습니다.
+    if: github.ref == 'refs/heads/v2' && github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      JOB: ${{ github.event.inputs.job || 'deploy' }}
+    steps:
+      - name: 저장소 가져오기 (v2)
+        uses: actions/checkout@v5
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+
+      - name: 뉴스 받아오기 (daily · weekly)
+        if: env.JOB == 'daily' || env.JOB == 'weekly'
+        env:
+          NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+          NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
+        run: node fetch-news.js
+
+      - name: 3일 이슈 분석 (daily)
+        if: env.JOB == 'daily'
+        run: node news-pipeline/build-news-insights.mjs
+
+      - name: 주간 브리프 한 호 (weekly)
+        if: env.JOB == 'weekly'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          WEEK: ${{ github.event.inputs.week }}
+        run: |
+          if [ -n "$WEEK" ]; then node news-pipeline/build-weekly-brief.mjs --week "$WEEK"
+          else node news-pipeline/build-weekly-brief.mjs; fi
+
+      - name: 바뀐 자료 커밋 (v2)
+        if: env.JOB == 'daily' || env.JOB == 'weekly'
+        run: |
+          git config --global user.name  "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add news-history.json "06. 실행계획(1)/prototype/assets/news" "06. 실행계획(1)/prototype/assets/brief"
+          if git diff --cached --quiet; then
+            echo "바뀐 자료가 없습니다."
+          else
+            git commit -m "🤖 새 판: ${JOB} 자료 갱신"
+            git push
+          fi
+
+      - name: 사이트 굽기 (검사 · 인증키 · 외부 CDN · 링크)
+        run: bash "./사이트 굽기.command"
+
+      - name: team-leap-v2 로 배포
+        if: env.CLOUDFLARE_API_TOKEN != ''
+        run: |
+          npx --yes wrangler@4 pages deploy "배포/site" --project-name=team-leap-v2 --branch=main \
+            --commit-hash="$(git rev-parse HEAD)" --commit-message="v2 ${JOB} · $(git log -1 --pretty=%s | head -c 80)"
+
+      - name: 배포 토큰이 없을 때
+        if: env.CLOUDFLARE_API_TOKEN == ''
+        run: echo "::warning::CLOUDFLARE_API_TOKEN 시크릿이 없어 배포를 건너뜁니다. 저장소 Settings → Secrets and variables → Actions 에 넣어 주세요."

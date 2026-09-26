@@ -1,0 +1,293 @@
+/* ==========================================================================
+   한눈에 보기 〔로컬 실험 · 2026. 9. 26.〕 — 디자인 팀 틀 «총괄 정책 현황»
+   ──────────────────────────────────────────────────────────────────────────
+   색은 «하는 일»로 고릅니다.
+     · 학교급(초·중·고)  = 정체  → 앱 전체가 쓰는 학교급 색 그대로(라이트).
+                                  다크는 밝기 띠를 넘어 따로 골라 검증했습니다
+                                  (#1F9A7F·#4A86DA·#D07A2B — 색각 이상 ΔE 15.2).
+     · 학생 수·미달 비율 = 크기  → 한 색의 밝기 5단(순차)
+     · 변화율            = 방향  → 붉음(줄어듦) ↔ 회색 ↔ 파랑(늘어남)(발산)
+   글자는 자료 색을 입지 않습니다 — 색은 옆의 표식이 맡습니다.
+   ========================================================================== */
+:root{
+  --ov-초:#0F8570; --ov-중:#1B4FA0; --ov-고:#CE6410;
+  /* 순차(파랑) — 옅음 → 짙음 */
+  --ov-s0:#DBEAFE; --ov-s1:#93C5FD; --ov-s2:#60A5FA; --ov-s3:#2563EB; --ov-s4:#1E3A8A;
+  /* 순차(호박) — 적정규모 미달 비율 */
+  --ov-a0:#FEF3C7; --ov-a1:#FDE68A; --ov-a2:#FBBF24; --ov-a3:#D97706; --ov-a4:#92400E;
+  /* 발산 — 늘어남(파랑) · 줄어듦(장미 4단) */
+  --ov-up:#60A5FA; --ov-d0:#FECDD3; --ov-d1:#FDA4AF; --ov-d2:#F43F5E; --ov-d3:#BE123C;
+  --ov-na:#E2E8F0;
+  --ov-bar:#94A3B8; --ov-bar-gun:#CBD5E1;
+  --ov-sz-appropriate:#CBD5E1; --ov-sz-small:#FB7185; --ov-sz-minimum:#BE123C;
+  --ov-pj:rgba(37,99,235,.06);
+  --ov-warn:#B45309; --ov-danger:#BE123C;
+  /* 값이 큰(짙은) 칸 위의 이름표 색 — 다크에서는 큰 값이 «밝은» 칸이라 뒤집힙니다 */
+  --ov-lb-hi:#FFFFFF; --ov-lb-hi-stroke:rgba(15,23,42,.35);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ov-초:#1F9A7F; --ov-중:#4A86DA; --ov-고:#D07A2B;
+    --ov-s0:#1E3A5F; --ov-s1:#1D4ED8; --ov-s2:#3B82F6; --ov-s3:#60A5FA; --ov-s4:#BFDBFE;
+    --ov-a0:#3B2A10; --ov-a1:#78350F; --ov-a2:#B45309; --ov-a3:#F59E0B; --ov-a4:#FDE68A;
+    --ov-up:#3B82F6; --ov-d0:#4C1D2A; --ov-d1:#881337; --ov-d2:#E11D48; --ov-d3:#FDA4AF;
+    --ov-na:#253247; --ov-bar:#64748B; --ov-bar-gun:#3B4A5F;
+    --ov-sz-appropriate:#3B4A5F; --ov-sz-small:#E11D48; --ov-sz-minimum:#FDA4AF;
+    --ov-pj:rgba(127,179,247,.07); --ov-warn:#F59E0B; --ov-danger:#FDA4AF;
+    --ov-lb-hi:#0F172A; --ov-lb-hi-stroke:rgba(255,255,255,.45);
+  }
+}
+:root[data-theme="light"]{ --ov-lb-hi:#FFFFFF; --ov-lb-hi-stroke:rgba(15,23,42,.35); }
+:root[data-theme="dark"]{
+  --ov-초:#1F9A7F; --ov-중:#4A86DA; --ov-고:#D07A2B;
+  --ov-s0:#1E3A5F; --ov-s1:#1D4ED8; --ov-s2:#3B82F6; --ov-s3:#60A5FA; --ov-s4:#BFDBFE;
+  --ov-a0:#3B2A10; --ov-a1:#78350F; --ov-a2:#B45309; --ov-a3:#F59E0B; --ov-a4:#FDE68A;
+  --ov-up:#3B82F6; --ov-d0:#4C1D2A; --ov-d1:#881337; --ov-d2:#E11D48; --ov-d3:#FDA4AF;
+  --ov-na:#253247; --ov-bar:#64748B; --ov-bar-gun:#3B4A5F;
+  --ov-sz-appropriate:#3B4A5F; --ov-sz-small:#E11D48; --ov-sz-minimum:#FDA4AF;
+  --ov-pj:rgba(127,179,247,.07); --ov-warn:#F59E0B; --ov-danger:#FDA4AF;
+  --ov-lb-hi:#0F172A; --ov-lb-hi-stroke:rgba(255,255,255,.45);
+}
+
+.ov-root{display:flex;flex-direction:column;gap:22px}
+.ov-loading{padding:40px;text-align:center;color:var(--ink-3)}
+.ov-note{font-size:12px;line-height:1.65;color:var(--ink-3);margin:8px 0 0}
+.ov-note a{color:var(--brand);font-weight:700}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.sw.lv-초,.ov-stack-seg.lv-초{background:var(--ov-초)}
+.sw.lv-중,.ov-stack-seg.lv-중{background:var(--ov-중)}
+.sw.lv-고,.ov-stack-seg.lv-고{background:var(--ov-고)}
+
+/* ── 머리 ── */
+.ov-hero{text-align:center;padding:10px 0 4px}
+.ov-kicker{display:inline-flex;align-items:center;gap:7px;margin:0 0 12px;padding:5px 12px 5px 6px;border-radius:999px;
+  font-size:12px;font-weight:700;color:var(--frame-kicker);background:var(--brand-pale);
+  border:1px solid color-mix(in srgb, var(--frame-kicker) 22%, transparent)}
+.ov-kicker-logo{width:18px;height:18px;border-radius:50%;background:#fff;padding:1px}
+.ov-hero h1{font-size:clamp(24px,3.2vw,36px);font-weight:800;letter-spacing:-.035em;line-height:1.25;margin:0 0 10px}
+.ov-hero h1 em{font-style:normal;color:var(--ov-danger)}
+.ov-lede{max-width:760px;margin:0 auto 18px;font-size:14.5px;line-height:1.75;color:var(--ink-2)}
+.ov-controls{display:inline-flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;padding:8px;
+  border-radius:18px;background:var(--card);border:1px solid var(--line);box-shadow:var(--leap-shadow)}
+.ov-play{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 16px;border:0;border-radius:12px;
+  background:var(--brand);color:var(--leap-on-fill);font-weight:800;font-size:13px}
+.ov-play .ic{font-size:11px}
+.ov-years{display:flex;gap:3px;padding:3px;border-radius:12px;background:var(--frame-seg)}
+.ov-years button{display:flex;flex-direction:column;align-items:center;min-width:64px;min-height:40px;justify-content:center;
+  border:0;border-radius:9px;background:transparent;color:var(--ink-2);font-weight:700;font-size:13.5px;line-height:1.1}
+.ov-years button small{font-size:10px;font-weight:600;color:var(--ink-3);margin-top:2px}
+.ov-years button[aria-pressed="true"]{background:var(--ink);color:var(--card)}
+.ov-years button[aria-pressed="true"] small{color:color-mix(in srgb, var(--card) 75%, transparent)}
+.ov-range input{width:150px;accent-color:var(--brand)}
+.ov-region select{min-height:40px;padding:0 12px;font-weight:700;font-size:13px;border-radius:12px}
+
+/* ── 장면 점 ── */
+.ov-dots{position:fixed;right:14px;top:50%;transform:translateY(-50%);z-index:60;display:flex;flex-direction:column;gap:10px;
+  padding:12px 8px;border-radius:999px;background:var(--card);border:1px solid var(--line);box-shadow:var(--leap-shadow)}
+.ov-dots a{display:block;width:10px;height:10px;border-radius:999px;background:var(--line);transition:height .2s,background .2s}
+.ov-dots a.on{height:26px;background:var(--brand)}
+@media (max-width:1180px){.ov-dots{display:none}}
+
+/* ── 장면 공통 ── */
+.ov-scene{scroll-margin-top:calc(var(--frame-head-h) + 12px)}
+.ov-block{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px 26px;box-shadow:var(--leap-shadow)}
+.ov-scene-head{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 16px;margin-bottom:14px}
+.ov-scene-head h2{flex:1 1 100%;order:2;font-size:clamp(18px,2vw,22px);font-weight:800;letter-spacing:-.03em;line-height:1.35;margin:0}
+.ov-scene-head .ov-seg{order:3}
+.ov-num{order:1;display:flex;align-items:center;gap:8px;margin:0;font-size:12px;font-weight:800;color:var(--frame-kicker)}
+.ov-asof{font-size:11px;font-weight:600;color:var(--ink-3);background:var(--bg);border:1px solid var(--line-2);border-radius:999px;padding:1px 9px}
+.ov-seg{display:inline-flex;gap:3px;padding:3px;border-radius:12px;background:var(--frame-seg)}
+.ov-seg button{border:0;background:transparent;border-radius:9px;min-height:36px;padding:0 12px;font-size:12.5px;font-weight:700;color:var(--ink-2)}
+.ov-seg button[aria-pressed="true"]{background:var(--card);color:var(--brand);box-shadow:0 1px 2px rgba(15,23,42,.06),0 2px 8px rgba(15,23,42,.08)}
+
+/* ── ① 지도 + 칸 ── */
+#ov-s1{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:0;background:var(--card);border:1px solid var(--line);
+  border-radius:22px;box-shadow:var(--leap-shadow);overflow:hidden}
+.ov-map-card{padding:22px 24px 16px;min-width:0}
+.ov-map svg{display:block;width:100%;max-height:560px}
+.ov-rg{stroke:var(--card);stroke-width:1.2;cursor:pointer;transition:fill .35s ease,opacity .2s}
+.ov-rg:hover,.ov-rg:focus-visible{stroke:var(--ink);stroke-width:1.6;outline:none}
+.ov-rg.sel{stroke:var(--brand);stroke-width:3}
+.ov-rg.dim{opacity:.55}
+.ov-rg.na{fill:var(--ov-na)}
+[data-fam="seq"] .ov-rg.q0{fill:var(--ov-s0)} [data-fam="seq"] .ov-rg.q1{fill:var(--ov-s1)} [data-fam="seq"] .ov-rg.q2{fill:var(--ov-s2)}
+[data-fam="seq"] .ov-rg.q3{fill:var(--ov-s3)} [data-fam="seq"] .ov-rg.q4{fill:var(--ov-s4)}
+[data-fam="amb"] .ov-rg.q0{fill:var(--ov-a0)} [data-fam="amb"] .ov-rg.q1{fill:var(--ov-a1)} [data-fam="amb"] .ov-rg.q2{fill:var(--ov-a2)}
+[data-fam="amb"] .ov-rg.q3{fill:var(--ov-a3)} [data-fam="amb"] .ov-rg.q4{fill:var(--ov-a4)}
+[data-fam="div"] .ov-rg.up{fill:var(--ov-up)} [data-fam="div"] .ov-rg.d0{fill:var(--ov-d0)} [data-fam="div"] .ov-rg.d1{fill:var(--ov-d1)}
+[data-fam="div"] .ov-rg.d2{fill:var(--ov-d2)} [data-fam="div"] .ov-rg.d3{fill:var(--ov-d3)}
+.ov-inset{fill:none;stroke:var(--line);stroke-dasharray:0}
+.ov-inset-lb{font-size:8.5px;fill:var(--ink-3)}
+.ov-lb{pointer-events:none}
+.ov-lb text{text-anchor:middle;paint-order:stroke;stroke-width:2.6px;stroke-linejoin:round}
+.ov-lb .n{font-size:9.5px;font-weight:800;fill:var(--ink);stroke:color-mix(in srgb, var(--card) 80%, transparent)}
+.ov-lb .v{font-size:8.5px;font-weight:700;fill:var(--ink-2);stroke:color-mix(in srgb, var(--card) 80%, transparent)}
+/* 큰 값 칸(라이트=짙음, 다크=밝음) 위의 이름표는 반대 밝기의 글자 */
+[data-fam] .ov-lb.q3 text,[data-fam] .ov-lb.q4 text,
+[data-fam="div"] .ov-lb.d2 text,[data-fam="div"] .ov-lb.d3 text{fill:var(--ov-lb-hi);stroke:var(--ov-lb-hi-stroke)}
+.ov-legend{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding-top:12px;border-top:1px solid var(--line-2);margin-top:8px}
+.ov-legend-h{font-size:12px;font-weight:800;color:var(--ink-2);margin-right:4px}
+.ov-lg{display:inline-flex;align-items:center;font-size:11.5px;color:var(--ink-2);padding:3px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+.sw.seq.q0{background:var(--ov-s0)}.sw.seq.q1{background:var(--ov-s1)}.sw.seq.q2{background:var(--ov-s2)}.sw.seq.q3{background:var(--ov-s3)}.sw.seq.q4{background:var(--ov-s4)}
+.sw.amb.q0{background:var(--ov-a0)}.sw.amb.q1{background:var(--ov-a1)}.sw.amb.q2{background:var(--ov-a2)}.sw.amb.q3{background:var(--ov-a3)}.sw.amb.q4{background:var(--ov-a4)}
+.sw.div.up{background:var(--ov-up)}.sw.div.d0{background:var(--ov-d0)}.sw.div.d1{background:var(--ov-d1)}.sw.div.d2{background:var(--ov-d2)}.sw.div.d3{background:var(--ov-d3)}
+
+.ov-panel{border-left:1px solid var(--line);padding:22px 20px;display:flex;flex-direction:column;gap:12px;background:color-mix(in srgb, var(--bg) 45%, var(--card))}
+.ov-panel-k{margin:0;font-size:11.5px;font-weight:800;color:var(--frame-kicker)}
+.ov-panel h3{margin:0;font-size:20px;font-weight:800;letter-spacing:-.03em;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.ov-tag{font-size:10.5px;font-weight:700;color:var(--ink-2);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:1px 8px}
+.ov-panel-kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ov-panel-kpis .k{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 12px;min-width:0}
+.ov-panel-kpis .k:first-child{grid-column:1/-1}
+.ov-panel-kpis .k > span{display:block;font-size:11px;font-weight:600;color:var(--ink-3);line-height:1.45}
+/* 작은 이름표(2026 공시·전망)는 제목 뒤에 붙여 둡니다 — 좁은 칸에서 양쪽 끝으로 벌리면
+   「2026→2036 / 변화 … 전망」처럼 제목이 두 동강 났습니다. */
+.ov-panel-kpis .k > span em{font-style:normal;font-weight:700;color:var(--ink-2);font-size:10px;
+  background:var(--frame-seg);border-radius:5px;padding:0 5px;margin-left:4px;white-space:nowrap;display:inline-block}
+.ov-panel-kpis b{display:block;font-size:22px;font-weight:800;letter-spacing:-.03em;margin-top:3px}
+.ov-panel-kpis b small{font-size:11.5px;font-weight:600;color:var(--ink-3);margin-left:3px}
+.ov-panel-kpis b.neg{color:var(--ov-danger)}
+.ov-sub{margin:2px 0 0;font-size:11px;color:var(--ink-3)}
+.ov-stack{display:flex;gap:2px;height:8px;border-radius:999px;overflow:hidden;margin-top:8px}
+.ov-stack-seg{display:block;min-width:2px}
+.ov-stack-lg{margin:6px 0 0;font-size:11px;color:var(--ink-2)}
+.ov-spark svg{display:block;width:100%}
+.ov-spark .pj{fill:var(--ov-pj)}
+.ov-spark .ln{fill:none;stroke:var(--brand);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.ov-spark .dt{fill:var(--brand);stroke:var(--card);stroke-width:2}
+.ov-spark text{font-size:8.5px;fill:var(--ink-3)}
+.ov-diag{margin:0;padding:12px 13px;border-radius:14px;font-size:12.5px;line-height:1.7;color:var(--ink);
+  background:color-mix(in srgb, #F59E0B 10%, var(--card));border:1px solid color-mix(in srgb, #F59E0B 35%, var(--line))}
+.ov-panel-act{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+.ov-btn{min-height:38px;padding:0 13px;border-radius:11px;border:1px solid var(--brand);background:var(--brand);color:var(--leap-on-fill);font-weight:700;font-size:12.5px}
+.ov-btn.ghost{background:var(--card);color:var(--brand);border-color:var(--line)}
+
+/* ── ② 네 지표 ── */
+.ov-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.ov-kpi{border:1px solid var(--line);border-radius:18px;padding:16px 16px 14px;background:var(--card);min-width:0}
+.ov-kpi .top{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--ink-2)}
+.ov-kpi .top em{font-style:normal;font-size:10.5px;font-weight:700;color:var(--brand);background:var(--brand-pale);border-radius:6px;padding:2px 7px;white-space:nowrap}
+.ov-kpi b{display:block;margin:10px 0 12px;font-size:clamp(26px,2.6vw,34px);font-weight:800;letter-spacing:-.04em;color:var(--ink)}
+.ov-kpi b small{font-size:13px;font-weight:600;color:var(--ink-3);margin-left:4px;letter-spacing:0}
+.ov-kpi .bar{height:8px;border-radius:999px;background:var(--frame-seg);overflow:hidden}
+.ov-kpi .bar i{display:block;height:100%;border-radius:999px;background:var(--brand)}
+.ov-kpi.warn b{color:var(--ov-warn)} .ov-kpi.warn .bar i{background:var(--ov-warn)}
+.ov-kpi.danger b{color:var(--ov-danger)} .ov-kpi.danger .bar i{background:var(--ov-danger)}
+.ov-kpi .lr{display:flex;justify-content:space-between;gap:8px;margin-top:7px;font-size:11px;color:var(--ink-3)}
+.ov-kpi .lr span:last-child{font-weight:800;color:var(--ink-2)}
+.ov-kpi p{margin:10px 0 0;padding-top:10px;border-top:1px solid var(--line-2);font-size:11.5px;color:var(--ink-3)}
+.ov-callout{margin:14px 0 0;padding:13px 16px;border-radius:14px;background:var(--brand-pale);border:1px solid color-mix(in srgb, var(--brand) 20%, var(--line));
+  font-size:13px;line-height:1.75;color:var(--ink)}
+.ov-links{margin-top:16px}
+.ov-links-h{margin:0 0 8px;font-size:12px;font-weight:800;color:var(--ink-3)}
+.ov-link-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.ov-link{display:flex;flex-direction:column;gap:4px;padding:13px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card);text-decoration:none;color:var(--ink)}
+.ov-link b{font-size:13.5px}.ov-link b::after{content:" →";color:var(--brand)}
+.ov-link span{font-size:12px;line-height:1.55;color:var(--ink-3)}
+.ov-link:hover{border-color:color-mix(in srgb, var(--brand) 40%, var(--line));background:var(--brand-pale)}
+
+/* ── ③ 학년별 ── */
+.ov-cohort{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:22px;align-items:start}
+.ov-hbars{display:flex;flex-direction:column;gap:5px}
+.ov-hbar{display:grid;grid-template-columns:78px minmax(0,1fr) 64px;align-items:center;gap:10px;font-size:12px;border-radius:8px;padding:1px 0}
+.ov-hbar .nm{color:var(--ink-2);font-weight:600;text-align:right}
+.ov-hbar .tr{height:16px;display:block}
+.ov-hbar .tr i{display:block;height:100%;border-radius:0 4px 4px 0;opacity:.8}
+.ov-hbar .tr i.lv-초{background:var(--ov-초)} .ov-hbar .tr i.lv-중{background:var(--ov-중)} .ov-hbar .tr i.lv-고{background:var(--ov-고)}
+.ov-hbar .val{font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.ov-hbar.hl .nm,.ov-hbar.hl .val{color:var(--ink);font-weight:800}
+.ov-hbar.hl .tr i{opacity:1}
+.ov-hbar:hover .tr i,.ov-hbar:focus-visible .tr i{opacity:1;filter:brightness(1.08)}
+.ov-cohort-side{display:flex;flex-direction:column;gap:10px}
+.ov-mini{border:1px solid var(--line);border-radius:16px;padding:13px 14px;background:var(--card)}
+.ov-mini > span{font-size:12px;font-weight:700;color:var(--ink-3)}
+.ov-mini b{display:block;font-size:26px;font-weight:800;letter-spacing:-.03em;margin:4px 0 2px}
+.ov-mini p{margin:0;font-size:12px;line-height:1.6;color:var(--ink-2)}
+
+/* ── ④ 추이 ── */
+.ov-trend svg{display:block;width:100%;height:auto}
+.ov-trend-lg{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--ink-2);margin-bottom:6px}
+.ov-trend-lg .pj-lg i{display:inline-block;width:18px;height:10px;border-radius:3px;background:var(--ov-pj);border:1px solid var(--line);margin-right:5px;vertical-align:-1px}
+.ov-trend .pj{fill:var(--ov-pj)}
+.ov-trend .gd,.ov-bars .gd{stroke:var(--line-2);stroke-width:1}
+.ov-trend .ax{font-size:11px;fill:var(--ink-3)}
+.ov-trend .ax.now{font-weight:800;fill:var(--ink)}
+.ov-trend .ar{opacity:.16}
+.ov-trend .ar.lv-초{fill:var(--ov-초)} .ov-trend .ar.lv-중{fill:var(--ov-중)} .ov-trend .ar.lv-고{fill:var(--ov-고)}
+.ov-trend .ln{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.ov-trend .ln.lv-초{stroke:var(--ov-초)} .ov-trend .ln.lv-중{stroke:var(--ov-중)} .ov-trend .ln.lv-고{stroke:var(--ov-고)}
+.ov-trend .nowl{stroke:var(--ink-3);stroke-width:1}
+.ov-trend .sel{stroke:var(--brand);stroke-width:1.5}
+.ov-trend .seld{fill:var(--brand);stroke:var(--card);stroke-width:2}
+.ov-trend .xh{stroke:var(--ink);stroke-width:1;opacity:.5}
+.ov-trend .hit{fill:transparent;cursor:crosshair}
+.ov-trend .hit:focus-visible{outline:none;stroke:var(--brand);stroke-width:1}
+.ov-trend .endlb{font-size:11.5px;font-weight:800;fill:var(--ink)}
+.ov-phases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+.ov-phase{border:1px solid var(--line);border-radius:16px;padding:13px 15px;background:var(--card)}
+.ov-phase .t{margin:0 0 6px;font-size:13px;font-weight:800;color:var(--ink);display:flex;align-items:center;flex-wrap:wrap;gap:4px}
+.ov-phase .t em{font-style:normal;margin-left:auto;font-size:12px;color:var(--ov-danger)}
+.ov-phase p{margin:0;font-size:12px;line-height:1.65;color:var(--ink-2)}
+
+/* ── ⑤ 시군 비교 ── */
+.ov-s5-grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:26px}
+.ov-bars svg{display:block;width:100%;height:auto}
+.ov-b{cursor:pointer;outline:none}
+.ov-b .hitb{fill:transparent}
+.ov-b .bar{fill:var(--ov-bar)}
+.ov-b.gun .bar{fill:var(--ov-bar-gun)}
+.ov-b:hover .bar,.ov-b:focus-visible .bar{fill:var(--brand);opacity:.7}
+.ov-b.sel .bar{fill:var(--brand);opacity:1}
+.ov-b .bv{font-size:10.5px;font-weight:800;fill:var(--ink)}
+.ov-b .bx{font-size:10.5px;fill:var(--ink-2)}
+.ov-b.sel .bx{font-weight:800;fill:var(--brand)}
+.ov-size{border-left:1px solid var(--line-2);padding-left:24px;display:flex;flex-direction:column;gap:10px}
+.ov-size h3{margin:0;font-size:17px;font-weight:800;letter-spacing:-.02em;line-height:1.4}
+.ov-size h3 em{font-style:normal;color:var(--ov-danger)}
+.ov-100{display:flex;gap:2px;height:22px;border-radius:8px;overflow:hidden}
+.ov-100 .seg{display:block;min-width:3px}
+.ov-100 .appropriate,.sw.sz-appropriate{background:var(--ov-sz-appropriate)}
+.ov-100 .small,.sw.sz-small{background:var(--ov-sz-small)}
+.ov-100 .minimum,.sw.sz-minimum{background:var(--ov-sz-minimum)}
+.ov-100-lg{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.ov-100-lg li{display:grid;grid-template-columns:16px 1fr auto 52px;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-2)}
+.ov-100-lg b{color:var(--ink)} .ov-100-lg em{font-style:normal;text-align:right;color:var(--ink-3)}
+
+/* ── ⑥ 브리프 미리보기 (brief.js 가 채웁니다) ── */
+.ov-brief-teaser{min-height:60px}
+
+.ov-foot{font-size:12px;line-height:1.75;color:var(--ink-3);padding:4px 6px 0}
+
+/* 알림풍선 — 값이 굵게, 이름이 뒤에 */
+.ov-tip{position:fixed;z-index:1400;pointer-events:none;min-width:150px;max-width:280px;padding:9px 11px;border-radius:12px;
+  background:var(--card);border:1px solid var(--line);box-shadow:0 10px 30px rgba(15,23,42,.18);display:flex;flex-direction:column;gap:4px}
+.ov-tip .r{display:flex;align-items:baseline;gap:7px;font-size:11.5px;color:var(--ink-3)}
+.ov-tip .r b{font-size:13px;color:var(--ink);font-variant-numeric:tabular-nums}
+.ov-tip .sw{width:12px;height:3px;border-radius:2px;margin:0;align-self:center}
+
+/* ── 좁은 화면 ── */
+@media (max-width:1100px){
+  #ov-s1{grid-template-columns:1fr}
+  .ov-panel{border-left:0;border-top:1px solid var(--line)}
+  .ov-kpis,.ov-link-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ov-s5-grid{grid-template-columns:1fr}
+  .ov-size{border-left:0;padding-left:0;border-top:1px solid var(--line-2);padding-top:16px}
+}
+@media (max-width:720px){
+  .ov-block{padding:18px 14px;border-radius:18px}
+  .ov-map-card{padding:16px 12px 12px}
+  .ov-controls{display:flex;border-radius:16px}
+  .ov-years{width:100%;justify-content:space-between}
+  .ov-years button{min-width:0;flex:1}
+  .ov-range{display:none}
+  .ov-region,.ov-region select,.ov-play{flex:1}
+  .ov-cohort,.ov-phases{grid-template-columns:1fr}
+  .ov-kpis{grid-template-columns:1fr 1fr;gap:8px}
+  .ov-kpi{padding:12px}
+  .ov-link-grid{grid-template-columns:1fr}
+  .ov-hbar{grid-template-columns:62px minmax(0,1fr) 52px;gap:6px}
+}
+@media print{
+  .ov-controls,.ov-dots,.ov-seg,.ov-panel-act,.ov-links,.ov-tip{display:none !important}
+  .ov-block,#ov-s1{box-shadow:none;break-inside:avoid}
+}

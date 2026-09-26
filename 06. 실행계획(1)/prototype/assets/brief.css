@@ -1,0 +1,215 @@
+/* ==========================================================================
+   주간 브리프 〔로컬 실험 · 2026. 9. 26.〕
+   ──────────────────────────────────────────────────────────────────────────
+   디자인 팀 틀(둥근 카드·파랑 강조) 위에, numbers.coroke.net 의 결 —
+   «숫자 한 줄 제목 · 그림 한 장 · 짧은 해설 · 출처» — 를 얹었습니다.
+   읽는 글이라 폭을 좁히고(760~1100px) 줄 간격을 넓혔습니다.
+   ========================================================================== */
+:root{
+  --br-accent:#E11D48;           /* 주제 머리말 — coroke 의 붉은 머리말 자리 */
+  --br-bar:#94A3B8; --br-bar-hl:#2563EB;
+  --br-ok:#15803D; --br-ok-bg:#F0FDF4; --br-mid:#B45309; --br-mid-bg:#FFFBEB; --br-bad:#BE123C; --br-bad-bg:#FFF1F2;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --br-accent:#FB7185; --br-bar:#64748B; --br-bar-hl:#7FB3F7;
+    --br-ok:#4ADE80; --br-ok-bg:#052E16; --br-mid:#FBBF24; --br-mid-bg:#2A1F05; --br-bad:#FDA4AF; --br-bad-bg:#3A0D17;
+  }
+}
+:root[data-theme="dark"]{
+  --br-accent:#FB7185; --br-bar:#64748B; --br-bar-hl:#7FB3F7;
+  --br-ok:#4ADE80; --br-ok-bg:#052E16; --br-mid:#FBBF24; --br-mid-bg:#2A1F05; --br-bad:#FDA4AF; --br-bad-bg:#3A0D17;
+}
+
+.br-root{max-width:1100px;margin:0 auto}
+.br-paper{display:flex;flex-direction:column;gap:18px}
+
+/* 머리 */
+.br-head{padding:6px 2px 0}
+.br-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.br-kicker{display:inline-flex;align-items:center;gap:7px;margin:0;font-size:13px;font-weight:700;color:var(--frame-kicker)}
+.br-kicker .dot{width:8px;height:8px;border-radius:50%;background:var(--br-accent)}
+.br-tools{display:flex;gap:6px;align-items:center}
+.br-tools select{min-height:38px;border-radius:11px;font-weight:700}
+.br-btn{min-height:38px;padding:0 14px;border-radius:11px;border:1px solid var(--line);background:var(--card);color:var(--ink-2);font-weight:700;font-size:12.5px}
+.br-btn:hover{color:var(--brand);background:var(--brand-pale)}
+.br-head h1{margin:12px 0 10px;font-size:clamp(24px,3vw,34px);font-weight:800;letter-spacing:-.035em;line-height:1.3}
+.br-meta{margin:0;font-size:13px;color:var(--ink-3);display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.br-badge{display:inline-block;font-size:11px;font-weight:800;border-radius:999px;padding:2px 9px;border:1px solid var(--line);background:var(--card);color:var(--ink-2)}
+.br-badge.ai{color:#6D28D9;border-color:#DDD6FE;background:#F5F3FF}
+.br-badge.draft{color:var(--brand);border-color:color-mix(in srgb, var(--brand) 30%, var(--line));background:var(--brand-pale)}
+.br-badge.rule{color:var(--ink-2);background:var(--frame-seg)}
+.br-badge.st{color:var(--br-mid);border-color:color-mix(in srgb, var(--br-mid) 35%, var(--line));background:var(--br-mid-bg)}
+
+/* 첫머리 */
+.br-lead-card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px 26px;box-shadow:var(--leap-shadow)}
+.br-lead{margin:0;font-size:16.5px;line-height:1.85;color:var(--ink);letter-spacing:-.015em}
+.br-takes{margin:16px 0 4px;padding:0;list-style:none;counter-reset:tk;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.br-takes li{counter-increment:tk;position:relative;padding:12px 14px 12px 42px;border-radius:14px;background:var(--bg);border:1px solid var(--line-2);font-size:13px;line-height:1.65;color:var(--ink-2)}
+.br-takes li::before{content:counter(tk);position:absolute;left:12px;top:11px;width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--card);
+  font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center}
+
+/* 근거 칩 */
+.br-cites{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:12px}
+.br-cites .lb{font-size:11px;font-weight:800;color:var(--ink-3);margin-right:2px}
+.br-cite{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;color:var(--ink-2);text-decoration:none;
+  border:1px solid var(--line);border-radius:8px;padding:2px 8px;background:var(--card)}
+.br-cite em{font-style:normal;font-weight:500;color:var(--ink-3)}
+.br-cite:hover{border-color:color-mix(in srgb, var(--brand) 40%, var(--line));color:var(--brand)}
+
+/* 절 */
+.br-sec{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px 26px;box-shadow:var(--leap-shadow)}
+.br-sec h2{display:flex;align-items:center;gap:9px;margin:0 0 6px;font-size:20px;font-weight:800;letter-spacing:-.03em}
+.br-sec h2 .no{width:26px;height:26px;border-radius:9px;background:var(--brand);color:var(--leap-on-fill);font-size:13px;display:flex;align-items:center;justify-content:center}
+.br-sec-lede{margin:0 0 16px;font-size:13px;color:var(--ink-3)}
+.br-note{margin:10px 0 0;font-size:12px;color:var(--ink-3)}
+.br-note a{color:var(--brand);font-weight:700}
+
+/* 1. 숫자 — coroke 카드 */
+.br-nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.br-num{border:1px solid var(--line);border-radius:18px;padding:16px 16px 14px;background:var(--card);display:flex;flex-direction:column;min-width:0}
+.br-num .k,.br-issue .k{margin:0 0 6px;font-size:12px;font-weight:800;color:var(--br-accent)}
+.br-num h3{margin:0 0 6px;font-size:19px;font-weight:800;letter-spacing:-.035em;line-height:1.35}
+.br-num .sub{margin:0 0 10px;font-size:13px;color:var(--ink-2);line-height:1.55}
+.br-num .body{margin:10px 0 0;font-size:13px;line-height:1.75;color:var(--ink-2)}
+.br-num .br-cites{margin-top:auto;padding-top:12px}
+.br-chart{margin:0;padding:12px;border-radius:14px;background:var(--bg);border:1px solid var(--line-2)}
+.br-chart figcaption{font-size:11.5px;color:var(--ink-3);margin-bottom:6px}
+.br-chart figcaption b{color:var(--ink-2)}
+.br-chart svg{display:block;width:100%;height:auto}
+.br-chart .bl{stroke:var(--line);stroke-width:1}
+.br-chart .bar{fill:var(--br-bar)}
+.br-chart .hl .bar{fill:var(--br-bar-hl)}
+.br-chart .v{font-size:12px;font-weight:800;fill:var(--ink)}
+.br-chart .x{font-size:11px;fill:var(--ink-3)}
+.br-chart .ln{fill:none;stroke:var(--br-bar-hl);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.br-chart .dt{fill:var(--br-bar-hl);stroke:var(--card);stroke-width:2}
+.br-chart .pj{fill:color-mix(in srgb, var(--br-bar-hl) 7%, transparent)}
+.br-chart-src,.br-chart-note{margin:6px 0 0;font-size:10.5px;color:var(--ink-3)}
+/* 세로 막대(HTML) — 막대 ≤24px, 끝 4px 둥글게, 값은 막대 위 */
+.br-cols{display:flex;align-items:stretch;gap:4px;height:170px;padding-top:4px}
+.br-cols .c{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px}
+.br-cols .c b{font-size:11.5px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.br-cols .b{flex:1;width:100%;display:flex;justify-content:center;align-items:flex-end;border-bottom:1px solid var(--line)}
+.br-cols .b i{display:block;width:min(24px,70%);border-radius:4px 4px 0 0;background:var(--br-bar)}
+.br-cols .hl .b i{background:var(--br-bar-hl)}
+.br-cols .x{font-size:10.5px;color:var(--ink-3);text-align:center;line-height:1.25;word-break:keep-all;min-height:26px}
+.br-hb{display:flex;flex-direction:column;gap:7px}
+.br-hb .r{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto;align-items:center;gap:8px;font-size:12px}
+.br-hb .n{color:var(--ink-2);line-height:1.35}
+.br-hb .t{height:14px;display:block}
+.br-hb .t i{display:block;height:100%;border-radius:0 4px 4px 0;background:var(--br-bar)}
+.br-hb .hl .t i{background:var(--br-bar-hl)}
+.br-hb b{font-size:12.5px;font-variant-numeric:tabular-nums}
+
+/* 2. 깊이 읽기 */
+.br-issue{padding:18px 0 20px;border-top:1px solid var(--line-2)}
+.br-issue:first-of-type{border-top:0;padding-top:8px}
+.br-issue h3{display:flex;gap:10px;align-items:flex-start;margin:0 0 12px;font-size:18px;font-weight:800;letter-spacing:-.03em;line-height:1.4}
+.br-issue h3 .ix{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--ink);font-size:13px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.br-issue-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.br-issue .lb{margin:0 0 5px;font-size:11.5px;font-weight:800;color:var(--ink-3);letter-spacing:.02em}
+.br-issue .lb.gb{margin-top:14px}
+.br-issue-grid p:not(.lb){margin:0;font-size:14px;line-height:1.8;color:var(--ink)}
+.br-facts{display:flex;flex-wrap:wrap;gap:6px}
+.br-fact{display:inline-flex;flex-direction:column;gap:1px;padding:7px 11px;border-radius:12px;background:var(--brand-pale);border:1px solid color-mix(in srgb, var(--brand) 18%, var(--line))}
+.br-fact em{font-style:normal;font-size:10.5px;color:var(--ink-3)}
+.br-fact b{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.02em}
+.br-ask{margin-top:14px;padding:12px 14px;border-radius:14px;background:color-mix(in srgb, #F59E0B 8%, var(--card));border:1px solid color-mix(in srgb, #F59E0B 30%, var(--line))}
+.br-ask ul{margin:0;padding-left:18px}
+.br-ask li{font-size:13.5px;line-height:1.7;color:var(--ink)}
+
+/* 3. 다른 시·도 */
+.br-regions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.br-region{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;border:1px solid var(--line);border-radius:16px;padding:14px;background:var(--card)}
+.br-region .rg{margin:0;width:52px;height:52px;border-radius:14px;background:var(--ink);color:var(--card);font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center}
+.br-region h3{margin:0 0 6px;font-size:15px;font-weight:800;letter-spacing:-.02em;line-height:1.45}
+.br-region p{margin:0 0 6px;font-size:13px;line-height:1.7;color:var(--ink-2)}
+.br-region .cmp{padding:8px 10px;border-radius:10px;background:var(--bg);color:var(--ink)}
+.br-region .cmp b{color:var(--brand);margin-right:4px}
+
+/* 4. 수치 맞춰 보기 */
+.br-fc{border:1px solid var(--line);border-radius:18px;padding:16px 18px;background:var(--card)}
+.br-fc blockquote{margin:0 0 12px;font-size:15px;font-weight:700;color:var(--ink)}
+.br-fc cite{font-style:normal;font-weight:500;font-size:12.5px;color:var(--ink-3)}
+.br-fc-vs{display:flex;flex-wrap:wrap;align-items:center;gap:14px}
+.br-fc-vs > div:not(.vs){display:flex;flex-direction:column;padding:10px 16px;border-radius:14px;background:var(--bg);min-width:140px}
+.br-fc-vs span{font-size:11.5px;font-weight:700;color:var(--ink-3)}
+.br-fc-vs b{font-size:28px;font-weight:800;letter-spacing:-.03em}
+.br-fc-vs em{font-style:normal;font-size:11px;color:var(--ink-3);max-width:220px}
+.br-fc-vs .vs{font-size:20px;color:var(--ink-3)}
+.br-fc .verdict{margin:0;padding:6px 12px;border-radius:999px;font-weight:800;font-size:13px}
+.verdict.ok{color:var(--br-ok);background:var(--br-ok-bg)} .verdict.mid{color:var(--br-mid);background:var(--br-mid-bg)} .verdict.bad{color:var(--br-bad);background:var(--br-bad-bg)}
+.br-fc .ex{margin:10px 0 0;font-size:12.5px;color:var(--ink-2)}
+.br-fc .note{margin:8px 0 0;font-size:13.5px;line-height:1.75;color:var(--ink)}
+
+/* 다음 주 */
+.br-watch{margin:0;padding-left:20px}
+.br-watch li{font-size:14px;line-height:1.7;margin-bottom:8px}
+.br-watch .br-cites{display:inline-flex;margin:0 0 0 4px}
+
+/* 기사 전체 */
+.br-stat{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px;margin:10px 0 14px}
+.br-topics .r{display:grid;grid-template-columns:120px minmax(0,1fr) 28px 70px;align-items:center;gap:8px;font-size:12.5px;margin-bottom:5px}
+.br-topics .n{color:var(--ink-2)}
+.br-topics .t{position:relative;height:12px;display:block;background:var(--frame-seg);border-radius:4px}
+.br-topics .t i{display:block;height:100%;border-radius:4px;background:var(--br-bar-hl)}
+.br-topics .t s{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);opacity:.55}
+.br-topics b{text-align:right}
+.br-topics em{font-style:normal;font-size:11px;color:var(--ink-3)}
+.br-regs{display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start}
+.br-rg{font-size:12px;color:var(--ink-2);border:1px solid var(--line);border-radius:999px;padding:3px 10px;background:var(--card)}
+.br-rg b{color:var(--ink)}
+.br-list details{border:1px solid var(--line);border-radius:12px;margin-bottom:6px;background:var(--card)}
+.br-list summary{padding:10px 14px;font-weight:800;font-size:13.5px;cursor:pointer}
+.br-list summary b{color:var(--brand);margin-left:4px}
+.br-list ul{list-style:none;margin:0;padding:0 14px 10px}
+.br-list li{display:grid;grid-template-columns:44px 40px minmax(0,1fr) auto auto;gap:8px;align-items:baseline;padding:6px 0;border-top:1px solid var(--line-2);font-size:12.5px}
+.br-list li .d,.br-list li .o{color:var(--ink-3);font-size:11.5px}
+.br-list li .rg{font-size:11px;font-weight:700;color:var(--ink-2)}
+.br-list li a{color:var(--ink);text-decoration:none}
+.br-list li a:hover{color:var(--brand);text-decoration:underline}
+.br-list li .c{font-size:10.5px;font-weight:800;color:var(--brand);background:var(--brand-pale);border-radius:6px;padding:1px 6px}
+
+/* 만드는 법 */
+.br-method{padding:18px 22px;border-radius:18px;background:var(--frame-seg);font-size:13px;line-height:1.75;color:var(--ink-2)}
+.br-method h2{margin:0 0 8px;font-size:15px;font-weight:800;color:var(--ink)}
+.br-method ol{margin:0 0 8px;padding-left:20px}
+.br-method details{margin-top:6px}
+
+/* 한눈에 보기 «이번 주» 칸 */
+.br-teaser{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px;align-items:start}
+.br-teaser .k{margin:0 0 6px;font-size:12px;color:var(--ink-3);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.br-teaser h3{margin:0 0 8px;font-size:19px;font-weight:800;letter-spacing:-.03em;line-height:1.4}
+.br-teaser p{margin:0 0 14px;font-size:13.5px;line-height:1.75;color:var(--ink-2)}
+.br-teaser .ov-btn{display:inline-flex;align-items:center;text-decoration:none}
+.br-teaser .r{margin:0;padding:0;list-style:none;counter-reset:tn;display:flex;flex-direction:column;gap:8px}
+.br-teaser .r li{counter-increment:tn;padding:12px 14px 12px 40px;position:relative;border:1px solid var(--line);border-radius:14px;font-weight:800;font-size:14px;letter-spacing:-.02em;line-height:1.45;background:var(--card)}
+.br-teaser .r li::before{content:counter(tn);position:absolute;left:13px;top:12px;font-size:12px;font-weight:800;color:var(--br-accent)}
+
+@media (max-width:1000px){
+  .br-nums{grid-template-columns:1fr 1fr}
+  .br-takes{grid-template-columns:1fr}
+  .br-regions,.br-stat,.br-teaser{grid-template-columns:1fr}
+}
+@media (max-width:720px){
+  .br-lead-card,.br-sec{padding:18px 14px;border-radius:18px}
+  .br-nums,.br-issue-grid{grid-template-columns:1fr}
+  .br-lead{font-size:15px}
+  .br-list li{grid-template-columns:40px minmax(0,1fr);}
+  .br-list li .rg,.br-list li .o,.br-list li .c{display:none}
+  .br-topics .r{grid-template-columns:96px minmax(0,1fr) 24px}
+  .br-topics em{display:none}
+}
+@media print{
+  .br-tools,.br-list{display:none !important}
+  .br-lead-card,.br-sec{box-shadow:none;break-inside:avoid-page}
+  .br-num,.br-issue,.br-region,.br-fc{break-inside:avoid}
+  .br-nums{grid-template-columns:1fr 1fr 1fr}
+}
+
+/* 인쇄 부록 — 화면에는 없습니다(print-only). 인쇄 규칙은 assets/print.css */
+.br-refs h2{font-size:13pt;margin:0 0 3mm}
+.br-refs ol{margin:0;padding-left:6mm;font-size:8.5pt;line-height:1.5}
+.br-refs li{margin-bottom:1.6mm;break-inside:avoid}
+.br-refs .u{display:block;font-size:7pt;color:#556476;word-break:break-all}
