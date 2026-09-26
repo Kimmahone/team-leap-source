@@ -12119,20 +12119,27 @@ function mvDeclutter(map, marks){
   try{
     const items = marks.map(mk => {
       const el = mk.getElement(); const p = map.project(mk.getLngLat());
-      return { mk, x:p.x, y:p.y, w:(el.offsetWidth || 90) + 4, h:(el.offsetHeight || 36) + 4 };
+      return { mk, x:p.x, y:p.y, w:(el.offsetWidth || 110) + 6, h:(el.offsetHeight || 26) + 6 };
     }).sort((a, b) => a.y - b.y);
     const placed = [];
-    const hit = (a, b) => Math.abs(a.x - b.x) * 2 < (a.w + b.w) && Math.abs(a.y - b.y) * 2 < (a.h + b.h);
+    /* 겹친 넓이 — 빈자리가 없을 때 «가장 덜 겹치는» 자리를 고르는 데 씁니다.
+       ★ 예전에는 빈자리를 못 찾으면 제자리(0)로 돌아가 오히려 크게 겹쳤습니다
+         (배포본에서 칠곡이 의성·구미를 덮음). */
+    const overlap = (a, b) => Math.max(0, Math.min(a.x + a.w / 2, b.x + b.w / 2) - Math.max(a.x - a.w / 2, b.x - b.w / 2)) *
+                              Math.max(0, Math.min(a.y + a.h / 2, b.y + b.h / 2) - Math.max(a.y - a.h / 2, b.y - b.h / 2));
     items.forEach(it => {
-      const tries = [0, -1, 1, -2, 2, -3, 3];
-      let best = null;
-      for(const k of tries){
-        const cand = { x: it.x, y: it.y + k * it.h * .55, w: it.w, h: it.h };
-        if(!placed.some(p => hit(p, cand))){ best = { cand, dy: k * it.h * .55 }; break; }
+      const cands = [];
+      [0, -1, 1, -2, 2, -3, 3].forEach(k => [0, -1, 1].forEach(m => cands.push({ dx: m * it.w * .5, dy: k * it.h * .6 })));
+      cands.sort((a, b) => (Math.abs(a.dx) + Math.abs(a.dy)) - (Math.abs(b.dx) + Math.abs(b.dy)));   /* 가까운 자리부터 */
+      let best = null, bestCost = Infinity;
+      for(const c of cands){
+        const box = { x: it.x + c.dx, y: it.y + c.dy, w: it.w, h: it.h };
+        const cost = placed.reduce((a, p) => a + overlap(p, box), 0);
+        if(cost === 0){ best = { c, box }; break; }
+        if(cost < bestCost){ bestCost = cost; best = { c, box }; }
       }
-      if(!best) best = { cand:{ x:it.x, y:it.y, w:it.w, h:it.h }, dy:0 };
-      it.mk.setOffset([0, Math.round(best.dy)]);
-      placed.push(best.cand);
+      it.mk.setOffset([Math.round(best.c.dx), Math.round(best.c.dy)]);
+      placed.push(best.box);
     });
   }catch(_e){}
 }

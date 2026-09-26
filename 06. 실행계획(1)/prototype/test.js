@@ -2876,6 +2876,10 @@ check('«소규모»가 화면마다 다른 집합을 가리키지 않는다 (�
   /곳이 학생 100명 이하<\/b>/.test(js) && !/곳이 소규모<\/b>\(학생 100명 이하\)/.test(js));
 check('지도는 경북 전체가 보이는 칸에 맞춰 열린다', /function mvHomeFit\(map, animate\)/.test(js) && /mvHomeFit\(map, false\)/.test(js) && /on\('mv-reset', \(\) => \{ mvHomeFit\(MV\.map, true\); \}\)/.test(js));
 check('지도 시군 딱지는 서로 덮지 않게 비켜 선다', /function mvDeclutter\(map, marks\)/.test(js) && /mvDeclutter\(map, MV\.marks\.filter/.test(js));
+/* 빈자리가 없을 때 제자리(0)로 돌아가면 크게 겹쳤습니다(배포본 칠곡·의성). 가장 덜 겹치는 자리를 고릅니다. */
+check('딱지 비키기는 빈자리가 없으면 «가장 덜 겹치는» 자리를 고른다', /bestCost/.test(js) && /const overlap = \(a, b\)/.test(js));
+check('딱지 비키기를 글꼴 도착·지도 크기 바뀜 뒤에 다시 한다', /map\.on\('resize', reDeclutter\)/.test(js) && /document\.fonts\.ready\.then\(reDeclutter\)/.test(js));
+check('넓은 화면의 시군 딱지는 한 줄이다', /\.mv-bub\{display:flex;align-items:baseline/.test(frameCss));
 check('한국어는 낱말 단위로 줄을 바꾼다', /word-break:keep-all/.test(frameCss));
 check('닫힌 서랍 그림자가 화면 끝에 비치지 않는다', /\.glossary-drawer:not\(\.open\)\{box-shadow:none;visibility:hidden\}/.test(frameCss));
 check('폰에서 도구 줄 앞쪽 단추가 화면 밖으로 밀리지 않는다', /justify-content:flex-start/.test(frameCss));

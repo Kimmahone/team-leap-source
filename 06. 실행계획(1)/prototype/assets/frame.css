@@ -135,6 +135,12 @@ body.nav-collapsed .sidebar .nav button,body.nav-collapsed .sidebar .nav a{
 .glossary-drawer.open{transition:transform .22s ease,visibility 0s}
 .glossary-drawer:not(.open){box-shadow:none;visibility:hidden}
 
+/* 지도 시군 딱지를 한 줄로 〔새 판 · 9. 26.〕 — 두 줄(89×52px)이면 경북 전체 배율에서
+   이웃 딱지와 비켜 설 자리가 없었습니다. 한 줄(약 120×26px)이면 넉넉합니다. */
+.mv-bub{display:flex;align-items:baseline;gap:5px;padding:4px 9px;border-radius:8px}
+.mv-bub b,.mv-bub span{display:inline}
+.mv-bub span{font-size:11px}
+
 /* 본문 */
 .main{padding:22px 24px 64px;max-width:1440px;margin:0 auto}
 .page-head{align-items:center;gap:10px 14px;margin-bottom:18px}
