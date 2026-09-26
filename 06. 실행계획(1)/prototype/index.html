@@ -12491,7 +12491,10 @@ function mvDraw(){
         const mk = new maplibregl.Marker({ element:el }).setLngLat([c.lo/c.n, c.la/c.n]).addTo(map);
         MV.marks.push(mk);
       });
-      mvDeclutter(map, MV.marks.filter(mk => mk.getElement().classList.contains('mv-bub')));
+      const bubs = MV.marks.filter(mk => mk.getElement().classList.contains('mv-bub'));
+      mvDeclutter(map, bubs);
+      /* 그린 직후에는 글꼴이 아직 바뀌는 중일 수 있어 한 번 더 — 싸고 안전합니다 */
+      setTimeout(() => mvDeclutter(map, bubs), 450);
     }
     const bb = map.getBounds();
     mvRenderList(list.filter(s =>
@@ -13413,7 +13416,13 @@ async function mvStart(){
      글꼴이 다 온 뒤와 지도 칸 크기가 바뀐 뒤에 한 번 더 비켜 세웁니다. 〔새 판 · 9. 26.〕 */
   const reDeclutter = () => mvDeclutter(map, (MV.marks || []).filter(mk => mk.getElement().classList.contains('mv-bub')));
   map.on('resize', reDeclutter);
-  try{ if(document.fonts && document.fonts.ready) document.fonts.ready.then(reDeclutter); }catch(_e){}
+  /* ★ fonts.ready 한 번으로는 모자랐습니다. 본문 글꼴은 글자 조각을 «필요할 때» 받아오므로,
+     딱지가 그려진 뒤에 새 조각이 와서 폭이 바뀝니다(그때 ready 는 이미 지나감).
+     조각이 올 때마다(loadingdone) 다시 비켜 세웁니다. */
+  try{
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(reDeclutter);
+    if(document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', reDeclutter);
+  }catch(_e){}
   map.on('zoomend', () => {
     if(!MV.is3d)return;
     mvApplyTerrain(map);
