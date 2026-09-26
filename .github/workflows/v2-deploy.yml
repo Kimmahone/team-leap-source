@@ -115,6 +115,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           WEEK: ${{ github.event.inputs.week }}
         run: |
+          node news-pipeline/gemini-check.mjs
           node news-pipeline/build-weekly-brief.mjs --dry --force --out brief-test.json ${WEEK:+--week "$WEEK"}
 
       - name: 시험 결과 첨부 (brief-test)
