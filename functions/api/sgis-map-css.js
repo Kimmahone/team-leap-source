@@ -2,7 +2,7 @@ const CSS_URL = 'https://sgisapi.mods.go.kr/maps/sop.css';
 
 const headers = {
   'Content-Type': 'text/css; charset=utf-8',
-  'Cache-Control': 'public, max-age=3600',
+  'Cache-Control': 'public, max-age=86400',
   'X-Content-Type-Options': 'nosniff',
   'Referrer-Policy': 'no-referrer'
 };
@@ -13,7 +13,8 @@ function empty(status=200){
 
 export async function onRequestGet(){
   let upstream;
-  try{ upstream=await fetch(CSS_URL, {headers:{Accept:'text/css,*/*;q=0.8'}}); }
+  /* 스타일은 바뀔 일이 드뭅니다 — Cloudflare 가장자리에서 하루 캐시, 늦으면 3초에서 끊습니다 */
+  try{ upstream=await fetch(CSS_URL, {headers:{Accept:'text/css,*/*;q=0.8'}, cf:{cacheTtl:86400, cacheEverything:true}, signal:AbortSignal.timeout(3000)}); }
   catch(_e){ return empty(); }
   if(!upstream.ok) return empty();
   const css=(await upstream.text()).replace(/url\(\/\//g, 'url(https://');

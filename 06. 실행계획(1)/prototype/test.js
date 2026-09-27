@@ -2880,6 +2880,13 @@ check('지도 시군 딱지는 서로 덮지 않게 비켜 선다', /function mv
 check('딱지 비키기는 빈자리가 없으면 «가장 덜 겹치는» 자리를 고른다', /bestCost/.test(js) && /const overlap = \(a, b\)/.test(js));
 check('딱지 비키기를 글꼴 도착·지도 크기 바뀜 뒤에 다시 한다', /map\.on\('resize', reDeclutter\)/.test(js) && /document\.fonts\.ready\.then\(reDeclutter\)/.test(js) &&
   /document\.fonts\.addEventListener\('loadingdone', reDeclutter\)/.test(js));
+/* 9. 27. «너무 늦게 열린다» — 머리의 SGIS 스타일이 그리기를 막았고(정부 서버가 늦으면 화면 전체가 대기),
+   글꼴 26조각을 방문마다 다시 물었습니다. */
+check('SGIS 스타일은 머리에서 그리기를 막지 않는다(준비됐을 때만 붙임)',
+  !/<link rel="stylesheet" href="\/api\/sgis-map-css">/.test(html) &&
+  /SGIS_MAP_STATUS\.ready\)\{var sgisCss=document\.createElement\('link'\)/.test(html));
+check('대시보드 글꼴은 오래 보관한다(방문마다 다시 묻지 않음)',
+  /\/dashboard\/vendor\/pretendard\/\*\n  ! Cache-Control\n  Cache-Control: public, max-age=2592000, immutable/.test(bake));
 check('넓은 화면의 시군 딱지는 한 줄이다', /\.mv-bub\{display:flex;align-items:baseline/.test(frameCss));
 check('한국어는 낱말 단위로 줄을 바꾼다', /word-break:keep-all/.test(frameCss));
 check('닫힌 서랍 그림자가 화면 끝에 비치지 않는다', /\.glossary-drawer:not\(\.open\)\{box-shadow:none;visibility:hidden\}/.test(frameCss));

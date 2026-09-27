@@ -396,6 +396,9 @@ EOF
 #       max-age=0, must-revalidate 는 매번 물어보되, 안 바뀌었으면 304(빈 응답)만
 #       오갑니다. 95KB 를 다시 받는 것이 아니라 «그대로입니까»를 묻는 것뿐입니다.
 #       i-hours 의 「지워진 쪽이 이레 동안 살아 있다」와 같은 자리입니다.
+#     ★ 예외 하나(9. 27.) — 대시보드 글꼴(vendor/pretendard). 26개 조각을 방문마다 «그대로입니까» 물어
+#       다시 올 때도 느렸습니다. 글꼴 파일은 고칠 일이 없으므로 30일 보관합니다(`! Cache-Control` 로
+#       위의 «매번 물어보기»를 떼고 붙입니다). 글꼴을 바꿀 일이 생기면 폴더 이름을 바꾸세요.
 cat > "$OUT/_headers" <<'EOF'
 /*.md
   Content-Type: text/plain; charset=utf-8
@@ -405,6 +408,9 @@ cat > "$OUT/_headers" <<'EOF'
   X-Frame-Options: DENY
   Permissions-Policy: geolocation=(), camera=(), microphone=(), interest-cohort=()
   Cache-Control: public, max-age=0, must-revalidate
+/dashboard/vendor/pretendard/*
+  ! Cache-Control
+  Cache-Control: public, max-age=2592000, immutable
 /dashboard/*
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://sgisapi.mods.go.kr; img-src 'self' data: blob: https://sgisapi.mods.go.kr https://api.vworld.kr https://s3.amazonaws.com https://tiles.openfreemap.org; font-src 'self'; worker-src 'self' blob:; child-src 'self' blob:; connect-src 'self' https://sgisapi.mods.go.kr https://api.vworld.kr https://s3.amazonaws.com https://tiles.openfreemap.org; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
 /apps/*

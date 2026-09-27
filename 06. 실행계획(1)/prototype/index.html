@@ -6,8 +6,11 @@
 <title>경북 학령인구 데이터 플랫폼 · TEAM LEAP</title>
 <!-- 지도 스크립트는 같은 출처의 서버 경로를 통해 불러옵니다.
      로컬 파일·네트워크 장애 때는 이 요청이 실패해도 아래 간편 지도가 그대로 작동합니다. -->
-<link rel="stylesheet" href="/api/sgis-map-css">
 <script src="/api/sgis-map"></script>
+<!-- ★ 9. 27. 느리게 열리던 까닭 하나 — SGIS 스타일이 <head> 에서 «그리기를 막는» 파일이었습니다.
+     정부 서버가 늦으면 화면 전체가 하얗게 기다렸고, SGIS 가 꺼진 서버(키 없음)에서도 매번 받았습니다.
+     이제 SGIS 가 실제로 준비됐을 때만 붙입니다(스크립트로 붙인 스타일은 그리기를 막지 않습니다). -->
+<script id="sgis-css-loader">if(window.SGIS_MAP_STATUS&&window.SGIS_MAP_STATUS.ready){var sgisCss=document.createElement('link');sgisCss.rel='stylesheet';sgisCss.href='/api/sgis-map-css';document.head.appendChild(sgisCss);}</script>
 <style>
 /* ==========================================================================
    LEAP Kit 사본 — 원본은 `08. 실행계획(3)/apps/kit/leap.css`

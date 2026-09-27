@@ -11,8 +11,9 @@ check('서비스 ID 미설정 시 안전한 대체 스크립트', missing.status
 
 const realFetch=globalThis.fetch;
 let called='';
-globalThis.fetch=async url=>{
-  called=String(url);
+let calledOpts={};
+globalThis.fetch=async (url,opts)=>{
+  called=String(url); calledOpts=opts||{};
   return new Response(`var protocol="https:";if(location.protocol == 'http:'){protocol="http:";}document.writeln('<link rel="stylesheet" href="'+protocol+'//sgisapi.mods.go.kr/maps/sop.css">');window.sop={map:function(){}};`, {status:200});
 };
 const ok=await onRequestGet({request,env:{SGIS_CONSUMER_KEY:'server-only-id'}});
@@ -22,11 +23,14 @@ check('서비스 ID는 응답에서 제거', !body.includes('server-only-id'));
 check('정상 스크립트와 준비 상태 반환', ok.status===200 && body.includes('window.sop=') && body.includes('ready:true'));
 check('SGIS 하위 자원은 HTTPS로 고정', !body.includes('protocol="http:"'));
 check('상류 document.writeln CSS 제거', !body.includes('document.writeln'));
+check('정부 서버가 늦으면 끊는다(페이지 머리에서 기다리므로)', calledOpts.signal instanceof AbortSignal);
 
-globalThis.fetch=async ()=>new Response('.pin{background:url(//sgisapi.mods.go.kr/maps/images/a.png)}',{status:200});
+let cssOpts={};
+globalThis.fetch=async (_u,opts)=>{ cssOpts=opts||{}; return new Response('.pin{background:url(//sgisapi.mods.go.kr/maps/images/a.png)}',{status:200}); };
 const css=await onCssGet();
 const cssBody=await css.text();
 check('SGIS CSS 중계 및 HTTPS 고정', css.status===200 && cssBody.includes('url(https://sgisapi.mods.go.kr/'));
+check('SGIS CSS 는 가장자리에서 캐시하고 늦으면 끊는다', cssOpts.cf && cssOpts.cf.cacheTtl>0 && cssOpts.signal instanceof AbortSignal);
 
 globalThis.fetch=async ()=>new Response('server-only-id',{status:200});
 const leaked=await onRequestGet({request,env:{SGIS_CONSUMER_KEY:'server-only-id'}});

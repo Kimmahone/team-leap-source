@@ -20,8 +20,10 @@ export async function onRequestGet(context){
   try{
     const url = new URL(UPSTREAM);
     url.searchParams.set('consumer_key', key);
+    /* 이 스크립트는 <head> 에서 페이지를 기다리게 합니다 — 정부 서버가 늦으면 3초에서 끊고 간편 지도로 */
     upstream = await fetch(url.toString(), {
-      headers:{'Accept':'application/javascript,text/javascript,*/*;q=0.8'}
+      headers:{'Accept':'application/javascript,text/javascript,*/*;q=0.8'},
+      signal: AbortSignal.timeout(3000)
     });
   }catch(_e){
     return unavailable('SGIS 지도 서버에 연결하지 못했습니다.');
