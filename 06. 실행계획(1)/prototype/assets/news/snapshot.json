@@ -1,24 +1,24 @@
 {
-  "id": "2026-09-28-naver-rolling",
+  "id": "2026-10-01-naver-rolling",
   "sourceKind": "naver-rolling",
   "source": "네이버 뉴스 검색 API · 3일 주기 분석",
-  "generatedAt": "2026-09-28T01:05:53.432Z",
+  "generatedAt": "2026-10-01T01:28:05.180Z",
   "cadenceDays": 3,
   "basis": "기사량은 사회적 관심의 신호이며 실제 학생 수·학교 수의 증감을 뜻하지 않습니다.",
-  "anchorDate": "2026-09-28",
-  "totalArticles": 61,
+  "anchorDate": "2026-10-01",
+  "totalArticles": 64,
   "coverage": {
     "from": "2026-08-11",
-    "to": "2026-09-28"
+    "to": "2026-10-01"
   },
   "currentPeriod": {
-    "from": "2026-08-30",
-    "to": "2026-09-28",
-    "count": 45
+    "from": "2026-09-02",
+    "to": "2026-10-01",
+    "count": 48
   },
   "priorPeriod": {
-    "from": "2026-07-31",
-    "to": "2026-08-29",
+    "from": "2026-08-03",
+    "to": "2026-09-01",
     "count": 16
   },
   "topics": [
@@ -26,41 +26,41 @@
       "topic": "교육재정",
       "current": 23,
       "prior": 8,
-      "currentShare": 51.1,
+      "currentShare": 47.9,
       "priorShare": 50,
-      "changePp": 1.1
+      "changePp": -2.1
     },
     {
       "topic": "통폐합·적정규모",
       "current": 15,
       "prior": 4,
-      "currentShare": 33.3,
+      "currentShare": 31.3,
       "priorShare": 25,
-      "changePp": 8.3
+      "changePp": 6.3
     },
     {
       "topic": "지역소멸·인구",
       "current": 5,
       "prior": 3,
-      "currentShare": 11.1,
+      "currentShare": 10.4,
       "priorShare": 18.8,
-      "changePp": -7.6
+      "changePp": -8.3
     },
     {
       "topic": "교육혁신·특구",
-      "current": 3,
+      "current": 5,
       "prior": 2,
-      "currentShare": 6.7,
+      "currentShare": 10.4,
       "priorShare": 12.5,
-      "changePp": -5.8
+      "changePp": -2.1
     },
     {
       "topic": "교원·정원",
-      "current": 0,
+      "current": 1,
       "prior": 1,
-      "currentShare": 0,
+      "currentShare": 2.1,
       "priorShare": 6.3,
-      "changePp": -6.3
+      "changePp": -4.2
     },
     {
       "topic": "통학·돌봄",
@@ -73,8 +73,8 @@
   ],
   "weeklyTrend": [
     {
-      "from": "2026-07-07",
-      "to": "2026-07-13",
+      "from": "2026-07-10",
+      "to": "2026-07-16",
       "total": 0,
       "topics": {
         "통폐합·적정규모": 0,
@@ -86,8 +86,8 @@
       }
     },
     {
-      "from": "2026-07-14",
-      "to": "2026-07-20",
+      "from": "2026-07-17",
+      "to": "2026-07-23",
       "total": 0,
       "topics": {
         "통폐합·적정규모": 0,
@@ -99,8 +99,8 @@
       }
     },
     {
-      "from": "2026-07-21",
-      "to": "2026-07-27",
+      "from": "2026-07-24",
+      "to": "2026-07-30",
       "total": 0,
       "topics": {
         "통폐합·적정규모": 0,
@@ -112,8 +112,8 @@
       }
     },
     {
-      "from": "2026-07-28",
-      "to": "2026-08-03",
+      "from": "2026-07-31",
+      "to": "2026-08-06",
       "total": 0,
       "topics": {
         "통폐합·적정규모": 0,
@@ -125,21 +125,8 @@
       }
     },
     {
-      "from": "2026-08-04",
-      "to": "2026-08-10",
-      "total": 0,
-      "topics": {
-        "통폐합·적정규모": 0,
-        "교육재정": 0,
-        "교원·정원": 0,
-        "통학·돌봄": 0,
-        "지역소멸·인구": 0,
-        "교육혁신·특구": 0
-      }
-    },
-    {
-      "from": "2026-08-11",
-      "to": "2026-08-17",
+      "from": "2026-08-07",
+      "to": "2026-08-13",
       "total": 5,
       "topics": {
         "통폐합·적정규모": 2,
@@ -151,81 +138,94 @@
       }
     },
     {
-      "from": "2026-08-18",
-      "to": "2026-08-24",
-      "total": 7,
+      "from": "2026-08-14",
+      "to": "2026-08-20",
+      "total": 0,
       "topics": {
-        "통폐합·적정규모": 2,
-        "교육재정": 5,
+        "통폐합·적정규모": 0,
+        "교육재정": 0,
         "교원·정원": 0,
         "통학·돌봄": 0,
-        "지역소멸·인구": 2,
+        "지역소멸·인구": 0,
         "교육혁신·특구": 0
       }
     },
     {
-      "from": "2026-08-25",
-      "to": "2026-08-31",
-      "total": 4,
+      "from": "2026-08-21",
+      "to": "2026-08-27",
+      "total": 11,
+      "topics": {
+        "통폐합·적정규모": 2,
+        "교육재정": 8,
+        "교원·정원": 0,
+        "통학·돌봄": 0,
+        "지역소멸·인구": 2,
+        "교육혁신·특구": 1
+      }
+    },
+    {
+      "from": "2026-08-28",
+      "to": "2026-09-03",
+      "total": 0,
       "topics": {
         "통폐합·적정규모": 0,
-        "교육재정": 3,
+        "교육재정": 0,
         "교원·정원": 0,
         "통학·돌봄": 0,
         "지역소멸·인구": 0,
-        "교육혁신·특구": 1
+        "교육혁신·특구": 0
       }
     },
     {
-      "from": "2026-09-01",
-      "to": "2026-09-07",
-      "total": 6,
+      "from": "2026-09-04",
+      "to": "2026-09-10",
+      "total": 16,
       "topics": {
         "통폐합·적정규모": 1,
-        "교육재정": 5,
+        "교육재정": 12,
         "교원·정원": 0,
         "통학·돌봄": 0,
-        "지역소멸·인구": 0,
-        "교육혁신·특구": 1
+        "지역소멸·인구": 2,
+        "교육혁신·특구": 2
       }
     },
     {
-      "from": "2026-09-08",
-      "to": "2026-09-14",
-      "total": 19,
+      "from": "2026-09-11",
+      "to": "2026-09-17",
+      "total": 23,
       "topics": {
-        "통폐합·적정규모": 5,
+        "통폐합·적정규모": 12,
         "교육재정": 10,
         "교원·정원": 0,
         "통학·돌봄": 0,
-        "지역소멸·인구": 3,
-        "교육혁신·특구": 1
+        "지역소멸·인구": 1,
+        "교육혁신·특구": 0
       }
     },
     {
-      "from": "2026-09-15",
-      "to": "2026-09-21",
-      "total": 16,
-      "topics": {
-        "통폐합·적정규모": 8,
-        "교육재정": 7,
-        "교원·정원": 0,
-        "통학·돌봄": 0,
-        "지역소멸·인구": 0,
-        "교육혁신·특구": 1
-      }
-    },
-    {
-      "from": "2026-09-22",
-      "to": "2026-09-28",
-      "total": 4,
+      "from": "2026-09-18",
+      "to": "2026-09-24",
+      "total": 5,
       "topics": {
         "통폐합·적정규모": 1,
         "교육재정": 1,
         "교원·정원": 0,
         "통학·돌봄": 0,
         "지역소멸·인구": 2,
-        "교육혁신·특구": 0
+        "교육혁신·특구": 1
+      }
+    },
+    {
+      "from": "2026-09-25",
+      "to": "2026-10-01",
+      "total": 4,
+      "topics": {
+        "통폐합·적정규모": 1,
+        "교육재정": 0,
+        "교원·정원": 1,
+        "통학·돌봄": 0,
+        "지역소멸·인구": 0,
+        "교육혁신·특구": 2
       }
     }
   ],
@@ -309,6 +309,18 @@
       "change": 3
     },
     {
+      "name": "미래교육",
+      "value": 3,
+      "prior": 2,
+      "change": 1
+    },
+    {
+      "name": "본격화",
+      "value": 3,
+      "prior": 0,
+      "change": 3
+    },
+    {
       "name": "우려",
       "value": 3,
       "prior": 2,
@@ -334,18 +346,6 @@
     },
     {
       "name": "7곳",
-      "value": 2,
-      "prior": 0,
-      "change": 2
-    },
-    {
-      "name": "경북교육연대",
-      "value": 2,
-      "prior": 0,
-      "change": 2
-    },
-    {
-      "name": "고사",
       "value": 2,
       "prior": 0,
       "change": 2
@@ -431,6 +431,18 @@
       "change": 3
     },
     {
+      "name": "미래교육",
+      "value": 3,
+      "prior": 2,
+      "change": 1
+    },
+    {
+      "name": "본격화",
+      "value": 3,
+      "prior": 0,
+      "change": 3
+    },
+    {
       "name": "우려",
       "value": 3,
       "prior": 2,
@@ -491,6 +503,12 @@
       "change": 2
     },
     {
+      "name": "늘어나는",
+      "value": 2,
+      "prior": 0,
+      "change": 2
+    },
+    {
       "name": "대응",
       "value": 2,
       "prior": 1,
@@ -515,12 +533,6 @@
       "change": 1
     },
     {
-      "name": "본격화",
-      "value": 2,
-      "prior": 0,
-      "change": 2
-    },
-    {
       "name": "선정",
       "value": 2,
       "prior": 0,
@@ -531,18 +543,6 @@
       "value": 2,
       "prior": 1,
       "change": 1
-    },
-    {
-      "name": "신산초",
-      "value": 2,
-      "prior": 0,
-      "change": 2
-    },
-    {
-      "name": "위기",
-      "value": 2,
-      "prior": 0,
-      "change": 2
     }
   ],
   "regions": [
@@ -631,10 +631,10 @@
   ],
   "similarity": {
     "method": "기사 제목 TF-IDF 벡터화 → 코사인 유사도 0.28 이상 묶음",
-    "documents": 45,
+    "documents": 48,
     "clusterCount": 3,
     "grouped": 7,
-    "unclustered": 38,
+    "unclustered": 41,
     "threshold": 0.28,
     "clusters": [
       {
@@ -646,7 +646,7 @@
           "경북교육연대"
         ],
         "size": 3,
-        "share": 6.7,
+        "share": 6.3,
         "cohesion": 0.73,
         "samples": [
           {
@@ -684,7 +684,7 @@
           "본격화"
         ],
         "size": 2,
-        "share": 4.4,
+        "share": 4.2,
         "cohesion": 0.82,
         "samples": [
           {
@@ -714,17 +714,9 @@
           "폐교"
         ],
         "size": 2,
-        "share": 4.4,
+        "share": 4.2,
         "cohesion": 0.8,
         "samples": [
-          {
-            "id": "https://www.ibabynews.com/news/articleView.html?idxno=154582",
-            "title": "늘어나는 폐교, 교육·문화·산업 거점으로 재탄생… 정부 120억 지원",
-            "link": "https://www.ibabynews.com/news/articleView.html?idxno=154582",
-            "publishedAt": "2026-09-16",
-            "press": "ibabynews.com",
-            "similarity": 0.8
-          },
           {
             "id": "https://www.hankyung.com/article/202609142492i",
             "title": "'애물단지' 폐교 파크골프장·생태체험시설로…정부 120억 투입",
@@ -732,12 +724,50 @@
             "publishedAt": "2026-09-14",
             "press": "hankyung.com",
             "similarity": 0.8
+          },
+          {
+            "id": "https://www.ibabynews.com/news/articleView.html?idxno=154582",
+            "title": "늘어나는 폐교, 교육·문화·산업 거점으로 재탄생… 정부 120억 지원",
+            "link": "https://www.ibabynews.com/news/articleView.html?idxno=154582",
+            "publishedAt": "2026-09-16",
+            "press": "ibabynews.com",
+            "similarity": 0.8
           }
         ]
       }
     ]
   },
   "evidence": [
+    {
+      "id": "http://www.metroseoul.co.kr/article/20260930500541",
+      "title": "경북교육청, 중등 교장 400여 명 역량 강화…미래교육 방향 공유",
+      "link": "http://www.metroseoul.co.kr/article/20260930500541",
+      "publishedAt": "2026-10-01",
+      "press": "metroseoul.co.kr",
+      "topics": [
+        "교육혁신·특구"
+      ]
+    },
+    {
+      "id": "https://www.newsclaim.co.kr/news/articleView.html?idxno=3076918",
+      "title": "경북 미래교육 '2030 대전환' 본격화",
+      "link": "https://www.newsclaim.co.kr/news/articleView.html?idxno=3076918",
+      "publishedAt": "2026-09-30",
+      "press": "newsclaim.co.kr",
+      "topics": [
+        "교육혁신·특구"
+      ]
+    },
+    {
+      "id": "https://www.hangyo.com/news/article.html?no=109433",
+      "title": "늘어나는 특수교육 수요…교원 확충은 제자리",
+      "link": "https://www.hangyo.com/news/article.html?no=109433",
+      "publishedAt": "2026-09-28",
+      "press": "hangyo.com",
+      "topics": [
+        "교원·정원"
+      ]
+    },
     {
       "id": "http://andongmbc.co.kr/adboard/NewsView84969",
       "title": "R]소규모 학교 통폐합..잇딴 갈등 해법은?",
@@ -787,37 +817,7 @@
       "topics": [
         "교육혁신·특구"
       ]
-    },
-    {
-      "id": "https://www.imaeil.com/page/view/2026091716013415216",
-      "title": "문 닫은 학교가 다시 열렸다…경북 폐교, 교육·문화·지역공동체 공간...",
-      "link": "https://www.imaeil.com/page/view/2026091716013415216",
-      "publishedAt": "2026-09-21",
-      "press": "imaeil.com",
-      "topics": [
-        "통폐합·적정규모"
-      ]
-    },
-    {
-      "id": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4084704",
-      "title": "김천교육지원청, 폐교 활용·도서관·학교복합시설 추진",
-      "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4084704",
-      "publishedAt": "2026-09-17",
-      "press": "kyongbuk.co.kr",
-      "topics": [
-        "통폐합·적정규모"
-      ]
-    },
-    {
-      "id": "https://www.kbsm.net/news/view.php?idx=534679",
-      "title": "경북교사노조, 국회 앞서 지방교육재정교부금 개편 중단 촉구 1인 시위",
-      "link": "https://www.kbsm.net/news/view.php?idx=534679",
-      "publishedAt": "2026-09-17",
-      "press": "kbsm.net",
-      "topics": [
-        "교육재정"
-      ]
     }
   ],
-  "historyNo": 7
+  "historyNo": 8
 }
