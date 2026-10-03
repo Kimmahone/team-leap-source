@@ -262,10 +262,16 @@ async function main() {
   const re = /var ROAD_META = [\s\S]*?var ROAD_NEAR = [\s\S]*?;/;
   if (re.test(html)) html = html.replace(re, block);
   else {
-    const anchor = '  var EDSS_META  = ';
+    /* ★ 〔2026. 10. 3.〕 EDSS 구역 «밖», 그 머리 주석 앞에 심습니다.
+       예전에는 `var EDSS_META` 바로 앞(= 주석과 변수 사이)에 심었습니다. 그
+       자리는 bake-edss.mjs 가 주석부터 EDSS_BIRTH 까지 통째로 바꾸는 구역이라,
+       10월 분기 정기 갱신에서 EDSS 를 다시 굽자 도로 값이 함께 지워졌습니다. */
+    const anchor = '  /* ↓ `bake-edss.mjs` 가 심습니다.';
     const i = html.indexOf(anchor);
     if (i < 0) { console.error('✗ 심을 자리를 찾지 못했습니다.'); process.exit(1); }
-    html = html.slice(0, i) + '  ' + block + '\n' + html.slice(i);
+    const note = '  /* ↓ `bake-road-distance.mjs` 가 심습니다. EDSS 구역(아래) 밖에 두어야 합니다 —\n'
+      + '     안에 끼면 `bake-edss.mjs` 가 그 구역을 통째로 바꿀 때 함께 지워집니다. */\n';
+    html = html.slice(0, i) + note + '  ' + block + '\n\n' + html.slice(i);
   }
   fs.writeFileSync(TARGET, html, 'utf8');
   const spedOk = Object.values(spedOut).filter(Boolean).length;

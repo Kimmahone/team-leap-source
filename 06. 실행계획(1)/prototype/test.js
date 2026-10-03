@@ -2645,6 +2645,25 @@ check('Excel 에도 시간 칸과 기준을 함께 내보낸다',
 /* 다시 구울 때마다 결과가 달라지면 안 됩니다. */
 check('받은 값을 캐시에 적어 둔다', /road-cache\.json/.test(bakeRoad) && /if \(k in cache\)/.test(bakeRoad));
 
+/* ★ 〔2026. 10. 3.〕 도로 값이 EDSS 구역 «안»에 심겨 있었습니다.
+   bake-edss.mjs 는 머리 주석부터 EDSS_BIRTH 까지를 통째로 바꿉니다. 10월 분기
+   정기 갱신에서 EDSS 를 다시 굽자 ROAD_* 가 함께 사라졌고, 품질검사가 막아
+   반영되지 않았습니다. 구역 안에는 EDSS 값만 있어야 합니다. */
+{
+  const bakeEdssSrc = (() => { try { return fs.readFileSync(path.resolve(__dirname, '../../open api/bake-edss.mjs'), 'utf8'); } catch (e) { return ''; } })();
+  const lit = (bakeEdssSrc.match(/const MARK = \/(.+)\/;\n/) || [])[1];
+  const MARK = lit ? new RegExp(lit) : null;
+  const region = MARK ? (js.match(MARK) || [''])[0] : '';
+  const names = (region.match(/var (\w+)/g) || []).map(v => v.slice(4));
+  check('EDSS 구역 안에는 EDSS 값만 있다 (다른 굽기의 값이 끼면 EDSS 를 다시 구울 때 지워진다)',
+    names.length > 0 && names.every(n => n.startsWith('EDSS_')));
+  check('EDSS 를 다시 구워도 도로 값이 남는다 (bake-edss 의 MARK 를 그대로 적용)',
+    !!MARK && /var ROAD_META = \{/.test(js.replace(MARK, '  var EDSS_META  = {};\n  var EDSS_BIRTH = {};\n')));
+  check('도로 값을 처음 심을 때도 EDSS 구역 밖(머리 주석 앞)에 심는다',
+    /const anchor = '  \/\* ↓ `bake-edss\.mjs` 가 심습니다\.';/.test(bakeRoad) &&
+    !/const anchor = '  var EDSS_META/.test(bakeRoad));
+}
+
 /* ── 학교 → 가까운 학교 ── */
 /* 초·중·고 917곳은 SCHOOLS 배열에 «없습니다» — 화면이 뜰 때 SCHOOL_RAW 를
    풀어서 밀어 넣습니다. 그것을 모르고 구웠더니 622곳만 잡혔습니다. */
