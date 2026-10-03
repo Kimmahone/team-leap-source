@@ -234,9 +234,10 @@ async function main() {
     else { r.lat = null; r.lon = null; if (hit) outside++; }
   }
   if (geo) geo.save();
-  const st = geo ? geo.stats() : {asked:0,fromCache:0,missed:0};
+  const st = geo ? geo.stats() : {asked:0,fromCache:0,missed:0,skipped:0};
   const located = unique.filter(r => r.lat != null).length;
   console.log(`  물어본 주소 ${st.asked}개 · 캐시에서 ${st.fromCache}개 · 못 찾음 ${st.missed}개` +
+    (st.skipped ? ` · 열쇠가 없어 비워 둠 ${st.skipped}개` : '') +
     (outside ? ` · 경북 밖이라 버림 ${outside}개` : ''));
   console.log(`  좌표를 얻은 곳 ${located} / ${unique.length}곳`);
 

@@ -35,12 +35,17 @@ const KEYFILE = path.resolve(HERE, '인증키.txt');
 const CACHE = path.resolve(HERE, 'data/geocode-cache.json');
 
 /* 카카오 REST 열쇠는 32자리 16진수라 학교알리미 열쇠와 생김새가 같습니다.
-   그래서 「카카오」가 적힌 줄을 먼저 찾습니다 — 그 주석을 지우지 마세요. */
-export function kakaoKey() {
+   그래서 「카카오」가 적힌 줄을 먼저 찾습니다 — 그 주석을 지우지 마세요.
+
+   깃허브 Actions 에는 인증키.txt 가 없으므로 환경변수 KAKAO_REST_API_KEY 를
+   먼저 봅니다 (다른 열쇠들과 같은 방식). */
+export function kakaoKey(keyFile = KEYFILE) {
+  const fromEnv = (process.env.KAKAO_REST_API_KEY || '').trim();
+  if (fromEnv) return fromEnv;
   let raw;
-  try { raw = fs.readFileSync(KEYFILE, 'utf8'); }
+  try { raw = fs.readFileSync(keyFile, 'utf8'); }
   catch (e) {
-    throw new Error('인증키.txt 를 읽지 못했습니다: ' + KEYFILE);
+    throw new Error('인증키.txt 를 읽지 못했습니다: ' + keyFile);
   }
   const line = raw.split('\n').find(l => /카카오/.test(l) && !l.trim().startsWith('#') && /[0-9a-fA-F]{32}/.test(l))
             || raw.split('\n').find(l => /카카오/i.test(l) && /[0-9a-fA-F]{32}/.test(l));
@@ -65,14 +70,38 @@ function shorten(addr) {
   return m ? m[1] : tidy(addr);
 }
 
+/* ★ 〔2026. 10. 2.〕 열쇠는 «카카오에 정말 물어볼 때» 처음 찾습니다.
+
+     예전에는 makeGeocoder() 를 부르자마자 열쇠부터 찾았습니다. 분기 정기
+     갱신에서 유치원 한 곳(화천초병설유치원)이 공식 좌표 없이 왔고, 그 주소는
+     캐시에 이미 있었는데도 Actions 에 인증키.txt 가 없다는 이유로 갱신 전체가
+     멈췄습니다. 캐시로 답할 수 있으면 열쇠는 필요 없습니다.
+
+     열쇠가 끝내 없으면 멈추지 않고 그 주소만 비워 둡니다(null). 없는 좌표를
+     지어내지 않는다는 원칙은 그대로이고, 캐시에는 적지 않습니다 — 열쇠가 생긴
+     다음 번에 다시 물어보게요. 열쇠가 «틀린» 것(401·403)은 사람이 고쳐야 하므로
+     지금처럼 멈춥니다. */
 export function makeGeocoder(opts = {}) {
-  const key = opts.key || kakaoKey();
+  const getKey = opts.getKey || (() => opts.key || kakaoKey());
+  const cacheFile = opts.cacheFile || CACHE;
   const delayMs = opts.delayMs ?? 60;      // 카카오 초당 한도를 넉넉히 비켜 갑니다
+  const say = opts.say || (msg => console.warn(msg));
+
+  let key = null, noKey = false;
+  function ensureKey() {
+    if (key || noKey) return key;
+    try { key = getKey(); }
+    catch (e) {
+      noKey = true;
+      say('⚠ 카카오 열쇠가 없어 캐시에 없는 주소는 좌표를 비워 둡니다: ' + String(e.message).split('\n')[0]);
+    }
+    return key;
+  }
 
   let cache = {};
-  try { cache = JSON.parse(fs.readFileSync(CACHE, 'utf8')); } catch (e) { cache = {}; }
+  try { cache = JSON.parse(fs.readFileSync(cacheFile, 'utf8')); } catch (e) { cache = {}; }
 
-  let asked = 0, fromCache = 0, missed = 0;
+  let asked = 0, fromCache = 0, missed = 0, skipped = 0;
 
   async function ask(query) {
     const url = 'https://dapi.kakao.com/v2/local/search/address.json?query=' + encodeURIComponent(query);
@@ -97,6 +126,7 @@ export function makeGeocoder(opts = {}) {
       const q = tidy(addr);
       if (!q) return null;
       if (Object.prototype.hasOwnProperty.call(cache, q)) { fromCache++; return cache[q]; }
+      if (!ensureKey()) { skipped++; return null; }
 
       let hit = await ask(q);
       if (!hit) {
@@ -110,12 +140,12 @@ export function makeGeocoder(opts = {}) {
       await new Promise(r => setTimeout(r, delayMs));
       return hit;
     },
-    stats() { return { asked, fromCache, missed }; },
+    stats() { return { asked, fromCache, missed, skipped }; },
     save() {
-      fs.mkdirSync(path.dirname(CACHE), { recursive: true });
+      fs.mkdirSync(path.dirname(cacheFile), { recursive: true });
       const sorted = {};
       Object.keys(cache).sort().forEach(k => { sorted[k] = cache[k]; });
-      fs.writeFileSync(CACHE, JSON.stringify(sorted, null, 1) + '\n', 'utf8');
+      fs.writeFileSync(cacheFile, JSON.stringify(sorted, null, 1) + '\n', 'utf8');
     }
   };
 }

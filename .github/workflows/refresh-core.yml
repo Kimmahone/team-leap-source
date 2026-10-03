@@ -48,6 +48,8 @@ jobs:
       KOSIS_API_KEY: ${{ secrets.KOSIS_API_KEY }}
       SCHOOLINFO_API_KEY: ${{ secrets.SCHOOLINFO_API_KEY }}
       KINDER_API_KEY: ${{ secrets.KINDER_API_KEY }}
+      # 공식 좌표가 빠진 학교·유치원을 주소로 찾을 때만 씁니다. 없어도 멈추지 않습니다.
+      KAKAO_REST_API_KEY: ${{ secrets.KAKAO_REST_API_KEY }}
       # EDSS 는 API 마다 키가 다릅니다. 한 Secret 에 여러 키를 합쳐 넣지 않습니다.
       EDSS_SCHOOL_ATTRIBUTE_API_KEY: ${{ secrets.EDSS_SCHOOL_ATTRIBUTE_API_KEY }}
       EDSS_CLASS_STUDENT_API_KEY: ${{ secrets.EDSS_CLASS_STUDENT_API_KEY }}
