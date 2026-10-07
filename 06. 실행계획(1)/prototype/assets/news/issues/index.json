@@ -1,5 +1,398 @@
 [
   {
+    "id": "2026-10-07-three-day",
+    "status": "자동 발행",
+    "source": "네이버 뉴스 검색 API",
+    "sourceKind": "naver-three-day",
+    "cadenceDays": 3,
+    "publishedAt": "2026-10-07",
+    "period": {
+      "from": "2026-10-01",
+      "to": "2026-10-07",
+      "count": 15
+    },
+    "title": "교육혁신·특구 보도가 이끈 최근 7일, 경북 교육의 다음 질문",
+    "lead": "최근 7일 경북 학령인구 대응 관련 기사는 15건입니다. 가장 비중이 큰 주제는 ‘교육혁신·특구’이며, 경산시의 언급이 두드러졌습니다.",
+    "highlights": [
+      "최근 7일 15건으로 직전 7일 3건보다 +12건 변화했습니다.",
+      "‘교육혁신·특구’ 주제가 40%로 가장 큰 비중을 차지했습니다.",
+      "경산시 언급이 1건으로 가장 많았습니다."
+    ],
+    "topics": [
+      {
+        "topic": "교육혁신·특구",
+        "current": 6,
+        "prior": 1,
+        "currentShare": 40,
+        "priorShare": 33.3,
+        "changePp": 6.7
+      },
+      {
+        "topic": "통폐합·적정규모",
+        "current": 5,
+        "prior": 1,
+        "currentShare": 33.3,
+        "priorShare": 33.3,
+        "changePp": 0
+      },
+      {
+        "topic": "지역소멸·인구",
+        "current": 4,
+        "prior": 0,
+        "currentShare": 26.7,
+        "priorShare": 0,
+        "changePp": 26.7
+      },
+      {
+        "topic": "교육재정",
+        "current": 1,
+        "prior": 0,
+        "currentShare": 6.7,
+        "priorShare": 0,
+        "changePp": 6.7
+      },
+      {
+        "topic": "교원·정원",
+        "current": 0,
+        "prior": 1,
+        "currentShare": 0,
+        "priorShare": 33.3,
+        "changePp": -33.3
+      },
+      {
+        "topic": "통학·돌봄",
+        "current": 0,
+        "prior": 0,
+        "currentShare": 0,
+        "priorShare": 0,
+        "changePp": 0
+      }
+    ],
+    "keywords": [
+      {
+        "name": "21개",
+        "value": 4,
+        "prior": 0,
+        "change": 4
+      },
+      {
+        "name": "교육혁신",
+        "value": 3,
+        "prior": 0,
+        "change": 3
+      },
+      {
+        "name": "경북도교육청",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "경북도의원",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "대학",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "도전",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "미래",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "미래교육",
+        "value": 2,
+        "prior": 1,
+        "change": 1
+      },
+      {
+        "name": "작은",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "조례",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "지역소멸",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "지역의",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "학령인구",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "400여",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "750곳",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "감소에",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "강화",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "거래",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      }
+    ],
+    "regions": [
+      {
+        "name": "경산시",
+        "value": 1
+      },
+      {
+        "name": "문경시",
+        "value": 1
+      },
+      {
+        "name": "영주시",
+        "value": 1
+      }
+    ],
+    "dailyTrend": [
+      {
+        "date": "2026-10-01",
+        "total": 4
+      },
+      {
+        "date": "2026-10-02",
+        "total": 1
+      },
+      {
+        "date": "2026-10-03",
+        "total": 0
+      },
+      {
+        "date": "2026-10-04",
+        "total": 2
+      },
+      {
+        "date": "2026-10-05",
+        "total": 2
+      },
+      {
+        "date": "2026-10-06",
+        "total": 6
+      },
+      {
+        "date": "2026-10-07",
+        "total": 0
+      }
+    ],
+    "clusters": [
+      {
+        "id": "rolling-3",
+        "label": "교육재정 · 촉구 · 개편",
+        "keywords": [
+          "촉구",
+          "개편",
+          "경북교육연대"
+        ],
+        "size": 3,
+        "share": 5.6,
+        "cohesion": 0.74,
+        "samples": [
+          {
+            "id": "http://andongmbc.co.kr/adboard/NewsView84807",
+            "title": "경북교육연대 '지방교육교부금 개편 중단 대응 촉구' 기자회견",
+            "link": "http://andongmbc.co.kr/adboard/NewsView84807",
+            "publishedAt": "2026-09-16",
+            "press": "andongmbc.co.kr",
+            "similarity": 0.76
+          },
+          {
+            "id": "https://www.idaegu.com/news/articleView.html?idxno=665721",
+            "title": "경북교육연대, 경북도의회서 지방교육재정교부금 개편 반개 철회 촉구",
+            "link": "https://www.idaegu.com/news/articleView.html?idxno=665721",
+            "publishedAt": "2026-09-16",
+            "press": "idaegu.com",
+            "similarity": 0.74
+          },
+          {
+            "id": "https://www.kbsm.net/news/view.php?idx=534679",
+            "title": "경북교사노조, 국회 앞서 지방교육재정교부금 개편 중단 촉구 1인 시위",
+            "link": "https://www.kbsm.net/news/view.php?idx=534679",
+            "publishedAt": "2026-09-17",
+            "press": "kbsm.net",
+            "similarity": 0.72
+          }
+        ]
+      },
+      {
+        "id": "rolling-2",
+        "label": "교육혁신·특구 · 교육혁신선도지역 · 본격화",
+        "keywords": [
+          "교육혁신선도지역",
+          "본격화",
+          "도전"
+        ],
+        "size": 3,
+        "share": 5.6,
+        "cohesion": 0.73,
+        "samples": [
+          {
+            "id": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4083699",
+            "title": "경산시, 교육혁신선도지역 도전 본격화…12개 기관 손잡았다",
+            "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4083699",
+            "publishedAt": "2026-09-09",
+            "press": "kyongbuk.co.kr",
+            "similarity": 0.74
+          },
+          {
+            "id": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4086061",
+            "title": "경산, 대학·기업 연계 '뿌리내림교육' 본격화…교육혁신선도지역 도전",
+            "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4086061",
+            "publishedAt": "2026-10-01",
+            "press": "kyongbuk.co.kr",
+            "similarity": 0.73
+          },
+          {
+            "id": "https://www.ksmnews.co.kr/news/view.php?idx=622970",
+            "title": "포항시, 교육혁신선도지역 도전 본격화…최대 100억원 확보 나서",
+            "link": "https://www.ksmnews.co.kr/news/view.php?idx=622970",
+            "publishedAt": "2026-09-21",
+            "press": "ksmnews.co.kr",
+            "similarity": 0.73
+          }
+        ]
+      },
+      {
+        "id": "rolling-1",
+        "label": "교육혁신·특구 · 교육혁신 · 21개",
+        "keywords": [
+          "교육혁신",
+          "21개",
+          "군과"
+        ],
+        "size": 3,
+        "share": 5.6,
+        "cohesion": 0.71,
+        "samples": [
+          {
+            "id": "https://tk.newdaily.co.kr/site/data/html/2026/10/05/2026100500100.html",
+            "title": "경북교육청, 21개 시·군과 지역 맞춤형 교육혁신 시동",
+            "link": "https://tk.newdaily.co.kr/site/data/html/2026/10/05/2026100500100.html",
+            "publishedAt": "2026-10-05",
+            "press": "tk.newdaily.co.kr",
+            "similarity": 0.72
+          },
+          {
+            "id": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4086197",
+            "title": "학교·지역 잇는 경북형 교육혁신…21개 시·군 공모 신청",
+            "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4086197",
+            "publishedAt": "2026-10-05",
+            "press": "kyongbuk.co.kr",
+            "similarity": 0.71
+          },
+          {
+            "id": "https://www.segye.com/newsView/20261004508273?OutUrl=naver",
+            "title": "\"교육이 곧 지역의 미래\"… 경북 21개 시군, '교육혁신' 도전",
+            "link": "https://www.segye.com/newsView/20261004508273?OutUrl=naver",
+            "publishedAt": "2026-10-04",
+            "press": "segye.com",
+            "similarity": 0.71
+          }
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "title": "경북 '작은 학교' 살린다…교육권·지역소멸 대응 조례",
+        "link": "https://www.bzeronews.com/news/articleView.html?idxno=823478",
+        "publishedAt": "2026-10-06",
+        "press": "bzeronews.com"
+      },
+      {
+        "title": "문경교육지원청, '문경을 담고 세계를 품는' 미래교육 청사진 제시",
+        "link": "https://www.dkilbo.com/news/articleView.html?idxno=556451",
+        "publishedAt": "2026-10-06",
+        "press": "dkilbo.com"
+      },
+      {
+        "title": "박영서 경북도의원, ‘경북도교육청 폐교재산 관리 및 활용에 관한 조례...",
+        "link": "https://www.seoul.co.kr/news/publicnews/local_govern/news_local/2026/10/06/20261006500221?wlog_tag3=naver",
+        "publishedAt": "2026-10-06",
+        "press": "seoul.co.kr"
+      },
+      {
+        "title": "김상희 경북도의원 “작은 학교가 지역의 미래”… ‘경북도교육청 적...",
+        "link": "https://www.seoul.co.kr/news/publicnews/local_govern/news_local/2026/10/06/20261006500219?wlog_tag3=naver",
+        "publishedAt": "2026-10-06",
+        "press": "seoul.co.kr"
+      },
+      {
+        "title": "학령인구 감소에 엇갈린 고등교육…대학 늘고 전문대 줄었다",
+        "link": "http://www.metroseoul.co.kr/article/20261006500361",
+        "publishedAt": "2026-10-06",
+        "press": "metroseoul.co.kr"
+      },
+      {
+        "title": "인천남부교육지원청, 폐교된 학교 역사 교적비로 남긴다",
+        "link": "https://www.m-i.kr/news/articleView.html?idxno=2002995",
+        "publishedAt": "2026-10-06",
+        "press": "m-i.kr"
+      },
+      {
+        "title": "경북교육청, 21개 시·군과 지역 맞춤형 교육혁신 시동",
+        "link": "https://tk.newdaily.co.kr/site/data/html/2026/10/05/2026100500100.html",
+        "publishedAt": "2026-10-05",
+        "press": "tk.newdaily.co.kr"
+      },
+      {
+        "title": "학교·지역 잇는 경북형 교육혁신…21개 시·군 공모 신청",
+        "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4086197",
+        "publishedAt": "2026-10-05",
+        "press": "kyongbuk.co.kr"
+      }
+    ],
+    "caveat": "기사량은 사회적 관심의 신호이며 실제 학생 수·학교 수의 증감을 뜻하지 않습니다.",
+    "review": "자동 집계된 초안으로, 대외 배포 전 담당자의 사실 확인이 필요합니다.",
+    "issueNo": 11
+  },
+  {
     "id": "2026-10-04-three-day",
     "status": "자동 발행",
     "source": "네이버 뉴스 검색 API",
