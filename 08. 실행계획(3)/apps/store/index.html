@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TEAM LEAP 앱 모음 — 경북교육 AI Lab에서 만든 것을 한곳에</title>
+<meta name="description" content="학령인구 감소 시대에 교사가 직접 만든 대시보드와 앱을 한곳에 모았습니다. TEAM LEAP · 경북교육 AI Lab · AI 활용 분과.">
+<meta name="author" content="TEAM LEAP · 경북교육 AI Lab">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2314202E'/%3E%3Cg transform='translate(32 32) scale(0.92) translate(-32 -33)'%3E%3Cpath d='M7 52 H25' stroke='%2397A3B0' stroke-width='7.5' stroke-linecap='round' fill='none'/%3E%3Cpath d='M39 36 H57' stroke='%23F2A65A' stroke-width='7.5' stroke-linecap='round' fill='none'/%3E%3Cpath d='M16 46 Q32 -10 48 30' stroke='%237FB3F7' stroke-width='8' stroke-linecap='round' fill='none'/%3E%3C/g%3E%3C/svg%3E">
+<style>
+/* ==========================================================================
+   LEAP Kit 토큰 (apps/kit/leap.css 사본 — 단일 HTML 유지를 위해 붙여 넣음)
+   카탈로그(../index.html)와 같은 값입니다. 고칠 때는 둘을 함께 고칩니다.
+   ========================================================================== */
+:root{
+  --leap-ink:#14202E; --leap-blue:#1B4FA0; --leap-amber:#A8560A;
+  --leap-amber-mark:#CE6410; --leap-teal:#0D6E5C; --leap-gray:#5A6672;
+  --leap-bg:#F7F9FC; --leap-surface:#FFFFFF; --leap-border:#D9E0EA;
+  --leap-hairline:#E8EDF3; --leap-on-fill:#FFFFFF;
+  --leap-font:system-ui,-apple-system,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  --leap-radius:14px; --leap-radius-sm:8px;
+  --leap-shadow:0 1px 2px rgba(20,32,46,.05),0 6px 18px rgba(20,32,46,.07);
+  --leap-shadow-lg:0 2px 4px rgba(20,32,46,.06),0 14px 38px rgba(20,32,46,.11);
+  --tint-blue:#EAF1FB; --tint-amber:#FCF0E3; --tint-teal:#E4F4F0;
+  --grad-head:linear-gradient(135deg,#14202E 0%,#1B4FA0 78%,#2C6FD1 100%);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --leap-ink:#E8EDF3; --leap-blue:#7FB3F7; --leap-amber:#F2A65A;
+    --leap-amber-mark:#F2A65A; --leap-teal:#4FD1B0; --leap-gray:#97A3B0;
+    --leap-bg:#0E1621; --leap-surface:#1A2735; --leap-border:#2C3B4C;
+    --leap-hairline:#22303F; --leap-on-fill:#0E1621;
+    --leap-shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.34);
+    --leap-shadow-lg:0 2px 6px rgba(0,0,0,.45),0 16px 44px rgba(0,0,0,.45);
+    --tint-blue:#16304F; --tint-amber:#3A2A18; --tint-teal:#123830;
+    --grad-head:linear-gradient(135deg,#0A111C 0%,#16345F 78%,#1E4C8C 100%);
+  }
+}
+:root[data-theme="dark"]{
+  --leap-ink:#E8EDF3;--leap-blue:#7FB3F7;--leap-amber:#F2A65A;--leap-amber-mark:#F2A65A;
+  --leap-teal:#4FD1B0;--leap-gray:#97A3B0;--leap-bg:#0E1621;--leap-surface:#1A2735;
+  --leap-border:#2C3B4C;--leap-hairline:#22303F;--leap-on-fill:#0E1621;
+  --leap-shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.34);
+  --leap-shadow-lg:0 2px 6px rgba(0,0,0,.45),0 16px 44px rgba(0,0,0,.45);
+  --tint-blue:#16304F;--tint-amber:#3A2A18;--tint-teal:#123830;
+  --grad-head:linear-gradient(135deg,#0A111C 0%,#16345F 78%,#1E4C8C 100%);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--leap-font);font-size:1rem;line-height:1.65;
+  color:var(--leap-ink);background:var(--leap-bg);-webkit-text-size-adjust:100%;
+  word-break:keep-all;overflow-wrap:anywhere}
+:focus-visible{outline:3px solid var(--leap-blue);outline-offset:3px;border-radius:var(--leap-radius-sm)}
+.leap-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}
+button,input{font:inherit;color:inherit}
+a{color:var(--leap-blue)}
+
+/* ==========================================================================
+   머리 — 카탈로그와 같은 모양. 「나가는 문」은 늘 같은 자리에 둡니다.
+   ========================================================================== */
+header.top{background:var(--grad-head);color:#fff;position:relative;overflow:hidden}
+header.top .deco{position:absolute;right:-60px;top:-50px;width:340px;height:340px;opacity:.13;pointer-events:none}
+.top-in{max-width:1180px;margin:0 auto;padding:20px 20px 22px;display:flex;align-items:center;
+  gap:14px;flex-wrap:wrap;position:relative}
+.brand{display:flex;align-items:center;gap:13px;min-width:0}
+.brand .badge{flex:none;width:46px;height:46px;border-radius:13px;background:rgba(255,255,255,.13);
+  display:grid;place-items:center;border:1px solid rgba(255,255,255,.2)}
+.brand h1{margin:0;font-size:1.1875rem;letter-spacing:-.02em;line-height:1.25}
+.brand .sub{font-size:.75rem;color:rgba(255,255,255,.72);letter-spacing:.03em;margin-top:1px}
+.top-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.iconbtn{min-height:42px;padding:8px 15px;font-size:.8125rem;font-weight:700;
+  border:1px solid rgba(255,255,255,.28);border-radius:999px;background:rgba(255,255,255,.1);
+  color:#fff;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.iconbtn:hover{background:rgba(255,255,255,.2)}
+.iconbtn--home{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.44)}
+
+.hero{position:relative;max-width:1180px;margin:0 auto;padding:4px 20px 40px;color:#fff;
+  display:grid;grid-template-columns:1fr auto;gap:28px;align-items:end}
+.hero h2{margin:0 0 12px;font-size:2rem;letter-spacing:-.03em;line-height:1.25}
+.hero p{margin:0;font-size:1rem;color:rgba(255,255,255,.84);max-width:58ch;line-height:1.7}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px;padding:0;list-style:none}
+.stats li{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);
+  border-radius:999px;padding:5px 14px;font-size:.8125rem;font-weight:700}
+.stats li b{font-size:1rem;margin-right:3px}
+.hero-qr{background:#fff;color:#14202E;border-radius:var(--leap-radius);padding:12px 12px 10px;
+  text-align:center;border:0;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.hero-qr svg{display:block;width:118px;height:118px}
+.hero-qr span{display:block;font-size:.75rem;font-weight:800;margin-top:6px}
+@media (max-width:720px){
+  .hero{grid-template-columns:1fr}
+  .hero-qr{display:none}
+  .hero h2{font-size:1.5rem}
+}
+
+/* ==========================================================================
+   L.E.A.P 고르기 — 계획서의 네 갈래가 곧 거르개입니다
+   ========================================================================== */
+main.wrap{max-width:1180px;margin:0 auto;padding:28px 20px 90px}
+.leap{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:0 0 14px}
+.leap button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;
+  background:var(--leap-surface);border:1px solid var(--leap-border);border-radius:var(--leap-radius);
+  padding:13px 16px;cursor:pointer;min-height:64px;box-shadow:var(--leap-shadow)}
+.leap button .k{font-size:.75rem;font-weight:800;letter-spacing:.04em;color:var(--leap-gray)}
+.leap button .t{font-size:.9375rem;font-weight:800;letter-spacing:-.01em}
+.leap button .n{font-size:.75rem;color:var(--leap-gray)}
+.leap button[aria-pressed="true"]{border-color:var(--leap-blue);box-shadow:0 0 0 2px var(--leap-blue) inset}
+.leap button[data-kind="work"] .k{color:var(--leap-amber)}
+.leap button[data-kind="class"] .k{color:var(--leap-teal)}
+.leap button[data-kind="data"] .k{color:var(--leap-blue)}
+.finder{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 30px}
+.finder input{flex:1 1 260px;min-height:46px;border:1px solid var(--leap-border);border-radius:999px;
+  padding:10px 18px;background:var(--leap-surface)}
+.finder input::placeholder{color:var(--leap-gray)}
+.finder .count{font-size:.875rem;color:var(--leap-gray);font-weight:700}
+
+.sec{margin-bottom:42px}
+.sec[hidden]{display:none}
+.sec-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:0 0 4px}
+.sec-h h2{margin:0;font-size:1.25rem;letter-spacing:-.022em}
+.sec-h .task{font-size:.75rem;font-weight:800;color:var(--leap-gray);border:1px solid var(--leap-border);
+  border-radius:999px;padding:2px 10px}
+.sec > .sub{margin:0 0 18px;color:var(--leap-gray);font-size:.9375rem;max-width:70ch}
+.sec > .sub a{font-weight:700}
+
+/* ==========================================================================
+   카드
+   ========================================================================== */
+.cards{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.card{background:var(--leap-surface);border:1px solid var(--leap-border);border-radius:var(--leap-radius);
+  padding:20px 22px;box-shadow:var(--leap-shadow);display:flex;flex-direction:column;
+  border-top:4px solid var(--leap-border);transition:transform .14s,box-shadow .14s}
+.card:hover{transform:translateY(-2px);box-shadow:var(--leap-shadow-lg)}
+.card[hidden]{display:none}
+.card.work{border-top-color:var(--leap-amber-mark)}
+.card.class{border-top-color:var(--leap-teal)}
+.card.data{border-top-color:var(--leap-blue)}
+.card-top{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}
+.tag{font-size:.6875rem;font-weight:800;border-radius:999px;padding:3px 10px;letter-spacing:.01em}
+.tag.work{background:var(--tint-amber);color:var(--leap-amber)}
+.tag.class{background:var(--tint-teal);color:var(--leap-teal)}
+.tag.data{background:var(--tint-blue);color:var(--leap-blue)}
+.tag.use{background:var(--leap-teal);color:var(--leap-on-fill)}
+.tag.wip{background:var(--leap-hairline);color:var(--leap-gray)}
+.tag.auto{background:var(--leap-hairline);color:var(--leap-ink)}
+.card h3{margin:0 0 8px;font-size:1.0625rem;letter-spacing:-.02em;line-height:1.4}
+.card .lead{margin:0 0 12px;font-size:.9375rem;line-height:1.65}
+.card .who{background:var(--leap-bg);border-radius:var(--leap-radius-sm);padding:9px 12px;
+  margin:0 0 10px;font-size:.8125rem;color:var(--leap-gray)}
+.card .who b{color:var(--leap-ink)}
+.card .by{margin:0 0 16px;font-size:.8125rem;color:var(--leap-gray)}
+.card .go{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{font-weight:700;padding:9px 18px;min-height:42px;border-radius:999px;font-size:.875rem;
+  border:1px solid var(--leap-blue);background:var(--leap-blue);color:var(--leap-on-fill);
+  cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn:hover{filter:brightness(1.09)}
+.btn--ghost{background:transparent;color:var(--leap-gray);border-color:var(--leap-border)}
+.btn--ghost:hover{background:var(--leap-hairline);filter:none;color:var(--leap-ink)}
+.ext{font-size:.75rem;opacity:.8}
+.empty{padding:28px;text-align:center;color:var(--leap-gray);border:1px dashed var(--leap-border);
+  border-radius:var(--leap-radius)}
+
+/* ==========================================================================
+   QR 크게 보기 — 발표 화면에 띄워 객석에서 찍게 합니다
+   ========================================================================== */
+dialog#qr-dlg{border:0;border-radius:18px;padding:28px 28px 22px;max-width:min(92vw,520px);
+  background:#fff;color:#14202E;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.4)}
+dialog#qr-dlg::backdrop{background:rgba(10,17,28,.72)}
+#qr-dlg h2{margin:0 0 4px;font-size:1.25rem;letter-spacing:-.02em}
+#qr-dlg .by{margin:0 0 16px;font-size:.875rem;color:#5A6672}
+#qr-box svg{display:block;width:min(70vw,360px);height:auto;margin:0 auto}
+#qr-dlg .url{margin:14px 0 18px;font-size:.875rem;font-weight:700;word-break:break-all;color:#1B4FA0}
+#qr-dlg .btn{background:#1B4FA0;border-color:#1B4FA0;color:#fff}
+
+footer.foot{margin-top:10px}
+.foot-card{background:var(--leap-surface);border:1px solid var(--leap-border);
+  border-radius:var(--leap-radius);padding:22px 24px;box-shadow:var(--leap-shadow);
+  font-size:.8125rem;color:var(--leap-gray);line-height:1.8}
+.foot-card b{color:var(--leap-ink)}
+.foot-card p{margin:0 0 4px}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms!important}
+  .card:hover{transform:none}
+}
+@media (max-width:520px){
+  .top-in,main.wrap,.hero{padding-left:16px;padding-right:16px}
+  .leap{grid-template-columns:1fr 1fr;gap:8px}
+  .leap button{padding:10px 12px;min-height:0}
+  .card,.foot-card{padding:18px 16px}
+}
+
+/* ==========================================================================
+   인쇄 — 성과보고회 자리에 놓는 「QR 안내문」
+   ========================================================================== */
+#print-area{display:none}
+@media print{
+  @page{size:A4 portrait;margin:12mm}
+  html,body{background:#fff!important;color:#000}
+  header.top,main,dialog,.no-print{display:none!important}
+  #print-area{display:block!important}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .ph{display:flex;gap:14px;align-items:center;border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:10px}
+  .ph svg{width:26mm;height:26mm;flex:none}
+  .ph h1{margin:0;font-size:16pt;letter-spacing:-.02em}
+  .ph p{margin:3px 0 0;font-size:9pt;color:#333}
+  .pgroup{font-size:10.5pt;font-weight:800;margin:10px 0 6px;border-left:4px solid #1B4FA0;padding-left:7px;break-after:avoid}
+  .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .pitem{border:1px solid #999;border-radius:4px;padding:6px 7px;display:flex;gap:7px;align-items:flex-start;break-inside:avoid}
+  .pitem svg{width:21mm;height:21mm;flex:none}
+  .pitem b{display:block;font-size:9pt;line-height:1.3}
+  .pitem span{display:block;font-size:7.5pt;color:#333;line-height:1.4;margin-top:2px}
+  .pitem i{display:block;font-style:normal;font-size:6.5pt;color:#555;margin-top:3px;word-break:break-all}
+  .pfoot{margin-top:10px;padding-top:6px;border-top:1px solid #ccc;font-size:8pt;color:#555;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <svg class="deco" viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke-linecap="round">
+    <path d="M7 52 H25" stroke="#fff" stroke-width="6.5"/>
+    <path d="M39 36 H57" stroke="#fff" stroke-width="6.5"/>
+    <path d="M16 46 Q32 -10 48 30" stroke="#fff" stroke-width="7"/>
+  </svg>
+  <div class="top-in">
+    <div class="brand">
+      <span class="badge">
+        <svg viewBox="0 0 64 64" width="30" height="30" aria-hidden="true" fill="none" stroke-linecap="round">
+          <path d="M7 52 H25" stroke="#97A3B0" stroke-width="6.5"/>
+          <path d="M39 36 H57" stroke="#F2A65A" stroke-width="6.5"/>
+          <path d="M16 46 Q32 -10 48 30" stroke="#7FB3F7" stroke-width="7"/>
+        </svg>
+      </span>
+      <div>
+        <h1>TEAM LEAP</h1>
+        <div class="sub">경북교육 AI Lab · AI 활용 분과</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <a class="iconbtn iconbtn--home" href="../../../index.html" aria-label="TEAM LEAP 메인 페이지로 나가기">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
+             stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 10.6 12 4l8 6.6V20h-5v-5.6H9V20H4z"/>
+        </svg>
+        메인으로
+      </a>
+      <button class="iconbtn" id="btn-print" type="button">QR 안내문 인쇄</button>
+      <button class="iconbtn" id="btn-theme" type="button">어둡게 보기</button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div>
+      <h2>TEAM LEAP가 만든 것, 한곳에서</h2>
+      <p>학령인구 감소 시대에 교사가 직접 만든 대시보드와 앱을 모았습니다.
+         누르면 바로 열리고, QR을 휴대폰 카메라로 비추면 휴대폰에서도 열립니다.</p>
+      <ul class="stats" id="stats" aria-label="모은 것"></ul>
+    </div>
+    <button class="hero-qr" id="hero-qr" type="button" aria-label="이 페이지로 오는 QR 크게 보기">
+      <span id="hero-qr-svg" aria-hidden="true"></span>
+      <span>이 페이지 QR</span>
+    </button>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="leap" role="group" aria-label="갈래로 고르기" id="leap">
+    <button type="button" data-kind="all" aria-pressed="true">
+      <span class="k">ALL</span><span class="t">전체 보기</span><span class="n" data-n="all"></span>
+    </button>
+    <button type="button" data-kind="work" aria-pressed="false">
+      <span class="k">LIGHTEN</span><span class="t">업무는 가볍게</span><span class="n" data-n="work"></span>
+    </button>
+    <button type="button" data-kind="class" aria-pressed="false">
+      <span class="k">ENRICH</span><span class="t">수업은 풍성하게</span><span class="n" data-n="class"></span>
+    </button>
+    <button type="button" data-kind="data" aria-pressed="false">
+      <span class="k">ANALYZE</span><span class="t">데이터는 명확하게</span><span class="n" data-n="data"></span>
+    </button>
+  </div>
+
+  <div class="finder">
+    <label class="leap-sr" for="q">앱 찾기</label>
+    <input id="q" type="search" placeholder="앱 이름이나 하는 일로 찾기 — 예: 시간표, 공문, 영단어" autocomplete="off">
+    <span class="count" id="count" aria-live="polite"></span>
+  </div>
+
+  <section class="sec" id="sec-analyze" aria-labelledby="h-analyze">
+    <div class="sec-h"><h2 id="h-analyze">학령인구 대시보드</h2><span class="task">과제 ③ · 데이터는 명확하게</span></div>
+    <p class="sub">경북의 학령인구가 어디서, 얼마나 줄어드는지 공공데이터로 보여 줍니다. 값마다 출처와 기준일을 붙였습니다.</p>
+    <div class="cards" data-group="analyze"></div>
+  </section>
+
+  <section class="sec" id="sec-tools" aria-labelledby="h-tools">
+    <div class="sec-h"><h2 id="h-tools">교실도구 — 학령인구가 줄어드는 교실을 위한 도구</h2><span class="task">TEAM LEAP 공동</span></div>
+    <p class="sub">소규모학교·작은 학급·복식학급에서 생기는 문제를 하나씩 맡습니다. 설치도 로그인도 필요 없습니다.
+      왜 그렇게 만들었는지는 <a href="../index.html">앱 카탈로그</a>에, 다음 주에 무엇을 하면 되는지는
+      <a href="../guide.html">교실에서 쓰는 법</a>에 있습니다.</p>
+    <div class="cards" data-group="tools"></div>
+  </section>
+
+  <section class="sec" id="sec-members" aria-labelledby="h-members">
+    <div class="sec-h"><h2 id="h-members">연구원 1인 1앱</h2><span class="task">과제 ①·② · 업무와 수업</span></div>
+    <p class="sub">연구원이 자기 업무와 수업에서 겪는 문제를 골라 직접 만든 앱입니다. 다른 주소로 열립니다.</p>
+    <div class="cards" data-group="members"></div>
+  </section>
+
+  <p class="empty" id="empty" hidden>찾는 앱이 없습니다. 다른 말로 찾거나 「전체 보기」를 눌러 주세요.</p>
+
+  <footer class="foot">
+    <div class="foot-card">
+      <p><b>TEAM LEAP</b> · 경북교육 AI Lab(GBE-AI Lab) AI 활용 분과 — 김지원 · 조지훈 · 김정준 · 신동영 · 이성근 · 정훈탁</p>
+      <p>이 페이지는 계획서의 과제 ④ 「교육용 웹앱스토어」의 첫 판입니다. QR도 이 페이지 안에서 그리며, 바깥으로 아무것도 보내지 않습니다.</p>
+      <p>© 2026 TEAM LEAP · 교육 목적에 한해 자유롭게 쓰실 수 있습니다. 각 앱의 저작권은 만든 사람에게 있습니다.</p>
+    </div>
+  </footer>
+</main>
+
+<dialog id="qr-dlg" aria-labelledby="qr-title">
+  <h2 id="qr-title"></h2>
+  <p class="by" id="qr-by"></p>
+  <div id="qr-box" role="img" aria-label="QR 코드"></div>
+  <p class="url" id="qr-url"></p>
+  <button class="btn" type="button" id="qr-close">닫기</button>
+</dialog>
+
+<div id="print-area" aria-hidden="true"></div>
+
+<!-- 앱 목록 — 카드·QR·인쇄물·머리의 숫자가 모두 여기서 나옵니다. 더하는 법은 README.md -->
+<script type="application/json" id="apps-data">
+{
+ "base": "https://team-leap.pages.dev/",
+ "source": "교실도구 문구는 앱 카탈로그(../index.html), 연구원 앱 문구는 TEAM LEAP 앱 개발 현황 시트(2026. 10. 7.)에서 옮겼습니다.",
+ "apps": [
+  {
+   "id": "dashboard",
+   "group": "analyze",
+   "kind": "data",
+   "badge": "auto",
+   "name": "경북 학령인구 데이터 플랫폼",
+   "lead": "경북 초·중·고 917곳의 학생·학급 변화와 앞으로의 전망을 시·군과 학교 단위로 봅니다. 지도, 학령인구 현황, 학생수 시뮬레이터, 다문화·특수교육, 폐교, 뉴스 여섯 화면.",
+   "who": "학교 규모와 학생 수 전망을 같은 근거로 보고 싶은 교육청 담당자·교원·학부모",
+   "by": "TEAM LEAP",
+   "href": "../../dashboard/index.html",
+   "path": "dashboard/"
+  },
+  {
+   "id": "news",
+   "group": "analyze",
+   "kind": "data",
+   "badge": "auto",
+   "name": "주간 뉴스 클리핑",
+   "lead": "경북 학령인구·교육 관련 뉴스를 매일 모아 주제별로 보여 줍니다. 대시보드의 뉴스 화면으로 바로 갑니다.",
+   "who": "학령인구 감소 대응 정책의 흐름을 따라가고 싶은 분",
+   "by": "TEAM LEAP",
+   "href": "../../dashboard/index.html#news",
+   "path": "dashboard/#news"
+  },
+  {
+   "id": "briefing",
+   "group": "analyze",
+   "kind": "data",
+   "name": "학령인구 대시보드 브리핑북",
+   "lead": "대시보드를 처음 보는 분께 무엇을 어떻게 볼 수 있는지 한 장으로 소개합니다.",
+   "who": "대시보드를 다른 사람에게 소개해야 하는 분",
+   "by": "TEAM LEAP",
+   "href": "https://leap-guide.pages.dev/",
+   "url": "https://leap-guide.pages.dev/"
+  },
+  {
+   "id": "a-circuit",
+   "group": "tools",
+   "kind": "work",
+   "name": "순회교사 통합 시간표",
+   "lead": "학교 두세 곳의 시간표를 한 장에 놓고 봅니다. 학교 사이 이동 시간이 모자란 자리를 미리 잡아 줍니다.",
+   "who": "학교 두 곳 이상을 도는 순회·겸임 교사",
+   "by": "TEAM LEAP",
+   "href": "../a-circuit/index.html",
+   "readme": "../a-circuit/README.html",
+   "path": "apps/a-circuit/"
+  },
+  {
+   "id": "b-classboard",
+   "group": "tools",
+   "kind": "class",
+   "name": "학급 회의",
+   "lead": "학급 회의에서 누가 무슨 의견인지 드러나지 않게 의견을 모으고 투표하고, 정한 약속을 지켜 나갑니다.",
+   "who": "학급 회의를 하고 싶지만 아이들이 눈치를 보는 담임",
+   "by": "TEAM LEAP",
+   "href": "../b-classboard/index.html",
+   "readme": "../b-classboard/README.html",
+   "path": "apps/b-classboard/"
+  },
+  {
+   "id": "c-storybook",
+   "group": "tools",
+   "kind": "class",
+   "name": "지역 탐방 디지털 스토리북",
+   "lead": "체험학습에서 찍은 사진과 글로 학생이 직접 책을 만듭니다. 쪽마다 어디인지가 붙고, 그것이 모여 탐방 지도 한 장이 됩니다.",
+   "who": "지역 탐방·현장학습 결과물을 남기고 싶은 담임",
+   "by": "TEAM LEAP",
+   "href": "../c-storybook/index.html",
+   "readme": "../c-storybook/README.html",
+   "path": "apps/c-storybook/"
+  },
+  {
+   "id": "d-multigrade",
+   "group": "tools",
+   "kind": "class",
+   "name": "복식학급 수업 도우미",
+   "lead": "두 학년을 한 교실에서 가르치는 복식수업 한 차시를 짭니다. 시간 배치·활동·학습지·지도안까지.",
+   "who": "복식학급 담임. 지금도 종이에 손으로 짜고 계신 분",
+   "by": "TEAM LEAP",
+   "href": "../d-multigrade/index.html",
+   "readme": "../d-multigrade/README.html",
+   "path": "apps/d-multigrade/"
+  },
+  {
+   "id": "e-together",
+   "group": "tools",
+   "kind": "work",
+   "name": "이웃 학교 함께하기",
+   "lead": "작은 학교가 혼자서는 못 하는 일을 가까운 학교와 함께 하도록. 이웃 학교를 거리로 찾고, 버스와 비용을 나눠 계산하고, 제안서를 종이로 뽑습니다.",
+   "who": "버스 한 대를 못 채워 체험학습을 접어 본 소규모학교 선생님",
+   "by": "TEAM LEAP",
+   "href": "../e-together/index.html",
+   "readme": "../e-together/README.html",
+   "path": "apps/e-together/"
+  },
+  {
+   "id": "f-lessonplan",
+   "group": "tools",
+   "kind": "class",
+   "name": "수업 설계안 만들기",
+   "lead": "왼쪽에서 적으면 오른쪽에 나올 종이가 바로 보입니다. 차시안(1·2차시)과 단원안을 A4 가로·세로 두 양식으로 냅니다.",
+   "who": "나눠 맡을 동학년이 없어 전 교과를 혼자 짜는 선생님",
+   "by": "TEAM LEAP",
+   "href": "../f-lessonplan/index.html",
+   "readme": "../f-lessonplan/README.html",
+   "path": "apps/f-lessonplan/"
+  },
+  {
+   "id": "g-classdata",
+   "group": "tools",
+   "kind": "class",
+   "name": "우리 반 데이터 보기",
+   "lead": "엑셀 템플릿을 받아 채워 올리면 바로 대시보드가 됩니다. 성취·참여·정서·관찰을 회차로 쌓아 한 학기의 변화를 봅니다.",
+   "who": "점수와 관찰이 수첩·종이에 흩어져 한 장으로 안 보이는 담임",
+   "by": "TEAM LEAP",
+   "href": "../g-classdata/index.html",
+   "readme": "../g-classdata/README.html",
+   "path": "apps/g-classdata/"
+  },
+  {
+   "id": "j-howmany",
+   "group": "tools",
+   "kind": "work",
+   "name": "몇 명이면 되나",
+   "lead": "학생 수가 줄면 학교에서 무엇이 되고 무엇이 사라지는지 인원 기준으로 미리 봅니다. 안 되는 것은 어떻게 바꾸면 되는지를 함께 봅니다.",
+   "who": "「올해도 축구부가 될까」를 해마다 감으로 판단해 온 선생님",
+   "by": "TEAM LEAP",
+   "href": "../j-howmany/index.html",
+   "readme": "../j-howmany/README.html",
+   "path": "apps/j-howmany/"
+  },
+  {
+   "id": "i-required",
+   "group": "tools",
+   "kind": "work",
+   "name": "법정 의무교육 점검표",
+   "lead": "법으로 시수가 박힌 교육이 연 127시간입니다. 그런데 창의적 체험활동은 한 해 102시간뿐입니다.",
+   "who": "3월에 범교과 학습 주제 운영 계획을 내야 하는 담임",
+   "by": "TEAM LEAP",
+   "href": "../i-required/index.html",
+   "readme": "../i-required/README.html",
+   "path": "apps/i-required/"
+  },
+  {
+   "id": "k-year",
+   "group": "tools",
+   "kind": "work",
+   "name": "우리 학교 한 해",
+   "lead": "교직원 각자가 맡은 일을 한 해 달력에 얹고 파일로 합칩니다. 언제 몇 사람이 동시에 바쁜지가 색으로 보입니다.",
+   "who": "담임에 업무 두셋을 겹쳐 맡고 계신 선생님, 업무분장을 짜는 분",
+   "by": "TEAM LEAP",
+   "href": "../k-year/index.html",
+   "readme": "../k-year/README.html",
+   "path": "apps/k-year/"
+  },
+  {
+   "id": "l-rooms",
+   "group": "tools",
+   "kind": "work",
+   "name": "남는 교실",
+   "lead": "학생이 줄어 남은 교실을 무엇으로 쓸지 함께 짭니다. 방마다 몇 명이 들어가는지 셈하고, 원하는 곳이 여럿일 때 나란히 놓고 봅니다.",
+   "who": "빈 교실을 두고 회의만 되풀이해 온 학교",
+   "by": "TEAM LEAP",
+   "href": "../l-rooms/index.html",
+   "readme": "../l-rooms/README.html",
+   "path": "apps/l-rooms/"
+  },
+  {
+   "id": "school-self-check",
+   "group": "members",
+   "kind": "work",
+   "badge": "use",
+   "name": "자율적 내부통제 자가진단표",
+   "lead": "내부통제 자가진단을 화면에서 점검하고, 담당자 확인 여부와 점검 결과를 학교 한글 양식에 맞춰 받습니다.",
+   "who": "내부통제 자가진단 업무를 맡은 교직원",
+   "by": "이성근 선생님",
+   "href": "https://school-self-check.vercel.app/",
+   "url": "https://school-self-check.vercel.app/"
+  },
+  {
+   "id": "training-certificate",
+   "group": "members",
+   "kind": "work",
+   "badge": "use",
+   "name": "연수 이수증 수합",
+   "lead": "담당자가 연수 목록을 만들면 구성원이 이수증을 올립니다. AI가 읽어 시트에 기록하고 연수별 폴더에 저장합니다.",
+   "who": "연수 이수증을 모으는 업무 담당자와 구성원",
+   "by": "이성근 선생님",
+   "href": "https://training-certificate.vercel.app/",
+   "url": "https://training-certificate.vercel.app/"
+  },
+  {
+   "id": "handover-helper",
+   "group": "members",
+   "kind": "work",
+   "name": "인수인계도우미",
+   "lead": "NEIS에서 내려받은 1년 치 기안 공문을 끌어다 놓으면 회계·업무·대외 발송·민감 문서로 나누고, 업무 타임라인과 학교 서식의 인수인계서를 만듭니다.",
+   "who": "업무를 넘기거나 이어받는 교직원",
+   "by": "신동영 선생님",
+   "href": "https://handover-helper-ten.vercel.app/",
+   "url": "https://handover-helper-ten.vercel.app/"
+  },
+  {
+   "id": "curriculum-planner",
+   "group": "members",
+   "kind": "work",
+   "name": "교육과정 편성 도우미",
+   "lead": "편제표·학사일정·시수 배당 등 학교 교육과정 편성을 돕고, 수립한 교육과정을 검토합니다.",
+   "who": "학교 교육과정을 편성·검토하는 교사",
+   "by": "신동영 선생님",
+   "href": "https://curriculum-planner-umber.vercel.app/",
+   "url": "https://curriculum-planner-umber.vercel.app/"
+  },
+  {
+   "id": "balpyo-compass",
+   "group": "members",
+   "kind": "class",
+   "name": "발표도우미",
+   "lead": "여러 가지 발표 장면에 쓰는 교사용 발표 도구입니다.",
+   "who": "발표를 진행하는 교사",
+   "by": "신동영 선생님",
+   "href": "https://balpyo-compass.vercel.app/",
+   "url": "https://balpyo-compass.vercel.app/"
+  },
+  {
+   "id": "voca-hero",
+   "group": "members",
+   "kind": "class",
+   "name": "VOCA HERO!",
+   "lead": "초등 필수 영단어 약 250개를 학년별로, 키우기 게임으로 익힙니다.",
+   "who": "영단어를 익히는 초등학생",
+   "by": "이성근 선생님",
+   "href": "https://english-game-sage.vercel.app/",
+   "url": "https://english-game-sage.vercel.app/"
+  },
+  {
+   "id": "jeongbo-ieum",
+   "group": "members",
+   "kind": "class",
+   "name": "정보이음",
+   "lead": "초등 정보 수업을 위한 통합 플랫폼입니다. 학습 설계부터 퀴즈, 학생 데이터를 바탕으로 한 누가기록까지 이어집니다.",
+   "who": "초등 정보 수업을 하는 교사",
+   "by": "이성근 선생님",
+   "href": "https://정보이음.com",
+   "url": "https://정보이음.com",
+   "qr": "https://xn--on3b62qods0a.com"
+  },
+  {
+   "id": "wonedu",
+   "group": "members",
+   "kind": "class",
+   "badge": "wip",
+   "name": "교육통합플랫폼",
+   "lead": "과목별로 보는 웹교과서 플랫폼입니다.",
+   "who": "학생과 교직원",
+   "by": "조지훈 선생님",
+   "href": "https://wonedu.org/",
+   "url": "https://wonedu.org/"
+  }
+ ]
+}
+</script>
+<script>/*! qrcode-generator 1.4.4 · Copyright (c) 2009 Kazuhiko Arase · MIT license · https://github.com/kazuhikoarase/qrcode-generator */
+var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=new Array(t),e=0;e<t;e+=1){r[e]=new Array(t);for(var n=0;n<t;n+=1)r[e][n]=null}return r}(l=4*u+17),e(0,0),e(l-7,0),e(0,l-7),i(),o(),v(t,r),7<=u&&h(t),null==n&&(n=w(u,f,c)),d(n,r)}var u=t,f=y[r],g=null,l=0,n=null,c=[],s={},e=function(t,r){for(var e=-1;e<=7;e+=1)if(!(t+e<=-1||l<=t+e))for(var n=-1;n<=7;n+=1)r+n<=-1||l<=r+n||(g[t+e][r+n]=0<=e&&e<=6&&(0==n||6==n)||0<=n&&n<=6&&(0==e||6==e)||2<=e&&e<=4&&2<=n&&n<=4)},o=function(){for(var t=8;t<l-8;t+=1)null==g[t][6]&&(g[t][6]=t%2==0);for(var r=8;r<l-8;r+=1)null==g[6][r]&&(g[6][r]=r%2==0)},i=function(){for(var t=B.getPatternPosition(u),r=0;r<t.length;r+=1)for(var e=0;e<t.length;e+=1){var n=t[r],o=t[e];if(null==g[n][o])for(var i=-2;i<=2;i+=1)for(var a=-2;a<=2;a+=1)g[n+i][o+a]=-2==i||2==i||-2==a||2==a||0==i&&0==a}},h=function(t){for(var r=B.getBCHTypeNumber(u),e=0;e<18;e+=1){var n=!t&&1==(r>>e&1);g[Math.floor(e/3)][e%3+l-8-3]=n}for(e=0;e<18;e+=1){n=!t&&1==(r>>e&1);g[e%3+l-8-3][Math.floor(e/3)]=n}},v=function(t,r){for(var e=f<<3|r,n=B.getBCHTypeInfo(e),o=0;o<15;o+=1){var i=!t&&1==(n>>o&1);o<6?g[o][8]=i:o<8?g[o+1][8]=i:g[l-15+o][8]=i}for(o=0;o<15;o+=1){i=!t&&1==(n>>o&1);o<8?g[8][l-o-1]=i:o<9?g[8][15-o-1+1]=i:g[8][15-o-1]=i}g[l-8][8]=!t},d=function(t,r){for(var e=-1,n=l-1,o=7,i=0,a=B.getMaskFunction(r),u=l-1;0<u;u-=2)for(6==u&&(u-=1);;){for(var f=0;f<2;f+=1)if(null==g[n][u-f]){var c=!1;i<t.length&&(c=1==(t[i]>>>o&1)),a(n,u-f)&&(c=!c),g[n][u-f]=c,-1==(o-=1)&&(i+=1,o=7)}if((n+=e)<0||l<=n){n-=e,e=-e;break}}},w=function(t,r,e){for(var n=b.getRSBlocks(t,r),o=M(),i=0;i<e.length;i+=1){var a=e[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var u=0;for(i=0;i<n.length;i+=1)u+=n[i].dataCount;if(o.getLengthInBits()>8*u)throw"code length overflow. ("+o.getLengthInBits()+">"+8*u+")";for(o.getLengthInBits()+4<=8*u&&o.put(0,4);o.getLengthInBits()%8!=0;)o.putBit(!1);for(;!(o.getLengthInBits()>=8*u||(o.put(236,8),o.getLengthInBits()>=8*u));)o.put(17,8);return function(t,r){for(var e=0,n=0,o=0,i=new Array(r.length),a=new Array(r.length),u=0;u<r.length;u+=1){var f=r[u].dataCount,c=r[u].totalCount-f;n=Math.max(n,f),o=Math.max(o,c),i[u]=new Array(f);for(var g=0;g<i[u].length;g+=1)i[u][g]=255&t.getBuffer()[g+e];e+=f;var l=B.getErrorCorrectPolynomial(c),h=C(i[u],l.getLength()-1).mod(l);a[u]=new Array(l.getLength()-1);for(g=0;g<a[u].length;g+=1){var s=g+h.getLength()-a[u].length;a[u][g]=0<=s?h.getAt(s):0}}var v=0;for(g=0;g<r.length;g+=1)v+=r[g].totalCount;var d=new Array(v),w=0;for(g=0;g<n;g+=1)for(u=0;u<r.length;u+=1)g<i[u].length&&(d[w]=i[u][g],w+=1);for(g=0;g<o;g+=1)for(u=0;u<r.length;u+=1)g<a[u].length&&(d[w]=a[u][g],w+=1);return d}(o,n)};s.addData=function(t,r){var e=null;switch(r=r||"Byte"){case"Numeric":e=x(t);break;case"Alphanumeric":e=m(t);break;case"Byte":e=L(t);break;case"Kanji":e=D(t);break;default:throw"mode:"+r}c.push(e),n=null},s.isDark=function(t,r){if(t<0||l<=t||r<0||l<=r)throw t+","+r;return g[t][r]},s.getModuleCount=function(){return l},s.make=function(){if(u<1){for(var t=1;t<40;t++){for(var r=b.getRSBlocks(t,f),e=M(),n=0;n<c.length;n++){var o=c[n];e.put(o.getMode(),4),e.put(o.getLength(),B.getLengthInBits(o.getMode(),t)),o.write(e)}var i=0;for(n=0;n<r.length;n++)i+=r[n].dataCount;if(e.getLengthInBits()<=8*i)break}u=t}a(!1,function(){for(var t=0,r=0,e=0;e<8;e+=1){a(!0,e);var n=B.getLostPoint(s);(0==e||n<t)&&(t=n,r=e)}return r}())},s.createTableTag=function(t,r){t=t||2;var e="";e+='<table style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: "+(r=void 0===r?4*t:r)+"px;",e+='">',e+="<tbody>";for(var n=0;n<s.getModuleCount();n+=1){e+="<tr>";for(var o=0;o<s.getModuleCount();o+=1)e+='<td style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: 0px;",e+=" width: "+t+"px;",e+=" height: "+t+"px;",e+=" background-color: ",e+=s.isDark(n,o)?"#000000":"#ffffff",e+=";",e+='"/>';e+="</tr>"}return e+="</tbody>",e+="</table>"},s.createSvgTag=function(t,r,e,n){var o={};"object"==typeof t&&(t=(o=t).cellSize,r=o.margin,e=o.alt,n=o.title),t=t||2,r=void 0===r?4*t:r,(e="string"==typeof e?{text:e}:e||{}).text=e.text||null,e.id=e.text?e.id||"qrcode-description":null,(n="string"==typeof n?{text:n}:n||{}).text=n.text||null,n.id=n.text?n.id||"qrcode-title":null;var i,a,u,f,c=s.getModuleCount()*t+2*r,g="";for(f="l"+t+",0 0,"+t+" -"+t+",0 0,-"+t+"z ",g+='<svg version="1.1" xmlns="http://www.w3.org/2000/svg"',g+=o.scalable?"":' width="'+c+'px" height="'+c+'px"',g+=' viewBox="0 0 '+c+" "+c+'" ',g+=' preserveAspectRatio="xMinYMin meet"',g+=n.text||e.text?' role="img" aria-labelledby="'+p([n.id,e.id].join(" ").trim())+'"':"",g+=">",g+=n.text?'<title id="'+p(n.id)+'">'+p(n.text)+"</title>":"",g+=e.text?'<description id="'+p(e.id)+'">'+p(e.text)+"</description>":"",g+='<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>',g+='<path d="',a=0;a<s.getModuleCount();a+=1)for(u=a*t+r,i=0;i<s.getModuleCount();i+=1)s.isDark(a,i)&&(g+="M"+(i*t+r)+","+u+f);return g+='" stroke="transparent" fill="black"/>',g+="</svg>"},s.createDataURL=function(o,t){o=o||2,t=void 0===t?4*o:t;var r=s.getModuleCount()*o+2*t,i=t,a=r-t;return I(r,r,function(t,r){if(i<=t&&t<a&&i<=r&&r<a){var e=Math.floor((t-i)/o),n=Math.floor((r-i)/o);return s.isDark(n,e)?0:1}return 1})},s.createImgTag=function(t,r,e){t=t||2,r=void 0===r?4*t:r;var n=s.getModuleCount()*t+2*r,o="";return o+="<img",o+=' src="',o+=s.createDataURL(t,r),o+='"',o+=' width="',o+=n,o+='"',o+=' height="',o+=n,o+='"',e&&(o+=' alt="',o+=p(e),o+='"'),o+="/>"};var p=function(t){for(var r="",e=0;e<t.length;e+=1){var n=t.charAt(e);switch(n){case"<":r+="&lt;";break;case">":r+="&gt;";break;case"&":r+="&amp;";break;case'"':r+="&quot;";break;default:r+=n}}return r};return s.createASCII=function(t,r){if((t=t||1)<2)return function(t){t=void 0===t?2:t;var r,e,n,o,i,a=1*s.getModuleCount()+2*t,u=t,f=a-t,c={"██":"█","█ ":"▀"," █":"▄","  ":" "},g={"██":"▀","█ ":"▀"," █":" ","  ":" "},l="";for(r=0;r<a;r+=2){for(n=Math.floor((r-u)/1),o=Math.floor((r+1-u)/1),e=0;e<a;e+=1)i="█",u<=e&&e<f&&u<=r&&r<f&&s.isDark(n,Math.floor((e-u)/1))&&(i=" "),u<=e&&e<f&&u<=r+1&&r+1<f&&s.isDark(o,Math.floor((e-u)/1))?i+=" ":i+="█",l+=t<1&&f<=r+1?g[i]:c[i];l+="\n"}return a%2&&0<t?l.substring(0,l.length-a-1)+Array(1+a).join("▀"):l.substring(0,l.length-1)}(r);t-=1,r=void 0===r?2*t:r;var e,n,o,i,a=s.getModuleCount()*t+2*r,u=r,f=a-r,c=Array(t+1).join("██"),g=Array(t+1).join("  "),l="",h="";for(e=0;e<a;e+=1){for(o=Math.floor((e-u)/t),h="",n=0;n<a;n+=1)i=1,u<=n&&n<f&&u<=e&&e<f&&s.isDark(o,Math.floor((n-u)/t))&&(i=0),h+=i?c:g;for(o=0;o<t;o+=1)l+=h+"\n"}return l.substring(0,l.length-1)},s.renderTo2dContext=function(t,r){r=r||2;for(var e=s.getModuleCount(),n=0;n<e;n++)for(var o=0;o<e;o++)t.fillStyle=s.isDark(n,o)?"black":"white",t.fillRect(n*r,o*r,r,r)},s}i.stringToBytes=(i.stringToBytesFuncs={default:function(t){for(var r=[],e=0;e<t.length;e+=1){var n=t.charCodeAt(e);r.push(255&n)}return r}}).default,i.createStringToBytes=function(u,f){var i=function(){function t(){var t=r.read();if(-1==t)throw"eof";return t}for(var r=S(u),e=0,n={};;){var o=r.read();if(-1==o)break;var i=t(),a=t()<<8|t();n[String.fromCharCode(o<<8|i)]=a,e+=1}if(e!=f)throw e+" != "+f;return n}(),a="?".charCodeAt(0);return function(t){for(var r=[],e=0;e<t.length;e+=1){var n=t.charCodeAt(e);if(n<128)r.push(n);else{var o=i[t.charAt(e)];"number"==typeof o?(255&o)==o?r.push(o):(r.push(o>>>8),r.push(255&o)):r.push(a)}}return r}};var r,t,a=1,u=2,o=4,f=8,y={L:1,M:0,Q:3,H:2},e=0,n=1,c=2,g=3,l=4,h=5,s=6,v=7,B=(r=[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],(t={}).getBCHTypeInfo=function(t){for(var r=t<<10;0<=d(r)-d(1335);)r^=1335<<d(r)-d(1335);return 21522^(t<<10|r)},t.getBCHTypeNumber=function(t){for(var r=t<<12;0<=d(r)-d(7973);)r^=7973<<d(r)-d(7973);return t<<12|r},t.getPatternPosition=function(t){return r[t-1]},t.getMaskFunction=function(t){switch(t){case e:return function(t,r){return(t+r)%2==0};case n:return function(t,r){return t%2==0};case c:return function(t,r){return r%3==0};case g:return function(t,r){return(t+r)%3==0};case l:return function(t,r){return(Math.floor(t/2)+Math.floor(r/3))%2==0};case h:return function(t,r){return t*r%2+t*r%3==0};case s:return function(t,r){return(t*r%2+t*r%3)%2==0};case v:return function(t,r){return(t*r%3+(t+r)%2)%2==0};default:throw"bad maskPattern:"+t}},t.getErrorCorrectPolynomial=function(t){for(var r=C([1],0),e=0;e<t;e+=1)r=r.multiply(C([1,w.gexp(e)],0));return r},t.getLengthInBits=function(t,r){if(1<=r&&r<10)switch(t){case a:return 10;case u:return 9;case o:case f:return 8;default:throw"mode:"+t}else if(r<27)switch(t){case a:return 12;case u:return 11;case o:return 16;case f:return 10;default:throw"mode:"+t}else{if(!(r<41))throw"type:"+r;switch(t){case a:return 14;case u:return 13;case o:return 16;case f:return 12;default:throw"mode:"+t}}},t.getLostPoint=function(t){for(var r=t.getModuleCount(),e=0,n=0;n<r;n+=1)for(var o=0;o<r;o+=1){for(var i=0,a=t.isDark(n,o),u=-1;u<=1;u+=1)if(!(n+u<0||r<=n+u))for(var f=-1;f<=1;f+=1)o+f<0||r<=o+f||0==u&&0==f||a==t.isDark(n+u,o+f)&&(i+=1);5<i&&(e+=3+i-5)}for(n=0;n<r-1;n+=1)for(o=0;o<r-1;o+=1){var c=0;t.isDark(n,o)&&(c+=1),t.isDark(n+1,o)&&(c+=1),t.isDark(n,o+1)&&(c+=1),t.isDark(n+1,o+1)&&(c+=1),0!=c&&4!=c||(e+=3)}for(n=0;n<r;n+=1)for(o=0;o<r-6;o+=1)t.isDark(n,o)&&!t.isDark(n,o+1)&&t.isDark(n,o+2)&&t.isDark(n,o+3)&&t.isDark(n,o+4)&&!t.isDark(n,o+5)&&t.isDark(n,o+6)&&(e+=40);for(o=0;o<r;o+=1)for(n=0;n<r-6;n+=1)t.isDark(n,o)&&!t.isDark(n+1,o)&&t.isDark(n+2,o)&&t.isDark(n+3,o)&&t.isDark(n+4,o)&&!t.isDark(n+5,o)&&t.isDark(n+6,o)&&(e+=40);var g=0;for(o=0;o<r;o+=1)for(n=0;n<r;n+=1)t.isDark(n,o)&&(g+=1);return e+=Math.abs(100*g/r/r-50)/5*10},t);function d(t){for(var r=0;0!=t;)r+=1,t>>>=1;return r}var w=function(){for(var r=new Array(256),e=new Array(256),t=0;t<8;t+=1)r[t]=1<<t;for(t=8;t<256;t+=1)r[t]=r[t-4]^r[t-5]^r[t-6]^r[t-8];for(t=0;t<255;t+=1)e[r[t]]=t;var n={glog:function(t){if(t<1)throw"glog("+t+")";return e[t]},gexp:function(t){for(;t<0;)t+=255;for(;256<=t;)t-=255;return r[t]}};return n}();function C(n,o){if(void 0===n.length)throw n.length+"/"+o;var r=function(){for(var t=0;t<n.length&&0==n[t];)t+=1;for(var r=new Array(n.length-t+o),e=0;e<n.length-t;e+=1)r[e]=n[e+t];return r}(),i={getAt:function(t){return r[t]},getLength:function(){return r.length},multiply:function(t){for(var r=new Array(i.getLength()+t.getLength()-1),e=0;e<i.getLength();e+=1)for(var n=0;n<t.getLength();n+=1)r[e+n]^=w.gexp(w.glog(i.getAt(e))+w.glog(t.getAt(n)));return C(r,0)},mod:function(t){if(i.getLength()-t.getLength()<0)return i;for(var r=w.glog(i.getAt(0))-w.glog(t.getAt(0)),e=new Array(i.getLength()),n=0;n<i.getLength();n+=1)e[n]=i.getAt(n);for(n=0;n<t.getLength();n+=1)e[n]^=w.gexp(w.glog(t.getAt(n))+r);return C(e,0).mod(t)}};return i}function p(){var e=[],o={writeByte:function(t){e.push(255&t)},writeShort:function(t){o.writeByte(t),o.writeByte(t>>>8)},writeBytes:function(t,r,e){r=r||0,e=e||t.length;for(var n=0;n<e;n+=1)o.writeByte(t[n+r])},writeString:function(t){for(var r=0;r<t.length;r+=1)o.writeByte(t.charCodeAt(r))},toByteArray:function(){return e},toString:function(){var t="";t+="[";for(var r=0;r<e.length;r+=1)0<r&&(t+=","),t+=e[r];return t+="]"}};return o}var k,A,b=(k=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12,7,37,13],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]],(A={}).getRSBlocks=function(t,r){var e=function(t,r){switch(r){case y.L:return k[4*(t-1)+0];case y.M:return k[4*(t-1)+1];case y.Q:return k[4*(t-1)+2];case y.H:return k[4*(t-1)+3];default:return}}(t,r);if(void 0===e)throw"bad rs block @ typeNumber:"+t+"/errorCorrectionLevel:"+r;for(var n,o,i=e.length/3,a=[],u=0;u<i;u+=1)for(var f=e[3*u+0],c=e[3*u+1],g=e[3*u+2],l=0;l<f;l+=1)a.push((n=g,o=void 0,(o={}).totalCount=c,o.dataCount=n,o));return a},A),M=function(){var e=[],n=0,o={getBuffer:function(){return e},getAt:function(t){var r=Math.floor(t/8);return 1==(e[r]>>>7-t%8&1)},put:function(t,r){for(var e=0;e<r;e+=1)o.putBit(1==(t>>>r-e-1&1))},getLengthInBits:function(){return n},putBit:function(t){var r=Math.floor(n/8);e.length<=r&&e.push(0),t&&(e[r]|=128>>>n%8),n+=1}};return o},x=function(t){var r=a,n=t,e={getMode:function(){return r},getLength:function(t){return n.length},write:function(t){for(var r=n,e=0;e+2<r.length;)t.put(o(r.substring(e,e+3)),10),e+=3;e<r.length&&(r.length-e==1?t.put(o(r.substring(e,e+1)),4):r.length-e==2&&t.put(o(r.substring(e,e+2)),7))}},o=function(t){for(var r=0,e=0;e<t.length;e+=1)r=10*r+i(t.charAt(e));return r},i=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);throw"illegal char :"+t};return e},m=function(t){var r=u,n=t,e={getMode:function(){return r},getLength:function(t){return n.length},write:function(t){for(var r=n,e=0;e+1<r.length;)t.put(45*o(r.charAt(e))+o(r.charAt(e+1)),11),e+=2;e<r.length&&t.put(o(r.charAt(e)),6)}},o=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);if("A"<=t&&t<="Z")return t.charCodeAt(0)-"A".charCodeAt(0)+10;switch(t){case" ":return 36;case"$":return 37;case"%":return 38;case"*":return 39;case"+":return 40;case"-":return 41;case".":return 42;case"/":return 43;case":":return 44;default:throw"illegal char :"+t}};return e},L=function(t){var r=o,e=i.stringToBytes(t),n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=0;r<e.length;r+=1)t.put(e[r],8)}};return n},D=function(t){var r=f,e=i.stringToBytesFuncs.SJIS;if(!e)throw"sjis not supported.";!function(){var t=e("友");if(2!=t.length||38726!=(t[0]<<8|t[1]))throw"sjis not supported."}();var o=e(t),n={getMode:function(){return r},getLength:function(t){return~~(o.length/2)},write:function(t){for(var r=o,e=0;e+1<r.length;){var n=(255&r[e])<<8|255&r[e+1];if(33088<=n&&n<=40956)n-=33088;else{if(!(57408<=n&&n<=60351))throw"illegal char at "+(e+1)+"/"+n;n-=49472}n=192*(n>>>8&255)+(255&n),t.put(n,13),e+=2}if(e<r.length)throw"illegal char at "+(e+1)}};return n},S=function(t){var e=t,n=0,o=0,i=0,r={read:function(){for(;i<8;){if(n>=e.length){if(0==i)return-1;throw"unexpected end of file./"+i}var t=e.charAt(n);if(n+=1,"="==t)return i=0,-1;t.match(/^\s$/)||(o=o<<6|a(t.charCodeAt(0)),i+=6)}var r=o>>>i-8&255;return i-=8,r}},a=function(t){if(65<=t&&t<=90)return t-65;if(97<=t&&t<=122)return t-97+26;if(48<=t&&t<=57)return t-48+52;if(43==t)return 62;if(47==t)return 63;throw"c:"+t};return r},I=function(t,r,e){for(var n=function(t,r){var n=t,o=r,l=new Array(t*r),e={setPixel:function(t,r,e){l[r*n+t]=e},write:function(t){t.writeString("GIF87a"),t.writeShort(n),t.writeShort(o),t.writeByte(128),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(255),t.writeByte(255),t.writeByte(255),t.writeString(","),t.writeShort(0),t.writeShort(0),t.writeShort(n),t.writeShort(o),t.writeByte(0);var r=i(2);t.writeByte(2);for(var e=0;255<r.length-e;)t.writeByte(255),t.writeBytes(r,e,255),e+=255;t.writeByte(r.length-e),t.writeBytes(r,e,r.length-e),t.writeByte(0),t.writeString(";")}},i=function(t){for(var r=1<<t,e=1+(1<<t),n=t+1,o=h(),i=0;i<r;i+=1)o.add(String.fromCharCode(i));o.add(String.fromCharCode(r)),o.add(String.fromCharCode(e));var a=p(),u=function(t){var e=t,n=0,o=0,r={write:function(t,r){if(t>>>r!=0)throw"length over";for(;8<=n+r;)e.writeByte(255&(t<<n|o)),r-=8-n,t>>>=8-n,n=o=0;o|=t<<n,n+=r},flush:function(){0<n&&e.writeByte(o)}};return r}(a);u.write(r,n);var f=0,c=String.fromCharCode(l[f]);for(f+=1;f<l.length;){var g=String.fromCharCode(l[f]);f+=1,o.contains(c+g)?c+=g:(u.write(o.indexOf(c),n),o.size()<4095&&(o.size()==1<<n&&(n+=1),o.add(c+g)),c=g)}return u.write(o.indexOf(c),n),u.write(e,n),u.flush(),a.toByteArray()},h=function(){var r={},e=0,n={add:function(t){if(n.contains(t))throw"dup key:"+t;r[t]=e,e+=1},size:function(){return e},indexOf:function(t){return r[t]},contains:function(t){return void 0!==r[t]}};return n};return e}(t,r),o=0;o<r;o+=1)for(var i=0;i<t;i+=1)n.setPixel(i,o,e(i,o));var a=p();n.write(a);for(var u=function(){function e(t){a+=String.fromCharCode(r(63&t))}var n=0,o=0,i=0,a="",t={},r=function(t){if(t<0);else{if(t<26)return 65+t;if(t<52)return t-26+97;if(t<62)return t-52+48;if(62==t)return 43;if(63==t)return 47}throw"n:"+t};return t.writeByte=function(t){for(n=n<<8|255&t,o+=8,i+=1;6<=o;)e(n>>>o-6),o-=6},t.flush=function(){if(0<o&&(e(n<<6-o),o=n=0),i%3!=0)for(var t=3-i%3,r=0;r<t;r+=1)a+="="},t.toString=function(){return a},t}(),f=a.toByteArray(),c=0;c<f.length;c+=1)u.writeByte(f[c]);return u.flush(),"data:image/gif;base64,"+u};return i}();qrcode.stringToBytesFuncs["UTF-8"]=function(t){return function(t){for(var r=[],e=0;e<t.length;e++){var n=t.charCodeAt(e);n<128?r.push(n):n<2048?r.push(192|n>>6,128|63&n):n<55296||57344<=n?r.push(224|n>>12,128|n>>6&63,128|63&n):(e++,n=65536+((1023&n)<<10|1023&t.charCodeAt(e)),r.push(240|n>>18,128|n>>12&63,128|n>>6&63,128|63&n))}return r}(t)},function(t){"function"==typeof define&&define.amd?define([],t):"object"==typeof exports&&(module.exports=t())}(function(){return qrcode});
+</script>
+<script>
+(function () {
+  'use strict';
+
+  /* 앱 목록은 위 <script id="apps-data"> 한 곳에만 있습니다.
+     화면 카드 · QR · 인쇄 안내문 · 머리의 숫자가 모두 여기서 나옵니다 —
+     목록을 두 곳에 적으면 한쪽만 고쳐지고 조용히 어긋납니다. */
+  var DATA = JSON.parse(document.getElementById('apps-data').textContent);
+  var BASE = DATA.base;
+  var APPS = DATA.apps;
+  var SELF = BASE + 'apps/store/';
+  var KIND = { work: '업무는 가볍게', class: '수업은 풍성하게', data: '데이터는 명확하게' };
+  var BADGE = { use: '학교에서 쓰는 중', wip: '만드는 중', auto: '자료 자동 갱신' };
+
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  /* QR 에 담는 주소. 사이트 안의 것은 path 로, 바깥 것은 url 로 적었습니다.
+     한글 도메인은 휴대폰 카메라가 못 읽는 경우가 있어 qr(퓨니코드)을 따로 둡니다. */
+  function qrText(a) { return a.qr || a.url || (BASE + a.path); }
+  function shownUrl(a) { return a.url || (BASE + a.path); }
+  function isExternal(a) { return /^https?:/.test(a.href); }
+
+  /* ---------------------------------------------------------------- QR
+     qrcode-generator(MIT)는 아래 <script> 에 붙여 넣었습니다. 모양은 여기서 그립니다 —
+     검은 칸을 하나의 path 로 이어 그리면 확대해도 칸 사이에 틈이 생기지 않습니다.
+     어두운 화면에서도 **흰 바탕에 검은 칸**을 지킵니다. 반대로 하면 못 읽는 폰이 있습니다. */
+  function qrSvg(text) {
+    var q = qrcode(0, 'M');
+    q.addData(text);
+    q.make();
+    var n = q.getModuleCount(), pad = 4, size = n + pad * 2, d = '';
+    for (var r = 0; r < n; r++) {
+      for (var c = 0; c < n; c++) {
+        if (q.isDark(r, c)) d += 'M' + (c + pad) + ' ' + (r + pad) + 'h1v1h-1z';
+      }
+    }
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + size + ' ' + size +
+      '" shape-rendering="crispEdges"><rect width="' + size + '" height="' + size +
+      '" fill="#fff"/><path d="' + d + '" fill="#000"/></svg>';
+  }
+
+  /* ---------------------------------------------------------------- 카드 */
+  function card(a) {
+    var art = el('article', 'card ' + a.kind);
+    art.dataset.kind = a.kind;
+    art.dataset.id = a.id;
+    art.dataset.find = [a.name, a.lead, a.who, a.by, KIND[a.kind]].join(' ').toLowerCase();
+
+    var top = el('div', 'card-top');
+    top.appendChild(el('span', 'tag ' + a.kind, KIND[a.kind]));
+    if (a.badge) top.appendChild(el('span', 'tag ' + a.badge, BADGE[a.badge]));
+    art.appendChild(top);
+
+    art.appendChild(el('h3', null, a.name));
+    art.appendChild(el('p', 'lead', a.lead));
+    var who = el('p', 'who');
+    who.appendChild(el('b', null, '이런 분께'));
+    who.appendChild(document.createTextNode(' — ' + a.who));
+    art.appendChild(who);
+    art.appendChild(el('p', 'by', '만든 이 · ' + a.by));
+
+    var go = el('div', 'go');
+    var open = el('a', 'btn');
+    open.href = a.href;
+    open.textContent = '열기';
+    if (isExternal(a)) {
+      open.target = '_blank';
+      open.rel = 'noopener';
+      open.appendChild(el('span', 'ext', ' ↗'));
+      open.setAttribute('aria-label', a.name + ' 열기 (새 창)');
+    } else {
+      open.setAttribute('aria-label', a.name + ' 열기');
+    }
+    go.appendChild(open);
+    if (a.readme) {
+      var rd = el('a', 'btn btn--ghost', '설명서');
+      rd.href = a.readme;
+      rd.setAttribute('aria-label', a.name + ' 설명서');
+      go.appendChild(rd);
+    }
+    var qb = el('button', 'btn btn--ghost', 'QR');
+    qb.type = 'button';
+    qb.setAttribute('aria-label', a.name + ' QR 크게 보기');
+    qb.addEventListener('click', function () { showQR(a.name, '만든 이 · ' + a.by, qrText(a), shownUrl(a)); });
+    go.appendChild(qb);
+    art.appendChild(go);
+    return art;
+  }
+
+  APPS.forEach(function (a) {
+    var box = document.querySelector('.cards[data-group="' + a.group + '"]');
+    if (box) box.appendChild(card(a));
+  });
+
+  /* ---------------------------------------------------------------- 머리의 숫자 */
+  function count(fn) { return APPS.filter(fn).length; }
+  var stats = [
+    [APPS.length, '개를 모았습니다'],
+    [count(function (a) { return a.group === 'analyze'; }), '대시보드'],
+    [count(function (a) { return a.group === 'tools'; }), '교실도구'],
+    [count(function (a) { return a.group === 'members'; }), '연구원 앱'],
+    [count(function (a) { return a.badge === 'use'; }), '학교에서 쓰는 중']
+  ];
+  stats.forEach(function (s) {
+    var li = el('li');
+    li.appendChild(el('b', null, String(s[0])));
+    li.appendChild(document.createTextNode(s[1]));
+    $('stats').appendChild(li);
+  });
+  document.querySelectorAll('[data-n]').forEach(function (n) {
+    var k = n.getAttribute('data-n');
+    n.textContent = (k === 'all' ? APPS.length : count(function (a) { return a.kind === k; })) + '개';
+  });
+
+  /* ---------------------------------------------------------------- 거르기 */
+  var state = { kind: 'all', q: '' };
+  function apply() {
+    var shown = 0;
+    document.querySelectorAll('.card').forEach(function (c) {
+      var ok = (state.kind === 'all' || c.dataset.kind === state.kind) &&
+               (!state.q || c.dataset.find.indexOf(state.q) !== -1);
+      c.hidden = !ok;
+      if (ok) shown++;
+    });
+    document.querySelectorAll('.sec').forEach(function (s) {
+      s.hidden = !s.querySelector('.card:not([hidden])');
+    });
+    $('empty').hidden = shown > 0;
+    $('count').textContent = shown === APPS.length ? '모두 ' + shown + '개' : shown + '개 보임';
+  }
+  document.querySelectorAll('#leap button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      state.kind = b.dataset.kind;
+      document.querySelectorAll('#leap button').forEach(function (x) {
+        x.setAttribute('aria-pressed', String(x === b));
+      });
+      apply();
+    });
+  });
+  $('q').addEventListener('input', function () {
+    state.q = this.value.trim().toLowerCase();
+    apply();
+  });
+  apply();
+
+  /* ---------------------------------------------------------------- QR 크게 보기 */
+  var dlg = $('qr-dlg');
+  function showQR(title, by, text, url) {
+    $('qr-title').textContent = title;
+    $('qr-by').textContent = by;
+    $('qr-box').innerHTML = qrSvg(text);
+    $('qr-box').setAttribute('aria-label', title + ' 로 가는 QR 코드');
+    $('qr-url').textContent = url;
+    if (typeof dlg.showModal === 'function') dlg.showModal();
+    else dlg.setAttribute('open', '');
+  }
+  $('qr-close').addEventListener('click', function () {
+    if (typeof dlg.close === 'function') dlg.close();
+    else dlg.removeAttribute('open');
+  });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+  $('hero-qr-svg').innerHTML = qrSvg(SELF);
+  $('hero-qr').addEventListener('click', function () {
+    showQR('TEAM LEAP 앱 모음', '이 페이지로 오는 QR', SELF, SELF);
+  });
+
+  /* ---------------------------------------------------------------- 인쇄 안내문
+     A4 세로에 세 칸씩. 묶음마다 제목을 달고, 맨 위에 이 페이지 QR 을 둡니다. */
+  (function buildPrint() {
+    var groups = [['analyze', '학령인구 대시보드'], ['tools', '교실도구 — TEAM LEAP 공동'], ['members', '연구원 1인 1앱']];
+    var h = '<div class="ph">' + qrSvg(SELF) +
+      '<div><h1>TEAM LEAP 앱 모음</h1><p>휴대폰 카메라로 QR을 비추면 바로 열립니다. 왼쪽 QR은 모든 앱을 모은 페이지입니다.</p>' +
+      '<p>' + SELF + '</p></div></div>';
+    groups.forEach(function (g) {
+      var list = APPS.filter(function (a) { return a.group === g[0]; });
+      if (!list.length) return;
+      h += '<div class="pgroup">' + g[1] + '</div><div class="pgrid">';
+      list.forEach(function (a) {
+        h += '<div class="pitem">' + qrSvg(qrText(a)) + '<div><b>' + esc(a.name) + '</b><span>' +
+             esc(a.who) + '</span><i>' + esc(shownUrl(a)) + '</i></div></div>';
+      });
+      h += '</div>';
+    });
+    h += '<div class="pfoot">TEAM LEAP · 경북교육 AI Lab(GBE-AI Lab) AI 활용 분과</div>';
+    $('print-area').innerHTML = h;
+  })();
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  $('btn-print').addEventListener('click', function () { window.print(); });
+
+  /* ---------------------------------------------------------------- 밝기
+     카탈로그·앱과 같은 열쇠(leap-theme)를 씁니다. 한 곳에서 고르면 다른 곳도 따라옵니다. */
+  var btnTheme = $('btn-theme');
+  function themeLabel() {
+    var cur = document.documentElement.getAttribute('data-theme');
+    var dark = cur ? cur === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    btnTheme.textContent = dark ? '밝게 보기' : '어둡게 보기';
+  }
+  try {
+    var saved = localStorage.getItem('leap-theme');
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+  } catch (e) {}
+  btnTheme.addEventListener('click', function () {
+    var cur = document.documentElement.getAttribute('data-theme');
+    var dark = cur ? cur === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var next = dark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('leap-theme', next); } catch (e) {}
+    themeLabel();
+  });
+  themeLabel();
+})();
+</script>
+</body>
+</html>
