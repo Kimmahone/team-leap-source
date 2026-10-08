@@ -179,9 +179,14 @@ check('시뮬레이터 예측 표가 채워진다', (byId['pred-tbody']._html ||
 console.log('\n■ 공공데이터 917교');
 const q = expr => vm.runInContext(expr, sandbox);
 const ROOT2 = path.resolve(__dirname, '..', '..');
-check('SGIS 온라인 지도와 오프라인 대체 지도를 함께 제공한다',
+const parkedHome = (htmlLive.match(/<template id="parked-home">([\s\S]*?)<\/template>/) || [])[1] || '';
+const activeHtml = htmlLive.replace(/<template\b[^>]*>[\s\S]*?<\/template>/g, '')
+  .replace(/(<script\b[^>]*>)[\s\S]*?<\/script>/g, '$1</script>');
+check('보관한 화면에는 SGIS 온라인 지도와 오프라인 대체 지도를 함께 남긴다',
   html.includes('id="map-mode-online"') && html.includes('id="map-mode-offline"') &&
-  html.includes('src="/api/sgis-map"') && /function setMapMode/.test(html));
+  parkedHome.includes('src="/api/sgis-map"') && parkedHome.includes('href="/api/sgis-map-css"') &&
+  !/<(?:script|link)\b[^>]*(?:src|href)=["']\/api\/sgis-map(?:-css)?["']/.test(activeHtml) &&
+  /function setMapMode/.test(html));
 check('지도 선택 명칭을 기술용어 대신 쉬운 말로 표시한다',
   html.includes('>간편 지도</button>') && html.includes('>실제 위치 지도</button>') &&
   !html.includes('>오프라인 경계 지도</button>'));

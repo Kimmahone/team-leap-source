@@ -4,10 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>경북 학령인구 데이터 플랫폼 · TEAM LEAP</title>
-<!-- 지도 스크립트는 같은 출처의 서버 경로를 통해 불러옵니다.
-     로컬 파일·네트워크 장애 때는 이 요청이 실패해도 아래 간편 지도가 그대로 작동합니다. -->
-<link rel="stylesheet" href="/api/sgis-map-css">
-<script src="/api/sgis-map"></script>
 <style>
 /* ==========================================================================
    LEAP Kit 사본 — 원본은 `08. 실행계획(3)/apps/kit/leap.css`
@@ -2321,6 +2317,10 @@ body.map-maxed.home-wide #home-side{display:none}
          ③ 초기화의 HOME_TAB_ON 을 true 로 바꿉니다
        ═════════════════════════════════════════════════════════════════════ -->
   <template id="parked-home">
+  <!-- SGIS는 보관한 종합 대시보드에서만 씁니다. template 안에서는 요청하지 않아
+       SGIS 응답이 늦어도 현재 MapLibre 지도와 첫 화면을 막지 않습니다. -->
+  <link rel="stylesheet" href="/api/sgis-map-css">
+  <script src="/api/sgis-map"></script>
   <section id="view-home" class="view">
     <div class="page-head">
       <h1>종합 대시보드</h1>
