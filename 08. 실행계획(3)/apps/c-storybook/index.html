@@ -4179,6 +4179,8 @@ var ZIP = (function () {
   // 책장 목록은 저장이 끝난 뒤에야 새 제목을 압니다. 그래서 탭을 열 때 다시 그립니다.
   var tabs = LEAP.initTabs(document.getElementById('tablist'), function (panel) {
     if (panel === 'panel-shelf' && V.rec) renderShelf();
+    // 표지의 입력·바탕 변경은 표지 안에서만 그립니다. 미리보기를 열 때 최신 책을 읽습니다.
+    if (panel === 'panel-prev' && V.rec) renderPrev();
   });
 
   // 저장소를 먼저 연 다음 그립니다. 열지 못하면 예전 방식으로 돌아갑니다.
