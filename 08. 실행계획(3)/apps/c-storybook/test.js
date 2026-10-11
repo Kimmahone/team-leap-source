@@ -15,7 +15,9 @@ function makeEl() {
     classList: { add() {}, remove() {} }, style: {}, files: null, type: '',
     set innerHTML(v) { this._html = v; },
     get innerHTML() { return this._html; },
-    addEventListener() {}, focus() {}, click() {},
+    _events: {},
+    addEventListener(type, fn) { this._events[type] = fn; },
+    focus() {}, click() { if (this._events.click) this._events.click(); },
     setAttribute(k, v) { this['_' + k] = v; },
     getAttribute(k) { return this['_' + k] || null; },
     appendChild() {}, removeChild() {},
@@ -90,6 +92,11 @@ function fakeIDB(seed) {
 function run(state, opt) {
   opt = opt || {};
   const panels = {};
+  const tabEls = ['cover', 'spot', 'page', 'back', 'prev', 'shelf', 'merge'].map(name => {
+    const el = makeEl(); el.setAttribute('aria-controls', 'panel-' + name); return el;
+  });
+  panels.tablist = makeEl();
+  panels.tablist.querySelectorAll = () => tabEls;
   const store = { 'leap-storybook-v1': state ? JSON.stringify(state) : null };
   if (opt.cur) store['leap-storybook-cur'] = opt.cur;
   const sandbox = {
@@ -130,6 +137,11 @@ function run(state, opt) {
   return {
     sb: sandbox,
     hook: sandbox.__LEAP_TEST__.hook,
+    openTab(name) {
+      const el = tabEls.find(t => t.getAttribute('aria-controls') === 'panel-' + name);
+      if (!el) throw new Error('Unknown tab: ' + name);
+      el.click();
+    },
     get cover() { return get('panel-cover'); },
     get page() { return get('panel-page'); },
     get back() { return get('panel-back'); },
@@ -183,6 +195,15 @@ check('미리보기에 부제·모둠이 보인다',
   r.cover.includes('봉정사 탐방 기록') && r.cover.includes('두루미 모둠'));
 check('고른 바탕이 눌린 상태', /data-th="dawn"[^>]*aria-pressed="true"/.test(r.cover),
   'coverStyle:grad 로 저장된 옛 책은 dawn 바탕으로 읽혀야 한다');
+
+console.log('\n[2-1] 표지를 바꾸고 미리보기를 다시 여는 흐름');
+const updated = run(mkBook());
+updated.hook.save(d => { d.book.title = '가상 예시 탐방책'; d.book.coverTheme = 'night'; });
+updated.openTab('prev');
+check('표지 수정 후 미리보기 탭에 최신 제목이 나온다', updated.prev.includes('가상 예시 탐방책'));
+check('표지 수정 후 미리보기에 이전 제목이 남지 않는다', !updated.prev.includes('우리 마을 이야기'));
+check('표지 바탕도 밤하늘 색으로 갱신된다',
+  updated.prev.includes('stop-color="#05080F"') && updated.prev.includes('stop-color="#14295A"'));
 
 console.log('\n[3] 표지 배경 — 인쇄 문제 (요청 1)');
 check('색 표지가 CSS 배경이 아니라 SVG 로 그려진다',
