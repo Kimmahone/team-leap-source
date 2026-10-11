@@ -122,6 +122,10 @@ main.wrap{max-width:1180px;margin:0 auto;padding:28px 20px 90px}
 .sec > .sub{margin:0 0 18px;color:var(--leap-gray);font-size:.9375rem;max-width:70ch}
 .sec > .sub a{font-weight:700}
 
+ .access-guide{padding:18px 22px;margin-bottom:24px;border-left:4px solid var(--leap-blue);background:var(--leap-surface);border-radius:var(--leap-radius-sm)}
+.access-guide p{margin:6px 0;font-size:.9375rem}.access-guide small{color:var(--leap-gray)}
+.card .access{margin:0 0 16px;padding-top:10px;border-top:1px solid var(--leap-border);font-size:.8125rem}.card .access b{display:block;color:var(--leap-blue);margin-bottom:4px}
+@media(prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
 /* ==========================================================================
    카드
    ========================================================================== */
@@ -253,7 +257,7 @@ footer.foot{margin-top:10px}
     <div>
       <h2>TEAM LEAP가 만든 것, 한곳에서</h2>
       <p>학령인구 감소 시대에 교사가 직접 만든 대시보드와 앱을 모았습니다.
-         누르면 바로 열리고, QR을 휴대폰 카메라로 비추면 휴대폰에서도 열립니다.</p>
+         앱마다 접속·로그인·체험 방법을 안내합니다. 휴대폰 카메라로 QR을 비추면 해당 앱으로 연결됩니다.</p>
       <ul class="stats" id="stats" aria-label="모은 것"></ul>
     </div>
     <button class="hero-qr" id="hero-qr" type="button" aria-label="이 페이지로 오는 QR 크게 보기">
@@ -264,6 +268,8 @@ footer.foot{margin-top:10px}
 </header>
 
 <main class="wrap">
+
+  <aside class="access-guide"><b>처음 오신 선생님께</b><p>① 앱을 고르고 접속 안내 읽기 ② 열기 또는 QR로 접속 ③ 예시 자료로 체험하기. 학교 운영용 2개 앱은 시험 입력 없이 소개 화면만 확인해 주세요.</p><small>2026. 10. 11. 공개 화면 점검 기준. 접속 확인과 실제 사용 효과는 구분합니다.</small></aside>
 
   <div class="leap" role="group" aria-label="갈래로 고르기" id="leap">
     <button type="button" data-kind="all" aria-pressed="true">
@@ -302,7 +308,7 @@ footer.foot{margin-top:10px}
 
   <section class="sec" id="sec-members" aria-labelledby="h-members">
     <div class="sec-h"><h2 id="h-members">연구원 1인 1앱</h2><span class="task">과제 ①·② · 업무와 수업</span></div>
-    <p class="sub">연구원이 자기 업무와 수업에서 겪는 문제를 골라 직접 만든 앱입니다. 다른 주소로 열립니다.</p>
+    <p class="sub">연구원이 업무와 수업에서 겪는 문제를 골라 만든 앱 9개입니다. 대시보드를 더한 주요 앱은 10개입니다. 접속 안내를 읽고 체험해 주세요.</p>
     <div class="cards" data-group="members"></div>
   </section>
 
@@ -312,7 +318,7 @@ footer.foot{margin-top:10px}
     <div class="foot-card">
       <p><b>TEAM LEAP</b> · 경북교육 AI Lab(GBE-AI Lab) AI 활용 분과 — 김지원 · 조지훈 · 김정준 · 신동영 · 이성근 · 정훈탁</p>
       <p>이 페이지는 계획서의 과제 ④ 「교육용 웹앱스토어」의 첫 판입니다. QR도 이 페이지 안에서 그리며, 바깥으로 아무것도 보내지 않습니다.</p>
-      <p>© 2026 TEAM LEAP · 교육 목적에 한해 자유롭게 쓰실 수 있습니다. 각 앱의 저작권은 만든 사람에게 있습니다.</p>
+      <p>© 2026 TEAM LEAP · 각 앱의 이용 조건·저작권·개인정보 안내는 해당 앱에서 확인해 주세요.</p>
     </div>
   </footer>
 </main>
@@ -331,7 +337,7 @@ footer.foot{margin-top:10px}
 <script type="application/json" id="apps-data">
 {
  "base": "https://team-leap.pages.dev/",
- "source": "교실도구 문구는 앱 카탈로그(../index.html), 연구원 앱 문구는 TEAM LEAP 앱 개발 현황 시트(2026. 10. 7.)에서 옮겼습니다.",
+ "source": "앱 개발 현황 시트와 공개 첫 화면 확인(2026. 10. 11.). 학교 운영 사용은 제작자 보고이며 효과 측정과 구분합니다.",
  "apps": [
   {
    "id": "dashboard",
@@ -339,11 +345,13 @@ footer.foot{margin-top:10px}
    "kind": "data",
    "badge": "auto",
    "name": "경북 학령인구 데이터 플랫폼",
-   "lead": "경북 초·중·고 917곳의 학생·학급 변화와 앞으로의 전망을 시·군과 학교 단위로 봅니다. 지도, 학령인구 현황, 학생수 시뮬레이터, 다문화·특수교육, 폐교, 뉴스 여섯 화면.",
+   "lead": "경북 22개 시·군과 학교의 학생·학급 현황을 비교합니다. 지도, 학령인구 현황, 학생수 시뮬레이터 등 여섯 메뉴. 재학생 전망은 공식 추계와 구분해 표시합니다.",
    "who": "학교 규모와 학생 수 전망을 같은 근거로 보고 싶은 교육청 담당자·교원·학부모",
-   "by": "TEAM LEAP",
+   "by": "김정준 · TEAM LEAP",
    "href": "../../dashboard/index.html",
-   "path": "dashboard/"
+   "path": "dashboard/",
+   "access": "바로 보기",
+   "start": "로그인 없이 열기 → 메뉴 선택 → 시·군 선택. 현재 메뉴 Excel 또는 인쇄로 저장합니다."
   },
   {
    "id": "news",
@@ -355,7 +363,9 @@ footer.foot{margin-top:10px}
    "who": "학령인구 감소 대응 정책의 흐름을 따라가고 싶은 분",
    "by": "TEAM LEAP",
    "href": "../../dashboard/index.html#news",
-   "path": "dashboard/#news"
+   "path": "dashboard/#news",
+   "access": "대시보드 바로가기",
+   "start": "대시보드의 뉴스 메뉴입니다. 독립 앱 수에는 포함하지 않습니다."
   },
   {
    "id": "briefing",
@@ -366,7 +376,9 @@ footer.foot{margin-top:10px}
    "who": "대시보드를 다른 사람에게 소개해야 하는 분",
    "by": "TEAM LEAP",
    "href": "https://leap-guide.pages.dev/",
-   "url": "https://leap-guide.pages.dev/"
+   "url": "https://leap-guide.pages.dev/",
+   "access": "소개 자료",
+   "start": "대시보드 안내 자료입니다. 독립 앱 수에는 포함하지 않습니다."
   },
   {
    "id": "a-circuit",
@@ -378,7 +390,9 @@ footer.foot{margin-top:10px}
    "by": "TEAM LEAP",
    "href": "../a-circuit/index.html",
    "readme": "../a-circuit/README.html",
-   "path": "apps/a-circuit/"
+   "path": "apps/a-circuit/",
+   "access": "설치·로그인 없이",
+   "start": "열기에서 시작하거나 설명서의 예시를 따라 체험하세요. 입력 자료는 기기와 앱별 저장 방식을 확인해 관리하세요."
   },
   {
    "id": "b-classboard",
@@ -390,7 +404,9 @@ footer.foot{margin-top:10px}
    "by": "TEAM LEAP",
    "href": "../b-classboard/index.html",
    "readme": "../b-classboard/README.html",
-   "path": "apps/b-classboard/"
+   "path": "apps/b-classboard/",
+   "access": "설치·로그인 없이",
+   "start": "열기에서 시작하거나 설명서의 예시를 따라 체험하세요. 입력 자료는 기기와 앱별 저장 방식을 확인해 관리하세요."
   },
   {
    "id": "c-storybook",
@@ -402,7 +418,9 @@ footer.foot{margin-top:10px}
    "by": "TEAM LEAP",
    "href": "../c-storybook/index.html",
    "readme": "../c-storybook/README.html",
-   "path": "apps/c-storybook/"
+   "path": "apps/c-storybook/",
+   "access": "설치·로그인 없이",
+   "start": "열기에서 시작하거나 설명서의 예시를 따라 체험하세요. 입력 자료는 기기와 앱별 저장 방식을 확인해 관리하세요."
   },
   {
    "id": "d-multigrade",
@@ -414,7 +432,9 @@ footer.foot{margin-top:10px}
    "by": "TEAM LEAP",
    "href": "../d-multigrade/index.html",
    "readme": "../d-multigrade/README.html",
-   "path": "apps/d-multigrade/"
+   "path": "apps/d-multigrade/",
+   "access": "설치·로그인 없이",
+   "start": "열기에서 시작하거나 설명서의 예시를 따라 체험하세요. 입력 자료는 기기와 앱별 저장 방식을 확인해 관리하세요."
   },
   {
    "id": "e-together",
@@ -426,7 +446,9 @@ footer.foot{margin-top:10px}
    "by": "TEAM LEAP",
    "href": "../e-together/index.html",
    "readme": "../e-together/README.html",
-   "path": "apps/e-together/"
+   "path": "apps/e-together/",
+   "access": "설치·로그인 없이",
+   "start": "열기에서 시작하거나 설명서의 예시를 따라 체험하세요. 입력 자료는 기기와 앱별 저장 방식을 확인해 관리하세요."
   },
   {
    "id": "f-lessonplan",
@@ -438,7 +460,9 @@ footer.foot{margin-top:10px}
    "by": "TEAM LEAP",
    "href": "../f-lessonplan/index.html",
    "readme": "../f-lessonplan/README.html",
-   "path": "apps/f-lessonplan/"
+   "path": "apps/f-lessonplan/",
+   "access": "설치·로그인 없이",
+   "start": "열기에서 시작하거나 설명서의 예시를 따라 체험하세요. 입력 자료는 기기와 앱별 저장 방식을 확인해 관리하세요."
   },
   {
    "id": "g-classdata",
@@ -450,7 +474,9 @@ footer.foot{margin-top:10px}
    "by": "TEAM LEAP",
    "href": "../g-classdata/index.html",
    "readme": "../g-classdata/README.html",
-   "path": "apps/g-classdata/"
+   "path": "apps/g-classdata/",
+   "access": "설치·로그인 없이",
+   "start": "열기에서 시작하거나 설명서의 예시를 따라 체험하세요. 입력 자료는 기기와 앱별 저장 방식을 확인해 관리하세요."
   },
   {
    "id": "j-howmany",
@@ -462,7 +488,9 @@ footer.foot{margin-top:10px}
    "by": "TEAM LEAP",
    "href": "../j-howmany/index.html",
    "readme": "../j-howmany/README.html",
-   "path": "apps/j-howmany/"
+   "path": "apps/j-howmany/",
+   "access": "설치·로그인 없이",
+   "start": "열기에서 시작하거나 설명서의 예시를 따라 체험하세요. 입력 자료는 기기와 앱별 저장 방식을 확인해 관리하세요."
   },
   {
    "id": "i-required",
@@ -474,7 +502,9 @@ footer.foot{margin-top:10px}
    "by": "TEAM LEAP",
    "href": "../i-required/index.html",
    "readme": "../i-required/README.html",
-   "path": "apps/i-required/"
+   "path": "apps/i-required/",
+   "access": "설치·로그인 없이",
+   "start": "열기에서 시작하거나 설명서의 예시를 따라 체험하세요. 입력 자료는 기기와 앱별 저장 방식을 확인해 관리하세요."
   },
   {
    "id": "k-year",
@@ -486,7 +516,9 @@ footer.foot{margin-top:10px}
    "by": "TEAM LEAP",
    "href": "../k-year/index.html",
    "readme": "../k-year/README.html",
-   "path": "apps/k-year/"
+   "path": "apps/k-year/",
+   "access": "설치·로그인 없이",
+   "start": "열기에서 시작하거나 설명서의 예시를 따라 체험하세요. 입력 자료는 기기와 앱별 저장 방식을 확인해 관리하세요."
   },
   {
    "id": "l-rooms",
@@ -498,7 +530,9 @@ footer.foot{margin-top:10px}
    "by": "TEAM LEAP",
    "href": "../l-rooms/index.html",
    "readme": "../l-rooms/README.html",
-   "path": "apps/l-rooms/"
+   "path": "apps/l-rooms/",
+   "access": "설치·로그인 없이",
+   "start": "열기에서 시작하거나 설명서의 예시를 따라 체험하세요. 입력 자료는 기기와 앱별 저장 방식을 확인해 관리하세요."
   },
   {
    "id": "school-self-check",
@@ -506,11 +540,14 @@ footer.foot{margin-top:10px}
    "kind": "work",
    "badge": "use",
    "name": "자율적 내부통제 자가진단표",
-   "lead": "내부통제 자가진단을 화면에서 점검하고, 담당자 확인 여부와 점검 결과를 학교 한글 양식에 맞춰 받습니다.",
+   "lead": "자가진단 결과를 수합하고 한글 양식으로 출력합니다. 제작자가 실제 학교 사용을 보고한 앱입니다.",
    "who": "내부통제 자가진단 업무를 맡은 교직원",
    "by": "이성근 선생님",
    "href": "https://school-self-check.vercel.app/",
-   "url": "https://school-self-check.vercel.app/"
+   "url": "https://school-self-check.vercel.app/",
+   "access": "운영학교 전용",
+   "start": "하주초 실제 점검 자료와 연결되어 있습니다. 체크 즉시 저장되므로 시험 입력을 하지 마세요. 다른 학교 적용·시연용 자료는 제작자와 협의해 주세요.",
+   "openLabel": "운영 화면 확인"
   },
   {
    "id": "training-certificate",
@@ -522,18 +559,23 @@ footer.foot{margin-top:10px}
    "who": "연수 이수증을 모으는 업무 담당자와 구성원",
    "by": "이성근 선생님",
    "href": "https://training-certificate.vercel.app/",
-   "url": "https://training-certificate.vercel.app/"
+   "url": "https://training-certificate.vercel.app/",
+   "access": "운영학교 전용",
+   "start": "하주초 실제 연수 수합용입니다. 시험 이수증 업로드·등록을 하지 마세요. 다른 학교 적용·시연용 자료는 제작자와 협의해 주세요.",
+   "openLabel": "운영 화면 확인"
   },
   {
    "id": "handover-helper",
    "group": "members",
    "kind": "work",
-   "name": "인수인계도우미",
+   "name": "업무 인수인계 도우미",
    "lead": "NEIS에서 내려받은 1년 치 기안 공문을 끌어다 놓으면 회계·업무·대외 발송·민감 문서로 나누고, 업무 타임라인과 학교 서식의 인수인계서를 만듭니다.",
    "who": "업무를 넘기거나 이어받는 교직원",
    "by": "신동영 선생님",
    "href": "https://handover-helper-ten.vercel.app/",
-   "url": "https://handover-helper-ten.vercel.app/"
+   "url": "https://handover-helper-ten.vercel.app/",
+   "access": "예시로 체험",
+   "start": "열기 → 「예시로 먼저 살펴보기」. 파일을 올리지 않고 분류와 업무 타임라인을 체험할 수 있습니다."
   },
   {
    "id": "curriculum-planner",
@@ -544,29 +586,35 @@ footer.foot{margin-top:10px}
    "who": "학교 교육과정을 편성·검토하는 교사",
    "by": "신동영 선생님",
    "href": "https://curriculum-planner-umber.vercel.app/",
-   "url": "https://curriculum-planner-umber.vercel.app/"
+   "url": "https://curriculum-planner-umber.vercel.app/",
+   "access": "바로 시작",
+   "start": "열기 → 「첫 프로젝트 만들기」. 공개 시연은 가상의 학교·일정으로 진행합니다."
   },
   {
    "id": "balpyo-compass",
    "group": "members",
    "kind": "class",
-   "name": "발표도우미",
-   "lead": "여러 가지 발표 장면에 쓰는 교사용 발표 도구입니다.",
+   "name": "발표나침반",
+   "lead": "34가지 발표 방법을 찾아 수업에 맞게 고릅니다. 발표 타이머와 발표자 선정 도구도 함께 씁니다.",
    "who": "발표를 진행하는 교사",
    "by": "신동영 선생님",
    "href": "https://balpyo-compass.vercel.app/",
-   "url": "https://balpyo-compass.vercel.app/"
+   "url": "https://balpyo-compass.vercel.app/",
+   "access": "바로 체험",
+   "start": "열기 → 발표 방법 선택. 타이머·발표자 도구는 실제 학생 명단 없이 체험해 보세요."
   },
   {
    "id": "voca-hero",
    "group": "members",
    "kind": "class",
    "name": "VOCA HERO!",
-   "lead": "초등 필수 영단어 약 250개를 학년별로, 키우기 게임으로 익힙니다.",
-   "who": "영단어를 익히는 초등학생",
+   "lead": "초3부터 고3까지 영단어를 퀴즈와 게임으로 반복 학습하고 용사를 성장시킵니다.",
+   "who": "영단어를 익히는 학생과 교사",
    "by": "이성근 선생님",
    "href": "https://english-game-sage.vercel.app/",
-   "url": "https://english-game-sage.vercel.app/"
+   "url": "https://english-game-sage.vercel.app/",
+   "access": "시작 오류 확인 중",
+   "start": "첫 화면은 열립니다. 10월 11일 접속 점검에서 「시작하기」 후 계정 준비 오류가 재현되었습니다. 이어하기는 Google 로그인을 사용합니다. 발표 전 제작자 확인이 필요합니다."
   },
   {
    "id": "jeongbo-ieum",
@@ -578,19 +626,36 @@ footer.foot{margin-top:10px}
    "by": "이성근 선생님",
    "href": "https://정보이음.com",
    "url": "https://정보이음.com",
-   "qr": "https://xn--on3b62qods0a.com"
+   "qr": "https://xn--on3b62qods0a.com",
+   "access": "테스트 로그인 제공",
+   "start": "열기 → 「교사 테스트 로그인」 또는 「학생 테스트 로그인」. 정식 수업 이용은 교사·학생 로그인 안내를 확인하세요."
   },
   {
    "id": "wonedu",
    "group": "members",
    "kind": "class",
    "badge": "wip",
-   "name": "교육통합플랫폼",
+   "name": "원에듀 교육통합플랫폼",
    "lead": "과목별로 보는 웹교과서 플랫폼입니다.",
    "who": "학생과 교직원",
    "by": "조지훈 선생님",
    "href": "https://wonedu.org/",
-   "url": "https://wonedu.org/"
+   "url": "https://wonedu.org/",
+   "access": "웹교과서 공개",
+   "start": "열기 → 공개 교과서 선택. 로그인 기능과 추가 서비스는 별도 안내를 확인하세요. 개발 현황 시트에서는 제작 중으로 표시합니다."
+  },
+  {
+   "id": "class-duty",
+   "group": "members",
+   "kind": "work",
+   "name": "우리 반 당번표",
+   "lead": "청소·우유 등 학급 역할과 이전 배정을 보고 다음 당번을 정합니다.",
+   "who": "학급 당번을 정하고 기록하는 담임",
+   "by": "정훈탁 선생님",
+   "href": "https://class-duty.vercel.app/",
+   "url": "https://class-duty.vercel.app/",
+   "access": "바로 시작",
+   "start": "열기 → 학생·역할 확인 → 자동 배정 제안. 공개 시연은 기본 번호 명단을 쓰고 실제 명단은 입력하지 않습니다."
   }
  ]
 }
@@ -610,7 +675,7 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
   var APPS = DATA.apps;
   var SELF = BASE + 'apps/store/';
   var KIND = { work: '업무는 가볍게', class: '수업은 풍성하게', data: '데이터는 명확하게' };
-  var BADGE = { use: '학교에서 쓰는 중', wip: '만드는 중', auto: '자료 자동 갱신' };
+  var BADGE = { use: '학교 운영 중 · 제작자 보고', wip: '만드는 중', auto: '자료 자동 갱신' };
 
   function $(id) { return document.getElementById(id); }
   function el(tag, cls, text) {
@@ -664,10 +729,14 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
     art.appendChild(who);
     art.appendChild(el('p', 'by', '만든 이 · ' + a.by));
 
+    var ac = el('p', 'access');
+    ac.appendChild(el('b', null, a.access));
+    ac.appendChild(document.createTextNode(a.start));
+    art.appendChild(ac);
     var go = el('div', 'go');
     var open = el('a', 'btn');
     open.href = a.href;
-    open.textContent = '열기';
+    open.textContent = a.openLabel || '열기';
     if (isExternal(a)) {
       open.target = '_blank';
       open.rel = 'noopener';
@@ -700,11 +769,11 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
   /* ---------------------------------------------------------------- 머리의 숫자 */
   function count(fn) { return APPS.filter(fn).length; }
   var stats = [
-    [APPS.length, '개를 모았습니다'],
-    [count(function (a) { return a.group === 'analyze'; }), '대시보드'],
+    [count(function (a) { return a.id === 'dashboard' || a.group === 'members'; }), '주요 앱'],
+    [count(function (a) { return a.id === 'news' || a.id === 'briefing'; }), '참고 바로가기'],
     [count(function (a) { return a.group === 'tools'; }), '교실도구'],
     [count(function (a) { return a.group === 'members'; }), '연구원 앱'],
-    [count(function (a) { return a.badge === 'use'; }), '학교에서 쓰는 중']
+    [count(function (a) { return a.badge === 'use'; }), '학교 운영 중 · 제작자 보고']
   ];
   stats.forEach(function (s) {
     var li = el('li');
@@ -782,7 +851,7 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
       h += '<div class="pgroup">' + g[1] + '</div><div class="pgrid">';
       list.forEach(function (a) {
         h += '<div class="pitem">' + qrSvg(qrText(a)) + '<div><b>' + esc(a.name) + '</b><span>' +
-             esc(a.who) + '</span><i>' + esc(shownUrl(a)) + '</i></div></div>';
+             esc(a.access + ' · ' + a.start) + '</span><i>' + esc(shownUrl(a)) + '</i></div></div>';
       });
       h += '</div>';
     });
