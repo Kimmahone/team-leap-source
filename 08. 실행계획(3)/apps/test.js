@@ -69,8 +69,9 @@ const RETIRED = [
 
 console.log('\n[1] 링크가 살아 있다 — 카탈로그가 깨지는 첫 번째 방식');
 const hrefs = [...html.matchAll(/href="\.\/([^"]+)"/g)].map(m => m[1]);
-check('앱마다 열기·설명서 링크 + 활용 가이드가 있다',
-  hrefs.length === CLAIMS.length * 2 + 1, hrefs.join(' '));
+check('앱마다 열기·설명서 링크 + 활용 가이드·앱 모음이 있다',
+  hrefs.length === CLAIMS.length * 2 + 2, hrefs.join(' '));
+check('연구원 앱 모음으로 가는 길이 있다', hrefs.includes('store/index.html'));
 check('활용 가이드로 가는 길이 있다', hrefs.includes('guide.html'));
 hrefs.forEach(h => {
   check('파일이 실제로 있다 — ' + h, fs.existsSync(path.join(__dirname, h)));
