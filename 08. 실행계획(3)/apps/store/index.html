@@ -343,15 +343,18 @@ footer.foot{margin-top:10px}
    "id": "dashboard",
    "group": "analyze",
    "kind": "data",
-   "badge": "auto",
-   "name": "경북 학령인구 데이터 플랫폼",
-   "lead": "경북 22개 시·군과 학교의 학생·학급 현황을 비교합니다. 지도, 학령인구 현황, 학생수 시뮬레이터 등 여섯 메뉴. 재학생 전망은 공식 추계와 구분해 표시합니다.",
+   "name": "경북 학령인구 정책 플랫폼",
+   "lead": "김지원 선생님이 작업한 버전으로 연결됩니다. 경북 학교를 지도에서 찾고, 지역별 학생·학급 현황과 교육 동향을 살펴봅니다. 기존 김정준 선생님 초기 구축본도 아래에서 따로 열 수 있습니다.",
    "who": "학교 규모와 학생 수 전망을 같은 근거로 보고 싶은 교육청 담당자·교원·학부모",
-   "by": "김정준 · TEAM LEAP",
-   "href": "../../dashboard/index.html",
-   "path": "dashboard/",
-   "access": "바로 보기",
-   "start": "로그인 없이 열기 → 메뉴 선택 → 시·군 선택. 현재 메뉴 Excel 또는 인쇄로 저장합니다."
+   "by": "김정준(초기 구축·프론트엔드) · 김지원(백엔드·DB) · 박하은(디자인)",
+   "href": "https://population.gbeai.net/",
+   "url": "https://population.gbeai.net/",
+   "openLabel": "김지원 버전 열기",
+   "links": [
+    { "name": "기존 김정준 버전", "href": "../../dashboard/index.html", "url": "https://team-leap.pages.dev/dashboard/" }
+   ],
+   "access": "공개 메뉴 바로 체험",
+   "start": "로그인 없이 「지도」 → 시·군·학교급 선택 → 학교 정보 확인. 「현황」·「동향」도 공개되어 있습니다. 「주간 브리프」·「정책 시나리오」는 회원 로그인 후 이용합니다."
   },
   {
    "id": "news",
@@ -364,8 +367,8 @@ footer.foot{margin-top:10px}
    "by": "TEAM LEAP",
    "href": "../../dashboard/index.html#news",
    "path": "dashboard/#news",
-   "access": "대시보드 바로가기",
-   "start": "대시보드의 뉴스 메뉴입니다. 독립 앱 수에는 포함하지 않습니다."
+   "access": "초기 구축본 뉴스 바로가기",
+   "start": "기존 김정준 버전의 뉴스 메뉴입니다. 독립 앱 수에는 포함하지 않습니다."
   },
   {
    "id": "briefing",
@@ -742,11 +745,22 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
       open.target = '_blank';
       open.rel = 'noopener';
       open.appendChild(el('span', 'ext', ' ↗'));
-      open.setAttribute('aria-label', a.name + ' 열기 (새 창)');
+      open.setAttribute('aria-label', a.name + ' ' + (a.openLabel || '열기') + ' (새 창)');
     } else {
       open.setAttribute('aria-label', a.name + ' 열기');
     }
     go.appendChild(open);
+    (a.links || []).forEach(function (link) {
+      var other = el('a', 'btn btn--ghost', link.name);
+      other.href = link.href;
+      other.setAttribute('aria-label', a.name + ' ' + link.name);
+      if (/^https?:/.test(link.href)) {
+        other.target = '_blank';
+        other.rel = 'noopener';
+        other.appendChild(el('span', 'ext', ' ↗'));
+      }
+      go.appendChild(other);
+    });
     if (a.readme) {
       var rd = el('a', 'btn btn--ghost', '설명서');
       rd.href = a.readme;
@@ -852,7 +866,10 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
       h += '<div class="pgroup">' + g[1] + '</div><div class="pgrid">';
       list.forEach(function (a) {
         h += '<div class="pitem">' + qrSvg(qrText(a)) + '<div><b>' + esc(a.name) + '</b><span>' +
-             esc(a.access + ' · ' + a.start) + '</span><i>' + esc(shownUrl(a)) + '</i></div></div>';
+             esc(a.access + ' · ' + a.start) + '</span><i>' + esc(shownUrl(a)) + '</i>' +
+             (a.links || []).map(function (link) {
+               return '<span>' + esc(link.name) + '</span><i>' + esc(link.url) + '</i>';
+             }).join('') + '</div></div>';
       });
       h += '</div>';
     });

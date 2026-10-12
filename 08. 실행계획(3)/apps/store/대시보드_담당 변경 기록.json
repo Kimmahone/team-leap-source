@@ -1,24 +1,61 @@
 {
-  "app": "경북 학령인구 데이터 플랫폼",
-  "recorded_date": "2026-10-11",
-  "source": "사용자 지시",
-  "current_work": {
+  "app": "경북 학령인구 대시보드",
+  "recorded_date": "2026-10-12",
+  "source": "사용자 제공 공개 주소 및 기본 링크 변경 지시·공개 화면 확인",
+  "initial_work": {
     "person": "김정준",
-    "role": "현재 초기 구축·공개와 현 버전 작업"
+    "role": "초기 구축·공개",
+    "url": "https://team-leap.pages.dev/dashboard/"
   },
-  "planned_work": {
+  "public_version": {
     "person": "김지원",
-    "role": "추후 보강 및 완성본 마무리",
-    "status": "예정 · 완료 미확인"
+    "role": "보강 작업 버전 공개",
+    "url": "https://population.gbeai.net/",
+    "default_in_store": true,
+    "credits": {
+      "design": "박하은",
+      "frontend": "김정준",
+      "backend_database": "김지원"
+    },
+    "public_menus": [
+      "지도",
+      "현황",
+      "동향"
+    ],
+    "member_menus": [
+      "주간 브리프",
+      "정책 시나리오"
+    ],
+    "verification": "공개 메뉴·회원 로그인 안내 확인. 회원 내부 동작과 전체 완성 여부는 미확인."
   },
-  "update_trigger": "김지원 선생님의 보강·완성본 작업 완료와 범위 확인 후",
-  "future_checks": [
-    "앱 모음의 제작자·역할 표기",
-    "대시보드 소개·크레딧",
-    "결과보고서 Ⅳ 연구 내용·Ⅵ 산출물",
-    "PPT 5번 설명·18~22번 부록 및 발표자 메모",
-    "개발 현황 시트의 담당·완료 상태"
-  ],
-  "suggested_future_credit": "김정준(초기 구축) · 김지원(보강·최종 마무리) · TEAM LEAP",
-  "rule": "현재 완료 실적으로 김지원 마무리를 표시하지 않는다. 기존 김정준 표기는 완료 확인 전 유지한다."
+  "remaining_work": {
+    "person": "김지원",
+    "role": "추가 보강·최종 마무리",
+    "status": "완료 범위 확인 후 갱신"
+  },
+  "rule": "동일 대시보드의 버전으로 집계한다. 기본 열기·QR은 김지원 버전, 별도 단추는 김정준 초기 구축본. 초기 기여를 유지하고 미확인 완료 실적을 단정하지 않는다.",
+  "previous_record": {
+    "app": "경북 학령인구 데이터 플랫폼",
+    "recorded_date": "2026-10-11",
+    "source": "사용자 지시",
+    "current_work": {
+      "person": "김정준",
+      "role": "현재 초기 구축·공개와 현 버전 작업"
+    },
+    "planned_work": {
+      "person": "김지원",
+      "role": "추후 보강 및 완성본 마무리",
+      "status": "예정 · 완료 미확인"
+    },
+    "update_trigger": "김지원 선생님의 보강·완성본 작업 완료와 범위 확인 후",
+    "future_checks": [
+      "앱 모음의 제작자·역할 표기",
+      "대시보드 소개·크레딧",
+      "결과보고서 Ⅳ 연구 내용·Ⅵ 산출물",
+      "PPT 5번 설명·18~22번 부록 및 발표자 메모",
+      "개발 현황 시트의 담당·완료 상태"
+    ],
+    "suggested_future_credit": "김정준(초기 구축) · 김지원(보강·최종 마무리) · TEAM LEAP",
+    "rule": "현재 완료 실적으로 김지원 마무리를 표시하지 않는다. 기존 김정준 표기는 완료 확인 전 유지한다."
+  }
 }
