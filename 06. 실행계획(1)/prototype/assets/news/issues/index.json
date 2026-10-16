@@ -1,5 +1,338 @@
 [
   {
+    "id": "2026-10-16-three-day",
+    "status": "자동 발행",
+    "source": "네이버 뉴스 검색 API",
+    "sourceKind": "naver-three-day",
+    "cadenceDays": 3,
+    "publishedAt": "2026-10-16",
+    "period": {
+      "from": "2026-10-10",
+      "to": "2026-10-16",
+      "count": 7
+    },
+    "title": "통폐합·적정규모 보도가 이끈 최근 7일, 경북 교육의 다음 질문",
+    "lead": "최근 7일 경북 학령인구 대응 관련 기사는 7건입니다. 가장 비중이 큰 주제는 ‘통폐합·적정규모’이며, 경산시의 언급이 두드러졌습니다.",
+    "highlights": [
+      "최근 7일 7건으로 직전 7일 12건보다 -5건 변화했습니다.",
+      "‘통폐합·적정규모’ 주제가 42.9%로 가장 큰 비중을 차지했습니다.",
+      "경산시 언급이 1건으로 가장 많았습니다."
+    ],
+    "topics": [
+      {
+        "topic": "통폐합·적정규모",
+        "current": 3,
+        "prior": 5,
+        "currentShare": 42.9,
+        "priorShare": 41.7,
+        "changePp": 1.2
+      },
+      {
+        "topic": "교육재정",
+        "current": 2,
+        "prior": 2,
+        "currentShare": 28.6,
+        "priorShare": 16.7,
+        "changePp": 11.9
+      },
+      {
+        "topic": "교원·정원",
+        "current": 2,
+        "prior": 0,
+        "currentShare": 28.6,
+        "priorShare": 0,
+        "changePp": 28.6
+      },
+      {
+        "topic": "통학·돌봄",
+        "current": 0,
+        "prior": 0,
+        "currentShare": 0,
+        "priorShare": 0,
+        "changePp": 0
+      },
+      {
+        "topic": "지역소멸·인구",
+        "current": 0,
+        "prior": 1,
+        "currentShare": 0,
+        "priorShare": 8.3,
+        "changePp": -8.3
+      },
+      {
+        "topic": "교육혁신·특구",
+        "current": 0,
+        "prior": 5,
+        "currentShare": 0,
+        "priorShare": 41.7,
+        "changePp": -41.7
+      }
+    ],
+    "keywords": [
+      {
+        "name": "교원",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "반대",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "24개",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "4명만",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "갈아입다",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "감축에",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "개편",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "개편안에",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "경북도의원",
+        "value": 1,
+        "prior": 1,
+        "change": 0
+      },
+      {
+        "name": "경북형",
+        "value": 1,
+        "prior": 1,
+        "change": 0
+      },
+      {
+        "name": "경산교육지원청",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "공간으로",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "공동체",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "교실은",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "교육교부금",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "교육현장",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "김상희",
+        "value": 1,
+        "prior": 1,
+        "change": 0
+      },
+      {
+        "name": "높여",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      }
+    ],
+    "regions": [
+      {
+        "name": "경산시",
+        "value": 1
+      },
+      {
+        "name": "상주시",
+        "value": 1
+      },
+      {
+        "name": "성주군",
+        "value": 1
+      }
+    ],
+    "dailyTrend": [
+      {
+        "date": "2026-10-10",
+        "total": 0
+      },
+      {
+        "date": "2026-10-11",
+        "total": 0
+      },
+      {
+        "date": "2026-10-12",
+        "total": 1
+      },
+      {
+        "date": "2026-10-13",
+        "total": 2
+      },
+      {
+        "date": "2026-10-14",
+        "total": 1
+      },
+      {
+        "date": "2026-10-15",
+        "total": 3
+      },
+      {
+        "date": "2026-10-16",
+        "total": 0
+      }
+    ],
+    "clusters": [
+      {
+        "id": "rolling-1",
+        "label": "교육재정 · 교부금 · 교육위",
+        "keywords": [
+          "교부금",
+          "교육위",
+          "국감"
+        ],
+        "size": 2,
+        "share": 6.1,
+        "cohesion": 0.8,
+        "samples": [
+          {
+            "id": "https://ilyo.co.kr/?ac=article_view&entry_id=513031",
+            "title": "교부금 개편부터 대입 원서 장애까지…교육위 국감 핵심 쟁점은",
+            "link": "https://ilyo.co.kr/?ac=article_view&entry_id=513031",
+            "publishedAt": "2026-10-06",
+            "press": "ilyo.co.kr",
+            "similarity": 0.8
+          },
+          {
+            "id": "https://www.newspim.com/news/view/20261002000818",
+            "title": "[미리보는 국감] 교육위, 수시 '먹통'·문항 거래·교부금 쟁점",
+            "link": "https://www.newspim.com/news/view/20261002000818",
+            "publishedAt": "2026-10-04",
+            "press": "newspim.com",
+            "similarity": 0.8
+          }
+        ]
+      },
+      {
+        "id": "rolling-2",
+        "label": "교육혁신·특구 · 본격화 · 교육혁신선도지역",
+        "keywords": [
+          "본격화",
+          "교육혁신선도지역",
+          "도전"
+        ],
+        "size": 2,
+        "share": 6.1,
+        "cohesion": 0.8,
+        "samples": [
+          {
+            "id": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4086061",
+            "title": "경산, 대학·기업 연계 '뿌리내림교육' 본격화…교육혁신선도지역 도전",
+            "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4086061",
+            "publishedAt": "2026-10-01",
+            "press": "kyongbuk.co.kr",
+            "similarity": 0.8
+          },
+          {
+            "id": "https://www.ksmnews.co.kr/news/view.php?idx=622970",
+            "title": "포항시, 교육혁신선도지역 도전 본격화…최대 100억원 확보 나서",
+            "link": "https://www.ksmnews.co.kr/news/view.php?idx=622970",
+            "publishedAt": "2026-09-21",
+            "press": "ksmnews.co.kr",
+            "similarity": 0.8
+          }
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "title": "정부의 지방교육재정교부금 개편안에 대구경북, 한목소리로 반대",
+        "link": "https://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0003275733&CMPT_CD=P0010&utm_source=naver&utm_medium=newsearch&utm_campaign=naver_news",
+        "publishedAt": "2026-10-15",
+        "press": "ohmynews.com"
+      },
+      {
+        "title": "교육교부금 개편 반대 확산…대구·경북 24개 단체 \"원점 재검토해야\"",
+        "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4087450",
+        "publishedAt": "2026-10-15",
+        "press": "kyongbuk.co.kr"
+      },
+      {
+        "title": "운동장엔 파크골프 · 교실은 북카페… 폐교, 새 옷 갈아입다",
+        "link": "https://www.munhwa.com/article/11623679?ref=naver",
+        "publishedAt": "2026-10-15",
+        "press": "munhwa.com"
+      },
+      {
+        "title": "경산교육지원청, 경북형 웍스AI·AI배움터 활용해 교원 역량 높여",
+        "link": "https://www.sentv.co.kr/article/view/sentv202610140194",
+        "publishedAt": "2026-10-14",
+        "press": "sentv.co.kr"
+      },
+      {
+        "title": "폐교가 마을 사랑방으로…안성 성은분교, 주민 공동체 공간으로 재탄생",
+        "link": "https://www.kgnews.co.kr/news/article.html?no=914938",
+        "publishedAt": "2026-10-13",
+        "press": "kgnews.co.kr"
+      },
+      {
+        "title": "R]초등교사 4명만 선발…교원 감축에 교육현장 우려",
+        "link": "http://andongmbc.co.kr/adboard/NewsView85223",
+        "publishedAt": "2026-10-13",
+        "press": "andongmbc.co.kr"
+      },
+      {
+        "title": "김상희 경북도의원, 적정규모학교 육성·지원 조례 대표발의",
+        "link": "https://www.gukjenews.com/news/articleView.html?idxno=3718125",
+        "publishedAt": "2026-10-12",
+        "press": "gukjenews.com"
+      }
+    ],
+    "caveat": "기사량은 사회적 관심의 신호이며 실제 학생 수·학교 수의 증감을 뜻하지 않습니다.",
+    "review": "자동 집계된 초안으로, 대외 배포 전 담당자의 사실 확인이 필요합니다.",
+    "issueNo": 14
+  },
+  {
     "id": "2026-10-13-three-day",
     "status": "자동 발행",
     "source": "네이버 뉴스 검색 API",
