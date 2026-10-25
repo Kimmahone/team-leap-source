@@ -1,80 +1,80 @@
 {
-  "id": "2026-10-22-naver-rolling",
+  "id": "2026-10-25-naver-rolling",
   "sourceKind": "naver-rolling",
   "source": "네이버 뉴스 검색 API · 3일 주기 분석",
-  "generatedAt": "2026-10-22T00:57:29.490Z",
+  "generatedAt": "2026-10-25T00:34:29.011Z",
   "cadenceDays": 3,
   "basis": "기사량은 사회적 관심의 신호이며 실제 학생 수·학교 수의 증감을 뜻하지 않습니다.",
-  "anchorDate": "2026-10-22",
-  "totalArticles": 102,
+  "anchorDate": "2026-10-25",
+  "totalArticles": 96,
   "coverage": {
-    "from": "2026-08-21",
-    "to": "2026-10-22"
+    "from": "2026-08-26",
+    "to": "2026-10-23"
   },
   "currentPeriod": {
-    "from": "2026-09-23",
-    "to": "2026-10-22",
-    "count": 55
+    "from": "2026-09-26",
+    "to": "2026-10-25",
+    "count": 56
   },
   "priorPeriod": {
-    "from": "2026-08-24",
-    "to": "2026-09-22",
-    "count": 44
+    "from": "2026-08-27",
+    "to": "2026-09-25",
+    "count": 39
   },
   "topics": [
     {
       "topic": "교육재정",
       "current": 20,
-      "prior": 24,
-      "currentShare": 36.4,
-      "priorShare": 54.5,
-      "changePp": -18.2
+      "prior": 20,
+      "currentShare": 35.7,
+      "priorShare": 51.3,
+      "changePp": -15.6
     },
     {
       "topic": "통폐합·적정규모",
       "current": 17,
-      "prior": 13,
-      "currentShare": 30.9,
-      "priorShare": 29.5,
-      "changePp": 1.4
+      "prior": 12,
+      "currentShare": 30.4,
+      "priorShare": 30.8,
+      "changePp": -0.4
     },
     {
       "topic": "교육혁신·특구",
       "current": 9,
-      "prior": 4,
-      "currentShare": 16.4,
-      "priorShare": 9.1,
-      "changePp": 7.3
+      "prior": 3,
+      "currentShare": 16.1,
+      "priorShare": 7.7,
+      "changePp": 8.4
     },
     {
       "topic": "지역소멸·인구",
       "current": 6,
       "prior": 5,
-      "currentShare": 10.9,
-      "priorShare": 11.4,
-      "changePp": -0.5
+      "currentShare": 10.7,
+      "priorShare": 12.8,
+      "changePp": -2.1
     },
     {
       "topic": "교원·정원",
       "current": 4,
       "prior": 0,
-      "currentShare": 7.3,
+      "currentShare": 7.1,
       "priorShare": 0,
-      "changePp": 7.3
+      "changePp": 7.1
     },
     {
       "topic": "통학·돌봄",
-      "current": 1,
+      "current": 2,
       "prior": 0,
-      "currentShare": 1.8,
+      "currentShare": 3.6,
       "priorShare": 0,
-      "changePp": 1.8
+      "changePp": 3.6
     }
   ],
   "weeklyTrend": [
     {
-      "from": "2026-07-31",
-      "to": "2026-08-06",
+      "from": "2026-08-03",
+      "to": "2026-08-09",
       "total": 0,
       "topics": {
         "통폐합·적정규모": 0,
@@ -86,8 +86,8 @@
       }
     },
     {
-      "from": "2026-08-07",
-      "to": "2026-08-13",
+      "from": "2026-08-10",
+      "to": "2026-08-16",
       "total": 0,
       "topics": {
         "통폐합·적정규모": 0,
@@ -99,8 +99,8 @@
       }
     },
     {
-      "from": "2026-08-14",
-      "to": "2026-08-20",
+      "from": "2026-08-17",
+      "to": "2026-08-23",
       "total": 0,
       "topics": {
         "통폐합·적정규모": 0,
@@ -112,51 +112,51 @@
       }
     },
     {
-      "from": "2026-08-21",
-      "to": "2026-08-27",
-      "total": 9,
+      "from": "2026-08-24",
+      "to": "2026-08-30",
+      "total": 1,
       "topics": {
-        "통폐합·적정규모": 2,
-        "교육재정": 7,
+        "통폐합·적정규모": 0,
+        "교육재정": 0,
         "교원·정원": 0,
         "통학·돌봄": 0,
-        "지역소멸·인구": 1,
+        "지역소멸·인구": 0,
         "교육혁신·특구": 1
       }
     },
     {
-      "from": "2026-08-28",
-      "to": "2026-09-03",
-      "total": 0,
+      "from": "2026-08-31",
+      "to": "2026-09-06",
+      "total": 4,
       "topics": {
-        "통폐합·적정규모": 0,
-        "교육재정": 0,
+        "통폐합·적정규모": 1,
+        "교육재정": 3,
         "교원·정원": 0,
         "통학·돌봄": 0,
         "지역소멸·인구": 0,
-        "교육혁신·특구": 0
+        "교육혁신·특구": 1
       }
     },
     {
-      "from": "2026-09-04",
-      "to": "2026-09-10",
-      "total": 15,
+      "from": "2026-09-07",
+      "to": "2026-09-13",
+      "total": 13,
       "topics": {
-        "통폐합·적정규모": 1,
-        "교육재정": 11,
+        "통폐합·적정규모": 0,
+        "교육재정": 10,
         "교원·정원": 0,
         "통학·돌봄": 0,
         "지역소멸·인구": 2,
-        "교육혁신·특구": 2
+        "교육혁신·특구": 1
       }
     },
     {
-      "from": "2026-09-11",
-      "to": "2026-09-17",
-      "total": 21,
+      "from": "2026-09-14",
+      "to": "2026-09-20",
+      "total": 19,
       "topics": {
         "통폐합·적정규모": 11,
-        "교육재정": 9,
+        "교육재정": 7,
         "교원·정원": 0,
         "통학·돌봄": 0,
         "지역소멸·인구": 1,
@@ -164,8 +164,8 @@
       }
     },
     {
-      "from": "2026-09-18",
-      "to": "2026-09-24",
+      "from": "2026-09-21",
+      "to": "2026-09-27",
       "total": 3,
       "topics": {
         "통폐합·적정규모": 0,
@@ -177,34 +177,34 @@
       }
     },
     {
-      "from": "2026-09-25",
-      "to": "2026-10-01",
-      "total": 7,
+      "from": "2026-09-28",
+      "to": "2026-10-04",
+      "total": 10,
       "topics": {
         "통폐합·적정규모": 2,
-        "교육재정": 0,
+        "교육재정": 1,
         "교원·정원": 1,
         "통학·돌봄": 0,
-        "지역소멸·인구": 1,
-        "교육혁신·특구": 3
+        "지역소멸·인구": 2,
+        "교육혁신·특구": 4
       }
     },
     {
-      "from": "2026-10-02",
-      "to": "2026-10-08",
-      "total": 13,
+      "from": "2026-10-05",
+      "to": "2026-10-11",
+      "total": 10,
       "topics": {
         "통폐합·적정규모": 5,
-        "교육재정": 2,
+        "교육재정": 1,
         "교원·정원": 0,
         "통학·돌봄": 0,
-        "지역소멸·인구": 2,
-        "교육혁신·특구": 5
+        "지역소멸·인구": 1,
+        "교육혁신·특구": 4
       }
     },
     {
-      "from": "2026-10-09",
-      "to": "2026-10-15",
+      "from": "2026-10-12",
+      "to": "2026-10-18",
       "total": 7,
       "topics": {
         "통폐합·적정규모": 3,
@@ -216,15 +216,15 @@
       }
     },
     {
-      "from": "2026-10-16",
-      "to": "2026-10-22",
-      "total": 27,
+      "from": "2026-10-19",
+      "to": "2026-10-25",
+      "total": 29,
       "topics": {
         "통폐합·적정규모": 7,
         "교육재정": 16,
         "교원·정원": 1,
-        "통학·돌봄": 1,
-        "지역소멸·인구": 2,
+        "통학·돌봄": 2,
+        "지역소멸·인구": 3,
         "교육혁신·특구": 1
       }
     }
@@ -233,14 +233,14 @@
     {
       "name": "교부금",
       "value": 12,
-      "prior": 4,
-      "change": 8
+      "prior": 3,
+      "change": 9
     },
     {
       "name": "개편",
       "value": 9,
-      "prior": 9,
-      "change": 0
+      "prior": 8,
+      "change": 1
     },
     {
       "name": "국감",
@@ -269,14 +269,14 @@
     {
       "name": "학령인구",
       "value": 4,
-      "prior": 1,
-      "change": 3
+      "prior": 2,
+      "change": 2
     },
     {
       "name": "경남교육청",
       "value": 3,
-      "prior": 1,
-      "change": 2
+      "prior": 0,
+      "change": 3
     },
     {
       "name": "교원",
@@ -303,6 +303,12 @@
       "change": 1
     },
     {
+      "name": "대응",
+      "value": 3,
+      "prior": 2,
+      "change": 1
+    },
+    {
       "name": "도마",
       "value": 3,
       "prior": 0,
@@ -311,8 +317,8 @@
     {
       "name": "미래교육",
       "value": 3,
-      "prior": 2,
-      "change": 1
+      "prior": 1,
+      "change": 2
     },
     {
       "name": "조례",
@@ -323,8 +329,8 @@
     {
       "name": "지방교육재정교부금",
       "value": 3,
-      "prior": 7,
-      "change": -4
+      "prior": 6,
+      "change": -3
     },
     {
       "name": "축소",
@@ -343,26 +349,20 @@
       "value": 2,
       "prior": 0,
       "change": 2
-    },
-    {
-      "name": "개편부터",
-      "value": 2,
-      "prior": 0,
-      "change": 2
     }
   ],
   "keywordCloud": [
     {
       "name": "교부금",
       "value": 12,
-      "prior": 4,
-      "change": 8
+      "prior": 3,
+      "change": 9
     },
     {
       "name": "개편",
       "value": 9,
-      "prior": 9,
-      "change": 0
+      "prior": 8,
+      "change": 1
     },
     {
       "name": "국감",
@@ -391,14 +391,14 @@
     {
       "name": "학령인구",
       "value": 4,
-      "prior": 1,
-      "change": 3
+      "prior": 2,
+      "change": 2
     },
     {
       "name": "경남교육청",
       "value": 3,
-      "prior": 1,
-      "change": 2
+      "prior": 0,
+      "change": 3
     },
     {
       "name": "교원",
@@ -425,6 +425,12 @@
       "change": 1
     },
     {
+      "name": "대응",
+      "value": 3,
+      "prior": 2,
+      "change": 1
+    },
+    {
       "name": "도마",
       "value": 3,
       "prior": 0,
@@ -433,8 +439,8 @@
     {
       "name": "미래교육",
       "value": 3,
-      "prior": 2,
-      "change": 1
+      "prior": 1,
+      "change": 2
     },
     {
       "name": "조례",
@@ -445,8 +451,8 @@
     {
       "name": "지방교육재정교부금",
       "value": 3,
-      "prior": 7,
-      "change": -4
+      "prior": 6,
+      "change": -3
     },
     {
       "name": "축소",
@@ -505,8 +511,8 @@
     {
       "name": "교육교부금",
       "value": 2,
-      "prior": 4,
-      "change": -2
+      "prior": 3,
+      "change": -1
     },
     {
       "name": "국감2026",
@@ -537,12 +543,6 @@
       "value": 2,
       "prior": 0,
       "change": 2
-    },
-    {
-      "name": "대응",
-      "value": 2,
-      "prior": 2,
-      "change": 0
     }
   ],
   "regions": [
@@ -559,11 +559,11 @@
       "value": 1
     },
     {
-      "name": "문경시",
+      "name": "김천시",
       "value": 1
     },
     {
-      "name": "봉화군",
+      "name": "문경시",
       "value": 1
     },
     {
@@ -599,13 +599,13 @@
       "change": 1
     },
     {
-      "name": "문경시",
+      "name": "김천시",
       "current": 1,
       "prior": 0,
       "change": 1
     },
     {
-      "name": "봉화군",
+      "name": "문경시",
       "current": 1,
       "prior": 0,
       "change": 1
@@ -631,10 +631,10 @@
   ],
   "similarity": {
     "method": "기사 제목 TF-IDF 벡터화 → 코사인 유사도 0.28 이상 묶음",
-    "documents": 55,
+    "documents": 56,
     "clusterCount": 3,
     "grouped": 7,
-    "unclustered": 48,
+    "unclustered": 49,
     "threshold": 0.28,
     "clusters": [
       {
@@ -646,7 +646,7 @@
           "군과"
         ],
         "size": 3,
-        "share": 5.5,
+        "share": 5.4,
         "cohesion": 0.71,
         "samples": [
           {
@@ -688,17 +688,17 @@
         "cohesion": 0.84,
         "samples": [
           {
-            "id": "https://weekly.hankooki.com/news/articleView.html?idxno=7189860",
-            "title": "[국감2026] 부산교육청 국감서 지방교육재정교부금 개편 쟁점…특수교육...",
-            "link": "https://weekly.hankooki.com/news/articleView.html?idxno=7189860",
+            "id": "https://weekly.hankooki.com/news/articleView.html?idxno=7189874",
+            "title": "[국감2026] 울산교육청 국감서 교부금 개편부터 교권 보호까지 쟁점",
+            "link": "https://weekly.hankooki.com/news/articleView.html?idxno=7189874",
             "publishedAt": "2026-10-20",
             "press": "weekly.hankooki.com",
             "similarity": 0.84
           },
           {
-            "id": "https://weekly.hankooki.com/news/articleView.html?idxno=7189874",
-            "title": "[국감2026] 울산교육청 국감서 교부금 개편부터 교권 보호까지 쟁점",
-            "link": "https://weekly.hankooki.com/news/articleView.html?idxno=7189874",
+            "id": "https://weekly.hankooki.com/news/articleView.html?idxno=7189860",
+            "title": "[국감2026] 부산교육청 국감서 지방교육재정교부금 개편 쟁점…특수교육...",
+            "link": "https://weekly.hankooki.com/news/articleView.html?idxno=7189860",
             "publishedAt": "2026-10-20",
             "press": "weekly.hankooki.com",
             "similarity": 0.84
@@ -738,6 +738,26 @@
     ]
   },
   "evidence": [
+    {
+      "id": "https://www.shinailbo.co.kr/news/articleView.html?idxno=5075129",
+      "title": "청도·영암 교육가족 60명 교류…학령인구 감소·AI 교육 대응 논의",
+      "link": "https://www.shinailbo.co.kr/news/articleView.html?idxno=5075129",
+      "publishedAt": "2026-10-23",
+      "press": "shinailbo.co.kr",
+      "topics": [
+        "지역소멸·인구"
+      ]
+    },
+    {
+      "id": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4088245",
+      "title": "\"집·학교·돌봄까지 몽땅 책임진다\"",
+      "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4088245",
+      "publishedAt": "2026-10-23",
+      "press": "kyongbuk.co.kr",
+      "topics": [
+        "통학·돌봄"
+      ]
+    },
     {
       "id": "https://www.kado.net/news/articleView.html?idxno=2079706",
       "title": "\"절반은 낙방\" 교육혁신선도지역 선점 치열",
@@ -797,27 +817,7 @@
       "topics": [
         "교육재정"
       ]
-    },
-    {
-      "id": "http://www.kookje.co.kr/news2011/asp/newsbody.asp?code=0100&key=20261021.22005005782",
-      "title": "교육위 국감 화두 ‘교부금 축소’…“교육감 대응도 안일” 질타",
-      "link": "http://www.kookje.co.kr/news2011/asp/newsbody.asp?code=0100&key=20261021.22005005782",
-      "publishedAt": "2026-10-20",
-      "press": "kookje.co.kr",
-      "topics": [
-        "교육재정"
-      ]
-    },
-    {
-      "id": "https://weekly.hankooki.com/news/articleView.html?idxno=7189874",
-      "title": "[국감2026] 울산교육청 국감서 교부금 개편부터 교권 보호까지 쟁점",
-      "link": "https://weekly.hankooki.com/news/articleView.html?idxno=7189874",
-      "publishedAt": "2026-10-20",
-      "press": "weekly.hankooki.com",
-      "topics": [
-        "교육재정"
-      ]
     }
   ],
-  "historyNo": 15
+  "historyNo": 16
 }
