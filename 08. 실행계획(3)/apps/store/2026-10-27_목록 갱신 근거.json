@@ -1,0 +1,38 @@
+{
+  "source": "https://docs.google.com/spreadsheets/d/15AQpT2-sbc9Z9y0QrEQruAqezkHaDfv5La6J3LGbR9A/edit#gid=0",
+  "range": "앱 제작 현황 A1:L13",
+  "checked_date": "2026-10-27",
+  "major_registered": 12,
+  "member_apps": 11,
+  "common_tools": 11,
+  "references": 2,
+  "new_apps": [
+    {
+      "id": "gb-baeumgil",
+      "group": "members",
+      "kind": "class",
+      "name": "경북배움길",
+      "lead": "교과 연계 체험처와 온라인 학습 자료를 지도·학년별 로드맵에서 찾고, 체험처의 탐구 질문을 확인합니다.",
+      "who": "체험학습·자기주도학습 자료를 찾는 교사·학생·학부모",
+      "by": "신동영 선생님",
+      "href": "https://gb-baeumgil.pages.dev/",
+      "url": "https://gb-baeumgil.pages.dev/",
+      "access": "로그인 없이 공개 체험",
+      "start": "「학년별 로드맵」 → 「5학년」 → 「청송 유네스코 세계지질공원」 → 탐구 질문. 10.27. 이 흐름을 확인했습니다. 현재 구글 시트 미연결로 백업 자료를 표시합니다. 방문 전 기관의 운영·예약 정보를 확인하세요."
+    },
+    {
+      "id": "school-certification",
+      "group": "members",
+      "kind": "class",
+      "name": "학교장 인증제",
+      "lead": "학생의 도전·성장을 소개하는 학교장 인증제 앱입니다. 학생·교사 Google 로그인과 교사 학교·역할 가입을 안내합니다.",
+      "who": "도전 활동을 운영하는 교사와 학생",
+      "by": "이성근 선생님",
+      "href": "https://school-certification.vercel.app/",
+      "url": "https://school-certification.vercel.app/",
+      "access": "Google 로그인 필요 · 첫 화면 확인",
+      "start": "10.27. 공개 로그인 화면과 교사 가입 안내까지만 확인했습니다. 내부 기록·승인 기능은 미확인입니다. 제작자와 가상 시연 계정을 준비한 뒤 체험하세요. 학생 정보나 운영 자료로 시험 입력하지 마세요."
+    }
+  ],
+  "limits": "시트 상태와 확인 범위는 기능 완성·현장 효과와 구분"
+}

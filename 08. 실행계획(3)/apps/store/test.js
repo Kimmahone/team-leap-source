@@ -28,8 +28,8 @@ check('모든 앱·참고 링크에 접속 안내가 있다', apps.every(a => a.
 check('학교 운영용 앱은 시험 입력 금지를 안내한다',
   apps.filter(a => ['school-self-check', 'training-certificate'].includes(a.id))
     .every(a => a.access === '운영학교 전용' && /시험.*하지 마세요/.test(a.start)));
-check('주요 앱 10개에 우리 반 당번표가 포함된다',
-  apps.filter(a => a.id === 'dashboard' || a.group === 'members').length === 10 && apps.some(a => a.id === 'class-duty'));
+check('주요 등록 앱 12개에 당번표와 신규 2개가 포함된다',
+  apps.filter(a => a.id === 'dashboard' || a.group === 'members').length === 12 && ['class-duty', 'gb-baeumgil', 'school-certification'].every(id => apps.some(a => a.id === id)));
 check('기준 주소(base)가 https 로 끝이 / 이다', /^https:\/\/.+\/$/.test(data.base || ''));
 check('앱이 하나 이상 있다', apps.length > 0);
 
