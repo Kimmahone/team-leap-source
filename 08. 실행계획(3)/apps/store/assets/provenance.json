@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-29",
+  "style": "W06 Midnight",
+  "figma": "https://www.figma.com/design/YlEsL91QOousaMKFjBFnJY?node-id=3-985",
+  "screenshots": [
+    {
+      "file": "dashboard.webp",
+      "source": "https://population.gbeai.net/",
+      "type": "공개 홈"
+    },
+    {
+      "file": "handover.webp",
+      "source": "https://handover-helper-ten.vercel.app/",
+      "type": "내장 가상 공문·연간 일정"
+    },
+    {
+      "file": "compass.webp",
+      "source": "https://balpyo-compass.vercel.app/",
+      "type": "공개 도감"
+    },
+    {
+      "file": "baeumgil.webp",
+      "source": "https://gb-baeumgil.pages.dev/",
+      "type": "공개 홈·백업 자료"
+    }
+  ],
+  "fonts": "@fontsource/ibm-plex-sans-kr & ibm-plex-mono 5.3.0 · SIL OFL"
+}

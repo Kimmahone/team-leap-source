@@ -105,5 +105,9 @@ check('새 창 링크에 noopener', /rel\s*=\s*'noopener'/.test(html));
 check('밝기 열쇠가 카탈로그와 같다(leap-theme)', html.includes("'leap-theme'"));
 check('인쇄 안내문 자리가 있다', html.includes('id="print-area"') && /@media print/.test(html));
 
+check('대시보드 기본은 김지원 플랫폼, 초기 구축본 링크를 함께 보존', apps.find(a=>a.id==='dashboard').href==='https://population.gbeai.net/' && apps.find(a=>a.id==='dashboard').links.some(l=>l.href.includes('dashboard')));
+check('미리보기 자산이 모두 존재', apps.filter(a=>a.preview).every(a=>fs.existsSync(path.join(HERE,a.preview))));
+check('글꼴이 자체 호스팅 파일로 제공된다', [...html.matchAll(/url\('\.\/assets\/fonts\/([^']+)'\)/g)].length>0 && [...html.matchAll(/url\('\.\/assets\/fonts\/([^']+)'\)/g)].every(m=>fs.existsSync(path.join(HERE,'assets/fonts',m[1]))));
+
 console.log('\n' + pass + '개 통과' + (fail ? ', ' + fail + '개 실패' : ''));
 process.exit(fail ? 1 : 0);
