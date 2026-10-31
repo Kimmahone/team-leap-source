@@ -1,5 +1,378 @@
 [
   {
+    "id": "2026-10-31-three-day",
+    "status": "자동 발행",
+    "source": "네이버 뉴스 검색 API",
+    "sourceKind": "naver-three-day",
+    "cadenceDays": 3,
+    "publishedAt": "2026-10-31",
+    "period": {
+      "from": "2026-10-25",
+      "to": "2026-10-31",
+      "count": 10
+    },
+    "title": "통폐합·적정규모 보도가 이끈 최근 7일, 경북 교육의 다음 질문",
+    "lead": "최근 7일 경북 학령인구 대응 관련 기사는 10건입니다. 가장 비중이 큰 주제는 ‘통폐합·적정규모’이며, 의성군의 언급이 두드러졌습니다.",
+    "highlights": [
+      "최근 7일 10건으로 직전 7일 28건보다 -18건 변화했습니다.",
+      "‘통폐합·적정규모’ 주제가 70%로 가장 큰 비중을 차지했습니다.",
+      "의성군 언급이 4건으로 가장 많았습니다."
+    ],
+    "topics": [
+      {
+        "topic": "통폐합·적정규모",
+        "current": 7,
+        "prior": 7,
+        "currentShare": 70,
+        "priorShare": 25,
+        "changePp": 45
+      },
+      {
+        "topic": "지역소멸·인구",
+        "current": 2,
+        "prior": 3,
+        "currentShare": 20,
+        "priorShare": 10.7,
+        "changePp": 9.3
+      },
+      {
+        "topic": "교육혁신·특구",
+        "current": 2,
+        "prior": 1,
+        "currentShare": 20,
+        "priorShare": 3.6,
+        "changePp": 16.4
+      },
+      {
+        "topic": "교육재정",
+        "current": 0,
+        "prior": 15,
+        "currentShare": 0,
+        "priorShare": 53.6,
+        "changePp": -53.6
+      },
+      {
+        "topic": "교원·정원",
+        "current": 0,
+        "prior": 1,
+        "currentShare": 0,
+        "priorShare": 3.6,
+        "changePp": -3.6
+      },
+      {
+        "topic": "통학·돌봄",
+        "current": 0,
+        "prior": 2,
+        "currentShare": 0,
+        "priorShare": 7.1,
+        "changePp": -7.1
+      }
+    ],
+    "keywords": [
+      {
+        "name": "소규모",
+        "value": 4,
+        "prior": 0,
+        "change": 4
+      },
+      {
+        "name": "의성군",
+        "value": 3,
+        "prior": 0,
+        "change": 3
+      },
+      {
+        "name": "김천",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "미래를",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "위기",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "의성on토론대회",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "폐교",
+        "value": 2,
+        "prior": 3,
+        "change": -1
+      },
+      {
+        "name": "학교의",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "ai",
+        "value": 2,
+        "prior": 2,
+        "change": 0
+      },
+      {
+        "name": "12년",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "결속",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "공자",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "공자예맥학교",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "교육혁신",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "구성초",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "넘었다",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "논하다",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "농촌",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      }
+    ],
+    "regions": [
+      {
+        "name": "의성군",
+        "value": 4
+      },
+      {
+        "name": "김천시",
+        "value": 3
+      },
+      {
+        "name": "경산시",
+        "value": 1
+      },
+      {
+        "name": "영주시",
+        "value": 1
+      }
+    ],
+    "dailyTrend": [
+      {
+        "date": "2026-10-25",
+        "total": 0
+      },
+      {
+        "date": "2026-10-26",
+        "total": 3
+      },
+      {
+        "date": "2026-10-27",
+        "total": 0
+      },
+      {
+        "date": "2026-10-28",
+        "total": 3
+      },
+      {
+        "date": "2026-10-29",
+        "total": 2
+      },
+      {
+        "date": "2026-10-30",
+        "total": 2
+      },
+      {
+        "date": "2026-10-31",
+        "total": 0
+      }
+    ],
+    "clusters": [
+      {
+        "id": "rolling-1",
+        "label": "통폐합·적정규모 · 학교의 · 미래를",
+        "keywords": [
+          "학교의",
+          "미래를",
+          "소규모"
+        ],
+        "size": 2,
+        "share": 3.4,
+        "cohesion": 0.85,
+        "samples": [
+          {
+            "id": "https://www.kbsm.net/news/view.php?idx=539464",
+            "title": "\"소규모 학교의 미래를 논하다\"...'2026 의성ON토론대회' 개최",
+            "link": "https://www.kbsm.net/news/view.php?idx=539464",
+            "publishedAt": "2026-10-28",
+            "press": "kbsm.net",
+            "similarity": 0.85
+          },
+          {
+            "id": "https://www.viva100.com/article/20261029501234",
+            "title": "경북 의성군, 소규모 학교의 미래를 위한 토론의 장 열다",
+            "link": "https://www.viva100.com/article/20261029501234",
+            "publishedAt": "2026-10-29",
+            "press": "viva100.com",
+            "similarity": 0.85
+          }
+        ]
+      },
+      {
+        "id": "rolling-3",
+        "label": "교육재정 · 국감2026 · 국감서",
+        "keywords": [
+          "국감2026",
+          "국감서",
+          "쟁점"
+        ],
+        "size": 2,
+        "share": 3.4,
+        "cohesion": 0.83,
+        "samples": [
+          {
+            "id": "https://weekly.hankooki.com/news/articleView.html?idxno=7189860",
+            "title": "[국감2026] 부산교육청 국감서 지방교육재정교부금 개편 쟁점…특수교육...",
+            "link": "https://weekly.hankooki.com/news/articleView.html?idxno=7189860",
+            "publishedAt": "2026-10-20",
+            "press": "weekly.hankooki.com",
+            "similarity": 0.83
+          },
+          {
+            "id": "https://weekly.hankooki.com/news/articleView.html?idxno=7189874",
+            "title": "[국감2026] 울산교육청 국감서 교부금 개편부터 교권 보호까지 쟁점",
+            "link": "https://weekly.hankooki.com/news/articleView.html?idxno=7189874",
+            "publishedAt": "2026-10-20",
+            "press": "weekly.hankooki.com",
+            "similarity": 0.83
+          }
+        ]
+      },
+      {
+        "id": "rolling-2",
+        "label": "교육재정 · 국정감사 · 개편",
+        "keywords": [
+          "국정감사",
+          "개편",
+          "교부금"
+        ],
+        "size": 2,
+        "share": 3.4,
+        "cohesion": 0.81,
+        "samples": [
+          {
+            "id": "https://daily.hankooki.com/news/articleView.html?idxno=1415960",
+            "title": "대구·경북교육청 국정감사 D-1...'교부금 개편 찬반' 쟁점 전망",
+            "link": "https://daily.hankooki.com/news/articleView.html?idxno=1415960",
+            "publishedAt": "2026-10-19",
+            "press": "daily.hankooki.com",
+            "similarity": 0.81
+          },
+          {
+            "id": "https://www.knnews.co.kr/news/articleView.php?idxno=1553237",
+            "title": "[경남교육청 국정감사] “교부금 개편 땐 교육환경 악화” 우려 쏟아져...",
+            "link": "https://www.knnews.co.kr/news/articleView.php?idxno=1553237",
+            "publishedAt": "2026-10-20",
+            "press": "knnews.co.kr",
+            "similarity": 0.81
+          }
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "title": "영주교육지원청 2026 미래교육 어울림 축제…학교와 지역 사회 결속",
+        "link": "http://www.ttlnews.com/news/articleView.html?idxno=3157317",
+        "publishedAt": "2026-10-30",
+        "press": "ttlnews.com"
+      },
+      {
+        "title": "\"소규모 학교 통폐합, 해법을 묻다\"… 의성군, '제6회 의성ON토론대회' ...",
+        "link": "http://www.enewstoday.co.kr/news/articleView.html?idxno=2486242",
+        "publishedAt": "2026-10-30",
+        "press": "enewstoday.co.kr"
+      },
+      {
+        "title": "경북 의성군, 소규모 학교의 미래를 위한 토론의 장 열다",
+        "link": "https://www.viva100.com/article/20261029501234",
+        "publishedAt": "2026-10-29",
+        "press": "viva100.com"
+      },
+      {
+        "title": "의성군, 지역소멸 위기 속 소규모 학교 미래 관련 토론회 개최",
+        "link": "https://www.tournews21.com/news/articleView.html?idxno=147017",
+        "publishedAt": "2026-10-29",
+        "press": "tournews21.com"
+      },
+      {
+        "title": "영남학원 이사회, 12년 만에 영남대 캠퍼스 개최…AI 교육혁신 지원",
+        "link": "https://www.webeconomy.co.kr/news/articleView.html?idxno=2352042",
+        "publishedAt": "2026-10-28",
+        "press": "webeconomy.co.kr"
+      },
+      {
+        "title": "\"소규모 학교의 미래를 논하다\"...'2026 의성ON토론대회' 개최",
+        "link": "https://www.kbsm.net/news/view.php?idx=539464",
+        "publishedAt": "2026-10-28",
+        "press": "kbsm.net"
+      },
+      {
+        "title": "AI·우주항공 담아 폐교 위기 넘었다",
+        "link": "https://www.fnnews.com/news/202610281154455268",
+        "publishedAt": "2026-10-28",
+        "press": "fnnews.com"
+      },
+      {
+        "title": "김천 구성초 폐교, '공자예맥학교'로 농촌 재생 모색",
+        "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4088566",
+        "publishedAt": "2026-10-26",
+        "press": "kyongbuk.co.kr"
+      }
+    ],
+    "caveat": "기사량은 사회적 관심의 신호이며 실제 학생 수·학교 수의 증감을 뜻하지 않습니다.",
+    "review": "자동 집계된 초안으로, 대외 배포 전 담당자의 사실 확인이 필요합니다.",
+    "issueNo": 19
+  },
+  {
     "id": "2026-10-28-three-day",
     "status": "자동 발행",
     "source": "네이버 뉴스 검색 API",
