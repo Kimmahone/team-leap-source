@@ -17,6 +17,7 @@ on:
     # 자동 생성 파일만 커밋한 경우 같은 작업이 연달아 다시 돌지 않게 합니다.
     paths-ignore:
       - news-history.json
+      - 'news-archive/**'
       - '06. 실행계획(1)/prototype/assets/news/snapshot.json'
       - '06. 실행계획(1)/prototype/assets/news/snapshots/index.json'
       - '06. 실행계획(1)/prototype/assets/news/issues/index.json'
@@ -123,7 +124,7 @@ jobs:
         run: |
           git config --global user.name  "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add news-history.json \
+          git add news-history.json news-archive \
             "06. 실행계획(1)/prototype/assets/news/snapshot.json" \
             "06. 실행계획(1)/prototype/assets/news/snapshots/index.json" \
             "06. 실행계획(1)/prototype/assets/news/issues/index.json"
