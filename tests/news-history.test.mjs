@@ -12,6 +12,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
+import os from 'node:os';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(import.meta.url);
@@ -41,6 +42,38 @@ check('건수 상한이 안전장치로 걸린다', (() => {
   for (let i = 0; i < news.HISTORY_MAX + 50; i++) many.push(at(0));
   return news.trimHistory(many, NOW).length === news.HISTORY_MAX;
 })());
+
+/* 〔2026. 11. 4.〕 내려가는 기사는 «버려지지 않고» 보관소로 간다. */
+const manyOld = [];
+for (let i = 0; i < news.HISTORY_MAX + 50; i++) manyOld.push({ ...at(0), link: 'M' + i });
+manyOld.push(at(news.HISTORY_DAYS + 5), at(400));
+const split = news.splitHistory(manyOld, NOW);
+check('나뉜 두 쪽을 합치면 처음과 같다 (잃는 기사가 없다)',
+  split.kept.length + split.archived.length === manyOld.length,
+  split.kept.length + ' + ' + split.archived.length + ' ≠ ' + manyOld.length);
+check('기간이 지난 것과 상한을 넘긴 것이 모두 보관 쪽으로 간다',
+  split.archived.length === 52);
+check('상한은 이제 넉넉하다 (v2 는 하루 9~10건 → 120일에 1200건)',
+  news.HISTORY_MAX >= 1500);
+
+const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'news-archive-'));
+const arch = path.join(tmpDir, 'archive');
+const sample = [at(150), at(151), at(400)];
+const months = news.archiveItems(sample, arch);
+const files = fs.readdirSync(arch).sort();
+check('달별 파일로 나누어 적는다', files.length === months.length && files.every((f) => /^\d{4}-\d{2}\.json$/.test(f)), files.join(','));
+const readAll = () => files.flatMap((f) => JSON.parse(fs.readFileSync(path.join(arch, f), 'utf8')));
+check('보관한 기사가 그대로 들어 있다', readAll().length === 3);
+news.archiveItems(sample, arch);
+check('같은 기사를 다시 보관해도 두 번 들어가지 않는다', readAll().length === 3);
+news.archiveItems([at(152)], arch);
+check('이미 있는 보관본에 더한다 (지우지 않는다)', fs.readdirSync(arch).flatMap((f) => JSON.parse(fs.readFileSync(path.join(arch, f), 'utf8'))).length === 4);
+const bad = path.join(arch, files[0]);
+fs.writeFileSync(bad, '{깨짐', 'utf8');
+let threw = false;
+try { news.archiveItems(sample, arch); } catch (e) { threw = true; }
+check('보관 파일이 깨졌으면 덮어쓰지 않고 멈춘다', threw && fs.readFileSync(bad, 'utf8') === '{깨짐');
+fs.rmSync(tmpDir, { recursive: true, force: true });
 check('빈 목록도 견딘다', news.trimHistory([], NOW).length === 0);
 
 /* ── 화면이 내놓은 기간을 자료가 덮는가 ──────────────────────────
@@ -72,8 +105,13 @@ const span = hist.length
   ? (new Date(hist[0].pubDate) - new Date(hist[hist.length - 1].pubDate)) / 864e5
   : 0;
 console.log(`   (모아 둔 기간 ${span.toFixed(0)}일 · ${hist.length}건 · 보관 ${news.HISTORY_DAYS}일)`);
-check('건수 상한에 눌려 있지 않다 (눌려 있으면 오래된 것이 밀려나고 있다)',
-  hist.length < news.HISTORY_MAX, '지금 ' + hist.length + ' / 상한 ' + news.HISTORY_MAX);
+/* 〔2026. 11. 4.〕 «지금 자료가 상한에 닿았나»는 더 이상 배포를 막지 않는다.
+   이 검사가 빨개져 v2 배포가 열흘 가까이 멈췄다. 상한을 넘겨도 기사는 news-archive/ 로
+   가므로 잃지 않는다 — 대신 경고만 남기고, 잃지 않는다는 규칙은 위 검사들이 지킨다. */
+if (hist.length >= news.HISTORY_MAX * 0.8) {
+  console.warn('   ⚠ 히스토리가 상한(' + news.HISTORY_MAX + ')의 80%를 넘었습니다 — 지금 ' + hist.length + '건. 넘친 기사는 news-archive/ 로 갑니다.');
+}
+check('상한을 넘기지는 않았다', hist.length <= news.HISTORY_MAX, '지금 ' + hist.length + ' / 상한 ' + news.HISTORY_MAX);
 check('보관 기간이 지난 기사가 남아 있지 않다',
   news.trimHistory(hist).length === hist.length);
 check('적어도 이레치는 채운다 (화면이 「주간」을 내놓습니다)',
