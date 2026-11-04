@@ -44,7 +44,17 @@ const WANT = 4;              // 카드에 올릴 수
    그래서 «날짜»로 자릅니다. 건수 상한은 파일이 끝없이 커지지 않게 하는
    안전장치일 뿐, 평소에는 걸리지 않습니다. */
 const HISTORY_DAYS = 120;    // 이 날수 안의 기사는 남깁니다 (주간·월간 필터를 넉넉히 덮습니다)
-const HISTORY_MAX = 500;     // 안전장치. 하루 5~6건이면 120일에 700건쯤이라 여기서 걸립니다
+const HISTORY_MAX = 1500;    // 안전장치. 하루 5~10건이면 120일에 600~1200건이라 평소엔 안 걸립니다
+const ARCHIVE_DIR = 'news-archive'; // 120일이 지난 기사는 지우지 않고 여기에 달마다 한 파일로 모읍니다
+
+/* 〔2026. 11. 4.〕 상한 500건이 «배포를 멈춘» 일이 있었습니다.
+   v2 는 하루 9~10건이 들어와 53일 만에 500건에 닿았고, 아래 검사가 «눌려 있다»며
+   굽기를 막아 10/27 부터 화면이 멈췄습니다. 눌려 있으면 오래된 기사가 조용히 사라지는
+   것도 사실이었습니다(v2 의 8/4~9/10 기사).
+   그래서 두 가지를 바꿨습니다.
+     1) 상한을 1500 으로 올렸습니다.
+     2) 기간이 지났거나 상한을 넘긴 기사는 «버리지 않고» `news-archive/` 로 옮깁니다.
+        화면에 심는 것은 최근 `HISTORY_DAYS`일뿐이고 보관본은 사이트에 실리지 않습니다. */
 
 const ID = process.env.NAVER_CLIENT_ID;
 const SECRET = process.env.NAVER_CLIENT_SECRET;
@@ -239,14 +249,43 @@ async function collect() {
 
 /* 날짜로 자르고, 건수 상한은 안전장치로만 씁니다.
    지금(now)을 인자로 받는 것은 검사에서 시간을 고정하기 위해서입니다. */
-function trimHistory(list, now) {
+function splitHistory(list, now) {
   const cut = (now == null ? Date.now() : now) - HISTORY_DAYS * 864e5;
-  const kept = list.filter((it) => {
+  const fresh = [], archived = [];
+  for (const it of list) {
     const t = new Date(it.pubDate).getTime();
-    /* 날짜를 못 읽는 기사는 버리지 않습니다 — 못 읽는 것과 오래된 것은 다릅니다. */
-    return !Number.isFinite(t) || t >= cut;
-  });
-  return kept.slice(0, HISTORY_MAX);
+    /* 날짜를 못 읽는 기사는 내리지 않습니다 — 못 읽는 것과 오래된 것은 다릅니다. */
+    if (!Number.isFinite(t) || t >= cut) fresh.push(it); else archived.push(it);
+  }
+  /* 상한을 넘긴 것도 버리지 않고 보관 쪽으로 보냅니다. 목록은 새것부터 정렬돼 있어야 합니다. */
+  return { kept: fresh.slice(0, HISTORY_MAX), archived: [...archived, ...fresh.slice(HISTORY_MAX)] };
+}
+function trimHistory(list, now) { return splitHistory(list, now).kept; }
+
+/* 내려간 기사를 달별 파일에 «더합니다». 같은 링크는 한 번만, 지우는 일은 없습니다. */
+function archiveItems(items, dir) {
+  dir = dir || ARCHIVE_DIR;
+  const byMonth = {};
+  for (const it of items) {
+    const t = new Date(it.pubDate);
+    const month = Number.isFinite(t.getTime()) ? t.toISOString().slice(0, 7) : 'unknown';
+    (byMonth[month] = byMonth[month] || []).push(it);
+  }
+  const months = Object.keys(byMonth).sort();
+  if (months.length) fs.mkdirSync(dir, { recursive: true });
+  for (const month of months) {
+    const file = dir + '/' + month + '.json';
+    /* 있는데 못 읽는 파일을 빈 목록으로 덮으면 보관본을 잃습니다 — 멈추고 사람이 보게 합니다. */
+    if (fs.existsSync(file) && !Array.isArray(readJson(file, null))) {
+      throw new Error(file + ' 을 읽을 수 없습니다. 덮어쓰지 않고 멈춥니다.');
+    }
+    const have = readJson(file, []);
+    const seen = new Set(have.map((p) => p.link));
+    const merged = [...have, ...byMonth[month].filter((it) => !seen.has(it.link))]
+      .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+    fs.writeFileSync(file, JSON.stringify(merged, null, 2) + '\n', 'utf8');
+  }
+  return months;
 }
 
 async function main() {
@@ -297,11 +336,10 @@ async function main() {
   const added = scored.filter((it) => !seen.has(it.link));
   const merged = dedupeStories([...added, ...prev])
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
-  const history = trimHistory(merged);
+  const { kept: history, archived } = splitHistory(merged);
 
-  const dropped = merged.length - history.length;
   console.log(`히스토리 ${prev.length}건 + 새로 ${added.length}건 → ${history.length}건` +
-    (dropped ? `  (${HISTORY_DAYS}일이 지나 ${dropped}건 내림)` : ''));
+    (archived.length ? `  (${archived.length}건은 ${ARCHIVE_DIR}/ 로 옮김)` : ''));
   if (history.length) {
     const oldest = new Date(history[history.length - 1].pubDate);
     console.log(`   보관 기간: ${oldest.toISOString().slice(0, 10)} ~ 오늘`);
@@ -309,18 +347,19 @@ async function main() {
   console.log(`\n가장 최근 ${WANT}건:`);
   history.slice(0, WANT).forEach((f, i) => console.log(`  ${i + 1}. ${f.title}`));
 
-  /* 밀려난 기사는 아무 데도 남지 않습니다. 줄어드는 것을 눈에 보이게 합니다. */
-  if (history.length < prev.length) {
-    console.error(`  ⚠ 히스토리가 ${prev.length}건에서 ${history.length}건으로 줄었습니다.`);
-  }
-
   if (DRY) { console.log('\n— 확인만 (--dry). 파일을 고치지 않았습니다.'); return; }
+
+  /* 보관본을 «먼저» 씁니다. 중간에 멈춰도 기사가 어디에도 없는 순간은 생기지 않습니다. */
+  if (archived.length) {
+    const months = archiveItems(archived);
+    console.log(`📦 ${archived.length}건을 ${ARCHIVE_DIR}/ 에 보관했습니다 (${months.join(', ')}).`);
+  }
 
   fs.writeFileSync('news-history.json', JSON.stringify(history, null, 2) + '\n', 'utf8');
   console.log('\n🎉 news-history.json 에 적었습니다.');
   console.log('   ※ 화면에 올리려면 `사이트 굽기.command` 를 돌려야 합니다.');
 }
 
-module.exports = { trimHistory, HISTORY_DAYS, HISTORY_MAX };
+module.exports = { trimHistory, splitHistory, archiveItems, HISTORY_DAYS, HISTORY_MAX, ARCHIVE_DIR };
 
 if (require.main === module) main();
