@@ -558,7 +558,7 @@ console.log('\n[19] 만드는 사람의 말이 일하는 화면에 없다');
 
 console.log('\n[20] 다른 앱과 어긋나지 않는다');
 {
-  check('메인으로 나가는 길이 있다', SRC.includes('메인으로') && SRC.includes('../../../index.html'));
+  check('전시관으로 돌아가는 길이 있다', SRC.includes('전시관으로') && SRC.includes('../store/index.html'));
   check('나가도 잃는 것이 없다고 알린다', SRC.includes('이 앱에 적은 것은 그대로 남습니다'));
   check('테마 단추가 있다', SRC.includes('LEAP.initThemeBtn'));
   check('학생을 적는 칸이 없다', !/학생\s*이름/.test(SRC), '이 앱에는 학생이 나오지 않는다');

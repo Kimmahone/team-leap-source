@@ -24,7 +24,7 @@ let data = { apps: [] };
 try { data = JSON.parse(m[1]); check('앱 목록이 JSON 으로 읽힌다', true); }
 catch (e) { check('앱 목록이 JSON 으로 읽힌다', false, e.message); }
 const apps = data.apps || [];
-check('모든 앱·참고 링크에 접속 안내가 있다', apps.every(a => a.access && a.start));
+check('모든 앱에 접속 안내가 있다', apps.every(a => a.access && a.start));
 check('학교 운영용 앱은 시험 입력 금지를 안내한다',
   apps.filter(a => ['school-self-check', 'training-certificate'].includes(a.id))
     .every(a => a.access === '운영학교 전용' && /시험.*하지 마세요/.test(a.start)));
@@ -106,8 +106,9 @@ check('앱 열기·바로가기·설명서가 모두 새 탭으로 열린다(사
   !/if \(isExternal\(a\)\) \{\s*open\.target/.test(html) && /open\.target = '_blank'/.test(html) &&
   /other\.target = '_blank'/.test(html) && /rd\.target = '_blank'/.test(html) && /rd\.rel = 'noopener'/.test(html));
 check('헤더 메뉴가 각 구역으로 이동한다',
-  ['#tour','#sec-analyze','#sec-members','#sec-tools','#sec-references'].every(h => html.includes('<a href="' + h + '">')) &&
-  ['tour','sec-analyze','sec-members','sec-tools','sec-references'].every(id => html.includes('id="' + id + '"')));
+  ['#tour','#sec-analyze','#sec-members','#sec-tools'].every(h => html.includes('<a href="' + h + '">')) &&
+  ['tour','sec-analyze','sec-members','sec-tools'].every(id => html.includes('id="' + id + '"')));
+check('「더 살펴볼 자료」 구역과 메뉴가 없다', !html.includes('sec-references') && !html.includes('더 살펴볼 자료'));
 check('숫자 줄이 가운데 정렬이다', /\.stats\{margin-left:auto;margin-right:auto\}/.test(html));
 check('밝기 열쇠가 카탈로그와 같다(leap-theme)', html.includes("'leap-theme'"));
 check('인쇄 안내문 자리가 있다', html.includes('id="print-area"') && /@media print/.test(html));

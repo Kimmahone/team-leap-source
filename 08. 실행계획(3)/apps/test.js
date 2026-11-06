@@ -309,7 +309,7 @@ CLAIMS.forEach(c => {
     '설명서는 앱 폴더에 나란히 있다. 링크 한 줄이면 닿는다');
   check(c.dir + ' — 그 설명서가 실제로 있다',
     fs.existsSync(path.join(__dirname, c.dir, 'README.html')));
-  check(c.dir + ' — 머리에 메인으로 가는 길도 있다', head.includes('메인으로'));
+  check(c.dir + ' — 머리에 전시관으로 가는 길도 있다', head.includes('전시관으로') && head.includes('href="../store/index.html"'));
 });
 
 /* ★ 〔2026. 8. 30.〕 「kit 은 원본입니다」가 사실이 아니던 자리.

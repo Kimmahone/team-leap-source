@@ -826,8 +826,8 @@ console.log('\n[v0.8-7] AI 초안 도우미가 없다 — 학생이 쓰는 앱')
   const head = html.slice(html.indexOf('top-actions'), html.indexOf('</header>'));
   check('머리에 AI 초안 단추가 없다', !/AI 초안|btn-ai/.test(head),
     '학생이 쓰는 앱입니다. AI 는 교사용 앱에만 둡니다');
-  check('머리에 메인으로 · 설명서 · 화면 전환이 있다',
-    head.includes('메인으로') && head.includes('설명서') && head.includes('btn-theme'));
+  check('머리에 전시관으로 · 설명서 · 화면 전환이 있다',
+    head.includes('전시관으로') && head.includes('설명서') && head.includes('btn-theme'));
 }
 
 console.log('\n[v0.8-★] 새 책 만들기가 저장 방식에 따라 다른 일을 하던 것');
