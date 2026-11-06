@@ -838,7 +838,7 @@ check('인쇄 스타일이 있다', /@media print/.test(html));
 check('모션 축소 요청을 존중한다', /prefers-reduced-motion/.test(html));
 check('버튼이 44px 이상이다', /\.btn\{[^}]*min-height:46px/.test(html));
 check('제목이 하나뿐(h1)', (html.match(/<h1[ >]/g) || []).length === 1);
-check('메인으로 돌아가는 홈 단추가 있다', html.includes('href="../../../index.html"'));
+check('전시관으로 돌아가는 홈 단추가 있다', html.includes('href="../store/index.html"'));
 check('저작권 표기가 있다', html.includes('© 2026 TEAM LEAP'));
 check('「어떤 자료도 외부로 전송하지 않습니다」가 사실이어야 한다',
   html.includes('어떤 자료도 외부로 전송하지 않습니다'));

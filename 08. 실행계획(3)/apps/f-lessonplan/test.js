@@ -448,7 +448,7 @@ console.log('\n[12] 설계 원칙 — 검사가 고정한다');
   check('h1 이 하나다', (html.match(/<h1[ >]/g) || []).length === 1);
   check('저작권 표기가 있다', html.includes('© 2026 TEAM LEAP'));
   check('출처를 밝힌다', html.includes('KERIS') && html.includes('한국교육과정평가원'));
-  check('메인으로 돌아가는 길이 있다', html.includes('iconbtn--home'));
+  check('전시관으로 돌아가는 길이 있다', html.includes('iconbtn--home'));
   check('마크의 획 색이 정해져 있다', /\.mk-low\{stroke:/.test(html),
     'stroke 가 없으면 SVG 는 선을 그리지 않는다 — 보여야 표기다');
   check('인쇄 스타일이 있다 (원칙 5)', html.includes('@media print'));

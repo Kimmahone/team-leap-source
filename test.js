@@ -73,26 +73,28 @@ check('고정된 머리 아래로 절이 숨지 않는다', /\[id\]\{scroll-marg
 /* ---------- 돌아오는 길 ----------
    앱을 열면 되돌아올 방법이 있어야 합니다. 브라우저 뒤로 가기는 방법이 아닙니다 —
    링크를 새 창으로 열거나 바탕화면 바로가기로 연 사람에게는 뒤로 갈 곳이 없습니다. */
-console.log('\n■ 열한 곳 모두에서 메인으로 돌아올 수 있는가');
+console.log('\n■ 열한 곳 모두에서 돌아올 수 있는가 (교실 도구는 앱 전시관으로, 나머지는 메인으로)');
 const homes = [
   ['대시보드',    '06. 실행계획(1)/prototype/index.html', '../../index.html'],
   ['앱 카탈로그', '08. 실행계획(3)/apps/index.html',      '../../index.html'],
-  ['앱 A',       '08. 실행계획(3)/apps/a-circuit/index.html',    '../../../index.html'],
-  ['앱 B',       '08. 실행계획(3)/apps/b-classboard/index.html', '../../../index.html'],
-  ['앱 C',       '08. 실행계획(3)/apps/c-storybook/index.html',  '../../../index.html'],
-  ['앱 D',       '08. 실행계획(3)/apps/d-multigrade/index.html', '../../../index.html'],
-  ['앱 E',       '08. 실행계획(3)/apps/e-together/index.html',   '../../../index.html'],
-  ['앱 F',       '08. 실행계획(3)/apps/f-lessonplan/index.html', '../../../index.html'],
-  ['앱 G',       '08. 실행계획(3)/apps/g-classdata/index.html',  '../../../index.html'],
-  ['앱 J',       '08. 실행계획(3)/apps/j-howmany/index.html',    '../../../index.html'],
-  ['앱 K',       '08. 실행계획(3)/apps/k-year/index.html',       '../../../index.html'],
-  ['앱 L',       '08. 실행계획(3)/apps/l-rooms/index.html',      '../../../index.html'],
-  ['앱 I',       '08. 실행계획(3)/apps/i-required/index.html',      '../../../index.html']
+  ['앱 A',       '08. 실행계획(3)/apps/a-circuit/index.html',    '../store/index.html'],
+  ['앱 B',       '08. 실행계획(3)/apps/b-classboard/index.html', '../store/index.html'],
+  ['앱 C',       '08. 실행계획(3)/apps/c-storybook/index.html',  '../store/index.html'],
+  ['앱 D',       '08. 실행계획(3)/apps/d-multigrade/index.html', '../store/index.html'],
+  ['앱 E',       '08. 실행계획(3)/apps/e-together/index.html',   '../store/index.html'],
+  ['앱 F',       '08. 실행계획(3)/apps/f-lessonplan/index.html', '../store/index.html'],
+  ['앱 G',       '08. 실행계획(3)/apps/g-classdata/index.html',  '../store/index.html'],
+  ['앱 J',       '08. 실행계획(3)/apps/j-howmany/index.html',    '../store/index.html'],
+  ['앱 K',       '08. 실행계획(3)/apps/k-year/index.html',       '../store/index.html'],
+  ['앱 L',       '08. 실행계획(3)/apps/l-rooms/index.html',      '../store/index.html'],
+  ['앱 I',       '08. 실행계획(3)/apps/i-required/index.html',      '../store/index.html']
 ];
 homes.forEach(([name, file, up]) => {
   const s = fs.readFileSync(path.join(HERE, file), 'utf8');
   const has = s.includes('href="' + up + '"');
-  const lands = path.resolve(path.dirname(path.join(HERE, file)), up) === APP;
+  const toStore = up.endsWith('store/index.html');
+  const dest = toStore ? path.join(HERE, '08. 실행계획(3)/apps/store/index.html') : APP;
+  const lands = path.resolve(path.dirname(path.join(HERE, file)), up) === dest;
   check(name + ' 에 홈 단추가 있고 이 페이지로 닿는다', has && lands,
     has ? '경로가 메인을 가리키지 않음' : '홈 단추 없음');
   /* 〔2026. 8. 7.〕 이 단추의 글자가 「처음으로」였습니다.
@@ -100,7 +102,7 @@ homes.forEach(([name, file, up]) => {
      그래서 새 수업을 짜려던 분이 이것을 눌러 앱을 나가 버렸습니다.
      어디로 가는 단추인지 이름에 적고, **나가도 잃는 것이 없다**는 것도 함께 적습니다. */
   check(name + ' 홈 단추가 어디로 가는지 이름으로 말한다',
-    s.includes('메인으로') && !/>\s*처음으로\s*<\/a>/.test(s),
+    s.includes(toStore ? '전시관으로' : '메인으로') && !/>\s*처음으로\s*<\/a>/.test(s),
     '「처음으로」는 앱 안에서 새로 시작한다는 뜻으로 읽힌다');
   check(name + ' 나가도 잃는 것이 없다고 알려 준다',
     s.includes('이 앱에 적은 것은 그대로 남습니다') || s.includes('메인 페이지로 나가기'));
