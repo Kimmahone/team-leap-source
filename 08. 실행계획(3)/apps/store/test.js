@@ -102,6 +102,13 @@ check('form 을 쓰지 않는다(CSP form-action \'none\')', !/<form\b/i.test(ht
 check('메인으로 가는 길이 카탈로그와 같은 깊이다', html.includes('href="../../../index.html"'));
 check('카탈로그와 「교실에서 쓰는 법」으로 가는 링크', html.includes('href="../index.html"') && html.includes('href="../guide.html"'));
 check('새 창 링크에 noopener', /rel\s*=\s*'noopener'/.test(html));
+check('앱 열기·바로가기·설명서가 모두 새 탭으로 열린다(사이트 안 앱 포함)',
+  !/if \(isExternal\(a\)\) \{\s*open\.target/.test(html) && /open\.target = '_blank'/.test(html) &&
+  /other\.target = '_blank'/.test(html) && /rd\.target = '_blank'/.test(html) && /rd\.rel = 'noopener'/.test(html));
+check('헤더 메뉴가 각 구역으로 이동한다',
+  ['#tour','#sec-analyze','#sec-members','#sec-tools','#sec-references'].every(h => html.includes('<a href="' + h + '">')) &&
+  ['tour','sec-analyze','sec-members','sec-tools','sec-references'].every(id => html.includes('id="' + id + '"')));
+check('숫자 줄이 가운데 정렬이다', /\.stats\{margin-left:auto;margin-right:auto\}/.test(html));
 check('밝기 열쇠가 카탈로그와 같다(leap-theme)', html.includes("'leap-theme'"));
 check('인쇄 안내문 자리가 있다', html.includes('id="print-area"') && /@media print/.test(html));
 
