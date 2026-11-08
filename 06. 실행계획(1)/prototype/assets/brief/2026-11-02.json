@@ -1,0 +1,1847 @@
+{
+ "id": "2026-11-02",
+ "no": 10,
+ "from": "2026-11-02",
+ "to": "2026-11-08",
+ "period": "11. 2.(월) ~ 11. 8.(일)",
+ "title": "교육혁신선도지역 43곳 지정과 초등 입학생 30만 미달 충격, 경북 소규모학교·폐교 전략 재점검 필요",
+ "lead": "교육부가 전국 43곳을 '교육혁신선도지역'으로 지정하며 소규모 학교 통폐합 및 거점학교 중심 재편에 본격 시동을 걸었습니다. 동시에 전국 초등학교 입학생 수가 사상 처음으로 30만 명 아래로 떨어질 것으로 전망되며 농산어촌 학교의 소멸 압박이 커지고 있습니다. 한편 정부의 폐교 활용 우수사례 발표와 함께 경북 내 미활용 폐교 70곳에 대한 지자체 매입 협력과 용도 다변화 요구가 대두되었으며, 교육재정교부금 산정 방식 개편을 둘러싼 갈등도 지속되고 있습니다.",
+ "leadArticles": [
+  "a19zs1sy",
+  "akz2ne4",
+  "afm8u09",
+  "a3k76l3"
+ ],
+ "takeaways": [
+  "교육혁신선도지역에 경북 상주·영주·봉화·청도 등이 선정되어 소규모학교 묶음 운영 및 교육생태계 재구조화 추진",
+  "초등 신입생 30만 명 붕괴 전망 속에서 경북 917개교 중 229곳(25%)이 적정규모에 미달해 학교 재편 압력 가중",
+  "정부 우수 폐교 활용 사례가 확산되는 가운데 경북 미매각 폐교 255곳 중 미활용 70곳의 공공 활용 전환 대책 시급"
+ ],
+ "status": "자동 생성 · 검토 전",
+ "generator": {
+  "kind": "ai",
+  "label": "AI 초안",
+  "model": "gemini-flash-latest"
+ },
+ "builtAt": "2026-11-08T23:44:52.445Z",
+ "stats": {
+  "articles": 112,
+  "inScope": 106,
+  "gyeongbuk": 23,
+  "otherSido": 71,
+  "national": 5,
+  "prevArticles": 77,
+  "topics": [
+   {
+    "topic": "통폐합·적정규모",
+    "n": 26,
+    "prev": 16
+   },
+   {
+    "topic": "폐교 활용",
+    "n": 25,
+    "prev": 34
+   },
+   {
+    "topic": "교육혁신선도지역",
+    "n": 22,
+    "prev": 0
+   },
+   {
+    "topic": "작은학교 살리기",
+    "n": 11,
+    "prev": 4
+   },
+   {
+    "topic": "기타",
+    "n": 9,
+    "prev": 13
+   },
+   {
+    "topic": "교육재정·교부금",
+    "n": 7,
+    "prev": 5
+   },
+   {
+    "topic": "교원·정원",
+    "n": 4,
+    "prev": 0
+   },
+   {
+    "topic": "통학·돌봄",
+    "n": 2,
+    "prev": 0
+   }
+  ],
+  "regions": [
+   {
+    "region": "경북",
+    "n": 23
+   },
+   {
+    "region": "충북",
+    "n": 14
+   },
+   {
+    "region": "기타",
+    "n": 13
+   },
+   {
+    "region": "충남",
+    "n": 10
+   },
+   {
+    "region": "경기",
+    "n": 8
+   },
+   {
+    "region": "강원",
+    "n": 8
+   },
+   {
+    "region": "경남",
+    "n": 8
+   },
+   {
+    "region": "전북",
+    "n": 7
+   },
+   {
+    "region": "전국",
+    "n": 5
+   },
+   {
+    "region": "울산",
+    "n": 4
+   },
+   {
+    "region": "서울",
+    "n": 4
+   },
+   {
+    "region": "전남",
+    "n": 4
+   },
+   {
+    "region": "대구",
+    "n": 2
+   },
+   {
+    "region": "부산",
+    "n": 1
+   },
+   {
+    "region": "인천",
+    "n": 1
+   }
+  ]
+ },
+ "numbers": [
+  {
+   "metric": "closed_by_use",
+   "topic": "폐교 재산 활용 및 관리",
+   "headline": "70곳",
+   "sub": "경북 폐교 중 매각되지 않은 255곳 가운데 70곳이 미활용 상태입니다.",
+   "body": "교육부와 행정안전부가 폐교를 동물보호센터나 천문과학관 등으로 전환한 우수사례를 발표하며 활용 다변화를 유도하고 있습니다. 경북은 누적 폐교 750곳 중 매각되지 않은 255곳 가운데 70곳이 여전히 미활용 상태로 남아 있습니다. 지자체 매입 유도 및 복합 공공시설 전환 등 선제적인 활용 대책이 필요한 것으로 보입니다.",
+   "articles": [
+    "a1prx7zg",
+    "a7xurzn",
+    "afm8u09"
+   ],
+   "chart": {
+    "type": "bars",
+    "unit": "곳",
+    "caption": "경북 폐교 750곳은 지금",
+    "source": "지방교육재정알리미 폐교정보",
+    "rows": [
+     {
+      "label": "매각",
+      "value": 495,
+      "hl": false
+     },
+     {
+      "label": "대부",
+      "value": 108,
+      "hl": false
+     },
+     {
+      "label": "자체활용",
+      "value": 77,
+      "hl": true
+     },
+     {
+      "label": "미활용",
+      "value": 70,
+      "hl": true
+     }
+    ]
+   }
+  },
+  {
+   "metric": "cohort",
+   "topic": "초등학교 신입생 급감 추세",
+   "headline": "12765명",
+   "sub": "2026년 공시 기준 경북 초등학교 1학년 학생 수는 고3 대비 62% 수준입니다.",
+   "body": "전국적으로 초등학교 입학 대상자가 처음으로 30만 명에 미달할 것으로 전망되면서 비수도권 학교 통폐합 우려가 커지고 있습니다. 경북의 초등학교 1학년 학생은 12,765명으로 고등학교 3학년(20,464명)의 62% 수준에 머물러 있습니다. 신입생 급감에 따른 면 단위 학교의 학급 편성 제약이 더욱 심화될 것으로 보입니다.",
+   "articles": [
+    "akz2ne4",
+    "a1y45mmk",
+    "apytu50"
+   ],
+   "chart": {
+    "type": "bars",
+    "unit": "명",
+    "caption": "학년별 학생(2026 공시)",
+    "source": "학교알리미 2026 공시 학년별 학생 수",
+    "rows": [
+     {
+      "label": "초1",
+      "value": 12765,
+      "hl": true
+     },
+     {
+      "label": "초2",
+      "value": 14158,
+      "hl": false
+     },
+     {
+      "label": "초3",
+      "value": 15473,
+      "hl": false
+     },
+     {
+      "label": "초4",
+      "value": 17941,
+      "hl": false
+     },
+     {
+      "label": "초5",
+      "value": 19425,
+      "hl": false
+     },
+     {
+      "label": "초6",
+      "value": 19266,
+      "hl": false
+     },
+     {
+      "label": "중1",
+      "value": 19554,
+      "hl": false
+     },
+     {
+      "label": "중2",
+      "value": 21693,
+      "hl": false
+     },
+     {
+      "label": "중3",
+      "value": 21010,
+      "hl": false
+     },
+     {
+      "label": "고1",
+      "value": 21863,
+      "hl": false
+     },
+     {
+      "label": "고2",
+      "value": 20104,
+      "hl": false
+     },
+     {
+      "label": "고3",
+      "value": 20464,
+      "hl": true
+     }
+    ]
+   }
+  },
+  {
+   "metric": "small_share_top",
+   "topic": "적정규모 미달 학교 현황",
+   "headline": "229곳",
+   "sub": "경북 초·중·고 917곳 중 25%가 적정규모 기준선에 미달합니다.",
+   "body": "정부의 교육혁신선도지역 정책이 소규모학교 권역 묶기 및 통합을 유도하면서 학교 구조 재편 논의가 빨라지고 있습니다. 경북은 전체 917개 학교 중 동 60명, 읍면 30명 기준에 미달하는 학교가 229곳에 달합니다. 학생 수 15명 이하인 최소규모 학교도 91곳에 이르러 체계적인 캠퍼스형·공동교육과정 도입이 시급해 보입니다.",
+   "articles": [
+    "a10hz4p5",
+    "a19zs1sy",
+    "ar9y041"
+   ],
+   "chart": {
+    "type": "bars",
+    "unit": "%",
+    "caption": "적정규모 미달 학교 비율 상위 8개 시군",
+    "source": "학교알리미 2026 공시",
+    "rows": [
+     {
+      "label": "고령",
+      "value": 58.8
+     },
+     {
+      "label": "예천",
+      "value": 54.2
+     },
+     {
+      "label": "성주",
+      "value": 52.2
+     },
+     {
+      "label": "봉화",
+      "value": 50
+     },
+     {
+      "label": "영양",
+      "value": 50
+     },
+     {
+      "label": "영덕",
+      "value": 50
+     },
+     {
+      "label": "의성",
+      "value": 45.2
+     },
+     {
+      "label": "울진",
+      "value": 42.3
+     }
+    ]
+   }
+  }
+ ],
+ "issues": [
+  {
+   "kicker": "교육혁신선도지역",
+   "title": "교육혁신선도지역 43곳 지정과 경북 시·군의 소규모학교 재편 과제",
+   "what": "교육부가 인구감소지역을 중심으로 전국 43개 시·군을 '교육혁신선도지역'으로 지정하였으며, 경북에서는 봉화, 영주, 상주, 청도 등이 선정되어 향후 소규모학교 혁신 및 학교 간 통합·연계 사업에 국비를 지원받게 되었습니다.",
+   "why": "단순 학교 통폐합에 따른 지역 반발을 최소화하기 위해 소규모학교를 권역으로 묶고 거점학교 중심으로 재구조화하는 모델이 본격화되고 있습니다. 지자체 정주 정책과의 결합 없이는 인구 유출과 폐교 위기를 막기 어렵다는 인식이 반영되었습니다.",
+   "ask": [
+    "선정된 봉화·영주·상주·청도 외에 적정규모 미달 비율이 50%를 넘는 고령, 영양, 성주, 예천 등 다른 군 지역에 적용할 소규모학교 네트워크 모델은 무엇인가?",
+    "거점학교 중심 교육과정 공유 및 통합 추진 과정에서 소규모학교 학부모 동의와 통학 지원 체계를 어떻게 보장할 것인가?"
+   ],
+   "facts": [
+    {
+     "key": "schools_under",
+     "label": "적정규모 참고선 미달 학교(동 60명·읍면 30명)",
+     "value": 229,
+     "unit": "곳",
+     "src": "학교알리미 2026 공시"
+    },
+    {
+     "key": "sgg_under_share_봉화",
+     "label": "봉화 적정규모 미달 비율",
+     "value": 50,
+     "unit": "%",
+     "src": "학교알리미 2026 공시"
+    },
+    {
+     "key": "sgg_under_share_상주",
+     "label": "상주 적정규모 미달 비율",
+     "value": 41.8,
+     "unit": "%",
+     "src": "학교알리미 2026 공시"
+    },
+    {
+     "key": "sgg_under_share_고령",
+     "label": "고령 적정규모 미달 비율",
+     "value": 58.8,
+     "unit": "%",
+     "src": "학교알리미 2026 공시"
+    },
+    {
+     "key": "sgg_under_share_영양",
+     "label": "영양 적정규모 미달 비율",
+     "value": 50,
+     "unit": "%",
+     "src": "학교알리미 2026 공시"
+    },
+    {
+     "key": "sgg_under_share_성주",
+     "label": "성주 적정규모 미달 비율",
+     "value": 52.2,
+     "unit": "%",
+     "src": "학교알리미 2026 공시"
+    },
+    {
+     "key": "sgg_under_share_예천",
+     "label": "예천 적정규모 미달 비율",
+     "value": 54.2,
+     "unit": "%",
+     "src": "학교알리미 2026 공시"
+    }
+   ],
+   "articles": [
+    "a19zs1sy",
+    "adx7ab3",
+    "a1cw8z3w",
+    "a1dltkzc",
+    "avbdcya",
+    "a1y4r6iw"
+   ]
+  },
+  {
+   "kicker": "폐교 활용",
+   "title": "정부 폐교 활용 공모 확산과 경북 미활용 폐교 70곳 관리 대책",
+   "what": "행정안전부와 교육부가 통영 한산초 용호분교의 고양이 보호센터 등 폐교 활용 우수사례 7곳을 선정한 가운데, 경북 도의회와 지역 교육청에서는 영양·울릉 등지의 미활용 폐교 매입 및 도 차원의 관리 대책이 제기되었습니다.",
+   "why": "폐교활용법 개정으로 활용 특례 범위가 통합돌봄과 주민공동체 분야까지 넓어졌으나, 농산어촌 지자체의 재정 여건상 자체 매입과 개발에는 한계가 있어 장기 방치 폐교가 지속 발생하고 있습니다.",
+   "ask": [
+    "도내 미활용 폐교 70곳 중 관리 부담이 큰 영양, 울릉 등 군 단위 폐교를 지자체 통합돌봄·문화체험 시설로 전환하기 위한 교육청-지자체 공동 협력 모델은 마련되어 있는가?",
+    "폐교 재산의 목적 외 방치나 대부료 미수납 문제를 사전에 차단할 중장기 폐교 자산 관리 로드맵이 갖추어져 있는가?"
+   ],
+   "facts": [
+    {
+     "key": "closed_total",
+     "label": "경북 폐교 누적",
+     "value": 750,
+     "unit": "곳",
+     "src": "지방교육재정알리미 폐교정보"
+    },
+    {
+     "key": "closed_not_sold",
+     "label": "경북 폐교 중 매각하지 않은 곳",
+     "value": 255,
+     "unit": "곳",
+     "src": "지방교육재정알리미 폐교정보"
+    },
+    {
+     "key": "closed_use_미활용",
+     "label": "경북 폐교 중 미활용",
+     "value": 70,
+     "unit": "곳",
+     "src": "지방교육재정알리미 폐교정보"
+    },
+    {
+     "key": "closed_unused_sgg_영양",
+     "label": "영양 미활용 폐교",
+     "value": 2,
+     "unit": "곳",
+     "src": "지방교육재정알리미 폐교정보"
+    },
+    {
+     "key": "closed_unused_sgg_울릉",
+     "label": "울릉 미활용 폐교",
+     "value": 3,
+     "unit": "곳",
+     "src": "지방교육재정알리미 폐교정보"
+    }
+   ],
+   "articles": [
+    "afm8u09",
+    "am3a84q",
+    "a7xurzn",
+    "a1prx7zg"
+   ]
+  },
+  {
+   "kicker": "교육재정·교부금",
+   "title": "학령인구 연동 교부금 개편 논란과 소규모학교 교육 여건 보호",
+   "what": "정부가 지방교육재정교부금 산정 방식에 학령인구 변화율을 반영하려는 방안을 검토하자 전국 시·도교육감협의회와 교총이 농산어촌 소규모학교 타격을 이유로 축소 개편 반대 입장을 표명했습니다.",
+   "why": "학생 수 감소에 비례해 교부금을 줄일 경우, 기본 학교 운영비와 특수교육, 기초학력 보장 비용이 고정적으로 소요되는 경북의 읍·면 지역 소규모 학교들이 직접적인 재정 압박을 받게 됩니다.",
+   "ask": [
+    "교부금 배분 방식에 학령인구 반영 비중이 조정될 경우, 경북 관내 229개 적정규모 미달 학교 운영비에 미칠 구체적인 재정 시뮬레이션 결과가 있는가?",
+    "향후 10년간 학생 수가 43.1% 감소할 것으로 전망되는 상황에서 농산어촌 필수 교육 인프라를 지탱할 자체 재원 확보 대책은 무엇인가?"
+   ],
+   "facts": [
+    {
+     "key": "schools_under",
+     "label": "적정규모 참고선 미달 학교(동 60명·읍면 30명)",
+     "value": 229,
+     "unit": "곳",
+     "src": "학교알리미 2026 공시"
+    },
+    {
+     "key": "students_change_2026_2036",
+     "label": "경북 학생 변화율 2026→2036(전망)",
+     "value": -43.1,
+     "unit": "%",
+     "src": "학교알리미 2026 공시 · EDSS 교육통계 2016~2025 실적 · 2027~ 코호트 진급법 전망(대시보드와 같은 셈)"
+    },
+    {
+     "key": "threshold_myeon",
+     "label": "적정규모 참고선(읍면)",
+     "value": 30,
+     "unit": "명",
+     "src": "대시보드 적정규모 참고선"
+    }
+   ],
+   "articles": [
+    "a16hjdbh",
+    "a411xfe",
+    "a3k76l3",
+    "a14hjpu",
+    "a1dc95xu"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "region": "충남",
+   "what": "폐교 활용 숙박형 체험교육 예산 74억 원 편성",
+   "detail": "충남교육청은 2027년 예산안에 자연과 문화 속 체험학습을 위한 폐교 활용 숙박형 체험교육 시설 조성 예산 74억 원을 편성했습니다.",
+   "compare": "경북은 매각하지 않은 폐교 255곳 중 70곳이 미활용 상태인 만큼 폐교를 학생 체험 및 체류형 인프라로 전환하는 투자를 검토할 필요가 있어 보입니다.",
+   "facts": [
+    {
+     "key": "closed_not_sold",
+     "label": "경북 폐교 중 매각하지 않은 곳",
+     "value": 255,
+     "unit": "곳",
+     "src": "지방교육재정알리미 폐교정보"
+    },
+    {
+     "key": "closed_use_미활용",
+     "label": "경북 폐교 중 미활용",
+     "value": 70,
+     "unit": "곳",
+     "src": "지방교육재정알리미 폐교정보"
+    }
+   ],
+   "articles": [
+    "an7dpia",
+    "a1vkyrjn",
+    "a1gxf26a"
+   ]
+  },
+  {
+   "region": "경기",
+   "what": "접경지역 미활용 폐교를 활용한 공립 단설 특수학교 신설",
+   "detail": "경기교육청과 연천교육지원청은 특수학교가 부족한 연천 지역의 미활용 폐교를 활용해 2029년 개교를 목표로 공립 특수학교 설립을 추진합니다.",
+   "compare": "경북 역시 미활용 폐교가 70곳에 이르는 상황에서 특수교육이나 거점 돌봄 기반이 취약한 시·군 폐교의 특수목적 교육시설 전환을 검토해 볼 만합니다.",
+   "facts": [
+    {
+     "key": "closed_use_미활용",
+     "label": "경북 폐교 중 미활용",
+     "value": 70,
+     "unit": "곳",
+     "src": "지방교육재정알리미 폐교정보"
+    }
+   ],
+   "articles": [
+    "avdqos4",
+    "a124bl3i",
+    "a1u12phh"
+   ]
+  },
+  {
+   "region": "경남",
+   "what": "통영 섬마을 폐교 활용 고양이 보호센터 국무총리상 수상",
+   "detail": "경남교육청은 2012년 폐교된 옛 한산초 용호분교를 동물보호·치료·입양 공간으로 재생하여 정부 우수사례 경진대회 최우수상을 받았습니다.",
+   "compare": "울진(37곳)과 영덕(37곳) 등 해안권 폐교 누적이 많은 경북에서도 지역 자연환경과 연계한 차별화된 테마형 폐교 재생 모델을 도입할 수 있어 보입니다.",
+   "facts": [
+    {
+     "key": "sgg_closed_울진",
+     "label": "울진 폐교 누적",
+     "value": 37,
+     "unit": "곳",
+     "src": "지방교육재정알리미 폐교정보"
+    },
+    {
+     "key": "sgg_closed_영덕",
+     "label": "영덕 폐교 누적",
+     "value": 37,
+     "unit": "곳",
+     "src": "지방교육재정알리미 폐교정보"
+    }
+   ],
+   "articles": [
+    "atcdt0p",
+    "a15nth14",
+    "am3a84q"
+   ]
+  },
+  {
+   "region": "전북",
+   "what": "김제 백구면 초등학교 통폐합 및 초·중 통합학교 신설",
+   "detail": "교육혁신선도지역으로 지정된 전북 김제시는 면 단위 초등학교 통폐합과 초·중 통합학교 신설, 폐교를 활용한 주민복합시설 조성을 추진합니다.",
+   "compare": "면 지역 초등학교 19곳에 초등생이 426명에 불과한 상주 등 면 단위 다수 학교 지역에서 초·중 통합 운영 및 시설 복합화 모델을 참고할 수 있어 보입니다.",
+   "facts": [
+    {
+     "key": "myeon_elem_상주",
+     "label": "상주 주소가 «면»인 초등학교 학생(2026 공시)",
+     "value": 426,
+     "unit": "명",
+     "src": "학교알리미 2026 공시"
+    },
+    {
+     "key": "myeon_elem_schools_상주",
+     "label": "상주 주소가 «면»인 초등학교 수",
+     "value": 19,
+     "unit": "곳",
+     "src": "학교알리미 2026 공시"
+    }
+   ],
+   "articles": [
+    "ats97l6",
+    "a11a1xm0",
+    "ag0opuq"
+   ]
+  }
+ ],
+ "factchecks": [],
+ "watch": [
+  {
+   "text": "교육혁신선도지역으로 지정된 상주·영주·봉화·청도의 세부 교육재편 실행계획 및 교육지원청-지자체 협력안 수립 추이",
+   "articles": [
+    "a19zs1sy",
+    "a1cw8z3w",
+    "a1dltkzc",
+    "afchso5",
+    "a1y4r6iw"
+   ]
+  },
+  {
+   "text": "지방교육재정교부금 내국세 연동 폐지 및 학령인구 반영 비중을 둘러싼 교육부와 전국 시·도교육감협의회 실무 협의 동향",
+   "articles": [
+    "a16hjdbh",
+    "a3k76l3",
+    "a14hjpu"
+   ]
+  },
+  {
+   "text": "2027학년도 전국 및 경북 초등학교 취학 대상자 집계 발표와 읍·면 단위 입학생 '0명' 학교 현황 조사",
+   "articles": [
+    "akz2ne4",
+    "a1y45mmk",
+    "apytu50"
+   ]
+  }
+ ],
+ "articles": [
+  {
+   "id": "a1417fd9",
+   "title": "울산 중학교 배정 방식 개편 실효성 쟁점 부상",
+   "outlet": "ujeil.com",
+   "date": "2026-11-02",
+   "link": "http://www.ujeil.com/news/articleView.html?idxno=394589",
+   "region": "울산",
+   "topic": "교원·정원",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a19dwmcv",
+   "title": "음성교육지원청, ‘26 글로벌에코리더 성과공유회 개최",
+   "outlet": "브레이크뉴스",
+   "date": "2026-11-02",
+   "link": "http://www.breaknews.com/1247731",
+   "region": "충북",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a16hjdbh",
+   "title": "전국 시·도교총 \"교육재정 삭감·일방적 유보통합 중단\" 7대 요구 결의",
+   "outlet": "domin.co.kr",
+   "date": "2026-11-02",
+   "link": "http://www.domin.co.kr/news/articleView.html?idxno=1574029",
+   "region": "전국",
+   "topic": "교육재정·교부금",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a10tvb44",
+   "title": "윤옥현 대구·경북 대학교육협의회장 취임…\"고등교육 경쟁력↑\"",
+   "outlet": "newsis.com",
+   "date": "2026-11-02",
+   "link": "https://www.newsis.com/view/NISX20261102_0003851572",
+   "region": "경북",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "adbtgnj",
+   "title": "충북교육청 '다채움' 5년간 318억원…행감서 비용 대비 효과 검증",
+   "outlet": "중부매일",
+   "date": "2026-11-02",
+   "link": "https://www.jbnews.com/news/articleView.html?idxno=1514930",
+   "region": "충북",
+   "topic": "기타",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "avdqos4",
+   "title": "안민석 교육감 \"좋은 교장이 좋은 학교 만들어…4년 임기 교장 공모제 ...",
+   "outlet": "kpinews.kr",
+   "date": "2026-11-02",
+   "link": "https://www.kpinews.kr/newsView/1065593465863350",
+   "region": "경기",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1v7g6wf",
+   "title": "'폐교 위기' 청년창업사관학교, 중진공서 졸업 기업 지원 이어간다",
+   "outlet": "edaily.co.kr",
+   "date": "2026-11-02",
+   "link": "https://www.edaily.co.kr/News/Read?newsId=03450566645641784&mediaCodeNo=257&utm_source=naver&utm_medium=referral&utm_campaign=news_syndication&utm_content=original_article",
+   "region": "기타",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "a1w8vsc2",
+   "title": "안민석 경기교육감 \"중학교까지 생성형 AI 사용 금지 검토\"",
+   "outlet": "한국경제",
+   "date": "2026-11-02",
+   "link": "https://www.hankyung.com/article/202611020254h",
+   "region": "경기",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a17hnjqv",
+   "title": "진천군, 전문농업인 최고경영자과정 교육생 2명 모집",
+   "outlet": "국제뉴스",
+   "date": "2026-11-02",
+   "link": "https://www.gukjenews.com/news/articleView.html?idxno=3739054",
+   "region": "충북",
+   "topic": "기타",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "ai7zfu5",
+   "title": "[이 사람] 김범진 안성교육장 “학교 담장 허물고, 아이 한 명 한 명의 ...",
+   "outlet": "경기신문",
+   "date": "2026-11-02",
+   "link": "http://www.kgnews.co.kr/news/article.html?no=917564",
+   "region": "경기",
+   "topic": "작은학교 살리기",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1f9x2ap",
+   "title": "AI 전환 속 미래 교육을 이끌 교사 혁신 방향은②[미래 교사를 기르다]",
+   "outlet": "한국대학신문",
+   "date": "2026-11-02",
+   "link": "https://news.unn.net/news/articleView.html?idxno=599471",
+   "region": "경북",
+   "topic": "교원·정원",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1xpwk3z",
+   "title": "\"한 명 한 명 깊이 투자\" 강삼영 교육감 교육체계 개편 의지",
+   "outlet": "강원도민일보",
+   "date": "2026-11-02",
+   "link": "https://www.kado.net/news/articleView.html?idxno=2081947",
+   "region": "강원",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a10hz4p5",
+   "title": "학생이 없다…상주·금산 등 소멸 지역, ‘학교 통폐합’ 시동",
+   "outlet": "kmib.co.kr",
+   "date": "2026-11-03",
+   "link": "https://www.kmib.co.kr/article/20261103502125",
+   "region": "충남",
+   "topic": "통폐합·적정규모",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a19zs1sy",
+   "title": "정부, 교육혁신선도지역 43곳 지정…학교통합·격차완화 추진",
+   "outlet": "hani.co.kr",
+   "date": "2026-11-03",
+   "link": "https://www.hani.co.kr/arti/society/schooling/1285625.html",
+   "region": "서울",
+   "topic": "교육혁신선도지역",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "adx7ab3",
+   "title": "최교진 \"소멸 위기 학교 살린다… 43곳 교육혁신 본격 시동\"",
+   "outlet": "fnnews.com",
+   "date": "2026-11-03",
+   "link": "https://www.fnnews.com/news/202611031824023305",
+   "region": "충남",
+   "topic": "통폐합·적정규모",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "ats97l6",
+   "title": "전북 5개 시군 교육혁신선도지역 선정…교육체계 변화 주목",
+   "outlet": "newsfreezone.co.kr",
+   "date": "2026-11-03",
+   "link": "https://www.newsfreezone.co.kr/news/articleView.html?idxno=717513",
+   "region": "전북",
+   "topic": "교육혁신선도지역",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a11a1xm0",
+   "title": "전북 김제·무주·부안·순창·완주 '교육혁신선도지역' 지정…최대 20억...",
+   "outlet": "국제뉴스",
+   "date": "2026-11-03",
+   "link": "https://www.gukjenews.com/news/articleView.html?idxno=3741184",
+   "region": "전북",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a6kzwpc",
+   "title": "학생 34% 줄어든 부산, 에코델타시티엔 왜 학교 3곳 더 짓나",
+   "outlet": "쿠키뉴스",
+   "date": "2026-11-03",
+   "link": "https://www.kukinews.com/article/view/kuk202611030188",
+   "region": "부산",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a411xfe",
+   "title": "진보당 충북도당 \"교육교부금 축소 개편 반대…충북 영향 공개해야\"",
+   "outlet": "충청리뷰",
+   "date": "2026-11-03",
+   "link": "https://www.ccreview.co.kr/news/articleView.html?idxno=361632",
+   "region": "충북",
+   "topic": "교육재정·교부금",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1ye7nh6",
+   "title": "합천교육지원청, 교육혁신선도지역 설명회",
+   "outlet": "idomin.com",
+   "date": "2026-11-03",
+   "link": "https://www.idomin.com/news/articleView.html?idxno=2018581",
+   "region": "경남",
+   "topic": "교육혁신선도지역",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "azkc2e4",
+   "title": "원주 원도심 작은학교 특화 운영 간담회",
+   "outlet": "g1tv.co.kr",
+   "date": "2026-11-03",
+   "link": "https://www.g1tv.co.kr/news?mid=1_207_3&newsid=350512",
+   "region": "강원",
+   "topic": "작은학교 살리기",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1weooj3",
+   "title": "\"학교 물품 대대적 전수조사하라\"",
+   "outlet": "cctimes.kr",
+   "date": "2026-11-04",
+   "link": "http://www.cctimes.kr/news/articleView.html?idxno=935644",
+   "region": "충북",
+   "topic": "기타",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1gq34xh",
+   "title": "[사설] 교육혁신선도지역 탈락 시·군, 재도전해야",
+   "outlet": "gnmaeil.com",
+   "date": "2026-11-04",
+   "link": "http://www.gnmaeil.com/news/articleView.html?idxno=598082",
+   "region": "경남",
+   "topic": "교육혁신선도지역",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "ak8xb4r",
+   "title": "교육혁신선도지역 최다..교육 변화 기대",
+   "outlet": "g1tv.co.kr",
+   "date": "2026-11-04",
+   "link": "https://www.g1tv.co.kr/news?mid=1_207_6&newsid=350642",
+   "region": "강원",
+   "topic": "교육혁신선도지역",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "as59vz0",
+   "title": "충북도의회 교육위 행감 시작…공용물품 관리실태 등 도마",
+   "outlet": "nocutnews.co.kr",
+   "date": "2026-11-04",
+   "link": "https://www.nocutnews.co.kr/news/6602325?utm_source=naver&utm_medium=article&utm_campaign=20261104204338",
+   "region": "충북",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1xvlife",
+   "title": "[충북도의회 행정사무감사] 교육기자재 관리 부실·통학택시 요금 과다...",
+   "outlet": "ccdn.co.kr",
+   "date": "2026-11-04",
+   "link": "https://www.ccdn.co.kr/news/articleView.html?idxno=1109062",
+   "region": "충북",
+   "topic": "통학·돌봄",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1fp967n",
+   "title": "대구 군위군 '교육혁신선도지역' 선정돼 147억 원 규모 교육혁신 추진",
+   "outlet": "CNB뉴스",
+   "date": "2026-11-04",
+   "link": "https://www.cnbnews.com/news/articleView.html?idxno=1022348",
+   "region": "대구",
+   "topic": "교육혁신선도지역",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "agg4h0v",
+   "title": "사학진흥재단, 폐교대학 증명발급 활용 수기 공모…5~19일 접수",
+   "outlet": "경북일보",
+   "date": "2026-11-04",
+   "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4089715",
+   "region": "기타",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "a9h8ga2",
+   "title": "남원교육지원청, 지역교육공동체와 함께 전북교육 발전방향 모색",
+   "outlet": "새전북신문",
+   "date": "2026-11-04",
+   "link": "https://sjbnews.com/news/news.php?number=891745",
+   "region": "전북",
+   "topic": "작은학교 살리기",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a136be00",
+   "title": "장수교육지원청, ‘2026. 다함께 만들어가는 전북교육 이야기’ 개최",
+   "outlet": "새전북신문",
+   "date": "2026-11-04",
+   "link": "https://sjbnews.com/news/news.php?number=891714",
+   "region": "전북",
+   "topic": "교육혁신선도지역",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1v3cllh",
+   "title": "교육선도지역, 지방소멸 넘는 변화의 기회로",
+   "outlet": "경북매일",
+   "date": "2026-11-04",
+   "link": "https://www.kbmaeil.com/article/20261104500272",
+   "region": "기타",
+   "topic": "교육혁신선도지역",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1c6pb7h",
+   "title": "[기고]농어촌 유학이 전학으로 이어지길 (이병만 법수초등학교 교장)",
+   "outlet": "gnnews.co.kr",
+   "date": "2026-11-04",
+   "link": "https://www.gnnews.co.kr/news/articleView.html?idxno=648910",
+   "region": "기타",
+   "topic": "작은학교 살리기",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "au077q9",
+   "title": "황명선 의원, \"논산·금산 나란히 교육혁신선도지역 선정\"",
+   "outlet": "브레이크뉴스",
+   "date": "2026-11-04",
+   "link": "http://www.breaknews.com/1248475",
+   "region": "충남",
+   "topic": "교육혁신선도지역",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a9cee93",
+   "title": "[사설] 지역소멸 막을 교육생태계 구축해야",
+   "outlet": "idomin.com",
+   "date": "2026-11-04",
+   "link": "https://www.idomin.com/news/articleView.html?idxno=2018780",
+   "region": "경남",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a3k76l3",
+   "title": "전국 교육감 \"지방교육재정교부금 늘면 나누고 줄면 보전하자\"",
+   "outlet": "newsgn.com",
+   "date": "2026-11-04",
+   "link": "https://www.newsgn.com/news/articleView.html?idxno=583549",
+   "region": "경북",
+   "topic": "교육재정·교부금",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1cw8z3w",
+   "title": "봉화군, 교육부 교육혁신선도지역 최종 지정...5년간 100억 확보",
+   "outlet": "이로운넷",
+   "date": "2026-11-04",
+   "link": "https://www.eroun.net/news/articleView.html?idxno=94339",
+   "region": "경북",
+   "topic": "교육혁신선도지역",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "auutdk4",
+   "title": "김영희 경기도의회 교육기획위원회 부위원장, 교육정보시스템 운영 효율...",
+   "outlet": "seoul.co.kr",
+   "date": "2026-11-04",
+   "link": "https://www.seoul.co.kr/news/publicnews/local_govern/kyungki_do/2026/11/04/20261104500282?wlog_tag3=naver",
+   "region": "경기",
+   "topic": "기타",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a8pbw51",
+   "title": "충남교육청, 금산·논산·부여·아산 교육혁신선도지역 지정",
+   "outlet": "newstnt.com",
+   "date": "2026-11-04",
+   "link": "https://www.newstnt.com/news/articleView.html?idxno=726734",
+   "region": "충남",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1dltkzc",
+   "title": "경북 상주시, 교육혁신선도지역 공모 선정",
+   "outlet": "viva100.com",
+   "date": "2026-11-04",
+   "link": "https://www.viva100.com/article/20261104501294",
+   "region": "경북",
+   "topic": "교육혁신선도지역",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "avbdcya",
+   "title": "영주·봉화, 미래 인성교육의 새 지평 열어야...입시 너머 '충·효·예'의...",
+   "outlet": "newstown.co.kr",
+   "date": "2026-11-04",
+   "link": "http://www.newstown.co.kr/news/articleView.html?idxno=720727",
+   "region": "경북",
+   "topic": "교육혁신선도지역",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a14hjpu",
+   "title": "교부금 개편 놓고 교육감협·교육부 시각차…\"필요 재원 부족\" vs \"2030년...",
+   "outlet": "metroseoul.co.kr",
+   "date": "2026-11-04",
+   "link": "http://www.metroseoul.co.kr/article/20261104500447",
+   "region": "경북",
+   "topic": "교육재정·교부금",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1tvk6rd",
+   "title": "작은 학교 잇고 배움 넓힌다…철원군, 교육혁신선도지역 선정",
+   "outlet": "ajunews.com",
+   "date": "2026-11-04",
+   "link": "https://www.ajunews.com/view/20261104144950321",
+   "region": "강원",
+   "topic": "교육혁신선도지역",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "ae2eb5y",
+   "title": "초중고판 '서울대 10개'에 최대 4600억 지원…학교 통폐합·성과평가 과...",
+   "outlet": "newspim.com",
+   "date": "2026-11-04",
+   "link": "https://www.newspim.com/news/view/20261104000592",
+   "region": "서울",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a9bpbtg",
+   "title": "괴산증평교육청-괴산군의회, 교육협력 간담회 가져",
+   "outlet": "국제뉴스",
+   "date": "2026-11-05",
+   "link": "https://www.gukjenews.com/news/articleView.html?idxno=3742237",
+   "region": "충북",
+   "topic": "작은학교 살리기",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "an7dpia",
+   "title": "충남교육청 내년 본예산 5조137억 편성",
+   "outlet": "동양일보",
+   "date": "2026-11-05",
+   "link": "https://www.dynews.co.kr/news/articleView.html?idxno=872727",
+   "region": "충남",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a124bl3i",
+   "title": "방치된 폐교의 ‘반전’…경기도교육청, 연천에 특수학교 설립 추진 [경...",
+   "outlet": "경기일보",
+   "date": "2026-11-05",
+   "link": "https://www.kyeonggi.com/article/20261105580450",
+   "region": "경기",
+   "topic": "기타",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1u12phh",
+   "title": "연천교육지원청, ‘왕복 1시간 통학 잔혹사’ 끝낸다… 공립 특수학교 ...",
+   "outlet": "경기신문",
+   "date": "2026-11-05",
+   "link": "https://www.kgnews.co.kr/news/article.html?no=918401",
+   "region": "경기",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "aqwisgf",
+   "title": "경북교육청 '남부권역 소통대길 톡' 성료···경북교육 2030 대전환 완성...",
+   "outlet": "CNB뉴스",
+   "date": "2026-11-05",
+   "link": "https://www.cnbnews.com/news/articleView.html?idxno=1022533",
+   "region": "경북",
+   "topic": "기타",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1prx7zg",
+   "title": "영양교육지원청, 폐교 재산 활용 논의…영양군에 매입 협력 요청",
+   "outlet": "shinailbo.co.kr",
+   "date": "2026-11-05",
+   "link": "https://www.shinailbo.co.kr/news/articleView.html?idxno=5080270",
+   "region": "경북",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "ab18n1x",
+   "title": "임종식 경북교육감 “교육 대전환, 말 아닌 학교의 변화로”…현장 소통...",
+   "outlet": "아이뉴스24",
+   "date": "2026-11-05",
+   "link": "http://www.inews24.com/view/2023103",
+   "region": "경북",
+   "topic": "작은학교 살리기",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a19njrx9",
+   "title": "[인터뷰] 임인환 대구시의회 의장 “시민 혈세 어디에 썼나…대구시정...",
+   "outlet": "아이뉴스24",
+   "date": "2026-11-05",
+   "link": "http://www.inews24.com/view/2023064",
+   "region": "대구",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1yg576k",
+   "title": "충북도의회 교육위원회, 교육 현안 전방위 감사 실시",
+   "outlet": "viva100.com",
+   "date": "2026-11-05",
+   "link": "https://www.viva100.com/article/20261105500458",
+   "region": "충북",
+   "topic": "교원·정원",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1fz11tt",
+   "title": "영암군, 교육혁신선도지역 선정…지역 맞춤형 교육 추진",
+   "outlet": "jeonmae.co.kr",
+   "date": "2026-11-05",
+   "link": "https://www.jeonmae.co.kr/news/articleView.html?idxno=1308768",
+   "region": "전남",
+   "topic": "교육혁신선도지역",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1dh1h33",
+   "title": "전북교육청, 제8기 시민감사관 첫 실지감사 착수",
+   "outlet": "jeonmae.co.kr",
+   "date": "2026-11-05",
+   "link": "https://www.jeonmae.co.kr/news/articleView.html?idxno=1308775",
+   "region": "전북",
+   "topic": "작은학교 살리기",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1pjfa87",
+   "title": "논산계룡교육지원청, '교육혁신선도지역' 선정으로 소규모학교 교육 넓...",
+   "outlet": "충남일보",
+   "date": "2026-11-05",
+   "link": "http://www.chungnamilbo.co.kr/news/articleView.html?idxno=918961",
+   "region": "충남",
+   "topic": "교육혁신선도지역",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1cefiay",
+   "title": "고흥군, 교육혁신 선도지역 선정…국비 최대 100억 원 확보",
+   "outlet": "sports.donga.com",
+   "date": "2026-11-05",
+   "link": "https://sports.donga.com/region/article/all/20261105/134970415/1",
+   "region": "전남",
+   "topic": "교육혁신선도지역",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a12s3osc",
+   "title": "남해·산청·통영·진주, 교육부 교육혁신선도지역 지정",
+   "outlet": "mbcgn.kr",
+   "date": "2026-11-05",
+   "link": "https://mbcgn.kr/01_new/new01_view.asp?idx=412023",
+   "region": "경남",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1awo6xy",
+   "title": "충주시, 평생학습대상 충북 첫 2회 수상…폐교의 변신 통했다",
+   "outlet": "충북일보",
+   "date": "2026-11-05",
+   "link": "https://www.inews365.com/news/article.html?no=942291",
+   "region": "충북",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1j3mtjv",
+   "title": "\"250만 원짜리 로봇도 소모품?\"…충북교육행정의 허술한 '민낯'",
+   "outlet": "충청리뷰",
+   "date": "2026-11-05",
+   "link": "https://www.ccreview.co.kr/news/articleView.html?idxno=361873",
+   "region": "충북",
+   "topic": "교원·정원",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "ar6al2f",
+   "title": "한국사학진흥재단, ‘2026 폐교대학 통합 증명발급 서비스 수기 공모전...",
+   "outlet": "kmib.co.kr",
+   "date": "2026-11-05",
+   "link": "https://www.kmib.co.kr/article/20261105500116",
+   "region": "전남",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "afchso5",
+   "title": "영주시, 교육혁신선도지역 선정…5년간 최대 100억 원 지원",
+   "outlet": "dnews.co.kr",
+   "date": "2026-11-05",
+   "link": "https://www.dnews.co.kr/uhtml/view.jsp?idxno=202611040928423240527",
+   "region": "경북",
+   "topic": "교육혁신선도지역",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "ag0opuq",
+   "title": "[N2 교육기획｜전북교육행정의 변화①] 전북교육, 학교 살리는 해법 바...",
+   "outlet": "news2day.co.kr",
+   "date": "2026-11-05",
+   "link": "https://www.news2day.co.kr/article/20261104500446",
+   "region": "전북",
+   "topic": "통폐합·적정규모",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "abvk714",
+   "title": "부여군 '2027 교육혁신선도지역' 선정…지방소멸 위기, 교육으로 돌파한...",
+   "outlet": "greened.kr",
+   "date": "2026-11-05",
+   "link": "https://www.greened.kr/news/articleView.html?idxno=353895",
+   "region": "충남",
+   "topic": "교육혁신선도지역",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1b7w4q6",
+   "title": "[패트롤] 인천시-인천시의회-인천시교육청-인천교통공사",
+   "outlet": "에너지경제",
+   "date": "2026-11-05",
+   "link": "https://www.ekn.kr/web/view.php?key=20261105023575546",
+   "region": "인천",
+   "topic": "기타",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "ayji5i",
+   "title": "[김병철 시선·기획②] 안민석, 학부모 목소리 '10대 교육 과제'로 구체...",
+   "outlet": "newstown.co.kr",
+   "date": "2026-11-06",
+   "link": "http://www.newstown.co.kr/news/articleView.html?idxno=721104",
+   "region": "기타",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "ar9y041",
+   "title": "정용채 경북도의원 \"대형산불 피해보상 사각지대 해소\"",
+   "outlet": "hankookilbo.com",
+   "date": "2026-11-06",
+   "link": "https://www.hankookilbo.com/news/article/A2026110618460000123?did=NA",
+   "region": "경북",
+   "topic": "통폐합·적정규모",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "arryjv6",
+   "title": "윤건영 충북교육감, \"제천·보은·음성 교육혁신선도지역 선정···지자...",
+   "outlet": "enewstoday.co.kr",
+   "date": "2026-11-06",
+   "link": "http://www.enewstoday.co.kr/news/articleView.html?idxno=2489549",
+   "region": "충북",
+   "topic": "교육혁신선도지역",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1mo5bfo",
+   "title": "경주시 내남면 '신농업혁신타운' 개소…\"신기술 연구·교육\"",
+   "outlet": "newsis.com",
+   "date": "2026-11-06",
+   "link": "https://www.newsis.com/view/NISX20261106_0003858539",
+   "region": "경북",
+   "topic": "기타",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a8xtnt2",
+   "title": "\"학교는 공동체 중심\"이라던 대통령님, 교육부 정책은 왜 이렇습니까",
+   "outlet": "ohmynews.com",
+   "date": "2026-11-06",
+   "link": "https://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0003282520&CMPT_CD=P0010&utm_source=naver&utm_medium=newsearch&utm_campaign=naver_news",
+   "region": "전국",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "aioxtnc",
+   "title": "청주 문의초·행정초등학교, 어깨동무 공동교육과정 독서골든벨 운영",
+   "outlet": "국제뉴스",
+   "date": "2026-11-06",
+   "link": "https://www.gukjenews.com/news/articleView.html?idxno=3744503",
+   "region": "충북",
+   "topic": "작은학교 살리기",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1ofkfh9",
+   "title": "[위클리오늘] 강원도의회 행감, 최재민·이종석 의원 교육행정 질타",
+   "outlet": "weeklytoday.com",
+   "date": "2026-11-06",
+   "link": "http://www.weeklytoday.com/news/articleView.html?idxno=801318",
+   "region": "강원",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "awmhm1e",
+   "title": "울릉교육지원청, 2027학년도 초등학교 통학구역 심의… ‘학구조정위원...",
+   "outlet": "tk.newdaily.co.kr",
+   "date": "2026-11-06",
+   "link": "https://tk.newdaily.co.kr/site/data/html/2026/11/06/2026110600188.html",
+   "region": "경북",
+   "topic": "통학·돌봄",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1ce9rm7",
+   "title": "통폐합 앞두고 14억 새 단장···인제 진동분교 '혈세 낭비' 지적",
+   "outlet": "enewstoday.co.kr",
+   "date": "2026-11-06",
+   "link": "http://www.enewstoday.co.kr/news/articleView.html?idxno=2489375",
+   "region": "강원",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1vkyrjn",
+   "title": "이병도 충남교육감, \"5조 137억원 첫 예산 승부…충남교육 미래에 투자...",
+   "outlet": "tournews21.com",
+   "date": "2026-11-06",
+   "link": "https://www.tournews21.com/news/articleView.html?idxno=147716",
+   "region": "충남",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1u5jqwv",
+   "title": "[교육기획] 초등학교 문 닫는데 입학 경쟁 치열한 전주교대부설초…‘...",
+   "outlet": "sportsseoul.com",
+   "date": "2026-11-06",
+   "link": "https://www.sportsseoul.com/news/read/1647469?ref=naver",
+   "region": "전북",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1x0mvca",
+   "title": "괴산군의회, 초등생 격감 작은학교 지원 논의",
+   "outlet": "국제뉴스",
+   "date": "2026-11-06",
+   "link": "https://www.gukjenews.com/news/articleView.html?idxno=3744189",
+   "region": "충북",
+   "topic": "작은학교 살리기",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "aksgrg8",
+   "title": "[패트롤]경북도-경북교육청-한국국학진흥원",
+   "outlet": "에너지경제",
+   "date": "2026-11-06",
+   "link": "https://www.ekn.kr/web/view.php?key=20261106028346238",
+   "region": "경북",
+   "topic": "기타",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1y4r6iw",
+   "title": "청도군, 교육부 '2027 교육혁신선도지역' 선정…최대 26억 투입",
+   "outlet": "국제뉴스",
+   "date": "2026-11-06",
+   "link": "https://www.gukjenews.com/news/articleView.html?idxno=3742552",
+   "region": "경북",
+   "topic": "교육혁신선도지역",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1gxf26a",
+   "title": "충남교육청, 2027년 예산안 5조 137억 원 편성…",
+   "outlet": "브레이크뉴스",
+   "date": "2026-11-06",
+   "link": "http://www.breaknews.com/1248827",
+   "region": "충남",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1goskd6",
+   "title": "\"섬 전체가 배움터로\"…완도군, 교육 혁신 선도 지역 선정",
+   "outlet": "jnilbo.com",
+   "date": "2026-11-06",
+   "link": "https://www.jnilbo.com/news/articleView.html?idxno=90000079891",
+   "region": "전남",
+   "topic": "교육혁신선도지역",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a6rggi8",
+   "title": "횡성 전역이 배움터로…명품 교육도시 도약",
+   "outlet": "강원도민일보",
+   "date": "2026-11-06",
+   "link": "https://www.kado.net/news/articleView.html?idxno=2082998",
+   "region": "강원",
+   "topic": "작은학교 살리기",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1cn5sqy",
+   "title": "사범교육에서 바이오·의학으로…국립경국대, 지역 고등교육의 새 전환...",
+   "outlet": "newspim.com",
+   "date": "2026-11-07",
+   "link": "https://www.newspim.com/news/view/20261107000076",
+   "region": "경북",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "a7xurzn",
+   "title": "정윤태 경북도의원, 울릉 어업·교통·폐교 활용 ‘도 차원 책임론’ 제...",
+   "outlet": "tk.newdaily.co.kr",
+   "date": "2026-11-07",
+   "link": "https://tk.newdaily.co.kr/site/data/html/2026/11/07/2026110700033.html",
+   "region": "경북",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a3lb4qt",
+   "title": "경남도의회 교육위, 도서지역 학생 안전·노후 교육시설 관리 지적",
+   "outlet": "mhns.co.kr",
+   "date": "2026-11-07",
+   "link": "https://www.mhns.co.kr/news/articleView.html?idxno=768069",
+   "region": "경남",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1ajlxmn",
+   "title": "경북 3개 학교, 교육부의 '농어촌 참 좋은 학교'로 선정",
+   "outlet": "dgmbc.com",
+   "date": "2026-11-07",
+   "link": "https://dgmbc.com/NewsArticle/871651",
+   "region": "경북",
+   "topic": "작은학교 살리기",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1u5bh15",
+   "title": "[44] 금산초등학교 연홍분교, 폐교를 일으켜 미술관이 된 섬마을 [남도 ...",
+   "outlet": "namdonews.com",
+   "date": "2026-11-07",
+   "link": "https://www.namdonews.com/news/articleView.html?idxno=928432",
+   "region": "충남",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a111x0qs",
+   "title": "\"학교와 예술인 잇는다\"… 강혜순 울산시의원, 소외계층 예술교육·창작...",
+   "outlet": "tournews21.com",
+   "date": "2026-11-07",
+   "link": "https://www.tournews21.com/news/articleView.html?idxno=147762",
+   "region": "울산",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a15748qx",
+   "title": "[사설]초등 입학 첫 20만 명대… 교육 장기비전 새로 짜야",
+   "outlet": "donga.com",
+   "date": "2026-11-08",
+   "link": "https://www.donga.com/news/Opinion/article/all/20261108/134988358/2",
+   "region": "서울",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a8x1faf",
+   "title": "울산 학교 예술교육·예술인 복지 잇는 조례 개정",
+   "outlet": "ulsanpress.net",
+   "date": "2026-11-08",
+   "link": "https://www.ulsanpress.net/news/articleView.html?idxno=586425",
+   "region": "울산",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "awq59xu",
+   "title": "교육 매개로 여러 세대 연결하는 생활권 공동체 거점으로",
+   "outlet": "ulsanpress.net",
+   "date": "2026-11-08",
+   "link": "https://www.ulsanpress.net/news/articleView.html?idxno=586390",
+   "region": "기타",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "aswhsan",
+   "title": "울산시의회, 문화예술 교육·복지 더 두텁게 정책 지원",
+   "outlet": "ujeil.com",
+   "date": "2026-11-08",
+   "link": "http://www.ujeil.com/news/articleView.html?idxno=394907",
+   "region": "울산",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "akz2ne4",
+   "title": "초등학교 입학생 사상 처음 30만명 미달…60년새 4분의 1토막",
+   "outlet": "충청일보",
+   "date": "2026-11-08",
+   "link": "https://www.ccdailynews.com/news/articleView.html?idxno=2450248",
+   "region": "기타",
+   "topic": "통폐합·적정규모",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "atcdt0p",
+   "title": "경남교육청, 통영 폐교 활용 고양이 보호센터 국무총리상 수상",
+   "outlet": "mhns.co.kr",
+   "date": "2026-11-08",
+   "link": "https://www.mhns.co.kr/news/articleView.html?idxno=768142",
+   "region": "경남",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1cikcsh",
+   "title": "[FOCUS 경기] 30년전 닫혔던 여주 당현분교, ‘RAS 교육’ 실천 거점 되...",
+   "outlet": "kyeongin.com",
+   "date": "2026-11-08",
+   "link": "https://www.kyeongin.com/article/1774332",
+   "region": "경기",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a3ozp6m",
+   "title": "저출생 충격 현실로…초교 입학생 사상 첫 30만 미달, 경기 지역도 8만명...",
+   "outlet": "경기일보",
+   "date": "2026-11-08",
+   "link": "https://www.kyeonggi.com/article/20261108580330",
+   "region": "경기",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a15nth14",
+   "title": "섬마을 폐교의 묘(猫)한 반전… ‘고양이 학교’ 핫플로",
+   "outlet": "chosun.com",
+   "date": "2026-11-08",
+   "link": "https://www.chosun.com/national/2026/11/08/IMW6CLQUHVFEXDPYSICAUCOCQY/?utm_source=naver&utm_medium=referral&utm_campaign=naver-news",
+   "region": "경남",
+   "topic": "통폐합·적정규모",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1rswk7b",
+   "title": "‘저출생 쇼크’ 현실화…내년 초등 입학생 사상 첫 30만명 밑돈다",
+   "outlet": "joongang.co.kr",
+   "date": "2026-11-08",
+   "link": "https://www.joongang.co.kr/article/25476734",
+   "region": "경북",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "a1y45mmk",
+   "title": "아이가 없는 내일…내년 전국 초등학교 입학생 30만명 붕괴",
+   "outlet": "newsgn.com",
+   "date": "2026-11-08",
+   "link": "https://www.newsgn.com/news/articleView.html?idxno=584163",
+   "region": "전국",
+   "topic": "통폐합·적정규모",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a6l2bnx",
+   "title": "예천군, 국립의대 신설 계기로 의료·교육·산업 연계 성장 추진",
+   "outlet": "경북일보",
+   "date": "2026-11-08",
+   "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4090027",
+   "region": "경북",
+   "topic": "교육혁신선도지역",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "adfbw1c",
+   "title": "내년 초등학교 입학생 첫 20만명대 전망…학령인구 감소 가속",
+   "outlet": "대경일보",
+   "date": "2026-11-08",
+   "link": "https://www.dkilbo.com/news/articleView.html?idxno=559955",
+   "region": "기타",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1dc95xu",
+   "title": "대구·경북 초등 입학 세대 13% 급감…전국 감소율 크게 웃돌아",
+   "outlet": "경북신문",
+   "date": "2026-11-08",
+   "link": "https://www.kbsm.net/news/view.php?idx=540841",
+   "region": "경북",
+   "topic": "교육재정·교부금",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1tljucl",
+   "title": "30만 명도 무너진 초등 입학생…저출생 파고 넘는 이색 만남 '나는 절로...",
+   "outlet": "부산일보",
+   "date": "2026-11-08",
+   "link": "https://www.busan.com/view/busan/view.php?code=2026110814344622319",
+   "region": "기타",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "adq5866",
+   "title": "“운동회도 여러 학교 모여야 가능”… 줄어드는 초등 입학생, 내년 ‘...",
+   "outlet": "segyebiz.com",
+   "date": "2026-11-08",
+   "link": "http://www.segyebiz.com/newsView/20261108505365?OutUrl=naver",
+   "region": "기타",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1bf6pbi",
+   "title": "정용채 도의원 \"경북 산불 피해 보상, 도지사가 직접 해결 나서야\"",
+   "outlet": "대경일보",
+   "date": "2026-11-08",
+   "link": "https://www.dkilbo.com/news/articleView.html?idxno=559863",
+   "region": "경북",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a5rtp0j",
+   "title": "내년 초등 입학생 30만 명 아래로…저출생 충격 현실 됐다",
+   "outlet": "mbn.mk.co.kr",
+   "date": "2026-11-08",
+   "link": "http://mbn.mk.co.kr/pages/news/newsView.php?category=mbn00009&news_seq_no=5229633",
+   "region": "기타",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "ale4kao",
+   "title": "'저출생 여파' 내년 초등입학생 역대 첫 20만명대로 감소 유력",
+   "outlet": "국제신문",
+   "date": "2026-11-08",
+   "link": "http://www.kookje.co.kr/news2011/asp/newsbody.asp?code=0200&key=20261108.99099002134",
+   "region": "기타",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1xmvx3q",
+   "title": "강원교육청, 통폐합 예정 학교에 14억 원 투입해 개축…교육재정 낭비 ...",
+   "outlet": "viva100.com",
+   "date": "2026-11-08",
+   "link": "https://www.viva100.com/article/20261108500138",
+   "region": "강원",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a14xd2uc",
+   "title": "'폐교의 변신' 고양이 보호부터 천문관까지…우수사례 7건 선정",
+   "outlet": "nocutnews.co.kr",
+   "date": "2026-11-08",
+   "link": "https://www.nocutnews.co.kr/news/6603596?utm_source=naver&utm_medium=article&utm_campaign=20261108090020",
+   "region": "전국",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "af4mhn6",
+   "title": "방치된 폐교, 고양이 보호센터·천문대로 탈바꿈…우수 사례 7곳 선정",
+   "outlet": "아시아경제",
+   "date": "2026-11-08",
+   "link": "https://view.asiae.co.kr/article/2026110711574930187",
+   "region": "서울",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "afm8u09",
+   "title": "폐교가 고양이 보호소·천문관으로…정부, 우수 활용사례 7건 선정",
+   "outlet": "newspim.com",
+   "date": "2026-11-08",
+   "link": "https://www.newspim.com/news/view/20261106000843",
+   "region": "전국",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "am3a84q",
+   "title": "버려진 학교에 새 주인 찾아왔다…통영 폐교, 고양이 보호소로 변신",
+   "outlet": "mt.co.kr",
+   "date": "2026-11-08",
+   "link": "https://www.mt.co.kr/policy/2026/11/08/2026110617381836405",
+   "region": "경남",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "apytu50",
+   "title": "“엄마, 학교 갔는데 교실이 텅 비었어”…내년 초등 입학 30만명대 붕괴",
+   "outlet": "mk.co.kr",
+   "date": "2026-11-08",
+   "link": "https://www.mk.co.kr/article/12201578",
+   "region": "기타",
+   "topic": "통폐합·적정규모",
+   "cited": true,
+   "inScope": true
+  }
+ ],
+ "checks": {
+  "dropped": [],
+  "citedArticles": 31
+ }
+}
