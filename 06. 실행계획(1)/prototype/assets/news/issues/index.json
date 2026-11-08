@@ -1,5 +1,388 @@
 [
   {
+    "id": "2026-11-08-three-day",
+    "status": "자동 발행",
+    "source": "네이버 뉴스 검색 API",
+    "sourceKind": "naver-three-day",
+    "cadenceDays": 3,
+    "publishedAt": "2026-11-08",
+    "period": {
+      "from": "2026-11-02",
+      "to": "2026-11-08",
+      "count": 7
+    },
+    "title": "교육혁신·특구 보도가 이끈 최근 7일, 경북 교육의 다음 질문",
+    "lead": "최근 7일 경북 학령인구 대응 관련 기사는 7건입니다. 가장 비중이 큰 주제는 ‘교육혁신·특구’이며, 김천시의 언급이 두드러졌습니다.",
+    "highlights": [
+      "최근 7일 7건으로 직전 7일 8건보다 -1건 변화했습니다.",
+      "‘교육혁신·특구’ 주제가 42.9%로 가장 큰 비중을 차지했습니다.",
+      "김천시 언급이 1건으로 가장 많았습니다."
+    ],
+    "topics": [
+      {
+        "topic": "교육혁신·특구",
+        "current": 3,
+        "prior": 2,
+        "currentShare": 42.9,
+        "priorShare": 25,
+        "changePp": 17.9
+      },
+      {
+        "topic": "교육재정",
+        "current": 2,
+        "prior": 0,
+        "currentShare": 28.6,
+        "priorShare": 0,
+        "changePp": 28.6
+      },
+      {
+        "topic": "통폐합·적정규모",
+        "current": 1,
+        "prior": 5,
+        "currentShare": 14.3,
+        "priorShare": 62.5,
+        "changePp": -48.2
+      },
+      {
+        "topic": "통학·돌봄",
+        "current": 1,
+        "prior": 0,
+        "currentShare": 14.3,
+        "priorShare": 0,
+        "changePp": 14.3
+      },
+      {
+        "topic": "교원·정원",
+        "current": 0,
+        "prior": 0,
+        "currentShare": 0,
+        "priorShare": 0,
+        "changePp": 0
+      },
+      {
+        "topic": "지역소멸·인구",
+        "current": 0,
+        "prior": 2,
+        "currentShare": 0,
+        "priorShare": 25,
+        "changePp": -25
+      }
+    ],
+    "keywords": [
+      {
+        "name": "교육혁신선도지역",
+        "value": 3,
+        "prior": 0,
+        "change": 3
+      },
+      {
+        "name": "100억",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "5년간",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "교육부",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "선정",
+        "value": 2,
+        "prior": 0,
+        "change": 2
+      },
+      {
+        "name": "2027학년도",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "2030년",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "2차",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "가해",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "개편",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "고사",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "공공기관",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "공모",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "교부금",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "교육감",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "교육감협",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "나누고",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      },
+      {
+        "name": "놓고",
+        "value": 1,
+        "prior": 0,
+        "change": 1
+      }
+    ],
+    "regions": [
+      {
+        "name": "김천시",
+        "value": 1
+      },
+      {
+        "name": "봉화군",
+        "value": 1
+      },
+      {
+        "name": "상주시",
+        "value": 1
+      },
+      {
+        "name": "영주시",
+        "value": 1
+      },
+      {
+        "name": "울릉군",
+        "value": 1
+      },
+      {
+        "name": "의성군",
+        "value": 1
+      }
+    ],
+    "dailyTrend": [
+      {
+        "date": "2026-11-02",
+        "total": 0
+      },
+      {
+        "date": "2026-11-03",
+        "total": 0
+      },
+      {
+        "date": "2026-11-04",
+        "total": 4
+      },
+      {
+        "date": "2026-11-05",
+        "total": 1
+      },
+      {
+        "date": "2026-11-06",
+        "total": 2
+      },
+      {
+        "date": "2026-11-07",
+        "total": 0
+      },
+      {
+        "date": "2026-11-08",
+        "total": 0
+      }
+    ],
+    "clusters": [
+      {
+        "id": "rolling-3",
+        "label": "교육재정 · 축소 · 국감",
+        "keywords": [
+          "축소",
+          "국감",
+          "교부금"
+        ],
+        "size": 3,
+        "share": 7.5,
+        "cohesion": 0.7,
+        "samples": [
+          {
+            "id": "https://news.kbs.co.kr/news/pc/view/view.do?ncd=8690977&ref=A",
+            "title": "대구·경북 교육청 국감…‘교부금 축소·AI 교육자료’ 공방",
+            "link": "https://news.kbs.co.kr/news/pc/view/view.do?ncd=8690977&ref=A",
+            "publishedAt": "2026-10-21",
+            "press": "news.kbs.co.kr",
+            "similarity": 0.73
+          },
+          {
+            "id": "http://www.kookje.co.kr/news2011/asp/newsbody.asp?code=0100&key=20261021.22005005782",
+            "title": "교육위 국감 화두 ‘교부금 축소’…“교육감 대응도 안일” 질타",
+            "link": "http://www.kookje.co.kr/news2011/asp/newsbody.asp?code=0100&key=20261021.22005005782",
+            "publishedAt": "2026-10-20",
+            "press": "kookje.co.kr",
+            "similarity": 0.7
+          },
+          {
+            "id": "https://www.nocutnews.co.kr/news/6594251?utm_source=naver&utm_medium=article&utm_campaign=20261020033859",
+            "title": "부산교육청 국감…교육교부금 축소·특수학교 과밀화 도마",
+            "link": "https://www.nocutnews.co.kr/news/6594251?utm_source=naver&utm_medium=article&utm_campaign=20261020033859",
+            "publishedAt": "2026-10-20",
+            "press": "nocutnews.co.kr",
+            "similarity": 0.69
+          }
+        ]
+      },
+      {
+        "id": "rolling-2",
+        "label": "통폐합·적정규모 · 학교의 · 미래를",
+        "keywords": [
+          "학교의",
+          "미래를",
+          "소규모"
+        ],
+        "size": 2,
+        "share": 5,
+        "cohesion": 0.85,
+        "samples": [
+          {
+            "id": "https://www.kbsm.net/news/view.php?idx=539464",
+            "title": "\"소규모 학교의 미래를 논하다\"...'2026 의성ON토론대회' 개최",
+            "link": "https://www.kbsm.net/news/view.php?idx=539464",
+            "publishedAt": "2026-10-28",
+            "press": "kbsm.net",
+            "similarity": 0.85
+          },
+          {
+            "id": "https://www.viva100.com/article/20261029501234",
+            "title": "경북 의성군, 소규모 학교의 미래를 위한 토론의 장 열다",
+            "link": "https://www.viva100.com/article/20261029501234",
+            "publishedAt": "2026-10-29",
+            "press": "viva100.com",
+            "similarity": 0.85
+          }
+        ]
+      },
+      {
+        "id": "rolling-1",
+        "label": "교육혁신·특구 · 5년간 · 100억",
+        "keywords": [
+          "5년간",
+          "100억",
+          "교육혁신선도지역"
+        ],
+        "size": 2,
+        "share": 5,
+        "cohesion": 0.83,
+        "samples": [
+          {
+            "id": "https://www.dnews.co.kr/uhtml/view.jsp?idxno=202611040928423240527",
+            "title": "영주시, 교육혁신선도지역 선정…5년간 최대 100억 원 지원",
+            "link": "https://www.dnews.co.kr/uhtml/view.jsp?idxno=202611040928423240527",
+            "publishedAt": "2026-11-05",
+            "press": "dnews.co.kr",
+            "similarity": 0.83
+          },
+          {
+            "id": "https://www.eroun.net/news/articleView.html?idxno=94339",
+            "title": "봉화군, 교육부 교육혁신선도지역 최종 지정...5년간 100억 확보",
+            "link": "https://www.eroun.net/news/articleView.html?idxno=94339",
+            "publishedAt": "2026-11-04",
+            "press": "eroun.net",
+            "similarity": 0.83
+          }
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "title": "정용채 도의원, 산불 보상 외면·공공기관 2차 가해·소규모 학교 고사...",
+        "link": "https://www.eroun.net/news/articleView.html?idxno=94678",
+        "publishedAt": "2026-11-06",
+        "press": "eroun.net"
+      },
+      {
+        "title": "울릉교육지원청, 2027학년도 초등학교 통학구역 심의… ‘학구조정위원...",
+        "link": "https://tk.newdaily.co.kr/site/data/html/2026/11/06/2026110600188.html",
+        "publishedAt": "2026-11-06",
+        "press": "tk.newdaily.co.kr"
+      },
+      {
+        "title": "영주시, 교육혁신선도지역 선정…5년간 최대 100억 원 지원",
+        "link": "https://www.dnews.co.kr/uhtml/view.jsp?idxno=202611040928423240527",
+        "publishedAt": "2026-11-05",
+        "press": "dnews.co.kr"
+      },
+      {
+        "title": "전국 교육감 \"지방교육재정교부금 늘면 나누고 줄면 보전하자\"",
+        "link": "https://www.newsgn.com/news/articleView.html?idxno=583549",
+        "publishedAt": "2026-11-04",
+        "press": "newsgn.com"
+      },
+      {
+        "title": "봉화군, 교육부 교육혁신선도지역 최종 지정...5년간 100억 확보",
+        "link": "https://www.eroun.net/news/articleView.html?idxno=94339",
+        "publishedAt": "2026-11-04",
+        "press": "eroun.net"
+      },
+      {
+        "title": "경북 상주시, 교육혁신선도지역 공모 선정",
+        "link": "https://www.viva100.com/article/20261104501294",
+        "publishedAt": "2026-11-04",
+        "press": "viva100.com"
+      },
+      {
+        "title": "교부금 개편 놓고 교육감협·교육부 시각차…\"필요 재원 부족\" vs \"2030년...",
+        "link": "http://www.metroseoul.co.kr/article/20261104500447",
+        "publishedAt": "2026-11-04",
+        "press": "metroseoul.co.kr"
+      }
+    ],
+    "caveat": "기사량은 사회적 관심의 신호이며 실제 학생 수·학교 수의 증감을 뜻하지 않습니다.",
+    "review": "자동 집계된 초안으로, 대외 배포 전 담당자의 사실 확인이 필요합니다.",
+    "issueNo": 22
+  },
+  {
     "id": "2026-11-05-three-day",
     "status": "자동 발행",
     "source": "네이버 뉴스 검색 API",
