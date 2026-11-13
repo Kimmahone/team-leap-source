@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TEAM LEAP 앱 전시관 — 교실의 내일을, 함께 만들다</title>
 <meta name="description" content="학령인구 감소 시대에 교사가 직접 만든 대시보드와 앱을 한곳에 모았습니다. TEAM LEAP · GBE-AI Lab · AI 활용 분과.">
-<meta name="author" content="TEAM LEAP · 경북교육 AI Lab">
+<meta name="author" content="TEAM LEAP · GBE-AI Lab">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2314202E'/%3E%3Cg transform='translate(32 32) scale(0.92) translate(-32 -33)'%3E%3Cpath d='M7 52 H25' stroke='%2397A3B0' stroke-width='7.5' stroke-linecap='round' fill='none'/%3E%3Cpath d='M39 36 H57' stroke='%23F2A65A' stroke-width='7.5' stroke-linecap='round' fill='none'/%3E%3Cpath d='M16 46 Q32 -10 48 30' stroke='%237FB3F7' stroke-width='8' stroke-linecap='round' fill='none'/%3E%3C/g%3E%3C/svg%3E">
 <style>
 @font-face {
@@ -1595,6 +1595,25 @@ main.wrap{padding-top:0}.tour{position:relative;border:0;border-radius:28px;padd
 
 
 </style>
+<style>
+/* 2026-11-14 catalog update: large, uncropped local previews. */
+.preview-button{display:block;width:100%;padding:0;border:0;background:#f6f7fa;overflow:hidden;cursor:zoom-in;border-radius:24px 24px 0 0;align-self:stretch}
+.preview-button .card-media{display:block;width:100%;height:auto;aspect-ratio:16/9;max-height:none;object-fit:contain;background:#f6f7fa;transition:transform 300ms ease}
+.preview-button:hover .card-media{transform:scale(1.015)}
+.cards[data-group=analyze] .preview-button{border-radius:24px 0 0 24px;display:grid;align-items:center}
+.cards[data-group=analyze] .preview-button .card-media{height:auto;aspect-ratio:16/9}
+.collection-toggle{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:0 0 22px;font-size:12px;color:var(--leap-gray)}
+.collection-toggle button{padding:10px 18px;min-height:44px;border:1px solid var(--leap-border);border-radius:99px;background:var(--leap-surface);color:var(--leap-ink)}
+.collection-toggle button[aria-pressed=true]{background:var(--leap-ink);color:var(--leap-bg)}
+.tag.exhibition{color:var(--leap-teal)}
+#preview-dlg{width:min(1200px,94vw);max-width:94vw;max-height:94dvh;padding:22px;border:1px solid var(--leap-border);border-radius:22px;background:var(--leap-surface);color:var(--leap-ink);overflow:auto}
+#preview-dlg::backdrop{background:#000b;backdrop-filter:blur(6px)}
+.preview-heading{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:16px}.preview-heading h2{font-size:22px}
+#preview-image{display:block;width:100%;max-height:67dvh;object-fit:contain;background:#f6f7fa;border-radius:12px}#preview-caption{font-size:12px;color:var(--leap-gray);margin:12px 0}
+@media(max-width:700px){.leap button{flex-wrap:nowrap}.leap .t{width:auto;order:0}.leap .n{margin-left:0}.cards[data-group=analyze] .preview-button{border-radius:24px 24px 0 0}.preview-heading h2{font-size:18px}#preview-dlg{padding:14px}.collection-toggle{gap:8px}}
+@media(prefers-reduced-motion:reduce){.preview-button .card-media{transition:none}.preview-button:hover .card-media{transform:none}}
+@media print{.collection-toggle,#preview-dlg{display:none!important}}
+</style>
 </head>
 <body>
 <a class="skip" href="#catalog">앱 목록 바로가기</a>
@@ -1622,7 +1641,7 @@ main.wrap{padding-top:0}.tour{position:relative;border:0;border-radius:28px;padd
       <a href="#sec-tools">교실 도구</a>
     </nav>
     <div class="top-actions"><span class="edition">GBE-AI LAB / 2026</span>
-      <a class="iconbtn iconbtn--home" href="../../../index.html" aria-label="TEAM LEAP 메인 페이지로 나가기">
+      <a class="iconbtn iconbtn--home" href="../../index.html" aria-label="TEAM LEAP 메인 페이지로 나가기">
         <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
              stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 10.6 12 4l8 6.6V20h-5v-5.6H9V20H4z"/>
@@ -1643,7 +1662,7 @@ main.wrap{padding-top:0}.tour{position:relative;border:0;border-radius:28px;padd
       <div class="hero-foot"><button class="hero-qr" id="hero-qr" type="button" aria-label="이 페이지로 오는 QR 크게 보기"><span id="hero-qr-svg" aria-hidden="true"></span><span>휴대폰으로 함께 체험</span></button><span>설치 없이 웹으로.<br>앱별 접속 안내를 확인해 주세요.</span></div>
     </div>
     <div class="feature reveal">
-      <figure class="screen"><div class="screen-bar"><span class="screen-dots" aria-hidden="true"><i></i><i></i><i></i></span><span id="feature-domain">population.gbeai.net</span><span>APP PREVIEW</span></div><div class="gallery-window" id="gallery-window" tabindex="0" role="region" aria-label="대표 앱 슬라이드. 좌우 방향키 또는 쓸어 넘기기로 이동"><div class="gallery-track" id="gallery-track"><img class="screen-img" id="feature-img" src="assets/dashboard.webp" width="1280" height="720" alt="경북 학령인구 정책 플랫폼 실제 공개 화면" ><img class="screen-img" id="feature-img1" src="assets/handover.webp" width="1280" height="720" alt="업무 인수인계 도우미 실제 공개 화면" aria-hidden="true" ><img class="screen-img" id="feature-img2" src="assets/compass.webp" width="1280" height="720" alt="발표나침반 실제 공개 화면" aria-hidden="true" ><img class="screen-img" id="feature-img3" src="assets/baeumgil.webp" width="1280" height="720" alt="경북배움길 실제 공개 화면" aria-hidden="true" ></div></div><figcaption class="screen-caption"><b id="feature-name">경북 학령인구 정책 플랫폼</b><span id="feature-counter">01 / 04</span></figcaption></figure>
+      <figure class="screen"><div class="screen-bar"><span class="screen-dots" aria-hidden="true"><i></i><i></i><i></i></span><span id="feature-domain">population.gbeai.net</span><span>APP PREVIEW</span></div><div class="gallery-window" id="gallery-window" tabindex="0" role="region" aria-label="대표 앱 슬라이드. 좌우 방향키 또는 쓸어 넘기기로 이동"><div class="gallery-track" id="gallery-track"><img class="screen-img" id="feature-img" src="assets/thumbs/dashboard.webp" width="1280" height="720" alt="경북 학령인구 정책 플랫폼 실제 공개 화면" ><img class="screen-img" id="feature-img1" src="assets/thumbs/handover-helper.webp" width="1280" height="720" alt="업무 인수인계 도우미 실제 공개 화면" aria-hidden="true" ><img class="screen-img" id="feature-img2" src="assets/thumbs/balpyo-compass.webp" width="1280" height="720" alt="발표나침반 실제 공개 화면" aria-hidden="true" ><img class="screen-img" id="feature-img3" src="assets/thumbs/gb-baeumgil.webp" width="1280" height="720" alt="경북배움길 실제 공개 화면" aria-hidden="true" ></div></div><figcaption class="screen-caption"><b id="feature-name">경북 학령인구 정책 플랫폼</b><span id="feature-counter">01 / 04</span></figcaption></figure>
       <div class="feature-controls"><button id="gallery-prev" class="gallery-arrow" type="button" aria-label="이전 미리보기" disabled>‹</button><div class="feature-picks" role="group" aria-label="대표 앱 미리보기"><button type="button" data-feature="0" aria-pressed="true"><span>01 / ANALYZE</span>학령인구</button><button type="button" data-feature="1" aria-pressed="false"><span>02 / LIGHTEN</span>업무 인수인계</button><button type="button" data-feature="2" aria-pressed="false"><span>03 / ENRICH</span>발표나침반</button><button type="button" data-feature="3" aria-pressed="false"><span>04 / ENRICH</span>경북배움길</button></div><button id="gallery-next" class="gallery-arrow" type="button" aria-label="다음 미리보기">›</button></div><p class="gallery-hint">화면을 넘기며 살펴보고, 아래에서 직접 체험하세요.</p>
     </div>
   </div>
@@ -1653,7 +1672,7 @@ main.wrap{padding-top:0}.tour{position:relative;border:0;border-radius:28px;padd
 
 
 <main class="wrap">
-<section class="tour" id="tour" aria-labelledby="tour-title"><div class="tour-top"><div><p class="section-kicker">GUIDED TOUR</p><h2 id="tour-title">화면으로 만나는 대표 앱</h2></div><span class="tour-count" id="tour-count" aria-live="polite">01 / 04</span></div><div class="tour-layout"><img class="tour-image" id="tour-img" src="assets/dashboard.webp" alt="학령인구 플랫폼 실제 화면" width="1280" height="720" loading="lazy"><div class="tour-info"><span class="tag data" id="tour-kind">데이터는 명확하게</span><h3 id="tour-name"></h3><p id="tour-desc"></p><ol class="tour-steps" id="tour-steps"></ol><div class="go"><a id="tour-open" class="btn" target="_blank" rel="noopener">앱 열기 ↗</a><button id="tour-qr" type="button" class="btn btn--ghost">체험 QR</button><a id="tour-detail" class="btn btn--ghost">자세한 소개</a></div><p id="tour-note" class="tour-note"></p></div></div><div class="tour-nav"><p>실제 공개 화면 · 2026. 10. 29. 캡처<br>사진 속 수치는 앱 화면의 자료이며, 팀의 효과 측정값이 아닙니다.</p><div class="tour-buttons"><button type="button" class="btn btn--ghost" id="tour-prev" disabled>← 이전 앱</button><button type="button" class="btn btn--ghost" id="tour-next">다음 앱 →</button></div></div></section>
+<section class="tour" id="tour" aria-labelledby="tour-title"><div class="tour-top"><div><p class="section-kicker">GUIDED TOUR</p><h2 id="tour-title">화면으로 만나는 대표 앱</h2></div><span class="tour-count" id="tour-count" aria-live="polite">01 / 04</span></div><div class="tour-layout"><img class="tour-image" id="tour-img" src="assets/thumbs/dashboard.webp" alt="학령인구 플랫폼 실제 화면" width="1280" height="720" loading="lazy"><div class="tour-info"><span class="tag data" id="tour-kind">데이터는 명확하게</span><h3 id="tour-name"></h3><p id="tour-desc"></p><ol class="tour-steps" id="tour-steps"></ol><div class="go"><a id="tour-open" class="btn" target="_blank" rel="noopener">앱 열기 ↗</a><button id="tour-qr" type="button" class="btn btn--ghost">체험 QR</button><a id="tour-detail" class="btn btn--ghost">자세한 소개</a></div><p id="tour-note" class="tour-note"></p></div></div><div class="tour-nav"><p>공개·가상 시연 화면 · 2026. 11. 14. 목록 갱신<br>사진 속 수치는 앱 화면의 자료이며, 팀의 효과 측정값이 아닙니다.</p><div class="tour-buttons"><button type="button" class="btn btn--ghost" id="tour-prev" disabled>← 이전 앱</button><button type="button" class="btn btn--ghost" id="tour-next">다음 앱 →</button></div></div></section>
 <div id="catalog" class="section-title catalog-title" tabindex="-1"><div><p class="section-kicker">EXPLORE THE COLLECTION</p><h2>우리의 앱, 다음 교실로.</h2></div><p>앱 이름·제작자·하는 일로 찾아보세요.<br>교과 수업부터 학교 업무까지, 필요한 앱을 골라 체험하세요.</p></div>
 
 
@@ -1670,28 +1689,29 @@ main.wrap{padding-top:0}.tour{position:relative;border:0;border-radius:28px;padd
       <span class="k">ENRICH</span><span class="t">수업은 풍성하게</span><span class="n" data-n="class"></span>
     </button>
     <button type="button" data-kind="data" aria-pressed="false">
-      <span class="k">ANALYZE</span><span class="t">데이터는 명확하게</span><span class="n" data-n="data"></span>
+      <span class="k">ANALYZE</span><span class="t">정책 · 데이터</span><span class="n" data-n="data"></span>
     </button>
   </div>
 
+  <div class="collection-toggle"><button type="button" id="featured-only" aria-pressed="false">성과보고회 대표 16개만 보기</button><span>썸네일을 누르면 화면을 크게 볼 수 있어요.</span></div>
   <div class="finder">
     <label class="leap-sr" for="q">앱 찾기</label>
     <input id="q" type="search" placeholder="앱 이름이나 하는 일로 찾기 — 예: 시간표, 공문, 영단어" autocomplete="off">
     <span class="count" id="count" aria-live="polite"></span>
   </div>
 
-  <details class="access-guide"><summary>체험 전에 확인해 주세요 · 접속 범위와 시연 안내</summary><p>① 앱별 체험 순서 읽기 ② 열기 또는 QR로 접속 ③ 내장 예시나 가상 자료로 체험하기. VOCA HERO는 별명·학년·필수 동의 후 시작합니다. 스마트 올림픽은 카메라와 움직일 공간이 필요합니다. 운영학교 전용 앱 2개는 이번 전시에서 제외했습니다.</p><small>2026. 11. 9. 추가 5개 앱의 공개 화면을 확인했습니다. 앱별 접속 안내를 참고해 주세요.</small></details>
+  <details class="access-guide"><summary>체험 전에 확인해 주세요 · 접속 범위와 시연 안내</summary><p>① 앱별 체험 순서 읽기 ② 열기 또는 QR로 접속 ③ 내장 예시나 가상 자료로 체험하기. VOCA HERO는 별명·학년·필수 동의 후 시작합니다. 스마트 올림픽은 카메라와 움직일 공간이 필요합니다. 운영학교 전용 앱 2개는 이번 전시에서 제외했습니다.</p><small>2026. 11. 14. 목록·썸네일 갱신. 결과 화면과 시작 화면을 구분해 소개합니다. 앱별 접속 안내를 확인해 주세요.</small></details>
   <section class="sec" id="sec-analyze" aria-labelledby="h-analyze">
-    <div class="sec-h"><h2 id="h-analyze">학령인구 대시보드</h2><span class="task">과제 ③ · 데이터는 명확하게</span></div>
-    <p class="sub">경북의 학령인구가 어디서, 얼마나 줄어드는지 공공데이터로 보여 줍니다. 값마다 출처와 기준일을 붙였습니다.</p>
+    <div class="sec-h"><h2 id="h-analyze">학령인구와 학교의 미래</h2><span class="task">과제 ③ · 데이터는 명확하게</span></div>
+    <p class="sub">지도와 통계로 지역의 변화를 읽고, 학교 운영 게임으로 교육의 미래를 함께 생각합니다.</p>
     <div class="cards" data-group="analyze"></div>
   </section>
 
 
 
   <section class="sec" id="sec-members" aria-labelledby="h-members">
-    <div class="sec-h"><h2 id="h-members">연구원 1인 1앱</h2><span class="task">과제 ①·② · 업무와 수업</span></div>
-    <p class="sub">연구원 앱 14개와 대시보드 1개, 공동 교실도구 11개를 소개합니다. 앱마다 접속 조건과 체험 방법을 확인해 주세요.</p>
+    <div class="sec-h"><h2 id="h-members">참여 교사의 수업·업무 앱</h2><span class="task">과제 ①·② · 업무와 수업</span></div>
+    <p class="sub">TEAM LEAP 참여 교사가 개발·공유하는 앱입니다. 대표 16개를 먼저 만나고, 필요한 도구로 체험을 넓혀 보세요.</p>
     <div class="cards" data-group="members"></div>
   </section>
   <section class="sec" id="sec-tools" aria-labelledby="h-tools">
@@ -1721,34 +1741,284 @@ main.wrap{padding-top:0}.tour{position:relative;border:0;border-radius:28px;padd
   <button class="btn" type="button" id="qr-close">닫기</button>
 </dialog>
 
+<dialog id="preview-dlg" aria-labelledby="preview-title"><div class="preview-heading"><h2 id="preview-title"></h2><button type="button" id="preview-close" class="btn btn--ghost">닫기</button></div><img id="preview-image" alt=""><p id="preview-caption"></p><a id="preview-open" class="btn" target="_blank" rel="noopener">앱 체험하기 ↗</a></dialog>
 <div id="print-area" aria-hidden="true"></div>
 
 <!-- 앱 목록 — 카드·QR·인쇄물·머리의 숫자가 모두 여기서 나옵니다. 더하는 법은 README.md -->
 <script type="application/json" id="apps-data">{
   "base": "https://team-leap.pages.dev/",
-  "source": "2026.11.09. 공개 소개 앱 26개. 운영학교 전용 2개 제외, 마호니의 교과·업무 앱 5개 추가. 신규 앱 공개 화면 확인; 현장 효과 검증과 구분.",
+  "source": "2026.11.14. 패들렛 게시 16개·최근 정비 앱과 기존 도구 대조. 전체 36개: 정책2·수업16·업무18. 공개 시작/결과 화면을 구분하고 앱별 이용 조건 유지.",
   "apps": [
     {
       "id": "dashboard",
       "group": "analyze",
       "kind": "data",
-      "name": "경북 학령인구 정책 플랫폼",
-      "lead": "김지원 선생님이 작업한 버전으로 연결됩니다. 경북 학교를 지도에서 찾고, 지역별 학생·학급 현황과 교육 동향을 살펴봅니다. 기존 김정준 선생님 초기 구축본도 아래에서 따로 열 수 있습니다.",
+      "name": "학령인구 대시보드",
+      "lead": "지역별 학생 수와 학교 현황을 지도와 통계로 살펴봅니다. 학령인구 변화를 이해하고 지역 교육의 방향을 함께 생각합니다.",
       "who": "학교 규모와 학생 수 전망을 같은 근거로 보고 싶은 교육청 담당자·교원·학부모",
       "by": "김정준(초기 구축·프론트엔드) · 김지원(백엔드·DB) · 박하은(디자인)",
       "href": "https://population.gbeai.net/",
       "url": "https://population.gbeai.net/",
-      "openLabel": "김지원 버전 열기",
+      "openLabel": "대시보드 열기",
       "links": [
         {
-          "name": "기존 김정준 버전",
+          "name": "초기 구축본 보기",
           "href": "../../dashboard/index.html",
           "url": "https://team-leap.pages.dev/dashboard/"
         }
       ],
       "access": "공개 메뉴 바로 체험",
-      "start": "로그인 없이 홈의 시군별 학생 수 증감 확인 → 「지도」에서 시·군·학교급 선택 → 「현황」·「동향」 살펴보기. 「정책 시나리오」는 회원 로그인 후 이용합니다. 10.29. 공개 홈과 메뉴를 다시 확인했습니다.",
-      "preview": "assets/dashboard.webp"
+      "start": "공개 홈에서 지역별 학생 수 비교 → 지도에서 시·군·학교급 선택 → 현황·동향 확인. 회원 메뉴는 로그인 후 이용합니다.",
+      "preview": "assets/thumbs/dashboard.webp",
+      "featured": true,
+      "previewAlt": "학령인구 대시보드 · 지역별 학생 수 지도·통계"
+    },
+    {
+      "id": "balpyo-compass",
+      "group": "members",
+      "kind": "class",
+      "name": "발표나침반",
+      "lead": "발표 방법을 고르고 순서와 시간을 정해 학생의 발표 참여와 수업 진행을 돕습니다.",
+      "who": "발표를 진행하는 교사",
+      "by": "신동영 선생님",
+      "href": "https://balpyo-compass.vercel.app/",
+      "url": "https://balpyo-compass.vercel.app/",
+      "access": "바로 체험",
+      "start": "발표 방법 선택 또는 메뉴 「타이머」 → 「▶ 시작」 → 「일시정지」. 타이머 실행·정지를 확인했습니다. 실명 명단 없이 체험하세요.",
+      "preview": "assets/thumbs/balpyo-compass.webp",
+      "featured": true,
+      "previewAlt": "발표나침반 · 갤러리 워크 진행 타이머"
+    },
+    {
+      "id": "voca-hero",
+      "group": "members",
+      "kind": "class",
+      "name": "VOCA HERO!",
+      "lead": "영단어 퀴즈를 풀고 보상을 받으며 용사를 성장시키는 학습 게임입니다.",
+      "who": "영단어를 익히는 학생과 교사",
+      "by": "이성근 선생님",
+      "href": "https://english-game-sage.vercel.app/",
+      "url": "https://english-game-sage.vercel.app/",
+      "access": "별명·학년·필수 동의 후 시작",
+      "start": "가상 별명·학년으로 시작 → 영단어 퀴즈 → 정답과 보상 확인 → 장비 강화. 11.8. 녹화용 가상 계정에서 확인했습니다. 전체 랭킹 공개는 선택 사항입니다.",
+      "openLabel": "체험하기",
+      "featured": true,
+      "preview": "assets/thumbs/voca-hero.webp",
+      "previewAlt": "VOCA HERO! · 시연 계정의 용사·장비 강화"
+    },
+    {
+      "id": "wonedu",
+      "group": "members",
+      "kind": "class",
+      "badge": "wip",
+      "name": "원에듀 교육통합플랫폼",
+      "lead": "웹 교과서의 내용을 읽고 모형을 직접 조작하며 교과 개념을 탐구합니다.",
+      "who": "학생과 교직원",
+      "by": "조지훈 선생님",
+      "href": "https://wonedu.org/",
+      "url": "https://wonedu.org/",
+      "access": "웹교과서 공개",
+      "start": "「초등 과학 3·4학년」 → 공개된 「3학년 1학기」 교과서. 공개 차례 진입을 확인했습니다. 집필 중인 권과 로그인·AI 기능은 별도입니다. 개발 현황 시트에서는 제작 중입니다.",
+      "featured": true,
+      "preview": "assets/thumbs/wonedu.webp",
+      "previewAlt": "원에듀 교육통합플랫폼 · 고리 자석 조작 실험"
+    },
+    {
+      "id": "gb-baeumgil",
+      "group": "members",
+      "kind": "class",
+      "name": "경북배움길",
+      "lead": "지역 체험처와 교과 내용을 연결해 우리 동네 배움길을 찾습니다. 지도와 학년별 자료로 탐방 수업을 준비합니다.",
+      "who": "체험학습·자기주도학습 자료를 찾는 교사·학생·학부모",
+      "by": "신동영 선생님",
+      "href": "https://gb-baeumgil.pages.dev/",
+      "url": "https://gb-baeumgil.pages.dev/",
+      "access": "로그인 없이 공개 체험",
+      "start": "「학년별 로드맵」 → 「5학년」 → 「청송 유네스코 세계지질공원」 → 탐구 질문. 10.27. 이 흐름을 확인했습니다. 현재 구글 시트 미연결로 백업 자료를 표시합니다. 방문 전 기관의 운영·예약 정보를 확인하세요.",
+      "preview": "assets/thumbs/gb-baeumgil.webp",
+      "featured": true,
+      "previewAlt": "경북배움길 · 학년별 지도·체험처 상세"
+    },
+    {
+      "id": "dialect-expedition",
+      "name": "사투리 원정대",
+      "kind": "class",
+      "lead": "지역마다 다른 낱말을 카드와 퀴즈로 만나며 우리말의 다양성과 지역 문화를 탐구합니다.",
+      "who": "국어·지역 이해 수업을 준비하는 교사와 학생",
+      "url": "https://dialect-expedition.pages.dev/",
+      "access": "로그인 없이 탐험",
+      "start": "지도에서 「경상도」 → 낱말 카드 → 퀴즈. 다른 지역의 표현도 비교해 보세요.",
+      "group": "members",
+      "by": "마호니 · 김정준",
+      "href": "https://dialect-expedition.pages.dev/",
+      "preview": "assets/thumbs/dialect-expedition.webp",
+      "previewAlt": "사투리 원정대 · 지역 낱말을 모은 나의 단어장",
+      "openLabel": "체험하기",
+      "featured": true
+    },
+    {
+      "id": "ourclass-piano",
+      "name": "모두의 도레미",
+      "kind": "class",
+      "lead": "한글 계이름을 보며 건반을 연주하고 화음을 익힙니다. 반주와 녹음·재생으로 음악 활동을 즐깁니다.",
+      "who": "건반 활동과 합주를 준비하는 음악 수업",
+      "url": "https://ourclass-piano.pages.dev/",
+      "access": "로그인 없이 시작 · 소리 사용",
+      "start": "「시작하기」 → 건반 연주 → 조성 선택 → 화음·반주. 태블릿은 가로로 사용하세요.",
+      "group": "members",
+      "by": "마호니 · 김정준",
+      "href": "https://ourclass-piano.pages.dev/",
+      "preview": "assets/thumbs/ourclass-piano.webp",
+      "previewAlt": "모두의 도레미 · 건반 연주·화음 표시",
+      "openLabel": "체험하기",
+      "featured": true
+    },
+    {
+      "id": "smart-olympic",
+      "name": "스마트 올림픽",
+      "kind": "class",
+      "lead": "카메라로 몸의 움직임을 인식해 다양한 운동을 게임처럼 즐기는 신체활동 앱입니다.",
+      "who": "기기와 움직일 공간이 있는 체육 수업",
+      "url": "https://smart-olympic.pages.dev/",
+      "access": "카메라 허용·움직일 공간 필요",
+      "start": "종목 선택 → 종목 안내 읽기 → 카메라 허용 후 체험. 주변 공간을 확보하고 무리하지 않는 범위에서 움직여 주세요.",
+      "group": "members",
+      "by": "마호니 · 김정준",
+      "href": "https://smart-olympic.pages.dev/",
+      "preview": "assets/thumbs/smart-olympic.webp",
+      "previewAlt": "스마트 올림픽 · 운동 종목 선택",
+      "openLabel": "체험하기",
+      "featured": true
+    },
+    {
+      "id": "elementary-math-playground",
+      "name": "초등 수학 놀이터",
+      "kind": "class",
+      "lead": "1~6학년 수학 단원을 이야기와 게임으로 만납니다. 문제를 해결하며 배운 내용을 확인합니다.",
+      "who": "학년·단원에 맞는 수학 활동을 찾는 교사와 학생",
+      "url": "https://elementary-math-playground.pages.dev/",
+      "access": "로그인 없이 시작 · 기기 내 저장",
+      "start": "학년 → 학기 → 게임 선택 → 활동 완료 → 수료증. 별명과 진행 기록은 현재 브라우저에 저장됩니다.",
+      "group": "members",
+      "by": "마호니 · 김정준",
+      "href": "https://elementary-math-playground.pages.dev/",
+      "preview": "assets/thumbs/elementary-math-playground.webp",
+      "previewAlt": "초등 수학 놀이터 · 직각 찾기 활동 완료",
+      "openLabel": "체험하기",
+      "featured": true
+    },
+    {
+      "id": "school-press-studio",
+      "name": "학교 보도자료 메이커",
+      "kind": "work",
+      "lead": "학교 활동 메모를 보도자료 초안으로 정리하고 사진을 더해 편집·출력합니다.",
+      "who": "학교 행사와 교육활동을 소식으로 전하는 교직원",
+      "url": "https://school-press-studio.kimjj0709.workers.dev/",
+      "access": "메모 초안으로 체험 · AI는 이용 안내 확인",
+      "start": "「예시 살펴보기」 또는 가상 행사 메모 → 「메모 초안」 → 작성·편집·출력. 인터뷰 초안은 실제 발언과 대조해 수정하세요.",
+      "group": "members",
+      "by": "마호니 · 김정준",
+      "href": "https://school-press-studio.kimjj0709.workers.dev/",
+      "preview": "assets/thumbs/school-press-studio.webp",
+      "previewAlt": "학교 보도자료 메이커 · 가상 학교의 메모 입력·보도자료 초안",
+      "openLabel": "체험하기",
+      "featured": true
+    },
+    {
+      "id": "school-future",
+      "group": "analyze",
+      "kind": "data",
+      "name": "학교를 살리자",
+      "lead": "학교 운영과 지원을 선택하며 학령인구 감소 속 학교의 미래를 생각하는 교육용 게임입니다.",
+      "who": "교육 현장의 수업과 업무를 준비하는 교사",
+      "by": "TEAM LEAP 참여 교사",
+      "href": "https://gyeongbuk-principal-population.pages.dev/",
+      "url": "https://gyeongbuk-principal-population.pages.dev/",
+      "access": "웹에서 체험",
+      "start": "학교 선택 → 지원·시설 선택 → 다음 해 변화 확인. 게임의 가정이며 공식 예측이 아닙니다.",
+      "featured": true,
+      "preview": "assets/thumbs/school-future.webp",
+      "previewAlt": "학교를 살리자 · 학교 운영 선택·게임 진행"
+    },
+    {
+      "id": "dokdo-coloring",
+      "group": "members",
+      "kind": "class",
+      "name": "독도그림그리기 · 독도 색칠 탐험",
+      "lead": "직접 색칠한 생물을 입체 독도에 보내고 감상하며 미술 활동과 지역 탐구를 연결합니다.",
+      "who": "교육 현장의 수업과 업무를 준비하는 교사",
+      "by": "TEAM LEAP 참여 교사",
+      "href": "https://dokdo-coloring-3d.pages.dev/",
+      "url": "https://dokdo-coloring-3d.pages.dev/",
+      "access": "웹에서 체험",
+      "start": "생물 고르기 → 색칠하기 → 입체 독도로 보내기.",
+      "featured": true,
+      "preview": "assets/thumbs/dokdo-coloring.webp",
+      "previewAlt": "독도그림그리기 · 독도 색칠 탐험 · 색칠한 생물이 등장하는 입체 독도"
+    },
+    {
+      "id": "cart-to-approval",
+      "group": "members",
+      "kind": "work",
+      "name": "장바구니 바로품의",
+      "lead": "쇼핑몰 장바구니를 물품 구입 내역과 품의 문안으로 정리합니다. 수량·금액을 확인하고 엑셀 등 제출 자료를 준비합니다.",
+      "who": "교육 현장의 수업과 업무를 준비하는 교사",
+      "by": "마호니",
+      "href": "https://cart-to-approval.kimjj0709.workers.dev/",
+      "url": "https://cart-to-approval.kimjj0709.workers.dev/",
+      "access": "웹에서 체험",
+      "start": "예시 불러오기 → 물품·수량·금액 확인 → 품의 문안·엑셀 받기.",
+      "featured": true,
+      "preview": "assets/thumbs/cart-to-approval.webp",
+      "previewAlt": "장바구니 바로품의 · 물품 3종·142,000원 정리 결과 / 알지(마호니) 안내"
+    },
+    {
+      "id": "eduprompt-nexus",
+      "group": "members",
+      "kind": "work",
+      "name": "EduPrompt Nexus",
+      "lead": "교과·학년·수업 단계에 맞는 AI 이미지·영상 예시와 프롬프트를 찾습니다. 제작 정보와 수업 활용 팁을 확인하며 수업 자료 제작을 준비합니다.",
+      "who": "교육 현장의 수업과 업무를 준비하는 교사",
+      "by": "마호니",
+      "href": "https://eduprompt-nexus.pages.dev/",
+      "url": "https://eduprompt-nexus.pages.dev/",
+      "access": "웹에서 체험",
+      "start": "교과·학년 선택 → 예시 열기 → 프롬프트·수업 활용 팁 확인.",
+      "featured": true,
+      "preview": "assets/thumbs/eduprompt-nexus.webp",
+      "previewAlt": "EduPrompt Nexus · 사실과 의견 수업 예시·프롬프트 상세"
+    },
+    {
+      "id": "mosaic",
+      "group": "members",
+      "kind": "work",
+      "name": "모자이크",
+      "lead": "사진에서 가릴 부분을 선택해 모자이크나 흐림 효과를 적용합니다. 결과를 확인하고 PNG로 저장합니다.",
+      "who": "교육 현장의 수업과 업무를 준비하는 교사",
+      "by": "마호니",
+      "href": "https://mosaic-app-2dk.pages.dev/",
+      "url": "https://mosaic-app-2dk.pages.dev/",
+      "access": "웹에서 체험",
+      "start": "예시 사진 열기 → 가릴 부분 선택 → 결과 확인·PNG 저장.",
+      "featured": true,
+      "preview": "assets/thumbs/mosaic.webp",
+      "previewAlt": "모자이크 · 사진 일부를 가린 결과 / 알지(마호니) 안내"
+    },
+    {
+      "id": "bg-remover",
+      "group": "members",
+      "kind": "work",
+      "name": "배경 제거기",
+      "lead": "사진의 배경을 지우고 원본과 결과를 비교합니다. 투명 PNG로 저장해 안내장과 수업·홍보 자료에 활용합니다.",
+      "who": "교육 현장의 수업과 업무를 준비하는 교사",
+      "by": "마호니",
+      "href": "https://vibe-bg-remover.pages.dev/",
+      "url": "https://vibe-bg-remover.pages.dev/",
+      "access": "웹에서 체험",
+      "start": "사진 선택 → 배경 제거 → 비교 후 투명 PNG 저장.",
+      "featured": true,
+      "preview": "assets/thumbs/bg-remover.webp",
+      "previewAlt": "배경 제거기 · 배경 제거·투명 처리 결과 / 알지(마호니) 안내"
     },
     {
       "id": "a-circuit",
@@ -1762,7 +2032,9 @@ main.wrap{padding-top:0}.tour{position:relative;border:0;border-radius:28px;padd
       "readme": "../a-circuit/README.html",
       "path": "apps/a-circuit/",
       "access": "설치·로그인 없이",
-      "start": "학교 찾기에 「포항」 입력 → 공개 학교 2곳 선택 → 「주간 시간표」에서 예시 수업 넣기 → 「이동 시간」 확인."
+      "start": "학교 찾기에 「포항」 입력 → 공개 학교 2곳 선택 → 「주간 시간표」에서 예시 수업 넣기 → 「이동 시간」 확인.",
+      "preview": "assets/thumbs/a-circuit.webp",
+      "previewAlt": "순회교사 통합 시간표 · 공개 시작·작업 화면"
     },
     {
       "id": "b-classboard",
@@ -1776,7 +2048,9 @@ main.wrap{padding-top:0}.tour{position:relative;border:0;border-radius:28px;padd
       "readme": "../b-classboard/README.html",
       "path": "apps/b-classboard/",
       "access": "설치·로그인 없이",
-      "start": "회의 이름에 「가상 예시 학급 회의」 입력 → 「회의 시작」 → 가상 안건 2개 제출 → 「모으기 마치고 공개」. 실명은 입력하지 않습니다."
+      "start": "회의 이름에 「가상 예시 학급 회의」 입력 → 「회의 시작」 → 가상 안건 2개 제출 → 「모으기 마치고 공개」. 실명은 입력하지 않습니다.",
+      "preview": "assets/thumbs/b-classboard.webp",
+      "previewAlt": "학급 회의 · 공개 시작·작업 화면"
     },
     {
       "id": "c-storybook",
@@ -1790,7 +2064,9 @@ main.wrap{padding-top:0}.tour{position:relative;border:0;border-radius:28px;padd
       "readme": "../c-storybook/README.html",
       "path": "apps/c-storybook/",
       "access": "설치·로그인 없이",
-      "start": "「표지」에 가상 책 제목·모둠 이름 입력 → 「페이지」에서 글 추가 → 「미리보기」. 사진 없이도 시작할 수 있습니다."
+      "start": "「표지」에 가상 책 제목·모둠 이름 입력 → 「페이지」에서 글 추가 → 「미리보기」. 사진 없이도 시작할 수 있습니다.",
+      "preview": "assets/thumbs/c-storybook.webp",
+      "previewAlt": "지역 탐방 디지털 스토리북 · 공개 시작·작업 화면"
     },
     {
       "id": "d-multigrade",
@@ -1804,7 +2080,9 @@ main.wrap{padding-top:0}.tour{position:relative;border:0;border-radius:28px;padd
       "readme": "../d-multigrade/README.html",
       "path": "apps/d-multigrade/",
       "access": "설치·로그인 없이",
-      "start": "첫 화면의 「예시안으로 시작하기」에서 수학 또는 국어 예시 선택 → 시간 배치·활동·학습지 확인. 이미 수업이 있으면 「보관함」을 확인합니다."
+      "start": "첫 화면의 「예시안으로 시작하기」에서 수학 또는 국어 예시 선택 → 시간 배치·활동·학습지 확인. 이미 수업이 있으면 「보관함」을 확인합니다.",
+      "preview": "assets/thumbs/d-multigrade.webp",
+      "previewAlt": "복식학급 수업 도우미 · 공개 시작·작업 화면"
     },
     {
       "id": "e-together",
@@ -1818,7 +2096,9 @@ main.wrap{padding-top:0}.tour{position:relative;border:0;border-radius:28px;padd
       "readme": "../e-together/README.html",
       "path": "apps/e-together/",
       "access": "설치·로그인 없이",
-      "start": "「우리 학교」에서 학교 이름 검색·선택 → 「이웃 학교」에서 가까운 학교 확인 → 「함께 하기」와 「제안서」 확인. 공개 학교 정보로 체험합니다."
+      "start": "「우리 학교」에서 학교 이름 검색·선택 → 「이웃 학교」에서 가까운 학교 확인 → 「함께 하기」와 「제안서」 확인. 공개 학교 정보로 체험합니다.",
+      "preview": "assets/thumbs/e-together.webp",
+      "previewAlt": "이웃 학교 함께하기 · 공개 시작·작업 화면"
     },
     {
       "id": "f-lessonplan",
@@ -1832,7 +2112,9 @@ main.wrap{padding-top:0}.tour{position:relative;border:0;border-radius:28px;padd
       "readme": "../f-lessonplan/README.html",
       "path": "apps/f-lessonplan/",
       "access": "설치·로그인 없이",
-      "start": "「예시 · 보관함」 → 「차시 설계안 · 초등 사회 4학년」 예시 선택 → 「② 흐름」과 출력 미리보기 확인. 기존 작업은 보관함에 보존됩니다."
+      "start": "「예시 · 보관함」 → 「차시 설계안 · 초등 사회 4학년」 예시 선택 → 「② 흐름」과 출력 미리보기 확인. 기존 작업은 보관함에 보존됩니다.",
+      "preview": "assets/thumbs/f-lessonplan.webp",
+      "previewAlt": "수업 설계안 만들기 · 공개 시작·작업 화면"
     },
     {
       "id": "g-classdata",
@@ -1846,7 +2128,9 @@ main.wrap{padding-top:0}.tour{position:relative;border:0;border-radius:28px;padd
       "readme": "../g-classdata/README.html",
       "path": "apps/g-classdata/",
       "access": "설치·로그인 없이",
-      "start": "「우리 반」에 가상 학급 설정 → 템플릿 받기 → 파일의 「③ 보기」 예시를 참고해 가상 수치로 「② 입력」 채우기 → 「넣고 보기」에서 업로드. 실제 학생 자료 없이 체험합니다."
+      "start": "「우리 반」에 가상 학급 설정 → 템플릿 받기 → 파일의 「③ 보기」 예시를 참고해 가상 수치로 「② 입력」 채우기 → 「넣고 보기」에서 업로드. 실제 학생 자료 없이 체험합니다.",
+      "preview": "assets/thumbs/g-classdata.webp",
+      "previewAlt": "우리 반 데이터 보기 · 공개 시작·작업 화면"
     },
     {
       "id": "j-howmany",
@@ -1860,7 +2144,9 @@ main.wrap{padding-top:0}.tour{position:relative;border:0;border-radius:28px;padd
       "readme": "../j-howmany/README.html",
       "path": "apps/j-howmany/",
       "access": "설치·로그인 없이",
-      "start": "첫 화면 「올해 전교생이 몇 명입니까」에 예시 숫자 60 입력 → 「보기」 → 인원 슬라이더로 결과 비교. 가상 인원입니다."
+      "start": "첫 화면 「올해 전교생이 몇 명입니까」에 예시 숫자 60 입력 → 「보기」 → 인원 슬라이더로 결과 비교. 가상 인원입니다.",
+      "preview": "assets/thumbs/j-howmany.webp",
+      "previewAlt": "몇 명이면 되나 · 공개 시작·작업 화면"
     },
     {
       "id": "i-required",
@@ -1874,7 +2160,9 @@ main.wrap{padding-top:0}.tour{position:relative;border:0;border-radius:28px;padd
       "readme": "../i-required/README.html",
       "path": "apps/i-required/",
       "access": "설치·로그인 없이",
-      "start": "학년 선택 → 「학교안전교육 7대 영역」·「범교과 학습 주제」에 가상 시수 입력 → 출력 미리보기. 실제 계획은 해당 연도 지침과 대조합니다."
+      "start": "학년 선택 → 「학교안전교육 7대 영역」·「범교과 학습 주제」에 가상 시수 입력 → 출력 미리보기. 실제 계획은 해당 연도 지침과 대조합니다.",
+      "preview": "assets/thumbs/i-required.webp",
+      "previewAlt": "법정 의무교육 점검표 · 공개 시작·작업 화면"
     },
     {
       "id": "k-year",
@@ -1888,7 +2176,9 @@ main.wrap{padding-top:0}.tour{position:relative;border:0;border-radius:28px;padd
       "readme": "../k-year/README.html",
       "path": "apps/k-year/",
       "access": "설치·로그인 없이",
-      "start": "맡은 자리에 「시연용 연구부」 입력 → 「시작하기」 → 「＋ 일 얹기」에서 가상 업무 등록 → 「한 해 보기」. 담당자의 실명 대신 역할을 씁니다."
+      "start": "맡은 자리에 「시연용 연구부」 입력 → 「시작하기」 → 「＋ 일 얹기」에서 가상 업무 등록 → 「한 해 보기」. 담당자의 실명 대신 역할을 씁니다.",
+      "preview": "assets/thumbs/k-year.webp",
+      "previewAlt": "우리 학교 한 해 · 공개 시작·작업 화면"
     },
     {
       "id": "l-rooms",
@@ -1902,62 +2192,41 @@ main.wrap{padding-top:0}.tour{position:relative;border:0;border-radius:28px;padd
       "readme": "../l-rooms/README.html",
       "path": "apps/l-rooms/",
       "access": "설치·로그인 없이",
-      "start": "남는 방 이름에 「가상 예시 교실」 입력 → 「시작하기」 → 「＋ 쓰임 얹기」로 가상 활용안 비교. 실제 학생·교직원 자료는 필요 없습니다."
+      "start": "남는 방 이름에 「가상 예시 교실」 입력 → 「시작하기」 → 「＋ 쓰임 얹기」로 가상 활용안 비교. 실제 학생·교직원 자료는 필요 없습니다.",
+      "preview": "assets/thumbs/l-rooms.webp",
+      "previewAlt": "남는 교실 · 공개 시작·작업 화면"
     },
     {
       "id": "handover-helper",
       "group": "members",
       "kind": "work",
       "name": "업무 인수인계 도우미",
-      "lead": "업무관리시스템에서 내려받은 1년 치 기안 공문을 끌어다 놓으면 회계·업무·대외 발송·민감 문서로 나누고, 업무 타임라인과 학교 서식의 인수인계서를 만듭니다.",
+      "lead": "공문 목록을 업무별로 분류하고 연간 일정과 인수인계서로 연결해 업무의 흐름을 정리합니다.",
       "who": "업무를 넘기거나 이어받는 교직원",
       "by": "신동영 선생님",
       "href": "https://handover-helper-ten.vercel.app/",
       "url": "https://handover-helper-ten.vercel.app/",
       "access": "예시로 체험",
       "start": "「예시로 먼저 살펴보기」 → 「연간 일정 보기」 → 「인수인계서 · 서명」. 내장 가상 공문으로 체험하며 실제 파일을 올릴 필요가 없습니다.",
-      "preview": "assets/handover.webp"
+      "preview": "assets/thumbs/handover-helper.webp",
+      "featured": false,
+      "previewAlt": "업무 인수인계 도우미 · 예시 공문 목록·업무 분류"
     },
     {
       "id": "curriculum-planner",
       "group": "members",
       "kind": "work",
       "name": "교육과정 편성 도우미",
-      "lead": "편제표·학사일정·시수 배당 등 학교 교육과정 편성을 돕고, 수립한 교육과정을 검토합니다.",
+      "lead": "편제표·학사일정·시수 배당을 연결해 학교 교육과정 편성과 검토를 돕습니다.",
       "who": "학교 교육과정을 편성·검토하는 교사",
       "by": "신동영 선생님",
       "href": "https://curriculum-planner-umber.vercel.app/",
       "url": "https://curriculum-planner-umber.vercel.app/",
       "access": "바로 시작",
-      "start": "프로젝트가 없으면 「첫 프로젝트 만들기」, 있으면 「새 프로젝트」 → 가상 학교·학년도 설정 → 편제표·학사일정 → 「인쇄·내보내기」. 실제 교육과정은 교사가 검토합니다."
-    },
-    {
-      "id": "balpyo-compass",
-      "group": "members",
-      "kind": "class",
-      "name": "발표나침반",
-      "lead": "34가지 발표 방법을 찾아 수업에 맞게 고릅니다. 발표 타이머와 발표자 선정 도구도 함께 씁니다.",
-      "who": "발표를 진행하는 교사",
-      "by": "신동영 선생님",
-      "href": "https://balpyo-compass.vercel.app/",
-      "url": "https://balpyo-compass.vercel.app/",
-      "access": "바로 체험",
-      "start": "발표 방법 선택 또는 메뉴 「타이머」 → 「▶ 시작」 → 「일시정지」. 타이머 실행·정지를 확인했습니다. 실명 명단 없이 체험하세요.",
-      "preview": "assets/compass.webp"
-    },
-    {
-      "id": "voca-hero",
-      "group": "members",
-      "kind": "class",
-      "name": "VOCA HERO!",
-      "lead": "초3부터 고3까지 영단어를 퀴즈와 게임으로 반복 학습하고 용사를 성장시킵니다.",
-      "who": "영단어를 익히는 학생과 교사",
-      "by": "이성근 선생님",
-      "href": "https://english-game-sage.vercel.app/",
-      "url": "https://english-game-sage.vercel.app/",
-      "access": "별명·학년·필수 동의 후 시작",
-      "start": "가상 별명·학년으로 시작 → 영단어 퀴즈 → 정답과 보상 확인 → 장비 강화. 11.8. 녹화용 가상 계정에서 확인했습니다. 전체 랭킹 공개는 선택 사항입니다.",
-      "openLabel": "체험하기"
+      "start": "프로젝트가 없으면 「첫 프로젝트 만들기」, 있으면 「새 프로젝트」 → 가상 학교·학년도 설정 → 편제표·학사일정 → 「인쇄·내보내기」. 실제 교육과정은 교사가 검토합니다.",
+      "featured": false,
+      "preview": "assets/thumbs/curriculum-planner.webp",
+      "previewAlt": "교육과정 편성 도우미 · 교육과정 편성·시수 요약"
     },
     {
       "id": "jeongbo-ieum",
@@ -1971,21 +2240,9 @@ main.wrap{padding-top:0}.tour{position:relative;border:0;border-radius:28px;padd
       "url": "https://정보이음.com",
       "qr": "https://xn--on3b62qods0a.com",
       "access": "교사 테스트 체험 확인",
-      "start": "「교사 테스트 로그인」 → 테스트초등학교 교사 대시보드. 이 경로의 진입을 확인했습니다. 학생 체험은 번호 선택 → 「학생 테스트 입장」이며 별도로 확인해야 합니다. 정식 수업은 로그인 안내를 따릅니다."
-    },
-    {
-      "id": "wonedu",
-      "group": "members",
-      "kind": "class",
-      "badge": "wip",
-      "name": "원에듀 교육통합플랫폼",
-      "lead": "과목별로 보는 웹교과서 플랫폼입니다.",
-      "who": "학생과 교직원",
-      "by": "조지훈 선생님",
-      "href": "https://wonedu.org/",
-      "url": "https://wonedu.org/",
-      "access": "웹교과서 공개",
-      "start": "「초등 과학 3·4학년」 → 공개된 「3학년 1학기」 교과서. 공개 차례 진입을 확인했습니다. 집필 중인 권과 로그인·AI 기능은 별도입니다. 개발 현황 시트에서는 제작 중입니다."
+      "start": "「교사 테스트 로그인」 → 테스트초등학교 교사 대시보드. 이 경로의 진입을 확인했습니다. 학생 체험은 번호 선택 → 「학생 테스트 입장」이며 별도로 확인해야 합니다. 정식 수업은 로그인 안내를 따릅니다.",
+      "preview": "assets/thumbs/jeongbo-ieum.webp",
+      "previewAlt": "정보이음 · 공개 시작·작업 화면"
     },
     {
       "id": "class-duty",
@@ -1998,21 +2255,9 @@ main.wrap{padding-top:0}.tour{position:relative;border:0;border-radius:28px;padd
       "href": "https://class-duty.vercel.app/",
       "url": "https://class-duty.vercel.app/",
       "access": "바로 시작",
-      "start": "기본 번호 명단 확인 → 「자동 배정」 → 제안 검토. 24명 기본 명단의 배정 제안을 확인했습니다. 필요하면 「제안 버리기」로 체험을 마칩니다."
-    },
-    {
-      "id": "gb-baeumgil",
-      "group": "members",
-      "kind": "class",
-      "name": "경북배움길",
-      "lead": "교과 연계 체험처와 온라인 학습 자료를 지도·학년별 로드맵에서 찾고, 체험처의 탐구 질문을 확인합니다.",
-      "who": "체험학습·자기주도학습 자료를 찾는 교사·학생·학부모",
-      "by": "신동영 선생님",
-      "href": "https://gb-baeumgil.pages.dev/",
-      "url": "https://gb-baeumgil.pages.dev/",
-      "access": "로그인 없이 공개 체험",
-      "start": "「학년별 로드맵」 → 「5학년」 → 「청송 유네스코 세계지질공원」 → 탐구 질문. 10.27. 이 흐름을 확인했습니다. 현재 구글 시트 미연결로 백업 자료를 표시합니다. 방문 전 기관의 운영·예약 정보를 확인하세요.",
-      "preview": "assets/baeumgil.webp"
+      "start": "기본 번호 명단 확인 → 「자동 배정」 → 제안 검토. 24명 기본 명단의 배정 제안을 확인했습니다. 필요하면 「제안 버리기」로 체험을 마칩니다.",
+      "preview": "assets/thumbs/class-duty.webp",
+      "previewAlt": "우리 반 당번표 · 공개 시작·작업 화면"
     },
     {
       "id": "school-certification",
@@ -2024,90 +2269,73 @@ main.wrap{padding-top:0}.tour{position:relative;border:0;border-radius:28px;padd
       "by": "이성근 선생님",
       "href": "https://school-certification.vercel.app/",
       "url": "https://school-certification.vercel.app/",
-      "access": "Google 로그인 필요 · 첫 화면 확인",
-      "start": "10.27. 공개 로그인 화면과 교사 가입 안내까지만 확인했습니다. 내부 기록·승인 기능은 미확인입니다. 제작자와 가상 시연 계정을 준비한 뒤 체험하세요. 학생 정보나 운영 자료로 시험 입력하지 마세요."
+      "access": "로그인 필요 · 공개 시작 화면",
+      "start": "학교장 인증제 소개와 로그인 화면을 확인합니다. 내부 체험은 담당자의 안내를 받아 진행합니다.",
+      "preview": "assets/thumbs/school-certification.webp",
+      "previewAlt": "학교장 인증제 · 공개 시작·작업 화면"
     },
     {
-      "id": "dialect-expedition",
-      "name": "사투리 원정대",
-      "kind": "class",
-      "lead": "지역마다 다른 말을 카드와 퀴즈로 만나고, 뜻을 비교하며 우리말의 다양성을 탐구합니다.",
-      "who": "국어·지역 이해 수업을 준비하는 교사와 학생",
-      "url": "https://dialect-expedition.pages.dev/",
-      "access": "로그인 없이 탐험",
-      "start": "지도에서 「경상도」 → 낱말 카드 → 퀴즈. 다른 지역의 표현도 비교해 보세요.",
+      "id": "kahoot-maker",
       "group": "members",
-      "by": "마호니 · 김정준",
-      "href": "https://dialect-expedition.pages.dev/",
-      "preview": "assets/dialect-expedition.webp",
-      "previewAlt": "사투리 원정대 공개 앱 화면",
-      "openLabel": "체험하기"
-    },
-    {
-      "id": "ourclass-piano",
-      "name": "모두의 도레미",
-      "kind": "class",
-      "lead": "한글 계이름을 보며 연주하고, 조성을 바꿔 도의 자리를 찾습니다. 반주와 녹음으로 작은 합주를 시작합니다.",
-      "who": "건반 활동과 합주를 준비하는 음악 수업",
-      "url": "https://ourclass-piano.pages.dev/",
-      "access": "로그인 없이 시작 · 소리 사용",
-      "start": "「시작하기」 → 건반 연주 → 조성 선택 → 화음·반주. 태블릿은 가로로 사용하세요.",
-      "group": "members",
-      "by": "마호니 · 김정준",
-      "href": "https://ourclass-piano.pages.dev/",
-      "preview": "assets/ourclass-piano.webp",
-      "previewAlt": "모두의 도레미 공개 앱 화면",
-      "openLabel": "체험하기"
-    },
-    {
-      "id": "smart-olympic",
-      "name": "스마트 올림픽",
-      "kind": "class",
-      "lead": "카메라로 동작을 인식해 달리기·체조·복싱 등 여러 종목을 교실에서 몸으로 즐깁니다.",
-      "who": "기기와 움직일 공간이 있는 체육 수업",
-      "url": "https://smart-olympic.pages.dev/",
-      "access": "카메라 허용·움직일 공간 필요",
-      "start": "종목 선택 → 종목 안내 읽기 → 카메라 허용 후 체험. 주변 공간을 확보하고 무리하지 않는 범위에서 움직여 주세요.",
-      "group": "members",
-      "by": "마호니 · 김정준",
-      "href": "https://smart-olympic.pages.dev/",
-      "preview": "assets/smart-olympic.webp",
-      "previewAlt": "스마트 올림픽 공개 앱 화면",
-      "openLabel": "체험하기"
-    },
-    {
-      "id": "elementary-math-playground",
-      "name": "초등 수학 놀이터",
-      "kind": "class",
-      "lead": "1~6학년의 단원을 골라 이야기 속 문제를 해결하고, 놀이 결과를 수료증으로 남깁니다.",
-      "who": "학년·단원에 맞는 수학 활동을 찾는 교사와 학생",
-      "url": "https://elementary-math-playground.pages.dev/",
-      "access": "로그인 없이 시작 · 기기 내 저장",
-      "start": "학년 → 학기 → 게임 선택 → 활동 완료 → 수료증. 별명과 진행 기록은 현재 브라우저에 저장됩니다.",
-      "group": "members",
-      "by": "마호니 · 김정준",
-      "href": "https://elementary-math-playground.pages.dev/",
-      "preview": "assets/elementary-math-playground.webp",
-      "previewAlt": "초등 수학 놀이터 공개 앱 화면",
-      "openLabel": "체험하기"
-    },
-    {
-      "id": "school-press-studio",
-      "name": "학교 보도자료 메이커",
       "kind": "work",
-      "lead": "학교 활동 메모를 보도자료 초안으로 정리하고, 사진을 더해 편집·출력합니다.",
-      "who": "학교 행사와 교육활동을 소식으로 전하는 교직원",
-      "url": "https://school-press-studio.kimjj0709.workers.dev/",
-      "access": "메모 초안으로 체험 · AI는 이용 안내 확인",
-      "start": "「예시 살펴보기」 또는 가상 행사 메모 → 「메모 초안」 → 작성·편집·출력. 인터뷰 초안은 실제 발언과 대조해 수정하세요.",
+      "name": "카훗 문제 생성 도우미",
+      "lead": "자료나 주제로 퀴즈를 만들고, 문제와 정답을 다듬어 카훗용 엑셀로 받습니다.",
+      "who": "수업 자료 제작과 교무 업무를 준비하는 교사",
+      "by": "마호니",
+      "href": "https://kahoot-maker.pages.dev/",
+      "url": "https://kahoot-maker.pages.dev/",
+      "access": "AI 생성은 연결 상태·할당량에 따라 달라집니다.",
+      "start": "주제·자료 입력 → 생성 → 문제·보기·정답·시간 수정 → 카훗용 엑셀 받기.",
+      "preview": "assets/thumbs/kahoot-maker.webp",
+      "previewAlt": "카훗 문제 생성 도우미 · 카훗 문제 생성 도우미 v3.0의 자료·설정 패널과 실제 생성한 물의 상태 변화 3문항 편집 화면"
+    },
+    {
+      "id": "edutech-hub",
       "group": "members",
-      "by": "마호니 · 김정준",
-      "href": "https://school-press-studio.kimjj0709.workers.dev/",
-      "preview": "assets/school-press-studio.webp",
-      "previewAlt": "학교 보도자료 메이커 공개 앱 화면",
-      "openLabel": "체험하기"
+      "kind": "work",
+      "name": "AI·디지털 수업 레퍼런스 허브",
+      "lead": "에듀테크 수업 사례와 AI·디지털 선도학교 컨설팅 자료를 모았습니다.",
+      "who": "수업 자료 제작과 교무 업무를 준비하는 교사",
+      "by": "마호니",
+      "href": "https://edutech-hub.pages.dev/",
+      "url": "https://edutech-hub.pages.dev/",
+      "access": "공개 자료 탐색",
+      "start": "조건 선택 → 수업 사례 찾기 → 활용 도구와 수업 연결 확인.",
+      "preview": "assets/thumbs/edutech-hub.webp",
+      "previewAlt": "AI·디지털 수업 레퍼런스 허브 · 앱 작업 화면"
+    },
+    {
+      "id": "dojang-gongbang",
+      "group": "members",
+      "kind": "work",
+      "name": "도장 공방",
+      "lead": "이름 도장·서명을 투명 PNG 또는 한글 호환용 투명 GIF로 저장합니다.",
+      "who": "수업 자료 제작과 교무 업무를 준비하는 교사",
+      "by": "마호니",
+      "href": "https://dojang-gongbang.pages.dev/",
+      "url": "https://dojang-gongbang.pages.dev/",
+      "access": "브라우저에서 만들기",
+      "start": "가상 이름·문구 입력 → 모양·글꼴 선택 → 도장 이미지 저장.",
+      "preview": "assets/thumbs/dojang-gongbang.webp",
+      "previewAlt": "도장 공방 · 도장 공방의 붉은 도장 시안과 작업대 — 투명 PNG·투명 GIF(한글 호환용)·흰 배경 PNG 선택 및 GIF 내려받기를 제공하는 운영 화면."
+    },
+    {
+      "id": "lesson-plan-maker",
+      "group": "members",
+      "kind": "work",
+      "name": "초등 AI·디지털 수업지도안 메이커",
+      "lead": "수업 내용을 입력하면 한글 표 양식의 서식과 배치를 정리합니다.",
+      "who": "수업 자료 제작과 교무 업무를 준비하는 교사",
+      "by": "마호니",
+      "href": "https://lesson-plan-maker.pages.dev/",
+      "url": "https://lesson-plan-maker.pages.dev/",
+      "access": "기본 편집부터 체험",
+      "start": "단원·차시 입력 → 수업 흐름 작성 → 지도안 미리보기·출력.",
+      "preview": "assets/thumbs/lesson-plan-maker.webp",
+      "previewAlt": "초등 AI·디지털 수업지도안 메이커 · 앱 작업 화면"
     }
-  ]
+  ],
+  "updated": "2026-11-14"
 }</script>
 <script>/*! qrcode-generator 1.4.4 · Copyright (c) 2009 Kazuhiko Arase · MIT license · https://github.com/kazuhikoarase/qrcode-generator */
 var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=new Array(t),e=0;e<t;e+=1){r[e]=new Array(t);for(var n=0;n<t;n+=1)r[e][n]=null}return r}(l=4*u+17),e(0,0),e(l-7,0),e(0,l-7),i(),o(),v(t,r),7<=u&&h(t),null==n&&(n=w(u,f,c)),d(n,r)}var u=t,f=y[r],g=null,l=0,n=null,c=[],s={},e=function(t,r){for(var e=-1;e<=7;e+=1)if(!(t+e<=-1||l<=t+e))for(var n=-1;n<=7;n+=1)r+n<=-1||l<=r+n||(g[t+e][r+n]=0<=e&&e<=6&&(0==n||6==n)||0<=n&&n<=6&&(0==e||6==e)||2<=e&&e<=4&&2<=n&&n<=4)},o=function(){for(var t=8;t<l-8;t+=1)null==g[t][6]&&(g[t][6]=t%2==0);for(var r=8;r<l-8;r+=1)null==g[6][r]&&(g[6][r]=r%2==0)},i=function(){for(var t=B.getPatternPosition(u),r=0;r<t.length;r+=1)for(var e=0;e<t.length;e+=1){var n=t[r],o=t[e];if(null==g[n][o])for(var i=-2;i<=2;i+=1)for(var a=-2;a<=2;a+=1)g[n+i][o+a]=-2==i||2==i||-2==a||2==a||0==i&&0==a}},h=function(t){for(var r=B.getBCHTypeNumber(u),e=0;e<18;e+=1){var n=!t&&1==(r>>e&1);g[Math.floor(e/3)][e%3+l-8-3]=n}for(e=0;e<18;e+=1){n=!t&&1==(r>>e&1);g[e%3+l-8-3][Math.floor(e/3)]=n}},v=function(t,r){for(var e=f<<3|r,n=B.getBCHTypeInfo(e),o=0;o<15;o+=1){var i=!t&&1==(n>>o&1);o<6?g[o][8]=i:o<8?g[o+1][8]=i:g[l-15+o][8]=i}for(o=0;o<15;o+=1){i=!t&&1==(n>>o&1);o<8?g[8][l-o-1]=i:o<9?g[8][15-o-1+1]=i:g[8][15-o-1]=i}g[l-8][8]=!t},d=function(t,r){for(var e=-1,n=l-1,o=7,i=0,a=B.getMaskFunction(r),u=l-1;0<u;u-=2)for(6==u&&(u-=1);;){for(var f=0;f<2;f+=1)if(null==g[n][u-f]){var c=!1;i<t.length&&(c=1==(t[i]>>>o&1)),a(n,u-f)&&(c=!c),g[n][u-f]=c,-1==(o-=1)&&(i+=1,o=7)}if((n+=e)<0||l<=n){n-=e,e=-e;break}}},w=function(t,r,e){for(var n=b.getRSBlocks(t,r),o=M(),i=0;i<e.length;i+=1){var a=e[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var u=0;for(i=0;i<n.length;i+=1)u+=n[i].dataCount;if(o.getLengthInBits()>8*u)throw"code length overflow. ("+o.getLengthInBits()+">"+8*u+")";for(o.getLengthInBits()+4<=8*u&&o.put(0,4);o.getLengthInBits()%8!=0;)o.putBit(!1);for(;!(o.getLengthInBits()>=8*u||(o.put(236,8),o.getLengthInBits()>=8*u));)o.put(17,8);return function(t,r){for(var e=0,n=0,o=0,i=new Array(r.length),a=new Array(r.length),u=0;u<r.length;u+=1){var f=r[u].dataCount,c=r[u].totalCount-f;n=Math.max(n,f),o=Math.max(o,c),i[u]=new Array(f);for(var g=0;g<i[u].length;g+=1)i[u][g]=255&t.getBuffer()[g+e];e+=f;var l=B.getErrorCorrectPolynomial(c),h=C(i[u],l.getLength()-1).mod(l);a[u]=new Array(l.getLength()-1);for(g=0;g<a[u].length;g+=1){var s=g+h.getLength()-a[u].length;a[u][g]=0<=s?h.getAt(s):0}}var v=0;for(g=0;g<r.length;g+=1)v+=r[g].totalCount;var d=new Array(v),w=0;for(g=0;g<n;g+=1)for(u=0;u<r.length;u+=1)g<i[u].length&&(d[w]=i[u][g],w+=1);for(g=0;g<o;g+=1)for(u=0;u<r.length;u+=1)g<a[u].length&&(d[w]=a[u][g],w+=1);return d}(o,n)};s.addData=function(t,r){var e=null;switch(r=r||"Byte"){case"Numeric":e=x(t);break;case"Alphanumeric":e=m(t);break;case"Byte":e=L(t);break;case"Kanji":e=D(t);break;default:throw"mode:"+r}c.push(e),n=null},s.isDark=function(t,r){if(t<0||l<=t||r<0||l<=r)throw t+","+r;return g[t][r]},s.getModuleCount=function(){return l},s.make=function(){if(u<1){for(var t=1;t<40;t++){for(var r=b.getRSBlocks(t,f),e=M(),n=0;n<c.length;n++){var o=c[n];e.put(o.getMode(),4),e.put(o.getLength(),B.getLengthInBits(o.getMode(),t)),o.write(e)}var i=0;for(n=0;n<r.length;n++)i+=r[n].dataCount;if(e.getLengthInBits()<=8*i)break}u=t}a(!1,function(){for(var t=0,r=0,e=0;e<8;e+=1){a(!0,e);var n=B.getLostPoint(s);(0==e||n<t)&&(t=n,r=e)}return r}())},s.createTableTag=function(t,r){t=t||2;var e="";e+='<table style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: "+(r=void 0===r?4*t:r)+"px;",e+='">',e+="<tbody>";for(var n=0;n<s.getModuleCount();n+=1){e+="<tr>";for(var o=0;o<s.getModuleCount();o+=1)e+='<td style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: 0px;",e+=" width: "+t+"px;",e+=" height: "+t+"px;",e+=" background-color: ",e+=s.isDark(n,o)?"#000000":"#ffffff",e+=";",e+='"/>';e+="</tr>"}return e+="</tbody>",e+="</table>"},s.createSvgTag=function(t,r,e,n){var o={};"object"==typeof t&&(t=(o=t).cellSize,r=o.margin,e=o.alt,n=o.title),t=t||2,r=void 0===r?4*t:r,(e="string"==typeof e?{text:e}:e||{}).text=e.text||null,e.id=e.text?e.id||"qrcode-description":null,(n="string"==typeof n?{text:n}:n||{}).text=n.text||null,n.id=n.text?n.id||"qrcode-title":null;var i,a,u,f,c=s.getModuleCount()*t+2*r,g="";for(f="l"+t+",0 0,"+t+" -"+t+",0 0,-"+t+"z ",g+='<svg version="1.1" xmlns="http://www.w3.org/2000/svg"',g+=o.scalable?"":' width="'+c+'px" height="'+c+'px"',g+=' viewBox="0 0 '+c+" "+c+'" ',g+=' preserveAspectRatio="xMinYMin meet"',g+=n.text||e.text?' role="img" aria-labelledby="'+p([n.id,e.id].join(" ").trim())+'"':"",g+=">",g+=n.text?'<title id="'+p(n.id)+'">'+p(n.text)+"</title>":"",g+=e.text?'<description id="'+p(e.id)+'">'+p(e.text)+"</description>":"",g+='<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>',g+='<path d="',a=0;a<s.getModuleCount();a+=1)for(u=a*t+r,i=0;i<s.getModuleCount();i+=1)s.isDark(a,i)&&(g+="M"+(i*t+r)+","+u+f);return g+='" stroke="transparent" fill="black"/>',g+="</svg>"},s.createDataURL=function(o,t){o=o||2,t=void 0===t?4*o:t;var r=s.getModuleCount()*o+2*t,i=t,a=r-t;return I(r,r,function(t,r){if(i<=t&&t<a&&i<=r&&r<a){var e=Math.floor((t-i)/o),n=Math.floor((r-i)/o);return s.isDark(n,e)?0:1}return 1})},s.createImgTag=function(t,r,e){t=t||2,r=void 0===r?4*t:r;var n=s.getModuleCount()*t+2*r,o="";return o+="<img",o+=' src="',o+=s.createDataURL(t,r),o+='"',o+=' width="',o+=n,o+='"',o+=' height="',o+=n,o+='"',e&&(o+=' alt="',o+=p(e),o+='"'),o+="/>"};var p=function(t){for(var r="",e=0;e<t.length;e+=1){var n=t.charAt(e);switch(n){case"<":r+="&lt;";break;case">":r+="&gt;";break;case"&":r+="&amp;";break;case'"':r+="&quot;";break;default:r+=n}}return r};return s.createASCII=function(t,r){if((t=t||1)<2)return function(t){t=void 0===t?2:t;var r,e,n,o,i,a=1*s.getModuleCount()+2*t,u=t,f=a-t,c={"██":"█","█ ":"▀"," █":"▄","  ":" "},g={"██":"▀","█ ":"▀"," █":" ","  ":" "},l="";for(r=0;r<a;r+=2){for(n=Math.floor((r-u)/1),o=Math.floor((r+1-u)/1),e=0;e<a;e+=1)i="█",u<=e&&e<f&&u<=r&&r<f&&s.isDark(n,Math.floor((e-u)/1))&&(i=" "),u<=e&&e<f&&u<=r+1&&r+1<f&&s.isDark(o,Math.floor((e-u)/1))?i+=" ":i+="█",l+=t<1&&f<=r+1?g[i]:c[i];l+="\n"}return a%2&&0<t?l.substring(0,l.length-a-1)+Array(1+a).join("▀"):l.substring(0,l.length-1)}(r);t-=1,r=void 0===r?2*t:r;var e,n,o,i,a=s.getModuleCount()*t+2*r,u=r,f=a-r,c=Array(t+1).join("██"),g=Array(t+1).join("  "),l="",h="";for(e=0;e<a;e+=1){for(o=Math.floor((e-u)/t),h="",n=0;n<a;n+=1)i=1,u<=n&&n<f&&u<=e&&e<f&&s.isDark(o,Math.floor((n-u)/t))&&(i=0),h+=i?c:g;for(o=0;o<t;o+=1)l+=h+"\n"}return l.substring(0,l.length-1)},s.renderTo2dContext=function(t,r){r=r||2;for(var e=s.getModuleCount(),n=0;n<e;n++)for(var o=0;o<e;o++)t.fillStyle=s.isDark(n,o)?"black":"white",t.fillRect(n*r,o*r,r,r)},s}i.stringToBytes=(i.stringToBytesFuncs={default:function(t){for(var r=[],e=0;e<t.length;e+=1){var n=t.charCodeAt(e);r.push(255&n)}return r}}).default,i.createStringToBytes=function(u,f){var i=function(){function t(){var t=r.read();if(-1==t)throw"eof";return t}for(var r=S(u),e=0,n={};;){var o=r.read();if(-1==o)break;var i=t(),a=t()<<8|t();n[String.fromCharCode(o<<8|i)]=a,e+=1}if(e!=f)throw e+" != "+f;return n}(),a="?".charCodeAt(0);return function(t){for(var r=[],e=0;e<t.length;e+=1){var n=t.charCodeAt(e);if(n<128)r.push(n);else{var o=i[t.charAt(e)];"number"==typeof o?(255&o)==o?r.push(o):(r.push(o>>>8),r.push(255&o)):r.push(a)}}return r}};var r,t,a=1,u=2,o=4,f=8,y={L:1,M:0,Q:3,H:2},e=0,n=1,c=2,g=3,l=4,h=5,s=6,v=7,B=(r=[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],(t={}).getBCHTypeInfo=function(t){for(var r=t<<10;0<=d(r)-d(1335);)r^=1335<<d(r)-d(1335);return 21522^(t<<10|r)},t.getBCHTypeNumber=function(t){for(var r=t<<12;0<=d(r)-d(7973);)r^=7973<<d(r)-d(7973);return t<<12|r},t.getPatternPosition=function(t){return r[t-1]},t.getMaskFunction=function(t){switch(t){case e:return function(t,r){return(t+r)%2==0};case n:return function(t,r){return t%2==0};case c:return function(t,r){return r%3==0};case g:return function(t,r){return(t+r)%3==0};case l:return function(t,r){return(Math.floor(t/2)+Math.floor(r/3))%2==0};case h:return function(t,r){return t*r%2+t*r%3==0};case s:return function(t,r){return(t*r%2+t*r%3)%2==0};case v:return function(t,r){return(t*r%3+(t+r)%2)%2==0};default:throw"bad maskPattern:"+t}},t.getErrorCorrectPolynomial=function(t){for(var r=C([1],0),e=0;e<t;e+=1)r=r.multiply(C([1,w.gexp(e)],0));return r},t.getLengthInBits=function(t,r){if(1<=r&&r<10)switch(t){case a:return 10;case u:return 9;case o:case f:return 8;default:throw"mode:"+t}else if(r<27)switch(t){case a:return 12;case u:return 11;case o:return 16;case f:return 10;default:throw"mode:"+t}else{if(!(r<41))throw"type:"+r;switch(t){case a:return 14;case u:return 13;case o:return 16;case f:return 12;default:throw"mode:"+t}}},t.getLostPoint=function(t){for(var r=t.getModuleCount(),e=0,n=0;n<r;n+=1)for(var o=0;o<r;o+=1){for(var i=0,a=t.isDark(n,o),u=-1;u<=1;u+=1)if(!(n+u<0||r<=n+u))for(var f=-1;f<=1;f+=1)o+f<0||r<=o+f||0==u&&0==f||a==t.isDark(n+u,o+f)&&(i+=1);5<i&&(e+=3+i-5)}for(n=0;n<r-1;n+=1)for(o=0;o<r-1;o+=1){var c=0;t.isDark(n,o)&&(c+=1),t.isDark(n+1,o)&&(c+=1),t.isDark(n,o+1)&&(c+=1),t.isDark(n+1,o+1)&&(c+=1),0!=c&&4!=c||(e+=3)}for(n=0;n<r;n+=1)for(o=0;o<r-6;o+=1)t.isDark(n,o)&&!t.isDark(n,o+1)&&t.isDark(n,o+2)&&t.isDark(n,o+3)&&t.isDark(n,o+4)&&!t.isDark(n,o+5)&&t.isDark(n,o+6)&&(e+=40);for(o=0;o<r;o+=1)for(n=0;n<r-6;n+=1)t.isDark(n,o)&&!t.isDark(n+1,o)&&t.isDark(n+2,o)&&t.isDark(n+3,o)&&t.isDark(n+4,o)&&!t.isDark(n+5,o)&&t.isDark(n+6,o)&&(e+=40);var g=0;for(o=0;o<r;o+=1)for(n=0;n<r;n+=1)t.isDark(n,o)&&(g+=1);return e+=Math.abs(100*g/r/r-50)/5*10},t);function d(t){for(var r=0;0!=t;)r+=1,t>>>=1;return r}var w=function(){for(var r=new Array(256),e=new Array(256),t=0;t<8;t+=1)r[t]=1<<t;for(t=8;t<256;t+=1)r[t]=r[t-4]^r[t-5]^r[t-6]^r[t-8];for(t=0;t<255;t+=1)e[r[t]]=t;var n={glog:function(t){if(t<1)throw"glog("+t+")";return e[t]},gexp:function(t){for(;t<0;)t+=255;for(;256<=t;)t-=255;return r[t]}};return n}();function C(n,o){if(void 0===n.length)throw n.length+"/"+o;var r=function(){for(var t=0;t<n.length&&0==n[t];)t+=1;for(var r=new Array(n.length-t+o),e=0;e<n.length-t;e+=1)r[e]=n[e+t];return r}(),i={getAt:function(t){return r[t]},getLength:function(){return r.length},multiply:function(t){for(var r=new Array(i.getLength()+t.getLength()-1),e=0;e<i.getLength();e+=1)for(var n=0;n<t.getLength();n+=1)r[e+n]^=w.gexp(w.glog(i.getAt(e))+w.glog(t.getAt(n)));return C(r,0)},mod:function(t){if(i.getLength()-t.getLength()<0)return i;for(var r=w.glog(i.getAt(0))-w.glog(t.getAt(0)),e=new Array(i.getLength()),n=0;n<i.getLength();n+=1)e[n]=i.getAt(n);for(n=0;n<t.getLength();n+=1)e[n]^=w.gexp(w.glog(t.getAt(n))+r);return C(e,0).mod(t)}};return i}function p(){var e=[],o={writeByte:function(t){e.push(255&t)},writeShort:function(t){o.writeByte(t),o.writeByte(t>>>8)},writeBytes:function(t,r,e){r=r||0,e=e||t.length;for(var n=0;n<e;n+=1)o.writeByte(t[n+r])},writeString:function(t){for(var r=0;r<t.length;r+=1)o.writeByte(t.charCodeAt(r))},toByteArray:function(){return e},toString:function(){var t="";t+="[";for(var r=0;r<e.length;r+=1)0<r&&(t+=","),t+=e[r];return t+="]"}};return o}var k,A,b=(k=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12,7,37,13],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]],(A={}).getRSBlocks=function(t,r){var e=function(t,r){switch(r){case y.L:return k[4*(t-1)+0];case y.M:return k[4*(t-1)+1];case y.Q:return k[4*(t-1)+2];case y.H:return k[4*(t-1)+3];default:return}}(t,r);if(void 0===e)throw"bad rs block @ typeNumber:"+t+"/errorCorrectionLevel:"+r;for(var n,o,i=e.length/3,a=[],u=0;u<i;u+=1)for(var f=e[3*u+0],c=e[3*u+1],g=e[3*u+2],l=0;l<f;l+=1)a.push((n=g,o=void 0,(o={}).totalCount=c,o.dataCount=n,o));return a},A),M=function(){var e=[],n=0,o={getBuffer:function(){return e},getAt:function(t){var r=Math.floor(t/8);return 1==(e[r]>>>7-t%8&1)},put:function(t,r){for(var e=0;e<r;e+=1)o.putBit(1==(t>>>r-e-1&1))},getLengthInBits:function(){return n},putBit:function(t){var r=Math.floor(n/8);e.length<=r&&e.push(0),t&&(e[r]|=128>>>n%8),n+=1}};return o},x=function(t){var r=a,n=t,e={getMode:function(){return r},getLength:function(t){return n.length},write:function(t){for(var r=n,e=0;e+2<r.length;)t.put(o(r.substring(e,e+3)),10),e+=3;e<r.length&&(r.length-e==1?t.put(o(r.substring(e,e+1)),4):r.length-e==2&&t.put(o(r.substring(e,e+2)),7))}},o=function(t){for(var r=0,e=0;e<t.length;e+=1)r=10*r+i(t.charAt(e));return r},i=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);throw"illegal char :"+t};return e},m=function(t){var r=u,n=t,e={getMode:function(){return r},getLength:function(t){return n.length},write:function(t){for(var r=n,e=0;e+1<r.length;)t.put(45*o(r.charAt(e))+o(r.charAt(e+1)),11),e+=2;e<r.length&&t.put(o(r.charAt(e)),6)}},o=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);if("A"<=t&&t<="Z")return t.charCodeAt(0)-"A".charCodeAt(0)+10;switch(t){case" ":return 36;case"$":return 37;case"%":return 38;case"*":return 39;case"+":return 40;case"-":return 41;case".":return 42;case"/":return 43;case":":return 44;default:throw"illegal char :"+t}};return e},L=function(t){var r=o,e=i.stringToBytes(t),n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=0;r<e.length;r+=1)t.put(e[r],8)}};return n},D=function(t){var r=f,e=i.stringToBytesFuncs.SJIS;if(!e)throw"sjis not supported.";!function(){var t=e("友");if(2!=t.length||38726!=(t[0]<<8|t[1]))throw"sjis not supported."}();var o=e(t),n={getMode:function(){return r},getLength:function(t){return~~(o.length/2)},write:function(t){for(var r=o,e=0;e+1<r.length;){var n=(255&r[e])<<8|255&r[e+1];if(33088<=n&&n<=40956)n-=33088;else{if(!(57408<=n&&n<=60351))throw"illegal char at "+(e+1)+"/"+n;n-=49472}n=192*(n>>>8&255)+(255&n),t.put(n,13),e+=2}if(e<r.length)throw"illegal char at "+(e+1)}};return n},S=function(t){var e=t,n=0,o=0,i=0,r={read:function(){for(;i<8;){if(n>=e.length){if(0==i)return-1;throw"unexpected end of file./"+i}var t=e.charAt(n);if(n+=1,"="==t)return i=0,-1;t.match(/^\s$/)||(o=o<<6|a(t.charCodeAt(0)),i+=6)}var r=o>>>i-8&255;return i-=8,r}},a=function(t){if(65<=t&&t<=90)return t-65;if(97<=t&&t<=122)return t-97+26;if(48<=t&&t<=57)return t-48+52;if(43==t)return 62;if(47==t)return 63;throw"c:"+t};return r},I=function(t,r,e){for(var n=function(t,r){var n=t,o=r,l=new Array(t*r),e={setPixel:function(t,r,e){l[r*n+t]=e},write:function(t){t.writeString("GIF87a"),t.writeShort(n),t.writeShort(o),t.writeByte(128),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(255),t.writeByte(255),t.writeByte(255),t.writeString(","),t.writeShort(0),t.writeShort(0),t.writeShort(n),t.writeShort(o),t.writeByte(0);var r=i(2);t.writeByte(2);for(var e=0;255<r.length-e;)t.writeByte(255),t.writeBytes(r,e,255),e+=255;t.writeByte(r.length-e),t.writeBytes(r,e,r.length-e),t.writeByte(0),t.writeString(";")}},i=function(t){for(var r=1<<t,e=1+(1<<t),n=t+1,o=h(),i=0;i<r;i+=1)o.add(String.fromCharCode(i));o.add(String.fromCharCode(r)),o.add(String.fromCharCode(e));var a=p(),u=function(t){var e=t,n=0,o=0,r={write:function(t,r){if(t>>>r!=0)throw"length over";for(;8<=n+r;)e.writeByte(255&(t<<n|o)),r-=8-n,t>>>=8-n,n=o=0;o|=t<<n,n+=r},flush:function(){0<n&&e.writeByte(o)}};return r}(a);u.write(r,n);var f=0,c=String.fromCharCode(l[f]);for(f+=1;f<l.length;){var g=String.fromCharCode(l[f]);f+=1,o.contains(c+g)?c+=g:(u.write(o.indexOf(c),n),o.size()<4095&&(o.size()==1<<n&&(n+=1),o.add(c+g)),c=g)}return u.write(o.indexOf(c),n),u.write(e,n),u.flush(),a.toByteArray()},h=function(){var r={},e=0,n={add:function(t){if(n.contains(t))throw"dup key:"+t;r[t]=e,e+=1},size:function(){return e},indexOf:function(t){return r[t]},contains:function(t){return void 0!==r[t]}};return n};return e}(t,r),o=0;o<r;o+=1)for(var i=0;i<t;i+=1)n.setPixel(i,o,e(i,o));var a=p();n.write(a);for(var u=function(){function e(t){a+=String.fromCharCode(r(63&t))}var n=0,o=0,i=0,a="",t={},r=function(t){if(t<0);else{if(t<26)return 65+t;if(t<52)return t-26+97;if(t<62)return t-52+48;if(62==t)return 43;if(63==t)return 47}throw"n:"+t};return t.writeByte=function(t){for(n=n<<8|255&t,o+=8,i+=1;6<=o;)e(n>>>o-6),o-=6},t.flush=function(){if(0<o&&(e(n<<6-o),o=n=0),i%3!=0)for(var t=3-i%3,r=0;r<t;r+=1)a+="="},t.toString=function(){return a},t}(),f=a.toByteArray(),c=0;c<f.length;c+=1)u.writeByte(f[c]);return u.flush(),"data:image/gif;base64,"+u};return i}();qrcode.stringToBytesFuncs["UTF-8"]=function(t){return function(t){for(var r=[],e=0;e<t.length;e++){var n=t.charCodeAt(e);n<128?r.push(n):n<2048?r.push(192|n>>6,128|63&n):n<55296||57344<=n?r.push(224|n>>12,128|n>>6&63,128|63&n):(e++,n=65536+((1023&n)<<10|1023&t.charCodeAt(e)),r.push(240|n>>18,128|n>>12&63,128|n>>6&63,128|63&n))}return r}(t)},function(t){"function"==typeof define&&define.amd?define([],t):"object"==typeof exports&&(module.exports=t())}(function(){return qrcode});
@@ -2123,7 +2351,7 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
   var BASE = DATA.base;
   var APPS = DATA.apps;
   var SELF = BASE + 'apps/store/';
-  var KIND = { work: '업무는 가볍게', class: '수업은 풍성하게', data: '데이터는 명확하게' };
+  var KIND = { work: '업무는 가볍게', class: '수업은 풍성하게', data: '정책 · 데이터' };
   var BADGE = { use: '학교 운영 중 · 제작자 보고', wip: '만드는 중', auto: '자료 자동 갱신' };
 
   function $(id) { return document.getElementById(id); }
@@ -2163,14 +2391,15 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
     var art = el('article', 'card ' + a.kind);
     art.id = 'app-' + a.id;
     art.tabIndex = -1;
-    if (a.preview) { var image = el('img', 'card-media'); image.src = a.preview; image.alt = a.previewAlt || a.name + ' 공개 앱 화면'; image.width=1280; image.height=720; image.loading='lazy'; art.appendChild(image); }
+    if (a.preview) { var preview=el('button','preview-button');preview.type='button';preview.setAttribute('aria-label',a.name+' 화면 크게 보기');var image=el('img','card-media');image.src=a.preview;image.alt=a.previewAlt;image.width=1280;image.height=720;image.loading='lazy';image.decoding='async';preview.appendChild(image);preview.addEventListener('click',function(){$('preview-title').textContent=a.name;$('preview-image').src=a.preview;$('preview-image').alt=a.previewAlt;$('preview-caption').textContent=a.previewAlt;$('preview-open').href=a.href;$('preview-dlg').showModal();});art.appendChild(preview); }
     var body=el('div','card-body'); art.appendChild(body);
     art.dataset.kind = a.kind;
-    art.dataset.id = a.id;
+    art.dataset.id = a.id; art.dataset.featured=String(!!a.featured);
     art.dataset.find = [a.name, a.lead, a.who, a.by, KIND[a.kind]].join(' ').toLowerCase();
 
     var top = el('div', 'card-top');
     top.appendChild(el('span', 'tag ' + a.kind, KIND[a.kind]));
+    if (a.featured) top.appendChild(el('span','tag exhibition','성과보고회 대표'));
     if (a.badge) top.appendChild(el('span', 'tag ' + a.badge, BADGE[a.badge]));
     if (/시연 제외/.test(a.access)) top.appendChild(el('span','tag restricted','시연 제외'));
     if(a.badge==='use') top.appendChild(el('span','tag restricted','소개만'));
@@ -2233,7 +2462,7 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
   /* ---------------------------------------------------------------- 머리의 숫자 */
   function count(fn) { return APPS.filter(fn).length; }
   var stats = [
-    [count(function(a){return a.id==='dashboard'||a.group==='members';}),'주요 등록 앱','대시보드 1 + 연구원 앱 14'],
+    [count(function(a){return a.group!=='tools';}),'정책·참여 교사 앱','성과보고회 대표 16개 포함'],
     [count(function(a){return a.group==='tools';}),'공동 교실도구','작은 학교·학급을 위한 도구']
   ];
   stats.forEach(function (s) {
@@ -2248,11 +2477,12 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
   });
 
   /* ---------------------------------------------------------------- 거르기 */
-  var state = { kind: 'all', q: '' };
+  var state = { kind: 'all', q: '', featured: false };
+  $('featured-only').addEventListener('click',function(){state.featured=!state.featured;this.setAttribute('aria-pressed',String(state.featured));apply();});
   function apply() {
     var shown = 0;
     document.querySelectorAll('.card').forEach(function (c) {
-      var ok = (state.kind === 'all' || c.dataset.kind === state.kind) &&
+      var ok = (!state.featured || c.dataset.featured === 'true') && (state.kind === 'all' || c.dataset.kind === state.kind) &&
                (!state.q || c.dataset.find.indexOf(state.q) !== -1);
       c.hidden = !ok;
       if (ok) shown++;
@@ -2279,6 +2509,8 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
   apply();
 
   /* ---------------------------------------------------------------- QR 크게 보기 */
+  $('preview-close').addEventListener('click',function(){$('preview-dlg').close();});
+  $('preview-dlg').addEventListener('click',function(e){if(e.target===this)this.close();});
   var dlg = $('qr-dlg');
   function showQR(title, by, text, url) {
     $('qr-title').textContent = title;
@@ -2302,7 +2534,7 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
   /* ---------------------------------------------------------------- 인쇄 안내문
      A4 세로에 세 칸씩. 묶음마다 제목을 달고, 맨 위에 이 페이지 QR 을 둡니다. */
   (function buildPrint() {
-    var groups = [['analyze', '학령인구 대시보드'], ['tools', '교실도구 — TEAM LEAP 공동'], ['members', '연구원 1인 1앱']];
+    var groups = [['analyze', '정책 · 학령인구와 학교의 미래'], ['tools', '교실도구 — TEAM LEAP 공동'], ['members', '연구원 1인 1앱']];
     var h = '<div class="ph">' + qrSvg(SELF) +
       '<div><h1>TEAM LEAP 앱 모음</h1><p>휴대폰 카메라로 QR을 비추면 바로 열립니다. 왼쪽 QR은 모든 앱을 모은 페이지입니다.</p>' +
       '<p>' + SELF + '</p></div></div>';
@@ -2331,10 +2563,10 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
      카탈로그·앱과 같은 열쇠(leap-theme)를 씁니다. 한 곳에서 고르면 다른 곳도 따라옵니다. */
 
   var spotlight = [
-    {id:'dashboard',image:'dashboard',domain:'population.gbeai.net',steps:['공개 홈에서 시군별 학생 수 변화를 비교합니다.','지도에서 시·군·학교급을 골라 학교를 찾습니다.','현황·동향을 열어 같은 지역의 맥락을 살펴봅니다.'],note:'김정준 초기 구축 · 김지원 작업 버전 기본 연결. 정책 시나리오는 회원 메뉴입니다.'},
+    {id:'dashboard',image:'dashboard',domain:'population.gbeai.net',steps:['공개 홈에서 시군별 학생 수 변화를 비교합니다.','지도에서 시·군·학교급을 골라 학교를 찾습니다.','현황·동향을 열어 같은 지역의 맥락을 살펴봅니다.'],note:'지역별 자료의 기준 연도를 확인해 주세요. 정책 시나리오는 회원 메뉴입니다.'},
     {id:'handover-helper',image:'handover',domain:'handover-helper-ten.vercel.app',steps:['「예시로 먼저 살펴보기」를 누릅니다.','가상 공문의 분류와 「연간 일정 보기」를 확인합니다.','「인수인계서 · 서명」에서 결과 구성을 살펴봅니다.'],note:'캡처는 내장 가상 공문입니다. 실제 공문을 올리지 않아도 체험할 수 있습니다.'},
     {id:'balpyo-compass',image:'compass',domain:'balpyo-compass.vercel.app',steps:['34가지 발표 방법에서 수업에 맞는 방법을 고릅니다.','메뉴의 「타이머」를 엽니다.','시작·일시정지로 발표 진행을 체험합니다.'],note:'실명 명단 없이 도감과 타이머로 체험하세요.'},
-    {id:'gb-baeumgil',image:'baeumgil',domain:'gb-baeumgil.pages.dev',steps:['「학년별 로드맵」에서 5학년을 고릅니다.','「청송 유네스코 세계지질공원」을 찾습니다.','체험처의 탐구 질문과 교과 연결을 살펴봅니다.'],note:'구글 시트 미연결로 백업 자료를 표시 중입니다. 방문 전 기관의 운영·예약 정보를 확인하세요.'}
+    {id:'gb-baeumgil',image:'baeumgil',domain:'gb-baeumgil.pages.dev',steps:['「학년별 로드맵」에서 5학년을 고릅니다.','「청송 유네스코 세계지질공원」을 찾습니다.','체험처의 탐구 질문과 교과 연결을 살펴봅니다.'],note:'방문 전 기관의 최신 운영 시간과 예약 정보를 확인하세요.'}
   ];
   var tourIndex=0;
   function screenChange(img,path,alt){img.classList.remove('is-changing');img.src=path;img.alt=alt;void img.offsetWidth;img.classList.add('is-changing');}
@@ -2346,7 +2578,7 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
     $('feature-name').textContent=a.name;$('feature-domain').textContent=item.domain;
     $('feature-counter').textContent=String(index+1).padStart(2,'0')+' / 04';
     document.querySelectorAll('[data-feature]').forEach(function(b){b.setAttribute('aria-pressed',String(Number(b.dataset.feature)===index));});
-    screenChange($('tour-img'),'assets/'+item.image+'.webp',a.name+' 실제 화면 · '+(item.image==='handover'?'내장 가상 자료':'공개 화면'));
+    screenChange($('tour-img'),a.preview,a.name+' 실제 화면 · '+(item.image==='handover'?'내장 가상 자료':'공개 화면'));
     $('tour-count').textContent=String(index+1).padStart(2,'0')+' / 04';$('tour-name').textContent=a.name;$('tour-desc').textContent=a.lead;$('tour-kind').textContent=KIND[a.kind];$('tour-kind').className='tag '+a.kind;
     $('tour-steps').replaceChildren();item.steps.forEach(function(step){$('tour-steps').appendChild(el('li',null,step));});
     $('tour-open').href=a.href;$('tour-open').setAttribute('aria-label',a.name+' 앱 열기 (새 창)');
@@ -2357,14 +2589,14 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
   $('tour-prev').addEventListener('click',function(){if(tourIndex>0)showSpot(tourIndex-1);});
   $('tour-next').addEventListener('click',function(){if(tourIndex<spotlight.length-1)showSpot(tourIndex+1);});
   $('tour-qr').addEventListener('click',function(){var a=APPS.find(function(x){return x.id===spotlight[tourIndex].id;});showQR(a.name,a.access,qrText(a),shownUrl(a));});
-  $('tour-detail').addEventListener('click',function(){state.kind='all';state.q='';$('q').value='';document.querySelectorAll('#leap button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.kind==='all'));});apply();var c=$('app-'+spotlight[tourIndex].id);c.querySelector('details').open=true;c.focus({preventScroll:true});});
+  $('tour-detail').addEventListener('click',function(){state.kind='all';state.q='';state.featured=false;$('featured-only').setAttribute('aria-pressed','false');$('q').value='';document.querySelectorAll('#leap button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.kind==='all'));});apply();var c=$('app-'+spotlight[tourIndex].id);c.querySelector('details').open=true;c.focus({preventScroll:true});});
   /* 헤더 메뉴: 지금 화면에 있는 구역을 표시합니다. */
   (function(){
     var links=[].slice.call(document.querySelectorAll('#top-nav a'));
     var targets=links.map(function(a){return document.getElementById(a.getAttribute('href').slice(1));});
     function mark(){
       var line=window.innerHeight*0.35,cur=-1;
-      targets.forEach(function(t,i){if(t&&t.getBoundingClientRect().top<=line)cur=i;});
+      targets.forEach(function(t,i){if(t&&!t.hidden&&t.getBoundingClientRect().top<=line)cur=i;});
       links.forEach(function(a,i){if(i===cur)a.setAttribute('aria-current','true');else a.removeAttribute('aria-current');});
     }
     window.addEventListener('scroll',mark,{passive:true});window.addEventListener('resize',mark);mark();

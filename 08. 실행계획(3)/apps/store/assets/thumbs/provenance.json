@@ -1,0 +1,222 @@
+{
+  "updated": "2026-11-14",
+  "note": "기존 검수·시연 화면의 웹 최적화본. 기능 재검증 일자를 뜻하지 않습니다.",
+  "images": [
+    {
+      "id": "dashboard",
+      "file": "assets/thumbs/dashboard.webp",
+      "source": "90. 자료 및 기타/06. 작업 기록/2026-11-12 TEAM LEAP 패들렛 18앱 통합안/썸네일/P01_학령인구_대시보드.png",
+      "scene": "지역별 학생 수 지도·통계"
+    },
+    {
+      "id": "school-future",
+      "file": "assets/thumbs/school-future.webp",
+      "source": "90. 자료 및 기타/06. 작업 기록/2026-11-12 TEAM LEAP 패들렛 18앱 통합안/썸네일/P02_학교를_살리자.png",
+      "scene": "학교 운영 선택·게임 진행"
+    },
+    {
+      "id": "gb-baeumgil",
+      "file": "assets/thumbs/gb-baeumgil.webp",
+      "source": "90. 자료 및 기타/06. 작업 기록/2026-11-12 TEAM LEAP 패들렛 18앱 통합안/썸네일/L01_경북배움길.png",
+      "scene": "학년별 지도·체험처 상세"
+    },
+    {
+      "id": "wonedu",
+      "file": "assets/thumbs/wonedu.webp",
+      "source": "90. 자료 및 기타/06. 작업 기록/2026-11-12 TEAM LEAP 패들렛 18앱 통합안/썸네일/L02_원에듀_교육통합플랫폼.png",
+      "scene": "고리 자석 조작 실험"
+    },
+    {
+      "id": "balpyo-compass",
+      "file": "assets/thumbs/balpyo-compass.webp",
+      "source": "90. 자료 및 기타/06. 작업 기록/2026-11-12 TEAM LEAP 패들렛 18앱 통합안/썸네일/L03_발표나침반.png",
+      "scene": "갤러리 워크 진행 타이머"
+    },
+    {
+      "id": "voca-hero",
+      "file": "assets/thumbs/voca-hero.webp",
+      "source": "90. 자료 및 기타/06. 작업 기록/2026-11-12 TEAM LEAP 패들렛 18앱 통합안/썸네일/L04_VOCA_HERO.png",
+      "scene": "시연 계정의 용사·장비 강화"
+    },
+    {
+      "id": "dokdo-coloring",
+      "file": "assets/thumbs/dokdo-coloring.webp",
+      "source": "90. 자료 및 기타/06. 작업 기록/2026-11-12 TEAM LEAP 패들렛 18앱 통합안/썸네일/L05_독도그림그리기_독도_색칠_탐험.png",
+      "scene": "색칠한 생물이 등장하는 입체 독도"
+    },
+    {
+      "id": "dialect-expedition",
+      "file": "assets/thumbs/dialect-expedition.webp",
+      "source": "90. 자료 및 기타/06. 작업 기록/2026-11-12 TEAM LEAP 패들렛 18앱 통합안/썸네일/L06_사투리_원정대.png",
+      "scene": "지역 낱말을 모은 나의 단어장"
+    },
+    {
+      "id": "ourclass-piano",
+      "file": "assets/thumbs/ourclass-piano.webp",
+      "source": "90. 자료 및 기타/06. 작업 기록/2026-11-12 TEAM LEAP 패들렛 18앱 통합안/썸네일/L07_모두의_도레미.png",
+      "scene": "건반 연주·화음 표시"
+    },
+    {
+      "id": "elementary-math-playground",
+      "file": "assets/thumbs/elementary-math-playground.webp",
+      "source": "90. 자료 및 기타/06. 작업 기록/2026-11-12 TEAM LEAP 패들렛 18앱 통합안/썸네일/L08_초등_수학_놀이터.png",
+      "scene": "직각 찾기 활동 완료"
+    },
+    {
+      "id": "smart-olympic",
+      "file": "assets/thumbs/smart-olympic.webp",
+      "source": "90. 자료 및 기타/06. 작업 기록/2026-11-12 TEAM LEAP 패들렛 18앱 통합안/썸네일/L09_스마트_올림픽.png",
+      "scene": "운동 종목 선택"
+    },
+    {
+      "id": "cart-to-approval",
+      "file": "assets/thumbs/cart-to-approval.webp",
+      "source": "90. 자료 및 기타/06. 작업 기록/2026-11-12 TEAM LEAP 패들렛 18앱 통합안/썸네일/W01_장바구니_바로품의.jpg",
+      "scene": "물품 3종·142,000원 정리 결과 / 알지(마호니) 안내"
+    },
+    {
+      "id": "school-press-studio",
+      "file": "assets/thumbs/school-press-studio.webp",
+      "source": "90. 자료 및 기타/06. 작업 기록/2026-11-12 TEAM LEAP 패들렛 18앱 통합안/썸네일/W02_학교_보도자료_메이커.png",
+      "scene": "가상 학교의 메모 입력·보도자료 초안"
+    },
+    {
+      "id": "eduprompt-nexus",
+      "file": "assets/thumbs/eduprompt-nexus.webp",
+      "source": "90. 자료 및 기타/06. 작업 기록/2026-11-12 TEAM LEAP 패들렛 18앱 통합안/썸네일/W03_EduPrompt_Nexus.jpg",
+      "scene": "사실과 의견 수업 예시·프롬프트 상세"
+    },
+    {
+      "id": "mosaic",
+      "file": "assets/thumbs/mosaic.webp",
+      "source": "90. 자료 및 기타/06. 작업 기록/2026-11-12 TEAM LEAP 패들렛 18앱 통합안/썸네일/W04_모자이크.jpg",
+      "scene": "사진 일부를 가린 결과 / 알지(마호니) 안내"
+    },
+    {
+      "id": "bg-remover",
+      "file": "assets/thumbs/bg-remover.webp",
+      "source": "90. 자료 및 기타/06. 작업 기록/2026-11-12 TEAM LEAP 패들렛 18앱 통합안/썸네일/W05_배경_제거기.jpg",
+      "scene": "배경 제거·투명 처리 결과 / 알지(마호니) 안내"
+    },
+    {
+      "id": "curriculum-planner",
+      "file": "assets/thumbs/curriculum-planner.webp",
+      "source": "90. 자료 및 기타/06. 작업 기록/2026-11-12 TEAM LEAP 패들렛 18앱 통합안/썸네일/W06_교육과정_편성_도우미.jpg",
+      "scene": "교육과정 편성·시수 요약"
+    },
+    {
+      "id": "handover-helper",
+      "file": "assets/thumbs/handover-helper.webp",
+      "source": "90. 자료 및 기타/06. 작업 기록/2026-11-12 TEAM LEAP 패들렛 18앱 통합안/썸네일/W07_업무_인수인계_도우미.jpg",
+      "scene": "예시 공문 목록·업무 분류"
+    },
+    {
+      "id": "kahoot-maker",
+      "file": "assets/thumbs/kahoot-maker.webp",
+      "source": "kahoot-maker-work-20261112.png",
+      "scene": "카훗 문제 생성 도우미 v3.0의 자료·설정 패널과 실제 생성한 물의 상태 변화 3문항 편집 화면"
+    },
+    {
+      "id": "edutech-hub",
+      "file": "assets/thumbs/edutech-hub.webp",
+      "source": "edutech-hub.webp",
+      "scene": "앱 작업 화면"
+    },
+    {
+      "id": "dojang-gongbang",
+      "file": "assets/thumbs/dojang-gongbang.webp",
+      "source": "dojang-gongbang-gif-20261113.png",
+      "scene": "도장 공방의 붉은 도장 시안과 작업대 — 투명 PNG·투명 GIF(한글 호환용)·흰 배경 PNG 선택 및 GIF 내려받기를 제공하는 운영 화면."
+    },
+    {
+      "id": "lesson-plan-maker",
+      "file": "assets/thumbs/lesson-plan-maker.webp",
+      "source": "lesson-plan-maker.webp",
+      "scene": "앱 작업 화면"
+    },
+    {
+      "id": "a-circuit",
+      "file": "assets/thumbs/a-circuit.webp",
+      "source": "90. 자료 및 기타/TEAM LEAP 소개 영상/제작자료/버전13/source/assets/05_app_screens/a-circuit.png",
+      "scene": "공개 시작·작업 화면"
+    },
+    {
+      "id": "b-classboard",
+      "file": "assets/thumbs/b-classboard.webp",
+      "source": "90. 자료 및 기타/TEAM LEAP 소개 영상/제작자료/버전13/source/assets/05_app_screens/b-classboard.png",
+      "scene": "공개 시작·작업 화면"
+    },
+    {
+      "id": "c-storybook",
+      "file": "assets/thumbs/c-storybook.webp",
+      "source": "90. 자료 및 기타/TEAM LEAP 소개 영상/제작자료/버전13/source/assets/05_app_screens/c-storybook.png",
+      "scene": "공개 시작·작업 화면"
+    },
+    {
+      "id": "d-multigrade",
+      "file": "assets/thumbs/d-multigrade.webp",
+      "source": "90. 자료 및 기타/TEAM LEAP 소개 영상/제작자료/버전13/source/assets/05_app_screens/d-multigrade.png",
+      "scene": "공개 시작·작업 화면"
+    },
+    {
+      "id": "e-together",
+      "file": "assets/thumbs/e-together.webp",
+      "source": "90. 자료 및 기타/TEAM LEAP 소개 영상/제작자료/버전13/source/assets/05_app_screens/e-together.png",
+      "scene": "공개 시작·작업 화면"
+    },
+    {
+      "id": "f-lessonplan",
+      "file": "assets/thumbs/f-lessonplan.webp",
+      "source": "90. 자료 및 기타/TEAM LEAP 소개 영상/제작자료/버전13/source/assets/05_app_screens/f-lessonplan.png",
+      "scene": "공개 시작·작업 화면"
+    },
+    {
+      "id": "g-classdata",
+      "file": "assets/thumbs/g-classdata.webp",
+      "source": "90. 자료 및 기타/TEAM LEAP 소개 영상/제작자료/버전13/source/assets/05_app_screens/g-classdata.png",
+      "scene": "공개 시작·작업 화면"
+    },
+    {
+      "id": "j-howmany",
+      "file": "assets/thumbs/j-howmany.webp",
+      "source": "90. 자료 및 기타/TEAM LEAP 소개 영상/제작자료/버전13/source/assets/05_app_screens/j-howmany.png",
+      "scene": "공개 시작·작업 화면"
+    },
+    {
+      "id": "i-required",
+      "file": "assets/thumbs/i-required.webp",
+      "source": "90. 자료 및 기타/TEAM LEAP 소개 영상/제작자료/버전13/source/assets/05_app_screens/i-required.png",
+      "scene": "공개 시작·작업 화면"
+    },
+    {
+      "id": "k-year",
+      "file": "assets/thumbs/k-year.webp",
+      "source": "90. 자료 및 기타/TEAM LEAP 소개 영상/제작자료/버전13/source/assets/05_app_screens/k-year.png",
+      "scene": "공개 시작·작업 화면"
+    },
+    {
+      "id": "l-rooms",
+      "file": "assets/thumbs/l-rooms.webp",
+      "source": "90. 자료 및 기타/TEAM LEAP 소개 영상/제작자료/버전13/source/assets/05_app_screens/l-rooms.png",
+      "scene": "공개 시작·작업 화면"
+    },
+    {
+      "id": "jeongbo-ieum",
+      "file": "assets/thumbs/jeongbo-ieum.webp",
+      "source": "90. 자료 및 기타/TEAM LEAP 소개 영상/제작자료/버전13/source/assets/05_app_screens/jeongbo-ieum.png",
+      "scene": "공개 시작·작업 화면"
+    },
+    {
+      "id": "class-duty",
+      "file": "assets/thumbs/class-duty.webp",
+      "source": "90. 자료 및 기타/TEAM LEAP 소개 영상/제작자료/버전13/source/assets/05_app_screens/class-duty.png",
+      "scene": "공개 시작·작업 화면"
+    },
+    {
+      "id": "school-certification",
+      "file": "assets/thumbs/school-certification.webp",
+      "source": "90. 자료 및 기타/TEAM LEAP 소개 영상/제작자료/버전13/source/assets/05_app_screens/school-certification.png",
+      "scene": "공개 시작·작업 화면"
+    }
+  ]
+}
