@@ -59,7 +59,7 @@ show_failure() {
   local where="$1" out="$2"
   echo "  ✗ $where"
   echo "    ── 무엇이 빨간가 ──────────────────────────────"
-  printf '%s\n' "$out" | grep -E 'FAIL|Error|error|✗' | head -12 | sed 's/^/    /'
+  printf '%s\n' "$out" | grep -E 'FAIL|Error|error|✗|실패' | head -12 | sed 's/^/    /'
   echo "    ── 마지막 줄 ──────────────────────────────────"
   printf '%s\n' "$out" | tail -6 | sed 's/^/    /'
   echo "    ── 어디서 돌았나 ──────────────────────────────"
