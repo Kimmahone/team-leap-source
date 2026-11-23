@@ -1,0 +1,1391 @@
+{
+ "id": "2026-11-16",
+ "no": 12,
+ "from": "2026-11-16",
+ "to": "2026-11-22",
+ "period": "11. 16.(월) ~ 11. 22.(일)",
+ "title": "행정사무감사에서 불거진 소규모 학교 투자와 폐교 활용의 한계",
+ "lead": "이번 주 경북도의회 행정사무감사에서는 학생 수 15명 이하 소규모 학교에 대한 전시성 시설 투자와 폐교를 둘러싼 적절성 논란이 주요 쟁점으로 다뤄졌습니다. 구미시는 교육혁신선도지역 선정에 따라 2031년까지 482억 원을 투입해 도시형 교육 모델 구축에 나섰습니다. 다른 시·도에서는 폐교 매각기금 폐지나 직속기관 난립에 대한 사전 타당성 검증 요구가 이어져 재정 운용의 투명성이 강조되었습니다.",
+ "leadArticles": [
+  "a15mti9i",
+  "ax9ydg7",
+  "au5kz3l",
+  "a1ohaa8v"
+ ],
+ "takeaways": [
+  "경북도의회 행정감사에서 15명 이하 소규모 학교의 전시성 시설 투자 지양 요구",
+  "구미시 교육혁신선도지역 사업으로 2031년까지 482억 원 투입 추진",
+  "타 시·도의 폐교 센터 난립 지적과 기금 정비 등 폐교 자산의 효율적 운용 논의"
+ ],
+ "status": "자동 생성 · 검토 전",
+ "generator": {
+  "kind": "ai",
+  "label": "AI 초안",
+  "model": "gemini-3.8-flash"
+ },
+ "builtAt": "2026-11-23T01:00:05.742Z",
+ "stats": {
+  "articles": 87,
+  "inScope": 70,
+  "gyeongbuk": 34,
+  "otherSido": 42,
+  "national": 3,
+  "prevArticles": 95,
+  "topics": [
+   {
+    "topic": "폐교 활용",
+    "n": 27,
+    "prev": 35
+   },
+   {
+    "topic": "통폐합·적정규모",
+    "n": 17,
+    "prev": 25
+   },
+   {
+    "topic": "교육재정·교부금",
+    "n": 10,
+    "prev": 5
+   },
+   {
+    "topic": "작은학교 살리기",
+    "n": 7,
+    "prev": 9
+   },
+   {
+    "topic": "기타",
+    "n": 7,
+    "prev": 6
+   },
+   {
+    "topic": "교육혁신선도지역",
+    "n": 2,
+    "prev": 7
+   }
+  ],
+  "regions": [
+   {
+    "region": "경북",
+    "n": 34
+   },
+   {
+    "region": "기타",
+    "n": 8
+   },
+   {
+    "region": "서울",
+    "n": 8
+   },
+   {
+    "region": "부산",
+    "n": 7
+   },
+   {
+    "region": "전북",
+    "n": 6
+   },
+   {
+    "region": "경기",
+    "n": 4
+   },
+   {
+    "region": "제주",
+    "n": 4
+   },
+   {
+    "region": "충북",
+    "n": 4
+   },
+   {
+    "region": "대전",
+    "n": 3
+   },
+   {
+    "region": "전국",
+    "n": 3
+   },
+   {
+    "region": "충남",
+    "n": 3
+   },
+   {
+    "region": "전남",
+    "n": 1
+   },
+   {
+    "region": "대구",
+    "n": 1
+   },
+   {
+    "region": "세종",
+    "n": 1
+   }
+  ]
+ },
+ "numbers": [
+  {
+   "metric": "small_share_top",
+   "topic": "소규모 학교 시설 투자 점검",
+   "headline": "15명",
+   "sub": "최소규모 기준 이하 학교에 대한 예산 투입 점검",
+   "body": "도의회 행정사무감사에서 학생 수가 15명 이하로 줄어든 소규모 학교에 수십억 원을 들여 강당을 짓거나 리모델링하는 전시성 투자를 재검토하라는 지적이 제기되었습니다. 학생 수 급감 지역에 대한 시설 투자의 효율성과 우선순위 재정립이 요구됩니다.",
+   "articles": [
+    "a9q4y06",
+    "a15mti9i",
+    "a1xqy9y6"
+   ],
+   "chart": {
+    "type": "bars",
+    "unit": "%",
+    "caption": "적정규모 미달 학교 비율 상위 8개 시군",
+    "source": "학교알리미 2026 공시",
+    "rows": [
+     {
+      "label": "고령",
+      "value": 58.8
+     },
+     {
+      "label": "예천",
+      "value": 54.2
+     },
+     {
+      "label": "성주",
+      "value": 52.2
+     },
+     {
+      "label": "봉화",
+      "value": 50
+     },
+     {
+      "label": "영양",
+      "value": 50
+     },
+     {
+      "label": "영덕",
+      "value": 50
+     },
+     {
+      "label": "의성",
+      "value": 45.2
+     },
+     {
+      "label": "울진",
+      "value": 42.3
+     }
+    ]
+   }
+  },
+  {
+   "metric": "closed_by_use",
+   "topic": "폐교 활용 대안 모색",
+   "headline": "750곳",
+   "sub": "누적 폐교 중 미활용 자산 관리와 대안 마련 필요",
+   "body": "경북 내 누적 폐교가 750곳에 이르는 가운데 울릉 장흥초 253억 원 투입 독도교육원 건립과 청송군의 청년 사과학교 구상 등 다양한 활용 방안이 제안되고 있습니다. 동시에 행감에서는 특수학교 설립 제안 과정의 발언 논란 등 폐교 활용 방식에 대한 신중한 접근도 요구되었습니다.",
+   "articles": [
+    "a1jvkqem",
+    "a1bsfoto",
+    "ax9ydg7"
+   ],
+   "chart": {
+    "type": "bars",
+    "unit": "곳",
+    "caption": "경북 폐교 750곳은 지금",
+    "source": "지방교육재정알리미 폐교정보",
+    "rows": [
+     {
+      "label": "매각",
+      "value": 495,
+      "hl": false
+     },
+     {
+      "label": "대부",
+      "value": 108,
+      "hl": false
+     },
+     {
+      "label": "자체활용",
+      "value": 77,
+      "hl": true
+     },
+     {
+      "label": "미활용",
+      "value": 70,
+      "hl": true
+     }
+    ]
+   }
+  },
+  {
+   "metric": "sgg:구미",
+   "topic": "거점 지역 교육 투자",
+   "headline": "482억 원",
+   "sub": "구미시 교육혁신선도지역 5년간 투입 규모",
+   "body": "구미시는 교육발전특구에 이어 교육혁신선도지역 2유형에 선정되어 2027년부터 2031년까지 특별교부금 100억 원을 포함한 총 482억 원을 투입합니다. 우수 학생 유출을 방지하고 공교육 경쟁력을 강화하기 위한 집중 투자가 본격화될 전망입니다.",
+   "articles": [
+    "au5kz3l",
+    "a1vr099a",
+    "a4vc9fa"
+   ],
+   "chart": {
+    "type": "bars",
+    "unit": "명",
+    "caption": "구미 초·중·고 학생",
+    "source": "학교알리미 2026 공시 · EDSS 교육통계 2016~2025 실적 · 2027~ 코호트 진급법 전망(대시보드와 같은 셈)",
+    "rows": [
+     {
+      "label": "2016 실적",
+      "value": 58585
+     },
+     {
+      "label": "2026 공시",
+      "value": 48589,
+      "hl": true
+     },
+     {
+      "label": "2036 전망",
+      "value": 28008
+     }
+    ]
+   }
+  }
+ ],
+ "issues": [
+  {
+   "kicker": "시설 투자",
+   "title": "최소규모 학교에 대한 대규모 시설 투자 적정성 논란",
+   "what": "도의회 행정사무감사에서 영주, 울진, 봉화 등 학생 수 15명 이하로 줄어든 학교에 수십억 원대 강당 신축이나 리모델링 예산이 투입되는 관행에 대한 비판이 제기되었습니다.",
+   "why": "도내 최소규모 학교가 91곳에 달하고 향후 학생 감소가 지속될 것으로 예상되는 상황에서, 단기 유지보수를 넘어선 대형 시설 투자는 교육재정의 비효율을 초래할 수 있기 때문입니다.",
+   "ask": [
+    "학생 수 15명 이하 소규모 학교의 시설 투자 타당성을 검증하는 별도 기준이 마련되어 있는가?",
+    "학교 간 시설 공유나 이동 수업 등 대규모 시설 신축을 대체할 공유형 인프라 대안을 검토하고 있는가?"
+   ],
+   "facts": [
+    {
+     "key": "schools_minimum",
+     "label": "최소규모 학교(15명 이하)",
+     "value": 91,
+     "unit": "곳",
+     "src": "학교알리미 2026 공시"
+    },
+    {
+     "key": "threshold_minimum",
+     "label": "최소규모 참고선",
+     "value": 15,
+     "unit": "명",
+     "src": "대시보드 적정규모 참고선"
+    },
+    {
+     "key": "sgg_under_봉화",
+     "label": "봉화 적정규모 미달 학교",
+     "value": 12,
+     "unit": "곳",
+     "src": "학교알리미 2026 공시"
+    }
+   ],
+   "articles": [
+    "a15mti9i",
+    "a9q4y06",
+    "a1xqy9y6"
+   ]
+  },
+  {
+   "kicker": "폐교 정책",
+   "title": "폐교 부지 활용 방향과 사회적 합의 형성 과제",
+   "what": "특수학교 부족 문제를 해결하기 위해 북부권 폐교를 활용하자는 제안이 도의회에서 나왔으나 분리교육 논란으로 번졌으며, 울릉에서는 253억 원을 들여 독도교육원을 건립하기로 했습니다.",
+   "why": "경북에는 매각되지 않은 폐교가 255곳, 미활용 폐교가 70곳에 이르러 자체 활용 수요가 높지만 사업 목적과 지역사회의 공감대 형성 여부에 따라 갈등이 발생할 수 있습니다.",
+   "ask": [
+    "폐교를 자체 교육시설이나 특수목적 시설로 전환할 때 사전 의견 수렴 체계가 제도화되어 있는가?",
+    "장기 미활용 폐교 자산의 용도 지정 시 교육적 가치와 지역 수요의 우선순위는 어떻게 설정되고 있는가?"
+   ],
+   "facts": [
+    {
+     "key": "closed_use_미활용",
+     "label": "경북 폐교 중 미활용",
+     "value": 70,
+     "unit": "곳",
+     "src": "지방교육재정알리미 폐교정보"
+    },
+    {
+     "key": "closed_not_sold",
+     "label": "경북 폐교 중 매각하지 않은 곳",
+     "value": 255,
+     "unit": "곳",
+     "src": "지방교육재정알리미 폐교정보"
+    },
+    {
+     "key": "closed_use_자체활용",
+     "label": "경북 폐교 중 자체활용",
+     "value": 77,
+     "unit": "곳",
+     "src": "지방교육재정알리미 폐교정보"
+    }
+   ],
+   "articles": [
+    "ax9ydg7",
+    "a4i1ijo",
+    "a1jvkqem"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "region": "부산",
+   "what": "폐교재산 기금 조례 폐지 추진 및 신규 센터 설립 타당성 검증 요구",
+   "detail": "조성 실적이 전무한 폐교재산 매각기금 조례 폐지를 추진하고, 철거 예정 부지에 폐교 활용 시설을 추진하는 등 칸막이 행정으로 인한 직속기관 난립 문제를 지적했습니다.",
+   "compare": "경북은 자체활용 폐교가 77곳에 달하고 미활용 폐교도 70곳이 남아 있어, 신규 시설 전환 시 장기 운영비와 사업 타당성에 대한 면밀한 사전 점검이 필요해 보입니다.",
+   "facts": [
+    {
+     "key": "closed_use_자체활용",
+     "label": "경북 폐교 중 자체활용",
+     "value": 77,
+     "unit": "곳",
+     "src": "지방교육재정알리미 폐교정보"
+    },
+    {
+     "key": "closed_use_미활용",
+     "label": "경북 폐교 중 미활용",
+     "value": 70,
+     "unit": "곳",
+     "src": "지방교육재정알리미 폐교정보"
+    }
+   ],
+   "articles": [
+    "a1ohaa8v",
+    "ahn3cuy",
+    "a1i6c5pg"
+   ]
+  },
+  {
+   "region": "경기",
+   "what": "통합운영학교 행정·교육과정 연계 강화 및 학교복합시설 사후관리 제도화 주문",
+   "detail": "23개 통합운영학교의 물리적 통합을 넘어선 연계 체계를 요구하고, 폐교 활용 학교복합시설에 투입되는 수백억 원 사업비의 운영비 분담과 장기 유지관리 책임을 명확히 할 것을 강조했습니다.",
+   "compare": "경북은 적정규모 미달 학교가 229곳에 이르러 통합운영 모델 도입 시 시설 투자뿐 아니라 사후 운영비 분담 지침 마련이 선행되어야 할 것으로 보입니다.",
+   "facts": [
+    {
+     "key": "schools_under",
+     "label": "적정규모 참고선 미달 학교(동 60명·읍면 30명)",
+     "value": 229,
+     "unit": "곳",
+     "src": "학교알리미 2026 공시"
+    },
+    {
+     "key": "schools_under_share",
+     "label": "적정규모 미달 비율",
+     "value": 25,
+     "unit": "%",
+     "src": "학교알리미 2026 공시"
+    }
+   ],
+   "articles": [
+    "a1puj1fe",
+    "altbcym"
+   ]
+  },
+  {
+   "region": "제주",
+   "what": "폐교 대부료율 인하 조례 개정 및 학교복합시설 교부금 제도 개선 요구",
+   "detail": "폐교 재산 대부료율을 1%에서 0.5%로 낮춰 폐교 활용률을 71.4%까지 높였으며, 보통교부금 기준에 묶인 학교복합시설 지원 개선을 국회에 건의했습니다.",
+   "compare": "경북은 대부 중인 폐교가 108곳으로 상당수를 차지하고 있어, 대부 기준 개선을 통한 민간 및 지자체 참여 활성화 방안을 검토할 여지가 있어 보입니다.",
+   "facts": [
+    {
+     "key": "closed_use_대부",
+     "label": "경북 폐교 중 대부",
+     "value": 108,
+     "unit": "곳",
+     "src": "지방교육재정알리미 폐교정보"
+    },
+    {
+     "key": "closed_use_미활용",
+     "label": "경북 폐교 중 미활용",
+     "value": 70,
+     "unit": "곳",
+     "src": "지방교육재정알리미 폐교정보"
+    }
+   ],
+   "articles": [
+    "a4w3uh4",
+    "a1x9gbiv"
+   ]
+  }
+ ],
+ "factchecks": [],
+ "watch": [
+  {
+   "text": "경북도의회 2026년도 행정사무감사 종료에 따른 지적사항 조치계획 수립",
+   "articles": [
+    "a1h2izsm",
+    "a15mti9i"
+   ]
+  },
+  {
+   "text": "구미시 교육혁신선도지역 기본계획 확정 및 세부 사업 실행안 검토",
+   "articles": [
+    "au5kz3l",
+    "a1vr099a"
+   ]
+  }
+ ],
+ "articles": [
+  {
+   "id": "aqmaf31",
+   "title": "\"속리산 자락에 울려 퍼진 아이들의 꿈과 웃음\"… 상주 화북초, 학예발...",
+   "outlet": "enewstoday.co.kr",
+   "date": "2026-11-16",
+   "link": "http://www.enewstoday.co.kr/news/articleView.html?idxno=2493253",
+   "region": "경북",
+   "topic": "작은학교 살리기",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a4jvchh",
+   "title": "교육위, 지역대 지원 1150억 증액…사립대 반값 등록금은 예결위로",
+   "outlet": "경북일보",
+   "date": "2026-11-16",
+   "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4090944",
+   "region": "경북",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "a7ygqui",
+   "title": "학생 줄어드는 경북…교육자원 공유로 미래형 교육체제 전환",
+   "outlet": "매일신문",
+   "date": "2026-11-16",
+   "link": "https://www.imaeil.com/page/view/2026111423000967165",
+   "region": "경북",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a826ts0",
+   "title": "[[구자문 칼럼]] 대학교육 글로벌 경쟁력의 중요성",
+   "outlet": "대경일보",
+   "date": "2026-11-16",
+   "link": "https://www.dkilbo.com/news/articleView.html?idxno=560850",
+   "region": "경북",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "a4i1ijo",
+   "title": "특수교사노조 \"경북도의회 행정감사서 장애학생 차별 발언\"",
+   "outlet": "yna.co.kr",
+   "date": "2026-11-16",
+   "link": "https://www.yna.co.kr/view/AKR20261116065400053?input=1195m",
+   "region": "경북",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1puj1fe",
+   "title": "박은경 경기도의원, 통합운영학교 개선과 유보통합 준비 주문",
+   "outlet": "m-i.kr",
+   "date": "2026-11-16",
+   "link": "https://www.m-i.kr/news/articleView.html?idxno=2018821",
+   "region": "경기",
+   "topic": "통폐합·적정규모",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a17493sa",
+   "title": "[르포] 제주 폐교 방치 현장 속으로...'무릉중·산양·조수·명월초' 탐...",
+   "outlet": "newsjeju.net",
+   "date": "2026-11-16",
+   "link": "https://www.newsjeju.net/news/articleView.html?idxno=428431",
+   "region": "제주",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1d7q08a",
+   "title": "경북도의회 김상희 의원 \"농산어촌·도서지역 교육격차 해소\"",
+   "outlet": "idaegu.co.kr",
+   "date": "2026-11-17",
+   "link": "https://www.idaegu.co.kr/news/articleView.html?idxno=565688",
+   "region": "경북",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1giyezh",
+   "title": "천호성 전북교육감, 교육교부금 개편에 제동…“지역 교육재정 축소 우...",
+   "outlet": "betanews.net",
+   "date": "2026-11-17",
+   "link": "https://www.betanews.net/article/view/beta202611170121",
+   "region": "전북",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "achc0z5",
+   "title": "통합교육청 첫 본예산 7조 7,000억 원...\"아이들 안전사업, 당연 1순위\"[...",
+   "outlet": "ikbc.co.kr",
+   "date": "2026-11-17",
+   "link": "https://www.ikbc.co.kr/article/view/kbc202611170084",
+   "region": "전남",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "aruhgxo",
+   "title": "13개 대학 인프라를 초·중·고 교육 현장으로…경산시의회, '지역 교육...",
+   "outlet": "ajunews.com",
+   "date": "2026-11-17",
+   "link": "https://www.ajunews.com/view/20261117190054421",
+   "region": "경북",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "a1cc9enw",
+   "title": "천호성 “차별 없는 교육 위한 교육재정 뒷받침해야”",
+   "outlet": "새전북신문",
+   "date": "2026-11-17",
+   "link": "https://sjbnews.com/news/news.php?number=892892",
+   "region": "전북",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "alv7iz3",
+   "title": "광역단체장 국회에서의 하루｜교육재정 확보, 끝까지 사수",
+   "outlet": "jjn.co.kr",
+   "date": "2026-11-17",
+   "link": "http://www.jjn.co.kr/news/articleView.html?idxno=1057521",
+   "region": "전북",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "altbcym",
+   "title": "정연일 경기도의원 “교육사업 사전 검증·성과평가 제도화해야”",
+   "outlet": "경기일보",
+   "date": "2026-11-17",
+   "link": "https://www.kyeonggi.com/article/20261117580495",
+   "region": "경기",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1wid24g",
+   "title": "폐교를 주민 소통 공간으로…KCC글라스, 실내건축에도 ‘공공의 가치’",
+   "outlet": "디지털타임스",
+   "date": "2026-11-17",
+   "link": "https://www.dt.co.kr/article/12095725?ref=naver",
+   "region": "대전",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "aiwqyxb",
+   "title": "[2026 행감ㅣ경북] \"농업예산 비중 10% 이상 확대…기본소득 국비 비율 ...",
+   "outlet": "농민신문",
+   "date": "2026-11-17",
+   "link": "https://www.agrinet.co.kr/news/articleView.html?idxno=408958",
+   "region": "경북",
+   "topic": "기타",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1x9gbiv",
+   "title": "악화되는 제주교육청 재정, 인건비 부담·교부금 개편 '악재'",
+   "outlet": "헤드라인제주",
+   "date": "2026-11-17",
+   "link": "https://www.headlinejeju.co.kr/news/articleView.html?idxno=602282",
+   "region": "제주",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "aa5nl67",
+   "title": "[이기식 칼럼] 사관학교 통합, 민간자문특별위원회는 무엇을 자문하는가",
+   "outlet": "news2day.co.kr",
+   "date": "2026-11-17",
+   "link": "https://www.news2day.co.kr/article/20261117500162",
+   "region": "기타",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "a1kl55sq",
+   "title": "“AI 시대, 결국 답은 인간과 공동체”…폐교를 ‘공공주방’으로 바꾼...",
+   "outlet": "dailyt.co.kr",
+   "date": "2026-11-17",
+   "link": "https://www.dailyt.co.kr/newsView/dlt202611170025",
+   "region": "서울",
+   "topic": "기타",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a14lh9h1",
+   "title": "양송이 서울시의원 “학교 배정 여전히 ‘깜깜이’ 학생 생활권 중심으...",
+   "outlet": "seoul.co.kr",
+   "date": "2026-11-17",
+   "link": "https://www.seoul.co.kr/news/publicnews/local_govern/smc_movement/2026/11/17/20261117500077?wlog_tag3=naver",
+   "region": "서울",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1kc54rb",
+   "title": "폐교를 공공주방으로…실내건축으로 사회문제 푼다",
+   "outlet": "smedaily.co.kr",
+   "date": "2026-11-17",
+   "link": "http://www.smedaily.co.kr/news/articleView.html?idxno=366228",
+   "region": "서울",
+   "topic": "기타",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "af1cwhr",
+   "title": "[뉴스워커_KCC글라스] 버려진 폐교가 주민들의 주방으로…실내건축대전...",
+   "outlet": "newsworker.co.kr",
+   "date": "2026-11-17",
+   "link": "https://www.newsworker.co.kr/news/articleView.html?idxno=514414",
+   "region": "서울",
+   "topic": "기타",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1hjsz8y",
+   "title": "육사, 충청권 이전·국군사관학교 신입생 선발 2029년부터…총동창회 “...",
+   "outlet": "munhwa.com",
+   "date": "2026-11-18",
+   "link": "https://www.munhwa.com/article/11632387?ref=naver",
+   "region": "전국",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "ax9ydg7",
+   "title": "경북도의회 교육위원회, 특수교육 교육여건 개선 논의 과정에서의 표현...",
+   "outlet": "seoul.co.kr",
+   "date": "2026-11-18",
+   "link": "https://www.seoul.co.kr/news/publicnews/local_govern/news_local/2026/11/18/20261118500323?wlog_tag3=naver",
+   "region": "경북",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1dp98h1",
+   "title": "군산시의회 행복委, 행정사무감사서 복지·교육·노인일자리 현안 점검",
+   "outlet": "jeonmin.co.kr",
+   "date": "2026-11-18",
+   "link": "http://www.jeonmin.co.kr/news/articleView.html?idxno=450756",
+   "region": "전북",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "au5kz3l",
+   "title": "명품 교육도시 도약 시동 '부릉 부릉'…김장호 구미시장, 학령인구 유출...",
+   "outlet": "ajunews.com",
+   "date": "2026-11-18",
+   "link": "https://www.ajunews.com/view/20261118195837436",
+   "region": "경북",
+   "topic": "교육혁신선도지역",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a9q4y06",
+   "title": "박영서 경북도의원, 행감서 \"관행적 예산 낭비 쇄신…학생 중심 교육현...",
+   "outlet": "이로운넷",
+   "date": "2026-11-18",
+   "link": "https://www.eroun.net/news/articleView.html?idxno=95907",
+   "region": "경북",
+   "topic": "작은학교 살리기",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a15mti9i",
+   "title": "박영서 도의원, 도내 교육지원청·직속기관 행감서",
+   "outlet": "idaegu.co.kr",
+   "date": "2026-11-18",
+   "link": "https://www.idaegu.co.kr/news/articleView.html?idxno=565738",
+   "region": "경북",
+   "topic": "작은학교 살리기",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a9t9rtt",
+   "title": "사관학교 총동창회 \"'육사 죽이기'가 본질임을 정부 스스로 자백\"",
+   "outlet": "월간조선",
+   "date": "2026-11-18",
+   "link": "https://monthly.chosun.com/news/articleView.html?idxno=72023",
+   "region": "충북",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "awqxnlx",
+   "title": "대전에 통합사관학교 신설, 육사만 충청으로 이전한다",
+   "outlet": "edaily.co.kr",
+   "date": "2026-11-18",
+   "link": "https://www.edaily.co.kr/News/Read?newsId=03824486645647032&mediaCodeNo=257&utm_source=naver&utm_medium=referral&utm_campaign=news_syndication&utm_content=original_article",
+   "region": "기타",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "a130gad0",
+   "title": "3군 사관학교 총동창회, 통합 수정안 거부",
+   "outlet": "sidae.com",
+   "date": "2026-11-18",
+   "link": "https://www.sidae.com/article/2026111814572289502",
+   "region": "기타",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "a1n74x8",
+   "title": "경상북도의회 교육위, 행감 질의 과정서 나온 부적절한 표현 공식 사과",
+   "outlet": "한스경제",
+   "date": "2026-11-18",
+   "link": "http://www.hansbiz.co.kr/news/articleView.html?idxno=884661",
+   "region": "경북",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1lhp1s1",
+   "title": "사관학교 '네트워크형 통합'으로 반발 절충…육사 이전은 그대로",
+   "outlet": "yna.co.kr",
+   "date": "2026-11-18",
+   "link": "https://www.yna.co.kr/view/AKR20261118119800504?input=1195m",
+   "region": "기타",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "ahn7mbj",
+   "title": "의견 수렴은 뒷전, 창설 절차는 속도…국군사관학교 '답정너' 추진",
+   "outlet": "ajunews.com",
+   "date": "2026-11-18",
+   "link": "https://www.ajunews.com/view/20261118145041469",
+   "region": "기타",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "a9l79fj",
+   "title": "박승진 시의원, 중랑구 재개발로 2만 8700여 호 증가…학교 부족 우려 제...",
+   "outlet": "newspim.com",
+   "date": "2026-11-18",
+   "link": "https://www.newspim.com/news/view/20261118001018",
+   "region": "기타",
+   "topic": "작은학교 살리기",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1vr099a",
+   "title": "구미시, 교육에 482억 투입…‘교육도시’ 경쟁력 키워",
+   "outlet": "아시아경제",
+   "date": "2026-11-18",
+   "link": "https://view.asiae.co.kr/article/2026111811433262653",
+   "region": "경북",
+   "topic": "교육재정·교부금",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a57uent",
+   "title": "KCC글라스, 대한민국 실내건축대전 개최… 폐교 활용한 ‘공공주방’ 대...",
+   "outlet": "womennews.co.kr",
+   "date": "2026-11-18",
+   "link": "https://www.womennews.co.kr/news/articleView.html?idxno=284616",
+   "region": "대전",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a4w3uh4",
+   "title": "디지털 저장매체 파기·폐교 대부료 인하…법제처, 조례 모델 10개 제시",
+   "outlet": "뉴스1",
+   "date": "2026-11-18",
+   "link": "https://www.news1.kr/politics/pm-bai-comm/6357914",
+   "region": "제주",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "aglfjmy",
+   "title": "\"교육 때문에 떠나던 구미, 이젠 찾아오는 도시로\"…교육혁신 승부수",
+   "outlet": "더팩트",
+   "date": "2026-11-18",
+   "link": "https://news.tf.co.kr/read/national/2390204.htm",
+   "region": "경북",
+   "topic": "교육혁신선도지역",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1rs0p33",
+   "title": "구미시, 교육혁신선도지역 선정…공교육 혁신 본격화",
+   "outlet": "m-i.kr",
+   "date": "2026-11-18",
+   "link": "https://www.m-i.kr/news/articleView.html?idxno=2020050",
+   "region": "경북",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "afi0hfv",
+   "title": "\"대치동 안 부럽다\"…구미시, 482억 투입해 교육경쟁력 강화",
+   "outlet": "뉴스1",
+   "date": "2026-11-18",
+   "link": "https://www.news1.kr/local/daegu-gyeongbuk/6357815",
+   "region": "경북",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1xqy9y6",
+   "title": "\"낙찰 차액 설계변경에 폐교 위기 학교에 투자\"…박영서 '제동'",
+   "outlet": "dailian.co.kr",
+   "date": "2026-11-18",
+   "link": "https://www.dailian.co.kr/news/view/1716539/?sc=Naver",
+   "region": "경북",
+   "topic": "작은학교 살리기",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1xvhpuv",
+   "title": "문경교육, 미래 배움의 지평 넓힌다⋯학교를 넘어 지역으로",
+   "outlet": "대구신문",
+   "date": "2026-11-18",
+   "link": "https://www.idaegu.com/news/articleView.html?idxno=667082",
+   "region": "경북",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "aub12ex",
+   "title": "경산시의회 '미래교육연구회', 지역대학·학교 상생 방안 내놨다",
+   "outlet": "daily.hankooki.com",
+   "date": "2026-11-18",
+   "link": "https://daily.hankooki.com/news/articleView.html?idxno=1426210",
+   "region": "경북",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "at63ham",
+   "title": "'경산시 지역대학과 초‧중‧고등학교 간 상생발전에 관한 연구' 최종보...",
+   "outlet": "pressian.com",
+   "date": "2026-11-18",
+   "link": "https://www.pressian.com/pages/articles/2026111721000043497?utm_source=naver&utm_medium=search",
+   "region": "경북",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "a1sxo0g6",
+   "title": "경북 장애인단체 \"도의회 행감 발언, 통합교육 취지 훼손\"",
+   "outlet": "안동MBC",
+   "date": "2026-11-19",
+   "link": "http://andongmbc.co.kr/adboard/NewsView85849",
+   "region": "경북",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1f8v7bj",
+   "title": "최현덕 남양주시장, 학교 사라질까 걱정하는 아이들과 마주 앉아 특별한...",
+   "outlet": "fieldnews.kr",
+   "date": "2026-11-19",
+   "link": "http://www.fieldnews.kr/news/articleView.html?idxno=33237",
+   "region": "경기",
+   "topic": "기타",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1deno9r",
+   "title": "(창간) 천호성 전북교육감 \"교육 양극화 좁히고, 살아가는 힘 길러\"",
+   "outlet": "domin.co.kr",
+   "date": "2026-11-19",
+   "link": "http://www.domin.co.kr/news/articleView.html?idxno=1576137",
+   "region": "전북",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "awjo9v8",
+   "title": "박승진 서울시의원, \"중화2동 7500세대 개발…지역 여건 반영한 학교 정...",
+   "outlet": "fntoday.co.kr",
+   "date": "2026-11-19",
+   "link": "https://www.fntoday.co.kr/news/articleView.html?idxno=399320",
+   "region": "서울",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a5ogmxx",
+   "title": "경기도의회 교육행정위원회, 2026년 행정사무감사 마무리",
+   "outlet": "seoul.co.kr",
+   "date": "2026-11-19",
+   "link": "https://www.seoul.co.kr/news/publicnews/local_govern/kyungki_do/2026/11/19/20261119500308?wlog_tag3=naver",
+   "region": "경기",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1bsfoto",
+   "title": "청송군 저연차 공무원, 관광기념품·청년 사과학교 제안",
+   "outlet": "경북일보",
+   "date": "2026-11-19",
+   "link": "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4091445",
+   "region": "경북",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "audxnnu",
+   "title": "[패트롤]포항시-영주시-영양군-농협 영양군지부-영덕군-청송군-청송군의...",
+   "outlet": "에너지경제",
+   "date": "2026-11-19",
+   "link": "https://www.ekn.kr/web/view.php?key=20261119025332069",
+   "region": "경북",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1ohaa8v",
+   "title": "4년간 조성액 '0원'…이준호 부산시의원, 폐교재산 기금 조례 폐지 추진",
+   "outlet": "ziksir.com",
+   "date": "2026-11-19",
+   "link": "https://www.ziksir.com/news/articleView.html?idxno=153890",
+   "region": "부산",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a15ywe0v",
+   "title": "감사 때마다 되풀이되는 교육현장 '고질병'…경북교육청, 이번엔 바뀔까",
+   "outlet": "매일신문",
+   "date": "2026-11-19",
+   "link": "https://www.imaeil.com/page/view/2026111911193451581",
+   "region": "경북",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "ait8dji",
+   "title": "괴산증평교육청, 작은학교 소통 프로그램 개최…교직원 42명 참석",
+   "outlet": "국제뉴스",
+   "date": "2026-11-19",
+   "link": "https://www.gukjenews.com/news/articleView.html?idxno=3755828",
+   "region": "충북",
+   "topic": "작은학교 살리기",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a3aukis",
+   "title": "윤경희 청송군수 \"젊은 공직자 아이디어는 군정 발전 밑거름\"",
+   "outlet": "국제뉴스",
+   "date": "2026-11-19",
+   "link": "https://www.gukjenews.com/news/articleView.html?idxno=3757194",
+   "region": "경북",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1rn8svj",
+   "title": "성일종 \"사관학교 통합은 육사 죽이기\"... 국방장관 사퇴 요구",
+   "outlet": "ohmynews.com",
+   "date": "2026-11-19",
+   "link": "https://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0003286475&CMPT_CD=P0010&utm_source=naver&utm_medium=newsearch&utm_campaign=naver_news",
+   "region": "서울",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "a1x7gwhn",
+   "title": "괴산증평교육지원청 작은학교와 소통",
+   "outlet": "cctimes.kr",
+   "date": "2026-11-19",
+   "link": "http://www.cctimes.kr/news/articleView.html?idxno=938113",
+   "region": "충북",
+   "topic": "작은학교 살리기",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1k4218g",
+   "title": "잠자던 100년 부산 학교史, 세상 밖으로… 신라대 부산학센터, 경남고 역...",
+   "outlet": "아시아경제",
+   "date": "2026-11-19",
+   "link": "https://view.asiae.co.kr/article/2026111912331748848",
+   "region": "부산",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1wo9l2n",
+   "title": "예산지역 학령인구 감소 대응 방안 논의",
+   "outlet": "금강일보",
+   "date": "2026-11-19",
+   "link": "https://www.ggilbo.com/news/articleView.html?idxno=1194214",
+   "region": "충남",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a12g380s",
+   "title": "[패트롤] 경북도-경북교육청-한국국학진흥원",
+   "outlet": "에너지경제",
+   "date": "2026-11-19",
+   "link": "https://www.ekn.kr/web/view.php?key=20261119023051838",
+   "region": "경북",
+   "topic": "기타",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1nbn3ki",
+   "title": "[심층분석]국군사관학교 2029년 출범 '예정'…육·해·공사 명칭 없앤다",
+   "outlet": "thepublic.kr",
+   "date": "2026-11-19",
+   "link": "https://www.thepublic.kr/news/articleView.html?idxno=327461",
+   "region": "충북",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "a1dqou85",
+   "title": "이준호 부산시의회 의원, 폐교 매각기금 4년간 '0원'…폐지 수순",
+   "outlet": "newstown.co.kr",
+   "date": "2026-11-19",
+   "link": "http://www.newstown.co.kr/news/articleView.html?idxno=722500",
+   "region": "부산",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1jvkqem",
+   "title": "울릉 장흥초등학교, 80여 년 역사 뒤로하고 독도교육원으로 새 출발",
+   "outlet": "더팩트",
+   "date": "2026-11-19",
+   "link": "https://news.tf.co.kr/read/national/2390778.htm",
+   "region": "경북",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1035e2g",
+   "title": "고교 선택부터 첫 일자리까지…구미, '떠나지 않아도 되는 교육'에 482억",
+   "outlet": "대구신문",
+   "date": "2026-11-19",
+   "link": "https://www.idaegu.com/news/articleView.html?idxno=667120",
+   "region": "경북",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1q1lv6n",
+   "title": "[기고]국군사관학교 창설 수정안은 포장만 바꾼 통폐합!…“1+2+1 통합교...",
+   "outlet": "munhwa.com",
+   "date": "2026-11-19",
+   "link": "https://www.munhwa.com/article/11632388?ref=naver",
+   "region": "기타",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "a174d06o",
+   "title": "김대중 교육감, 국회 앞 피켓 시위…\"학교 닫히면 마을 소멸\"",
+   "outlet": "아시아경제",
+   "date": "2026-11-20",
+   "link": "https://view.asiae.co.kr/article/2026112020081670357",
+   "region": "전국",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a12ywynp",
+   "title": "철거 예정 부지인데 사업 추진?...폐교 활용 '칸막이 행정' 도마",
+   "outlet": "news.bbsi.co.kr",
+   "date": "2026-11-20",
+   "link": "https://news.bbsi.co.kr/news/articleView.html?idxno=4119944",
+   "region": "부산",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a8do3wx",
+   "title": "교육재정 흔들리면 전북 교육도 흔들린다…전북 정치권도 나서야",
+   "outlet": "jeonmin.co.kr",
+   "date": "2026-11-20",
+   "link": "http://www.jeonmin.co.kr/news/articleView.html?idxno=450873",
+   "region": "전북",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "ahn3cuy",
+   "title": "\"학교는 줄고 센터는 늘고\"…박준영 시의원, 교육청 폐교 활용 정책 개...",
+   "outlet": "국제뉴스",
+   "date": "2026-11-20",
+   "link": "https://www.gukjenews.com/news/articleView.html?idxno=3758395",
+   "region": "부산",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "apt64ek",
+   "title": "박준영 의원 \"폐교에 센터만 늘려선 안 돼\"…전면 점검 촉구",
+   "outlet": "nbntv.co.kr",
+   "date": "2026-11-20",
+   "link": "https://www.nbntv.co.kr/news/articleView.html?idxno=4027738",
+   "region": "부산",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a137wqlf",
+   "title": "대구시의회, 교육정책 실효성 정조준…학생 안전·교육격차 해소 촉구",
+   "outlet": "아이뉴스24",
+   "date": "2026-11-20",
+   "link": "http://www.inews24.com/view/2028661",
+   "region": "대구",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1bcjipe",
+   "title": "박희정 시의원, 서울시 초등학교 학생 수 불균형…장기적 계획 필요",
+   "outlet": "newspim.com",
+   "date": "2026-11-20",
+   "link": "https://www.newspim.com/news/view/20261120000705",
+   "region": "서울",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "ammpc7c",
+   "title": "청송군, 젊은 공직자 아이디어로 ‘지역 미래’ 설계",
+   "outlet": "tk.newdaily.co.kr",
+   "date": "2026-11-20",
+   "link": "https://tk.newdaily.co.kr/site/data/html/2026/11/20/2026112050176.html",
+   "region": "경북",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1ijjqyi",
+   "title": "[기획특집] 살기좋은 경북 (111) 문경시 산북면",
+   "outlet": "경북신문",
+   "date": "2026-11-20",
+   "link": "https://www.kbsm.net/news/view.php?idx=542612",
+   "region": "경북",
+   "topic": "기타",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "asnazhp",
+   "title": "폐교에서 아이들의 배움터로…'제주꿈새미', 제주건축문화대상 수상",
+   "outlet": "헤드라인제주",
+   "date": "2026-11-20",
+   "link": "https://www.headlinejeju.co.kr/news/articleView.html?idxno=602468",
+   "region": "제주",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "ahez68o",
+   "title": "[인터뷰] 이병도 충남교육감 \"교육 중심은 사람…충남교육 10년 대전환 ...",
+   "outlet": "weekly.hankooki.com",
+   "date": "2026-11-20",
+   "link": "https://weekly.hankooki.com/news/articleView.html?idxno=7194875",
+   "region": "충남",
+   "topic": "폐교 활용",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1jbtskq",
+   "title": "예산교육지원청·예산군, 지역교육행정협의회 개최…교육 현안 3건 논의",
+   "outlet": "국제뉴스",
+   "date": "2026-11-20",
+   "link": "https://www.gukjenews.com/news/articleView.html?idxno=3757570",
+   "region": "충남",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1l98yx5",
+   "title": "보통교부금 특례 3년 연장' 청신호…세종교육 재정 숨통 트이나",
+   "outlet": "ccnnews.co.kr",
+   "date": "2026-11-20",
+   "link": "http://www.ccnnews.co.kr/news/articleView.html?idxno=418085",
+   "region": "세종",
+   "topic": "교육재정·교부금",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "anbwge8",
+   "title": "김상희 경북도의원, 내신평가 공정성·IB 교육 내실화 촉구",
+   "outlet": "국제뉴스",
+   "date": "2026-11-21",
+   "link": "https://www.gukjenews.com/news/articleView.html?idxno=3758810",
+   "region": "경북",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1i6c5pg",
+   "title": "박준영 부산시의원, 폐교 활용 센터 난립 비판…교육재정 낭비 우려",
+   "outlet": "thepowernews.co.kr",
+   "date": "2026-11-21",
+   "link": "https://www.thepowernews.co.kr/view.php?ud=2026112023141341761d72a7352_7",
+   "region": "부산",
+   "topic": "폐교 활용",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a4vc9fa",
+   "title": "구미시, 교육 지원사업 확대…2031년까지 482억원 투입",
+   "outlet": "daily.hankooki.com",
+   "date": "2026-11-21",
+   "link": "https://daily.hankooki.com/news/articleView.html?idxno=1427609",
+   "region": "경북",
+   "topic": "교육재정·교부금",
+   "cited": true,
+   "inScope": true
+  },
+  {
+   "id": "a1h2izsm",
+   "title": "경북도의회 교육위 교육행정사무감사 마무리",
+   "outlet": "경북매일",
+   "date": "2026-11-22",
+   "link": "https://www.kbmaeil.com/article/20261122500417",
+   "region": "경북",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "a1wfymqt",
+   "title": "교총, 최교진 교육부 장관 사의에 “늦었지만 당연한 결정”",
+   "outlet": "chosun.com",
+   "date": "2026-11-22",
+   "link": "https://www.chosun.com/national/education/2026/11/22/C7KGWWSVCBCXHPWJ63XAT2H76U/?utm_source=naver&utm_medium=referral&utm_campaign=naver-news",
+   "region": "전국",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  },
+  {
+   "id": "ap0yec8",
+   "title": "국힘 “국군사관학교 수장도 입맛대로…사관학교 통폐합 추진 멈춰야”",
+   "outlet": "디지털타임스",
+   "date": "2026-11-22",
+   "link": "https://www.dt.co.kr/article/12096526?ref=naver",
+   "region": "대전",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "a1dng8f",
+   "title": "한기호 “국군사관학교 창설 계획은 사실상 육사 죽이기…즉각 철회하...",
+   "outlet": "강원일보",
+   "date": "2026-11-22",
+   "link": "https://www.kwnews.co.kr/article/20261122500498",
+   "region": "기타",
+   "topic": "대학 구조조정",
+   "cited": false,
+   "inScope": false
+  },
+  {
+   "id": "aquymeq",
+   "title": "박희정 서울시의원 “530m 거리 초등학교 학생 수 11배 차이…배치 불균...",
+   "outlet": "megaeconomy.co.kr",
+   "date": "2026-11-22",
+   "link": "https://www.megaeconomy.co.kr/news/newsview.php?ncode=1065572820830953",
+   "region": "서울",
+   "topic": "통폐합·적정규모",
+   "cited": false,
+   "inScope": true
+  }
+ ],
+ "checks": {
+  "dropped": [],
+  "citedArticles": 17
+ }
+}
