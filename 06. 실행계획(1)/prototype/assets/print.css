@@ -168,7 +168,45 @@
   #view-brief .br-region p{font-size:8.5pt}
   #view-brief .br-stat{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
   #view-brief .br-method{font-size:8.5pt;padding:4mm 5mm;break-inside:avoid}
-  #view-brief .br-refs{display:block !important;break-before:page;page-break-before:always}
+
+  /* ── 빈 쪽 없애기 〔2026. 11. 27.〕 ─────────────────────────────────
+     「내용이 적은 호를 인쇄하면 빈 여백이 많다」— 12개 호를 모두 PDF 로 뽑아 보니
+     절(1 숫자·2 깊이 읽기·3 다른 시·도…)마다 새 쪽에서 시작해, 1쪽이 45%,
+     어떤 쪽은 6%만 차 있었습니다. brief.css 가 절 카드 «통째»를 자르지 말라고
+     (break-inside:avoid-page) 했기 때문입니다 — 남은 칸에 절이 다 안 들어가면
+     절 전체가 다음 쪽으로 밀립니다. 부록도 늘 새 쪽에서 시작했습니다.
+
+     그래서 — 절은 쪽을 넘어 이어 씁니다. 대신 «작은 덩어리»(숫자 카드 하나·
+     그림·시·도 카드·질문 상자)는 자르지 않고, 제목은 첫 내용과 함께 둡니다.
+
+     ★ 종이에서는 절을 감싸던 큰 테두리를 걷고, 제목 위 가는 선으로 절을 가릅니다.
+       절이 쪽을 넘으면 큰 테두리는 쪽 끝까지 늘어나 «속이 빈 상자»가 되었고
+       (다음 카드가 통째로 넘어갈 때), Chrome 이 그 테두리 조각 때문에 시·도 카드를
+       두 쪽에 걸쳐 자르기도 했습니다. 안쪽 카드(숫자·시·도·질문 상자)의 테두리는 둡니다.
+       12개 호를 모두 뽑아 «덩어리 잘림 0 · 제목 홀로 남음 0 · 빈 상자 0»을 확인했습니다. */
+  #view-brief .br-sec{break-inside:auto;page-break-inside:auto;
+    border:0 !important;border-radius:0 !important;padding:0;background:none}
+  #view-brief .br-paper > .br-sec{margin-top:3mm}
+  #view-brief .br-sec h2{padding-top:3.5mm;border-top:.45mm solid #1D4ED8}
+  #view-brief .br-sec.br-all h2{border-top-color:#CBD5E1}
+  /* 첫머리 카드는 1쪽 머리글 바로 밑이라 그대로 한 덩어리로 둡니다 */
+  #view-brief .br-lead-card{break-inside:avoid;page-break-inside:avoid}
+  #view-brief .br-sec-lede,#view-brief .br-issue .k,#view-brief .br-issue .lb{break-after:avoid;page-break-after:avoid}
+  #view-brief .br-issue{break-inside:auto;page-break-inside:auto}
+  /* 다른 시·도 — 두 칸 격자에서는 Chrome 이 카드를 쪽 사이에서 잘랐습니다.
+     숫자 카드처럼 한 줄에 하나(넓게)로 두면 카드가 낮아지고 자르지 않기도 지켜집니다. */
+  #view-brief .br-regions{display:block}
+  #view-brief .br-region{margin-bottom:3mm}
+  #view-brief .br-region:last-child{margin-bottom:0}
+  #view-brief .br-issue-grid,#view-brief .br-facts,#view-brief .br-ask,#view-brief .br-chart,
+  #view-brief .br-stat,#view-brief .br-watch li,#view-brief .br-cites{break-inside:avoid;page-break-inside:avoid}
+  /* 부록은 앞 내용에 이어 붙입니다 — 선 하나로 본문과 가릅니다 */
+  #view-brief .br-refs{display:block !important;break-before:auto;page-break-before:auto;
+    margin-top:2mm;padding-top:4mm;border-top:.4mm solid #CBD5E1}
+  #view-brief .br-refs h2{break-after:avoid;page-break-after:avoid}
+  /* 부록 한두 건만 마지막 쪽으로 넘어가 종이 한 장을 더 쓰던 호가 있었습니다 — 줄 사이를 조금 좁힙니다 */
+  #view-brief .br-refs ol{line-height:1.4}
+  #view-brief .br-refs li{margin-bottom:1mm}
 
   /* ═════════ 뉴스 — 표지 그림 대신 목록으로 ═════════ */
   .news-grid{grid-template-columns:1fr 1fr !important;gap:3mm !important}
